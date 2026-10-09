@@ -1180,7 +1180,7 @@
         "strength",
         "pace"
       ],
-      "rationale": "Spa 115 and spd 100 drive VIS 96 and PAS 89, while weight 3.5 kg and height 3 dm already hold PHY down. Spe 45 keeps it in a deep role."
+      "rationale": "Spa 115 and spd 100 drive VIS 96 and PAS 89, while weight 3.5 kg, the largest PHY input, keeps it light in contact. Spe 45 keeps it in a deep role."
     },
     {
       "id": 955,
@@ -2576,7 +2576,7 @@
         "pace",
         "footwork"
       ],
-      "rationale": "Def 110 and spa 95 suit a deep blocker in heads shape, and weight 9.7 kg and height 4 dm already hold PHY down. Spe 40 keeps it static."
+      "rationale": "Def 110 and spa 95 suit a deep blocker in heads shape. Spe 40 keeps it static."
     },
     {
       "id": 1012,
@@ -2868,9 +2868,7 @@
     {
       "id": 1024,
       "name": "Terapagos",
-      "adjustments": {
-        "ACC": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "FB",
         "DM",
@@ -2885,10 +2883,10 @@
         "stamina"
       ],
       "weaknesses": [
-        "acceleration",
+        "aerial",
         "size"
       ],
-      "rationale": "A 2 dm turtle with hp 90 and def 85; its shelled body should not burst like ACC 67 says. Ability Tera Shift does not apply in default form."
+      "rationale": "A 2 dm turtle with hp 90 and def 85 suits a steady defensive role; height and weight already feed the ACC blend, so its small body gets no further cut, and AER 40 is its low point. Ability Tera Shift does not apply in default form."
     },
     {
       "id": 1025,

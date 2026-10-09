@@ -202,7 +202,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Turtle genus and def 80 with spd 80 make a shell-backed defender. Spe 58 is middling, so it reads as a steady full-back rather than a runner."
+      "rationale": "Genus Turtle and its shell earn a small DEF +3 on top of what def and spd already give, matching Squirtle. Spe 58 is middling, so it reads as a steady full-back rather than a runner."
     },
     {
       "id": 9,

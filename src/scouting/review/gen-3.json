@@ -879,9 +879,7 @@
     {
       "id": 288,
       "name": "Vigoroth",
-      "adjustments": {
-        "STA": 4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "WB",
@@ -900,7 +898,7 @@
         "composure",
         "discipline"
       ],
-      "rationale": "Genus Wild Monkey with ability Vital Spirit and spe 90 is a restless engine, so stamina rises a touch; that same frenzy costs composure."
+      "rationale": "Genus Wild Monkey with ability Vital Spirit and spe 90 is a restless engine; Layer 1 already credits Vital Spirit in STA, so no adjustment, and that same frenzy costs composure."
     },
     {
       "id": 289,
@@ -1129,9 +1127,9 @@
       "name": "Azurill",
       "adjustments": {},
       "bestRoles": [
-        "W",
         "ST",
-        "WB"
+        "AM",
+        "CM"
       ],
       "worstRoles": [
         "CB",
@@ -1144,9 +1142,10 @@
       "weaknesses": [
         "size",
         "strength",
-        "durability"
+        "durability",
+        "pace"
       ],
-      "rationale": "IsBaby with height 2 and atk 20 has no physical game; its bouncing tail suits a tiny wide role at best."
+      "rationale": "IsBaby with height 2 and atk 20 has no physical game, and spe 20 rules out the wide pace roles. Ability Huge Power makes SHO 31 its best attribute, so it is a short-range finisher at best."
     },
     {
       "id": 299,

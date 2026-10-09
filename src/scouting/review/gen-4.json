@@ -363,24 +363,25 @@
       "name": "Kricketot",
       "adjustments": {},
       "bestRoles": [
-        "WB",
-        "W",
-        "WM"
+        "AM",
+        "CM",
+        "ST"
       ],
       "worstRoles": [
         "CB",
         "GK"
       ],
       "strengths": [
-        "acceleration",
+        "close-control",
         "dribbling"
       ],
       "weaknesses": [
         "strength",
         "size",
-        "shot-power"
+        "shot-power",
+        "pace"
       ],
-      "rationale": "Height 3, weight 22 hg and atk 25 leave nothing physical; its only edge is the small humanoid frame Layer 1 already rewarded in DRI and TEC."
+      "rationale": "Height 3, weight 22 hg and atk 25 leave nothing physical, and spe 25 rules out the wide pace roles. Its only edge is the small humanoid frame Layer 1 already rewarded in DRI and TEC, which suits a central creator."
     },
     {
       "id": 402,

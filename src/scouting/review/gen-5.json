@@ -1779,7 +1779,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Def 133 and atk 108 at weight 81 kg make a rock-solid centre-back, but its limbs are flippers, so the upright-driven TEC and HAN are trimmed; spe 32 keeps it deep."
+      "rationale": "Def 133 and atk 108 at weight 81 kg make a rock-solid centre-back, but its limbs are flippers, so the upright TEC bonus is trimmed and HAN drops for limbs that cannot grip; spe 32 keeps it deep."
     },
     {
       "id": 566,
@@ -3034,9 +3034,7 @@
     {
       "id": 617,
       "name": "Accelgor",
-      "adjustments": {
-        "PAC": 5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "AM",
@@ -3056,7 +3054,7 @@
         "strength",
         "durability"
       ],
-      "rationale": "Spe 145 is the highest in the generation, and ability Unburden plus its ninja design fit a blistering winger; the arms-shape PAC cut in Layer 1 undersells that, so PAC rises."
+      "rationale": "Spe 145 is the highest in the generation, and ability Unburden plus its ninja design fit a blistering winger. Layer 1 already prices spe 145 and Unburden into PAC 90, so no adjustment."
     },
     {
       "id": 618,
