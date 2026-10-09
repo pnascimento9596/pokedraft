@@ -2325,7 +2325,7 @@
         "vision"
       ],
       "weaknesses": [
-        "handling",
+        "dribbling",
         "acceleration"
       ],
       "rationale": "Def and spd 115 with hp 100 give DEF 95 and STA 90; quadruped shape rules out goal despite GK topping roleBlends."

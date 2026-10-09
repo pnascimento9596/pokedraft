@@ -2503,7 +2503,7 @@
       ],
       "weaknesses": [
         "close-control",
-        "handling"
+        "tackling"
       ],
       "rationale": "Spa 135 and spe 135 give PAC 97 and VIS 94 on a 240 kg quadruped; no hands keep it out of goal despite the blend, and atk 85 suits playmaking over finishing."
     },
@@ -2550,7 +2550,7 @@
         "finishing"
       ],
       "weaknesses": [
-        "handling",
+        "passing",
         "distribution"
       ],
       "rationale": "Atk 130 and spe 104 on a 125 kg quadruped with a blade horn give SHO 91 and TAK 90; no hands rule out goal despite the GK blend."
@@ -2836,7 +2836,7 @@
         "strength"
       ],
       "weaknesses": [
-        "handling",
+        "vision",
         "passing"
       ],
       "rationale": "Spe 124 and atk 120 on a 162.5 kg quadruped with a blade horn give PAC 95 and SHO 90; no hands keep it out of goal despite the blend."
@@ -2861,7 +2861,7 @@
       ],
       "weaknesses": [
         "dribbling",
-        "handling"
+        "finishing"
       ],
       "rationale": "Spa 122 and def 100 give VIS 96 and DEF 94 on a 156 kg quadruped; atk 72 keeps it from scoring, and no hands rule out goal."
     },

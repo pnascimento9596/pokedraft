@@ -704,9 +704,7 @@
     {
       "id": 750,
       "name": "Mudsdale",
-      "adjustments": {
-        "HAN": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -727,7 +725,7 @@
         "dribbling",
         "agility"
       ],
-      "rationale": "Height 25, weight 9200, and atk 125 with hoof kicks in its kickMoves make a fearsome centre-back. Shape quadruped means hooves, not hands, so HAN -8 since 83 is far too high for a horse."
+      "rationale": "Height 25, weight 9200, and atk 125 with hoof kicks in its kickMoves make a fearsome centre-back. Shape quadruped means hooves, not hands, and Layer 1 already cuts HAN for that."
     },
     {
       "id": 751,
@@ -1266,8 +1264,7 @@
       "id": 772,
       "name": "Type: Null",
       "adjustments": {
-        "VIS": -5,
-        "HAN": -6
+        "VIS": -5
       },
       "bestRoles": [
         "CB",
@@ -1288,14 +1285,12 @@
         "vision",
         "dribbling"
       ],
-      "rationale": "Its defining restraint helmet covers its head, so VIS -5, and shape quadruped means no hands, HAN -6. Even 95 stats and ability Battle Armor make a solid defender."
+      "rationale": "Its defining restraint helmet covers its head, so VIS -5, and shape quadruped means no hands, which Layer 1 already prices in HAN. Even 95 stats and ability Battle Armor make a solid defender."
     },
     {
       "id": 773,
       "name": "Silvally",
-      "adjustments": {
-        "HAN": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1311,10 +1306,10 @@
         "pace"
       ],
       "weaknesses": [
-        "handling",
+        "acceleration",
         "dribbling"
       ],
-      "rationale": "Even 95 base stats, spe 95, and ability RKS System make it a versatile defender. Shape quadruped makes HAN 84 and its GK top blend unrealistic, so HAN -8."
+      "rationale": "Even 95 base stats, spe 95, and ability RKS System make it a versatile defender. Shape quadruped gives it no hands, which Layer 1 already prices in HAN, so its GK top blend stays out of its best roles."
     },
     {
       "id": 774,

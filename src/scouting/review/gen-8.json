@@ -574,7 +574,7 @@
         "strength"
       ],
       "weaknesses": [
-        "handling",
+        "passing",
         "close-control"
       ],
       "rationale": "Def 100, kickMoves headbutt and zen-headbutt, and its ram design support winning headers, so AER rises. Shape quadruped gives it no hands, so DIV 86 is too high for a sheep in goal."
@@ -1973,9 +1973,7 @@
     {
       "id": 888,
       "name": "Zacian",
-      "adjustments": {
-        "HAN": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "ST",
         "W",
@@ -1992,10 +1990,10 @@
         "agility"
       ],
       "weaknesses": [
-        "handling",
+        "vision",
         "distribution"
       ],
-      "rationale": "Spe 138 and atk 120 with ability Intrepid Sword make it a lethal forward. Shape quadruped and a sword held in its jaws leave no hands, so HAN 89 is cut even after the Layer 1 penalty."
+      "rationale": "Spe 138 and atk 120 with ability Intrepid Sword make it a lethal forward. Shape quadruped and a sword held in its jaws leave no hands, which the Layer 1 shape penalty on HAN already prices."
     },
     {
       "id": 889,
@@ -2017,7 +2015,7 @@
         "durability"
       ],
       "weaknesses": [
-        "handling",
+        "vision",
         "distribution"
       ],
       "rationale": "Def 115 and ability Dauntless Shield make it the archetypal defender, already in DEF 97 and TAK 96. Shape quadruped already cuts HAN in Layer 1, and goal is not its position."

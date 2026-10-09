@@ -65,7 +65,7 @@ export const COEFFICIENTS: ScoutingCoefficients = {
     upright: { DRI: 6, TEC: 5, SHO: 4, PAS: 3, KIC: 4 },
     humanoid: { DRI: 7, TEC: 7, SHO: 5, PAS: 5, KIC: 5, HAN: 6, DIV: 3 },
     legs: { DRI: 5, TEC: 3, SHO: 4, KIC: 4, PAC: 2 },
-    quadruped: { DRI: 1, PAC: 2, ACC: 2, TEC: -2, PAS: -2, HAN: -6 },
+    quadruped: { DRI: 1, PAC: 2, ACC: 2, TEC: -2, PAS: -2, HAN: -12 },
     arms: { HAN: 10, DIV: 6, REF: 2, DRI: -8, TEC: -7, SHO: -2, PAC: -3, KIC: -8 },
     fish: {
       PAC: -25,

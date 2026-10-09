@@ -1642,7 +1642,7 @@
         "strength"
       ],
       "weaknesses": [
-        "handling",
+        "acceleration",
         "close-control"
       ],
       "rationale": "Spe 99 on a quadruped deer with genus Life suits long bounding runs, which the baseline already prices with weight 2150 hg, so no change; hp 126 and balanced atk and spa 131 cover both ends."

@@ -3575,16 +3575,14 @@
       ],
       "weaknesses": [
         "close-control",
-        "handling"
+        "vision"
       ],
       "rationale": "Def 129 and spe 108 at weight 250 kg make a fast, unbreakable centre-back, and genus Iron Will with ability Justified fit a disciplined leader; the quadruped shape already cuts HAN in Layer 1, so no change."
     },
     {
       "id": 639,
       "name": "Terrakion",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "ST",
         "CB",
@@ -3601,10 +3599,10 @@
         "aggression"
       ],
       "weaknesses": [
-        "handling",
+        "vision",
         "passing"
       ],
-      "rationale": "Atk 129 and spe 108 on a 260 kg quadruped make a charging, powerful forward who can also anchor the defence; hooves give no grip, so HAN trims and GK leaves its best roles."
+      "rationale": "Atk 129 and spe 108 on a 260 kg quadruped make a charging, powerful forward who can also anchor the defence. Shape quadruped already cuts HAN in Layer 1, and hooves with no grip keep GK out of its best roles."
     },
     {
       "id": 640,
@@ -3626,7 +3624,7 @@
         "composure"
       ],
       "weaknesses": [
-        "handling",
+        "tackling",
         "shot-power"
       ],
       "rationale": "Spd 129 and spe 108 make a resilient, graceful runner suited to covering a flank or the middle; the quadruped shape already cuts HAN in Layer 1, so no change."
@@ -3784,9 +3782,7 @@
     {
       "id": 647,
       "name": "Keldeo",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "WM",
@@ -3802,10 +3798,10 @@
         "kicking-technique"
       ],
       "weaknesses": [
-        "handling",
+        "tackling",
         "strength"
       ],
-      "rationale": "Spe 108 and spa 129 on a light 48.5 kg colt with kickMoves double-kick make a quick, creative attacker; as a hooved quadruped it has no grip, so HAN trims and GK falls out of its best roles."
+      "rationale": "Spe 108 and spa 129 on a light 48.5 kg colt with kickMoves double-kick make a quick, creative attacker. As a hooved quadruped it has no grip, which Layer 1 already prices in HAN, so GK falls out of its best roles."
     },
     {
       "id": 648,
