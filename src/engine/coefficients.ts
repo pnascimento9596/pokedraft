@@ -6,6 +6,7 @@ export interface EngineCoefficients {
     coreWeight: number;
     synergyWeight: number;
     benchWeight: number;
+    curve: number;
     dragCount: number;
     dragWeight: number;
     synergy: {
@@ -57,6 +58,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     coreWeight: 0.8,
     synergyWeight: 0.12,
     benchWeight: 0.08,
+    curve: 0.4,
     dragCount: 3,
     dragWeight: 0.5,
     synergy: {
@@ -65,26 +67,26 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
       sameGen: 0.25,
       coverage: 0.25,
       edgeCap: 1,
-      fullAt: 0.5,
+      fullAt: 0.8,
     },
   },
   match: {
     shape: 0.5,
     base: 1.1,
-    spread: 5.5,
-    minLambda: 0.3,
-    maxLambda: 3.4,
+    spread: 5,
+    minLambda: 0.1,
+    maxLambda: 5,
     wDef: 0.7,
     wGk: 0.3,
     gammaMid: 1,
     controlLo: 0.85,
     controlHi: 1.15,
-    knockoutFactor: 0.82,
+    knockoutFactor: 1,
     extraTimeFraction: 1 / 3,
     chances: { regulation: 50, extraTime: 17, maxGoalProb: 0.6 },
     dispersion: {
-      group: { outer: 0.14, amplitude: 0.4 },
-      knockout: { outer: 0.2, amplitude: 0.75 },
+      group: { outer: 0.14, amplitude: 0.2 },
+      knockout: { outer: 0.2, amplitude: 0.3 },
     },
     penaltyShare: 0.06,
     assistProb: 0.62,
@@ -96,7 +98,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
   awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, DEF: 1 } },
   ladder: {
-    score: { G1: 600, G2: 650, G3: 700, R32: 750, R16: 800, QF: 850, SF: 900, F: 950 },
+    score: { G1: 300, G2: 320, G3: 340, R32: 360, R16: 480, QF: 760, SF: 850, F: 990 },
     jitter: 20,
     tilt: 5,
   },

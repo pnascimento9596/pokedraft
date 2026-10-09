@@ -93,8 +93,9 @@ export function rateTeam(
   const blend =
     c.team.coreWeight * (core - drag) + c.team.synergyWeight * synergy + c.team.benchWeight * bench;
 
+  const x = clamp01(blend);
   return {
-    score: Math.round(SCORE_SCALE * clamp01(blend)),
+    score: Math.round(SCORE_SCALE * (x + c.team.curve * x * (1 - x))),
     core,
     drag,
     synergy,
