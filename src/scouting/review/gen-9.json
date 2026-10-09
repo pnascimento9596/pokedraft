@@ -1147,9 +1147,9 @@
         "DRI": 5
       },
       "bestRoles": [
-        "FB",
         "DM",
-        "WB"
+        "CB",
+        "FB"
       ],
       "worstRoles": [
         "ST",
@@ -1218,7 +1218,6 @@
       "id": 956,
       "name": "Espathra",
       "adjustments": {
-        "KIC": 6,
         "SHO": 4
       },
       "bestRoles": [
@@ -1239,7 +1238,7 @@
         "tackling",
         "marking"
       ],
-      "rationale": "Genus Ostrich on long legs with spe 105 and kickMoves low-kick; an ostrich kick is famously strong, so KIC and SHO rise from a baseline that atk 60 held down. Def 60 limits its defending."
+      "rationale": "Genus Ostrich on long legs with spe 105; an ostrich kick is famously strong, which the stat blend does not see, so SHO rises a little. KIC stays, since GK is a worst role, and def 60 limits its defending."
     },
     {
       "id": 957,

@@ -1069,8 +1069,7 @@
       "id": 693,
       "name": "Clawitzer",
       "adjustments": {
-        "SHO": 6,
-        "KIC": 4
+        "SHO": 6
       },
       "bestRoles": [
         "DM",
@@ -1090,7 +1089,7 @@
         "dribbling",
         "pace"
       ],
-      "rationale": "Spa 120 with ability Mega Launcher and genus Howitzer make its cannon claw a long-range weapon that shape squiggle penalties hide, so SHO and KIC rise; spe 59 limits mobility."
+      "rationale": "Spa 120 with ability Mega Launcher and genus Howitzer make its cannon claw a long-range weapon that shape squiggle penalties hide, so SHO rises; spe 59 limits mobility."
     },
     {
       "id": 694,

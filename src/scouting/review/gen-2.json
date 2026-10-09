@@ -226,9 +226,9 @@
       "name": "Sentret",
       "adjustments": {},
       "bestRoles": [
-        "WB",
-        "FB",
-        "DM"
+        "DM",
+        "CB",
+        "FB"
       ],
       "worstRoles": [
         "ST",
@@ -243,7 +243,7 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Genus Scout and ability Keen Eye already lifted VIS through layer1Mods; spe 20, atk 46 and weight 60 leave little else, so it plays a watchful support role."
+      "rationale": "Genus Scout and ability Keen Eye already lifted VIS through layer1Mods; spe 20, atk 46 and weight 60 leave little else, so it plays a watchful holding role in front of the back line."
     },
     {
       "id": 162,
@@ -394,7 +394,7 @@
       "id": 168,
       "name": "Ariados",
       "adjustments": {
-        "DEF": 3
+        "TAK": 3
       },
       "bestRoles": [
         "CB",
@@ -414,7 +414,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Genus Long Leg with a multi-legged armor shape covers ground around it, and hp 70 with atk 90 suits a trapping defender; spe 40 limits pace, so DEF rises slightly."
+      "rationale": "Genus Long Leg on an armor shape can reach in and poke the ball away, so TAK rises slightly; hp 70 and atk 90 suit a trapping defender, and spe 40 limits pace."
     },
     {
       "id": 169,
@@ -544,9 +544,9 @@
       "name": "Igglybuff",
       "adjustments": {},
       "bestRoles": [
-        "WB",
-        "WM",
-        "CM"
+        "CM",
+        "DM",
+        "WM"
       ],
       "worstRoles": [
         "CB",
@@ -561,7 +561,7 @@
         "size",
         "pace"
       ],
-      "rationale": "Hp 90 lifts STA to 56 for an isBaby at weight 10; def 15 and spe 15 leave it physically outmatched, already reflected in layer1Mods."
+      "rationale": "Hp 90 lifts STA to 69 for an isBaby at weight 10; def 15 and spe 15 leave it physically outmatched, already reflected in layer1Mods, so it plays centrally where stamina matters."
     },
     {
       "id": 175,
@@ -669,9 +669,9 @@
       "name": "Mareep",
       "adjustments": {},
       "bestRoles": [
-        "WB",
+        "CM",
         "WM",
-        "FB"
+        "DM"
       ],
       "worstRoles": [
         "ST",
@@ -685,7 +685,7 @@
         "pace",
         "strength"
       ],
-      "rationale": "Spa 65 is its best stat and hidden ability Plus is a partner ability; spe 35 and atk 40 on a quadruped shape keep it a modest support player."
+      "rationale": "Spa 65 is its best stat and hidden ability Plus is a partner ability; spe 35 and atk 40 on a quadruped shape keep it a modest central support player."
     },
     {
       "id": 180,
@@ -766,8 +766,8 @@
       "name": "Marill",
       "adjustments": {},
       "bestRoles": [
-        "WB",
         "FB",
+        "DM",
         "CM"
       ],
       "worstRoles": [
@@ -782,7 +782,7 @@
         "pace",
         "size"
       ],
-      "rationale": "Ability Huge Power already added SHO 13 in layer1Mods; hp 70 lifts STA while height 4 and spe 40 keep it a small wide runner."
+      "rationale": "Ability Huge Power already added SHO 13 in layer1Mods; hp 70 lifts STA while height 4 and spe 40 keep it a small, steady full-back rather than a wide runner."
     },
     {
       "id": 184,
@@ -970,13 +970,11 @@
     {
       "id": 191,
       "name": "Sunkern",
-      "adjustments": {
-        "ACC": -6
-      },
+      "adjustments": {},
       "bestRoles": [
-        "WB",
-        "FB",
-        "DM"
+        "CB",
+        "DM",
+        "FB"
       ],
       "worstRoles": [
         "ST",
@@ -992,7 +990,7 @@
         "size",
         "footwork"
       ],
-      "rationale": "Ball shape, height 3 and spe 30 describe a seed with tiny legs; ACC 40 still sits above its spe line because of its light, small body, so it comes down."
+      "rationale": "Ball shape, height 3 and spe 30 describe a seed with tiny legs. Its light, small body already feeds ACC, so no change, and it stays deep where it need not run."
     },
     {
       "id": 192,
@@ -1482,8 +1480,8 @@
       "name": "Qwilfish",
       "adjustments": {},
       "bestRoles": [
-        "W",
         "ST",
+        "AM",
         "WM"
       ],
       "worstRoles": [
@@ -1498,7 +1496,7 @@
         "footwork",
         "pace"
       ],
-      "rationale": "Fish shape already cut its outfield ratings hard; atk 95 and spe 85 with hidden ability Intimidate keep it a nuisance up front."
+      "rationale": "Fish shape already cut its outfield ratings hard, including PAC; atk 95 and spe 85 with hidden ability Intimidate keep it a nuisance through the middle and up front."
     },
     {
       "id": 212,
@@ -1789,7 +1787,7 @@
       "bestRoles": [
         "AM",
         "ST",
-        "W"
+        "CM"
       ],
       "worstRoles": [
         "CB",
@@ -1804,7 +1802,7 @@
         "durability",
         "pace"
       ],
-      "rationale": "Genus Jet and ability Sniper fit a water-jet shooter, but fish shape already cut PAC and DRI; def 35 and hp 35 leave it fragile."
+      "rationale": "Genus Jet and ability Sniper fit a water-jet shooter from central areas, but fish shape already cut PAC and DRI; def 35 and hp 35 leave it fragile."
     },
     {
       "id": 224,
@@ -2109,7 +2107,7 @@
       "bestRoles": [
         "ST",
         "AM",
-        "W"
+        "CM"
       ],
       "worstRoles": [
         "GK",
@@ -2475,8 +2473,8 @@
       "id": 251,
       "name": "Celebi",
       "adjustments": {
-        "PHY": -4,
-        "AER": 4
+        "AER": 4,
+        "HAN": -6
       },
       "bestRoles": [
         "AM",
@@ -2496,7 +2494,7 @@
         "size",
         "strength"
       ],
-      "rationale": "Flat 100 stats give elite DRI and PAS, but height 6 and weight 50 cannot back PHY 66; it hovers on small wings, so AER 58 is lifted a little."
+      "rationale": "Flat 100 stats give elite DRI and PAS. Weight 50 already holds PHY at 66 and TAK at 73, so those stand, but height 6 gives no reach to handle a shot, so HAN drops; it hovers on small wings, so AER 58 is lifted a little."
     }
   ]
 }

@@ -898,7 +898,7 @@
       "bestRoles": [
         "DM",
         "FB",
-        "WB"
+        "CB"
       ],
       "worstRoles": [
         "W",
@@ -1349,7 +1349,7 @@
       "bestRoles": [
         "DM",
         "CB",
-        "WB"
+        "FB"
       ],
       "worstRoles": [
         "W",
@@ -1749,7 +1749,7 @@
       "bestRoles": [
         "GK",
         "FB",
-        "WB"
+        "DM"
       ],
       "worstRoles": [
         "ST",
@@ -2305,10 +2305,7 @@
     {
       "id": 478,
       "name": "Froslass",
-      "adjustments": {
-        "DRI": -6,
-        "SHO": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "AM",
@@ -2327,7 +2324,7 @@
         "strength",
         "footwork"
       ],
-      "rationale": "Spe 110 on an ice/ghost type gives pace, but the arms shape floats with no feet, so DRI 87 and SHO 72 overstate its ball work. Weight 266 hg keeps it light."
+      "rationale": "Spe 110 on an ice/ghost type gives pace. The arms shape floats with no feet, and Layer 1 already takes DRI, TEC and SHO down for it, so no further trim. Weight 266 hg keeps it light."
     },
     {
       "id": 479,
@@ -2610,7 +2607,9 @@
     {
       "id": 490,
       "name": "Manaphy",
-      "adjustments": {},
+      "adjustments": {
+        "HAN": -6
+      },
       "bestRoles": [
         "AM",
         "CM",
@@ -2630,7 +2629,7 @@
         "size",
         "aerial"
       ],
-      "rationale": "Even 100 stats on a humanoid shape at height 3 and weight 14 hg make a gifted little creator with no physical presence. Baseline fits."
+      "rationale": "Even 100 stats on a humanoid shape at height 3 and weight 14 hg make a gifted little creator with no physical presence. Weight already holds PHY at 62, so only HAN drops, for a body with no reach to handle a shot."
     },
     {
       "id": 491,
@@ -2660,7 +2659,9 @@
     {
       "id": 492,
       "name": "Shaymin",
-      "adjustments": {},
+      "adjustments": {
+        "HAN": -6
+      },
       "bestRoles": [
         "W",
         "AM",
@@ -2680,7 +2681,7 @@
         "size",
         "aerial"
       ],
-      "rationale": "Even 100 stats on a quadruped hedgehog at height 2 and weight 21 hg give quickness and stamina but no physical game. Baseline fits."
+      "rationale": "Even 100 stats on a quadruped hedgehog at height 2 and weight 21 hg give quickness and stamina but no physical game, and weight already holds PHY at 63. Height 2 gives no reach to handle a shot, so HAN drops."
     },
     {
       "id": 493,

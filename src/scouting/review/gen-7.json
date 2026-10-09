@@ -6,9 +6,9 @@
       "name": "Rowlet",
       "adjustments": {},
       "bestRoles": [
-        "WB",
+        "FB",
         "WM",
-        "FB"
+        "DM"
       ],
       "worstRoles": [
         "CB",
@@ -30,8 +30,8 @@
       "adjustments": {},
       "bestRoles": [
         "DM",
-        "FB",
-        "WB"
+        "CB",
+        "FB"
       ],
       "worstRoles": [
         "ST",
@@ -45,7 +45,7 @@
         "pace",
         "dribbling"
       ],
-      "rationale": "Even atk, def, spa, and spd of 70 to 75 with spe 52 fit a steady defensive wide player. Shape wings already lifted AER in Layer 1, so the baseline stands."
+      "rationale": "Even atk, def, spa, and spd of 70 to 75 with spe 52 fit a steady defender. Shape wings already lifted AER in Layer 1, so the baseline stands."
     },
     {
       "id": 724,
@@ -799,7 +799,7 @@
       "bestRoles": [
         "AM",
         "ST",
-        "W"
+        "CM"
       ],
       "worstRoles": [
         "GK",
@@ -1002,7 +1002,7 @@
       "adjustments": {},
       "bestRoles": [
         "WM",
-        "W",
+        "AM",
         "FB"
       ],
       "worstRoles": [
@@ -1486,7 +1486,6 @@
         "aggression"
       ],
       "weaknesses": [
-        "pace",
         "footwork",
         "stamina"
       ],
@@ -1618,10 +1617,7 @@
     {
       "id": 785,
       "name": "Tapu Koko",
-      "adjustments": {
-        "TEC": -5,
-        "DRI": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -1641,7 +1637,7 @@
         "durability",
         "footwork"
       ],
-      "rationale": "Spe 130 and atk 115 make it an explosive wide attacker, but shape arms means it floats with no legs, so like Tornadus it takes TEC and DRI trims on top of the Layer 1 KIC -8. Weight 205 (20.5 kg) and hp 70 keep it light."
+      "rationale": "Spe 130 and atk 115 make it an explosive wide attacker. Shape arms means it floats with no legs, and Layer 1 already applies DRI -8, TEC -7 and KIC -8 for that, so no further trim. Weight 205 (20.5 kg) and hp 70 keep it light."
     },
     {
       "id": 786,

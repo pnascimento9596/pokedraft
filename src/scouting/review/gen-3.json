@@ -449,9 +449,9 @@
       "name": "Lotad",
       "adjustments": {},
       "bestRoles": [
-        "WB",
-        "FB",
-        "WM"
+        "DM",
+        "CB",
+        "FB"
       ],
       "worstRoles": [
         "ST",
@@ -466,7 +466,7 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Armor shape at height 5 with base stats all 50 or below limits it everywhere; its lily-pad body gives balance but no threat, so the baseline stands."
+      "rationale": "Armor shape at height 5 with base stats all 50 or below limits it everywhere; its lily-pad body gives balance but no threat, so the baseline stands and it holds a deep position."
     },
     {
       "id": 271,
@@ -523,13 +523,13 @@
       "name": "Seedot",
       "adjustments": {},
       "bestRoles": [
-        "FB",
-        "WB",
-        "DM"
+        "CB",
+        "DM",
+        "FB"
       ],
       "worstRoles": [
-        "GK",
-        "AM"
+        "W",
+        "GK"
       ],
       "strengths": [
         "durability",
@@ -1235,8 +1235,8 @@
       "adjustments": {},
       "bestRoles": [
         "AM",
-        "W",
-        "CM"
+        "CM",
+        "ST"
       ],
       "worstRoles": [
         "CB",
@@ -1252,7 +1252,7 @@
         "pace",
         "strength"
       ],
-      "rationale": "Ability Prankster and genus Darkness suit a sneaky creator, and Layer 1 already rewarded its kickMoves; height 5 and spe 50 limit its pace and presence."
+      "rationale": "Ability Prankster and genus Darkness suit a sneaky creator, and Layer 1 already rewarded its kickMoves; height 5 and spe 50 limit its pace and presence, so it works centrally."
     },
     {
       "id": 303,
@@ -3256,8 +3256,7 @@
       "id": 385,
       "name": "Jirachi",
       "adjustments": {
-        "PHY": -8,
-        "TAK": -6
+        "HAN": -6
       },
       "bestRoles": [
         "AM",
@@ -3277,7 +3276,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Weight 11 and height 3 cannot win physical duels, so physicality and tackling fall; base stats all 100 still make it a gifted creator."
+      "rationale": "Weight 11 already holds PHY at 63 and TAK at 69, so those stand, but height 3 gives no reach to handle a shot, so HAN drops; base stats all 100 still make it a gifted creator."
     },
     {
       "id": 386,

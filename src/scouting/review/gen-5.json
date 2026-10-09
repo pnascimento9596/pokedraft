@@ -5,9 +5,7 @@
       "id": 494,
       "name": "Victini",
       "adjustments": {
-        "HAN": -6,
-        "DIV": -4,
-        "PHY": -4
+        "HAN": -6
       },
       "bestRoles": [
         "AM",
@@ -28,7 +26,7 @@
         "size",
         "aerial"
       ],
-      "rationale": "Height 0.4 m and weight 4 kg leave no reach or strength for goal or physical duels, so HAN, DIV and PHY drop; the flat 100 base stats, humanoid shape and kickMoves blaze-kick and mega-kick keep it a complete attacking mid."
+      "rationale": "Height 4 gives no reach to handle a shot, so HAN drops; weight 40 already holds PHY at 65 and height already lowers DIV, so those stand. The flat 100 base stats, humanoid shape and kickMoves blaze-kick and mega-kick keep it a complete attacking mid."
     },
     {
       "id": 495,
@@ -1160,7 +1158,7 @@
       "bestRoles": [
         "FB",
         "DM",
-        "WB"
+        "CB"
       ],
       "worstRoles": [
         "ST",
@@ -2965,7 +2963,7 @@
       "bestRoles": [
         "ST",
         "AM",
-        "W"
+        "CM"
       ],
       "worstRoles": [
         "GK",
@@ -3665,10 +3663,7 @@
     {
       "id": 641,
       "name": "Tornadus",
-      "adjustments": {
-        "TEC": -5,
-        "DRI": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "W",
@@ -3688,15 +3683,12 @@
         "kicking-technique",
         "footwork"
       ],
-      "rationale": "Spe 111 and spa 125 with ability Prankster make a quick, tricky creator, but its lower body is a cloud rather than legs. Layer 1 already applied KIC -8 for the arms shape, so only TEC and DRI come down from the stat-driven baseline."
+      "rationale": "Spe 111 and spa 125 with ability Prankster make a quick, tricky creator. Its lower body is a cloud rather than legs, and Layer 1 already applies DRI -8, TEC -7 and KIC -8 for the arms shape, so no further trim."
     },
     {
       "id": 642,
       "name": "Thundurus",
-      "adjustments": {
-        "TEC": -5,
-        "DRI": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -3716,7 +3708,7 @@
         "kicking-technique",
         "footwork"
       ],
-      "rationale": "It shares Tornadus's spe 111 and atk 115 with an electric/flying type and also floats on a cloud with no legs. Layer 1 already applied KIC -8 for the arms shape, so only TEC and DRI trim, leaving a quick aerial forward; ability Defiant fits its aggression."
+      "rationale": "It shares Tornadus's spe 111 and atk 115 with an electric/flying type and also floats on a cloud with no legs. Layer 1 already applies DRI -8, TEC -7 and KIC -8 for the arms shape, so no further trim, leaving a quick aerial forward; ability Defiant fits its aggression."
     },
     {
       "id": 643,
@@ -3771,9 +3763,7 @@
     {
       "id": 645,
       "name": "Landorus",
-      "adjustments": {
-        "TEC": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "GK",
         "CM",
@@ -3793,7 +3783,7 @@
         "kicking-technique",
         "footwork"
       ],
-      "rationale": "Atk 125 and spa 115 with strong arms give it handling and power, but like Tornadus it floats on a cloud without legs. Layer 1 already applied KIC -8 for the arms shape, so only TEC is trimmed and goal becomes its natural home."
+      "rationale": "Atk 125 and spa 115 with strong arms give it handling and power, but like Tornadus it floats on a cloud without legs. Layer 1 already applies TEC -7 and KIC -8 for the arms shape, so no further trim, and goal becomes its natural home."
     },
     {
       "id": 646,

@@ -371,13 +371,12 @@
       "id": 15,
       "name": "Beedrill",
       "adjustments": {
-        "TAK": 4,
-        "KIC": -4
+        "TAK": 4
       },
       "bestRoles": [
         "W",
         "ST",
-        "DM"
+        "WM"
       ],
       "worstRoles": [
         "GK",
@@ -392,7 +391,7 @@
         "durability",
         "kicking-technique"
       ],
-      "rationale": "Genus Poison Bee with atk 90, spe 75 and twin stingers presses hard, worth more tackling. Its legs are small next to the stinger arms, so KIC 62 is trimmed, and def 40 means it breaks easily."
+      "rationale": "Genus Poison Bee with atk 90, spe 75 and twin stingers presses hard, worth more tackling, and plays high on the wing or up front. Its legs are small next to the stinger arms, and def 40 means it breaks easily."
     },
     {
       "id": 16,
@@ -1511,9 +1510,9 @@
       "name": "Poliwhirl",
       "adjustments": {},
       "bestRoles": [
-        "CM",
+        "W",
         "WM",
-        "W"
+        "ST"
       ],
       "worstRoles": [
         "GK",
@@ -1528,7 +1527,7 @@
         "vision",
         "tackling"
       ],
-      "rationale": "Humanoid shape with spe 90 and hands and feet, so it keeps the ball well. Spa 50 holds its vision down, which the baseline already says."
+      "rationale": "Humanoid shape with spe 90 and hands and feet, so it keeps the ball well and is most dangerous on the wing. Spa 50 holds its vision down, which the baseline already says."
     },
     {
       "id": 62,
@@ -1829,9 +1828,7 @@
     {
       "id": 74,
       "name": "Geodude",
-      "adjustments": {
-        "DRI": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "GK",
         "CB",
@@ -1851,7 +1848,7 @@
         "kicking-technique",
         "footwork"
       ],
-      "rationale": "Genus Rock on an arms shape, a boulder with two arms and no legs. Layer 1 already applied KIC -8 for the arms shape, but DRI 33 is still too generous for a body that rolls. Def 100 and rock fists suit a keeper or blocker."
+      "rationale": "Genus Rock on an arms shape, a boulder with two arms and no legs. Layer 1 already applies DRI -8 and KIC -8 for the arms shape, so no further trim. Def 100 and rock fists suit a keeper or blocker."
     },
     {
       "id": 75,
@@ -1902,7 +1899,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Genus Megaton with weight 3000, def 130 and ability Sturdy is an immovable stopper, already in PHY 95 and TAK 95. Spe 45 rightly keeps ACC at 23."
+      "rationale": "Genus Megaton with weight 3000, def 130 and ability Sturdy is an immovable stopper, already in PHY 95 and TAK 95. Spe 45 and its weight rightly keep ACC at 26."
     },
     {
       "id": 77,
@@ -2314,9 +2311,7 @@
     {
       "id": 93,
       "name": "Haunter",
-      "adjustments": {
-        "DRI": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "WM",
@@ -2336,7 +2331,7 @@
         "strength",
         "footwork"
       ],
-      "rationale": "Genus Gas with weight 1, a floating head and two disembodied hands, with no legs at all. Layer 1 already applied KIC -8 for the arms shape, but DRI 77 is still too high for a creature that cannot kick."
+      "rationale": "Genus Gas with weight 1, a floating head and two disembodied hands, with no legs at all. Layer 1 already takes DRI and TEC down and applies KIC -8 for the arms shape, so no further trim."
     },
     {
       "id": 94,
@@ -3733,7 +3728,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Atk 134 with ability Multiscale on an upright frame of weight 2100, already in SHO 99 and PHY 94. Its bulk drags ACC to 42, which fits."
+      "rationale": "Atk 134 with ability Multiscale on an upright frame of weight 2100, already in SHO 99 and PHY 94. Its bulk trims ACC to 60, which fits."
     },
     {
       "id": 150,
@@ -3755,15 +3750,17 @@
         "pace"
       ],
       "weaknesses": [
-        "acceleration",
-        "agility"
+        "marking",
+        "tackling"
       ],
-      "rationale": "Genus Genetic with spa 154 and spe 130 is elite across the attack, already in SHO 99 and TEC 99. Legendary status alone adds nothing, and weight 1220 rightly holds ACC at 74."
+      "rationale": "Genus Genetic with spa 154 and spe 130 is elite across the attack, already in SHO 99 and TEC 99. Legendary status alone adds nothing, and def 90 is its lowest stat, so marking and tackling are its relative weak spots."
     },
     {
       "id": 151,
       "name": "Mew",
-      "adjustments": {},
+      "adjustments": {
+        "HAN": -6
+      },
       "bestRoles": [
         "AM",
         "ST",
@@ -3783,7 +3780,7 @@
         "size",
         "strength"
       ],
-      "rationale": "Base stats all 100 with kickMoves spanning blaze-kick to triple-axel, already in TEC 99. Height 4 and weight 40 make it tiny, as AER 54 and PHY 65 reflect."
+      "rationale": "Base stats all 100 with kickMoves spanning blaze-kick to triple-axel, already in TEC 99. Weight 40 already holds PHY at 65 and TAK at 72, so those stand, but height 4 gives no reach to handle a shot, so HAN drops."
     }
   ]
 }

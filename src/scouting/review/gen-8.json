@@ -1551,8 +1551,7 @@
       "name": "Pincurchin",
       "adjustments": {
         "HAN": -8,
-        "GKP": -6,
-        "PAS": -5
+        "GKP": -6
       },
       "bestRoles": [
         "DM",
@@ -1572,7 +1571,7 @@
         "size",
         "acceleration"
       ],
-      "rationale": "A 3 dm spiny urchin with spe 15 cannot handle or cover a goal, so the shape tentacles HAN bonus and GKP 83 are pulled back. Spa 91 overstates PAS for a creature this slow, though atk 101 and spines make it awkward to tackle."
+      "rationale": "A 3 dm spiny urchin with spe 15 cannot cover a goal, so HAN and GKP 83 are pulled back despite the tentacles shape. Atk 101 and spines make it awkward to tackle, and spa 91 lets it pass from a deep spot."
     },
     {
       "id": 872,
@@ -1625,10 +1624,7 @@
     {
       "id": 874,
       "name": "Stonjourner",
-      "adjustments": {
-        "PAC": -6,
-        "DRI": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1649,7 +1645,7 @@
         "passing",
         "agility"
       ],
-      "rationale": "Genus Big Rock and weight 520 kg make it a walking monolith with atk 125 and def 135. Spe 70 overstates top speed for that mass, and DRI 56 is too generous for stone legs."
+      "rationale": "Genus Big Rock and weight 520 kg make it a walking monolith with atk 125 and def 135. Layer 1 already lowers PAC, ACC and DRI for that heavy weight, so no further trim."
     },
     {
       "id": 875,
