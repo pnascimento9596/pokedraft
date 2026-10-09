@@ -8,7 +8,7 @@ export interface Rng {
   pick<T>(arr: readonly T[]): T;
 }
 
-function cyrb128(str: string): [number, number, number, number] {
+export function cyrb128(str: string): [number, number, number, number] {
   let h1 = 1779033703;
   let h2 = 3144134277;
   let h3 = 1013904242;
@@ -32,7 +32,7 @@ function cyrb128(str: string): [number, number, number, number] {
   return [h1 >>> 0, h2 >>> 0, h3 >>> 0, h4 >>> 0];
 }
 
-function sfc32(a: number, b: number, c: number, d: number): () => number {
+export function sfc32(a: number, b: number, c: number, d: number): () => number {
   return function next(): number {
     a |= 0;
     b |= 0;
