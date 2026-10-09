@@ -41,7 +41,7 @@ export const COEFFICIENTS: ScoutingCoefficients = {
   // small = 1 - height percentile, light = 1 - weight percentile.
   blend: {
     PAC: { spe: 0.9, height: 0.1 },
-    ACC: { spe: 0.55, light: 0.25, small: 0.2 },
+    ACC: { spe: 0.75, light: 0.15, small: 0.1 },
     SHO: { atk: 0.6, spa: 0.3, spe: 0.1 },
     PAS: { spa: 0.6, spd: 0.25, spe: 0.15 },
     VIS: { spa: 0.65, spd: 0.35 },
@@ -59,14 +59,14 @@ export const COEFFICIENTS: ScoutingCoefficients = {
     KIC: { atk: 0.6, spa: 0.2, hp: 0.2 },
   },
 
-  // Body plan. upright, humanoid, and legs kick naturally; arms suits goalkeeping;
+  // Body plan. upright, humanoid, and legs kick naturally; arms (no legs) suits goalkeeping;
   // fish, ball, blob, and squiggle lack feet; wings and bug-wings help in the air.
   shape: {
     upright: { DRI: 6, TEC: 5, SHO: 4, PAS: 3, KIC: 4 },
     humanoid: { DRI: 7, TEC: 7, SHO: 5, PAS: 5, KIC: 5, HAN: 6, DIV: 3 },
     legs: { DRI: 5, TEC: 3, SHO: 4, KIC: 4, PAC: 2 },
     quadruped: { DRI: 1, PAC: 2, ACC: 2, TEC: -2, PAS: -2, HAN: -6 },
-    arms: { HAN: 10, DIV: 6, REF: 2, DRI: -4, TEC: -2, SHO: -2, PAC: -3 },
+    arms: { HAN: 10, DIV: 6, REF: 2, DRI: -4, TEC: -2, SHO: -2, PAC: -3, KIC: -8 },
     fish: {
       PAC: -25,
       ACC: -22,
@@ -102,12 +102,12 @@ export const COEFFICIENTS: ScoutingCoefficients = {
     armor: { PHY: 4, DEF: 4, ACC: -3, DRI: -4, TEC: -4 },
   },
 
-  // Agility penalty for extreme weight: perDoubling points per doubling above thresholdKg.
+  // Agility and diving penalty for extreme weight: perDoubling points per doubling above thresholdKg.
   heavy: {
     thresholdKg: 150,
     perDoubling: 4,
     cap: 12,
-    attrs: { ACC: 1, DRI: 1, PAC: 0.5, AER: 0.5 },
+    attrs: { ACC: 1, DRI: 1, DIV: 1, PAC: 0.5, AER: 0.5 },
   },
 
   baby: { allAttrs: -6 },
