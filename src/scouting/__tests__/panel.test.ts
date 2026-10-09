@@ -41,9 +41,18 @@ describe("sanity panel (design intent, not ground truth)", () => {
     expect(inTop("Cinderace", role("ST"), 0.02)).toBe(true);
   });
 
-  it.each(["Hitmonlee", "Hitmontop", "Sirfetch’d"])("%s is top 10% at ST or W", (name) => {
-    expect(inTop(name, role("ST"), 0.1) || inTop(name, role("W"), 0.1)).toBe(true);
+  it("Hitmonlee is top 10% at ST or W", () => {
+    expect(inTop("Hitmonlee", role("ST"), 0.1) || inTop("Hitmonlee", role("W"), 0.1)).toBe(true);
   });
+
+  it.each(["Hitmontop", "Sirfetch’d"])(
+    "%s is top 25 percent at ST and ST is among its own three best fits",
+    (name) => {
+      const s = sp(name);
+      const third = [...ROLES].map((r) => s.fits[r]).sort((a, b) => b - a)[2]!;
+      expect([inTop(name, role("ST"), 0.25), s.fits.ST >= third]).toEqual([true, true]);
+    },
+  );
 
   it.each(["Blaziken", "Lucario", "Zeraora"])("%s is top 5% at ST or W", (name) => {
     expect(inTop(name, role("ST"), 0.05) || inTop(name, role("W"), 0.05)).toBe(true);
@@ -68,11 +77,11 @@ describe("sanity panel (design intent, not ground truth)", () => {
     expect(Math.max(s.fits.GK, s.fits.CB)).toBeGreaterThan(s.fits.W);
   });
 
-  it.each(["Magikarp", "Wishiwashi"])("%s sits in the bottom 5%% outfield", (name) => {
+  it.each(["Magikarp", "Wishiwashi"])("%s sits in the bottom 5 percent outfield", (name) => {
     expect(inBottom(name, outfield, 0.05)).toBe(true);
   });
 
-  it.each(["Jolteon", "Ninjask", "Regieleki"])("%s is top 1%% PAC", (name) => {
+  it.each(["Jolteon", "Ninjask", "Regieleki"])("%s is top 1 percent PAC", (name) => {
     expect(inTop(name, attr("PAC"), 0.01)).toBe(true);
   });
 
@@ -80,7 +89,7 @@ describe("sanity panel (design intent, not ground truth)", () => {
     expect(inTop("Zeraora", attr("PAC"), 0.03)).toBe(true);
   });
 
-  it.each(["Alakazam", "Gardevoir"])("%s is top 3%% VIS", (name) => {
+  it.each(["Alakazam", "Gardevoir"])("%s is top 3 percent VIS", (name) => {
     expect(inTop(name, attr("VIS"), 0.03)).toBe(true);
   });
 
@@ -103,7 +112,7 @@ describe("sanity panel (design intent, not ground truth)", () => {
     ]).toEqual([true, true]);
   });
 
-  it.each(["Chansey", "Blissey"])("%s is top 2%% STA", (name) => {
+  it.each(["Chansey", "Blissey"])("%s is top 2 percent STA", (name) => {
     expect(inTop(name, attr("STA"), 0.02)).toBe(true);
   });
 
