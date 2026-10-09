@@ -33,3 +33,5 @@ jobs:
           pnpm data:pokedex
           pnpm data:scouting
           git diff --exit-code -- src/data
+      - name: Check review move citations against the pinned learnset
+        run: pnpm data:check-moves

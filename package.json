@@ -15,7 +15,8 @@
     "data:pokedex": "node scripts/data/build-pokedex.mjs",
     "data:scouting": "tsx scripts/data/build-scouting.ts",
     "data:report": "tsx scripts/data/scouting-report.ts",
-    "data:audit-sample": "tsx scripts/data/audit-sample.ts"
+    "data:audit-sample": "tsx scripts/data/audit-sample.ts",
+    "data:check-moves": "tsx scripts/data/check-review-moves.ts"
   },
   "dependencies": {
     "next": "16.4.0",
