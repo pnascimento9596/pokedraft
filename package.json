@@ -6,12 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:mirrors": "bash scripts/check-mirrors.sh",
+    "data:pokedex": "node scripts/data/build-pokedex.mjs",
+    "data:scouting": "tsx scripts/data/build-scouting.ts",
+    "data:report": "tsx scripts/data/scouting-report.ts",
+    "data:audit-sample": "tsx scripts/data/audit-sample.ts",
+    "data:check-moves": "tsx scripts/data/check-review-moves.ts"
   },
   "dependencies": {
     "next": "16.4.0",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -19,7 +30,14 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
-    "typescript": "^5"
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^5.0.3"
   },
-  "packageManager": "pnpm@11.5.1"
+  "packageManager": "pnpm@11.5.1",
+  "engines": {
+    "node": ">=22"
+  }
 }
