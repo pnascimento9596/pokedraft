@@ -151,6 +151,10 @@
     "ball-fetch": { "mods": { "DRI": 3, "ACC": 2 }, "reason": "Fetches thrown balls." },
     "intrepid-sword": { "mods": { "SHO": 3 }, "reason": "Attack rises on entry." },
     "dauntless-shield": { "mods": { "DEF": 3, "HAN": 2 }, "reason": "Defence rises on entry." },
+    "schooling": {
+      "mods": { "HAN": 8, "DIV": 8, "GKP": 6, "REF": 4 },
+      "reason": "Gathers into a large school when healthy, read as a body that can fill the goal mouth."
+    },
     "klutz": {
       "mods": { "TEC": -4, "HAN": -4 },
       "reason": "Cannot use held items, read as clumsy."

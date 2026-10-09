@@ -51,7 +51,7 @@ export const COEFFICIENTS: ScoutingCoefficients = {
     TAK: { atk: 0.4, def: 0.35, weight: 0.25 },
     AER: { height: 0.55, atk: 0.2, hp: 0.15, weight: 0.1 },
     PHY: { weight: 0.4, hp: 0.25, def: 0.2, atk: 0.15 },
-    STA: { hp: 0.65, spd: 0.2, def: 0.15 },
+    STA: { hp: 0.85, spd: 0.15 },
     DIV: { spe: 0.35, height: 0.35, def: 0.3 },
     HAN: { def: 0.4, spd: 0.35, hp: 0.25 },
     REF: { spe: 0.6, spd: 0.4 },
@@ -81,7 +81,7 @@ export const COEFFICIENTS: ScoutingCoefficients = {
       HAN: -14,
       DIV: -8,
     },
-    ball: { DRI: -10, TEC: -10, SHO: -8, PAS: -6, KIC: -8, TAK: -6, HAN: -10 },
+    ball: { DRI: -22, TEC: -12, SHO: -8, PAS: -6, KIC: -8, TAK: -6, HAN: -10 },
     blob: {
       PAC: -6,
       ACC: -6,
