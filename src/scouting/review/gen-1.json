@@ -56,7 +56,6 @@
       "id": 3,
       "name": "Venusaur",
       "adjustments": {
-        "PAC": -4,
         "TAK": 3
       },
       "bestRoles": [
@@ -78,7 +77,7 @@
         "agility",
         "footwork"
       ],
-      "rationale": "Weight 1000 and height 20 carrying a large flower on a quadruped frame should not run at PAC 76 off spe 80. Vines justify the tackling bump and def 83 suits a centre-back."
+      "rationale": "Quadruped shape at height 20 with spe 80 makes a steady holder rather than a runner. Its signature vines justify the tackling bump, and def 83 suits a centre-back."
     },
     {
       "id": 4,
@@ -209,8 +208,7 @@
       "id": 9,
       "name": "Blastoise",
       "adjustments": {
-        "SHO": 5,
-        "PAC": -3
+        "SHO": 5
       },
       "bestRoles": [
         "CB",
@@ -231,15 +229,12 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Shell cannons are its signature, so long-range shooting deserves more than the baseline. Weight 855 with def 100 and spd 105 is a slow wall, and hands with HAN 90 make goal a real option."
+      "rationale": "Shell cannons are its signature, so long-range shooting deserves more than the baseline. Def 100 and spd 105 make a sturdy wall, and hands with HAN 90 make goal a real option."
     },
     {
       "id": 10,
       "name": "Caterpie",
-      "adjustments": {
-        "ACC": -3,
-        "PAC": -3
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "FB",
@@ -258,7 +253,7 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Genus Worm on an armor shape at height 3 crawls on stubby legs, so its small size still lifts ACC 49 a little above what spe 45 earns, and it takes a small trim. Spe 45 and atk 30 leave it nothing but a disciplined holding job."
+      "rationale": "Genus Worm on an armor shape at height 3 crawls on stubby legs, and Layer 1 already prices its size and spe 45. Atk 30 leaves it nothing but a disciplined holding job."
     },
     {
       "id": 11,
@@ -286,7 +281,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Genus Cocoon with no usable limbs and spe 30 barely moves, so pace drops and ACC 33 takes a smaller trim now that spe drives it. Def 55 and its hard shell can block a lane."
+      "rationale": "Genus Cocoon with no usable limbs is immobile by design, which the squiggle shape does not price, so pace and acceleration drop. Def 55 and its hard shell can block a lane."
     },
     {
       "id": 12,
@@ -315,10 +310,7 @@
     {
       "id": 13,
       "name": "Weedle",
-      "adjustments": {
-        "ACC": -3,
-        "PAC": -3
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "FB",
@@ -337,7 +329,7 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Genus Hairy Bug crawling on an armor shape at height 3, so ACC 54 sits slightly high for a caterpillar with spe 50 and takes a small trim. The head stinger gives it some bite in a holding role despite atk 35."
+      "rationale": "Genus Hairy Bug crawling on an armor shape at height 3 with spe 50 is a small holding player, and Layer 1 already prices its size. The head stinger gives it some bite despite atk 35."
     },
     {
       "id": 14,
@@ -365,7 +357,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Genus Cocoon on a squiggle shape with spe 35 is close to immobile, so pace drops and ACC 39 takes a smaller trim now that spe drives it. Def 50 and a hard shell make it a static blocker at best."
+      "rationale": "Genus Cocoon on a squiggle shape is immobile by design, which the shape does not price, so pace and acceleration drop. Def 50 and a hard shell make it a static blocker at best."
     },
     {
       "id": 15,
@@ -1257,10 +1249,7 @@
     {
       "id": 51,
       "name": "Dugtrio",
-      "adjustments": {
-        "DRI": -6,
-        "TEC": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "ST",
         "W",
@@ -1280,7 +1269,7 @@
         "close-control",
         "durability"
       ],
-      "rationale": "Heads shape with no visible limbs, yet spe 120 lifted DRI to 87, too high for a creature that cannot touch the ball with feet. Burrowing pace and atk 100 still suit a poacher."
+      "rationale": "Heads shape already removes dribbling and technique in Layer 1 for a creature that cannot touch the ball with feet. Burrowing pace off spe 120 and atk 100 still suit a poacher."
     },
     {
       "id": 52,
@@ -1459,7 +1448,7 @@
       "id": 59,
       "name": "Arcanine",
       "adjustments": {
-        "ACC": 5
+        "ACC": 3
       },
       "bestRoles": [
         "ST",
@@ -1479,7 +1468,7 @@
         "close-control",
         "kicking-technique"
       ],
-      "rationale": "Signature Extreme Speed on spe 95, yet ACC 76 still lags its speed because weight 1550 drags it. A big quadruped dog with ability Intimidate still reaches top speed in a stride, so ACC rises."
+      "rationale": "Signature Extreme Speed is a burst from a standing start, so ACC edges up beyond what spe 95 gives a big quadruped. Ability Intimidate fits a physical forward."
     },
     {
       "id": 60,
@@ -2260,8 +2249,8 @@
       "id": 91,
       "name": "Cloyster",
       "adjustments": {
-        "DEF": 6,
-        "PAC": -5
+        "DEF": 3,
+        "PAC": -3
       },
       "bestRoles": [
         "CB",
@@ -2282,7 +2271,7 @@
         "footwork",
         "dribbling"
       ],
-      "rationale": "Def 180 is the highest in the generation, yet DEF 68 is pulled down by spd 45. A spiked shell on a ball shape at weight 1325 barely moves, so PAC 66 off spe 70 is too high."
+      "rationale": "Def 180 is the highest in the generation, and its spiked shell earns a small defending bump. A legless shell on a ball shape has no running gait, so PAC eases off."
     },
     {
       "id": 92,
@@ -2361,7 +2350,6 @@
       "id": 95,
       "name": "Onix",
       "adjustments": {
-        "AER": 6,
         "GKP": 5
       },
       "bestRoles": [
@@ -2384,7 +2372,7 @@
         "kicking-technique",
         "acceleration"
       ],
-      "rationale": "Height 88 and weight 2100, a rock snake long enough to fill a goal mouth, so aerial reach and keeper positioning rise. Squiggle shape with no limbs rightly leaves its technique near the floor."
+      "rationale": "Height 88 and weight 2100, a rock snake long enough to fill a goal mouth, so keeper positioning rises, while height already carries its aerial reach. Squiggle shape with no limbs rightly leaves its technique near the floor."
     },
     {
       "id": 96,

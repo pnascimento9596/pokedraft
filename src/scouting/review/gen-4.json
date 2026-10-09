@@ -28,7 +28,7 @@
       "id": 388,
       "name": "Grotle",
       "adjustments": {
-        "AER": -5
+        "AER": -3
       },
       "bestRoles": [
         "CB",
@@ -49,14 +49,13 @@
         "agility",
         "footwork"
       ],
-      "rationale": "Weight 970 hg on a quadruped shape with spe 36 cannot leave the ground, so AER 72 overstates its heading. Atk 89 and def 85 keep it a sturdy ball-winner in front of goal."
+      "rationale": "Quadruped shape on a tortoise body with stubby legs cannot spring for headers, so AER eases a little. Atk 89 and def 85 keep it a sturdy ball-winner in front of goal."
     },
     {
       "id": 389,
       "name": "Torterra",
       "adjustments": {
-        "AER": -6,
-        "DIV": -5
+        "AER": -3
       },
       "bestRoles": [
         "CB",
@@ -77,7 +76,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "A 3100 hg quadruped with spe 56 cannot jump for headers or dive, so AER comes down and DIV takes a cut on top of the Layer 1 heavy penalty of DIV -3. Height 22, def 105 and genus Continent make it a wall that fills the goalmouth or the centre."
+      "rationale": "A quadruped tortoise of genus Continent cannot spring for headers, so AER eases; the Layer 1 heavy penalty from weight 3100 hg already covers its diving. Height 22, def 105 and genus Continent make it a wall that fills the goalmouth or the centre."
     },
     {
       "id": 390,
@@ -236,9 +235,7 @@
     {
       "id": 396,
       "name": "Starly",
-      "adjustments": {
-        "DRI": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "WB",
@@ -257,7 +254,7 @@
         "size",
         "footwork"
       ],
-      "rationale": "Height 3 and weight 20 hg on a wings shape leave a tiny bird that cannot shield or carry the ball, so DRI 63 drops further. Spe 60 and flight make it a nuisance runner."
+      "rationale": "Spe 60 and the wings shape make it a nuisance runner; Layer 1 already trims DRI for the wings shape and the baseline already reflects height 3 and weight 20 hg, so no change."
     },
     {
       "id": 397,
@@ -287,7 +284,7 @@
       "id": 398,
       "name": "Staraptor",
       "adjustments": {
-        "DRI": -6
+        "DRI": -3
       },
       "bestRoles": [
         "ST",
@@ -309,7 +306,7 @@
         "discipline",
         "close-control"
       ],
-      "rationale": "Atk 120, spe 100 and the reckless ability make it a direct, head-first attacker. A wings-shape bird has no business at DRI 90, so close control comes down."
+      "rationale": "Atk 120, spe 100 and the reckless ability make it a direct, head-first attacker who goes through players rather than around them, so DRI trims slightly."
     },
     {
       "id": 399,
@@ -593,9 +590,7 @@
     {
       "id": 410,
       "name": "Shieldon",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -614,14 +609,12 @@
         "footwork",
         "finishing"
       ],
-      "rationale": "Genus Shield with def 118 blocks with its face plate, but a quadruped shape cannot catch, so HAN 70 drops. Spe 30 limits it to a static defender."
+      "rationale": "Genus Shield with def 118 blocks with its face plate, and the quadruped shape already costs HAN in Layer 1, so no change. Spe 30 limits it to a static defender."
     },
     {
       "id": 411,
       "name": "Bastiodon",
-      "adjustments": {
-        "HAN": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "GK",
@@ -642,7 +635,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Def 168 and genus Shield make it a literal wall that can stand in the goal or the box. Quadruped shape means it blocks rather than catches, so HAN 90 comes down; spe 30 rules out running."
+      "rationale": "Def 168 and genus Shield make it a literal wall that can stand in the goal or the box. The quadruped shape already costs HAN in Layer 1, so no change; spe 30 rules out running."
     },
     {
       "id": 412,
@@ -1468,7 +1461,7 @@
       "id": 445,
       "name": "Garchomp",
       "adjustments": {
-        "ACC": 5,
+        "ACC": 3,
         "HAN": -6
       },
       "bestRoles": [
@@ -1490,7 +1483,7 @@
         "handling",
         "vision"
       ],
-      "rationale": "Genus Mach and spe 102 describe a jet-like burst that ACC 80 still undersells after weight 950 drags it. Its arms end in fins and claws, so HAN 89 overstates a keeper's grip; atk 130 makes it an elite striker."
+      "rationale": "Genus Mach describes a jet-like burst beyond what ACC 80 shows, so ACC gets a small lift. Its arms end in fins and claws, so HAN 89 overstates a keeper's grip; atk 130 makes it an elite striker."
     },
     {
       "id": 446,
@@ -1596,8 +1589,7 @@
       "id": 450,
       "name": "Hippowdon",
       "adjustments": {
-        "AER": -6,
-        "DIV": -4
+        "AER": -3
       },
       "bestRoles": [
         "CB",
@@ -1619,7 +1611,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Genus Heavyweight, weight 3000 hg on a quadruped shape cannot jump or dive, so AER 90 comes down and DIV 76 takes a cut on top of the Layer 1 heavy penalty of DIV -4. Def 118 and atk 112 make it a bulldozer at the back."
+      "rationale": "Genus Heavyweight on a squat quadruped hippo body cannot spring for headers, so AER eases; the Layer 1 heavy penalty from weight 3000 hg already covers its diving. Def 118 and atk 112 make it a bulldozer at the back."
     },
     {
       "id": 451,
@@ -1841,7 +1833,7 @@
       "id": 460,
       "name": "Abomasnow",
       "adjustments": {
-        "TEC": -5
+        "TEC": -3
       },
       "bestRoles": [
         "CB",
@@ -1862,7 +1854,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Genus Frost Tree, height 22 and weight 1355 hg make a lumbering giant; TEC 84 overstates the touch of a body with spe 60. Hp 90 and atk 92 hold the middle."
+      "rationale": "Genus Frost Tree describes a stiff, tree-like giant at height 22 that lacks fine touch, so TEC trims slightly. Hp 90 and atk 92 hold the middle."
     },
     {
       "id": 461,
@@ -1946,9 +1938,7 @@
     {
       "id": 464,
       "name": "Rhyperior",
-      "adjustments": {
-        "AER": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "ST",
@@ -1969,7 +1959,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Atk 140 and def 130 make a battering presence, but weight 2828 hg and spe 40 mean it does not leave the ground, so AER drops. Genus Drill suits a target forward or stopper."
+      "rationale": "Atk 140 and def 130 make a battering presence; weight 2828 hg already costs AER through the Layer 1 heavy penalty, so no change. Genus Drill suits a target forward or stopper."
     },
     {
       "id": 465,
@@ -2175,8 +2165,7 @@
       "id": 473,
       "name": "Mamoswine",
       "adjustments": {
-        "AER": -6,
-        "DIV": -4
+        "AER": -3
       },
       "bestRoles": [
         "CB",
@@ -2198,7 +2187,7 @@
         "agility",
         "close-control"
       ],
-      "rationale": "Genus Twin Tusk, a 2910 hg quadruped mammoth, cannot jump or dive, so AER comes down and DIV takes a cut on top of the Layer 1 heavy penalty of DIV -4. Atk 130 and its tusks make it a charging presence."
+      "rationale": "Genus Twin Tusk on a quadruped mammoth body cannot spring for headers, so AER eases; the Layer 1 heavy penalty from weight 2910 hg already covers its diving. Atk 130 and its tusks make it a charging presence."
     },
     {
       "id": 474,
@@ -2686,9 +2675,7 @@
     {
       "id": 493,
       "name": "Arceus",
-      "adjustments": {
-        "DIV": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -2708,7 +2695,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Genus Alpha with 120 in every stat dominates, but a 3200 hg quadruped cannot dive, so DIV takes a cut on top of the Layer 1 heavy penalty of DIV -4. Height 32 keeps its aerial reach."
+      "rationale": "Genus Alpha with 120 in every stat dominates; weight 3200 hg already costs DIV through the Layer 1 heavy penalty, so no change. Height 32 keeps its aerial reach."
     }
   ]
 }

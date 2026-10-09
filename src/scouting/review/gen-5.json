@@ -159,8 +159,7 @@
       "name": "Emboar",
       "adjustments": {
         "TEC": -6,
-        "PAS": -4,
-        "PHY": 4
+        "PAS": -4
       },
       "bestRoles": [
         "ST",
@@ -181,7 +180,7 @@
         "acceleration",
         "close-control"
       ],
-      "rationale": "Atk 123, hp 110 and weight 150 kg make a battering ram, so PHY rises, but a fist-fighting brawler does not earn TEC 98 or PAS 79 from move counts alone; ability Reckless fits a direct striker."
+      "rationale": "A fist-fighting brawler with ability Reckless does not earn TEC 98 or PAS 79 from kickMoves counts alone, so both come down; atk 123, hp 110 and weight 150 kg already make it a battering ram through the baseline."
     },
     {
       "id": 501,
@@ -235,8 +234,6 @@
       "id": 503,
       "name": "Samurott",
       "adjustments": {
-        "PAS": -4,
-        "TEC": -4,
         "TAK": 4
       },
       "bestRoles": [
@@ -257,7 +254,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Quadruped shape at weight 94.6 kg gives a powerful but unhandy frame, so TEC and PAS ease from the spa 108 driven baseline; genus Formidable and its foreleg blades fit a hard-tackling centre-back."
+      "rationale": "Genus Formidable and the blades on its forelegs fit a hard-tackling centre-back, so TAK rises; the quadruped shape already trims its TEC and PAS in Layer 1."
     },
     {
       "id": 504,
@@ -355,9 +352,7 @@
     {
       "id": 508,
       "name": "Stoutland",
-      "adjustments": {
-        "HAN": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -374,9 +369,9 @@
       ],
       "weaknesses": [
         "passing",
-        "handling"
+        "vision"
       ],
-      "rationale": "Atk 110 with def and spd 90 on a 61 kg quadruped makes a sturdy marking defender; with paws and no hands HAN trims further, and genus Big-Hearted fits a high work-rate role."
+      "rationale": "Atk 110 with def and spd 90 on a 61 kg quadruped makes a sturdy marking defender; the quadruped shape already cuts HAN in Layer 1, so no change, and genus Big-Hearted fits a high work-rate role."
     },
     {
       "id": 509,
@@ -405,9 +400,7 @@
     {
       "id": 510,
       "name": "Liepard",
-      "adjustments": {
-        "TEC": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -427,7 +420,7 @@
         "durability",
         "strength"
       ],
-      "rationale": "Spe 106 and a lean 37.5 kg quadruped frame make an elusive winger, and abilities Unburden and Prankster fit its trickery; paws rather than feet limit striking technique, so TEC trims."
+      "rationale": "Spe 106 and a lean 37.5 kg quadruped frame make an elusive winger, and abilities Unburden and Prankster fit its trickery; the quadruped shape already trims TEC in Layer 1, so no change."
     },
     {
       "id": 511,
@@ -722,10 +715,7 @@
     {
       "id": 523,
       "name": "Zebstrika",
-      "adjustments": {
-        "TEC": -5,
-        "DRI": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -744,7 +734,7 @@
         "close-control",
         "handling"
       ],
-      "rationale": "Spe 116 on a 79.5 kg quadruped makes an outright sprinter and kickMoves double-kick gives power, but hooves do not deliver fine touch, so TEC and DRI come down from the spe and atk driven baseline."
+      "rationale": "Spe 116 on a 79.5 kg quadruped makes an outright sprinter and kickMoves double-kick gives power; the quadruped shape already prices its hooves in Layer 1, so no change."
     },
     {
       "id": 524,
@@ -898,9 +888,7 @@
     {
       "id": 530,
       "name": "Excadrill",
-      "adjustments": {
-        "AER": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "ST",
         "W",
@@ -917,10 +905,10 @@
         "dribbling"
       ],
       "weaknesses": [
-        "aerial",
+        "vision",
         "passing"
       ],
-      "rationale": "Atk 135 and hp 110 on a compact 0.7 m, 40.4 kg body make a powerful drilling forward; the short height argues against aerial duels, so AER drops, and spa 50 keeps passing modest."
+      "rationale": "Atk 135 and hp 110 on a compact 0.7 m, 40.4 kg body make a powerful drilling forward; height already sets its AER, so no change, and spa 50 keeps passing and vision modest."
     },
     {
       "id": 531,
@@ -998,7 +986,7 @@
       "id": 534,
       "name": "Conkeldurr",
       "adjustments": {
-        "TEC": -5,
+        "TEC": -3,
         "KIC": -4
       },
       "bestRoles": [
@@ -1021,7 +1009,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Atk 140 and weight 87 kg make a destroyer in duels, but it is designed leaning on two concrete pillars and has spe 45, so the move-driven TEC and KIC are trimmed."
+      "rationale": "Atk 140 and weight 87 kg make a destroyer in duels, but it is designed leaning on two concrete pillars, so the move-driven TEC and KIC are trimmed."
     },
     {
       "id": 535,
@@ -1872,7 +1860,7 @@
       "id": 569,
       "name": "Garbodor",
       "adjustments": {
-        "DRI": -5
+        "DRI": -3
       },
       "bestRoles": [
         "CB",
@@ -1892,7 +1880,7 @@
         "acceleration",
         "close-control"
       ],
-      "rationale": "Height 1.9 m and weight 107.3 kg with long garbage arms suit a blocking centre-back or keeper; a lumbering trash-heap body does not support DRI 67, so it is trimmed."
+      "rationale": "Long garbage arms on a height 1.9 m frame suit a blocking centre-back or keeper; a sprawling trash-heap design does not support close control at DRI 67, so it trims slightly."
     },
     {
       "id": 570,
@@ -1973,9 +1961,7 @@
     {
       "id": 573,
       "name": "Cinccino",
-      "adjustments": {
-        "AER": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -1995,7 +1981,7 @@
         "aerial",
         "strength"
       ],
-      "rationale": "Spe 115 with abilities Technician and Skill Link make a slick, quick winger, but height 0.5 m and weight 7.5 kg give no aerial presence, so AER drops a little."
+      "rationale": "Spe 115 with abilities Technician and Skill Link make a slick, quick winger; height 0.5 m already keeps its AER low, so no change."
     },
     {
       "id": 574,
@@ -2239,11 +2225,7 @@
     {
       "id": 584,
       "name": "Vanilluxe",
-      "adjustments": {
-        "TEC": -6,
-        "KIC": -6,
-        "AER": 4
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "CM",
@@ -2263,7 +2245,7 @@
         "kicking-technique",
         "dribbling"
       ],
-      "rationale": "Heads shape with two cones and no legs means atk 95 and spa 110 cannot translate into kicking, so TEC and KIC are cut further; two heads at height 1.3 m make it a useful header of the ball."
+      "rationale": "Heads shape with two cones and no legs already costs TEC, KIC and DRI and adds AER for its two heads in Layer 1, so no change; atk 95 and spa 110 still give it range."
     },
     {
       "id": 585,
@@ -2515,9 +2497,7 @@
     {
       "id": 595,
       "name": "Joltik",
-      "adjustments": {
-        "PHY": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "WM",
@@ -2536,7 +2516,7 @@
         "strength",
         "aerial"
       ],
-      "rationale": "Height 0.1 m and weight 0.6 kg make the shortest body in the generation, with spe 65 its only real asset; the armor-shape PHY bonus from Layer 1 does not fit so tiny a body, so PHY trims."
+      "rationale": "Height 0.1 m and weight 0.6 kg make the shortest body in the generation, which already keeps PHY low, and spe 65 is its only real asset, so no change."
     },
     {
       "id": 596,
@@ -2665,8 +2645,7 @@
       "id": 601,
       "name": "Klinklang",
       "adjustments": {
-        "HAN": -8,
-        "TEC": -5
+        "HAN": -8
       },
       "bestRoles": [
         "CB",
@@ -2686,7 +2665,7 @@
         "handling",
         "kicking-technique"
       ],
-      "rationale": "Def 115 and spe 90 make a fast, sturdy defender, but heads shape gears with no hands or feet cannot catch or strike cleanly, so HAN and TEC drop below the stat-driven baseline."
+      "rationale": "Def 115 and spe 90 make a fast, sturdy defender, but heads shape gears with no hands cannot catch, so HAN drops; the heads shape already trims TEC in Layer 1."
     },
     {
       "id": 602,
@@ -3402,9 +3381,7 @@
     {
       "id": 631,
       "name": "Heatmor",
-      "adjustments": {
-        "TEC": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "CM",
         "AM",
@@ -3423,14 +3400,12 @@
         "acceleration",
         "pace"
       ],
-      "rationale": "Atk 97 and spa 105 on an upright 58 kg body give real range, but a plodding anteater with spe 65 does not merit TEC 90, so it trims; abilities Gluttony and Flash Fire have no football bearing."
+      "rationale": "Atk 97 and spa 105 on an upright 58 kg body give real range; spe 65 already tempers TEC, so no change, and abilities Gluttony and Flash Fire have no football bearing."
     },
     {
       "id": 632,
       "name": "Durant",
-      "adjustments": {
-        "AER": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -3450,7 +3425,7 @@
         "aerial",
         "passing"
       ],
-      "rationale": "Spe 109 with atk 109 and def 112 on a dense 33 kg ant body gives a fast, hard-tackling runner, but height 0.3 m gives no aerial presence, so AER drops; genus Iron Ant fits a colony worker's teamwork."
+      "rationale": "Spe 109 with atk 109 and def 112 on a dense 33 kg ant body gives a fast, hard-tackling runner; height 0.3 m already keeps AER low, so no change. Genus Iron Ant fits a colony worker's teamwork."
     },
     {
       "id": 633,
@@ -3582,9 +3557,7 @@
     {
       "id": 638,
       "name": "Cobalion",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -3604,7 +3577,7 @@
         "close-control",
         "handling"
       ],
-      "rationale": "Def 129 and spe 108 at weight 250 kg make a fast, unbreakable centre-back, and genus Iron Will with ability Justified fit a disciplined leader; hooves give no grip, so HAN trims."
+      "rationale": "Def 129 and spe 108 at weight 250 kg make a fast, unbreakable centre-back, and genus Iron Will with ability Justified fit a disciplined leader; the quadruped shape already cuts HAN in Layer 1, so no change."
     },
     {
       "id": 639,
@@ -3636,9 +3609,7 @@
     {
       "id": 640,
       "name": "Virizion",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "WB",
         "CM",
@@ -3658,7 +3629,7 @@
         "handling",
         "shot-power"
       ],
-      "rationale": "Spd 129 and spe 108 make a resilient, graceful runner suited to covering a flank or the middle; as a hooved quadruped it has no grip on the ball in hand, so HAN trims."
+      "rationale": "Spd 129 and spe 108 make a resilient, graceful runner suited to covering a flank or the middle; the quadruped shape already cuts HAN in Layer 1, so no change."
     },
     {
       "id": 641,
@@ -3840,8 +3811,7 @@
       "id": 648,
       "name": "Meloetta",
       "adjustments": {
-        "HAN": -6,
-        "PHY": -4
+        "HAN": -6
       },
       "bestRoles": [
         "AM",
@@ -3862,7 +3832,7 @@
         "strength",
         "aerial"
       ],
-      "rationale": "Spa 128 with a singer and dancer identity and kickMoves triple-axel make a graceful playmaker, but height 0.6 m and weight 6.5 kg give no reach or strength, so HAN and PHY trim."
+      "rationale": "Spa 128 with a singer and dancer identity and kickMoves triple-axel make a graceful playmaker; small hands at height 0.6 m give no keeper's reach, so HAN trims, while weight 6.5 kg already keeps PHY low."
     },
     {
       "id": 649,

@@ -371,9 +371,7 @@
     {
       "id": 267,
       "name": "Beautifly",
-      "adjustments": {
-        "PHY": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "WM",
@@ -392,7 +390,7 @@
         "strength",
         "tackling"
       ],
-      "rationale": "Bug-wings shape and spa 100 support an airborne creator; a delicate butterfly at weight 284 with def 50 loses contact duels, so physicality drops."
+      "rationale": "Bug-wings shape and spa 100 support an airborne creator, while weight 284 and def 50 already keep it out of contact duels."
     },
     {
       "id": 268,
@@ -786,9 +784,7 @@
     {
       "id": 284,
       "name": "Masquerain",
-      "adjustments": {
-        "TAK": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "WM",
@@ -807,7 +803,7 @@
         "strength",
         "tackling"
       ],
-      "rationale": "Spa 100 and bug-wings shape make it an airborne creator, and ability Intimidate fits its eyeball wings; weight 36 cannot win a tackle, so TAK is trimmed."
+      "rationale": "Spa 100 and bug-wings shape make it an airborne creator, and ability Intimidate fits its eyeball wings; weight 36 already keeps its tackling low."
     },
     {
       "id": 285,
@@ -986,9 +982,7 @@
     {
       "id": 292,
       "name": "Shedinja",
-      "adjustments": {
-        "PHY": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "GK",
@@ -1007,7 +1001,7 @@
         "stamina",
         "strength"
       ],
-      "rationale": "Hp 1 and weight 12 make it a hollow shell, so physicality falls; ability Wonder Guard makes it a strange static blocker rather than a runner."
+      "rationale": "Hp 1 and weight 12 make it a hollow shell, which the baseline already prices; ability Wonder Guard makes it a strange static blocker rather than a runner."
     },
     {
       "id": 293,
@@ -1158,8 +1152,7 @@
       "id": 299,
       "name": "Nosepass",
       "adjustments": {
-        "HAN": -8,
-        "DIV": -6
+        "HAN": -8
       },
       "bestRoles": [
         "CB",
@@ -1180,7 +1173,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Def 135 and weight 970 make it an immovable rock, but its stubby humanoid arms do not earn HAN 85, and spe 30 on a rock body cannot dive; it plays as a wall in front of goal, not in it."
+      "rationale": "Def 135 and weight 970 make it an immovable rock, but its stubby humanoid arms do not earn HAN 85; it plays as a wall in front of goal, not in it."
     },
     {
       "id": 300,
@@ -2426,9 +2419,7 @@
     {
       "id": 351,
       "name": "Castform",
-      "adjustments": {
-        "PHY": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "WM",
         "W",
@@ -2447,7 +2438,7 @@
         "size",
         "durability"
       ],
-      "rationale": "Weight 8 and height 3 make it a tiny cloud, so physicality falls hard. Ball shape with no feet already costs it DRI 22 in Layer 1, so DRI 61 needs no further trim, while spe 70 keeps it lively."
+      "rationale": "Weight 8 and height 3 make it a tiny cloud, already reflected in its physicality. Ball shape with no feet already costs it DRI 22 in Layer 1, so DRI 61 needs no further trim, while spe 70 keeps it lively."
     },
     {
       "id": 352,
@@ -2595,8 +2586,7 @@
       "id": 358,
       "name": "Chimecho",
       "adjustments": {
-        "HAN": -8,
-        "PHY": -6
+        "HAN": -8
       },
       "bestRoles": [
         "WM",
@@ -2616,7 +2606,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Weight 10 and height 6 wind chime has tiny nubs, so the arms-shape handling bonus overshoots and physicality drops; spa 95 and spd 90 make it a light creator."
+      "rationale": "Its wind chime body has only tiny nubs, so the arms-shape handling bonus overshoots; weight 10 already keeps it out of contact, and spa 95 and spd 90 make it a light creator."
     },
     {
       "id": 359,

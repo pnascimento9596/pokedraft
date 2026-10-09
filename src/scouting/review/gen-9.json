@@ -78,9 +78,7 @@
     {
       "id": 909,
       "name": "Fuecoco",
-      "adjustments": {
-        "ACC": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "CM",
@@ -98,7 +96,7 @@
         "pace",
         "agility"
       ],
-      "rationale": "Spe 36 on a stubby 4 dm croc body leaves baseline ACC 41 a little generous. Hp 67 and ability Unaware fit a calm holding role over anything wide."
+      "rationale": "Spe 36 on a stubby 4 dm croc body already sets a low ACC 41, so no change. Hp 67 and ability Unaware fit a calm holding role over anything wide."
     },
     {
       "id": 910,
@@ -468,8 +466,7 @@
       "id": 925,
       "name": "Maushold",
       "adjustments": {
-        "PAS": 3,
-        "PHY": -5
+        "PAS": 3
       },
       "bestRoles": [
         "W",
@@ -489,7 +486,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Genus Family and ability Friend Guard reward combination play, so PAS ticks up. At weight 2.8 kg the baseline PHY 48 overstates how hard a group of mice is to shift."
+      "rationale": "Genus Family and ability Friend Guard reward combination play, so PAS ticks up. At weight 2.8 kg it is easy to shift, which PHY already reflects."
     },
     {
       "id": 926,
@@ -611,9 +608,7 @@
     {
       "id": 931,
       "name": "Squawkabilly",
-      "adjustments": {
-        "PHY": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -632,7 +627,7 @@
         "strength",
         "discipline"
       ],
-      "rationale": "Ability Intimidate and Hustle with atk 96 and spe 92 fit a pressing winger, and wings already added AER. At weight 2.4 kg the baseline PHY 51 is too high for a parrot."
+      "rationale": "Ability Intimidate and Hustle with atk 96 and spe 92 fit a pressing winger, and wings already added AER. Weight 2.4 kg already holds PHY down, so no change."
     },
     {
       "id": 932,
@@ -999,9 +994,7 @@
     {
       "id": 947,
       "name": "Brambleghast",
-      "adjustments": {
-        "PHY": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -1020,7 +1013,7 @@
         "strength",
         "kicking-technique"
       ],
-      "rationale": "Spe 90 and atk 115 make a quick, erratic attacker, but a 12 dm tumbleweed at weight 6 kg is hollow, so baseline PHY 50 drops. Ball shape already cut its technique."
+      "rationale": "Spe 90 and atk 115 make a quick, erratic attacker, and a 12 dm tumbleweed at weight 6 kg is hollow, which PHY already reflects. Ball shape already cut its technique."
     },
     {
       "id": 948,
@@ -1168,9 +1161,7 @@
     {
       "id": 954,
       "name": "Rabsca",
-      "adjustments": {
-        "PHY": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "CM",
@@ -1189,7 +1180,7 @@
         "strength",
         "pace"
       ],
-      "rationale": "Spa 115 and spd 100 drive VIS 96 and PAS 89; at weight 3.5 kg and height 3 dm the baseline PHY 53 overstates its presence. Spe 45 keeps it in a deep role."
+      "rationale": "Spa 115 and spd 100 drive VIS 96 and PAS 89, while weight 3.5 kg and height 3 dm already hold PHY down. Spe 45 keeps it in a deep role."
     },
     {
       "id": 955,
@@ -1459,7 +1450,7 @@
       "id": 966,
       "name": "Revavroom",
       "adjustments": {
-        "ACC": 5,
+        "ACC": 3,
         "HAN": -6
       },
       "bestRoles": [
@@ -1480,7 +1471,7 @@
         "passing",
         "handling"
       ],
-      "rationale": "Genus Multi-Cyl is a revving engine, and spe 90 with 120 kg weight should launch harder than ACC 69. Its legs shape has no hands, so HAN 72 drops; spa 54 caps passing."
+      "rationale": "Genus Multi-Cyl is a revving engine built to launch, so ACC +3. Its legs shape has no hands, so HAN 72 drops; spa 54 caps passing."
     },
     {
       "id": 967,
@@ -1829,9 +1820,7 @@
     {
       "id": 981,
       "name": "Farigiraf",
-      "adjustments": {
-        "AER": 3
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1851,7 +1840,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Genus Long Neck at height 32 dm makes it a natural header, so AER rises toward the top; spa 110 gives VIS 85 and ability Armor Tail fits a second set of eyes. Spe 60 limits dribbling."
+      "rationale": "Genus Long Neck at height 32 dm makes it a natural header, which height already gives as AER 93; spa 110 gives VIS 85 and ability Armor Tail fits a second set of eyes. Spe 60 limits dribbling."
     },
     {
       "id": 982,
@@ -1932,9 +1921,7 @@
     {
       "id": 985,
       "name": "Scream Tail",
-      "adjustments": {
-        "PHY": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "WB",
         "FB",
@@ -1953,7 +1940,7 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Hp 115, spe 111 and spd 115 suit a tireless wide defender, but at weight 8 kg the baseline PHY 65 is too high. Atk 65 keeps shooting modest."
+      "rationale": "Hp 115, spe 111 and spd 115 suit a tireless wide defender, and weight 8 kg already holds PHY down. Atk 65 keeps shooting modest."
     },
     {
       "id": 986,
@@ -2473,9 +2460,7 @@
     {
       "id": 1007,
       "name": "Koraidon",
-      "adjustments": {
-        "ACC": 4
-      },
+      "adjustments": {},
       "bestRoles": [
         "ST",
         "CB",
@@ -2495,7 +2480,7 @@
         "agility",
         "handling"
       ],
-      "rationale": "Atk 135 and spe 135 on a 303 kg upright sprinting lizard; Koraidon's identity is a ride Pokémon built to run, so ACC 81, held down by its weight, edges up. Short forelimbs keep it out of goal."
+      "rationale": "Atk 135 and spe 135 on a 303 kg upright sprinting lizard make a powerful runner, with spe and weight already setting ACC 81. Short forelimbs keep it out of goal."
     },
     {
       "id": 1008,
@@ -2573,9 +2558,7 @@
     {
       "id": 1011,
       "name": "Dipplin",
-      "adjustments": {
-        "PHY": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "CB",
@@ -2593,7 +2576,7 @@
         "pace",
         "footwork"
       ],
-      "rationale": "Def 110 and spa 95 suit a deep blocker in heads shape, but at weight 9.7 kg and height 4 dm baseline PHY 66 is too high. Spe 40 keeps it static."
+      "rationale": "Def 110 and spa 95 suit a deep blocker in heads shape, and weight 9.7 kg and height 4 dm already hold PHY down. Spe 40 keeps it static."
     },
     {
       "id": 1012,
@@ -2621,9 +2604,7 @@
     {
       "id": 1013,
       "name": "Sinistcha",
-      "adjustments": {
-        "PHY": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "WM",
         "AM",
@@ -2642,7 +2623,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Def 106 and spa 121 give DEF 83 and VIS 87, but a 2.2 kg teacup in ball shape has little body, so PHY 51 drops. Ability Hospitality fits a support role."
+      "rationale": "Def 106 and spa 121 give DEF 83 and VIS 87, and a 2.2 kg teacup in ball shape has little body, which weight already prices into PHY. Ability Hospitality fits a support role."
     },
     {
       "id": 1014,
@@ -2815,9 +2796,7 @@
     {
       "id": 1021,
       "name": "Raging Bolt",
-      "adjustments": {
-        "AER": 4
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "CB",
@@ -2836,7 +2815,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "At height 52 dm with a long neck, AER 86 undersells a natural header, so it rises; spa 137 gives VIS 92 while spe 75 and 480 kg slow it."
+      "rationale": "At height 52 dm with a long neck it is a natural header, which height already gives as AER 86; spa 137 gives VIS 92 while spe 75 and 480 kg slow it."
     },
     {
       "id": 1022,
@@ -2890,8 +2869,7 @@
       "id": 1024,
       "name": "Terapagos",
       "adjustments": {
-        "ACC": -5,
-        "PHY": -4
+        "ACC": -5
       },
       "bestRoles": [
         "FB",
@@ -2910,14 +2888,12 @@
         "acceleration",
         "size"
       ],
-      "rationale": "A 2 dm, 6.5 kg turtle with hp 90 and def 85; its shelled body should not burst like ACC 67 says, and baseline PHY 58 is high for its weight. Ability Tera Shift does not apply in default form."
+      "rationale": "A 2 dm turtle with hp 90 and def 85; its shelled body should not burst like ACC 67 says. Ability Tera Shift does not apply in default form."
     },
     {
       "id": 1025,
       "name": "Pecharunt",
-      "adjustments": {
-        "PHY": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "FB",
         "WB",
@@ -2936,7 +2912,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Def 160 gives DEF 93, but at height 3 dm and weight 0.3 kg in ball shape PHY 59 is far too high. Ability Poison Puppeteer fits a disruptive presence over raw contact."
+      "rationale": "Def 160 gives DEF 93, and at height 3 dm and weight 0.3 kg in ball shape it has little body, which weight already prices into PHY. Ability Poison Puppeteer fits a disruptive presence over raw contact."
     }
   ]
 }

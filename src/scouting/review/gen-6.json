@@ -129,9 +129,7 @@
     {
       "id": 655,
       "name": "Delphox",
-      "adjustments": {
-        "DRI": -3
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "CM",
@@ -150,7 +148,7 @@
         "tackling",
         "strength"
       ],
-      "rationale": "Spa 114, spe 104 and the psychic type make it a playmaker who directs play from range; atk 69 and kickMoves limited to low-kick trim close dribbling slightly."
+      "rationale": "Spa 114, spe 104 and the psychic type make it a playmaker who directs play from range; the baseline already reflects atk 69, so no change."
     },
     {
       "id": 656,
@@ -400,9 +398,7 @@
     {
       "id": 666,
       "name": "Vivillon",
-      "adjustments": {
-        "PHY": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "WM",
@@ -421,7 +417,7 @@
         "strength",
         "tackling"
       ],
-      "rationale": "Spe 89 and spa 90 on shape bug-wings give a fluttering wide threat, but weight 170 and def 50 make PHY 52 overstated for a butterfly."
+      "rationale": "Spe 89 and spa 90 on shape bug-wings give a fluttering wide threat; weight 170 hg and def 50 already keep PHY low, so no change."
     },
     {
       "id": 667,
@@ -449,9 +445,7 @@
     {
       "id": 668,
       "name": "Pyroar",
-      "adjustments": {
-        "PHY": 3
-      },
+      "adjustments": {},
       "bestRoles": [
         "ST",
         "W",
@@ -470,14 +464,13 @@
         "handling",
         "close-control"
       ],
-      "rationale": "Spe 106, weight 815 and ability Unnerve on a quadruped lion with genus Royal make it a powerful, imposing runner; PHY gets a nudge for its frame."
+      "rationale": "Spe 106 and ability Unnerve on a quadruped lion with genus Royal make it a powerful, imposing runner; weight 815 hg already sets PHY, so no change."
     },
     {
       "id": 669,
       "name": "Flabébé",
       "adjustments": {
-        "HAN": -6,
-        "DIV": -4
+        "HAN": -6
       },
       "bestRoles": [
         "AM",
@@ -497,7 +490,7 @@
         "strength",
         "handling"
       ],
-      "rationale": "Height 1 and weight 1 make it one of the smallest species, so the Layer 1 arms bonus to HAN and DIV overstates any goalkeeping; spd 79 and spa 61 point to light link play."
+      "rationale": "Height 1 and weight 1 make it one of the smallest species, so the Layer 1 arms bonus to HAN overstates any goalkeeping, while height already holds DIV down. Spd 79 and spa 61 point to light link play."
     },
     {
       "id": 670,
@@ -577,7 +570,6 @@
       "id": 673,
       "name": "Gogoat",
       "adjustments": {
-        "PHY": 3,
         "STA": 3
       },
       "bestRoles": [
@@ -598,7 +590,7 @@
         "acceleration",
         "handling"
       ],
-      "rationale": "Hp 123, weight 910 and genus Mount make it a ridable workhorse with headbutt power; ACC 57 and spe 68 suit a central engine rather than a winger."
+      "rationale": "Genus Mount describes a ridable workhorse built to carry riders over distance, so STA rises; hp 123 and weight 910 hg already set PHY. ACC 57 and spe 68 suit a central engine rather than a winger."
     },
     {
       "id": 674,
@@ -748,10 +740,7 @@
     {
       "id": 680,
       "name": "Doublade",
-      "adjustments": {
-        "DRI": -4,
-        "KIC": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -769,7 +758,7 @@
         "dribbling",
         "pace"
       ],
-      "rationale": "Def 150 and atk 110 on twin blades with genus Sword suit hard tackling, but shape heads has no legs, so DRI and KIC drop further; spe 35 confirms a back-line role."
+      "rationale": "Def 150 and atk 110 on twin blades with genus Sword suit hard tackling; the heads shape already cuts DRI and KIC in Layer 1, so no change, and spe 35 confirms a back-line role."
     },
     {
       "id": 681,
@@ -873,9 +862,7 @@
     {
       "id": 685,
       "name": "Slurpuff",
-      "adjustments": {
-        "PHY": -3
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "CM",
@@ -894,7 +881,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Balanced atk 80, spa 85 and spe 72 on a humanoid suit attacking midfield, but weight 50 at height 8 is very light, so PHY comes down."
+      "rationale": "Balanced atk 80, spa 85 and spe 72 on a humanoid suit attacking midfield; weight 50 hg already keeps PHY low, so no change."
     },
     {
       "id": 686,
@@ -1195,9 +1182,7 @@
     {
       "id": 698,
       "name": "Amaura",
-      "adjustments": {
-        "AER": 3
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "CB",
@@ -1215,7 +1200,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Hp 77 and height 13 on a long-necked quadruped of genus Tundra give extra reach in the air; spe 46 keeps it in a holding role."
+      "rationale": "Hp 77 and height 13 on a long-necked quadruped of genus Tundra already give it reach in the air, so no change; spe 46 keeps it in a holding role."
     },
     {
       "id": 699,
@@ -1325,10 +1310,7 @@
     {
       "id": 703,
       "name": "Carbink",
-      "adjustments": {
-        "HAN": -6,
-        "DIV": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1344,10 +1326,10 @@
       ],
       "weaknesses": [
         "pace",
-        "handling",
+        "footwork",
         "size"
       ],
-      "rationale": "Def 150 and spd 150 make it very durable, but shape ball at height 3 has no hands, so HAN 80 and DIV 54 are overstated even after Layer 1."
+      "rationale": "Def 150 and spd 150 make it very durable; the ball shape already cuts HAN and limits footwork in Layer 1 and height 3 already holds DIV down, so no change."
     },
     {
       "id": 704,
@@ -1423,9 +1405,7 @@
     {
       "id": 707,
       "name": "Klefki",
-      "adjustments": {
-        "PHY": -3
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "WM",
@@ -1444,7 +1424,7 @@
         "size",
         "dribbling"
       ],
-      "rationale": "Height 2 and weight 30 on shape ball with no legs make PHY 49 too high, while the Layer 1 ball cut of DRI 22 already brings DRI to 66; ability Prankster and spe 75 fit a tricky floating nuisance."
+      "rationale": "Height 2 and weight 30 hg on shape ball with no legs already keep PHY and DRI low, so no change; ability Prankster and spe 75 fit a tricky floating nuisance."
     },
     {
       "id": 708,
@@ -1569,7 +1549,7 @@
       "id": 713,
       "name": "Avalugg",
       "adjustments": {
-        "DEF": 6,
+        "DEF": 3,
         "SHO": -5,
         "KIC": -6
       },
@@ -1593,7 +1573,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Def 184 at weight 5050 and genus Iceberg make it an immovable wall, so DEF rises, while a quadruped iceberg with spe 28 cannot strike or kick at SHO 68 and KIC 81."
+      "rationale": "Genus Iceberg makes it an immovable wall beyond what def 184 alone shows, so DEF rises a little, while a quadruped iceberg with spe 28 cannot strike or kick at SHO 68 and KIC 81."
     },
     {
       "id": 714,
@@ -1645,9 +1625,7 @@
     {
       "id": 716,
       "name": "Xerneas",
-      "adjustments": {
-        "ACC": 4
-      },
+      "adjustments": {},
       "bestRoles": [
         "CM",
         "DM",
@@ -1667,7 +1645,7 @@
         "handling",
         "close-control"
       ],
-      "rationale": "Spe 99 on a quadruped deer with genus Life suits long bounding runs that ACC 75 undersells after weight 2150 drags it; hp 126 and balanced atk and spa 131 cover both ends."
+      "rationale": "Spe 99 on a quadruped deer with genus Life suits long bounding runs, which the baseline already prices with weight 2150 hg, so no change; hp 126 and balanced atk and spa 131 cover both ends."
     },
     {
       "id": 717,

@@ -77,9 +77,7 @@
     {
       "id": 725,
       "name": "Litten",
-      "adjustments": {
-        "DRI": -3
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "AM",
@@ -98,14 +96,12 @@
         "stamina",
         "durability"
       ],
-      "rationale": "Spe 70 and a small cat frame (height 4, weight 43) suit quick wide running, but shape quadruped limits close control, so DRI -3. Hp 45 and def 40 make it fragile."
+      "rationale": "Spe 70 and a small cat frame (height 4, weight 43) suit quick wide running, and shape quadruped is already priced into DRI by Layer 1, so no change. Hp 45 and def 40 make it fragile."
     },
     {
       "id": 726,
       "name": "Torracat",
-      "adjustments": {
-        "DRI": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -124,15 +120,14 @@
         "handling",
         "durability"
       ],
-      "rationale": "Spe 90 and atk 85 give it real burst, and ability Intimidate adds bite. Shape quadruped makes a DRI of 88 too generous for close control, so DRI -4."
+      "rationale": "Spe 90 and atk 85 give it real burst, and ability Intimidate adds bite. Shape quadruped and spe already set DRI in Layer 1, so no change."
     },
     {
       "id": 727,
       "name": "Incineroar",
       "adjustments": {
         "PHY": 4,
-        "TEC": -6,
-        "DRI": -4
+        "TEC": -3
       },
       "bestRoles": [
         "CB",
@@ -153,7 +148,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Genus Heel and ability Intimidate fit a wrestling enforcer, so PHY +4. Seven kickMoves already pushed TEC to 94 and DRI up 13, which overstates finesse for a height 18, weight 830 bruiser with spe 60, so TEC -6 and DRI -4."
+      "rationale": "Genus Heel and ability Intimidate fit a wrestling enforcer, so PHY +4. Seven kickMoves already pushed TEC to 94, and genus Heel points to grappling over finesse, so TEC -3."
     },
     {
       "id": 728,
@@ -233,7 +228,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Spa 126 and spd 116 make it an elite distributor, and height 18 with its balloon-heading sea lion line earns AER +3. Shape fish and spe 60 leave PAC and ACC low, which the baseline already reflects."
+      "rationale": "Spa 126 and spd 116 make it an elite distributor, and its balloon-heading sea lion line design earns AER +3 back from the shape fish penalty. Shape fish and spe 60 leave PAC and ACC low, which the baseline already reflects."
     },
     {
       "id": 731,
@@ -385,9 +380,7 @@
     {
       "id": 737,
       "name": "Charjabug",
-      "adjustments": {
-        "ACC": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -406,7 +399,7 @@
         "dribbling",
         "agility"
       ],
-      "rationale": "Genus Battery and its boxy shape squiggle make it nearly stationary, so ACC -6 against ACC 43 on spe 36. Def 95 and ability Battery, which powers allies, suit a holding defender."
+      "rationale": "Genus Battery and spe 36 make it nearly stationary, which ACC 43 already reflects, so no change. Def 95 and ability Battery, which powers allies, suit a holding defender."
     },
     {
       "id": 738,
@@ -488,8 +481,7 @@
       "id": 741,
       "name": "Oricorio",
       "adjustments": {
-        "TEC": 3,
-        "PHY": -4
+        "TEC": 3
       },
       "bestRoles": [
         "W",
@@ -510,14 +502,12 @@
         "strength",
         "size"
       ],
-      "rationale": "Genus Dancing and ability Dancer make footwork its identity, so TEC +3 to offset part of the wing penalty. Weight 34 is only 3.4 kg, so PHY -4 despite hp 75."
+      "rationale": "Genus Dancing and ability Dancer make footwork its identity, so TEC +3 to offset part of the wing penalty. Weight 34 (3.4 kg) already holds PHY down in Layer 1."
     },
     {
       "id": 742,
       "name": "Cutiefly",
-      "adjustments": {
-        "PHY": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "WM",
@@ -537,14 +527,12 @@
         "size",
         "durability"
       ],
-      "rationale": "Spe 84 on a height 1, weight 2 bee fly makes it darting but featherlight, so PHY -4. Def 40 leaves it easy to knock off the ball."
+      "rationale": "Spe 84 on a height 1, weight 2 bee fly makes it darting but featherlight, which the baseline already prices, so no change. Def 40 leaves it easy to knock off the ball."
     },
     {
       "id": 743,
       "name": "Ribombee",
-      "adjustments": {
-        "PHY": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "AM",
@@ -563,7 +551,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Spe 124 and shape bug-wings make it one of the quickest movers in the generation. Height 2 and weight 5 (0.5 kg) mean no physical presence, so PHY -4."
+      "rationale": "Spe 124 and shape bug-wings make it one of the quickest movers in the generation. Height 2 and weight 5 (0.5 kg) already keep PHY low, so no change."
     },
     {
       "id": 744,
@@ -591,9 +579,7 @@
     {
       "id": 745,
       "name": "Lycanroc",
-      "adjustments": {
-        "DRI": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -612,7 +598,7 @@
         "passing",
         "vision"
       ],
-      "rationale": "Spe 112, atk 115, and ability Sand Rush make it a ruthless runner in behind. Shape quadruped makes DRI 95 too high for close control, so DRI -5."
+      "rationale": "Spe 112, atk 115, and ability Sand Rush make it a ruthless runner in behind. Shape quadruped is already priced into DRI by Layer 1, so no change."
     },
     {
       "id": 746,
@@ -918,9 +904,7 @@
     {
       "id": 758,
       "name": "Salazzle",
-      "adjustments": {
-        "DRI": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "AM",
@@ -940,7 +924,7 @@
         "strength",
         "durability"
       ],
-      "rationale": "Spe 117 and spa 111 make it a slick wide creator. Shape quadruped and no kickMoves beyond protect make DRI 87 generous, so DRI -4."
+      "rationale": "Spe 117 and spa 111 make it a slick wide creator. Shape quadruped is already priced into DRI by Layer 1, so no change."
     },
     {
       "id": 759,
@@ -1076,8 +1060,7 @@
       "id": 764,
       "name": "Comfey",
       "adjustments": {
-        "GKP": -6,
-        "DIV": -6
+        "GKP": -6
       },
       "bestRoles": [
         "W",
@@ -1098,7 +1081,7 @@
         "size",
         "aerial"
       ],
-      "rationale": "Height 1 and weight 3 make a goal impossible to cover, so GKP -6 and DIV -6 against the spd 110 and spe 100 that inflated them. Ability Triage fits a supportive, quick wide role."
+      "rationale": "Height 1 and weight 3 make a goal impossible to cover, so GKP -6 against the spd 110 that inflated it, while height already holds DIV down. Ability Triage fits a supportive, quick wide role."
     },
     {
       "id": 765,
@@ -1257,9 +1240,7 @@
     {
       "id": 771,
       "name": "Pyukumuku",
-      "adjustments": {
-        "ACC": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1279,7 +1260,7 @@
         "size",
         "dribbling"
       ],
-      "rationale": "Spe 5 is the lowest in the generation, so ACC 32 is still a little high for a sea cucumber, ACC -4. Def 130 and spd 130 and ability Unaware make it hard to rattle, but height 3 limits it."
+      "rationale": "Spe 5 is the lowest in the generation and already sets ACC 32, so no change. Def 130 and spd 130 and ability Unaware make it hard to rattle, but height 3 limits it."
     },
     {
       "id": 772,
@@ -1417,11 +1398,7 @@
     {
       "id": 777,
       "name": "Togedemaru",
-      "adjustments": {
-        "DRI": -6,
-        "SHO": -4,
-        "PHY": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -1441,7 +1418,7 @@
         "size",
         "aerial"
       ],
-      "rationale": "Spe 96 on a height 3, weight 33 hedgehog is quick, but its kickMoves are head and shield moves, not kicks, so DRI -6 and SHO -4. At 3.3 kg it gets PHY -5."
+      "rationale": "Spe 96 on a height 3, weight 33 hedgehog is quick, and Layer 1 gave its head and shield kickMoves no kick credit, so no change. At 3.3 kg it lacks strength."
     },
     {
       "id": 778,
@@ -1740,7 +1717,7 @@
       "id": 790,
       "name": "Cosmoem",
       "adjustments": {
-        "PAC": -8
+        "PAC": -4
       },
       "bestRoles": [
         "CB",
@@ -1761,14 +1738,12 @@
         "footwork",
         "passing"
       ],
-      "rationale": "Genus Protostar describes a motionless cocoon, and weight 9999 on height 1 cannot move. Layer 1 already took ACC 11 off, leaving ACC 21, so only PAC -8 is added. Def 131 and spd 131 with ability Sturdy make it an unmovable block."
+      "rationale": "Genus Protostar describes a motionless cocoon, so PAC -4 on top of what spe 37 and weight 9999 already took off. Def 131 and spd 131 with ability Sturdy make it an unmovable block."
     },
     {
       "id": 791,
       "name": "Solgaleo",
-      "adjustments": {
-        "HAN": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1788,7 +1763,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Hp 137, atk 137, and a height 34, weight 2300 lion frame make a dominant centre-back. Shape quadruped means paws, not hands, so HAN -8."
+      "rationale": "Hp 137, atk 137, and a height 34, weight 2300 lion frame make a dominant centre-back. Shape quadruped already cuts HAN in Layer 1, so no change."
     },
     {
       "id": 792,
@@ -1868,9 +1843,7 @@
     {
       "id": 795,
       "name": "Pheromosa",
-      "adjustments": {
-        "PHY": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -1890,7 +1863,7 @@
         "strength",
         "durability"
       ],
-      "rationale": "Spe 151 and kickMoves like high-jump-kick and triple-kick make it an elite kicker, already rewarded in Layer 1. Genus Lissome, def 37, and weight 250 on height 18 earn PHY -5."
+      "rationale": "Spe 151 and kickMoves like high-jump-kick and triple-kick make it an elite kicker, already rewarded in Layer 1. Genus Lissome, def 37, and weight 250 on height 18 leave it light in contact, which PHY already reflects."
     },
     {
       "id": 796,
@@ -1945,9 +1918,7 @@
     {
       "id": 798,
       "name": "Kartana",
-      "adjustments": {
-        "PHY": -10
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -1967,7 +1938,7 @@
         "durability",
         "size"
       ],
-      "rationale": "Atk 181 and spe 109 make it a lethal cutting attacker, but weight 1 (0.1 kg) on height 3 is paper, so PHY -10. Spd 31 adds fragility."
+      "rationale": "Atk 181 and spe 109 make it a lethal cutting attacker. Weight 1 (0.1 kg) on height 3 is paper, which weight already prices into PHY, and spd 31 adds fragility."
     },
     {
       "id": 799,
@@ -2222,7 +2193,7 @@
       "id": 809,
       "name": "Melmetal",
       "adjustments": {
-        "TEC": -6
+        "TEC": -3
       },
       "bestRoles": [
         "CB",
@@ -2244,7 +2215,7 @@
         "dribbling",
         "footwork"
       ],
-      "rationale": "Atk 143, def 143, and weight 8000 make a crushing defender, and ability Iron Fist fits its huge hex-nut arms. Its kickMoves are headbutts and mega-kick, which overstated TEC 86, so TEC -6."
+      "rationale": "Atk 143, def 143, and weight 8000 make a crushing defender. Ability Iron Fist and its huge hex-nut arms make it a puncher rather than a technician, so TEC -3."
     }
   ]
 }

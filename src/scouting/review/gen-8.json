@@ -52,10 +52,7 @@
     {
       "id": 812,
       "name": "Rillaboom",
-      "adjustments": {
-        "DIV": -5,
-        "PHY": 4
-      },
+      "adjustments": {},
       "bestRoles": [
         "ST",
         "CB",
@@ -74,7 +71,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Atk 125 on a 21 dm, 90 kg humanoid gorilla makes it a bruising target man, so PHY rises. That same weight makes full-stretch dives less likely than the DIV 93 baseline suggests."
+      "rationale": "Atk 125 on a 21 dm, 90 kg humanoid gorilla makes it a bruising target man, which PHY and AER already reflect, so no change."
     },
     {
       "id": 813,
@@ -204,8 +201,7 @@
       "id": 818,
       "name": "Inteleon",
       "adjustments": {
-        "VIS": 4,
-        "PHY": -4
+        "VIS": 4
       },
       "bestRoles": [
         "AM",
@@ -226,7 +222,7 @@
         "strength",
         "tackling"
       ],
-      "rationale": "Genus Secret Agent, ability Sniper, and spa 125 frame a precise long-range shooter who reads the game, so VIS rises. A 19 dm, 45 kg rangy upright frame is lean, so PHY drops slightly."
+      "rationale": "Genus Secret Agent, ability Sniper, and spa 125 frame a precise long-range shooter who reads the game, so VIS rises. A 19 dm, 45 kg rangy upright frame is lean."
     },
     {
       "id": 819,
@@ -256,7 +252,6 @@
       "name": "Greedent",
       "adjustments": {
         "HAN": -6,
-        "AER": -6,
         "STA": -5
       },
       "bestRoles": [
@@ -278,7 +273,7 @@
         "acceleration",
         "aerial"
       ],
-      "rationale": "Hp 120 and def 95 make it a sturdy holding player, but height 6 is too short for AER 58 and its stubby forepaws do not earn HAN 85. Ability Gluttony and spe 20 argue against STA 93."
+      "rationale": "Hp 120 and def 95 make it a sturdy holding player, but its stubby forepaws do not earn HAN 85. Ability Gluttony and spe 20 argue against STA 93."
     },
     {
       "id": 821,
@@ -511,8 +506,7 @@
       "id": 830,
       "name": "Eldegoss",
       "adjustments": {
-        "GKP": -6,
-        "PHY": -4
+        "GKP": -6
       },
       "bestRoles": [
         "DM",
@@ -533,7 +527,7 @@
         "kicking-technique",
         "shot-power"
       ],
-      "rationale": "Spd 120 and ability Regenerator make it hard to wear down, but a 5 dm blob weighing 2.5 kg has no body to fill a goal or win duels, so GKP 89 and PHY drop."
+      "rationale": "Spd 120 and ability Regenerator make it hard to wear down, but a 5 dm blob weighing 2.5 kg has no body to fill a goal, so GKP 89 drops."
     },
     {
       "id": 831,
@@ -737,8 +731,7 @@
       "id": 839,
       "name": "Coalossal",
       "adjustments": {
-        "STA": -6,
-        "TEC": -6
+        "STA": -6
       },
       "bestRoles": [
         "CB",
@@ -760,7 +753,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "A 28 dm, 310 kg humanoid coal heap with def 120 is a wall, but spe 30 and that mass do not sustain STA 93. Layer 1 credited mega-kick for TEC, which overstates touch for a walking slag heap."
+      "rationale": "A 28 dm, 310 kg humanoid coal heap with def 120 is a wall, but spe 30 and that mass do not sustain STA 93."
     },
     {
       "id": 840,
@@ -792,8 +785,7 @@
       "name": "Flapple",
       "adjustments": {
         "SHO": -6,
-        "KIC": -6,
-        "PHY": -5
+        "KIC": -6
       },
       "bestRoles": [
         "W",
@@ -813,7 +805,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Atk 110 inflates SHO 89, but a 3 dm, 1 kg body with shape wings cannot strike a ball hard, so SHO, KIC, and PHY drop. Ability Hustle and flight keep it a darting wide threat."
+      "rationale": "Atk 110 inflates SHO 89, but a 3 dm, 1 kg apple body cannot strike a ball hard, so SHO and KIC drop. Ability Hustle and flight keep it a darting wide threat."
     },
     {
       "id": 842,
@@ -1578,9 +1570,9 @@
       "name": "Snom",
       "adjustments": {},
       "bestRoles": [
-        "FB",
-        "WB",
-        "DM"
+        "DM",
+        "CB",
+        "CM"
       ],
       "worstRoles": [
         "ST",
@@ -1595,7 +1587,7 @@
         "kicking-technique",
         "shot-power"
       ],
-      "rationale": "Every stat is low, with atk 25 and spe 20, and shape squiggle at height 3 gives no limbs. Ability Ice Scales and Shield Dust offer some protection."
+      "rationale": "Every stat is low, with atk 25 and spe 20, and shape squiggle at height 3 gives no limbs. Spe 20 rules out the pace roles FB and WB, so it plays in the middle. Ability Ice Scales and Shield Dust offer some protection."
     },
     {
       "id": 873,
@@ -2008,9 +2000,7 @@
     {
       "id": 889,
       "name": "Zamazenta",
-      "adjustments": {
-        "HAN": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -2030,7 +2020,7 @@
         "handling",
         "distribution"
       ],
-      "rationale": "Def 115 and ability Dauntless Shield make it the archetypal defender, already in DEF 97 and TAK 96. Shape quadruped gives no hands, so HAN 91 is cut and goal is not its position."
+      "rationale": "Def 115 and ability Dauntless Shield make it the archetypal defender, already in DEF 97 and TAK 96. Shape quadruped already cuts HAN in Layer 1, and goal is not its position."
     },
     {
       "id": 890,
@@ -2233,9 +2223,7 @@
     {
       "id": 898,
       "name": "Calyrex",
-      "adjustments": {
-        "PHY": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "CM",
         "AM",
@@ -2254,7 +2242,7 @@
         "strength",
         "tackling"
       ],
-      "rationale": "Even 80 stats and psychic type with genus King suit a calm conductor, already in PAS 80 and VIS 76. Height 11 and weight 7.7 kg give a frail body, so PHY drops."
+      "rationale": "Even 80 stats and psychic type with genus King suit a calm conductor, already in PAS 80 and VIS 76. Height 11 and weight 7.7 kg give a frail body, which PHY already reflects."
     },
     {
       "id": 899,

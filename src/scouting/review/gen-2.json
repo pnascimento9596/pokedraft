@@ -50,9 +50,7 @@
     {
       "id": 154,
       "name": "Meganium",
-      "adjustments": {
-        "DRI": -3
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -71,7 +69,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Def and spd 100 on a heavy quadruped (weight 1005, height 18) make it a wall; Layer 1 still nudged DRI up for the shape, which a long-necked heavy body does not earn."
+      "rationale": "Def and spd 100 on a quadruped at weight 1005 and height 18 make it a wall in front of the back line, and spe 80 keeps it off the wings."
     },
     {
       "id": 155,
@@ -737,9 +735,7 @@
     {
       "id": 182,
       "name": "Bellossom",
-      "adjustments": {
-        "PHY": -3
-      },
+      "adjustments": {},
       "bestRoles": [
         "CM",
         "AM",
@@ -759,7 +755,7 @@
         "aerial",
         "pace"
       ],
-      "rationale": "Spd 100 and spa 90 support PAS 83 and VIS 85, and triple-axel in kickMoves fits its dancer design; height 4 and weight 58 cannot back up PHY 57."
+      "rationale": "Spd 100 and spa 90 support PAS 83 and VIS 85, and triple-axel in kickMoves fits its dancer design; height 4 and weight 58 already keep it out of physical duels."
     },
     {
       "id": 183,
@@ -917,8 +913,7 @@
       "id": 189,
       "name": "Jumpluff",
       "adjustments": {
-        "DRI": -6,
-        "PHY": -4
+        "DRI": -6
       },
       "bestRoles": [
         "W",
@@ -939,7 +934,7 @@
         "size",
         "close-control"
       ],
-      "rationale": "Spe 110 earns real pace, but weight 30 and stubby cotton-ball limbs cannot carry DRI 98 or PHY 46 in contact."
+      "rationale": "Spe 110 earns real pace, but stubby cotton-ball limbs cannot keep the ball close enough for DRI 98."
     },
     {
       "id": 190,
@@ -1142,9 +1137,7 @@
     {
       "id": 198,
       "name": "Murkrow",
-      "adjustments": {
-        "DRI": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "ST",
@@ -1164,7 +1157,7 @@
         "size",
         "tackling"
       ],
-      "rationale": "Spe 91 and atk 85 at weight 21 suit a quick forward, and ability Prankster fits unpredictability; a crow on wings shape cannot hold DRI 89 with its talons."
+      "rationale": "Spe 91 and atk 85 at weight 21 suit a quick forward, and ability Prankster fits unpredictability; the wings shape already trims its close control."
     },
     {
       "id": 199,
@@ -1219,9 +1212,7 @@
     {
       "id": 201,
       "name": "Unown",
-      "adjustments": {
-        "ACC": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "WM",
@@ -1240,7 +1231,7 @@
         "footwork",
         "kicking-technique"
       ],
-      "rationale": "Ball shape with no limbs and kickMoves empty mean it cannot strike the ball; ACC 51 still sits a little above its flat 48 spe line, so it is trimmed."
+      "rationale": "Ball shape with no limbs and kickMoves empty mean it cannot strike the ball, which Layer 1 already prices; spa 72 and its psychic type give it some vision."
     },
     {
       "id": 202,
@@ -1273,7 +1264,6 @@
       "id": 203,
       "name": "Girafarig",
       "adjustments": {
-        "AER": 4,
         "VIS": 3
       },
       "bestRoles": [
@@ -1294,7 +1284,7 @@
         "handling",
         "durability"
       ],
-      "rationale": "Genus Long Neck at height 15 favours heading, and its second head on the tail watches behind it; spe 85 and double-kick in kickMoves suit attacking play."
+      "rationale": "Its second head on the tail watches behind it, so vision rises; height 15 already carries its heading, and spe 85 with double-kick in kickMoves suit attacking play."
     },
     {
       "id": 204,
@@ -1400,9 +1390,7 @@
     {
       "id": 208,
       "name": "Steelix",
-      "adjustments": {
-        "AER": 5
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1424,7 +1412,7 @@
         "dribbling",
         "footwork"
       ],
-      "rationale": "Height 92 and weight 4000 make it by far the largest body here, and def 200 with Sturdy anchors defence; standing height that dwarfs every opponent lifts AER further."
+      "rationale": "Height 92 and weight 4000 make it by far the largest body here, already carried by its aerial and physical baseline, and def 200 with ability Sturdy anchors defence."
     },
     {
       "id": 209,
@@ -1501,9 +1489,7 @@
     {
       "id": 212,
       "name": "Scizor",
-      "adjustments": {
-        "AER": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1522,14 +1508,13 @@
         "acceleration",
         "handling"
       ],
-      "rationale": "Atk 130 with ability Technician and pincer arms give TAK 92; weight 1180 of steel on small bug-wings shape does not earn the AER 95 that its wing bonus produced."
+      "rationale": "Atk 130 with ability Technician and pincer arms give TAK 92, so it wins the ball at centre-back or presses up front."
     },
     {
       "id": 213,
       "name": "Shuckle",
       "adjustments": {
-        "HAN": -8,
-        "PAC": -6
+        "HAN": -8
       },
       "bestRoles": [
         "CB",
@@ -1551,7 +1536,7 @@
         "shot-power",
         "size"
       ],
-      "rationale": "Def and spd 230 make it the hardest body to break down, but spe 5 (tied for the lowest of any species) and height 6 mean it barely moves, so PAC comes down. Its def and spd drive a high HAN baseline although it has no hands, so HAN comes down."
+      "rationale": "Def and spd 230 make it the hardest body to break down, and spe 5 already pins its pace. Its def and spd drive a high HAN baseline although it has no hands, so HAN comes down."
     },
     {
       "id": 214,
@@ -2248,9 +2233,7 @@
     {
       "id": 242,
       "name": "Blissey",
-      "adjustments": {
-        "PHY": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "CM",
         "DM",
@@ -2271,7 +2254,7 @@
         "shot-power",
         "strength"
       ],
-      "rationale": "Hp 255 and ability Healer make it a tireless support player, but atk and def 10 mean it loses physical contact, so PHY 60 drawn from hp is trimmed."
+      "rationale": "Hp 255 and ability Healer make it a tireless support player, while atk and def 10 already hold down its tackling and physicality."
     },
     {
       "id": 243,
