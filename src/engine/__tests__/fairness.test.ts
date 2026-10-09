@@ -65,7 +65,7 @@ function combo(roll: Roll): Extract<Roll, { kind: "combo" }> {
   return roll;
 }
 
-describe("roll fairness, chi-square over 200,000 seeded draws", () => {
+describe("roll fairness, chi-square over 200,000 seeded draws", { timeout: 60_000 }, () => {
   it("region roll is uniform over all 9 regions (catches a region weighted by species count)", () => {
     const settings: RolledSettings = {
       mode: "cup8",

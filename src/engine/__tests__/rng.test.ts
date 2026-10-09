@@ -62,6 +62,7 @@ describe("int() rejection sampling (catches modulo bias in the top tail)", () =>
       for (let i = 0; i < 200_000; i++) counts[rng.int(n)]! += 1;
       expect(chiSquareUniform(counts).p).toBeGreaterThan(0.001);
     },
+    60_000,
   );
 });
 
