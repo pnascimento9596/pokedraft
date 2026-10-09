@@ -171,6 +171,7 @@ export type DraftAction =
 export type DraftErrorCode =
   | "wrongPhase"
   | "wrongMode"
+  | "invalidSettings"
   | "slotOccupied"
   | "slotMismatch"
   | "slotRequired"

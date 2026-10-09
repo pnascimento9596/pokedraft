@@ -88,8 +88,8 @@ describe("createDraft settings validation (catches unvalidated settings leaking 
     ["duplicate gens", { ...OPEN_SQUAD, gens: [1, 1] as Gen[] }],
     ["unknown gen", { ...OPEN_SQUAD, gens: [10] as unknown as Gen[] }],
     ["unknown formation", { ...OPEN_SQUAD, formation: "9-9-9" }],
-  ])("rejects %s with invalidTarget", (_, settings) => {
-    expect(codeOf(() => createDraft(settings as DraftSettings, seed("x")))).toBe("invalidTarget");
+  ])("rejects %s with invalidSettings, not the reroll code invalidTarget", (_, settings) => {
+    expect(codeOf(() => createDraft(settings as DraftSettings, seed("x")))).toBe("invalidSettings");
   });
 
   it("sorts gens ascending", () => {
