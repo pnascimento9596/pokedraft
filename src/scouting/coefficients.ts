@@ -149,7 +149,7 @@ export const COEFFICIENTS: ScoutingCoefficients = {
       "head-smash": 4,
     },
     traits: {
-      kick: { cap: 12, attrs: { SHO: 1, KIC: 1, TEC: 0.75, DRI: 0.5 } },
+      kick: { cap: 24, attrs: { SHO: 1, KIC: 1, TEC: 0.75, DRI: 0.5 } },
       reflex: { cap: 8, attrs: { REF: 1, DIV: 0.75, HAN: 0.5 } },
       header: { cap: 5, attrs: { AER: 1, SHO: 0.25 } },
     },
