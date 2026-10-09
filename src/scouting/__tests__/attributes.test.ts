@@ -54,6 +54,10 @@ describe("Layer 1 baseline", () => {
     expect([b.KIC.shape, b.DRI.shape, b.TEC.shape]).toEqual([-8, -8, -7]);
   });
 
+  it("gives the handless quadruped shape HAN -12 (Zacian)", () => {
+    expect(all.get(speciesByName("Zacian").id)!.breakdown.HAN.shape).toBe(-12);
+  });
+
   it("leads ACC with speed, so tiny slow Flabébé is not quick off the mark", () => {
     expect(all.get(speciesByName("Flabébé").id)!.attrs.ACC).toBe(51);
     expect(all.get(speciesByName("Regieleki").id)!.attrs.ACC).toBe(93);
