@@ -68,7 +68,7 @@ const COMBO_SPECIES: Readonly<Record<Region, Readonly<Record<PokemonType, readon
 const KANTO151_SPECIES: readonly Species[] = SPECIES.filter((s) => s.id <= KANTO151_MAX_ID);
 
 function invalidSettings(message: string): never {
-  throw new DraftError("invalidTarget", message);
+  throw new DraftError("invalidSettings", message);
 }
 
 function normalizeGens(gens: unknown): readonly Gen[] {

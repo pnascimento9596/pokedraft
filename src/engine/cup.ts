@@ -5,7 +5,7 @@ import { simulateMatch, simulateScore, type MatchStarter, type Phase } from "./m
 import { buildLadder } from "./opponents";
 import { canonicalSortBy, createEngineRng, deriveSubseed } from "./rng";
 import { speciesById } from "./species";
-import { awards, AWARD_POINTS, type PlayerTally } from "./stats";
+import { awards, type PlayerTally } from "./stats";
 import { benchQuality, matchLines, rateTeam } from "./team";
 import {
   CUP_ROUNDS,
@@ -173,9 +173,7 @@ export function runCup(
     const conceded = match.regulation.opp + (match.extraTime?.opp ?? 0);
     for (const s of starters) {
       const sheet =
-        conceded === 0 && (s.line === "GK" || s.line === "DEF")
-          ? AWARD_POINTS.cleanSheet[s.line]
-          : 0;
+        conceded === 0 && (s.line === "GK" || s.line === "DEF") ? c.awards.cleanSheet[s.line] : 0;
       bump(s.species.id, { appearances: 1, cleanSheetPoints: sheet });
     }
     for (const g of match.goals) {
@@ -255,6 +253,6 @@ export function runCup(
       assists,
       appearances,
     })),
-    awards: awards(tallies),
+    awards: awards(tallies, c),
   };
 }

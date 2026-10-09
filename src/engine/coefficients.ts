@@ -36,7 +36,6 @@ export interface EngineCoefficients {
       knockout: { outer: number; amplitude: number };
     };
     penaltyShare: number;
-    penaltyConvert: number;
     assistProb: number;
     scorerLineFactor: Record<Exclude<Line, "GK">, number>;
     assistLineFactor: Record<Line, number>;
@@ -44,6 +43,7 @@ export interface EngineCoefficients {
   };
   shootout: { kicks: number; maxSuddenDeath: number; base: number; band: number };
   availability: { eventProb: number; familiarityFloor: number };
+  awards: { goal: number; assist: number; cleanSheet: { GK: number; DEF: number } };
   ladder: {
     score: Record<CupRound, number>;
     jitter: number;
@@ -87,7 +87,6 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
       knockout: { outer: 0.2, amplitude: 0.75 },
     },
     penaltyShare: 0.06,
-    penaltyConvert: 0.76,
     assistProb: 0.62,
     scorerLineFactor: { DEF: 0.25, MID: 0.6, ATT: 1 },
     assistLineFactor: { GK: 0.05, DEF: 0.4, MID: 1, ATT: 0.7 },
@@ -95,6 +94,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
   },
   shootout: { kicks: 5, maxSuddenDeath: 20, base: 0.75, band: 0.1 },
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
+  awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, DEF: 1 } },
   ladder: {
     score: { G1: 600, G2: 650, G3: 700, R32: 750, R16: 800, QF: 850, SF: 900, F: 950 },
     jitter: 20,
