@@ -41,8 +41,14 @@ describe("sanity panel (design intent, not ground truth)", () => {
     expect(inTop("Cinderace", role("ST"), 0.02)).toBe(true);
   });
 
-  it.each(["Hitmonlee", "Hitmontop", "Sirfetch’d"])("%s is top 10 percent at ST or W", (name) => {
-    expect(inTop(name, role("ST"), 0.1) || inTop(name, role("W"), 0.1)).toBe(true);
+  it("Hitmonlee is top 10 percent at ST or W", () => {
+    expect(inTop("Hitmonlee", role("ST"), 0.1) || inTop("Hitmonlee", role("W"), 0.1)).toBe(true);
+  });
+
+  // "Strong striker" for these two was set to top 20 percent at ST by the owner after the
+  // measured model placed them at 17.5 and 19.6 percent. See docs/decisions/dispatch-1.md.
+  it.each(["Hitmontop", "Sirfetch’d"])("%s is top 20 percent at ST", (name) => {
+    expect(inTop(name, role("ST"), 0.2)).toBe(true);
   });
 
   it.each(["Blaziken", "Lucario", "Zeraora"])("%s is top 5% at ST or W", (name) => {
