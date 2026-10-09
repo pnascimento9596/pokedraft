@@ -38,8 +38,14 @@ and bad at, and does the baseline already say that?
   supports. Do not repeat what `layer1Mods` already applied (for example, Layer 1 already
   rewards kicking moves, wings, and abilities like Speed Boost). If the data does not support a
   call, make no adjustment. An empty object `{}` is fine.
+- Do not adjust an attribute for a field that already feeds it. Speed already feeds PAC, ACC,
+  DRI, PAS and TEC; weight over 150 kg already lowers ACC, DRI, DIV, PAC and AER; the arms
+  shape (no legs) already lowers DRI, TEC and KIC. Check `layer1Mods` and the blend inputs.
+- KIC is goalkeeper kicking (goal kicks and distribution) and only feeds GK. Outfield kicking
+  power and technique live in SHO and TEC. Raise KIC only when GK is a best role.
 - `bestRoles`: exactly 3 distinct roles, best first. These are the positions it would naturally
-  play.
+  play. Every best role gets full familiarity in its fit, so a wrong one inflates that fit.
+  A species tagged weak on `pace` cannot have W or WB as a best role.
 - `worstRoles`: exactly 2 distinct roles, not in bestRoles.
 - `strengths`, `weaknesses`: 2 to 4 tags each from the closed list below, no tag in both.
 - `rationale`: one or two sentences that cite the specific fields that drove the call, using
