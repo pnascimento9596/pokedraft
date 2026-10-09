@@ -1018,7 +1018,7 @@
       "weaknesses": [
         "strength",
         "footwork",
-        "acceleration"
+        "tackling"
       ],
       "rationale": "Genus Blimp, height 12 and weight 150 hg describe a floating envelope that drifts into position rather than sprinting, so ACC 79 drops and AER rises. Hp 150 makes it tireless."
     },
@@ -1187,7 +1187,7 @@
         "GK"
       ],
       "strengths": [
-        "acceleration",
+        "passing",
         "unpredictability"
       ],
       "weaknesses": [

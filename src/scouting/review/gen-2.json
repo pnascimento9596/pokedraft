@@ -1795,7 +1795,7 @@
       ],
       "strengths": [
         "long-shots",
-        "acceleration"
+        "vision"
       ],
       "weaknesses": [
         "footwork",
@@ -2318,9 +2318,9 @@
       ],
       "weaknesses": [
         "handling",
-        "acceleration"
+        "vision"
       ],
-      "rationale": "Atk 115 and hp 115 at weight 1980 give SHO 91 and PHY 91; quadruped shape rules out goal and its size holds ACC at 78."
+      "rationale": "Atk 115 and hp 115 at weight 1980 give SHO 91 and PHY 91; quadruped shape rules out goal, and VIS 76 from spa 90 and spd 75 is the soft spot in its profile."
     },
     {
       "id": 245,
@@ -2439,10 +2439,10 @@
         "durability"
       ],
       "weaknesses": [
-        "acceleration",
+        "finishing",
         "dribbling"
       ],
-      "rationale": "Height 52 and wings shape give AER 99 and huge reach, and spd 154 with Multiscale makes it hard to beat; its bulk holds ACC at 79."
+      "rationale": "Height 52 and wings shape give AER 99 and huge reach, and spd 154 with Multiscale makes it hard to beat; atk 90 is its lowest stat, so SHO 78 and DRI 70 are its soft spots."
     },
     {
       "id": 250,

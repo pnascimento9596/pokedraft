@@ -784,7 +784,7 @@
         "stamina"
       ],
       "weaknesses": [
-        "pace",
+        "acceleration",
         "agility"
       ],
       "rationale": "Weight 600 with hp 90, def 87 and an armoured hide makes a protective anchor, worth a small defending bump. Spe 76 keeps it off the wings."
@@ -856,7 +856,7 @@
       ],
       "weaknesses": [
         "agility",
-        "acceleration"
+        "marking"
       ],
       "rationale": "Genus Drill with atk 102, spa 85 and ability Sheer Force on an upright frame of weight 620, so a powerful striker who can drop back. The kickMoves bonus is already in SHO 96."
     },
