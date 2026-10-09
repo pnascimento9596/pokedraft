@@ -49,8 +49,9 @@ describe("Layer 1 baseline", () => {
     expect(all.get(speciesByName("Regigigas").id)!.breakdown.DIV.heavy).toBe(-5.94);
   });
 
-  it("gives the legless arms shape a KIC penalty (Geodude)", () => {
-    expect(all.get(speciesByName("Geodude").id)!.breakdown.KIC.shape).toBe(-8);
+  it("gives the legless arms shape KIC, DRI and TEC penalties (Geodude)", () => {
+    const b = all.get(speciesByName("Geodude").id)!.breakdown;
+    expect([b.KIC.shape, b.DRI.shape, b.TEC.shape]).toEqual([-8, -8, -7]);
   });
 
   it("leads ACC with speed, so tiny slow Flabébé is not quick off the mark", () => {
