@@ -208,7 +208,7 @@ NOT RUN: the out-of-sample move scan used a small hand-picked move dictionary, s
 
 ## Resolutions (added by the implementer after round 1)
 
-Round 1 judged the data before the fixes below. Round 2 (`docs/reports/scouting-audit.md`) audits the final artifact.
+Round 1 judged the data before the fixes below. Round 2 is `docs/reports/scouting-audit-round-2.md`; round 3 (`docs/reports/scouting-audit.md`) audits the artifact that ships.
 
 | Finding | Resolution | Where |
 |---|---|---|
