@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -23,6 +24,11 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Cache the pinned PokéAPI CSVs
+        uses: actions/cache@v6
+        with:
+          path: scripts/data/.cache/c80757193bd0889054e36f4209762360bdaa4b95
+          key: pokeapi-csv-c80757193bd0889054e36f4209762360bdaa4b95
       - run: pnpm check:mirrors
       - run: pnpm lint
       - run: pnpm typecheck
