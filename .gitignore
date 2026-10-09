@@ -42,3 +42,4 @@ next-env.d.ts
 
 # pokedraft
 scripts/data/.cache/
+scripts/calibration/out/
