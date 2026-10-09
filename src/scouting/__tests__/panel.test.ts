@@ -102,9 +102,12 @@ describe("sanity panel (design intent, not ground truth)", () => {
     expect(SCOUTING.filter((s) => overall(s) < 25).map((s) => s.name)).toEqual([]);
   });
 
-  it("Shuckle is bottom 2% PAC and Slowpoke bottom 10% PAC", () => {
+  // Owner decision: bottom 5 percent, not 2. Body-plan and baby penalties (fish, blobs, babies)
+  // own the very bottom of PAC; Shuckle (spe 5) sits on the floor of unpenalized species, and
+  // the old 2 percent only passed via a spe double count. See docs/decisions/dispatch-1.md.
+  it("Shuckle is bottom 5% PAC and Slowpoke bottom 10% PAC", () => {
     expect([
-      inBottom("Shuckle", attr("PAC"), 0.02),
+      inBottom("Shuckle", attr("PAC"), 0.05),
       inBottom("Slowpoke", attr("PAC"), 0.1),
     ]).toEqual([true, true]);
   });
