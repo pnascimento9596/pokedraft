@@ -16,7 +16,11 @@ export interface CitedEntry {
 }
 
 type StatWord = "hp" | "atk" | "def" | "spa" | "spd" | "spe";
-const ATTR_RE = new RegExp(`\\b(${ATTRS.join("|")})\\s+([+-]?\\d+)\\b`, "g");
+// Also reads indirect forms such as "ACC at 74" and "STA to 56".
+const ATTR_RE = new RegExp(
+  `\\b(${ATTRS.join("|")})\\s+(?:(?:at|of|is|to|from|near|around)\\s+)?(?:(?:only|just)\\s+)?([+-]?\\d+)\\b`,
+  "g",
+);
 // Lower or title case only, so the attribute DEF is not read as the stat def.
 const STAT_RE = /\b(hp|HP|Hp|atk|Atk|def|Def|spa|Spa|spd|Spd|spe|Spe)\s+(\d+)\b/g;
 const SHAPE_ALT = [...SHAPES].sort((a, b) => b.length - a.length).join("|");

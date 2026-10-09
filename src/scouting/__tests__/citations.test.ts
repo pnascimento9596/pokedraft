@@ -33,6 +33,12 @@ describe("citation checker", () => {
     ]);
   });
 
+  it("reads an indirect attribute citation (Mewtwo ACC is 86, not 74)", () => {
+    expect(check("Mewtwo", "Its weight holds ACC at 74.")).toEqual([
+      '"ACC at 74" but ACC is 86 baseline, 86 final, Layer 1 mods 0',
+    ]);
+  });
+
   it("accepts a citation of a Layer 1 modifier total (Marill Huge Power SHO 13)", () => {
     expect(check("Marill", "Ability Huge Power already added SHO 13 in layer1Mods.")).toEqual([]);
   });
