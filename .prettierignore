@@ -1,0 +1,8 @@
+.next
+node_modules
+pnpm-lock.yaml
+src/data/*.json
+src/scouting/review/*.json
+tools/pstack-core
+docs
+scripts/data/.cache
