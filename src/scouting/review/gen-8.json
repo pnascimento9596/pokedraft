@@ -1,0 +1,2438 @@
+{
+  "gen": 8,
+  "entries": [
+    {
+      "id": 810,
+      "name": "Grookey",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "AM",
+        "WM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "agility",
+        "acceleration",
+        "dribbling"
+      ],
+      "weaknesses": [
+        "strength",
+        "size"
+      ],
+      "rationale": "Spe 65 on a 3 dm, 5 kg upright chimp body keeps it nimble, and kickMoves low-kick and mega-kick are already credited by Layer 1. Height 3 leaves it no physical presence, so it belongs out wide."
+    },
+    {
+      "id": 811,
+      "name": "Thwackey",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "ST",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "dribbling",
+        "acceleration",
+        "agility"
+      ],
+      "weaknesses": [
+        "strength",
+        "heading"
+      ],
+      "rationale": "Spe 80 and atk 85 on a 7 dm upright frame suit a busy wide forward, and the baseline DRI 90 already reflects it. Weight 14 kg is too light to hold off centre-backs."
+    },
+    {
+      "id": 812,
+      "name": "Rillaboom",
+      "adjustments": {
+        "DIV": -5,
+        "PHY": 4
+      },
+      "bestRoles": [
+        "ST",
+        "CB",
+        "DM"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "strength",
+        "shot-power",
+        "aerial"
+      ],
+      "weaknesses": [
+        "acceleration",
+        "agility"
+      ],
+      "rationale": "Atk 125 on a 21 dm, 90 kg humanoid gorilla makes it a bruising target man, so PHY rises. That same weight makes full-stretch dives less likely than the DIV 93 baseline suggests."
+    },
+    {
+      "id": 813,
+      "name": "Scorbunny",
+      "adjustments": {
+        "AER": 6
+      },
+      "bestRoles": [
+        "W",
+        "ST",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "acceleration",
+        "kicking-technique",
+        "dribbling"
+      ],
+      "weaknesses": [
+        "strength",
+        "tackling"
+      ],
+      "rationale": "Genus Rabbit and kickMoves high-jump-kick point to a natural leaper, so AER 34 is lifted. Layer 1 already rewarded its long kickMoves list for SHO, DRI, and KIC, and def 40 keeps it out of defence."
+    },
+    {
+      "id": 814,
+      "name": "Raboot",
+      "adjustments": {
+        "AER": 5
+      },
+      "bestRoles": [
+        "W",
+        "ST",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "pace",
+        "dribbling",
+        "kicking-technique"
+      ],
+      "weaknesses": [
+        "strength",
+        "marking"
+      ],
+      "rationale": "Spe 94 and the full kickMoves set including high-jump-kick make it a springy wide attacker, and genus Rabbit justifies more than AER 51. Def 60 and a 9 kg weight give it little defensive value."
+    },
+    {
+      "id": 815,
+      "name": "Cinderace",
+      "adjustments": {},
+      "bestRoles": [
+        "ST",
+        "W",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "finishing",
+        "kicking-technique",
+        "pace",
+        "dribbling"
+      ],
+      "weaknesses": [
+        "marking",
+        "durability"
+      ],
+      "rationale": "Genus Striker, spe 119, and kickMoves pyro-ball and blaze-kick already max SHO, DRI, TEC, and KIC, so no adjustment is needed. Def 75 and hp 80 leave it fragile in duels, so it plays centre-forward first."
+    },
+    {
+      "id": 816,
+      "name": "Sobble",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "WM",
+        "AM"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "acceleration",
+        "agility"
+      ],
+      "weaknesses": [
+        "strength",
+        "composure"
+      ],
+      "rationale": "Spe 70 on a 3 dm quadruped lizard gives quick bursts, and the baseline already reflects shape quadruped. Atk 40 and weight 4 kg give it no physical game, and its timid genus Water Lizard design suggests nerves under pressure."
+    },
+    {
+      "id": 817,
+      "name": "Drizzile",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "AM",
+        "WM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "pace",
+        "dribbling",
+        "passing"
+      ],
+      "weaknesses": [
+        "strength",
+        "tackling"
+      ],
+      "rationale": "Spa 95 and spe 90 drive PAS 77 and DRI 88 on an upright 7 dm body, which reads as a creative wide player. Atk 60 and def 55 give little in the tackle."
+    },
+    {
+      "id": 818,
+      "name": "Inteleon",
+      "adjustments": {
+        "VIS": 4,
+        "PHY": -4
+      },
+      "bestRoles": [
+        "AM",
+        "ST",
+        "W"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "long-shots",
+        "vision",
+        "composure",
+        "pace"
+      ],
+      "weaknesses": [
+        "strength",
+        "tackling"
+      ],
+      "rationale": "Genus Secret Agent, ability Sniper, and spa 125 frame a precise long-range shooter who reads the game, so VIS rises. A 19 dm, 45 kg rangy upright frame is lean, so PHY drops slightly."
+    },
+    {
+      "id": 819,
+      "name": "Skwovet",
+      "adjustments": {},
+      "bestRoles": [
+        "DM",
+        "CM",
+        "FB"
+      ],
+      "worstRoles": [
+        "GK",
+        "W"
+      ],
+      "strengths": [
+        "stamina",
+        "work-rate"
+      ],
+      "weaknesses": [
+        "pace",
+        "size"
+      ],
+      "rationale": "Spe 25 and height 3 keep it slow and tiny, while hp 70 gives it the relative engine of STA 52. Ability Cheek Pouch fits a scurrying, ball-hoarding role in midfield rather than out wide."
+    },
+    {
+      "id": 820,
+      "name": "Greedent",
+      "adjustments": {
+        "HAN": -6,
+        "AER": -6,
+        "STA": -5
+      },
+      "bestRoles": [
+        "DM",
+        "CB",
+        "CM"
+      ],
+      "worstRoles": [
+        "W",
+        "ST"
+      ],
+      "strengths": [
+        "durability",
+        "positioning",
+        "tackling"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "aerial"
+      ],
+      "rationale": "Hp 120 and def 95 make it a sturdy holding player, but height 6 is too short for AER 58 and its stubby forepaws do not earn HAN 85. Ability Gluttony and spe 20 argue against STA 92."
+    },
+    {
+      "id": 821,
+      "name": "Rookidee",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "WM",
+        "WB"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "flight",
+        "acceleration",
+        "aggression"
+      ],
+      "weaknesses": [
+        "strength",
+        "size"
+      ],
+      "rationale": "Shape wings and spe 57 give it quick flits, and Layer 1 already added the wing AER bonus. Height 2 and weight 1.8 kg give it no physical presence, though ability Big Pecks and genus Tiny Bird suit a scrappy pest."
+    },
+    {
+      "id": 822,
+      "name": "Corvisquire",
+      "adjustments": {
+        "VIS": 3
+      },
+      "bestRoles": [
+        "W",
+        "WB",
+        "WM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "flight",
+        "pace",
+        "vision"
+      ],
+      "weaknesses": [
+        "strength",
+        "close-control"
+      ],
+      "rationale": "Genus Raven and ability Keen Eye support a sharper read of the game than VIS 43. Spe 77 and shape wings keep it on the flank, and wings rather than feet limit close control."
+    },
+    {
+      "id": 823,
+      "name": "Corviknight",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "FB"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "aerial",
+        "durability",
+        "intimidation",
+        "flight"
+      ],
+      "weaknesses": [
+        "acceleration",
+        "dribbling"
+      ],
+      "rationale": "Def 105, hp 98, and a 22 dm, 75 kg steel/flying frame make it a commanding aerial centre-back, already reflected in AER 99 and DEF 94. Abilities Pressure and Unnerve add intimidation, while shape wings limits dribbling."
+    },
+    {
+      "id": 824,
+      "name": "Blipbug",
+      "adjustments": {},
+      "bestRoles": [
+        "DM",
+        "FB",
+        "CM"
+      ],
+      "worstRoles": [
+        "ST",
+        "GK"
+      ],
+      "strengths": [
+        "vision",
+        "teamwork"
+      ],
+      "weaknesses": [
+        "strength",
+        "pace",
+        "shot-power"
+      ],
+      "rationale": "Ability Compound Eyes and Telepathy suit reading play and linking with teammates. Atk 20, hp 25, and a 4 dm armor body leave it with no power or speed."
+    },
+    {
+      "id": 825,
+      "name": "Dottler",
+      "adjustments": {
+        "HAN": -8
+      },
+      "bestRoles": [
+        "DM",
+        "CB",
+        "CM"
+      ],
+      "worstRoles": [
+        "W",
+        "ST"
+      ],
+      "strengths": [
+        "positioning",
+        "vision",
+        "durability"
+      ],
+      "weaknesses": [
+        "pace",
+        "dribbling",
+        "handling"
+      ],
+      "rationale": "Def 80 and spd 90 make it a stationary screen, but shape armor on a 4 dm limbless shell cannot catch, so HAN 66 is cut. Spe 30 rules out wide roles."
+    },
+    {
+      "id": 826,
+      "name": "Orbeetle",
+      "adjustments": {
+        "GKP": -6,
+        "PHY": -4
+      },
+      "bestRoles": [
+        "CM",
+        "DM",
+        "WB"
+      ],
+      "worstRoles": [
+        "ST",
+        "CB"
+      ],
+      "strengths": [
+        "vision",
+        "passing",
+        "flight"
+      ],
+      "weaknesses": [
+        "strength",
+        "size",
+        "shot-power"
+      ],
+      "rationale": "Spa 80, spd 120, and genus Seven Spot psychic type make it a reader of play. Height 4 is far too small to command a goal or win duels, so GKP 93 and PHY drop despite its def 110."
+    },
+    {
+      "id": 827,
+      "name": "Nickit",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "WM",
+        "WB"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "agility",
+        "acceleration",
+        "unpredictability"
+      ],
+      "weaknesses": [
+        "strength",
+        "shot-power"
+      ],
+      "rationale": "Genus Fox, abilities Run Away and Unburden, and shape quadruped already lift PAC and ACC in Layer 1. Atk 28 and def 28 leave it with nothing in contact."
+    },
+    {
+      "id": 828,
+      "name": "Thievul",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "WM",
+        "AM"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "pace",
+        "vision",
+        "agility",
+        "unpredictability"
+      ],
+      "weaknesses": [
+        "strength",
+        "shot-power"
+      ],
+      "rationale": "Spe 90 and spd 92 on a 12 dm quadruped fox give pace and a sly reading of play that baseline PAC 85 and VIS 81 already capture. Atk 58 limits shooting power."
+    },
+    {
+      "id": 829,
+      "name": "Gossifleur",
+      "adjustments": {},
+      "bestRoles": [
+        "DM",
+        "CB",
+        "FB"
+      ],
+      "worstRoles": [
+        "W",
+        "ST"
+      ],
+      "strengths": [
+        "durability",
+        "stamina"
+      ],
+      "weaknesses": [
+        "pace",
+        "dribbling",
+        "kicking-technique"
+      ],
+      "rationale": "Shape blob, spe 10, and height 4 make it nearly immobile, and Layer 1 already applied the blob penalties. Ability Regenerator and def 60 give it some staying power."
+    },
+    {
+      "id": 830,
+      "name": "Eldegoss",
+      "adjustments": {
+        "GKP": -6,
+        "PHY": -4
+      },
+      "bestRoles": [
+        "DM",
+        "FB",
+        "WB"
+      ],
+      "worstRoles": [
+        "ST",
+        "CB"
+      ],
+      "strengths": [
+        "stamina",
+        "durability",
+        "vision"
+      ],
+      "weaknesses": [
+        "strength",
+        "kicking-technique",
+        "shot-power"
+      ],
+      "rationale": "Spd 120 and ability Regenerator make it hard to wear down, but a 5 dm blob weighing 2.5 kg has no body to fill a goal or win duels, so GKP 89 and PHY drop."
+    },
+    {
+      "id": 831,
+      "name": "Wooloo",
+      "adjustments": {},
+      "bestRoles": [
+        "FB",
+        "WB",
+        "W"
+      ],
+      "worstRoles": [
+        "GK",
+        "ST"
+      ],
+      "strengths": [
+        "durability",
+        "teamwork"
+      ],
+      "weaknesses": [
+        "shot-power",
+        "strength"
+      ],
+      "rationale": "Ability Fluffy and genus Sheep suit a cushioned, herd-minded runner, and spe 48 on a quadruped is already in PAC 47. Atk 40 gives it no shot."
+    },
+    {
+      "id": 832,
+      "name": "Dubwool",
+      "adjustments": {
+        "AER": 5,
+        "DIV": -6
+      },
+      "bestRoles": [
+        "CB",
+        "FB",
+        "DM"
+      ],
+      "worstRoles": [
+        "GK",
+        "AM"
+      ],
+      "strengths": [
+        "heading",
+        "durability",
+        "strength"
+      ],
+      "weaknesses": [
+        "handling",
+        "close-control"
+      ],
+      "rationale": "Def 100, kickMoves headbutt and zen-headbutt, and its ram design support winning headers, so AER rises. Shape quadruped gives it no hands, so DIV 86 is too high for a sheep in goal."
+    },
+    {
+      "id": 833,
+      "name": "Chewtle",
+      "adjustments": {
+        "TAK": 3
+      },
+      "bestRoles": [
+        "FB",
+        "DM",
+        "CB"
+      ],
+      "worstRoles": [
+        "GK",
+        "AM"
+      ],
+      "strengths": [
+        "aggression",
+        "tackling"
+      ],
+      "weaknesses": [
+        "pace",
+        "size"
+      ],
+      "rationale": "Genus Snapping and ability Strong Jaw describe a biter that lunges into challenges, so TAK rises a little. Height 3 and spe 44 keep it small and slow."
+    },
+    {
+      "id": 834,
+      "name": "Drednaw",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "FB"
+      ],
+      "worstRoles": [
+        "W",
+        "GK"
+      ],
+      "strengths": [
+        "aggression",
+        "tackling",
+        "strength",
+        "durability"
+      ],
+      "weaknesses": [
+        "acceleration",
+        "passing"
+      ],
+      "rationale": "Atk 115, hp 90, and a 115 kg quadruped body make it a ferocious stopper, already reflected in TAK 88 and PHY 94. Ability Strong Jaw adds aggression, while spa 48 limits passing."
+    },
+    {
+      "id": 835,
+      "name": "Yamper",
+      "adjustments": {
+        "TAK": 4,
+        "STA": 4
+      },
+      "bestRoles": [
+        "DM",
+        "FB",
+        "CM"
+      ],
+      "worstRoles": [
+        "GK",
+        "ST"
+      ],
+      "strengths": [
+        "work-rate",
+        "stamina",
+        "tackling"
+      ],
+      "weaknesses": [
+        "pace",
+        "size"
+      ],
+      "rationale": "Ability Ball Fetch and genus Puppy describe a dog that chases down every ball, so TAK and STA rise. Spe 26 and height 3 keep it slow and small."
+    },
+    {
+      "id": 836,
+      "name": "Boltund",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "ST",
+        "WM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "pace",
+        "acceleration",
+        "agility"
+      ],
+      "weaknesses": [
+        "handling",
+        "marking"
+      ],
+      "rationale": "Spe 121 on a 10 dm quadruped dog drives PAC 96, and genus Dog fits a relentless runner in behind. Shape quadruped gives no hands and def 60 gives little marking."
+    },
+    {
+      "id": 837,
+      "name": "Rolycoly",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "FB"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "durability",
+        "strength"
+      ],
+      "weaknesses": [
+        "dribbling",
+        "kicking-technique",
+        "pace"
+      ],
+      "rationale": "Shape ball and spe 30 leave it rolling rather than running, with Layer 1 already cutting DRI and TEC. A dense 12 kg body at height 3 gives it some resistance in contact."
+    },
+    {
+      "id": 838,
+      "name": "Carkol",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "FB"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "strength",
+        "durability"
+      ],
+      "weaknesses": [
+        "acceleration",
+        "dribbling"
+      ],
+      "rationale": "Hp 80, def 90, and weight 78 kg make it a solid blocker, while spe 50 on shape legs keeps it slow off the mark. Ability Steam Engine does not change its footballing profile."
+    },
+    {
+      "id": 839,
+      "name": "Coalossal",
+      "adjustments": {
+        "STA": -6,
+        "TEC": -6
+      },
+      "bestRoles": [
+        "CB",
+        "DM",
+        "GK"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "strength",
+        "size",
+        "aerial",
+        "intimidation"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "agility"
+      ],
+      "rationale": "A 28 dm, 310 kg humanoid coal heap with def 120 is a wall, but spe 30 and that mass do not sustain STA 94. Layer 1 credited mega-kick for TEC, which overstates touch for a walking slag heap."
+    },
+    {
+      "id": 840,
+      "name": "Applin",
+      "adjustments": {},
+      "bestRoles": [
+        "DM",
+        "FB",
+        "CB"
+      ],
+      "worstRoles": [
+        "ST",
+        "W"
+      ],
+      "strengths": [
+        "durability",
+        "positioning"
+      ],
+      "weaknesses": [
+        "pace",
+        "kicking-technique",
+        "strength",
+        "size"
+      ],
+      "rationale": "Def 80 is its only asset, and shape squiggle at height 2 and weight 0.5 kg leaves it limbless and tiny. Layer 1 already cut its technical attributes."
+    },
+    {
+      "id": 841,
+      "name": "Flapple",
+      "adjustments": {
+        "SHO": -6,
+        "KIC": -6,
+        "PHY": -5
+      },
+      "bestRoles": [
+        "W",
+        "AM",
+        "ST"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "flight",
+        "acceleration",
+        "agility"
+      ],
+      "weaknesses": [
+        "strength",
+        "size"
+      ],
+      "rationale": "Atk 110 inflates SHO 89, but a 3 dm, 1 kg body with shape wings cannot strike a ball hard, so SHO, KIC, and PHY drop. Ability Hustle and flight keep it a darting wide threat."
+    },
+    {
+      "id": 842,
+      "name": "Appletun",
+      "adjustments": {
+        "KIC": -5,
+        "VIS": -5
+      },
+      "bestRoles": [
+        "DM",
+        "CB",
+        "CM"
+      ],
+      "worstRoles": [
+        "W",
+        "ST"
+      ],
+      "strengths": [
+        "durability",
+        "stamina",
+        "strength"
+      ],
+      "weaknesses": [
+        "pace",
+        "agility"
+      ],
+      "rationale": "Hp 110 and shape quadruped describe a slow, sturdy apple-pie dragon. Spe 30 and its sluggish build argue against the playmaking VIS 83 and KIC 80 that spa 100 produced."
+    },
+    {
+      "id": 843,
+      "name": "Silicobra",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "FB"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "reach",
+        "durability"
+      ],
+      "weaknesses": [
+        "kicking-technique",
+        "dribbling",
+        "passing"
+      ],
+      "rationale": "Height 22 on a limbless squiggle body gives reach and AER 70, while Layer 1 already cut its technical attributes. Def 75 is its main asset."
+    },
+    {
+      "id": 844,
+      "name": "Sandaconda",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "GK",
+        "DM"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "reach",
+        "size",
+        "durability",
+        "aerial"
+      ],
+      "weaknesses": [
+        "kicking-technique",
+        "dribbling"
+      ],
+      "rationale": "Height 38 and def 125 let a coiled sand snake cover space, already reflected in AER 92 and DIV 92. Shape squiggle and no limbs keep it out of technical roles."
+    },
+    {
+      "id": 845,
+      "name": "Cramorant",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "WM",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "flight",
+        "aerial",
+        "unpredictability"
+      ],
+      "weaknesses": [
+        "strength",
+        "close-control"
+      ],
+      "rationale": "Spe 85 and spd 95 with shape wings give a mobile wide player, and ability Gulp Missile fits an erratic, unpredictable profile. Weight 18 kg and wings rather than feet limit strength and control."
+    },
+    {
+      "id": 846,
+      "name": "Arrokuda",
+      "adjustments": {},
+      "bestRoles": [
+        "ST",
+        "W",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "acceleration",
+        "aggression"
+      ],
+      "weaknesses": [
+        "stamina",
+        "handling",
+        "dribbling"
+      ],
+      "rationale": "Genus Rush and ability Propeller Tail describe a burst darter, though Layer 1 already applied heavy shape fish penalties. Hp 41 and def 40 leave no staying power."
+    },
+    {
+      "id": 847,
+      "name": "Barraskewda",
+      "adjustments": {},
+      "bestRoles": [
+        "ST",
+        "W",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "acceleration",
+        "shot-power",
+        "aggression"
+      ],
+      "weaknesses": [
+        "stamina",
+        "handling"
+      ],
+      "rationale": "Spe 136 and atk 123 make it a spearing forward, already tempered by the shape fish penalty in Layer 1. Hp 61 and spd 50 keep stamina low."
+    },
+    {
+      "id": 848,
+      "name": "Toxel",
+      "adjustments": {
+        "TEC": -3
+      },
+      "bestRoles": [
+        "W",
+        "AM",
+        "WM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "unpredictability",
+        "acceleration"
+      ],
+      "weaknesses": [
+        "strength",
+        "composure",
+        "footwork"
+      ],
+      "rationale": "IsBaby penalties are already applied, and its hidden ability Klutz marks it as clumsy, so TEC drops slightly. Spa 54 is its only notable stat."
+    },
+    {
+      "id": 849,
+      "name": "Toxtricity",
+      "adjustments": {},
+      "bestRoles": [
+        "AM",
+        "ST",
+        "CM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "finishing",
+        "kicking-technique",
+        "aggression",
+        "passing"
+      ],
+      "weaknesses": [
+        "discipline",
+        "acceleration"
+      ],
+      "rationale": "Spa 114 and atk 98 with ability Technician and Punk Rock already yield SHO 92 and TEC 96. Genus Punk suggests a hot-headed temperament, and spe 75 limits burst."
+    },
+    {
+      "id": 850,
+      "name": "Sizzlipede",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "WM",
+        "WB"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "acceleration",
+        "unpredictability"
+      ],
+      "weaknesses": [
+        "strength",
+        "shot-power"
+      ],
+      "rationale": "Shape tentacles on a 7 dm, 1 kg centipede is scuttling rather than strong, with Layer 1 already cutting DRI and KIC. Atk 65 and spe 45 make it a minor wide option."
+    },
+    {
+      "id": 851,
+      "name": "Centiskorch",
+      "adjustments": {
+        "AER": -6
+      },
+      "bestRoles": [
+        "CB",
+        "DM",
+        "CM"
+      ],
+      "worstRoles": [
+        "W",
+        "GK"
+      ],
+      "strengths": [
+        "reach",
+        "strength",
+        "aggression",
+        "stamina"
+      ],
+      "weaknesses": [
+        "acceleration",
+        "dribbling"
+      ],
+      "rationale": "Hp 100, atk 115, and a 30 dm, 120 kg body make it a long, aggressive presence, but that height is body length along the ground, so AER 92 is trimmed. Spe 65 and shape tentacles limit dribbling."
+    },
+    {
+      "id": 852,
+      "name": "Clobbopus",
+      "adjustments": {},
+      "bestRoles": [
+        "DM",
+        "CB",
+        "FB"
+      ],
+      "worstRoles": [
+        "W",
+        "ST"
+      ],
+      "strengths": [
+        "limb-reach",
+        "aggression"
+      ],
+      "weaknesses": [
+        "pace",
+        "finishing"
+      ],
+      "rationale": "Genus Tantrum and shape tentacles describe an octopus that grabs and lashes out, with Layer 1 already adding TAK. Spe 32 and atk 68 limit attacking value."
+    },
+    {
+      "id": 853,
+      "name": "Grapploct",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "GK"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "marking",
+        "limb-reach",
+        "tackling",
+        "strength"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "discipline"
+      ],
+      "rationale": "Genus Jujitsu, atk 118, and shape tentacles describe a grappler that locks onto opponents, already reflected in TAK 89 and HAN 83. Spe 42 keeps it central, and grappling style risks fouls."
+    },
+    {
+      "id": 854,
+      "name": "Sinistea",
+      "adjustments": {},
+      "bestRoles": [
+        "WM",
+        "AM",
+        "W"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "agility",
+        "unpredictability"
+      ],
+      "weaknesses": [
+        "strength",
+        "size",
+        "kicking-technique"
+      ],
+      "rationale": "Height 1 and weight 0.2 kg on a shape ball teacup leave it no body, though spe 50 and ghost type give it slippery movement. Layer 1 already cut its technical attributes."
+    },
+    {
+      "id": 855,
+      "name": "Polteageist",
+      "adjustments": {
+        "GKP": -8
+      },
+      "bestRoles": [
+        "AM",
+        "CM",
+        "WM"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "vision",
+        "passing",
+        "unpredictability"
+      ],
+      "weaknesses": [
+        "strength",
+        "size",
+        "tackling"
+      ],
+      "rationale": "Spa 134 and spd 114 drive VIS 94 and PAS 87, fitting a playmaker. Height 2 and weight 0.4 kg make GKP 89 implausible, since a teapot cannot cover a goal."
+    },
+    {
+      "id": 856,
+      "name": "Hatenna",
+      "adjustments": {},
+      "bestRoles": [
+        "CM",
+        "AM",
+        "WM"
+      ],
+      "worstRoles": [
+        "CB",
+        "ST"
+      ],
+      "strengths": [
+        "vision",
+        "positioning"
+      ],
+      "weaknesses": [
+        "strength",
+        "pace"
+      ],
+      "rationale": "Ability Anticipation and genus Calm suit reading play, already credited by Layer 1 in GKP. Atk 30, spe 39, and height 4 leave it slight and slow."
+    },
+    {
+      "id": 857,
+      "name": "Hattrem",
+      "adjustments": {},
+      "bestRoles": [
+        "CM",
+        "AM",
+        "DM"
+      ],
+      "worstRoles": [
+        "ST",
+        "CB"
+      ],
+      "strengths": [
+        "vision",
+        "passing",
+        "positioning"
+      ],
+      "weaknesses": [
+        "pace",
+        "strength"
+      ],
+      "rationale": "Spa 86 and ability Anticipation support a composed central passer, and the baseline PAS 76 and VIS 77 already show it. Spe 49 and atk 40 limit pace and power."
+    },
+    {
+      "id": 858,
+      "name": "Hatterene",
+      "adjustments": {},
+      "bestRoles": [
+        "DM",
+        "CM",
+        "GK"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "vision",
+        "reach",
+        "positioning"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "dribbling"
+      ],
+      "rationale": "Spa 136 and height 21 with long hair tendrils give it reach and the VIS 97 and GKP 99 baseline. Spe 29 and shape blob make it nearly static, so it anchors centrally."
+    },
+    {
+      "id": 859,
+      "name": "Impidimp",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "AM",
+        "WM"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "unpredictability",
+        "dribbling"
+      ],
+      "weaknesses": [
+        "strength",
+        "discipline",
+        "size"
+      ],
+      "rationale": "Genus Wily and abilities Prankster and Pickpocket describe a sneaky trickster, and kickMoves already lifted DRI. Height 4 and def 30 leave it fragile."
+    },
+    {
+      "id": 860,
+      "name": "Morgrem",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "AM",
+        "WM"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "unpredictability",
+        "dribbling",
+        "footwork"
+      ],
+      "weaknesses": [
+        "strength",
+        "discipline"
+      ],
+      "rationale": "Genus Devious and spe 70 with kickMoves low-kick give a tricky wide attacker. Def 45 and weight 12.5 kg give no defensive presence."
+    },
+    {
+      "id": 861,
+      "name": "Grimmsnarl",
+      "adjustments": {
+        "PHY": 6,
+        "VIS": -5
+      },
+      "bestRoles": [
+        "ST",
+        "CM",
+        "DM"
+      ],
+      "worstRoles": [
+        "W",
+        "GK"
+      ],
+      "strengths": [
+        "strength",
+        "shot-power",
+        "aggression",
+        "intimidation"
+      ],
+      "weaknesses": [
+        "acceleration",
+        "discipline"
+      ],
+      "rationale": "Genus Bulk Up and atk 120 on a 61 kg humanoid describe a brawler, so PHY rises. Spa 95 inflates VIS 80 beyond what a hair-wrapped bruiser shows, and spe 60 limits burst."
+    },
+    {
+      "id": 862,
+      "name": "Obstagoon",
+      "adjustments": {
+        "DEF": 5
+      },
+      "bestRoles": [
+        "CB",
+        "FB",
+        "DM"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "marking",
+        "intimidation",
+        "aggression",
+        "durability"
+      ],
+      "weaknesses": [
+        "discipline",
+        "passing"
+      ],
+      "rationale": "Genus Blocking and kickMoves obstruct define a body-on-the-line defender, so DEF rises beyond def 101. Abilities Reckless and Defiant point to a combative, foul-prone temperament."
+    },
+    {
+      "id": 863,
+      "name": "Perrserker",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "FB"
+      ],
+      "worstRoles": [
+        "GK",
+        "W"
+      ],
+      "strengths": [
+        "aggression",
+        "tackling",
+        "durability"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration"
+      ],
+      "rationale": "Genus Viking, ability Tough Claws, and atk 110 with def 100 make it a combative stopper, already reflected in TAK 86. Spe 50 and height 8 keep it slow and short."
+    },
+    {
+      "id": 864,
+      "name": "Cursola",
+      "adjustments": {},
+      "bestRoles": [
+        "CM",
+        "AM",
+        "DM"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "vision",
+        "passing",
+        "long-shots"
+      ],
+      "weaknesses": [
+        "pace",
+        "strength",
+        "durability"
+      ],
+      "rationale": "Spa 145 and spd 130 drive VIS 95 and PAS 90 for a deep playmaker. Def 50, ability Weak Armor, and weight 0.4 kg make it fragile, and spe 30 keeps it central."
+    },
+    {
+      "id": 865,
+      "name": "Sirfetch’d",
+      "adjustments": {
+        "AER": -8
+      },
+      "bestRoles": [
+        "CB",
+        "DM",
+        "ST"
+      ],
+      "worstRoles": [
+        "W",
+        "GK"
+      ],
+      "strengths": [
+        "tackling",
+        "discipline",
+        "strength",
+        "shot-power"
+      ],
+      "weaknesses": [
+        "pace",
+        "aerial"
+      ],
+      "rationale": "Atk 135 and ability Steadfast suit a disciplined lance-bearing duelist. Shape wings earned a Layer 1 AER bonus, but type fighting with no flying type and weight 117 kg on an 8 dm body mean it does not fly, so AER drops."
+    },
+    {
+      "id": 866,
+      "name": "Mr. Rime",
+      "adjustments": {
+        "DRI": 5
+      },
+      "bestRoles": [
+        "CM",
+        "AM",
+        "DM"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "footwork",
+        "passing",
+        "vision",
+        "kicking-technique"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration"
+      ],
+      "rationale": "Genus Comedian and kickMoves triple-axel describe a tap-dancing showman, so DRI rises above 67 for nimble footwork. Spa 110 already gives PAS 94, and spe 70 on a 58 kg body limits burst."
+    },
+    {
+      "id": 867,
+      "name": "Runerigus",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "GK"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "durability",
+        "size",
+        "positioning"
+      ],
+      "weaknesses": [
+        "pace",
+        "dribbling",
+        "kicking-technique"
+      ],
+      "rationale": "Def 145 and a 66.6 kg shape blob slab make it a wall, and Layer 1 already cut its technical attributes. Spe 30 rules out mobile roles."
+    },
+    {
+      "id": 868,
+      "name": "Milcery",
+      "adjustments": {},
+      "bestRoles": [
+        "WM",
+        "WB",
+        "AM"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "teamwork",
+        "acceleration"
+      ],
+      "weaknesses": [
+        "strength",
+        "size",
+        "shot-power"
+      ],
+      "rationale": "Ability Aroma Veil and Sweet Veil protect teammates, fitting a support role. Height 2 and weight 0.3 kg on a shape ball body give no physical game."
+    },
+    {
+      "id": 869,
+      "name": "Alcremie",
+      "adjustments": {
+        "GKP": -6
+      },
+      "bestRoles": [
+        "AM",
+        "CM",
+        "WM"
+      ],
+      "worstRoles": [
+        "CB",
+        "ST"
+      ],
+      "strengths": [
+        "vision",
+        "passing",
+        "teamwork"
+      ],
+      "weaknesses": [
+        "strength",
+        "size",
+        "aerial"
+      ],
+      "rationale": "Spd 121 and spa 110 drive VIS 92 and PAS 83, and ability Sweet Veil supports teammates. Height 3 and weight 0.5 kg make GKP 91 implausible for a goal-covering role."
+    },
+    {
+      "id": 870,
+      "name": "Falinks",
+      "adjustments": {
+        "AER": -10,
+        "DIV": -8,
+        "DEF": 5,
+        "STA": 5
+      },
+      "bestRoles": [
+        "CB",
+        "DM",
+        "FB"
+      ],
+      "worstRoles": [
+        "GK",
+        "W"
+      ],
+      "strengths": [
+        "teamwork",
+        "discipline",
+        "positioning",
+        "tackling"
+      ],
+      "weaknesses": [
+        "aerial",
+        "dribbling"
+      ],
+      "rationale": "Genus Formation and shape heads describe a drilled squad of six small marchers, so DEF and STA rise for shape and shared running. Height 30 measures the marching column, not a tall body, so AER 91 and DIV 90 are cut."
+    },
+    {
+      "id": 871,
+      "name": "Pincurchin",
+      "adjustments": {
+        "HAN": -8,
+        "GKP": -6,
+        "PAS": -5
+      },
+      "bestRoles": [
+        "DM",
+        "CB",
+        "CM"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "intimidation",
+        "tackling"
+      ],
+      "weaknesses": [
+        "pace",
+        "size",
+        "acceleration"
+      ],
+      "rationale": "A 3 dm spiny urchin with spe 15 cannot handle or cover a goal, so the shape tentacles HAN bonus and GKP 83 are pulled back. Spa 91 overstates PAS for a creature this slow, though atk 101 and spines make it awkward to tackle."
+    },
+    {
+      "id": 872,
+      "name": "Snom",
+      "adjustments": {},
+      "bestRoles": [
+        "FB",
+        "WB",
+        "DM"
+      ],
+      "worstRoles": [
+        "ST",
+        "GK"
+      ],
+      "strengths": [
+        "durability",
+        "acceleration"
+      ],
+      "weaknesses": [
+        "strength",
+        "kicking-technique",
+        "shot-power"
+      ],
+      "rationale": "Every stat is low, with atk 25 and spe 20, and shape squiggle at height 3 gives no limbs. Ability Ice Scales and Shield Dust offer some protection."
+    },
+    {
+      "id": 873,
+      "name": "Frosmoth",
+      "adjustments": {},
+      "bestRoles": [
+        "CM",
+        "AM",
+        "WM"
+      ],
+      "worstRoles": [
+        "CB",
+        "ST"
+      ],
+      "strengths": [
+        "vision",
+        "passing",
+        "flight"
+      ],
+      "weaknesses": [
+        "strength",
+        "tackling"
+      ],
+      "rationale": "Spa 125 and spd 90 drive PAS 89 and VIS 91, and shape bug-wings plus kickMoves triple-axel give graceful movement. Atk 65 and def 60 give little in contact."
+    },
+    {
+      "id": 874,
+      "name": "Stonjourner",
+      "adjustments": {
+        "PAC": -6,
+        "DRI": -6
+      },
+      "bestRoles": [
+        "CB",
+        "DM",
+        "ST"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "strength",
+        "size",
+        "tackling",
+        "durability"
+      ],
+      "weaknesses": [
+        "vision",
+        "passing",
+        "agility"
+      ],
+      "rationale": "Genus Big Rock and weight 520 kg make it a walking monolith with atk 125 and def 135. Spe 70 overstates top speed for that mass, and DRI 56 is too generous for stone legs."
+    },
+    {
+      "id": 875,
+      "name": "Eiscue",
+      "adjustments": {
+        "HAN": -6
+      },
+      "bestRoles": [
+        "CB",
+        "DM",
+        "FB"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "heading",
+        "durability",
+        "strength"
+      ],
+      "weaknesses": [
+        "pace",
+        "agility",
+        "handling"
+      ],
+      "rationale": "Def 110, ability Ice Face, and kickMoves head-smash fit an ice-headed blocker, with Layer 1 already adding AER. Genus Penguin gives it flippers, not hands, so HAN 87 drops."
+    },
+    {
+      "id": 876,
+      "name": "Indeedee",
+      "adjustments": {},
+      "bestRoles": [
+        "AM",
+        "CM",
+        "WM"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "passing",
+        "vision",
+        "teamwork"
+      ],
+      "weaknesses": [
+        "strength",
+        "tackling"
+      ],
+      "rationale": "Spa 105, spe 95, and ability Psychic Surge drive PAS 95 and VIS 91 for a creative supporting midfielder. Atk 65 and def 55 limit contact play."
+    },
+    {
+      "id": 877,
+      "name": "Morpeko",
+      "adjustments": {
+        "STA": -4
+      },
+      "bestRoles": [
+        "W",
+        "AM",
+        "ST"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "acceleration",
+        "dribbling",
+        "unpredictability"
+      ],
+      "weaknesses": [
+        "strength",
+        "stamina",
+        "size"
+      ],
+      "rationale": "Spe 97 on a 3 dm, 3 kg body gives explosive bursts, already in ACC 97 and DRI 99. Ability Hunger Switch flips its mood as it runs out of energy, so STA drops and unpredictability fits."
+    },
+    {
+      "id": 878,
+      "name": "Cufant",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "ST"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "strength",
+        "shot-power"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "dribbling"
+      ],
+      "rationale": "Weight 100 kg, ability Sheer Force, and atk 80 on a quadruped elephant give raw power. Spe 40 and Layer 1 weight effects keep it slow."
+    },
+    {
+      "id": 879,
+      "name": "Copperajah",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "ST"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "strength",
+        "size",
+        "shot-power",
+        "intimidation"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "agility"
+      ],
+      "rationale": "Height 30, weight 650 kg, and atk 130 with ability Sheer Force make it a battering ram, already in PHY 97 and SHO 92. Spe 30 makes ACC 15 fair."
+    },
+    {
+      "id": 880,
+      "name": "Dracozolt",
+      "adjustments": {
+        "TEC": -4
+      },
+      "bestRoles": [
+        "CB",
+        "ST",
+        "DM"
+      ],
+      "worstRoles": [
+        "W",
+        "GK"
+      ],
+      "strengths": [
+        "strength",
+        "shot-power",
+        "aerial"
+      ],
+      "weaknesses": [
+        "agility",
+        "composure"
+      ],
+      "rationale": "Atk 100 and weight 190 kg make it a powerful mismatched fossil, and ability Hustle trades accuracy for power, so TEC drops. Spe 75 keeps it from the flanks."
+    },
+    {
+      "id": 881,
+      "name": "Arctozolt",
+      "adjustments": {
+        "TEC": -6,
+        "PAS": -4
+      },
+      "bestRoles": [
+        "CB",
+        "DM",
+        "CM"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "strength",
+        "durability",
+        "aerial"
+      ],
+      "weaknesses": [
+        "pace",
+        "agility",
+        "balance"
+      ],
+      "rationale": "Def 90 and weight 150 kg make it solid, but genus Fossil and its frozen, top-heavy upper half make TEC 85 and PAS 78 from spa 90 too fluent. Spe 55 keeps it slow."
+    },
+    {
+      "id": 882,
+      "name": "Dracovish",
+      "adjustments": {
+        "HAN": -8,
+        "DIV": -6
+      },
+      "bestRoles": [
+        "CB",
+        "DM",
+        "ST"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "strength",
+        "tackling",
+        "aggression"
+      ],
+      "weaknesses": [
+        "handling",
+        "agility"
+      ],
+      "rationale": "Ability Strong Jaw and atk 90 on a 215 kg body give a biting enforcer. Shape legs means no hands or arms, so HAN 85 and DIV 90 overstate it as a keeper."
+    },
+    {
+      "id": 883,
+      "name": "Arctovish",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "CM"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "durability",
+        "strength"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "dribbling"
+      ],
+      "rationale": "Def 100 and hp 90 make it sturdy, and Layer 1 already applied heavy shape fish penalties that leave ACC 8. It can only hold a central position."
+    },
+    {
+      "id": 884,
+      "name": "Duraludon",
+      "adjustments": {},
+      "bestRoles": [
+        "ST",
+        "CM",
+        "AM"
+      ],
+      "worstRoles": [
+        "W",
+        "GK"
+      ],
+      "strengths": [
+        "shot-power",
+        "aerial",
+        "kicking-technique"
+      ],
+      "weaknesses": [
+        "stamina",
+        "agility"
+      ],
+      "rationale": "Spa 120 and def 115 on an 18 dm steel/dragon frame drive SHO 93 and TEC 95, and Layer 1 already applied its weight. Spd 50 and hp 70 limit endurance."
+    },
+    {
+      "id": 885,
+      "name": "Dreepy",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "WM",
+        "ST"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "acceleration",
+        "pace",
+        "unpredictability"
+      ],
+      "weaknesses": [
+        "strength",
+        "size",
+        "stamina"
+      ],
+      "rationale": "Spe 82 and ghost type on a 5 dm, 2 kg body give darting movement, already in ACC 91. Hp 28 and def 30 leave nothing physical."
+    },
+    {
+      "id": 886,
+      "name": "Drakloak",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "ST",
+        "WM"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "pace",
+        "acceleration",
+        "teamwork"
+      ],
+      "weaknesses": [
+        "strength",
+        "durability"
+      ],
+      "rationale": "Spe 102 drives PAC 84, and genus Caretaker fits a player who carries and supports teammates. Def 50 and weight 11 kg make it easy to knock off the ball."
+    },
+    {
+      "id": 887,
+      "name": "Dragapult",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "ST",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "pace",
+        "finishing",
+        "long-shots",
+        "unpredictability"
+      ],
+      "weaknesses": [
+        "durability",
+        "marking"
+      ],
+      "rationale": "Spe 142 and atk 120 already max PAC, SHO, and DRI, and genus Stealth with ability Infiltrator suits ghosting in behind. Def 75 keeps it out of the back line."
+    },
+    {
+      "id": 888,
+      "name": "Zacian",
+      "adjustments": {
+        "HAN": -8
+      },
+      "bestRoles": [
+        "ST",
+        "W",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "WB"
+      ],
+      "strengths": [
+        "pace",
+        "finishing",
+        "aggression",
+        "agility"
+      ],
+      "weaknesses": [
+        "handling",
+        "distribution"
+      ],
+      "rationale": "Spe 138 and atk 120 with ability Intrepid Sword make it a lethal forward. Shape quadruped and a sword held in its jaws leave no hands, so HAN 89 is cut even after the Layer 1 penalty."
+    },
+    {
+      "id": 889,
+      "name": "Zamazenta",
+      "adjustments": {
+        "HAN": -8
+      },
+      "bestRoles": [
+        "CB",
+        "DM",
+        "FB"
+      ],
+      "worstRoles": [
+        "GK",
+        "AM"
+      ],
+      "strengths": [
+        "tackling",
+        "positioning",
+        "strength",
+        "durability"
+      ],
+      "weaknesses": [
+        "handling",
+        "distribution"
+      ],
+      "rationale": "Def 115 and ability Dauntless Shield make it the archetypal defender, already in DEF 97 and TAK 96. Shape quadruped gives no hands, so HAN 91 is cut and goal is not its position."
+    },
+    {
+      "id": 890,
+      "name": "Eternatus",
+      "adjustments": {},
+      "bestRoles": [
+        "GK",
+        "CB",
+        "DM"
+      ],
+      "worstRoles": [
+        "W",
+        "AM"
+      ],
+      "strengths": [
+        "size",
+        "aerial",
+        "reach",
+        "intimidation"
+      ],
+      "weaknesses": [
+        "agility",
+        "close-control"
+      ],
+      "rationale": "Height 200 and weight 950 kg make it a colossal blocker, already in AER 99 and PHY 94 with Layer 1 cutting DRI and ACC. Ability Pressure adds intimidation."
+    },
+    {
+      "id": 891,
+      "name": "Kubfu",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "ST",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "acceleration",
+        "discipline",
+        "composure",
+        "footwork"
+      ],
+      "weaknesses": [
+        "strength",
+        "size"
+      ],
+      "rationale": "Genus Wushu, ability Inner Focus, and kickMoves low-kick and low-sweep fit a disciplined young martial artist, already credited by Layer 1. Height 6 and def 60 limit physicality."
+    },
+    {
+      "id": 892,
+      "name": "Urshifu",
+      "adjustments": {},
+      "bestRoles": [
+        "ST",
+        "AM",
+        "W"
+      ],
+      "worstRoles": [
+        "GK",
+        "FB"
+      ],
+      "strengths": [
+        "shot-power",
+        "finishing",
+        "strength",
+        "discipline"
+      ],
+      "weaknesses": [
+        "vision",
+        "passing"
+      ],
+      "rationale": "Atk 130, spe 97, and genus Wushu with ability Unseen Fist make it a ruthless finisher, already in SHO 99. Spa 63 and spd 60 limit VIS 55 and PAS 65."
+    },
+    {
+      "id": 893,
+      "name": "Zarude",
+      "adjustments": {},
+      "bestRoles": [
+        "CM",
+        "ST",
+        "DM"
+      ],
+      "worstRoles": [
+        "FB",
+        "WB"
+      ],
+      "strengths": [
+        "limb-reach",
+        "aggression",
+        "strength",
+        "stamina"
+      ],
+      "weaknesses": [
+        "discipline",
+        "teamwork"
+      ],
+      "rationale": "Hp 105, atk 120, and def 105 with shape upright and vine-extending arms give a box-to-box enforcer. Genus Rogue Monkey suggests a lone, undisciplined temperament."
+    },
+    {
+      "id": 894,
+      "name": "Regieleki",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "ST",
+        "AM"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "pace",
+        "acceleration",
+        "dribbling"
+      ],
+      "weaknesses": [
+        "durability",
+        "marking"
+      ],
+      "rationale": "Spe 200 is the highest raw speed in the packet and drives PAC 96, with ability Transistor fitting an electric outlet. Def 50 and spd 50 keep it away from defence."
+    },
+    {
+      "id": 895,
+      "name": "Regidrago",
+      "adjustments": {},
+      "bestRoles": [
+        "ST",
+        "CM",
+        "AM"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "shot-power",
+        "stamina",
+        "durability"
+      ],
+      "weaknesses": [
+        "marking",
+        "agility"
+      ],
+      "rationale": "Hp 200 and atk 100 with ability Dragon's Maw give a durable, hard-hitting forward. Def 50 and spd 50 limit defending, and spe 80 on a 200 kg body limits agility."
+    },
+    {
+      "id": 896,
+      "name": "Glastrier",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "ST"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "strength",
+        "shot-power",
+        "tackling",
+        "intimidation"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "agility"
+      ],
+      "rationale": "Atk 145, def 130, and weight 800 kg on a quadruped warhorse with kickMoves double-kick already give KIC 96 and PHY 95. Spe 30 makes it immobile in transition."
+    },
+    {
+      "id": 897,
+      "name": "Spectrier",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "WM",
+        "ST"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "pace",
+        "stamina",
+        "vision"
+      ],
+      "weaknesses": [
+        "tackling",
+        "handling"
+      ],
+      "rationale": "Spe 130 and spa 145 on a 20 dm quadruped horse drive PAC 96 and VIS 90, and its horse build supports STA 82. Def 60 and shape quadruped limit defensive and goalkeeping value."
+    },
+    {
+      "id": 898,
+      "name": "Calyrex",
+      "adjustments": {
+        "PHY": -4
+      },
+      "bestRoles": [
+        "CM",
+        "AM",
+        "DM"
+      ],
+      "worstRoles": [
+        "CB",
+        "ST"
+      ],
+      "strengths": [
+        "vision",
+        "passing",
+        "composure"
+      ],
+      "weaknesses": [
+        "strength",
+        "tackling"
+      ],
+      "rationale": "Even 80 stats and psychic type with genus King suit a calm conductor, already in PAS 80 and VIS 76. Height 11 and weight 7.7 kg give a frail body, so PHY drops."
+    },
+    {
+      "id": 899,
+      "name": "Wyrdeer",
+      "adjustments": {},
+      "bestRoles": [
+        "DM",
+        "CM",
+        "CB"
+      ],
+      "worstRoles": [
+        "GK",
+        "W"
+      ],
+      "strengths": [
+        "vision",
+        "intimidation",
+        "stamina"
+      ],
+      "weaknesses": [
+        "handling",
+        "acceleration"
+      ],
+      "rationale": "Hp 103, atk and spa 105, and ability Intimidate on a 95 kg quadruped deer suit a commanding holding player. Shape quadruped rules out goal, and spe 65 limits burst."
+    },
+    {
+      "id": 900,
+      "name": "Kleavor",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "ST",
+        "DM"
+      ],
+      "worstRoles": [
+        "GK",
+        "AM"
+      ],
+      "strengths": [
+        "tackling",
+        "aggression",
+        "intimidation"
+      ],
+      "weaknesses": [
+        "discipline",
+        "passing"
+      ],
+      "rationale": "Genus Axe, atk 135, and ability Sharpness describe a chopping, aggressive defender, already in TAK 91. Spa 45 limits PAS 49."
+    },
+    {
+      "id": 901,
+      "name": "Ursaluna",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "ST"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "strength",
+        "tackling",
+        "durability"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "agility"
+      ],
+      "rationale": "Hp 130, atk 140, and weight 290 kg with ability Guts make it a crushing stopper, already in PHY 99 and TAK 97. Spe 50 keeps it slow."
+    },
+    {
+      "id": 902,
+      "name": "Basculegion",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "ST"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "strength",
+        "size"
+      ],
+      "weaknesses": [
+        "acceleration",
+        "dribbling",
+        "pace"
+      ],
+      "rationale": "Hp 120 and atk 112 on a 30 dm, 110 kg body give presence, while Layer 1 already applied the shape fish penalties. It cannot cover ground out wide."
+    },
+    {
+      "id": 903,
+      "name": "Sneasler",
+      "adjustments": {},
+      "bestRoles": [
+        "W",
+        "ST",
+        "WB"
+      ],
+      "worstRoles": [
+        "GK",
+        "CB"
+      ],
+      "strengths": [
+        "agility",
+        "pace",
+        "dribbling",
+        "aggression"
+      ],
+      "weaknesses": [
+        "passing",
+        "vision"
+      ],
+      "rationale": "Genus Free Climb, spe 120, and ability Unburden describe an agile, aggressive forward, already in DRI 99. Spa 40 limits passing and vision."
+    },
+    {
+      "id": 904,
+      "name": "Overqwil",
+      "adjustments": {},
+      "bestRoles": [
+        "CB",
+        "DM",
+        "ST"
+      ],
+      "worstRoles": [
+        "W",
+        "WB"
+      ],
+      "strengths": [
+        "intimidation",
+        "tackling",
+        "durability"
+      ],
+      "weaknesses": [
+        "pace",
+        "acceleration",
+        "dribbling"
+      ],
+      "rationale": "Ability Intimidate, ability Poison Point, and atk 115 on a spiny pufferfish make it menacing in the tackle. Layer 1 already applied the shape fish penalties."
+    },
+    {
+      "id": 905,
+      "name": "Enamorus",
+      "adjustments": {},
+      "bestRoles": [
+        "AM",
+        "ST",
+        "W"
+      ],
+      "worstRoles": [
+        "CB",
+        "GK"
+      ],
+      "strengths": [
+        "flight",
+        "vision",
+        "passing",
+        "finishing"
+      ],
+      "weaknesses": [
+        "marking",
+        "durability"
+      ],
+      "rationale": "Spa 135, atk 115, and spe 106 with fairy/flying type make it an airborne creative forward, already in PAS 94 and SHO 92. Def 70 limits defending."
+    }
+  ]
+}
