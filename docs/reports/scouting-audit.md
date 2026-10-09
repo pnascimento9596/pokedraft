@@ -168,3 +168,36 @@ What holds up: no in-sample adjustment repeats a shape, heavy, baby, move or typ
 - `pnpm lint`, `pnpm typecheck`, the full `pnpm test`, and `pnpm build`: NOT RUN (out of scope for this audit).
 - No proposed fix was applied, so `scripts/data/validate-review.ts`, `pnpm data:scouting` and the golden tests were not run against any fix: NOT RUN. The fit effects quoted under Disagreements were computed with `allFits` on baseline plus the proposed adjustments in a scratch script, not from a rebuilt artifact.
 - `pnpm check:mirrors`: NOT RUN (no mirrored file touched).
+
+## Resolution check
+
+Checked against HEAD `e925281` ("fix(scouting): resolve the round 3 audit disagreements"), on top of `148a945` ("test(scouting): forbid wide best roles at spe 30 or less (RED)"). The working tree had one unrelated uncommitted change (`STATE.md`), which I did not read or touch. I checked the review files and `src/data/scouting.json` for all 1,025 species. They agree on adjustments, roles, tags and rationale, and every final attribute equals `clamp(baseline + adjustment)` (0 mismatches). A `computeBaselines` recompute matches every stored baseline (0 mismatches).
+
+Commands run at `e925281`:
+
+- `pnpm -s vitest run src/scouting`: exit 0. "Test Files 6 passed (6)", "Tests 75 passed (75)". The extra test (74 before) is the new rule "never lists W or WB as a best role for a species with spe 30 or less, tagged or not (Azurill, Kricketot)".
+- `pnpm -s data:check-moves`: exit 0. "1025 rationales, 159 move citations, 0 not learnable".
+
+**Counts: RESOLVED 10, RESOLVED WITH DEVIATION 0, OPEN 0** (of the 10 items addressed in `e925281`).
+
+| # | item | status | note |
+|---|---|---|---|
+| 1 | Vigoroth (288) | RESOLVED | Adjustments `{}`, STA 74. The rationale now says Layer 1 already credits Vital Spirit in STA. Fits match my computed fix (WB 71, DM 55, CM 54, WM 65); overall stays 74. |
+| 2 | Accelgor (617) | RESOLVED | Adjustments `{}`, PAC 90. The rationale says Layer 1 already prices spe 145 and Unburden into PAC 90, which is correct. W 84, overall 84, as computed. |
+| 3 | Carracosta (565) | RESOLVED | Adjustments unchanged `{TEC: -5, HAN: -6}`. The rationale now says "the upright TEC bonus is trimmed and HAN drops for limbs that cannot grip", which is accurate and matches Prinplup and Empoleon. |
+| 4 | Azurill (298) | RESOLVED | bestRoles ST, AM, CM; worstRoles CB, GK; `pace` added to weaknesses. The rationale cites spe 20 and Huge Power SHO 31 (correct). Overall 27 (ST); W 25, WB 22, as computed. |
+| 5 | Terapagos (1024), observation 5 | RESOLVED | `ACC -5` dropped (ACC 67), matching Sunkern's treatment. The rationale now says height and weight already feed the ACC blend. |
+| 6 | Terapagos weakness, acceleration to aerial | RESOLVED (sound) | With ACC back at 67, "acceleration" would be wrong. AER 40 is its lowest attribute (next lowest DIV 47), so "aerial" fits the data. |
+| 7 | Kricketot (401), observation 6 | RESOLVED | bestRoles AM, CM, ST (was WB, W, WM); `pace` added (spe 25, PAC 28). Fits AM 33, CM 31, ST 31; overall 33. The flat blend (W 34, AM 33) makes the move cost 1 point at most. |
+| 8 | Kricketot strength, acceleration to close-control | RESOLVED (sound) | ACC 38 sits below DRI 40, its top attribute, so close-control matches the data. It overlaps the existing `dribbling` tag, which is allowed. |
+| 9 | Wartortle (8) wording | RESOLVED | The rationale now gives genus Turtle and the shell as the reason, "on top of what def and spd already give, matching Squirtle". DEF +3 unchanged. |
+| 10 | Rabsca (954) and Dipplin (1011) wording | RESOLVED | Rabsca now says weight is "the largest PHY input" (0.4 of `blend.PHY`, correct). Dipplin's height-to-PHY clause is removed. No number changes. |
+
+The new spe-30 guard also closes the round 3 scan for that pattern: no species with spe 30 or below lists W or WB as a best role.
+
+Still open (none of these is a concrete error in the data):
+
+- **Round 2 observation 7, KIC trims (cosmetic).** Six species trim KIC without GK as a best role: Bellsprout -4, Crobat -4, Ninjask -5, Conkeldurr -4, Flapple -6, Appletun -5. KIC carries 0.05 of the GK blend only, so no best-role fit changes. Fix: a validator rule for any non-zero KIC without GK in bestRoles, plus dropping the six trims.
+- **Pace-tagged FB-first species (interpretive).** The 12 from round 3 are unchanged: Squirtle, Wartortle, Chikorita, Marill, Wurmple, Shroomish, Sewaddle, Scatterbug, Rowlet, Grubbin, Mareanie, Chewtle. FB weights PAC 0.2. Round 2's "FB only third when pace is a weakness" remains unadopted. This is a design decision, not a defect.
+- **Low final PAC in wide roles (interpretive).** Barboach (PAC 27, WB/FB/W), Burmy (PAC 27, WB third) and Tynamo (PAC 28, W first) still list W or WB. They pass the new guard because spe is 60, 36 and 60; the low PAC comes from shape cuts. These are defensible, but a guard keyed on final PAC would catch them if the rule is meant to be about pitch speed.
+- **Loose height wording (minor).** Bellossom, Cherrim, Mesprit, Nymble and Klefki pair height with weight when they describe a light or small body. None claims height is a PHY input in a way that drives a number, so I do not count these as open defects.
