@@ -45,6 +45,19 @@ describe("Layer 1 baseline", () => {
     expect(COEFFICIENTS.moves.points.protect).toBe(0);
   });
 
+  it("applies the heavy penalty to DIV, so a 420 kg Regigigas does not dive like a keeper", () => {
+    expect(all.get(speciesByName("Regigigas").id)!.breakdown.DIV.heavy).toBe(-5.94);
+  });
+
+  it("gives the legless arms shape a KIC penalty (Geodude)", () => {
+    expect(all.get(speciesByName("Geodude").id)!.breakdown.KIC.shape).toBe(-8);
+  });
+
+  it("leads ACC with speed, so tiny slow Flabébé is not quick off the mark", () => {
+    expect(all.get(speciesByName("Flabébé").id)!.attrs.ACC).toBe(51);
+    expect(all.get(speciesByName("Regieleki").id)!.attrs.ACC).toBe(93);
+  });
+
   it("caps kick-move points at 24 for KIC (Hitmonlee's 32 points clip)", () => {
     expect(all.get(speciesByName("Hitmonlee").id)!.breakdown.KIC.moves).toBe(24);
   });
