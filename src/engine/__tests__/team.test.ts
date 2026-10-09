@@ -27,10 +27,10 @@ describe("rateTeam", () => {
 
   it("pins the p75 lineup's components so a formula change shows up as a diff", () => {
     const rating = rateTeam(P75);
-    expect(rating.score).toBe(738);
+    expect(rating.score).toBe(788);
     expect(rating.core).toBeCloseTo(0.7481674796747967, 12);
     expect(rating.drag).toBeCloseTo(0.003784183296378437, 12);
-    expect(rating.synergy).toBe(1);
+    expect(rating.synergy).toBeCloseTo(0.7196969696969696, 12);
     expect(rating.bench).toBeCloseTo(0.2856585365853659, 12);
     expect(rating.weakest).toEqual(["4-3-3.LB", "4-3-3.RB", "4-3-3.GK"]);
     expect(rating.edges).toHaveLength(33);
@@ -57,7 +57,7 @@ describe("rateTeam", () => {
 
   it("pins a strong Kanto lineup so the weakest-link order and score stay stable", () => {
     const rating = rateTeam(KANTO);
-    expect(rating.score).toBe(939);
+    expect(rating.score).toBe(943);
     expect(rating.drag).toBeCloseTo(0.016090169992608944, 12);
     expect(rating.weakest).toEqual(["4-3-3.RCM", "4-3-3.CDM", "4-3-3.RB"]);
   });
@@ -67,17 +67,24 @@ describe("rateTeam", () => {
       ...ENGINE_COEFFICIENTS,
       team: { ...ENGINE_COEFFICIENTS.team, synergyWeight: 0 },
     };
-    expect(rateTeam(P75, noSynergy).score).toBe(618);
+    expect(rateTeam(P75, noSynergy).score).toBe(713);
+  });
+
+  it("bends the blend with x + k·x·(1 − x), so curve 0 is the raw blend and the curve lifts mid scores", () => {
+    const flat = { ...ENGINE_COEFFICIENTS, team: { ...ENGINE_COEFFICIENTS.team, curve: 0 } };
+    expect(ENGINE_COEFFICIENTS.team.curve).toBe(0.4);
+    expect(rateTeam(P75, flat).score).toBe(705);
+    expect(rateTeam(P75).score).toBe(788);
   });
 });
 
 describe("matchLines", () => {
   it("centres the line shape on score / 10 so equal scores mean equal average strength", () => {
     const lines = matchLines(rateTeam(P75));
-    expect(lines.GK).toBeCloseTo(73.70142276422763, 10);
-    expect(lines.DEF).toBeCloseTo(73.64044715447154, 10);
-    expect(lines.MID).toBeCloseTo(74.02662601626017, 10);
-    expect(lines.ATT).toBeCloseTo(73.83150406504065, 10);
-    expect((lines.GK + lines.DEF + lines.MID + lines.ATT) / 4).toBeCloseTo(73.8, 10);
+    expect(lines.GK).toBeCloseTo(78.70142276422763, 10);
+    expect(lines.DEF).toBeCloseTo(78.64044715447154, 10);
+    expect(lines.MID).toBeCloseTo(79.02662601626017, 10);
+    expect(lines.ATT).toBeCloseTo(78.83150406504065, 10);
+    expect((lines.GK + lines.DEF + lines.MID + lines.ATT) / 4).toBeCloseTo(78.8, 10);
   });
 });

@@ -46,7 +46,7 @@ describe("simulateMatch", () => {
   it("keys its streams on the match index (shared streams would replay one match eight times)", () => {
     const a = simulateMatch(input("m-25", 0, "G1", "group"));
     const b = simulateMatch(input("m-25", 1, "G1", "group"));
-    expect(a.goals).toHaveLength(9);
+    expect(a.goals).toHaveLength(7);
     expect(b.goals).not.toEqual(a.goals);
   });
 
@@ -90,33 +90,37 @@ describe("simulateMatch", () => {
   });
 
   it("pins a group match scoreline, scorers and recap", () => {
-    const m = simulateMatch(input("m-25", 0, "G1", "group"));
+    const m = simulateMatch(input("m-25", 2, "G3", "group"));
     expect([m.regulation, m.extraTime, m.shootout, m.outcome, m.rating]).toEqual([
-      { user: 6, opp: 3 },
+      { user: 9, opp: 1 },
       null,
       null,
       "W",
-      939,
+      943,
     ]);
     expect(m.goals).toEqual([
-      { side: "user", minute: 1, penalty: false, scorer: 3, assist: 135 },
-      { side: "user", minute: 6, penalty: false, scorer: 85, assist: null },
-      { side: "opp", minute: 26, penalty: false, scorer: 9, assist: 8 },
-      { side: "opp", minute: 39, penalty: true, scorer: 10, assist: null },
-      { side: "user", minute: 43, penalty: false, scorer: 80, assist: 55 },
-      { side: "user", minute: 47, penalty: false, scorer: 55, assist: null },
-      { side: "opp", minute: 47, penalty: false, scorer: 10, assist: null },
-      { side: "user", minute: 60, penalty: false, scorer: 3, assist: null },
-      { side: "user", minute: 68, penalty: true, scorer: 149, assist: null },
+      { side: "user", minute: 6, penalty: false, scorer: 55, assist: 6 },
+      { side: "user", minute: 35, penalty: false, scorer: 26, assist: 59 },
+      { side: "user", minute: 52, penalty: false, scorer: 149, assist: 26 },
+      { side: "user", minute: 60, penalty: false, scorer: 6, assist: 3 },
+      { side: "user", minute: 62, penalty: false, scorer: 26, assist: 80 },
+      { side: "user", minute: 64, penalty: false, scorer: 80, assist: null },
+      { side: "user", minute: 71, penalty: false, scorer: 80, assist: 3 },
+      { side: "user", minute: 80, penalty: true, scorer: 149, assist: null },
+      { side: "opp", minute: 81, penalty: false, scorer: 10, assist: null },
+      { side: "user", minute: 90, penalty: false, scorer: 135, assist: 6 },
     ]);
     expect(m.recap).toEqual([
-      "Beat Celadon City 6-3.",
-      "Venusaur scores in the 1st minute, set up by Jolteon.",
-      "Dodrio finds the net in the 6th minute.",
-      "Slowbro finishes in the 43rd minute after a pass from Golduck.",
-      "Golduck finds the net in the 47th minute.",
-      "Venusaur scores in the 60th minute.",
-      "Dragonite scores from the spot in the 68th minute.",
+      "Beat Pallet Town 9-1.",
+      "Golduck finishes in the 6th minute after a pass from Charizard.",
+      "Raichu scores in the 35th minute, set up by Arcanine.",
+      "Raichu sets up Dragonite in the 52nd minute.",
+      "Charizard finishes in the 60th minute after a pass from Venusaur.",
+      "Raichu scores in the 62nd minute, set up by Slowbro.",
+      "Slowbro finds the net in the 64th minute.",
+      "Slowbro finishes in the 71st minute after a pass from Venusaur.",
+      "Dragonite scores from the spot in the 80th minute.",
+      "Charizard sets up Jolteon in the 90th minute.",
     ]);
   });
 

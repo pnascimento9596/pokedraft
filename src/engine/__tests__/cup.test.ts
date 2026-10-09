@@ -14,8 +14,20 @@ const KANTO = {
   bench: [25, 94, 65, 68, 143],
 } as unknown as FullLineup;
 
+const MIDDLING = {
+  formation: "4-3-3",
+  starters: [79, 52, 54, 60, 63, 66, 69, 72, 74, 77, 84],
+  bench: [86, 88, 90, 92, 96],
+} as unknown as FullLineup;
+const WEAK = {
+  formation: "4-3-3",
+  starters: [10, 11, 13, 14, 16, 19, 21, 23, 27, 29, 32],
+  bench: [41, 43, 46, 48, 50],
+} as unknown as FullLineup;
+
 const SEEDS = Array.from({ length: 200 }, (_, i) => `cup-${i}` as Seed);
 const RUNS = SEEDS.map((seed) => runCup(KANTO, seed, "cup8"));
+const MIDDLING_RUNS = SEEDS.map((seed) => runCup(MIDDLING, seed, "cup8"));
 
 describe("runCup", () => {
   it("always returns the eight rounds in order (a short list would break the bracket UI)", () => {
@@ -24,7 +36,7 @@ describe("runCup", () => {
 
   it("stops playing after elimination and plays nothing past the first non-win in the knockout", () => {
     const finishes = new Set<string>();
-    for (const r of RUNS) {
+    for (const r of [...RUNS, ...MIDDLING_RUNS]) {
       finishes.add(r.finish);
       const knockout = r.matches.slice(3);
       const firstOut =
@@ -65,7 +77,7 @@ describe("runCup", () => {
       );
       if (r.flawless) flawless++;
     }
-    expect(flawless).toBe(19);
+    expect(flawless).toBe(49);
   });
 
   it("replays identically from the same lineup and seed", () => {
@@ -75,36 +87,36 @@ describe("runCup", () => {
   });
 
   it("pins a cup run where the group is decided past points, GD and GF", () => {
-    const r = runCup(P75, "golden-1" as Seed, "cup8");
+    const r = runCup(WEAK, "golden-177" as Seed, "cup8");
     expect([r.rating.score, r.wins, r.draws, r.losses, r.finish, r.flawless]).toEqual([
-      738,
-      3,
+      221,
+      1,
       0,
-      2,
-      "R16",
+      3,
+      "R32",
       false,
     ]);
     expect(r.group.map((g) => [g.team, g.points, g.goalsFor, g.goalsAgainst])).toEqual([
-      ["vermilion-athletic", 6, 3, 1],
-      ["user", 6, 3, 1],
-      ["coumarine-united", 3, 3, 5],
-      ["veilstone-united", 3, 3, 5],
+      ["motostoke-united", 9, 3, 0],
+      ["user", 3, 2, 3],
+      ["mesagoza-fc", 3, 2, 3],
+      ["canalave-athletic", 3, 1, 2],
     ]);
     expect(r.awards).toEqual({
-      goldenBoot: { species: 6, goals: 2, assists: 0, appearances: 5 },
-      topAssister: { species: 28, goals: 0, assists: 1, appearances: 5 },
-      playerOfTournament: { species: 6, goals: 2, assists: 0, appearances: 5 },
+      goldenBoot: { species: 27, goals: 2, assists: 0, appearances: 4 },
+      topAssister: { species: 32, goals: 1, assists: 2, appearances: 4 },
+      playerOfTournament: { species: 32, goals: 1, assists: 2, appearances: 4 },
     });
   });
 
   it("pins a run with an absence and counts the replacement's appearance, not the absentee's", () => {
     const r = runCup(P75, "golden-4" as Seed, "cup8");
-    expect([r.wins, r.draws, r.losses, r.finish]).toEqual([3, 1, 2, "QF"]);
+    expect([r.wins, r.draws, r.losses, r.finish]).toEqual([5, 0, 1, "QF"]);
     const absences = r.matches.flatMap((m) => (m.status === "played" ? m.absences : []));
     expect(absences).toEqual([{ slot: "4-3-3.LW", out: 25, in: 4 }]);
     const appearances = Object.fromEntries(r.players.map((p) => [p.species, p.appearances]));
     expect([appearances[25], appearances[4], appearances[1]]).toEqual([5, 1, 0]);
-    expect(r.awards.goldenBoot).toEqual({ species: 136, goals: 3, assists: 1, appearances: 6 });
+    expect(r.awards.goldenBoot).toEqual({ species: 38, goals: 4, assists: 2, appearances: 6 });
   });
 });
 
@@ -112,15 +124,15 @@ describe("buildLadder", () => {
   it("draws kanto151 opponents from Kanto towns only, with the per-round score ladder", () => {
     const ladder = buildLadder("golden-1", "kanto151");
     expect(CUP_ROUNDS.map((r) => [ladder[r].id, ladder[r].score])).toEqual([
-      ["celadon-city", 587],
-      ["fuchsia-united", 652],
-      ["pallet-town", 691],
-      ["indigo-plateau-united", 759],
-      ["viridian-fc", 796],
-      ["pewter-united", 869],
-      ["vermilion-fc", 904],
-      ["cinnabar-fc", 964],
+      ["celadon-city", 287],
+      ["fuchsia-united", 322],
+      ["pallet-town", 331],
+      ["indigo-plateau-united", 369],
+      ["viridian-fc", 476],
+      ["pewter-united", 779],
+      ["vermilion-fc", 854],
+      ["cinnabar-fc", 1000],
     ]);
-    expect(ladder.F.lines).toEqual({ GK: 100.4, DEF: 100.4, MID: 93.4, ATT: 96.4 });
+    expect(ladder.F.lines).toEqual({ GK: 104, DEF: 104, MID: 97, ATT: 100 });
   });
 });
