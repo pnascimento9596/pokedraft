@@ -1,0 +1,174 @@
+{
+  "about": "Curated ability to soccer-attribute nudges. A regular ability applies in full, a hidden ability at abilities.hiddenWeight, and the per-attribute sum is capped at abilities.capPerAttr (see coefficients.ts). Weather-gated and battle-mechanic-only abilities are left out on purpose.",
+  "abilities": {
+    "speed-boost": {
+      "mods": { "PAC": 6, "ACC": 4 },
+      "reason": "Speed rises every turn, read as relentless pace."
+    },
+    "quick-feet": { "mods": { "PAC": 5, "DRI": 3 }, "reason": "Named for fast feet." },
+    "unburden": {
+      "mods": { "ACC": 5, "PAC": 2 },
+      "reason": "Bursts of speed once unencumbered, read as acceleration."
+    },
+    "run-away": {
+      "mods": { "PAC": 2, "ACC": 2 },
+      "reason": "Always escapes, a small turn of pace."
+    },
+    "light-metal": { "mods": { "ACC": 3 }, "reason": "Body is lighter than it looks." },
+    "huge-power": {
+      "mods": { "SHO": 8, "KIC": 4 },
+      "reason": "Doubles physical power, read as shot power."
+    },
+    "pure-power": {
+      "mods": { "SHO": 7, "KIC": 3 },
+      "reason": "Doubles physical power, read as shot power."
+    },
+    "sheer-force": { "mods": { "SHO": 4, "PHY": 2 }, "reason": "Raw power over side effects." },
+    "reckless": {
+      "mods": { "SHO": 3, "TAK": 2, "PAS": -2 },
+      "reason": "All-out recoil attacks: hits hard, little care."
+    },
+    "hustle": { "mods": { "SHO": 3, "TEC": -3 }, "reason": "More power, less accuracy." },
+    "no-guard": {
+      "mods": { "SHO": 3, "DEF": -3 },
+      "reason": "Every attack lands and so does every hit taken."
+    },
+    "sniper": {
+      "mods": { "SHO": 5 },
+      "reason": "Critical hits land harder, read as clinical finishing."
+    },
+    "skill-link": {
+      "mods": { "SHO": 3, "TEC": 2 },
+      "reason": "Multi-hit moves always connect fully."
+    },
+    "technician": { "mods": { "TEC": 5, "DRI": 2 }, "reason": "Gets the most from light touches." },
+    "adaptability": {
+      "mods": { "TEC": 3 },
+      "reason": "Plays to its own strengths more effectively."
+    },
+    "long-reach": {
+      "mods": { "PAS": 3, "SHO": 2 },
+      "reason": "Hits from range without contact, read as long passing and shooting."
+    },
+    "unseen-fist": { "mods": { "SHO": 3 }, "reason": "Strikes through protection." },
+    "intimidate": {
+      "mods": { "TAK": 5, "DEF": 2 },
+      "reason": "Lowers the opponent's attack on entry, read as a hard tackler."
+    },
+    "guard-dog": {
+      "mods": { "DEF": 3, "TAK": 2 },
+      "reason": "Cannot be intimidated or forced out, a stubborn defender."
+    },
+    "defiant": { "mods": { "TAK": 2 }, "reason": "Fights back harder when pressed." },
+    "scrappy": { "mods": { "TAK": 2 }, "reason": "Hits anything, scrappy in duels." },
+    "tough-claws": {
+      "mods": { "TAK": 3 },
+      "reason": "Contact moves are stronger, read as winning challenges."
+    },
+    "stakeout": { "mods": { "TAK": 2, "GKP": 1 }, "reason": "Punishes opponents who switch in." },
+    "pressure": {
+      "mods": { "TAK": 2 },
+      "reason": "Opponents use more effort against it, read as pressing."
+    },
+    "guts": { "mods": { "PHY": 3, "TAK": 2 }, "reason": "Stronger when hurt, read as grit." },
+    "thick-fat": {
+      "mods": { "PHY": 3, "ACC": -2 },
+      "reason": "A thick layer of fat: sturdy but less nimble."
+    },
+    "heavy-metal": { "mods": { "PHY": 4, "PAC": -3, "ACC": -3 }, "reason": "Body weight doubled." },
+    "battle-armor": {
+      "mods": { "PHY": 3, "DEF": 2 },
+      "reason": "Hard armour, read as robust in contact."
+    },
+    "shell-armor": {
+      "mods": { "PHY": 3, "DEF": 2 },
+      "reason": "Hard shell, read as robust in contact."
+    },
+    "solid-rock": { "mods": { "DEF": 2 }, "reason": "Takes strong hits better." },
+    "filter": { "mods": { "DEF": 2 }, "reason": "Takes strong hits better." },
+    "prism-armor": { "mods": { "DEF": 2 }, "reason": "Takes strong hits better." },
+    "mirror-armor": { "mods": { "DEF": 2 }, "reason": "Reflects stat drops back." },
+    "stamina": { "mods": { "STA": 6, "DEF": 2 }, "reason": "Named for stamina." },
+    "regenerator": {
+      "mods": { "STA": 4 },
+      "reason": "Recovers when it steps out, read as recovery between runs."
+    },
+    "vital-spirit": { "mods": { "STA": 2 }, "reason": "Never falls asleep, a high work rate." },
+    "insomnia": { "mods": { "STA": 2 }, "reason": "Never falls asleep, a high work rate." },
+    "levitate": { "mods": { "AER": 6 }, "reason": "Floats off the ground." },
+    "gale-wings": {
+      "mods": { "AER": 3, "ACC": 3 },
+      "reason": "Flying moves strike first, quick off the mark in the air."
+    },
+    "wind-rider": { "mods": { "AER": 3 }, "reason": "Rides the wind." },
+    "sturdy": {
+      "mods": { "HAN": 4, "DIV": 2 },
+      "reason": "Cannot be knocked out in one hit, read as a keeper who holds firm."
+    },
+    "suction-cups": {
+      "mods": { "HAN": 4 },
+      "reason": "Grips the surface, read as a keeper's grip."
+    },
+    "sticky-hold": {
+      "mods": { "HAN": 3, "DRI": 2 },
+      "reason": "Held items cannot be taken, the ball sticks."
+    },
+    "iron-fist": { "mods": { "HAN": 3 }, "reason": "Stronger punches, read as punching clear." },
+    "anticipation": { "mods": { "GKP": 4, "REF": 3 }, "reason": "Senses dangerous moves coming." },
+    "forewarn": { "mods": { "GKP": 3 }, "reason": "Reads the opponent's strongest move." },
+    "frisk": { "mods": { "VIS": 2 }, "reason": "Checks what the opponent holds." },
+    "compound-eyes": {
+      "mods": { "VIS": 4, "PAS": 2 },
+      "reason": "Wide field of view, read as vision."
+    },
+    "keen-eye": { "mods": { "VIS": 4, "GKP": 3 }, "reason": "Sharp eyes that cannot be fooled." },
+    "telepathy": {
+      "mods": { "PAS": 4, "VIS": 3 },
+      "reason": "Anticipates allies' moves, read as passing to teammates."
+    },
+    "receiver": {
+      "mods": { "PAS": 4, "VIS": 2 },
+      "reason": "Takes over a fallen ally's role, a team player."
+    },
+    "inner-focus": {
+      "mods": { "GKP": 2, "PAS": 1 },
+      "reason": "Does not flinch, read as composure."
+    },
+    "dancer": { "mods": { "DRI": 4, "ACC": 2 }, "reason": "Copies dance moves, read as footwork." },
+    "limber": { "mods": { "DRI": 3, "TEC": 2 }, "reason": "Flexible body." },
+    "infiltrator": {
+      "mods": { "DRI": 3 },
+      "reason": "Slips past screens, read as getting past defenders."
+    },
+    "libero": {
+      "mods": { "TEC": 3, "DRI": 3 },
+      "reason": "Named for the libero; changes type to fit each play."
+    },
+    "protean": {
+      "mods": { "TEC": 2, "DRI": 2 },
+      "reason": "Changes type to fit each play, read as versatility."
+    },
+    "ball-fetch": { "mods": { "DRI": 3, "ACC": 2 }, "reason": "Fetches thrown balls." },
+    "intrepid-sword": { "mods": { "SHO": 3 }, "reason": "Attack rises on entry." },
+    "dauntless-shield": { "mods": { "DEF": 3, "HAN": 2 }, "reason": "Defence rises on entry." },
+    "klutz": {
+      "mods": { "TEC": -4, "HAN": -4 },
+      "reason": "Cannot use held items, read as clumsy."
+    },
+    "slow-start": {
+      "mods": { "ACC": -8, "PAC": -4 },
+      "reason": "Halved attack and speed for the first turns."
+    },
+    "truant": { "mods": { "STA": -8 }, "reason": "Loafs every other turn." },
+    "defeatist": { "mods": { "STA": -6 }, "reason": "Loses heart when hurt." },
+    "stall": { "mods": { "ACC": -4 }, "reason": "Always moves last." },
+    "wimp-out": { "mods": { "TAK": -3 }, "reason": "Flees when hurt, avoids challenges." },
+    "emergency-exit": { "mods": { "TAK": -3 }, "reason": "Flees when hurt, avoids challenges." },
+    "rattled": { "mods": { "GKP": -2 }, "reason": "Spooked easily, low composure." },
+    "tangled-feet": { "mods": { "DRI": -2 }, "reason": "Named for tangled feet." },
+    "wonder-guard": {
+      "mods": { "STA": -4 },
+      "reason": "Only survives on immunity; the body itself has 1 HP."
+    }
+  }
+}
