@@ -2,6 +2,7 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { SCOUTING } from "@/scouting/scouting-data";
+import { fit } from "@/scouting/fit";
 import { ATTRS, ROLES, type Role } from "@/scouting/types";
 
 const N = SCOUTING.length;
@@ -83,6 +84,27 @@ for (let g = 1; g <= 9; g++) {
   const big = adjs.length ? adjs.filter((v) => Math.abs(v) >= 8).length / adjs.length : 0;
   push(
     `| ${g} | ${rows.length} | ${fmt(zero / rows.length)} | ${fmt(adjs.length / rows.length)} | ${fmt(meanSum)} | ${fmt(meanAbs)} | ${fmt(net)} | ${fmt(big)} |`,
+  );
+}
+push("");
+
+push(
+  "## Net effect of Layer 2 on fit per generation",
+  "",
+  "Overall fit (max over roles) from final attributes minus the same from baseline attributes, both with the review's natural roles. This is the harshness check: a generation reviewed harsher than others shows a lower mean.",
+  "",
+  "| Gen | mean delta | min | max | share changed |",
+  "|---|---|---|---|---|",
+);
+for (let g = 1; g <= 9; g++) {
+  const d = SCOUTING.filter((s) => s.gen === g).map(
+    (s) =>
+      Math.max(...ROLES.map((r) => fit(s.attrs, s.bestRoles, r))) -
+      Math.max(...ROLES.map((r) => fit(s.baseline, s.bestRoles, r))),
+  );
+  const mean = d.reduce((a, b) => a + b, 0) / d.length;
+  push(
+    `| ${g} | ${fmt(mean)} | ${Math.min(...d)} | ${Math.max(...d)} | ${fmt(d.filter((v) => v !== 0).length / d.length)} |`,
   );
 }
 push("");
