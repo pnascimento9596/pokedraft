@@ -22,7 +22,7 @@
         "strength",
         "aerial"
       ],
-      "rationale": "Spe 65 on a 4 dm, 4.1 kg quadruped cat already shows in baseline ACC 84; hp 40 and tiny size leave it light in contests, so no change. Wide roles suit its burst."
+      "rationale": "Spe 65 on a 4 dm, 4.1 kg quadruped cat already shows in baseline ACC 71; hp 40 and tiny size leave it light in contests, so no change. Wide roles suit its burst."
     },
     {
       "id": 907,
@@ -98,7 +98,7 @@
         "pace",
         "agility"
       ],
-      "rationale": "Spe 36 on a stubby 4 dm croc body leaves baseline ACC 50 too generous. Hp 67 and ability Unaware fit a calm holding role over anything wide."
+      "rationale": "Spe 36 on a stubby 4 dm croc body leaves baseline ACC 41 a little generous. Hp 67 and ability Unaware fit a calm holding role over anything wide."
     },
     {
       "id": 910,
@@ -121,7 +121,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Spa 90 and hp 81 already give PAS 70 and STA 71; spe 49 on an upright 30.7 kg croc keeps it a slow, steady midfielder. Baseline reads true."
+      "rationale": "Spa 90 and hp 81 already give PAS 70 and STA 73; spe 49 on an upright 30.7 kg croc keeps it a slow, steady midfielder. Baseline reads true."
     },
     {
       "id": 911,
@@ -220,7 +220,7 @@
         "marking",
         "durability"
       ],
-      "rationale": "Genus Dancer and kickMoves mega-kick and triple-axel define a leg-driven fighter; Layer 1 covered kicking, but ACC 59 undersells dance footwork with spe 85, so ACC rises. Def 80 leaves it less sound tracking runners."
+      "rationale": "Genus Dancer and kickMoves mega-kick and triple-axel define a leg-driven fighter; Layer 1 covered kicking, but ACC 70 undersells dance footwork with spe 85, so ACC rises. Def 80 leaves it less sound tracking runners."
     },
     {
       "id": 915,
@@ -391,7 +391,7 @@
         "size",
         "durability"
       ],
-      "rationale": "Spe 60 on a 3 dm, 2.5 kg quadruped mouse gives baseline ACC 86 already; def 20 makes it fragile. Baseline is honest."
+      "rationale": "Spe 60 on a 3 dm, 2.5 kg quadruped mouse gives baseline ACC 71 already; def 20 makes it fragile. Baseline is honest."
     },
     {
       "id": 922,
@@ -462,7 +462,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Genus Couple and heads shape describe two 1.8 kg mice moving together; spe 75 drives ACC 92 already, while the tiny frame rules out central defending."
+      "rationale": "Genus Couple and heads shape describe two 1.8 kg mice moving together; spe 75 drives ACC 82 already, while the tiny frame rules out central defending."
     },
     {
       "id": 925,
@@ -947,7 +947,7 @@
         "strength",
         "size"
       ],
-      "rationale": "At height 2 dm and 0.7 kg with spe 75 and ability Unburden it is all burst; baseline ACC 98 already captures that and its fragility."
+      "rationale": "At height 2 dm and 0.7 kg with spe 75 and ability Unburden it is all burst; baseline ACC 88 already captures that and its fragility."
     },
     {
       "id": 945,
@@ -1454,7 +1454,7 @@
         "acceleration",
         "passing"
       ],
-      "rationale": "Hidden ability Slow Start and a 35 kg engine body with atk 70 make a stocky, slow-starting defender; baseline ACC 33 already reflects the engine lag."
+      "rationale": "Hidden ability Slow Start and a 35 kg engine body with atk 70 make a stocky, slow-starting defender; baseline ACC 36 already reflects the engine lag."
     },
     {
       "id": 966,
@@ -1481,7 +1481,7 @@
         "passing",
         "handling"
       ],
-      "rationale": "Genus Multi-Cyl is a revving engine, and spe 90 with 120 kg weight should launch harder than ACC 56. Its legs shape has no hands, so HAN 72 drops; spa 54 caps passing."
+      "rationale": "Genus Multi-Cyl is a revving engine, and spe 90 with 120 kg weight should launch harder than ACC 69. Its legs shape has no hands, so HAN 72 drops; spa 54 caps passing."
     },
     {
       "id": 967,
@@ -1507,7 +1507,7 @@
         "handling",
         "marking"
       ],
-      "rationale": "Genus Mount, built to carry riders over distance, with spe 121 already giving PAC 95; STA 63 undersells a running mount. Quadruped shape keeps it out of goal."
+      "rationale": "Genus Mount, built to carry riders over distance, with spe 121 already giving PAC 95; STA 66 undersells a running mount. Quadruped shape keeps it out of goal."
     },
     {
       "id": 968,
@@ -1673,7 +1673,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Hp 108 on a 45 kg upright calf whale gives STA 72 and PHY 71, while spe 43 slows it; ability Thick Fat fits absorbing contact. Baseline holds."
+      "rationale": "Hp 108 on a 45 kg upright calf whale gives STA 83 and PHY 71, while spe 43 slows it; ability Thick Fat fits absorbing contact. Baseline holds."
     },
     {
       "id": 975,
@@ -1697,7 +1697,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Height 45 dm, weight 700 kg and hp 170 already produce PHY 95 and ACC 27 after Layer 1; ability Slush Rush does not change its default lumbering."
+      "rationale": "Height 45 dm, weight 700 kg and hp 170 already produce PHY 95 and ACC 44 after Layer 1; ability Slush Rush does not change its default lumbering."
     },
     {
       "id": 976,
@@ -1978,7 +1978,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Hp 111, atk 127 and def 99 give TAK 86 and STA 94 on a quadruped mushroom; spe 55 keeps it central. Baseline matches a brute holding player."
+      "rationale": "Hp 111, atk 127 and def 99 give TAK 86 and STA 93 on a quadruped mushroom; spe 55 keeps it central. Baseline matches a brute holding player."
     },
     {
       "id": 987,
@@ -2030,7 +2030,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Atk 135 with a 32 dm, 92 kg quadruped body gives SHO 95 and AER 93; spe 81 and ACC 51 fit a long, heavy frame. Baseline is right."
+      "rationale": "Atk 135 with a 32 dm, 92 kg quadruped body gives SHO 95 and AER 93; spe 81 and ACC 68 fit a long, heavy frame. Baseline is right."
     },
     {
       "id": 989,
@@ -2200,7 +2200,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Atk 134 and def 110 on a 303 kg upright frame give PHY 97 and TAK 94; spe 72 and ACC 39 keep it central. Baseline holds."
+      "rationale": "Atk 134 and def 110 on a 303 kg upright frame give PHY 97 and TAK 94; spe 72 and ACC 54 keep it central. Baseline holds."
     },
     {
       "id": 996,
@@ -2246,7 +2246,7 @@
         "vision",
         "passing"
       ],
-      "rationale": "Hp 90 and atk 95 on a 30 kg upright body give PHY 72 and STA 75; spa 45 and a face shielded by its ice fin fit a direct, low-vision player."
+      "rationale": "Hp 90 and atk 95 on a 30 kg upright body give PHY 72 and STA 80; spa 45 and a face shielded by its ice fin fit a direct, low-vision player."
     },
     {
       "id": 998,
@@ -2272,7 +2272,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Atk 145 on a 210 kg upright dragon gives SHO 97 and PHY 95, but its short forelimbs relative to that frame make HAN 89 too high. Spe 87 with ACC 50 keeps it central."
+      "rationale": "Atk 145 on a 210 kg upright dragon gives SHO 97 and PHY 95, but its short forelimbs relative to that frame make HAN 89 too high. Spe 87 with ACC 66 keeps it central."
     },
     {
       "id": 999,
@@ -2391,7 +2391,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Hp 155 and def 125 on a 699.7 kg quadruped with spe 45 give PHY 96 and ACC 20; ability Vessel of Ruin fits a slow, crushing defender."
+      "rationale": "Hp 155 and def 125 on a 699.7 kg quadruped with spe 45 give PHY 96 and ACC 23; ability Vessel of Ruin fits a slow, crushing defender."
     },
     {
       "id": 1004,
@@ -2496,7 +2496,7 @@
         "agility",
         "handling"
       ],
-      "rationale": "Atk 135 and spe 135 on a 303 kg upright sprinting lizard; Koraidon's identity is a ride Pokémon built to run, so ACC 66 edges up. Short forelimbs keep it out of goal."
+      "rationale": "Atk 135 and spe 135 on a 303 kg upright sprinting lizard; Koraidon's identity is a ride Pokémon built to run, so ACC 81, held down by its weight, edges up. Short forelimbs keep it out of goal."
     },
     {
       "id": 1008,
@@ -2545,7 +2545,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Spa 125 gives PAS 95 and VIS 89 on a 280 kg upright body; spe 109 with ACC 60 fits a big, long-striding midfielder. Baseline holds."
+      "rationale": "Spa 125 gives PAS 95 and VIS 89 on a 280 kg upright body; spe 109 with ACC 76 fits a big, long-striding midfielder. Baseline holds."
     },
     {
       "id": 1010,
@@ -2763,7 +2763,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Def 130 and spa 125 with abilities Stamina and Stalwart already gave STA and DEF bonuses; spe 85 with ACC 57 suits a tall central player."
+      "rationale": "Def 130 and spa 125 with abilities Stamina and Stalwart already gave STA and DEF bonuses; spe 85 with ACC 68 suits a tall central player."
     },
     {
       "id": 1019,
@@ -2787,7 +2787,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Hp 106 and def 110 on a 93 kg heads shape with spe 44 give STA 95 and DEF 90; ability Regenerator fits a tireless anchor. Baseline holds."
+      "rationale": "Hp 106 and def 110 on a 93 kg heads shape with spe 44 give STA 94 and DEF 90; ability Regenerator fits a tireless anchor. Baseline holds."
     },
     {
       "id": 1020,
@@ -2811,7 +2811,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Def 121 and atk 115 on a 590 kg quadruped give PHY 96 and DEF 94; ACC 45 and spa 65 keep it a central enforcer."
+      "rationale": "Def 121 and atk 115 on a 590 kg quadruped give PHY 96 and DEF 94; ACC 64 and spa 65 keep it a central enforcer."
     },
     {
       "id": 1021,
@@ -2911,7 +2911,7 @@
         "acceleration",
         "size"
       ],
-      "rationale": "A 2 dm, 6.5 kg turtle with hp 90 and def 85; its shelled body should not burst like ACC 80 says, and baseline PHY 58 is high for its weight. Ability Tera Shift does not apply in default form."
+      "rationale": "A 2 dm, 6.5 kg turtle with hp 90 and def 85; its shelled body should not burst like ACC 67 says, and baseline PHY 58 is high for its weight. Ability Tera Shift does not apply in default form."
     },
     {
       "id": 1025,

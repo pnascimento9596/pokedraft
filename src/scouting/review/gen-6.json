@@ -77,7 +77,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Def 122, weight 900 and the shield move spiky-shield in kickMoves make it a wall at the back; spe 64 and baseline ACC 39 keep it central."
+      "rationale": "Def 122, weight 900 and the shield move spiky-shield in kickMoves make it a wall at the back; spe 64 and baseline ACC 50 keep it central."
     },
     {
       "id": 653,
@@ -376,9 +376,7 @@
     {
       "id": 665,
       "name": "Spewpa",
-      "adjustments": {
-        "ACC": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -397,7 +395,7 @@
         "dribbling",
         "pace"
       ],
-      "rationale": "Shape blob with spe 29 and a cocoon genus line means it barely moves, so ACC 39 is too generous; def 60 is its only asset."
+      "rationale": "Shape blob with spe 29 and a cocoon genus line means it barely moves, which ACC 29 already shows after the Layer 1 blob cut; def 60 is its only asset."
     },
     {
       "id": 666,
@@ -600,7 +598,7 @@
         "acceleration",
         "handling"
       ],
-      "rationale": "Hp 123, weight 910 and genus Mount make it a ridable workhorse with headbutt power; ACC 44 and spe 68 suit a central engine rather than a winger."
+      "rationale": "Hp 123, weight 910 and genus Mount make it a ridable workhorse with headbutt power; ACC 57 and spe 68 suit a central engine rather than a winger."
     },
     {
       "id": 674,
@@ -651,7 +649,7 @@
         "acceleration",
         "passing"
       ],
-      "rationale": "Atk 124, weight 1360 and genus Daunting with ability Iron Fist describe a punching bruiser, so TEC and PAS come down from kickMoves inflation; spe 58 and ACC 32 confirm a central role."
+      "rationale": "Atk 124, weight 1360 and genus Daunting with ability Iron Fist describe a punching bruiser, so TEC and PAS come down from kickMoves inflation; spe 58 and ACC 42 confirm a central role."
     },
     {
       "id": 676,
@@ -995,7 +993,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Def 115, atk 105 and genus Collective describe a body of many clawed hands, so HAN gets a small lift; ACC 43 and shape heads keep it at the back."
+      "rationale": "Def 115, atk 105 and genus Collective describe a body of many clawed hands, so HAN gets a small lift; ACC 54 and shape heads keep it at the back."
     },
     {
       "id": 690,
@@ -1193,7 +1191,7 @@
         "handling",
         "agility"
       ],
-      "rationale": "Height 25, weight 2700, atk 121 and head-smash in kickMoves make a dominant heading presence, but the tyrannosaur build has tiny forelimbs and ACC 33, so HAN and DIV fall."
+      "rationale": "Height 25, weight 2700, atk 121 and head-smash in kickMoves make a dominant heading presence, but the tyrannosaur build has tiny forelimbs, so HAN and DIV fall; ACC 50 shows it is slow to turn."
     },
     {
       "id": 698,
@@ -1242,7 +1240,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Hp 123, height 27 and weight 2250 already drive top AER, PHY and STA; spe 58 and ACC 28 confirm a deep central role."
+      "rationale": "Hp 123, height 27 and weight 2250 already drive top AER, PHY and STA; spe 58 and ACC 39 confirm a deep central role."
     },
     {
       "id": 700,
@@ -1421,13 +1419,12 @@
         "acceleration",
         "pace"
       ],
-      "rationale": "Spd 150, spa 110 and hp 90 on a weight 1505 upright dragon make a commanding central midfielder; ACC 46 and spe 80 keep it out of wide or pace roles."
+      "rationale": "Spd 150, spa 110 and hp 90 on a weight 1505 upright dragon make a commanding central midfielder; ACC 63 and spe 80 keep it out of wide or pace roles."
     },
     {
       "id": 707,
       "name": "Klefki",
       "adjustments": {
-        "DRI": -5,
         "PHY": -3
       },
       "bestRoles": [
@@ -1448,7 +1445,7 @@
         "size",
         "dribbling"
       ],
-      "rationale": "Height 2 and weight 30 on shape ball with no legs make DRI 78 and PHY 49 too high; ability Prankster and spe 75 fit a tricky floating nuisance."
+      "rationale": "Height 2 and weight 30 on shape ball with no legs make PHY 49 too high, while the Layer 1 ball cut of DRI 22 already brings DRI to 66; ability Prankster and spe 75 fit a tricky floating nuisance."
     },
     {
       "id": 708,
@@ -1495,7 +1492,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Atk 110, weight 710 and shape tentacles for its root legs give a strong reaching defender; spe 56 and ACC 36 match the rooted genus Elder Tree."
+      "rationale": "Atk 110, weight 710 and shape tentacles for its root legs give a strong reaching defender; spe 56 and ACC 46 match the rooted genus Elder Tree."
     },
     {
       "id": 710,
@@ -1671,7 +1668,7 @@
         "handling",
         "close-control"
       ],
-      "rationale": "Spe 99 on a quadruped deer with genus Life suits long bounding runs that ACC 59 undersells; hp 126 and balanced atk and spa 131 cover both ends."
+      "rationale": "Spe 99 on a quadruped deer with genus Life suits long bounding runs that ACC 75 undersells after weight 2150 drags it; hp 126 and balanced atk and spa 131 cover both ends."
     },
     {
       "id": 717,
@@ -1794,7 +1791,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Def 120, spa 130 and weight 1950 on a quadruped give a heavy central anchor; spe 70 and shape quadruped already show in ACC 41 and DRI 58."
+      "rationale": "Def 120, spa 130 and weight 1950 on a quadruped give a heavy central anchor; spe 70 and shape quadruped already show in ACC 56 and DRI 58."
     }
   ]
 }

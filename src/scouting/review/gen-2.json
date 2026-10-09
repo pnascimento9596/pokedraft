@@ -219,7 +219,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Genus Big Jaw, atk 105 and def 100 at height 23 and weight 888 make it an imposing ball-winner; TAK gets the jaw bump while ACC 47 already reflects its bulk."
+      "rationale": "Genus Big Jaw, atk 105 and def 100 at height 23 and weight 888 make it an imposing ball-winner; TAK gets the jaw bump while ACC 62 already reflects its bulk."
     },
     {
       "id": 161,
@@ -489,7 +489,7 @@
         "footwork",
         "pace"
       ],
-      "rationale": "Hp 125 gives STA 80 and spa 76 supports VIS; fish shape already removed pace and dribbling, so it holds the middle as a durable anchor."
+      "rationale": "Hp 125 gives STA 87 and spa 76 supports VIS; fish shape already removed pace and dribbling, so it holds the middle as a durable anchor."
     },
     {
       "id": 172,
@@ -513,7 +513,7 @@
         "size",
         "durability"
       ],
-      "rationale": "IsBaby, height 3 and weight 20 with def 15 make it fragile, while spe 60 keeps ACC 80; Layer 1 baby mods already cover the size gap."
+      "rationale": "IsBaby, height 3 and weight 20 with def 15 make it fragile, while spe 60 keeps ACC 65; Layer 1 baby mods already cover the size gap."
     },
     {
       "id": 173,
@@ -612,7 +612,7 @@
         "strength",
         "pace"
       ],
-      "rationale": "Fairy/flying type with wings in its design flies, but humanoid shape skipped the wing bonus, so AER 43 is too low; spa 80 and spd 105 support PAS and VIS 80."
+      "rationale": "Fairy/flying type with wings in its design flies, but humanoid shape skipped the wing bonus, so AER 43 is too low; spa 80 and spd 105 support PAS 80 and VIS 79."
     },
     {
       "id": 177,
@@ -732,7 +732,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Spa 115 and hp 90 give PAS and VIS 89 and STA 85, and genus Light fits a reference point; spe 55 at weight 615 keeps it off the flanks."
+      "rationale": "Spa 115 and hp 90 give PAS and VIS 89 and STA 83, and genus Light fits a reference point; spe 55 at weight 615 keeps it off the flanks."
     },
     {
       "id": 182,
@@ -859,7 +859,7 @@
         "pace",
         "tackling"
       ],
-      "rationale": "Spd 100 and spa 90 with hp 90 support PAS 87 and STA 85; its frog design and genus Frog mean strong jumping legs, so AER rises from 67."
+      "rationale": "Spd 100 and spa 90 with hp 90 support PAS 87 and STA 84; its frog design and genus Frog mean strong jumping legs, so AER rises from 67."
     },
     {
       "id": 187,
@@ -911,7 +911,7 @@
         "size",
         "close-control"
       ],
-      "rationale": "Spe 80 gives ACC 90, but weight 10 and the flower-puff design with stubby legs do not earn DRI 84 after a shape bonus of 8."
+      "rationale": "Spe 80 gives ACC 82, but weight 10 and the flower-puff design with stubby legs do not earn DRI 84 after a shape bonus of 8."
     },
     {
       "id": 189,
@@ -965,7 +965,7 @@
         "strength",
         "tackling"
       ],
-      "rationale": "Genus Long Tail and its hand-tipped tail give a third hand the upright shape mods missed; spe 85 already drives ACC 87 and DRI 89."
+      "rationale": "Genus Long Tail and its hand-tipped tail give a third hand the upright shape mods missed; spe 85 already drives ACC 83 and DRI 89."
     },
     {
       "id": 191,
@@ -992,7 +992,7 @@
         "size",
         "footwork"
       ],
-      "rationale": "Ball shape, height 3 and spe 30 describe a seed with tiny legs; ACC 55 is out of line with every other stat and its body, so it comes down."
+      "rationale": "Ball shape, height 3 and spe 30 describe a seed with tiny legs; ACC 40 still sits above its spe line because of its light, small body, so it comes down."
     },
     {
       "id": 192,
@@ -1090,7 +1090,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Hp 95 with atk and def 85 at weight 750 give PHY 84 and STA 81; Unaware fits a calm defender and spe 35 keeps it central."
+      "rationale": "Hp 95 with atk and def 85 at weight 750 give PHY 84 and STA 82; Unaware fits a calm defender and spe 35 keeps it central."
     },
     {
       "id": 196,
@@ -1139,7 +1139,7 @@
         "shot-power",
         "finishing"
       ],
-      "rationale": "Def 110 and spd 130 with hp 95 give DEF 94 and STA 92; GK tops roleBlends but a quadruped has no hands, so it anchors the back line instead."
+      "rationale": "Def 110 and spd 130 with hp 95 give DEF 94 and STA 88; GK tops roleBlends but a quadruped has no hands, so it anchors the back line instead."
     },
     {
       "id": 198,
@@ -1196,9 +1196,7 @@
     {
       "id": 200,
       "name": "Misdreavus",
-      "adjustments": {
-        "DRI": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "WM",
@@ -1218,7 +1216,7 @@
         "kicking-technique",
         "tackling"
       ],
-      "rationale": "Spe 85 and ability Levitate make it a floating, darting ghost, but the ball shape has no legs at all, so DRI 76 still overstates close control after Layer 1."
+      "rationale": "Spe 85 and ability Levitate make it a floating, darting ghost. The ball shape has no legs at all, and Layer 1 now cuts DRI 20 for it, which leaves DRI 64 honest without a further trim."
     },
     {
       "id": 201,
@@ -1244,7 +1242,7 @@
         "footwork",
         "kicking-technique"
       ],
-      "rationale": "Ball shape with no limbs and kickMoves empty mean it cannot strike the ball; ACC 64 sits above its flat 48 spe line, so it is trimmed."
+      "rationale": "Ball shape with no limbs and kickMoves empty mean it cannot strike the ball; ACC 51 still sits a little above its flat 48 spe line, so it is trimmed."
     },
     {
       "id": 202,
@@ -1271,7 +1269,7 @@
         "shot-power",
         "dribbling"
       ],
-      "rationale": "Genus Patient and its counter-only fighting style with ability Shadow Tag, which stops opponents escaping, describe a reactive marker; hp 190 backs STA 82."
+      "rationale": "Genus Patient and its counter-only fighting style with ability Shadow Tag, which stops opponents escaping, describe a reactive marker; hp 190 backs STA 91."
     },
     {
       "id": 203,
@@ -1373,7 +1371,7 @@
         "dribbling",
         "aerial"
       ],
-      "rationale": "Hp 100 gives STA 81, but squiggle shape means height 15 is body length and its design has only tiny vestigial wings, so AER 74 is too generous."
+      "rationale": "Hp 100 gives STA 86, but squiggle shape means height 15 is body length and its design has only tiny vestigial wings, so AER 74 is too generous."
     },
     {
       "id": 207,
@@ -1732,7 +1730,7 @@
         "vision",
         "passing"
       ],
-      "rationale": "Spe 50 on a small quadruped gives ACC 68, but its design with eyes hidden under hair limits what it sees, so VIS drops slightly."
+      "rationale": "Spe 50 on a small quadruped gives ACC 54, but its design with eyes hidden under hair limits what it sees, so VIS drops slightly."
     },
     {
       "id": 221,
@@ -1759,7 +1757,7 @@
         "vision",
         "acceleration"
       ],
-      "rationale": "Hp 100 and atk 100 at weight 558 with Thick Fat give PHY 86 and STA 81; its fur covers its eyes, so VIS 52 is trimmed."
+      "rationale": "Hp 100 and atk 100 at weight 558 with Thick Fat give PHY 86 and STA 84; its fur covers its eyes, so VIS 52 is trimmed."
     },
     {
       "id": 222,
@@ -1882,7 +1880,7 @@
         "dribbling",
         "footwork"
       ],
-      "rationale": "Height 21 and weight 2200 with a wide wings shape give AER 93 and reach; spd 140 lifts VIS, while spe 70 and no legs keep ACC 36."
+      "rationale": "Height 21 and weight 2200 with a wide wings shape give AER 93 and reach; spd 140 lifts VIS, while spe 70 and no legs keep ACC 52."
     },
     {
       "id": 227,
@@ -1929,7 +1927,7 @@
         "strength",
         "durability"
       ],
-      "rationale": "Spe 65 and spa 80 on a quadruped dog give ACC 76; def 30 and weight 108 keep it light in duels."
+      "rationale": "Spe 65 and spa 80 on a quadruped dog give ACC 68; def 30 and weight 108 keep it light in duels."
     },
     {
       "id": 229,
@@ -2001,7 +1999,7 @@
         "pace",
         "passing"
       ],
-      "rationale": "Hp 90 at weight 335 gives STA 68 and PHY 66 for a small quadruped; spe 40 and spa 40 limit pace and passing."
+      "rationale": "Hp 90 at weight 335 gives STA 75 and PHY 66 for a small quadruped; spe 40 and spa 40 limit pace and passing."
     },
     {
       "id": 232,
@@ -2175,7 +2173,7 @@
         "durability",
         "tackling"
       ],
-      "rationale": "Spa 85 and spe 65 give PAS 70 and ACC 75 for an isBaby; def 15 and height 4 rule out physical duels."
+      "rationale": "Spa 85 and spe 65 give PAS 70 and ACC 62 for an isBaby; def 15 and height 4 rule out physical duels."
     },
     {
       "id": 239,
@@ -2199,7 +2197,7 @@
         "durability",
         "strength"
       ],
-      "rationale": "Spe 95 with rolling-kick and low-kick in kickMoves gives ACC 85 and DRI 88; isBaby and def 37 keep it fragile."
+      "rationale": "Spe 95 with rolling-kick and low-kick in kickMoves gives ACC 83 and DRI 88; isBaby and def 37 keep it fragile."
     },
     {
       "id": 240,
@@ -2222,7 +2220,7 @@
         "durability",
         "strength"
       ],
-      "rationale": "Spe 83 and atk 75 give ACC 75 and DRI 79; isBaby and def 37 limit contact, already reflected in the baby mods."
+      "rationale": "Spe 83 and atk 75 give ACC 72 and DRI 79; isBaby and def 37 limit contact, already reflected in the baby mods."
     },
     {
       "id": 241,
@@ -2247,7 +2245,7 @@
         "vision",
         "passing"
       ],
-      "rationale": "Spe 100, def 105 and hp 95 with Thick Fat give PAC 85, PHY 87 and STA 86, and its Rollout charging identity suits an overlapping full-back; spa 40 limits passing."
+      "rationale": "Spe 100, def 105 and hp 95 with Thick Fat give PAC 85, PHY 87 and STA 84, and its Rollout charging identity suits an overlapping full-back; spa 40 limits passing."
     },
     {
       "id": 242,
@@ -2324,7 +2322,7 @@
         "handling",
         "acceleration"
       ],
-      "rationale": "Atk 115 and hp 115 at weight 1980 give SHO 91 and PHY 91; quadruped shape rules out goal and its size keeps ACC 64."
+      "rationale": "Atk 115 and hp 115 at weight 1980 give SHO 91 and PHY 91; quadruped shape rules out goal and its size holds ACC at 78."
     },
     {
       "id": 245,
@@ -2349,7 +2347,7 @@
         "handling",
         "acceleration"
       ],
-      "rationale": "Def and spd 115 with hp 100 give DEF 95 and STA 94; quadruped shape rules out goal despite GK topping roleBlends."
+      "rationale": "Def and spd 115 with hp 100 give DEF 95 and STA 90; quadruped shape rules out goal despite GK topping roleBlends."
     },
     {
       "id": 246,
@@ -2421,7 +2419,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Atk 134 at height 20 and weight 2020 with Unnerve give PHY 96 and SHO 99; spe 61 and its bulk already show in ACC 31."
+      "rationale": "Atk 134 at height 20 and weight 2020 with Unnerve give PHY 96 and SHO 99; spe 61 and its bulk already show in ACC 43."
     },
     {
       "id": 249,
@@ -2446,7 +2444,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Height 52 and wings shape give AER 99 and huge reach, and spd 154 with Multiscale makes it hard to beat; its bulk keeps ACC 63."
+      "rationale": "Height 52 and wings shape give AER 99 and huge reach, and spd 154 with Multiscale makes it hard to beat; its bulk holds ACC at 79."
     },
     {
       "id": 250,
@@ -2471,7 +2469,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Atk 130 and spd 154 at height 38 with wings shape give AER 99 and TAK 93; Regenerator fits STA 96 and its size keeps ACC 50."
+      "rationale": "Atk 130 and spd 154 at height 38 with wings shape give AER 99 and TAK 93; Regenerator fits STA 95 and its size holds ACC at 68."
     },
     {
       "id": 251,

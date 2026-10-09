@@ -56,7 +56,7 @@
       "name": "Torterra",
       "adjustments": {
         "AER": -6,
-        "DIV": -8
+        "DIV": -5
       },
       "bestRoles": [
         "CB",
@@ -77,7 +77,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "A 3100 hg quadruped with spe 56 cannot jump for headers or dive, so AER and DIV come down. Height 22, def 105 and genus Continent make it a wall that fills the goalmouth or the centre."
+      "rationale": "A 3100 hg quadruped with spe 56 cannot jump for headers or dive, so AER comes down and DIV takes a cut on top of the Layer 1 heavy penalty of DIV -3. Height 22, def 105 and genus Continent make it a wall that fills the goalmouth or the centre."
     },
     {
       "id": 390,
@@ -130,9 +130,7 @@
     {
       "id": 392,
       "name": "Infernape",
-      "adjustments": {
-        "ACC": 3
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "W",
@@ -152,7 +150,7 @@
         "durability",
         "marking"
       ],
-      "rationale": "Spe 108 and its acrobatic fire/fighting style give it more burst than ACC 82 shows. Def 71 and spd 71 are the only soft spots, so it plays high up the pitch."
+      "rationale": "Spe 108 and its acrobatic fire/fighting style already show in ACC 87, which now tracks its speed, so no burst bump is needed. Def 71 and spd 71 are the only soft spots, so it plays high up the pitch."
     },
     {
       "id": 393,
@@ -940,7 +938,7 @@
         "footwork",
         "kicking-technique"
       ],
-      "rationale": "Hp 111 drives STA 89 and storm-drain soaks pressure, but the squiggle shape and spe 39 already cost it every ball skill in Layer 1. Baseline fits."
+      "rationale": "Hp 111 drives STA 92 and storm-drain soaks pressure, but the squiggle shape and spe 39 already cost it every ball skill in Layer 1. Baseline fits."
     },
     {
       "id": 424,
@@ -994,7 +992,7 @@
         "footwork",
         "shot-power"
       ],
-      "rationale": "Genus Balloon at weight 12 hg drifts rather than bursts, so ACC 93 is too high; ghost/flying type keeps it floating for aerial balls. Hp 90 gives it running power."
+      "rationale": "Genus Balloon at weight 12 hg drifts rather than bursts, so ACC 80 is too high; ghost/flying type keeps it floating for aerial balls. Hp 90 gives it running power."
     },
     {
       "id": 426,
@@ -1022,7 +1020,7 @@
         "footwork",
         "acceleration"
       ],
-      "rationale": "Genus Blimp, height 12 and weight 150 hg describe a floating envelope that drifts into position rather than sprinting, so ACC drops and AER rises. Hp 150 makes it tireless."
+      "rationale": "Genus Blimp, height 12 and weight 150 hg describe a floating envelope that drifts into position rather than sprinting, so ACC 79 drops and AER rises. Hp 150 makes it tireless."
     },
     {
       "id": 427,
@@ -1492,7 +1490,7 @@
         "handling",
         "vision"
       ],
-      "rationale": "Genus Mach and spe 102 describe a jet-like burst that ACC 69 undersells. Its arms end in fins and claws, so HAN 89 overstates a keeper's grip; atk 130 makes it an elite striker."
+      "rationale": "Genus Mach and spe 102 describe a jet-like burst that ACC 80 still undersells after weight 950 drags it. Its arms end in fins and claws, so HAN 89 overstates a keeper's grip; atk 130 makes it an elite striker."
     },
     {
       "id": 446,
@@ -1599,7 +1597,7 @@
       "name": "Hippowdon",
       "adjustments": {
         "AER": -6,
-        "DIV": -8
+        "DIV": -4
       },
       "bestRoles": [
         "CB",
@@ -1621,7 +1619,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Genus Heavyweight, weight 3000 hg on a quadruped shape cannot jump or dive, so AER 90 and DIV 80 come down. Def 118 and atk 112 make it a bulldozer at the back."
+      "rationale": "Genus Heavyweight, weight 3000 hg on a quadruped shape cannot jump or dive, so AER 90 comes down and DIV 76 takes a cut on top of the Layer 1 heavy penalty of DIV -4. Def 118 and atk 112 make it a bulldozer at the back."
     },
     {
       "id": 451,
@@ -2178,7 +2176,7 @@
       "name": "Mamoswine",
       "adjustments": {
         "AER": -6,
-        "DIV": -8
+        "DIV": -4
       },
       "bestRoles": [
         "CB",
@@ -2200,7 +2198,7 @@
         "agility",
         "close-control"
       ],
-      "rationale": "Genus Twin Tusk, a 2910 hg quadruped mammoth, cannot jump or dive, so AER and DIV come down. Atk 130 and its tusks make it a charging presence."
+      "rationale": "Genus Twin Tusk, a 2910 hg quadruped mammoth, cannot jump or dive, so AER comes down and DIV takes a cut on top of the Layer 1 heavy penalty of DIV -4. Atk 130 and its tusks make it a charging presence."
     },
     {
       "id": 474,
@@ -2434,9 +2432,7 @@
     {
       "id": 483,
       "name": "Dialga",
-      "adjustments": {
-        "DIV": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -2457,7 +2453,7 @@
         "agility",
         "footwork"
       ],
-      "rationale": "A 6830 hg quadruped cannot dive, so DIV drops; height 54 still gives it aerial reach. Def 120 and spa 150 suit a dominant central anchor."
+      "rationale": "A 6830 hg quadruped cannot dive, and the Layer 1 heavy penalty of DIV -9 already says so; height 54 still gives it aerial reach. Def 120 and spa 150 suit a dominant central anchor."
     },
     {
       "id": 484,
@@ -2487,9 +2483,7 @@
     {
       "id": 485,
       "name": "Heatran",
-      "adjustments": {
-        "DIV": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "CB",
@@ -2509,12 +2503,14 @@
         "agility",
         "footwork"
       ],
-      "rationale": "Genus Lava Dome, a 4300 hg quadruped, cannot dive, so DIV comes down. Def 106 and spa 130 suit a deep anchor."
+      "rationale": "Genus Lava Dome, a 4300 hg quadruped, cannot dive, and the Layer 1 heavy penalty of DIV -6 already covers it. Def 106 and spa 130 suit a deep anchor."
     },
     {
       "id": 486,
       "name": "Regigigas",
-      "adjustments": {},
+      "adjustments": {
+        "REF": -6
+      },
       "bestRoles": [
         "CB",
         "GK",
@@ -2534,14 +2530,12 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Genus Colossal with atk 160 at height 37 dominates; the slow-start ability already cut PAC and ACC in Layer 1. Baseline fits."
+      "rationale": "Genus Colossal with atk 160 at height 37 dominates. Weight 4200 already trims DIV and ability Slow Start already cut PAC and ACC in Layer 1, but a body that starts slowly should not react like REF 95 between the posts, so REF -6."
     },
     {
       "id": 487,
       "name": "Giratina",
-      "adjustments": {
-        "DIV": -8
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -2562,7 +2556,7 @@
         "footwork",
         "dribbling"
       ],
-      "rationale": "Genus Renegade at weight 7500 hg on a tentacles shape cannot dive, so DIV drops. Hp 150 and def 120 make it a towering anchor."
+      "rationale": "Genus Renegade at weight 7500 hg on a tentacles shape cannot dive, and the Layer 1 heavy penalty of DIV -9 already covers it. Hp 150 and def 120 make it a towering anchor."
     },
     {
       "id": 488,
@@ -2692,7 +2686,7 @@
       "id": 493,
       "name": "Arceus",
       "adjustments": {
-        "DIV": -8
+        "DIV": -4
       },
       "bestRoles": [
         "CB",
@@ -2713,7 +2707,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Genus Alpha with 120 in every stat dominates, but a 3200 hg quadruped cannot dive, so DIV drops. Height 32 keeps its aerial reach."
+      "rationale": "Genus Alpha with 120 in every stat dominates, but a 3200 hg quadruped cannot dive, so DIV takes a cut on top of the Layer 1 heavy penalty of DIV -4. Height 32 keeps its aerial reach."
     }
   ]
 }

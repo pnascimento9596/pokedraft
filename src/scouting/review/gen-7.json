@@ -361,9 +361,7 @@
     {
       "id": 736,
       "name": "Grubbin",
-      "adjustments": {
-        "ACC": -4
-      },
+      "adjustments": {},
       "bestRoles": [
         "FB",
         "DM",
@@ -382,7 +380,7 @@
         "vision",
         "size"
       ],
-      "rationale": "A larva with spe 46, height 4, and shape armor should not carry ACC 63, so ACC -4. Ability Swarm and its armored body are its only real assets."
+      "rationale": "A larva with spe 46, height 4, and shape armor already takes a Layer 1 ACC cut, and ACC 48 now tracks its spe, so no further trim. Ability Swarm and its armored body are its only real assets."
     },
     {
       "id": 737,
@@ -408,7 +406,7 @@
         "dribbling",
         "agility"
       ],
-      "rationale": "Genus Battery and its boxy shape squiggle make it nearly stationary, so ACC -6 against spe 36. Def 95 and ability Battery, which powers allies, suit a holding defender."
+      "rationale": "Genus Battery and its boxy shape squiggle make it nearly stationary, so ACC -6 against ACC 43 on spe 36. Def 95 and ability Battery, which powers allies, suit a holding defender."
     },
     {
       "id": 738,
@@ -588,7 +586,7 @@
         "passing",
         "strength"
       ],
-      "rationale": "Genus Puppy, spe 60, and ability Vital Spirit fit an eager chaser, and the baseline ACC 72 already says so. Spa 30 caps its passing."
+      "rationale": "Genus Puppy, spe 60, and ability Vital Spirit fit an eager chaser, and the baseline ACC 61 already says so. Spa 30 caps its passing."
     },
     {
       "id": 745,
@@ -1260,7 +1258,7 @@
       "id": 771,
       "name": "Pyukumuku",
       "adjustments": {
-        "ACC": -10
+        "ACC": -4
       },
       "bestRoles": [
         "CB",
@@ -1281,7 +1279,7 @@
         "size",
         "dribbling"
       ],
-      "rationale": "Spe 5 is the lowest in the generation, so ACC 47 is far too high, ACC -10. Def 130 and spd 130 and ability Unaware make it hard to rattle, but height 3 limits it."
+      "rationale": "Spe 5 is the lowest in the generation, so ACC 32 is still a little high for a sea cucumber, ACC -4. Def 130 and spd 130 and ability Unaware make it hard to rattle, but height 3 limits it."
     },
     {
       "id": 772,
@@ -1389,7 +1387,7 @@
         "vision",
         "acceleration"
       ],
-      "rationale": "Ability Comatose and genus Drowsing mean it is permanently asleep clutching its log, so VIS -10, PAS -6, DRI -8, and ACC -6 against a baseline that rated it a creative AM. Atk 115 and its kickMoves still back real shot-power."
+      "rationale": "Ability Comatose and genus Drowsing mean it is permanently asleep clutching its log, so VIS -10, PAS -6, DRI -8, and ACC -6 against a baseline that rated it a creative AM with ACC 65. Atk 115 and its kickMoves still back real shot-power."
     },
     {
       "id": 776,
@@ -1591,7 +1589,7 @@
         "stamina",
         "acceleration"
       ],
-      "rationale": "Def 90 and atk 75 with fighting type make a combative defender. Hp 55 caps its stamina, which STA 51 already shows."
+      "rationale": "Def 90 and atk 75 with fighting type make a combative defender. Hp 55 caps its stamina, which STA 46 already shows."
     },
     {
       "id": 784,
@@ -1620,7 +1618,10 @@
     {
       "id": 785,
       "name": "Tapu Koko",
-      "adjustments": {},
+      "adjustments": {
+        "TEC": -5,
+        "DRI": -4
+      },
       "bestRoles": [
         "W",
         "ST",
@@ -1637,9 +1638,10 @@
       ],
       "weaknesses": [
         "stamina",
-        "durability"
+        "durability",
+        "footwork"
       ],
-      "rationale": "Spe 130 and atk 115 make it an explosive wide attacker, and the baseline already says so. Weight 205 (20.5 kg) and hp 70 keep it light."
+      "rationale": "Spe 130 and atk 115 make it an explosive wide attacker, but shape arms means it floats with no legs, so like Tornadus it takes TEC and DRI trims on top of the Layer 1 KIC -8. Weight 205 (20.5 kg) and hp 70 keep it light."
     },
     {
       "id": 786,
@@ -1742,8 +1744,7 @@
       "id": 790,
       "name": "Cosmoem",
       "adjustments": {
-        "PAC": -8,
-        "ACC": -10
+        "PAC": -8
       },
       "bestRoles": [
         "CB",
@@ -1764,7 +1765,7 @@
         "footwork",
         "passing"
       ],
-      "rationale": "Genus Protostar describes a motionless cocoon, and weight 9999 on height 1 cannot move, so PAC -8 and ACC -10. Def 131 and spd 131 with ability Sturdy make it an unmovable block."
+      "rationale": "Genus Protostar describes a motionless cocoon, and weight 9999 on height 1 cannot move. Layer 1 already took ACC 11 off, leaving ACC 21, so only PAC -8 is added. Def 131 and spd 131 with ability Sturdy make it an unmovable block."
     },
     {
       "id": 791,
@@ -1995,7 +1996,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Hp 223, height 55, and weight 8880 make a gigantic presence, and the baseline already gives PHY 90 and STA 80. Spe 43 keeps it central."
+      "rationale": "Hp 223, height 55, and weight 8880 make a gigantic presence, and the baseline already gives PHY 90 and STA 90. Spe 43 keeps it central."
     },
     {
       "id": 800,

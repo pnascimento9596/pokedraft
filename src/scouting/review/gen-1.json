@@ -237,7 +237,7 @@
       "id": 10,
       "name": "Caterpie",
       "adjustments": {
-        "ACC": -6,
+        "ACC": -3,
         "PAC": -3
       },
       "bestRoles": [
@@ -258,14 +258,14 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Genus Worm on an armor shape at height 3 crawls on stubby legs, so ACC 66 from small size overstates it. Spe 45 and atk 30 leave it nothing but a disciplined holding job."
+      "rationale": "Genus Worm on an armor shape at height 3 crawls on stubby legs, so its small size still lifts ACC 49 a little above what spe 45 earns, and it takes a small trim. Spe 45 and atk 30 leave it nothing but a disciplined holding job."
     },
     {
       "id": 11,
       "name": "Metapod",
       "adjustments": {
         "PAC": -8,
-        "ACC": -10,
+        "ACC": -4,
         "DEF": 4
       },
       "bestRoles": [
@@ -286,7 +286,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Genus Cocoon with no usable limbs, signature Harden, and spe 30. It barely moves, so pace and acceleration drop, while def 55 and its hardened shell can block a lane."
+      "rationale": "Genus Cocoon with no usable limbs and spe 30 barely moves, so pace drops and ACC 33 takes a smaller trim now that spe drives it. Def 55 and its hard shell can block a lane."
     },
     {
       "id": 12,
@@ -316,7 +316,7 @@
       "id": 13,
       "name": "Weedle",
       "adjustments": {
-        "ACC": -6,
+        "ACC": -3,
         "PAC": -3
       },
       "bestRoles": [
@@ -337,14 +337,14 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Genus Hairy Bug crawling on an armor shape at height 3, so ACC 71 overstates a caterpillar. The head stinger gives it some bite in a holding role despite atk 35."
+      "rationale": "Genus Hairy Bug crawling on an armor shape at height 3, so ACC 54 sits slightly high for a caterpillar with spe 50 and takes a small trim. The head stinger gives it some bite in a holding role despite atk 35."
     },
     {
       "id": 14,
       "name": "Kakuna",
       "adjustments": {
         "PAC": -8,
-        "ACC": -10,
+        "ACC": -4,
         "DEF": 4
       },
       "bestRoles": [
@@ -365,7 +365,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Genus Cocoon with spe 35 and signature Harden is close to immobile, so pace and acceleration drop. Def 50 and a hard shell make it a static blocker at best."
+      "rationale": "Genus Cocoon on a squiggle shape with spe 35 is close to immobile, so pace drops and ACC 39 takes a smaller trim now that spe drives it. Def 50 and a hard shell make it a static blocker at best."
     },
     {
       "id": 15,
@@ -490,7 +490,7 @@
         "size",
         "durability"
       ],
-      "rationale": "Genus Mouse with spe 72 at height 3, plus ability Hustle and Guts, so ACC 93 fits a darting quadruped. Hp 30 and def 35 make it fragile in contact."
+      "rationale": "Genus Mouse with spe 72 at height 3, plus ability Hustle and Guts, so ACC 82 fits a darting quadruped. Hp 30 and def 35 make it fragile in contact."
     },
     {
       "id": 20,
@@ -982,7 +982,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Genus Balloon, it inflates and floats, which earns a small aerial bump over AER 47. Hp 115 drives STA 71, while spe 20 and height 5 rule out running roles."
+      "rationale": "Genus Balloon, it inflates and floats, which earns a small aerial bump over AER 47. Hp 115 drives STA 85, while spe 20 and height 5 rule out running roles."
     },
     {
       "id": 40,
@@ -1480,7 +1480,7 @@
         "close-control",
         "kicking-technique"
       ],
-      "rationale": "Signature Extreme Speed on spe 95, yet ACC 62 lags because weight 1550 drags it. A big quadruped dog with ability Intimidate still reaches top speed in a stride."
+      "rationale": "Signature Extreme Speed on spe 95, yet ACC 76 still lags its speed because weight 1550 drags it. A big quadruped dog with ability Intimidate still reaches top speed in a stride, so ACC rises."
     },
     {
       "id": 60,
@@ -1830,7 +1830,6 @@
       "id": 74,
       "name": "Geodude",
       "adjustments": {
-        "KIC": -8,
         "DRI": -5
       },
       "bestRoles": [
@@ -1852,7 +1851,7 @@
         "kicking-technique",
         "footwork"
       ],
-      "rationale": "Genus Rock on an arms shape, a boulder with two arms and no legs, so KIC 48 and DRI 33 are too generous. Def 100 and rock fists suit a keeper or blocker."
+      "rationale": "Genus Rock on an arms shape, a boulder with two arms and no legs. Layer 1 already applied KIC -8 for the arms shape, but DRI 33 is still too generous for a body that rolls. Def 100 and rock fists suit a keeper or blocker."
     },
     {
       "id": 75,
@@ -1929,7 +1928,7 @@
         "handling",
         "durability"
       ],
-      "rationale": "Genus Fire Horse with spe 90 on a quadruped shape is built to gallop long distances, so STA 42 from hp 50 undersells it. Hooves cannot handle the ball, and def 55 is light."
+      "rationale": "Genus Fire Horse with spe 90 on a quadruped shape is built to gallop long distances, so STA 43 from hp 50 undersells it. Hooves cannot handle the ball, and def 55 is light."
     },
     {
       "id": 78,
@@ -1955,13 +1954,12 @@
         "handling",
         "close-control"
       ],
-      "rationale": "Genus Fire Horse with spe 105 is a long-striding galloper, so STA 60 from hp 65 is too low for a horse. Weight 950 and kickMoves double-kick back its power."
+      "rationale": "Genus Fire Horse with spe 105 is a long-striding galloper, so STA 59 from hp 65 is too low for a horse. Weight 950 and kickMoves double-kick back its power."
     },
     {
       "id": 79,
       "name": "Slowpoke",
       "adjustments": {
-        "ACC": -5,
         "REF": -4
       },
       "bestRoles": [
@@ -1983,7 +1981,7 @@
         "acceleration",
         "reflexes"
       ],
-      "rationale": "Genus Dopey with spe 15 and abilities Oblivious and Own Tempo, its whole identity is slow reaction, so acceleration and reflexes drop further. Hp 90 makes it hard to unsettle."
+      "rationale": "Genus Dopey with spe 15 and abilities Oblivious and Own Tempo, its whole identity is slow reaction. Spe 15 already pins ACC at 28, so only reflexes drop further. Hp 90 makes it hard to unsettle."
     },
     {
       "id": 80,
@@ -2034,7 +2032,7 @@
         "strength",
         "kicking-technique"
       ],
-      "rationale": "Genus Magnet on an arms shape at height 3 and weight 60, floating with no legs, already penalised in KIC 35. Spa 95 and def 70 suit a holding role."
+      "rationale": "Genus Magnet on an arms shape at height 3 and weight 60, floating with no legs, already penalised to KIC 27 by the Layer 1 KIC -8. Spa 95 and def 70 suit a holding role."
     },
     {
       "id": 82,
@@ -2317,7 +2315,6 @@
       "id": 93,
       "name": "Haunter",
       "adjustments": {
-        "KIC": -6,
         "DRI": -5
       },
       "bestRoles": [
@@ -2339,7 +2336,7 @@
         "strength",
         "footwork"
       ],
-      "rationale": "Genus Gas with weight 1, a floating head and two disembodied hands, with no legs at all. The arms shape left KIC 45 and DRI 77 too high for a creature that cannot kick."
+      "rationale": "Genus Gas with weight 1, a floating head and two disembodied hands, with no legs at all. Layer 1 already applied KIC -8 for the arms shape, but DRI 77 is still too high for a creature that cannot kick."
     },
     {
       "id": 94,
@@ -2842,7 +2839,7 @@
         "tackling",
         "shot-power"
       ],
-      "rationale": "Hp 250 drives STA 89, and ability Healer and Natural Cure fit a selfless midfielder. Atk 5 and def 5 make it useless in contact or shooting."
+      "rationale": "Hp 250 drives STA 96, and ability Healer and Natural Cure fit a selfless midfielder. Atk 5 and def 5 make it useless in contact or shooting."
     },
     {
       "id": 114,
@@ -2892,7 +2889,7 @@
         "agility",
         "vision"
       ],
-      "rationale": "Genus Parent at height 22 and weight 800 with hp 105 and spe 90, protective and powerful, already in PHY 85 and STA 89. Spa 40 limits its vision."
+      "rationale": "Genus Parent at height 22 and weight 800 with hp 105 and spe 90, protective and powerful, already in PHY 85 and STA 90. Spa 40 limits its vision."
     },
     {
       "id": 116,
@@ -3290,7 +3287,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Genus Transport with hp 130 and weight 2200 on a fish shape, so slow but steady, as PAC 33 and STA 87 show. Spd 95 supports a calm central role."
+      "rationale": "Genus Transport with hp 130 and weight 2200 on a fish shape, so slow but steady, as PAC 33 and STA 88 show. Spd 95 supports a calm central role."
     },
     {
       "id": 132,
@@ -3338,7 +3335,7 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Genus Evolution with balanced stats near 55 and ability Adaptability on a small quadruped of height 3. Quick and nimble, already shown in ACC 78."
+      "rationale": "Genus Evolution with balanced stats near 55 and ability Adaptability on a small quadruped of height 3. Quick and nimble enough for its spe, already shown in ACC 62."
     },
     {
       "id": 134,
@@ -3362,7 +3359,7 @@
         "acceleration",
         "tackling"
       ],
-      "rationale": "Hp 130 drives STA 90 and spa 110 drives VIS 90, so an endless overlapping runner. Atk 65 and a quadruped shape keep it out of finishing roles."
+      "rationale": "Hp 130 drives STA 94 and spa 110 drives VIS 90, so an endless overlapping runner. Atk 65 and a quadruped shape keep it out of finishing roles."
     },
     {
       "id": 135,
@@ -3589,7 +3586,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Genus Sleeping at weight 4600, its identity is a huge body that blocks a whole path, so keeper positioning rises. Hp 160 drove STA 94, but a sleeper that rarely moves lacks work rate."
+      "rationale": "Genus Sleeping at weight 4600, its identity is a huge body that blocks a whole path, so keeper positioning rises. Hp 160 drove STA 96, but a sleeper that rarely moves lacks work rate."
     },
     {
       "id": 144,

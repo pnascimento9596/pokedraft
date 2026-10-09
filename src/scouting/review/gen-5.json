@@ -328,7 +328,7 @@
         "size",
         "strength"
       ],
-      "rationale": "Height 0.4 m and weight 4.1 kg make a tiny quadruped with ACC 77 off spe 55; ability Vital Spirit already added STA in Layer 1, so it stays an energetic wide runner with no adjustment."
+      "rationale": "Height 0.4 m and weight 4.1 kg make a tiny quadruped with ACC 61 off spe 55; ability Vital Spirit already added STA in Layer 1, so it stays an energetic wide runner with no adjustment."
     },
     {
       "id": 507,
@@ -402,7 +402,7 @@
         "strength",
         "stamina"
       ],
-      "rationale": "Spe 66 and ACC 86 on a 10.1 kg quadruped favour quick, sly wide play; genus Devious and ability Prankster suit an unpredictable winger, and def 37 rules out defending."
+      "rationale": "Spe 66 and ACC 76 on a 10.1 kg quadruped favour quick, sly wide play; genus Devious and ability Prankster suit an unpredictable winger, and def 37 rules out defending."
     },
     {
       "id": 510,
@@ -1970,7 +1970,7 @@
         "strength",
         "size"
       ],
-      "rationale": "A 5.8 kg quadruped with spe 75 and ACC 90 is a darting wide runner; abilities Technician and Skill Link already nudged TEC and SHO in Layer 1, so no change."
+      "rationale": "A 5.8 kg quadruped with spe 75 and ACC 80 is a darting wide runner; abilities Technician and Skill Link already nudged TEC and SHO in Layer 1, so no change."
     },
     {
       "id": 573,
@@ -2421,7 +2421,6 @@
       "id": 591,
       "name": "Amoonguss",
       "adjustments": {
-        "KIC": -6,
         "HAN": -5
       },
       "bestRoles": [
@@ -2442,7 +2441,7 @@
         "acceleration",
         "kicking-technique"
       ],
-      "rationale": "Hp 114 and ability Regenerator give a durable, tireless holding mid, but a 0.6 m mushroom with no real feet and cap-shaped arms does not merit KIC 78 or HAN 85, so both are trimmed."
+      "rationale": "Hp 114 and ability Regenerator give a durable, tireless holding mid. Layer 1 already applied KIC -8 for the arms shape, but a 0.6 m mushroom with cap-shaped arms does not merit HAN 85, so it is trimmed."
     },
     {
       "id": 592,
@@ -3224,7 +3223,7 @@
         "acceleration",
         "close-control"
       ],
-      "rationale": "Height 2.8 m and weight 330 kg with atk 124 make a towering presence, dominant in the air at both ends; spe 55 and ACC 25 keep it central, and the baseline already says so."
+      "rationale": "Height 2.8 m and weight 330 kg with atk 124 make a towering presence, dominant in the air at both ends; spe 55 and ACC 34 keep it central, and the baseline already says so."
     },
     {
       "id": 624,
@@ -3277,7 +3276,7 @@
         "acceleration",
         "handling"
       ],
-      "rationale": "Atk 125 and def 100 make a hard-tackling centre-back or forward, but genus Sword Blade means blades for hands, so the HAN and DIV bonuses from Layer 1 are cut; spe 70 with ACC 44 is not quick off the mark."
+      "rationale": "Atk 125 and def 100 make a hard-tackling centre-back or forward, but genus Sword Blade means blades for hands, so the HAN and DIV bonuses from Layer 1 are cut; spe 70 with ACC 56 is not quick off the mark."
     },
     {
       "id": 626,
@@ -3667,7 +3666,6 @@
       "id": 641,
       "name": "Tornadus",
       "adjustments": {
-        "KIC": -8,
         "TEC": -5,
         "DRI": -4
       },
@@ -3690,13 +3688,12 @@
         "kicking-technique",
         "footwork"
       ],
-      "rationale": "Spe 111 and spa 125 with ability Prankster make a quick, tricky creator, but its lower body is a cloud rather than legs, so TEC, DRI and KIC come down from the stat-driven baseline."
+      "rationale": "Spe 111 and spa 125 with ability Prankster make a quick, tricky creator, but its lower body is a cloud rather than legs. Layer 1 already applied KIC -8 for the arms shape, so only TEC and DRI come down from the stat-driven baseline."
     },
     {
       "id": 642,
       "name": "Thundurus",
       "adjustments": {
-        "KIC": -8,
         "TEC": -5,
         "DRI": -4
       },
@@ -3719,7 +3716,7 @@
         "kicking-technique",
         "footwork"
       ],
-      "rationale": "It shares Tornadus's spe 111 and atk 115 with an electric/flying type and also floats on a cloud with no legs, so TEC, DRI and KIC trim, leaving a quick aerial forward; ability Defiant fits its aggression."
+      "rationale": "It shares Tornadus's spe 111 and atk 115 with an electric/flying type and also floats on a cloud with no legs. Layer 1 already applied KIC -8 for the arms shape, so only TEC and DRI trim, leaving a quick aerial forward; ability Defiant fits its aggression."
     },
     {
       "id": 643,
@@ -3744,7 +3741,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Height 3.2 m and weight 330 kg with spa 150 and atk 120 make a towering defender with passing range; ACC 45 shows it is slow to start, and Layer 1 already handled its wings, so no change."
+      "rationale": "Height 3.2 m and weight 330 kg with spa 150 and atk 120 make a towering defender with passing range; ACC 64 shows it is slow to start, and Layer 1 already handled its wings, so no change."
     },
     {
       "id": 644,
@@ -3769,13 +3766,12 @@
         "acceleration",
         "close-control"
       ],
-      "rationale": "Atk 150 at height 2.9 m and weight 345 kg gives overwhelming power in the box at either end; ACC 48 limits sharp movement and the baseline already reflects its bulk."
+      "rationale": "Atk 150 at height 2.9 m and weight 345 kg gives overwhelming power in the box at either end; ACC 67 limits sharp movement and the baseline already reflects its bulk."
     },
     {
       "id": 645,
       "name": "Landorus",
       "adjustments": {
-        "KIC": -8,
         "TEC": -5
       },
       "bestRoles": [
@@ -3797,7 +3793,7 @@
         "kicking-technique",
         "footwork"
       ],
-      "rationale": "Atk 125 and spa 115 with strong arms give it handling and power, but like Tornadus it floats on a cloud without legs, so TEC and KIC are trimmed and goal becomes its natural home."
+      "rationale": "Atk 125 and spa 115 with strong arms give it handling and power, but like Tornadus it floats on a cloud without legs. Layer 1 already applied KIC -8 for the arms shape, so only TEC is trimmed and goal becomes its natural home."
     },
     {
       "id": 646,
@@ -3822,7 +3818,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Hp 125 with atk and spa 130 at height 3.0 m and weight 325 kg give a towering, tireless central anchor; spe 95 is decent for its size, but ACC 50 shows a slow start, consistent with the baseline."
+      "rationale": "Hp 125 with atk and spa 130 at height 3.0 m and weight 325 kg give a towering, tireless central anchor; spe 95 is decent for its size, but ACC 68 shows a slow start, consistent with the baseline."
     },
     {
       "id": 647,
@@ -3900,7 +3896,7 @@
         "stamina",
         "acceleration"
       ],
-      "rationale": "Atk and spa 120 with spe 99 and kickMoves blaze-kick on an upright 82.5 kg frame make a complete attacker, and its back-mounted cannon identity fits long-range shooting; the baseline already captures it."
+      "rationale": "Atk and spa 120 with spe 99 and kickMoves blaze-kick on a shape humanoid frame of 82.5 kg make a complete attacker, and its back-mounted cannon identity fits long-range shooting; the baseline already captures it."
     }
   ]
 }

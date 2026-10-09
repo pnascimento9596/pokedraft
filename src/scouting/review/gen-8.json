@@ -249,7 +249,7 @@
         "pace",
         "size"
       ],
-      "rationale": "Spe 25 and height 3 keep it slow and tiny, while hp 70 gives it the relative engine of STA 52. Ability Cheek Pouch fits a scurrying, ball-hoarding role in midfield rather than out wide."
+      "rationale": "Spe 25 and height 3 keep it slow and tiny, while hp 70 gives it the relative engine of STA 59. Ability Cheek Pouch fits a scurrying, ball-hoarding role in midfield rather than out wide."
     },
     {
       "id": 820,
@@ -278,7 +278,7 @@
         "acceleration",
         "aerial"
       ],
-      "rationale": "Hp 120 and def 95 make it a sturdy holding player, but height 6 is too short for AER 58 and its stubby forepaws do not earn HAN 85. Ability Gluttony and spe 20 argue against STA 92."
+      "rationale": "Hp 120 and def 95 make it a sturdy holding player, but height 6 is too short for AER 58 and its stubby forepaws do not earn HAN 85. Ability Gluttony and spe 20 argue against STA 93."
     },
     {
       "id": 821,
@@ -760,7 +760,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "A 28 dm, 310 kg humanoid coal heap with def 120 is a wall, but spe 30 and that mass do not sustain STA 94. Layer 1 credited mega-kick for TEC, which overstates touch for a walking slag heap."
+      "rationale": "A 28 dm, 310 kg humanoid coal heap with def 120 is a wall, but spe 30 and that mass do not sustain STA 93. Layer 1 credited mega-kick for TEC, which overstates touch for a walking slag heap."
     },
     {
       "id": 840,
@@ -966,9 +966,7 @@
     {
       "id": 848,
       "name": "Toxel",
-      "adjustments": {
-        "TEC": -3
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "AM",
@@ -987,7 +985,7 @@
         "composure",
         "footwork"
       ],
-      "rationale": "IsBaby penalties are already applied, and its hidden ability Klutz marks it as clumsy, so TEC drops slightly. Spa 54 is its only notable stat."
+      "rationale": "IsBaby penalties are already applied, and Layer 1 already cut TEC and HAN for its hidden ability Klutz, so no further trim. Spa 54 is its only notable stat."
     },
     {
       "id": 849,
@@ -1729,7 +1727,7 @@
         "stamina",
         "size"
       ],
-      "rationale": "Spe 97 on a 3 dm, 3 kg body gives explosive bursts, already in ACC 97 and DRI 99. Ability Hunger Switch flips its mood as it runs out of energy, so STA drops and unpredictability fits."
+      "rationale": "Spe 97 on a 3 dm, 3 kg body gives explosive bursts, already in ACC 96 and DRI 99. Ability Hunger Switch flips its mood as it runs out of energy, so STA drops and unpredictability fits."
     },
     {
       "id": 878,
@@ -1860,7 +1858,7 @@
         "handling",
         "agility"
       ],
-      "rationale": "Ability Strong Jaw and atk 90 on a 215 kg body give a biting enforcer. Shape legs means no hands or arms, so HAN 85 and DIV 90 overstate it as a keeper."
+      "rationale": "Ability Strong Jaw and atk 90 on a 215 kg body give a biting enforcer. Shape legs means no hands or arms, so HAN 85 and DIV 88 overstate it as a keeper."
     },
     {
       "id": 883,
@@ -1884,7 +1882,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Def 100 and hp 90 make it sturdy, and Layer 1 already applied heavy shape fish penalties that leave ACC 8. It can only hold a central position."
+      "rationale": "Def 100 and hp 90 make it sturdy, and Layer 1 already applied heavy shape fish penalties that leave ACC 17. It can only hold a central position."
     },
     {
       "id": 884,
@@ -1933,7 +1931,7 @@
         "size",
         "stamina"
       ],
-      "rationale": "Spe 82 and ghost type on a 5 dm, 2 kg body give darting movement, already in ACC 91. Hp 28 and def 30 leave nothing physical."
+      "rationale": "Spe 82 and ghost type on a 5 dm, 2 kg body give darting movement, already in ACC 84. Hp 28 and def 30 leave nothing physical."
     },
     {
       "id": 886,
@@ -2234,7 +2232,7 @@
         "tackling",
         "handling"
       ],
-      "rationale": "Spe 130 and spa 145 on a 20 dm quadruped horse drive PAC 96 and VIS 90, and its horse build supports STA 82. Def 60 and shape quadruped limit defensive and goalkeeping value."
+      "rationale": "Spe 130 and spa 145 on a 20 dm quadruped horse drive PAC 96 and VIS 90, and its horse build supports STA 87. Def 60 and shape quadruped limit defensive and goalkeeping value."
     },
     {
       "id": 898,

@@ -23,7 +23,7 @@
         "strength",
         "aerial"
       ],
-      "rationale": "Spe 70 on a height 5 gecko gives quick feet and the baseline DRI 76 and ACC 86 already reflect it; weight 50 and def 35 leave it easy to knock off the ball."
+      "rationale": "Spe 70 on a height 5 gecko gives quick feet and the baseline DRI 76 and ACC 76 already reflect it; weight 50 and def 35 leave it easy to knock off the ball."
     },
     {
       "id": 253,
@@ -217,7 +217,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Weight 819 and height 15 with hp 100 and atk 110 make it a powerful anchor; spe 60 and ACC 38 rule out wide work, and its upright shape with big arms keeps GK viable."
+      "rationale": "Weight 819 and height 15 with hp 100 and atk 110 make it a powerful anchor; spe 60 and ACC 48 rule out wide work, and its upright shape with big arms keeps GK viable."
     },
     {
       "id": 261,
@@ -346,7 +346,7 @@
       "id": 266,
       "name": "Silcoon",
       "adjustments": {
-        "ACC": -8
+        "ACC": -4
       },
       "bestRoles": [
         "CB",
@@ -366,7 +366,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Genus Cocoon with ball shape and spe 15 is close to immobile, so ACC 37 overstates its burst; def 55 is the only thing it brings."
+      "rationale": "Genus Cocoon with ball shape and spe 15 is close to immobile, so ACC 30 takes a small trim for a body that cannot move; def 55 is the only thing it brings."
     },
     {
       "id": 267,
@@ -398,7 +398,7 @@
       "id": 268,
       "name": "Cascoon",
       "adjustments": {
-        "ACC": -8
+        "ACC": -4
       },
       "bestRoles": [
         "CB",
@@ -418,7 +418,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Ball-shaped cocoon at height 7 with spe 15 barely moves, so ACC 35 is too generous; def 55 is its only usable trait."
+      "rationale": "Ball-shaped cocoon at height 7 with spe 15 barely moves, so ACC 29 takes a small trim for a body that cannot move; def 55 is its only usable trait."
     },
     {
       "id": 269,
@@ -1079,7 +1079,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Genus Loud Noise with hp 104 and weight 840 makes a commanding midfield body; spe 68 and ACC 44 limit its range."
+      "rationale": "Genus Loud Noise with hp 104 and weight 840 makes a commanding midfield body; spe 68 and ACC 56 limit its range."
     },
     {
       "id": 296,
@@ -2427,8 +2427,7 @@
       "id": 351,
       "name": "Castform",
       "adjustments": {
-        "PHY": -8,
-        "DRI": -4
+        "PHY": -8
       },
       "bestRoles": [
         "WM",
@@ -2448,7 +2447,7 @@
         "size",
         "durability"
       ],
-      "rationale": "Weight 8 and height 3 make it a tiny cloud, so physicality falls hard; ball shape with no feet also trims DRI 73, while spe 70 keeps it lively."
+      "rationale": "Weight 8 and height 3 make it a tiny cloud, so physicality falls hard. Ball shape with no feet already costs it DRI 22 in Layer 1, so DRI 61 needs no further trim, while spe 70 keeps it lively."
     },
     {
       "id": 352,
@@ -2788,7 +2787,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Hp 110 and weight 1506 on a quadruped walrus with tusks make a sturdy anchor; spe 65 and ACC 40 limit its range."
+      "rationale": "Hp 110 and weight 1506 on a quadruped walrus with tusks make a sturdy anchor; spe 65 and ACC 52 limit its range."
     },
     {
       "id": 366,
