@@ -45,8 +45,12 @@ describe("Layer 1 baseline", () => {
     expect(COEFFICIENTS.moves.points.protect).toBe(0);
   });
 
-  it("caps kick-move points at 12 for KIC (Hitmonlee knows many kicks)", () => {
-    expect(all.get(speciesByName("Hitmonlee").id)!.breakdown.KIC.moves).toBe(12);
+  it("caps kick-move points at 24 for KIC (Hitmonlee's 32 points clip)", () => {
+    expect(all.get(speciesByName("Hitmonlee").id)!.breakdown.KIC.moves).toBe(24);
+  });
+
+  it("does not flatten a deep kicking learnset to a single kick (Hitmontop scores 22)", () => {
+    expect(all.get(speciesByName("Hitmontop").id)!.breakdown.KIC.moves).toBe(22);
   });
 
   it("scores only moves listed in move-traits.json", () => {
