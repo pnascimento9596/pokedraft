@@ -28,3 +28,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - name: Rebuild data artifacts and require zero diff
+        run: |
+          pnpm data:pokedex
+          git diff --exit-code -- src/data
