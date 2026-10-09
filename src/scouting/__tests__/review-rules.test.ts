@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { POKEDEX } from "@/data/pokedex";
 import { SCOUTING } from "../scouting-data";
 
 describe("Layer 2 review rules", () => {
@@ -6,6 +7,14 @@ describe("Layer 2 review rules", () => {
     const bad = SCOUTING.filter(
       (s) =>
         s.weaknesses.includes("pace") && (s.bestRoles.includes("W") || s.bestRoles.includes("WB")),
+    ).map((s) => s.name);
+    expect(bad).toEqual([]);
+  });
+
+  it("never lists W or WB as a best role for a species with spe 30 or less, tagged or not (Azurill, Kricketot)", () => {
+    const bad = SCOUTING.filter(
+      (s) =>
+        POKEDEX[s.id - 1]!.spe <= 30 && (s.bestRoles.includes("W") || s.bestRoles.includes("WB")),
     ).map((s) => s.name);
     expect(bad).toEqual([]);
   });
