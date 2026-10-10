@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { runCup } from "../cup";
 import { buildLadder } from "../opponents";
+import * as engine from "..";
 import { CUP_ROUNDS, type FullLineup, type Seed } from "../types";
 
 const P75 = {
@@ -134,5 +135,19 @@ describe("buildLadder", () => {
       ["cinnabar-fc", 994],
     ]);
     expect(ladder.F.lines).toEqual({ GK: 103.4, DEF: 103.4, MID: 96.4, ATT: 99.4 });
+  });
+});
+
+describe("exact ladder (catches the UI showing a nominal ladder or a nameless unplayed match)", () => {
+  it("exports buildLadder from the engine index, the same ladder the cup plays", () => {
+    expect(engine.buildLadder("golden-1", "kanto151")).toEqual(buildLadder("golden-1", "kanto151"));
+  });
+
+  it("names every unplayed match's opponent and rating, matching the run's ladder", () => {
+    const r = runCup(WEAK, "golden-177" as Seed, "cup8");
+    const ladder = buildLadder("golden-177", "cup8");
+    const unplayed = r.matches.filter((m) => m.status === "notPlayed");
+    expect(unplayed.map((m) => m.round)).toEqual(["R16", "QF", "SF", "F"]);
+    for (const m of unplayed) expect(m.opponent).toEqual(ladder[m.round]);
   });
 });
