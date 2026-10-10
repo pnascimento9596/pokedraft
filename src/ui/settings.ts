@@ -58,18 +58,6 @@ export function savePanel(panel: PanelSettings): void {
 
 export type ChallengeMode = "cup8" | "kanto151";
 
-export function challengeSettings(mode: ChallengeMode, panel: PanelSettings): DraftSettings {
-  return mode === "cup8"
-    ? {
-        mode: "cup8",
-        formation: panel.formation,
-        gens: panel.gens,
-        style: panel.style,
-        order: panel.order,
-      }
-    : { mode: "kanto151", formation: panel.formation, order: panel.order };
-}
-
 export function builderSettings(panel: PanelSettings): DraftSettings {
   return {
     mode: "builder",

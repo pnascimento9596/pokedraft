@@ -1,4 +1,11 @@
-import type { CupFinish, CupResult, DraftSettings, FormationId } from "@/engine";
+import { z } from "zod";
+import {
+  FORMATION_IDS,
+  type CupFinish,
+  type CupResult,
+  type DraftSettings,
+  type FormationId,
+} from "@/engine";
 import { MODE_LABEL, STYLE_LABEL } from "./labels";
 import { readJson, writeJson } from "./storage";
 
@@ -42,12 +49,38 @@ export interface BucketStats {
   } | null;
 }
 
+// Saved data comes from a browser that may hold older or damaged values, so every read is
+// validated and anything that does not fit is dropped instead of reaching the screen.
+const Count = z.number().int().nonnegative();
+const RunRecordSchema = z.object({
+  token: z.string().min(1),
+  bucket: z.enum(STAT_BUCKETS),
+  friendly: z.boolean(),
+  formation: z.enum(FORMATION_IDS as unknown as [FormationId, ...FormationId[]]),
+  score: z.number().finite(),
+  wins: Count,
+  draws: Count,
+  losses: Count,
+  finish: z.enum(["group", "R32", "R16", "QF", "SF", "F", "champion"]),
+  flawless: z.boolean(),
+  at: z.string().min(1),
+});
+const BucketStatsSchema = z.object({
+  runs: Count,
+  bestScore: z.number().finite().nullable(),
+  bestRecord: z.object({ wins: Count, draws: Count, losses: Count }).nullable(),
+});
+
 const HISTORY_KEY = "pokedraft:history:v1";
 export const HISTORY_LIMIT = 50;
 
 export function loadHistory(): readonly RunRecord[] {
   const raw = readJson<unknown>(HISTORY_KEY, []);
-  return Array.isArray(raw) ? (raw as RunRecord[]) : [];
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((entry) => {
+    const parsed = RunRecordSchema.safeParse(entry);
+    return parsed.success ? [parsed.data] : [];
+  });
 }
 
 export function toRecord(
@@ -84,8 +117,8 @@ export function loadStats(): Readonly<Record<StatBucket, BucketStats>> {
   const out = emptyStats();
   if (typeof raw !== "object" || raw === null) return out;
   for (const b of STAT_BUCKETS) {
-    const v = (raw as Record<string, BucketStats | undefined>)[b];
-    if (v !== undefined && typeof v.runs === "number") out[b] = v;
+    const parsed = BucketStatsSchema.safeParse((raw as Record<string, unknown>)[b]);
+    if (parsed.success) out[b] = parsed.data;
   }
   return out;
 }

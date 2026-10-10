@@ -1,5 +1,21 @@
+/* next/font ships no fallback metrics for the renamed Big Shoulders family, so the headings jump
+   when the web font arrives. This face makes Arial Bold take the same room. Values come from
+   Next's bundled capsize table for Big Shoulders Display at weight 800 (xWidthAvg 750 of 2000,
+   ascent 1968, descent 426) against Arial Bold (xWidthAvg 983 of 2048):
+   size-adjust 750/2000 / (983/2048) = 78.13%, ascent 0.984 / 0.7813 = 125.94%,
+   descent 0.213 / 0.7813 = 27.26%. */
+@font-face {
+  font-family: "Big Shoulders Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 700 900;
+  size-adjust: 78.13%;
+  ascent-override: 125.94%;
+  descent-override: 27.26%;
+  line-gap-override: 0%;
+}
+
 :root {
-  --font-display: var(--font-shoulders), "Arial Narrow", sans-serif;
+  --font-display: var(--font-shoulders), "Big Shoulders Fallback", "Arial Narrow", sans-serif;
   --font-body: var(--font-barlow), "Helvetica Neue", sans-serif;
 
   --night: #060d0a;

@@ -39,8 +39,10 @@ export function RollReveal({ stages, instant, onDone }: RollRevealProps) {
     return () => window.clearTimeout(id);
   }, [instant, progress, last, onDone]);
 
-  const settledCount = shown.state === "settled" ? shown.index + 1 : shown.index;
-  const line = stages.slice(0, settledCount).map(announce).join(" ");
+  // One announcement, after the last wheel stops. A growing line would make a screen reader
+  // read the region again when the type lands.
+  const line =
+    shown.state === "settled" && shown.index === last ? stages.map(announce).join(" ") : "";
 
   return (
     <div className={s.reveal}>

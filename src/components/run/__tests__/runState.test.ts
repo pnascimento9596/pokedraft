@@ -4,9 +4,10 @@ import { candidatesFor, startRun, step, type Run } from "../runState";
 
 const SETTINGS: DraftSettings = { mode: "kanto151", formation: "4-3-3", order: "squadFirst" };
 
-const starter = (index: number): SlotRef => ({ kind: "starter", index });
+type StarterIndex = Extract<SlotRef, { kind: "starter" }>["index"];
+const starter = (index: StarterIndex): SlotRef => ({ kind: "starter", index });
 
-function pickInto(run: Run, index: number): Run {
+function pickInto(run: Run, index: StarterIndex): Run {
   const species = candidatesFor(run.state)[0]!;
   return step(run, { type: "pick", species, slot: starter(index) });
 }

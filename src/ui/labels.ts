@@ -7,7 +7,6 @@ import type {
   Mode,
   PokemonType,
   Region,
-  Role,
 } from "@/engine";
 
 export const REGION_LABEL: Readonly<Record<Region, string>> = {
@@ -90,19 +89,6 @@ export const FINISH_LABEL: Readonly<Record<CupFinish, string>> = {
   SF: "Out in the semi-final",
   F: "Runner-up",
   champion: "Champions",
-};
-
-export const ROLE_LABEL: Readonly<Record<Role, string>> = {
-  GK: "Goalkeeper",
-  CB: "Centre-back",
-  FB: "Full-back",
-  WB: "Wing-back",
-  DM: "Defensive mid",
-  CM: "Central mid",
-  AM: "Attacking mid",
-  WM: "Wide mid",
-  W: "Winger",
-  ST: "Striker",
 };
 
 export function tagLabel(tag: string): string {

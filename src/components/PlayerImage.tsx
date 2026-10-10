@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { hasImage, imagePath, resolvePack } from "@/images/packs";
-import { readSettings, useImageSettings } from "@/images/settings";
+import { useImageSettings } from "@/images/settings";
 import { Blank, Picture, drawnSize } from "./PlayerPicture";
 
 // The player's picture. It follows the pack the player chose (settings), so it needs React state
@@ -37,22 +37,4 @@ export function PlayerImage({ dexId, size, alt, pack, eager }: PlayerImageProps)
       onError={() => setFailed(src)}
     />
   );
-}
-
-/**
- * Starts loading and decoding the pictures for these ids so a spin never lands on one that has
- * not arrived. Resolves when they are ready (or failed). Browsers without `decode` resolve at once.
- */
-export function preloadCreatures(dexIds: readonly number[], pack?: string): Promise<void> {
-  if (typeof Image === "undefined" || !("decode" in Image.prototype)) return Promise.resolve();
-  const chosen = resolvePack(pack, readSettings().pack);
-  const jobs = [...new Set(dexIds)]
-    .filter((id) => hasImage(chosen, id))
-    .map((id) => {
-      const img = new Image();
-      img.decoding = "async";
-      img.src = imagePath(chosen, id);
-      return img.decode().catch(() => undefined);
-    });
-  return Promise.all(jobs).then(() => undefined);
 }
