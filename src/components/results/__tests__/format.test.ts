@@ -103,6 +103,20 @@ describe("results format", () => {
     expect(shootoutLine(m)).toBe("4-3 on pens");
   });
 
+  it("throws on a decider no engine issued, naming it, instead of returning undefined (catches the missing default)", () => {
+    const m = knockout({
+      shootout: {
+        user: 4,
+        opp: 3,
+        keeper: sp(1),
+        kicks: kicks(4, false, false),
+        decider: "lottery" as never,
+        coinWinner: null,
+      },
+    });
+    expect(() => shootoutLine(m)).toThrow('Unknown shootout decider "lottery"');
+  });
+
   it("adds extra-time goals to the regulation score so an a.e.t. scoreline is not stuck at 90 minutes", () => {
     const m = knockout({ regulation: { user: 1, opp: 1 }, extraTime: { user: 2, opp: 1 } });
     expect(finalScore(m)).toEqual({ user: 3, opp: 2 });
