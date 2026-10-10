@@ -45,6 +45,58 @@ describe("CSP report sink (catches a report-only policy whose violations nobody 
     ]);
   });
 
+  it("logs WebKit's single report object sent to report-uri", async () => {
+    const spy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const single = {
+      type: "csp-violation",
+      url: "http://localhost:3491/how-to-play?probe=webkit",
+      body: {
+        documentURL: "http://localhost:3491/how-to-play?probe=webkit",
+        disposition: "report",
+        effectiveDirective: "img-src",
+        blockedURL: "https://example.com:443/csp-probe.png",
+      },
+    };
+    const res = await POST(report(JSON.stringify(single), "application/csp-report"));
+    expect(res.status).toBe(204);
+    expect(lines(spy)).toEqual([
+      {
+        level: "warn",
+        where: "csp-report",
+        directive: "img-src",
+        blocked: "https://example.com",
+        page: "/how-to-play",
+        disposition: "report",
+      },
+    ]);
+  });
+
+  it("logs WebKit's hybrid report-uri body ({ type, csp-report })", async () => {
+    const spy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const hybrid = {
+      type: "csp-violation",
+      url: "http://localhost:3491/how-to-play?probe=webkit",
+      "csp-report": {
+        "document-uri": "http://localhost:3491/how-to-play?probe=webkit",
+        "violated-directive": "img-src",
+        "effective-directive": "img-src",
+        "blocked-uri": "https://example.com/csp-probe.png",
+        disposition: "report",
+      },
+    };
+    await POST(report(JSON.stringify(hybrid), "application/csp-report"));
+    expect(lines(spy)).toEqual([
+      {
+        level: "warn",
+        where: "csp-report",
+        directive: "img-src",
+        blocked: "https://example.com",
+        page: "/how-to-play",
+        disposition: "report",
+      },
+    ]);
+  });
+
   it("logs a legacy report-uri body the same way", async () => {
     const spy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const legacy = {

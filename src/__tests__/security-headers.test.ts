@@ -15,9 +15,8 @@ describe("security headers (catches a site that can be framed, sniffed or loaded
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
       "X-Frame-Options": "DENY",
-      "Reporting-Endpoints": 'csp="/api/csp-report"',
       "Content-Security-Policy-Report-Only":
-        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; report-to csp; report-uri /api/csp-report",
+        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; report-uri /api/csp-report",
     });
   });
 

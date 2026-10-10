@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 
-// Report-Only until a browser pass on a Preview deployment shows no violations; then rename the key
-// to Content-Security-Policy. No nonces: they force dynamic rendering. Development adds
-// 'unsafe-eval' because React uses eval for its dev-only error stacks.
+// Report-Only until the runtime log shows no csp-report lines from real devices; then rename the
+// key to Content-Security-Policy. No nonces: they force dynamic rendering. report-uri, not
+// report-to: headless Chromium never delivered a Reporting API batch, and WebKit logs an error
+// for a report-only policy with no report target. Development adds 'unsafe-eval' because React
+// uses eval for its dev-only error stacks.
 const CSP = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
@@ -14,6 +16,7 @@ const CSP = [
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
+  "report-uri /api/csp-report",
 ].join("; ");
 
 const SECURITY_HEADERS = [
