@@ -7,8 +7,20 @@ export function cardHref(source: CardSource): string {
   return `/card?${q.toString()}`;
 }
 
-// Contract stub. The results workstream implements the fetch and the file save.
 export async function downloadCard(source: CardSource, filename: string): Promise<void> {
-  void source;
-  void filename;
+  const res = await fetch(cardHref(source));
+  if (!res.ok) throw new Error(`card request failed with ${res.status}`);
+  const type = res.headers.get("content-type") ?? "";
+  if (!type.startsWith("image/png")) throw new Error(`card is ${type || "untyped"}, not a PNG`);
+  const url = URL.createObjectURL(await res.blob());
+  try {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.append(a);
+    a.click();
+    a.remove();
+  } finally {
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
 }
