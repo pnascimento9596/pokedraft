@@ -6,9 +6,9 @@ import { readJson, writeJson } from "@/ui/storage";
 type Theme = "system" | "light" | "dark";
 const NEXT: Readonly<Record<Theme, Theme>> = { system: "dark", dark: "light", light: "system" };
 const LABEL: Readonly<Record<Theme, string>> = {
-  system: "Theme: auto",
-  dark: "Theme: night",
-  light: "Theme: day",
+  system: "Auto",
+  dark: "Night",
+  light: "Day",
 };
 const KEY = "pokedraft:theme";
 
@@ -32,6 +32,7 @@ export function ThemeToggle() {
     <button
       type="button"
       className="btn btn--ghost btn--sm"
+      aria-label={`Theme: ${LABEL[theme].toLowerCase()}. Change theme`}
       onClick={() => {
         const next = NEXT[theme];
         apply(next);

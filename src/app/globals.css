@@ -369,8 +369,26 @@ select {
 .site-header nav {
   display: flex;
   align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
+  gap: 2px;
+}
+
+@media (max-width: 479px) {
+  .site-header {
+    padding-inline: 12px;
+  }
+  .site-header nav a {
+    padding: 6px 5px;
+    font-size: 0.78rem;
+  }
+  .site-header nav .btn {
+    padding-inline: 0.5em;
+  }
+}
+
+.site-header nav a,
+.site-header nav .btn,
+.site-header__brand {
+  white-space: nowrap;
 }
 
 .site-header nav a {
