@@ -22,18 +22,26 @@ export default defineConfig({
     colorScheme: "dark",
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] }, testIgnore: /mobile-acceptance/ },
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+      testIgnore: /mobile-(acceptance|targets)/,
+    },
     {
       name: "iphone-se",
       use: { ...devices["iPhone SE"] },
-      testMatch: /mobile-acceptance\.spec\.ts/,
+      testMatch: /mobile-(acceptance|targets)\.spec\.ts/,
     },
     {
       name: "iphone-14",
       use: { ...devices["iPhone 14"] },
-      testMatch: /mobile-acceptance\.spec\.ts/,
+      testMatch: /mobile-(acceptance|targets)\.spec\.ts/,
     },
-    { name: "pixel-7", use: { ...devices["Pixel 7"] }, testMatch: /mobile-acceptance\.spec\.ts/ },
+    {
+      name: "pixel-7",
+      use: { ...devices["Pixel 7"] },
+      testMatch: /mobile-(acceptance|targets)\.spec\.ts/,
+    },
   ],
   webServer: BASE_URL
     ? undefined
