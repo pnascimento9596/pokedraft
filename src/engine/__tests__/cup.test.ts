@@ -213,3 +213,77 @@ describe("scorer roles (catches defenders and holding midfielders scoring like f
     }
   });
 });
+
+describe("player of the tournament contribution (catches an opaque or role-blind award)", () => {
+  // Independent recompute: goals 3, assists 2, a clean sheet 2 in goal and 1 at CB, FB or DM
+  // (by the slot filled that match, so a WB or CM earns none), and 1 point per 180 minutes
+  // (90 a match, 120 after extra time).
+  const SHEET: Partial<Record<Role, number>> = { GK: 2, CB: 1, FB: 1, DM: 1 };
+  const round2 = (x: number) => Math.round(x * 100) / 100;
+
+  function recompute(l: FullLineup, r: CupResult) {
+    const slots = FORMATIONS[l.formation].slots;
+    const acc = new Map<
+      number,
+      { goals: number; assists: number; cs: number; csPts: number; min: number }
+    >();
+    const get = (id: number) => {
+      if (!acc.has(id)) acc.set(id, { goals: 0, assists: 0, cs: 0, csPts: 0, min: 0 });
+      return acc.get(id)!;
+    };
+    for (const m of r.matches) {
+      if (m.status !== "played") continue;
+      const role = new Map<number, Role>(l.starters.map((id, i) => [id, slots[i]!.role]));
+      for (const a of m.absences) {
+        role.delete(a.out);
+        if (a.in !== null) role.set(a.in, slots.find((s) => s.id === a.slot)!.role);
+      }
+      const conceded = m.goals.filter((g) => g.side === "opp").length;
+      for (const [id, rl] of role) {
+        const p = get(id);
+        p.min += m.extraTime === null ? 90 : 120;
+        if (conceded === 0 && SHEET[rl] !== undefined) {
+          p.cs += 1;
+          p.csPts += SHEET[rl]!;
+        }
+      }
+      for (const g of m.goals) {
+        if (g.side !== "user") continue;
+        get(g.scorer).goals += 1;
+        if (g.assist !== null) get(g.assist).assists += 1;
+      }
+    }
+    return [...acc].map(([species, p]) => ({
+      species,
+      goals: p.goals,
+      assists: p.assists,
+      cleanSheets: p.cs,
+      minutes: p.min,
+      points: {
+        goals: 3 * p.goals,
+        assists: 2 * p.assists,
+        cleanSheets: p.csPts,
+        minutes: round2(p.min / 180),
+      },
+      total: round2(3 * p.goals + 2 * p.assists + p.csPts + p.min / 180),
+    }));
+  }
+
+  const squads = [
+    KANTO,
+    { ...P75, formation: "4-2-3-1" } as FullLineup,
+    { ...MIDDLING, formation: "3-5-2" } as FullLineup,
+  ];
+
+  it("exports the winner's breakdown, and no player out-scores the winner", () => {
+    for (const l of squads) {
+      for (const seed of SEEDS.slice(0, 60)) {
+        const r = runCup(l, seed, "cup8");
+        const all = recompute(l, r);
+        const pot = r.awards.potContribution;
+        expect(pot).toEqual(all.find((p) => p.species === r.awards.playerOfTournament.species));
+        expect(Math.max(...all.map((p) => p.total))).toBe(pot!.total);
+      }
+    }
+  });
+});
