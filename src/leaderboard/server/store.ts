@@ -1,0 +1,106 @@
+import { and, asc, count, desc, eq, gt, gte, lt, or, type SQL } from "drizzle-orm";
+import { leaderboardEntries, type LeaderboardRow, type NewLeaderboardRow } from "@/db/schema";
+import type { Db } from "@/db/types";
+import { BOARD_LIMIT, type BoardEntry, type BoardMode } from "../contract";
+
+export type Board = { readonly mode: BoardMode; readonly dailyDate: string | null };
+
+export type InsertResult =
+  | { readonly ok: true; readonly row: LeaderboardRow }
+  | { readonly ok: false; readonly conflict: "daily" | "token" };
+
+export interface LeaderboardStore {
+  countRecentByIp(ipHash: string, since: Date): Promise<number>;
+  insert(row: NewLeaderboardRow): Promise<InsertResult>;
+  rankOf(row: LeaderboardRow, board: Board): Promise<number>;
+  top(board: Board): Promise<readonly LeaderboardRow[]>;
+}
+
+const t = leaderboardEntries;
+
+function boardFilter(board: Board): SQL {
+  return board.dailyDate === null
+    ? eq(t.mode, board.mode)
+    : and(eq(t.mode, board.mode), eq(t.dailyDate, board.dailyDate))!;
+}
+
+const ORDER = [desc(t.wins), desc(t.draws), desc(t.teamScore), asc(t.createdAt), asc(t.id)];
+
+function aheadOf(row: LeaderboardRow): SQL {
+  return or(
+    gt(t.wins, row.wins),
+    and(eq(t.wins, row.wins), gt(t.draws, row.draws)),
+    and(eq(t.wins, row.wins), eq(t.draws, row.draws), gt(t.teamScore, row.teamScore)),
+    and(
+      eq(t.wins, row.wins),
+      eq(t.draws, row.draws),
+      eq(t.teamScore, row.teamScore),
+      or(lt(t.createdAt, row.createdAt), and(eq(t.createdAt, row.createdAt), lt(t.id, row.id))),
+    ),
+  )!;
+}
+
+function uniqueViolation(e: unknown): string | null {
+  for (let cur: unknown = e; cur instanceof Error || (typeof cur === "object" && cur !== null);) {
+    const c = cur as { code?: unknown; constraint?: unknown; cause?: unknown };
+    if (c.code === "23505") return typeof c.constraint === "string" ? c.constraint : "";
+    cur = c.cause;
+  }
+  return null;
+}
+
+export function drizzleStore(getDb: () => Db): LeaderboardStore {
+  return {
+    async countRecentByIp(ipHash, since) {
+      const [r] = await getDb()
+        .select({ n: count() })
+        .from(t)
+        .where(and(eq(t.ipHash, ipHash), gte(t.createdAt, since)));
+      return r?.n ?? 0;
+    },
+    async insert(row) {
+      try {
+        const [inserted] = await getDb().insert(t).values(row).returning();
+        return { ok: true, row: inserted! };
+      } catch (e) {
+        const constraint = uniqueViolation(e);
+        if (constraint === null) throw e;
+        return {
+          ok: false,
+          conflict: constraint === "leaderboard_entries_token_uq" ? "token" : "daily",
+        };
+      }
+    },
+    async rankOf(row, board) {
+      const [r] = await getDb()
+        .select({ n: count() })
+        .from(t)
+        .where(and(boardFilter(board), aheadOf(row)));
+      return (r?.n ?? 0) + 1;
+    },
+    async top(board) {
+      return getDb()
+        .select()
+        .from(t)
+        .where(boardFilter(board))
+        .orderBy(...ORDER)
+        .limit(BOARD_LIMIT);
+    },
+  };
+}
+
+export function toBoardEntry(row: LeaderboardRow, rank: number): BoardEntry {
+  return {
+    rank,
+    nickname: row.nickname,
+    mode: row.mode,
+    variant: row.variant,
+    dailyDate: row.dailyDate,
+    token: row.token,
+    teamScore: row.teamScore,
+    wins: row.wins,
+    draws: row.draws,
+    losses: row.losses,
+    createdAt: row.createdAt.toISOString(),
+  };
+}
