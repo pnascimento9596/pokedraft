@@ -32,6 +32,17 @@ describe("How to play", () => {
     expect(section.textContent).not.toMatch(/hard from the quarter-final/);
   });
 
+  it("says the all-time leaderboard ranks Open and Classic together (catches 'tracked separately', true only of Your records)", () => {
+    render(<HowToPlayPage />);
+    const section = screen.getByRole("heading", { name: "The 8-0 Challenge" }).closest("section")!;
+    expect(
+      within(section).getByText(
+        /Open is easier than Classic\. Your records keep them apart, but the all-time leaderboard ranks every draft setting together and names each run's settings on its row\./,
+      ),
+    ).toBeTruthy();
+    expect(section.textContent).not.toMatch(/tracked separately/);
+  });
+
   it("uses no em or en dash anywhere on the page", () => {
     const { container } = render(<HowToPlayPage />);
     expect(container.textContent).not.toMatch(DASHES);
