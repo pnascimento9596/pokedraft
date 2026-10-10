@@ -15,15 +15,28 @@ const ROUTES = [
   "/nope-404",
 ];
 
+// Rules that must be part of every scan, so an options edit cannot shrink the run unseen.
+const MUST_RUN = ["color-contrast", "target-size", "label-content-name-mismatch", "region"];
+
 for (const route of ROUTES) {
   test(`no axe violations on ${route}`, async ({ page }) => {
     await page.goto(route);
     await page.locator("footer").first().waitFor();
-    const { violations } = await new AxeBuilder({ page })
+    const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
       // Experimental in axe, so off by default. Tokens read "GK Name" and must be named the same.
       .withRules(["label-content-name-mismatch"])
       .analyze();
-    expect(violations.map((v) => `${v.id} (${v.impact}) x${v.nodes.length}`)).toEqual([]);
+    // SC-01: withTags() then withRules() leaves runOnly at the one rule, so the tag set never ran.
+    const ran = new Set(
+      [
+        ...results.passes,
+        ...results.violations,
+        ...results.incomplete,
+        ...results.inapplicable,
+      ].map((r) => r.id),
+    );
+    expect(MUST_RUN.filter((id) => !ran.has(id))).toEqual([]);
+    expect(results.violations.map((v) => `${v.id} (${v.impact}) x${v.nodes.length}`)).toEqual([]);
   });
 }
