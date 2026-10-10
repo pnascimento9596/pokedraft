@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_HOST ? `https://${SITE_HOST}` : "http://localhost:3000"),
   title: "pokedraft",
   description: "Draft Pokémon into a soccer formation and play a cup.",
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -32,6 +33,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             poke<span>draft</span>
           </Link>
           <nav aria-label="Main">
+            <Link href="/daily">Daily</Link>
+            <Link href="/leaderboard">Leaderboard</Link>
             <Link href="/how-to-play">How to play</Link>
             <Link href="/history">History</Link>
             <ThemeToggle />

@@ -75,3 +75,9 @@
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
+
+.dailyNext {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}

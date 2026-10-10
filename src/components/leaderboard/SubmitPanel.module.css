@@ -1,0 +1,72 @@
+.panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--flood);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.label {
+  display: block;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.input {
+  flex: 1 1 200px;
+  min-width: 0;
+  max-width: 320px;
+  min-height: 40px;
+  padding: 0.4em 0.7em;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunk);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.hint {
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+
+.error {
+  margin: 0;
+  color: var(--loss);
+  font-weight: 600;
+}
+
+.success {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+  flex: 1 1 220px;
+  font-weight: 600;
+}
+
+.rank {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--flood);
+}

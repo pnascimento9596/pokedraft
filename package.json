@@ -20,21 +20,31 @@
     "data:check-moves": "tsx scripts/data/check-review-moves.ts",
     "calibrate": "tsx scripts/calibrate.mts",
     "test:e2e": "playwright test",
-    "check:image-seam": "bash scripts/check-image-seam.sh"
+    "check:image-seam": "bash scripts/check-image-seam.sh",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/db/migrate.mts",
+    "db:rollback": "tsx scripts/db/rollback.mts",
+    "db:smoke": "tsx scripts/db/smoke.mts",
+    "db:delete-entry": "tsx scripts/db/delete-entry.mts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "drizzle-orm": "^0.45.4",
     "next": "16.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@playwright/test": "^1.64.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
     "eslint-config-prettier": "^10.1.8",

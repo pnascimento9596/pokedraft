@@ -1,0 +1,66 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.tabs {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.tab {
+  min-height: 40px;
+  padding: 0.4em 1.1em;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.tab[aria-selected="true"] {
+  background: var(--flood);
+  color: var(--flood-ink);
+}
+
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.date {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date input {
+  min-height: 40px;
+  padding: 0.3em 0.6em;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunk);
+  color: var(--ink);
+  font: inherit;
+}
+
+.caption {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}

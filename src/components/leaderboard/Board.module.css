@@ -1,0 +1,133 @@
+.loading {
+  margin: 0;
+  padding: 20px 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.row[data-top] {
+  border-left-color: var(--flood);
+}
+
+.link {
+  display: grid;
+  grid-template-columns: 2.4ch minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  text-decoration: none;
+}
+
+.link:hover .nick {
+  text-decoration: underline;
+}
+
+.rank {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.6rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.row[data-top] .rank {
+  color: var(--flood);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nick {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.recordCol,
+.scoreCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.record,
+.score {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.35rem;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.score {
+  color: var(--flood);
+}
+
+@media (max-width: 479px) {
+  .link {
+    gap: 8px;
+    padding: 9px 10px;
+  }
+  .record,
+  .score {
+    font-size: 1.15rem;
+  }
+}
+
+.empty,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 16px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+}
+
+.error {
+  border-style: solid;
+  border-color: var(--loss);
+}
+
+.empty p,
+.error p {
+  margin: 0;
+  color: var(--ink-soft);
+}
