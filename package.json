@@ -18,7 +18,9 @@
     "data:report": "tsx scripts/data/scouting-report.ts",
     "data:audit-sample": "tsx scripts/data/audit-sample.ts",
     "data:check-moves": "tsx scripts/data/check-review-moves.ts",
-    "calibrate": "tsx scripts/calibrate.mts"
+    "calibrate": "tsx scripts/calibrate.mts",
+    "test:e2e": "playwright test",
+    "check:image-seam": "bash scripts/check-image-seam.sh"
   },
   "dependencies": {
     "next": "16.4.0",

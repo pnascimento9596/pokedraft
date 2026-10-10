@@ -43,3 +43,8 @@ next-env.d.ts
 # pokedraft
 scripts/data/.cache/
 scripts/calibration/out/
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
