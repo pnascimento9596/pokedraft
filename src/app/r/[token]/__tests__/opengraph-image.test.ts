@@ -14,10 +14,10 @@ const TOKEN = scriptedToken(
 );
 
 describe("share image caching (catches a fresh CPU render for every link preview)", () => {
-  it("marks a valid run's image immutable for a year", async () => {
+  it("caches a valid run's image for a day in browsers and a year on the CDN", async () => {
     const res = await Image({ params: Promise.resolve({ token: TOKEN }) });
     expect([res.status, res.headers.get("content-type"), res.headers.get("cache-control")]).toEqual(
-      [200, "image/png", "public, max-age=31536000, immutable"],
+      [200, "image/png", "public, max-age=86400, s-maxage=31536000"],
     );
   }, 30_000);
 

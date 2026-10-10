@@ -52,8 +52,8 @@ describe("GET /card", () => {
     const run = await GET(new NextRequest(`http://localhost/card?t=${FLAWLESS}`));
     const lineup = await GET(new NextRequest(`http://localhost/card?b=${PARTIAL_BUILDER}`));
     expect([run.headers.get("cache-control"), lineup.headers.get("cache-control")]).toEqual([
-      "public, max-age=31536000, immutable",
-      "public, max-age=31536000, immutable",
+      "public, max-age=86400, s-maxage=31536000",
+      "public, max-age=86400, s-maxage=31536000",
     ]);
   }, 30_000);
 
