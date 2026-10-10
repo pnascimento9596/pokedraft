@@ -36,3 +36,15 @@ Measured in GATE 6 with the final coefficients (`docs/calibration.md`, Scouting 
 | 10 | A review-rules test that GK cannot be a best role when it is the lowest blend | audit follow-up 6 |
 | 11 | Reword the Serperior and Onix rationales that still call serpent height reach | audit observation 7 |
 | 12 | Audit the 18 reconciled reviews this fit-movement sample did not reach, with a review-diff sampler | audit observation 6 |
+| 13 | Re-derive the top-60 moved set after the Cresselia, Wailord and Dondozo fixes and judge any species that enters it (the audit sample was cut before those fixes; boundary species move by 2) | GLM review of PR 6B, warning 2 |
+
+## Re-measured in dispatch 6 PR 6C
+
+`pnpm calibrate --n 5000` on engine-3 (4-3-3) and `--rows cup8-full --formation 3-5-2`. Team Score does not depend on the ladder, so engine-2 measured the same numbers. The flagged lists are the pre-6B predicates, so these are placements of the same species after the fix, not a count of remaining errors.
+
+| # | 4-3-3 placement | 4-3-3 mean Δ score | 3-5-2 placement | 3-5-2 mean Δ score | Before 6B (4-3-3) |
+|---|---|---|---|---|---|
+| 2 | 1,294 of 5,000 = 25.9% | +30.15 (n 1,285) | 1,290 = 25.8% | +29.94 (n 1,281) | 24.0%, +30.1 |
+| 5 | 465 of 5,000 = 9.3% | +25.88 (n 472) | 654 = 13.1% | +23.90 (n 679) | 10.2%, +27.8 |
+
+Item 5 placement fell (10.2% to 9.3%; 3-5-2 14.5% to 13.1%) and the squiggle species that still start rate about 2 points less above their alternative. Item 2 placement rose slightly: the frame term lifts big keepers that were already strong picks, so the good bot starts them a little more. Whether those keepers are now rated right is the frame term's design question, not something this delta can answer.
