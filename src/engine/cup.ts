@@ -218,7 +218,7 @@ export function runCup(
   if (!alive) finish = "group";
   CUP_ROUNDS.slice(GROUP_ROUNDS.length).forEach((round, k) => {
     if (!alive) {
-      matches.push({ status: "notPlayed", round, opponent: null });
+      matches.push({ status: "notPlayed", round, opponent: ladder[round] });
       return;
     }
     const match = play(GROUP_ROUNDS.length + k, round, ladder[round]);

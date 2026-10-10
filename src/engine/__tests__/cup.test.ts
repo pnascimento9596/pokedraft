@@ -47,7 +47,9 @@ describe("runCup", () => {
       const cut = r.finish === "champion" ? 5 : firstOut;
       knockout.forEach((m, i) => {
         expect(m.status).toBe(i < cut ? "played" : "notPlayed");
-        if (m.status === "notPlayed") expect(m.opponent).toBeNull();
+        if (m.status === "notPlayed") {
+          expect(m.opponent).toEqual(buildLadder(r.seed, r.mode)[m.round]);
+        }
       });
     }
     expect([...finishes].sort()).toEqual(["F", "QF", "R16", "R32", "SF", "champion", "group"]);

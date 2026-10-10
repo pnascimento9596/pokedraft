@@ -306,7 +306,8 @@ export type MatchResult =
   | {
       readonly status: "notPlayed";
       readonly round: CupRound;
-      readonly opponent: Opponent | null;
+      /** The ladder opponent the run would have met in this round. */
+      readonly opponent: Opponent;
     };
 
 export interface GroupRow {
@@ -337,7 +338,8 @@ export interface Awards {
 }
 
 export interface CupResult {
-  readonly engine: typeof ENGINE_VERSION;
+  /** The engine that produced this result; older than ENGINE_VERSION for a retained run. */
+  readonly engine: `pokedraft-engine-${number}`;
   readonly seed: Seed;
   readonly mode: Mode;
   readonly rating: TeamRating;

@@ -235,3 +235,13 @@
   letter-spacing: 0.06em;
   color: var(--loss);
 }
+
+.notPlayedOpp {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  overflow-wrap: anywhere;
+  color: var(--ink-soft);
+}
