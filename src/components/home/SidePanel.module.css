@@ -1,0 +1,248 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--flood) 6%, transparent), transparent 120px),
+    var(--panel);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 14px 16px;
+  border-top: 1px solid var(--line);
+}
+
+.section:first-child {
+  border-top: 0;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+}
+
+.heading::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.live {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--live);
+  box-shadow: 0 0 8px var(--live);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.ctas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.cta {
+  min-height: 48px;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.select {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunk);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.chips :global(.chip) {
+  min-height: 30px;
+  font-size: 0.74rem;
+  padding: 0.15em 0.6em;
+}
+
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunk);
+  border: 1px solid var(--line);
+}
+
+.segment {
+  min-height: 34px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.segment[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.switchText {
+  display: flex;
+  flex-direction: column;
+}
+
+.switchLabel {
+  font-weight: 600;
+}
+
+.switchTrack {
+  position: relative;
+  flex-shrink: 0;
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--bg-sunk);
+  border: 1px solid var(--line-strong);
+  transition: background 120ms ease;
+}
+
+.switchThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  transition: transform 120ms ease;
+}
+
+.switch[aria-checked="true"] .switchTrack {
+  background: var(--flood);
+  border-color: var(--flood);
+}
+
+.switch[aria-checked="true"] .switchThumb {
+  transform: translateX(18px);
+  background: var(--flood-ink);
+}
+
+.stats {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.stats th,
+.stats td {
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+}
+
+.stats thead th {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.stats th[scope="row"],
+.stats thead th:first-child {
+  text-align: left;
+  font-weight: 600;
+}
+
+.stats td:global(.num) {
+  font-size: 1rem;
+}
+
+.stats .none {
+  text-align: right;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.moreToggle {
+  width: 100%;
+  margin-top: 4px;
+}
+
+@media (max-width: 1023px) {
+  .more[data-open="false"] {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .moreToggle {
+    display: none;
+  }
+}

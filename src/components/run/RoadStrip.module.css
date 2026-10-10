@@ -1,0 +1,99 @@
+.road {
+  --chart-h: 120px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255, 210, 63, 0.05), transparent 60%), var(--bg-raised);
+}
+
+.road[data-compact] {
+  --chart-h: 56px;
+  padding: 10px 12px;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+}
+
+.road[data-compact] .title {
+  font-size: 0.9rem;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 4px;
+  align-items: end;
+  height: calc(var(--chart-h) + 40px);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 3px;
+  min-width: 0;
+  height: 100%;
+}
+
+.value {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.bar {
+  height: calc(var(--chart-h) * var(--h));
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, var(--line-strong), var(--line));
+  border-top: 2px solid var(--ink-faint);
+}
+
+.step[data-big] .bar {
+  background: linear-gradient(
+    180deg,
+    var(--flood),
+    color-mix(in srgb, var(--flood) 30%, transparent)
+  );
+  border-top-color: var(--flood);
+}
+
+.step[data-big] .value {
+  color: var(--flood);
+}
+
+.round {
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line-strong);
+  padding-top: 3px;
+}
+
+.step[data-big] .round {
+  color: var(--ink);
+}
+
+.caption {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}

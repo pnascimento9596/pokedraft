@@ -12,4 +12,9 @@ Measured ground truth. Updated in the same PR as every merge.
 | Engine version | `pokedraft-engine-1` | `ENGINE_VERSION` in `src/engine/types.ts` |
 | Engine goldens | cup8 classic3 run (`golden-cup8`): token sha256 f3e0c9c617dcb00878b7ab31d29bcc3f6718ac19b0a713d507a911a4a0bd09a7, replay sha256 13c141d47fd86051f7b7e5bea0808aa6bbf1d2dbb5851726b5c42fe3e441f998; kanto151 run (`golden-kanto151`): token sha256 86a3fd6d55040d5702ae03edf6842b0b0b18ac3b159f3aff01689a034e8d249c, replay sha256 2e6121c2a610b7af8145f50be16c4277864da14bd91743a979fdfd33e0264489; 20-run Team Score panel pinned | `src/engine/__tests__/goldens.test.ts` |
 | Calibration (N 5,000 per row and bot, 0 errors) | 840±20: 3.5% flawless [3.1, 3.9], 6.03 wins; 900±20: 11.9% [11.2, 12.7]; 950±20: 30.0% [29.3, 30.6]; random kanto151 3.65 wins; good bot 811.5 (classic3) / 867.0 (open); misses: classic3 score below 840, best observed 963, builder-leg-off good > oracle | `pnpm calibrate --n 5000`, JSON sha256 7d37938d5c791cc0bb199ff2fb37356f7619a0457ecf50c58e28ad6fff5f08f1; `docs/calibration.md` |
-| Last reviewer | GLM 5.3 Flash (`glm-5.3-flash:cloud --think high`), dispatch 2 PR #2 | receipt on the PR, pinned to the reviewed head SHA |
+| UI routes | `/` (home and builder), `/play` (challenge run), `/r/[token]` (shared run plus OG image), `/card` (1200x630 PNG, same satori renderer as OG), `/history`, `/how-to-play` | `src/app/` |
+| Unit and component tests | 31 files, 302 tests pass | `pnpm test` |
+| Playwright | 4 specs pass (151 run seed `e2e-151` pinned 3-0-2, cup8 classic seed `e2e-80` pinned 2-1-1, friendly cup, bad token); runs in CI job `e2e` | `pnpm test:e2e` |
+| Image seam guard | `PlayerImage` is the only file under `src/` allowed `<img`, `next/image`, `background-image` or `url(`; runs in CI | `pnpm check:image-seam` |
+| Road to the Final | shows the nominal ladder labelled approximate; seeded ladder not exported by the engine | `docs/queue/engine-followups.md` item 1 |
+| Last reviewer | GLM 5.3 Flash (`glm-5.3-flash:cloud --think high`), dispatch 3 PR #3 | receipt on the PR, pinned to the reviewed head SHA |

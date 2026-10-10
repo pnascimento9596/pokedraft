@@ -30,6 +30,7 @@ jobs:
           path: scripts/data/.cache/c80757193bd0889054e36f4209762360bdaa4b95
           key: pokeapi-csv-c80757193bd0889054e36f4209762360bdaa4b95-${{ hashFiles('scripts/data/build-pokedex.mjs', 'scripts/data/build-type-chart.mjs') }}
       - run: pnpm check:mirrors
+      - run: pnpm check:image-seam
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
@@ -42,3 +43,24 @@ jobs:
           git diff --exit-code -- src/data
       - name: Check review move citations against the pinned learnset
         run: pnpm data:check-moves
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build
+      - run: pnpm test:e2e
+      - name: Upload the Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
