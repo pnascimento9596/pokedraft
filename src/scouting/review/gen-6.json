@@ -469,9 +469,7 @@
     {
       "id": 669,
       "name": "Flabébé",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "WM",
@@ -490,14 +488,12 @@
         "strength",
         "handling"
       ],
-      "rationale": "Height 1 and weight 1 make it one of the smallest species, so the Layer 1 arms bonus to HAN overstates any goalkeeping, while height already holds DIV down. Spd 79 and spa 61 point to light link play."
+      "rationale": "Height 1 and weight 1 make it one of the smallest species, and the Layer 1 frame term already trims HAN and DIV for that, so it gets no further cut. Spd 79 and spa 61 point to light link play."
     },
     {
       "id": 670,
       "name": "Floette",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "CM",
@@ -515,7 +511,7 @@
         "size",
         "strength"
       ],
-      "rationale": "Height 2 and weight 9 cannot support HAN 64 from the shape arms bonus; spd 98 and spa 75 fit a small creative passer."
+      "rationale": "Height 2 and weight 9 already trim HAN 58 through the Layer 1 frame term, so the baseline stands; spd 98 and spa 75 fit a small creative passer."
     },
     {
       "id": 671,
@@ -790,9 +786,7 @@
     {
       "id": 682,
       "name": "Spritzee",
-      "adjustments": {
-        "HAN": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "DM",
         "CM",
@@ -810,7 +804,7 @@
         "pace",
         "size"
       ],
-      "rationale": "Ability Healer and hp 78 suit a supportive holding player, but height 2 and weight 5 cannot back HAN 67 from the arms shape bonus; spe 23 is very slow."
+      "rationale": "Ability Healer and hp 78 suit a supportive holding player; height 2 and weight 5 already trim HAN 61 through the Layer 1 frame term, so the baseline stands, and spe 23 is very slow."
     },
     {
       "id": 683,
@@ -1278,7 +1272,7 @@
         "size",
         "handling"
       ],
-      "rationale": "Spe 118 and high-jump-kick in kickMoves on genus Wrestling with the flying type describe an aerial grappler, so AER 65 and PHY rise; Layer 1 already rewarded its kicking."
+      "rationale": "Spe 118 and high-jump-kick in kickMoves on genus Wrestling with the flying type describe an aerial grappler, so AER 66 and PHY rise; Layer 1 already rewarded its kicking."
     },
     {
       "id": 702,
@@ -1699,9 +1693,7 @@
     {
       "id": 719,
       "name": "Diancie",
-      "adjustments": {
-        "HAN": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "CM",
         "DM",
@@ -1720,7 +1712,7 @@
         "pace",
         "size"
       ],
-      "rationale": "Def 150 and spd 150 give a resilient central player, but height 7 and weight 88 make HAN 98 from the arms bonus too high; spe 50 keeps it slow."
+      "rationale": "Def 150 and spd 150 give a resilient central player; height 7 and weight 88 already trim HAN 96 through the Layer 1 frame term, so it gets no further cut, and spe 50 keeps it slow."
     },
     {
       "id": 720,

@@ -13,7 +13,7 @@ export type Seed = Brand<string, "Seed">;
 export type IsoDate = Brand<string, "IsoDate">;
 export type Quality = Brand<number, "Quality">;
 
-export const ENGINE_VERSION = "pokedraft-engine-1" as const;
+export const ENGINE_VERSION = "pokedraft-engine-2" as const;
 
 export const GENS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 export type Gen = (typeof GENS)[number];
@@ -344,7 +344,7 @@ export interface CupResult {
   readonly awards: Awards;
 }
 
-export const RUN_TOKEN_VERSION = 1 as const;
+export const RUN_TOKEN_VERSION = 2 as const;
 
 export interface RunToken {
   readonly v: typeof RUN_TOKEN_VERSION;

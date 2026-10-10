@@ -3,6 +3,8 @@ import { NextRequest } from "next/server";
 import { PASSCODE_COOKIE, isPublicPath, passcodeDigest, safeNext } from "../passcode";
 import { proxy } from "../proxy";
 import { scriptedToken } from "../leaderboard/server/__tests__/fixtures";
+import { RUN_TOKEN_VERSION } from "../engine";
+import { A11Y_RUN_V1 } from "../engine/versions/__tests__/fixtures";
 
 function req(path: string, cookie?: string): NextRequest {
   const headers = cookie ? { cookie: `${PASSCODE_COOKIE}=${cookie}` } : undefined;
@@ -75,7 +77,8 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
 
   it("rewrites an undecodable share link to the 404 route and passes a real token through", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "");
-    for (const bad of ["garbage", "pd1.%%%", "pd2.abc", "pd1.e30"]) {
+    const cur = `pd${RUN_TOKEN_VERSION}`;
+    for (const bad of ["garbage", `${cur}.%%%`, "pd99.abc", "pd0.abc", `${cur}.e30`]) {
       const res = proxy(req(`/r/${bad}`));
       expect(res.headers.get("x-middleware-rewrite")).toBe("https://pokedraft.test/run-not-found");
     }
@@ -85,6 +88,14 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     );
     expect(proxy(req(`/r/${real}`)).headers.get("x-middleware-next")).toBe("1");
     expect(proxy(req("/r/garbage/opengraph-image")).headers.get("x-middleware-next")).toBe("1");
+  });
+
+  it("passes an old engine's share link through to the page, which replays it on its own bundle", () => {
+    vi.stubEnv("FRIENDS_PASSCODE", "");
+    expect(RUN_TOKEN_VERSION).not.toBe(1);
+    const res = proxy(req(`/r/${A11Y_RUN_V1}`));
+    expect(res.headers.get("x-middleware-rewrite")).toBeNull();
+    expect(res.headers.get("x-middleware-next")).toBe("1");
   });
 
   it("only follows same-site relative next paths", () => {

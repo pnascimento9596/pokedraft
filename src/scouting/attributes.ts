@@ -8,6 +8,7 @@ export interface AttributeBreakdown {
   base: number;
   shape: number;
   heavy: number;
+  frame: number;
   baby: number;
   moves: number;
   abilities: number;
@@ -50,7 +51,7 @@ function midrankPercentiles(values: readonly number[]): number[] {
   });
 }
 
-function featureVectors(dex: readonly Species[]): FeatureVector[] {
+function featureVectors(dex: readonly Species[], c: ScoutingCoefficients): FeatureVector[] {
   const pct = (pick: (s: Species) => number) => midrankPercentiles(dex.map(pick));
   const hp = pct((s) => s.hp);
   const atk = pct((s) => s.atk);
@@ -59,6 +60,8 @@ function featureVectors(dex: readonly Species[]): FeatureVector[] {
   const spd = pct((s) => s.spd);
   const spe = pct((s) => s.spe);
   const height = pct((s) => s.heightDm);
+  const upright = (s: Species) => s.abilities.some((a) => c.uprightAbilities.includes(a.id));
+  const reach = pct((s) => s.heightDm * (upright(s) ? 1 : (c.bodyLength[s.shape] ?? 1)));
   const weight = pct((s) => s.weightHg);
   return dex.map((_, i) => ({
     hp: hp[i]!,
@@ -68,6 +71,7 @@ function featureVectors(dex: readonly Species[]): FeatureVector[] {
     spd: spd[i]!,
     spe: spe[i]!,
     height: height[i]!,
+    reach: reach[i]!,
     weight: weight[i]!,
     small: 1 - height[i]!,
     light: 1 - weight[i]!,
@@ -132,6 +136,12 @@ function heavyPenalty(s: Species, c: ScoutingCoefficients): number {
   return Math.min(c.heavy.cap, c.heavy.perDoubling * Math.log2(kg / c.heavy.thresholdKg));
 }
 
+function frameTerm(s: Species, f: FeatureVector, c: ScoutingCoefficients): number {
+  if (s.abilities.some((a) => c.frame.sizeAbilities.includes(a.id))) return 0;
+  const blend = c.frame.reach * f.reach + c.frame.weight * f.weight;
+  return c.frame.cap * (2 * blend - 1);
+}
+
 const round2 = (v: number) => Math.round(v * 100) / 100;
 
 export function computeBaselines(
@@ -139,7 +149,7 @@ export function computeBaselines(
   traits: AbilityTraits,
   c: ScoutingCoefficients = COEFFICIENTS,
 ): Map<number, Baseline> {
-  const features = featureVectors(dex);
+  const features = featureVectors(dex, c);
   const basePct = {} as Record<Attr, number[]>;
   for (const attr of ATTRS) {
     const blends = features.map((f) =>
@@ -152,6 +162,7 @@ export function computeBaselines(
   dex.forEach((s, i) => {
     const shape = c.shape[s.shape];
     const heavy = heavyPenalty(s, c);
+    const frame = frameTerm(s, features[i]!, c);
     const moves = moveMods(s, c);
     const abilities = abilityMods(s, traits, c);
     const types = typeMods(s, c);
@@ -162,17 +173,19 @@ export function computeBaselines(
         base: c.scale.floor + c.scale.span * basePct[attr][i]!,
         shape: shape[attr] ?? 0,
         heavy: -heavy * (c.heavy.attrs[attr] ?? 0),
+        frame: attr in c.frame.attrs ? frame * c.frame.attrs[attr]! : 0,
         baby: s.isBaby ? c.baby.allAttrs : 0,
         moves: moves[attr] ?? 0,
         abilities: abilities[attr] ?? 0,
         type: types[attr] ?? 0,
       };
-      const total = b.base + b.shape + b.heavy + b.baby + b.moves + b.abilities + b.type;
+      const total = b.base + b.shape + b.heavy + b.frame + b.baby + b.moves + b.abilities + b.type;
       attrs[attr] = clampAttr(total, c);
       breakdown[attr] = {
         base: round2(b.base),
         shape: b.shape,
         heavy: round2(b.heavy),
+        frame: round2(b.frame),
         baby: b.baby,
         moves: round2(b.moves),
         abilities: round2(b.abilities),

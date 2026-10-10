@@ -65,7 +65,7 @@ const KANTO: DraftSettings = { mode: "kanto151", formation: "3-5-2", order: "pos
 function token(settings: DraftSettings, seed: Seed): RunToken {
   const actions =
     settings.mode === "kanto151" ? kantoActions(settings, seed) : cup8Actions(settings, seed);
-  return { v: 1, settings, seed, actions };
+  return { v: 2, settings, seed, actions };
 }
 
 const CUP8_TOKEN = token(CUP8, "golden-cup8" as Seed);
@@ -73,17 +73,17 @@ const KANTO_TOKEN = token(KANTO, "golden-kanto151" as Seed);
 
 describe("engine goldens (any byte of drift in draft, rating, match or cup output moves a hash)", () => {
   it("pins the engine version these goldens were cut against", () => {
-    expect(ENGINE_VERSION).toBe("pokedraft-engine-1");
+    expect(ENGINE_VERSION).toBe("pokedraft-engine-2");
   });
 
   it("byte-pins a full cup8 classic3 run", () => {
     const s = encodeToken(CUP8_TOKEN);
     const run = replay(s);
     expect(CUP8_TOKEN.actions).toHaveLength(18);
-    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([592, 3, "R16"]);
-    expect(sha256(s)).toBe("f3e0c9c617dcb00878b7ab31d29bcc3f6718ac19b0a713d507a911a4a0bd09a7");
+    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 3, "R16"]);
+    expect(sha256(s)).toBe("19d825f1e323eca01da9c3a92fd02428bfd0b7549e622a1ed6b4d34efe0f4107");
     expect(sha256(JSON.stringify(run))).toBe(
-      "13c141d47fd86051f7b7e5bea0808aa6bbf1d2dbb5851726b5c42fe3e441f998",
+      "20e343f8bc4ac7414f1edfc9b56901533b84a27b1ae4deba5989824a9f0b684b",
     );
   });
 
@@ -92,9 +92,9 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const run = replay(s);
     expect(KANTO_TOKEN.actions).toHaveLength(36);
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 3, "QF"]);
-    expect(sha256(s)).toBe("86a3fd6d55040d5702ae03edf6842b0b0b18ac3b159f3aff01689a034e8d249c");
+    expect(sha256(s)).toBe("36035c63e7778a21d7b3a2d1c842bae057f7aacf43424b1be2ce0d965725de8e");
     expect(sha256(JSON.stringify(run))).toBe(
-      "2e6121c2a610b7af8145f50be16c4277864da14bd91743a979fdfd33e0264489",
+      "f050e3ff1848e655cc534d6d7c78015370b7ed7d21c00fe6878c66c3744ccf47",
     );
   });
 
@@ -112,7 +112,7 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
       return replay(token(settings, `panel-${i}` as Seed)).cup.rating.score;
     });
     expect(scores).toEqual([
-      361, 473, 487, 522, 424, 434, 376, 594, 392, 499, 600, 499, 497, 432, 563, 399, 491, 557, 465,
+      361, 473, 487, 521, 428, 437, 376, 592, 392, 498, 600, 502, 497, 432, 563, 398, 491, 555, 456,
       489,
     ]);
   });

@@ -267,7 +267,7 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Spe 90 and hp 85 suit a running wide role; genus Long Body means height 18 is body length rather than standing height, so AER 80 overstates its reach."
+      "rationale": "Spe 90 and hp 85 suit a running wide role; genus Long Body means height 18 is body length rather than standing height, so AER 81 overstates its reach."
     },
     {
       "id": 163,
@@ -314,7 +314,7 @@
         "dribbling",
         "shot-power"
       ],
-      "rationale": "Hp 100, spd 96 and spa 86 with Keen Eye give VIS 86 and AER 89 from wings shape; atk 50 means it organizes rather than scores, and roleBlends favor GK."
+      "rationale": "Hp 100, spd 96 and spa 86 with Keen Eye give VIS 86 and AER 90 from wings shape; atk 50 means it organizes rather than scores, and roleBlends favor GK."
     },
     {
       "id": 165,
@@ -1338,9 +1338,7 @@
     {
       "id": 206,
       "name": "Dunsparce",
-      "adjustments": {
-        "AER": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1359,7 +1357,7 @@
         "dribbling",
         "aerial"
       ],
-      "rationale": "Hp 100 gives STA 86, but squiggle shape means height 15 is body length and its design has only tiny vestigial wings, so AER 74 is too generous."
+      "rationale": "Hp 100 gives STA 86. Squiggle shape means height 15 is body length, which Layer 1 already discounts, so AER 55 stands and its tiny vestigial wings add nothing."
     },
     {
       "id": 207,
@@ -2456,8 +2454,7 @@
       "id": 251,
       "name": "Celebi",
       "adjustments": {
-        "AER": 4,
-        "HAN": -6
+        "AER": 4
       },
       "bestRoles": [
         "AM",
@@ -2477,7 +2474,7 @@
         "size",
         "strength"
       ],
-      "rationale": "Flat 100 stats give elite DRI and PAS. Weight 50 already holds PHY at 66 and TAK at 73, so those stand, but height 6 gives no reach to handle a shot, so HAN drops; it hovers on small wings, so AER 58 is lifted a little."
+      "rationale": "Flat 100 stats give elite DRI and PAS. Weight 50 already holds PHY at 66 and TAK at 73, and height 6 already trims HAN through the Layer 1 frame term, so those stand; it hovers on small wings, so AER 59 is lifted a little."
     }
   ]
 }

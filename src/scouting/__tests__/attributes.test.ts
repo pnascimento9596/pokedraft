@@ -54,6 +54,46 @@ describe("Layer 1 baseline", () => {
     expect([b.KIC.shape, b.DRI.shape, b.TEC.shape]).toEqual([-8, -8, -7]);
   });
 
+  it("cuts a tiny body's keeper frame and caps it (Flabébé 0.1 m, 0.1 kg; Joltik 0.1 m, 0.6 kg)", () => {
+    const flabebe = all.get(speciesByName("Flabébé").id)!.breakdown;
+    const joltik = all.get(speciesByName("Joltik").id)!.breakdown;
+    expect([flabebe.HAN.frame, flabebe.DIV.frame, joltik.HAN.frame]).toEqual([-5.95, -5.95, -5.82]);
+  });
+
+  it("boosts a big keeper frame and caps it at 6 (Wailord 14.5 m, 398 kg; Eternatus 20 m, 950 kg)", () => {
+    const wailord = all.get(speciesByName("Wailord").id)!.breakdown;
+    const eternatus = all.get(speciesByName("Eternatus").id)!.breakdown;
+    expect([wailord.HAN.frame, wailord.DIV.frame, eternatus.HAN.frame]).toEqual([5.85, 5.85, 5.98]);
+  });
+
+  it("skips the frame term when an ability already sets the body size (Wishiwashi, Schooling)", () => {
+    const b = all.get(speciesByName("Wishiwashi").id)!.breakdown;
+    expect([b.HAN.frame, b.DIV.frame, b.HAN.abilities]).toEqual([0, 0, 8]);
+  });
+
+  it("keeps the frame term off every attribute but DIV and HAN", () => {
+    const wailord = all.get(speciesByName("Wailord").id)!.breakdown;
+    expect([wailord.AER.frame, wailord.PHY.frame, wailord.REF.frame]).toEqual([0, 0, 0]);
+  });
+
+  it("reads a serpent's Pokédex height as body length, so it does not lift AER or DIV (Arbok 3.5 m)", () => {
+    const arbok = speciesByName("Arbok");
+    const asSquiggle = all.get(arbok.id)!.breakdown;
+    const asUpright = baselineFor({ ...arbok, shape: "upright" }).breakdown;
+    expect([asSquiggle.AER.base, asUpright.AER.base]).toEqual([72.98, 85.2]);
+    expect([asSquiggle.DIV.base, asUpright.DIV.base]).toEqual([72.77, 83.15]);
+  });
+
+  it("keeps a levitating squiggle body's height as its reach (Cresselia, Levitate, 1.5 m)", () => {
+    const cresselia = speciesByName("Cresselia");
+    const asSquiggle = all.get(cresselia.id)!.breakdown;
+    const asUpright = baselineFor({ ...cresselia, shape: "upright" }).breakdown;
+    expect([asSquiggle.AER.base, asSquiggle.DIV.base]).toEqual([
+      asUpright.AER.base,
+      asUpright.DIV.base,
+    ]);
+  });
+
   it("gives the handless quadruped shape HAN -12 (Zacian)", () => {
     expect(all.get(speciesByName("Zacian").id)!.breakdown.HAN.shape).toBe(-12);
   });

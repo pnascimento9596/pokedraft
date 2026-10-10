@@ -97,7 +97,7 @@
         "strength",
         "tackling"
       ],
-      "rationale": "Genus Rabbit and kickMoves high-jump-kick point to a natural leaper, so AER 34 is lifted. Layer 1 already rewarded its long kickMoves list for SHO, DRI, and KIC, and def 40 keeps it out of defence."
+      "rationale": "Genus Rabbit and kickMoves high-jump-kick point to a natural leaper, so AER 35 is lifted. Layer 1 already rewarded its long kickMoves list for SHO, DRI, and KIC, and def 40 keeps it out of defence."
     },
     {
       "id": 814,
@@ -123,7 +123,7 @@
         "strength",
         "marking"
       ],
-      "rationale": "Spe 94 and the full kickMoves set including high-jump-kick make it a springy wide attacker, and genus Rabbit justifies more than AER 51. Def 60 and a 9 kg weight give it little defensive value."
+      "rationale": "Spe 94 and the full kickMoves set including high-jump-kick make it a springy wide attacker, and genus Rabbit justifies more than AER 52. Def 60 and a 9 kg weight give it little defensive value."
     },
     {
       "id": 815,
@@ -273,7 +273,7 @@
         "acceleration",
         "aerial"
       ],
-      "rationale": "Hp 120 and def 95 make it a sturdy holding player, but its stubby forepaws do not earn HAN 85. Ability Gluttony and spe 20 argue against STA 93."
+      "rationale": "Hp 120 and def 95 make it a sturdy holding player, but its stubby forepaws do not earn HAN 82. Ability Gluttony and spe 20 argue against STA 93."
     },
     {
       "id": 821,
@@ -399,7 +399,7 @@
         "dribbling",
         "handling"
       ],
-      "rationale": "Def 80 and spd 90 make it a stationary screen, but shape armor on a 4 dm limbless shell cannot catch, so HAN 66 is cut. Spe 30 rules out wide roles."
+      "rationale": "Def 80 and spd 90 make it a stationary screen, but shape armor on a 4 dm limbless shell cannot catch, so HAN 64 is cut. Spe 30 rules out wide roles."
     },
     {
       "id": 826,
@@ -577,7 +577,7 @@
         "passing",
         "close-control"
       ],
-      "rationale": "Def 100, kickMoves headbutt and zen-headbutt, and its ram design support winning headers, so AER rises. Shape quadruped gives it no hands, so DIV 86 is too high for a sheep in goal."
+      "rationale": "Def 100, kickMoves headbutt and zen-headbutt, and its ram design support winning headers, so AER rises. Shape quadruped gives it no hands, so DIV 88 is too high for a sheep in goal."
     },
     {
       "id": 833,
@@ -856,7 +856,7 @@
         "dribbling",
         "passing"
       ],
-      "rationale": "Height 22 on a limbless squiggle body gives reach and AER 70, while Layer 1 already cut its technical attributes. Def 75 is its main asset."
+      "rationale": "Height 22 on a limbless squiggle body is body length, which Layer 1 already discounts to AER 49, but stretched out it still covers ground, and Layer 1 already cut its technical attributes. Def 75 is its main asset."
     },
     {
       "id": 844,
@@ -881,7 +881,7 @@
         "kicking-technique",
         "dribbling"
       ],
-      "rationale": "Height 38 and def 125 let a coiled sand snake cover space, already reflected in AER 92 and DIV 92. Shape squiggle and no limbs keep it out of technical roles."
+      "rationale": "Height 38 and def 125 let a coiled sand snake cover space, already reflected in AER 84 and DIV 90. Shape squiggle and no limbs keep it out of technical roles."
     },
     {
       "id": 845,
@@ -1101,7 +1101,7 @@
         "acceleration",
         "discipline"
       ],
-      "rationale": "Genus Jujitsu, atk 118, and shape tentacles describe a grappler that locks onto opponents, already reflected in TAK 89 and HAN 83. Spe 42 keeps it central, and grappling style risks fouls."
+      "rationale": "Genus Jujitsu, atk 118, and shape tentacles describe a grappler that locks onto opponents, already reflected in TAK 89 and HAN 85. Spe 42 keeps it central, and grappling style risks fouls."
     },
     {
       "id": 854,
@@ -1536,7 +1536,7 @@
         "aerial",
         "dribbling"
       ],
-      "rationale": "Genus Formation and shape heads describe a drilled squad of six small marchers, so DEF and STA rise for shape and shared running. Height 30 measures the marching column, not a tall body, so AER 91 and DIV 90 are cut."
+      "rationale": "Genus Formation and shape heads describe a drilled squad of six small marchers, so DEF and STA rise for shape and shared running. Height 30 measures the marching column, not a tall body, so AER 91 and DIV 95, which read it as reach, are cut."
     },
     {
       "id": 871,
@@ -1664,7 +1664,7 @@
         "agility",
         "handling"
       ],
-      "rationale": "Def 110, ability Ice Face, and kickMoves head-smash fit an ice-headed blocker, with Layer 1 already adding AER. Genus Penguin gives it flippers, not hands, so HAN 87 drops."
+      "rationale": "Def 110, ability Ice Face, and kickMoves head-smash fit an ice-headed blocker, with Layer 1 already adding AER. Genus Penguin gives it flippers, not hands, so HAN 90 drops."
     },
     {
       "id": 876,
@@ -1846,7 +1846,7 @@
         "handling",
         "agility"
       ],
-      "rationale": "Ability Strong Jaw and atk 90 on a 215 kg body give a biting enforcer. Shape legs means no hands or arms, so HAN 85 and DIV 88 overstate it as a keeper."
+      "rationale": "Ability Strong Jaw and atk 90 on a 215 kg body give a biting enforcer. Shape legs means no hands or arms, so HAN 90 and DIV 93 overstate it as a keeper."
     },
     {
       "id": 883,
@@ -2043,7 +2043,7 @@
         "agility",
         "close-control"
       ],
-      "rationale": "Height 200 and weight 950 kg make it a colossal blocker, already in AER 99 and PHY 94 with Layer 1 cutting DRI and ACC. Ability Pressure adds intimidation."
+      "rationale": "Height 200 and weight 950 kg make it a colossal blocker, already in AER 98 and PHY 94 with Layer 1 cutting DRI and ACC. Ability Pressure adds intimidation."
     },
     {
       "id": 891,

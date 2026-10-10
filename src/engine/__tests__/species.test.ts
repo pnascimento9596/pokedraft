@@ -49,21 +49,21 @@ describe("role-relative quality (GK fits must not make every keeper the weakest 
   it("puts the GK median fit (32) and the CB median fit (56) within 0.05 of each other", () => {
     const gk = qualityOf("GK", 32);
     const cb = qualityOf("CB", 56);
-    expect(gk).toBeCloseTo(0.4892682926829268, 12);
+    expect(gk).toBeCloseTo(0.4917073170731707, 12);
     expect(cb).toBeCloseTo(0.49658536585365853, 12);
     expect(Math.abs(gk - cb)).toBeLessThan(0.05);
   });
 
   it("pins Lugia GK, Mewtwo ST and Magikarp ST", () => {
-    expect(byName("Lugia").quality.GK).toBe(0.9985365853658537);
+    expect(byName("Lugia").quality.GK).toBe(0.9995121951219512);
     expect(byName("Mewtwo").quality.ST).toBe(0.9990243902439024);
-    expect(byName("Magikarp").quality.ST).toBe(0.06634146341463415);
+    expect(byName("Magikarp").quality.ST).toBe(0.06682926829268293);
   });
 
   it("stores the same value qualityOf returns for a species' fit", () => {
     const lugia = byName("Lugia");
-    expect(lugia.fits.GK).toBe(93);
-    expect(qualityOf("GK", 93)).toBe(lugia.quality.GK);
+    expect(lugia.fits.GK).toBe(96);
+    expect(qualityOf("GK", 96)).toBe(lugia.quality.GK);
   });
 
   it("is monotone non-decreasing in fit for every role, from 0 at fit 0 to 1 at fit 100", () => {

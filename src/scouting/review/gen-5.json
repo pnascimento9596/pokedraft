@@ -4,9 +4,7 @@
     {
       "id": 494,
       "name": "Victini",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "W",
@@ -26,13 +24,13 @@
         "size",
         "aerial"
       ],
-      "rationale": "Height 4 gives no reach to handle a shot, so HAN drops; weight 40 already holds PHY at 65 and height already lowers DIV, so those stand. The flat 100 base stats, humanoid shape and kickMoves blaze-kick and mega-kick keep it a complete attacking mid."
+      "rationale": "Height 4 and weight 40 already trim HAN and DIV through the Layer 1 frame term and hold PHY at 65, so those stand. The flat 100 base stats, humanoid shape and kickMoves blaze-kick and mega-kick keep it a complete attacking mid."
     },
     {
       "id": 495,
       "name": "Snivy",
       "adjustments": {
-        "HAN": -4
+        "HAN": -2
       },
       "bestRoles": [
         "W",
@@ -51,13 +49,13 @@
         "strength",
         "size"
       ],
-      "rationale": "Spe 63 is its best stat and the upright snake shape at height 0.6 m suits quick wide running; tiny forelimbs cut HAN, and weight 8.1 kg gives no physical presence."
+      "rationale": "Spe 63 is its best stat and the upright snake shape at height 0.6 m suits quick wide running; its forelimbs are small even for its size, so HAN trims slightly, and weight 8.1 kg gives no physical presence."
     },
     {
       "id": 496,
       "name": "Servine",
       "adjustments": {
-        "HAN": -4
+        "HAN": -2
       },
       "bestRoles": [
         "W",
@@ -77,7 +75,7 @@
         "strength",
         "shot-power"
       ],
-      "rationale": "Spe 83 and a light 16 kg upright frame make a nimble wide player; the Grass Snake genus and small forelimbs argue against goalkeeping, so HAN drops despite def 75."
+      "rationale": "Spe 83 and a light 16 kg upright frame make a nimble wide player; the Grass Snake genus and forelimbs small even for its size argue against goalkeeping, so HAN trims slightly despite def 75."
     },
     {
       "id": 497,
@@ -1167,7 +1165,7 @@
       "id": 541,
       "name": "Swadloon",
       "adjustments": {
-        "HAN": -6
+        "HAN": -3
       },
       "bestRoles": [
         "CB",
@@ -1187,7 +1185,7 @@
         "size",
         "finishing"
       ],
-      "rationale": "Def 90 and spd 80 make a tough little blocker, but genus Leaf-Wrapped means a body bundled in leaves at height 0.5 m, so the arms-driven HAN boost is trimmed and it plays in front of goal rather than in it."
+      "rationale": "Def 90 and spd 80 make a tough little blocker, but genus Leaf-Wrapped means a body bundled in leaves with only stubby limbs, so the arms-driven HAN boost is trimmed; height 0.5 m already shrinks its keeper frame, and it plays in front of goal rather than in it."
     },
     {
       "id": 542,
@@ -1318,7 +1316,7 @@
       "name": "Whimsicott",
       "adjustments": {
         "DRI": -5,
-        "HAN": -6
+        "HAN": -3
       },
       "bestRoles": [
         "W",
@@ -1338,7 +1336,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Spe 116 and ability Prankster make a tricky, darting wide player, but a 6.6 kg cotton-wrapped body has little real touch or grip, so the humanoid-driven DRI and HAN are trimmed."
+      "rationale": "Spe 116 and ability Prankster make a tricky, darting wide player, but a cotton-wrapped body has little real touch or grip, so the humanoid-driven DRI and HAN are trimmed; weight 6.6 kg already shrinks its keeper frame."
     },
     {
       "id": 548,
@@ -1489,7 +1487,7 @@
       "name": "Darumaka",
       "adjustments": {
         "DRI": -4,
-        "HAN": -5
+        "HAN": -3
       },
       "bestRoles": [
         "ST",
@@ -1508,7 +1506,7 @@
         "pace",
         "close-control"
       ],
-      "rationale": "Atk 90 with ability Hustle gives an eager, heavy hitter, but a round 0.6 m daruma body with stubby limbs earns less than the humanoid tag gives, so DRI and HAN are trimmed."
+      "rationale": "Atk 90 with ability Hustle gives an eager, heavy hitter, but a round daruma body with stubby limbs earns less than the humanoid tag gives, so DRI and HAN are trimmed; height 0.6 m already shrinks its keeper frame."
     },
     {
       "id": 555,
@@ -1835,7 +1833,7 @@
       "name": "Trubbish",
       "adjustments": {
         "DRI": -5,
-        "HAN": -5
+        "HAN": -3
       },
       "bestRoles": [
         "FB",
@@ -1854,7 +1852,7 @@
         "passing",
         "close-control"
       ],
-      "rationale": "A 0.6 m trash bag with stubby limbs earns less than the humanoid shape's DRI and HAN bonuses, so both are trimmed; spe 65 and def 62 leave a scrappy full-back, and ability Stench fits an off-putting presence."
+      "rationale": "A trash bag with stubby limbs earns less than the humanoid shape's DRI and HAN bonuses, so both are trimmed, while height 0.6 m already shrinks its keeper frame; spe 65 and def 62 leave a scrappy full-back, and ability Stench fits an off-putting presence."
     },
     {
       "id": 569,
@@ -2401,7 +2399,7 @@
       "id": 591,
       "name": "Amoonguss",
       "adjustments": {
-        "HAN": -5
+        "HAN": -3
       },
       "bestRoles": [
         "DM",
@@ -2421,7 +2419,7 @@
         "acceleration",
         "kicking-technique"
       ],
-      "rationale": "Hp 114 and ability Regenerator give a durable, tireless holding mid. Layer 1 already applied KIC -8 for the arms shape, but a 0.6 m mushroom with cap-shaped arms does not merit HAN 85, so it is trimmed."
+      "rationale": "Hp 114 and ability Regenerator give a durable, tireless holding mid. Layer 1 already applied KIC -8 for the arms shape, and its arms are cap-shaped shields rather than hands, so HAN 83 is trimmed a little; height 0.6 m already shrinks its keeper frame."
     },
     {
       "id": 592,
@@ -3804,9 +3802,7 @@
     {
       "id": 648,
       "name": "Meloetta",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "CM",
@@ -3826,7 +3822,7 @@
         "strength",
         "aerial"
       ],
-      "rationale": "Spa 128 with a singer and dancer identity and kickMoves triple-axel make a graceful playmaker; small hands at height 0.6 m give no keeper's reach, so HAN trims, while weight 6.5 kg already keeps PHY low."
+      "rationale": "Spa 128 with a singer and dancer identity and kickMoves triple-axel make a graceful playmaker; height 0.6 m and weight 6.5 kg already trim HAN through the Layer 1 frame term and keep PHY low, so the baseline stands."
     },
     {
       "id": 649,

@@ -9,6 +9,7 @@ import {
   createDraft,
   eligibleSpecies,
   encodeToken,
+  RUN_TOKEN_VERSION,
   speciesById,
   type DraftAction,
   type DraftSettings,
@@ -60,5 +61,5 @@ export function scriptedToken(settings: DraftSettings, seed: string): string {
     const species = firstPick(state);
     push({ type: "pick", species, slot });
   }
-  return encodeToken({ v: 1, settings, seed: seed as Seed, actions });
+  return encodeToken({ v: RUN_TOKEN_VERSION, settings, seed: seed as Seed, actions });
 }

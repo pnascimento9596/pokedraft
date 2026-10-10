@@ -18,6 +18,7 @@ import { RATE_LIMIT, handleBoard, handleSubmit, hashIp } from "../handlers";
 import { drizzleStore, type LeaderboardStore } from "../store";
 import { drizzleLimiter } from "@/ratelimit/store";
 import { migratedDb, scriptedToken } from "./fixtures";
+import { A11Y_RUN_V1 } from "@/engine/versions/__tests__/fixtures";
 
 const NOW = new Date("2026-10-09T16:00:00Z");
 const SECRET = "test-secret-0123456789abcdef01234567";
@@ -106,7 +107,7 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       wins: 4,
       draws: 1,
       losses: 1,
-      teamScore: 622,
+      teamScore: 623,
     });
     const [row] = await rows();
     expect(row).toMatchObject({
@@ -115,8 +116,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       wins: 4,
       draws: 1,
       losses: 1,
-      teamScore: 622,
-      engineVersion: "pokedraft-engine-1",
+      teamScore: 623,
+      engineVersion: "pokedraft-engine-2",
       ipHash: hashIp("203.0.113.7", SECRET),
     });
   });
@@ -170,10 +171,17 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect((await submit({ nickname: "Gary", token: "not-a-token" })).body.error.code).toBe(
       "TOKEN_MALFORMED",
     );
-    const v2 = scriptedToken(CUP8, "lb-cup8").replace(/^pd1\./, "pd2.");
-    const res = await submit({ nickname: "Gary", token: v2 });
+    const future = scriptedToken(CUP8, "lb-cup8").replace(/^pd2\./, "pd3.");
+    const res = await submit({ nickname: "Gary", token: future });
     expect(res.status).toBe(409);
     expect(res.body.error.code).toBe("ENGINE_VERSION_MISMATCH");
+  });
+
+  it("refuses a real engine-1 run with 409, so a daily board never mixes engines", async () => {
+    const res = await submit({ nickname: "Gary", token: A11Y_RUN_V1 });
+    expect(res.status).toBe(409);
+    expect(res.body.error.code).toBe("ENGINE_VERSION_MISMATCH");
+    expect(await rows()).toEqual([]);
   });
 
   it("returns 409 ENGINE_VERSION_MISMATCH when the page runs another engine", async () => {

@@ -77,7 +77,7 @@ describe("runCup", () => {
       );
       if (r.flawless) flawless++;
     }
-    expect(flawless).toBe(49);
+    expect(flawless).toBe(50);
   });
 
   it("replays identically from the same lineup and seed", () => {
@@ -89,7 +89,7 @@ describe("runCup", () => {
   it("pins a cup run where the group is decided past points, GD and GF", () => {
     const r = runCup(WEAK, "golden-177" as Seed, "cup8");
     expect([r.rating.score, r.wins, r.draws, r.losses, r.finish, r.flawless]).toEqual([
-      221,
+      220,
       1,
       0,
       3,

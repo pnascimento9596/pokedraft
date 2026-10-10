@@ -2,8 +2,10 @@ import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { RunTokenError } from "@/engine";
-import { replayAnyVersion, tokenVersion } from "..";
+import { ENGINE_VERSION, RunTokenError } from "@/engine";
+import { scriptedToken } from "@/leaderboard/server/__tests__/fixtures";
+import { replayAnyVersion, retainedTokenVersions, tokenVersion } from "..";
+import { RETAINED_TOKEN_VERSIONS } from "../label";
 import * as v1 from "../v1";
 import { A11Y_RUN_V1, GOLDEN_CUP8_V1, GOLDEN_KANTO151_V1 } from "./fixtures";
 
@@ -80,12 +82,23 @@ describe("replayAnyVersion (routes a token to the engine that issued it)", () =>
     );
   });
 
-  it("replays a real dispatch 5 era shared link", () => {
+  it("replays a real dispatch 5 era shared link as an older engine", () => {
     const run = replayAnyVersion(A11Y_RUN_V1);
-    expect(run.engine).toBe("pokedraft-engine-1");
+    expect([run.engine, run.current]).toEqual(["pokedraft-engine-1", false]);
     expect([run.cup.rating.score, run.cup.wins, run.cup.draws, run.cup.losses]).toEqual([
       845, 8, 0, 0,
     ]);
+  });
+
+  it("replays a live-engine token on the live engine", () => {
+    const run = replayAnyVersion(
+      scriptedToken({ mode: "kanto151", formation: "4-4-2", order: "squadFirst" }, "live-seed"),
+    );
+    expect([run.engine, run.current, run.bundle]).toEqual([ENGINE_VERSION, true, null]);
+  });
+
+  it("lists the same retained versions the proxy lets through", () => {
+    expect(retainedTokenVersions()).toEqual([...RETAINED_TOKEN_VERSIONS]);
   });
 
   it("reads the version from the pd<N>. prefix", () => {
