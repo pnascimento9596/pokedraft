@@ -1,16 +1,22 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { decodeToken } from "./engine";
+import { RETAINED_TOKEN_VERSIONS } from "./engine/versions/label";
 import { PASSCODE_COOKIE, cookieMatches, isPublicPath } from "./passcode";
 
 const SHARE_PATH = /^\/r\/([^/]+)$/;
 
 // A page that streams has already sent 200, so an undecodable share link is answered here,
 // before the body starts. Tokens that decode but fail the replay keep the friendly 200 page.
+// Links from an older engine go through: only that engine's retained bundle can decode them,
+// and the page replays them there.
 function brokenShareLink(pathname: string): boolean {
   const m = SHARE_PATH.exec(pathname);
   if (m === null) return false;
   try {
-    decodeToken(decodeURIComponent(m[1]!));
+    const token = decodeURIComponent(m[1]!);
+    const version = Number(/^pd(\d+)\./.exec(token)?.[1]);
+    if (RETAINED_TOKEN_VERSIONS.includes(version)) return false;
+    decodeToken(token);
     return false;
   } catch {
     return true;

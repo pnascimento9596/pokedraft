@@ -34,6 +34,10 @@ const RETAINED: Readonly<Record<number, RetainedBundle>> = {
 
 const PREFIX = /^pd(\d+)\./;
 
+export function retainedTokenVersions(): number[] {
+  return Object.keys(RETAINED).map(Number);
+}
+
 export function tokenVersion(token: string): number {
   const m = PREFIX.exec(token);
   if (m === null) throw new RunTokenError("malformed", "token has no pd<version>. prefix");
