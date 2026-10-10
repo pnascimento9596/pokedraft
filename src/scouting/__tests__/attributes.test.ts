@@ -66,6 +66,11 @@ describe("Layer 1 baseline", () => {
     expect([wailord.HAN.frame, wailord.DIV.frame, eternatus.HAN.frame]).toEqual([5.85, 5.85, 5.98]);
   });
 
+  it("skips the frame term when an ability already sets the body size (Wishiwashi, Schooling)", () => {
+    const b = all.get(speciesByName("Wishiwashi").id)!.breakdown;
+    expect([b.HAN.frame, b.DIV.frame, b.HAN.abilities]).toEqual([0, 0, 8]);
+  });
+
   it("keeps the frame term off every attribute but DIV and HAN", () => {
     const wailord = all.get(speciesByName("Wailord").id)!.breakdown;
     expect([wailord.AER.frame, wailord.PHY.frame, wailord.REF.frame]).toEqual([0, 0, 0]);
