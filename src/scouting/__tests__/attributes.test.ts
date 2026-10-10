@@ -84,6 +84,16 @@ describe("Layer 1 baseline", () => {
     expect([asSquiggle.DIV.base, asUpright.DIV.base]).toEqual([72.84, 83.22]);
   });
 
+  it("keeps a levitating squiggle body's height as its reach (Cresselia, Levitate, 1.5 m)", () => {
+    const cresselia = speciesByName("Cresselia");
+    const asSquiggle = all.get(cresselia.id)!.breakdown;
+    const asUpright = baselineFor({ ...cresselia, shape: "upright" }).breakdown;
+    expect([asSquiggle.AER.base, asSquiggle.DIV.base]).toEqual([
+      asUpright.AER.base,
+      asUpright.DIV.base,
+    ]);
+  });
+
   it("gives the handless quadruped shape HAN -12 (Zacian)", () => {
     expect(all.get(speciesByName("Zacian").id)!.breakdown.HAN.shape).toBe(-12);
   });
