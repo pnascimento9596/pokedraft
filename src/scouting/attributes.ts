@@ -135,7 +135,8 @@ function heavyPenalty(s: Species, c: ScoutingCoefficients): number {
   return Math.min(c.heavy.cap, c.heavy.perDoubling * Math.log2(kg / c.heavy.thresholdKg));
 }
 
-function frameTerm(f: FeatureVector, c: ScoutingCoefficients): number {
+function frameTerm(s: Species, f: FeatureVector, c: ScoutingCoefficients): number {
+  if (s.abilities.some((a) => c.frame.sizeAbilities.includes(a.id))) return 0;
   const blend = c.frame.reach * f.reach + c.frame.weight * f.weight;
   return c.frame.cap * (2 * blend - 1);
 }
@@ -160,7 +161,7 @@ export function computeBaselines(
   dex.forEach((s, i) => {
     const shape = c.shape[s.shape];
     const heavy = heavyPenalty(s, c);
-    const frame = frameTerm(features[i]!, c);
+    const frame = frameTerm(s, features[i]!, c);
     const moves = moveMods(s, c);
     const abilities = abilityMods(s, traits, c);
     const types = typeMods(s, c);

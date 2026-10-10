@@ -15,7 +15,13 @@ export interface ScoutingCoefficients {
   shape: Record<Shape, AttrMods>;
   heavy: { thresholdKg: number; perDoubling: number; cap: number; attrs: AttrMods };
   bodyLength: Partial<Record<Shape, number>>;
-  frame: { reach: number; weight: number; cap: number; attrs: AttrMods };
+  frame: {
+    reach: number;
+    weight: number;
+    cap: number;
+    attrs: AttrMods;
+    sizeAbilities: readonly string[];
+  };
   baby: { allAttrs: number };
   moves: {
     points: Record<string, number>;
@@ -117,8 +123,15 @@ export const COEFFICIENTS: ScoutingCoefficients = {
   bodyLength: { squiggle: 0.4 },
 
   // Keeper reach and frame: cap * (2 * blend - 1) from the reach and weight percentiles, so a
-  // big frame gains up to cap and a tiny body loses up to cap.
-  frame: { reach: 0.5, weight: 0.5, cap: 6, attrs: { DIV: 1, HAN: 1 } },
+  // big frame gains up to cap and a tiny body loses up to cap. Skipped for species with an
+  // ability in sizeAbilities, whose trait already sets the body in the goal mouth.
+  frame: {
+    reach: 0.5,
+    weight: 0.5,
+    cap: 6,
+    attrs: { DIV: 1, HAN: 1 },
+    sizeAbilities: ["schooling"],
+  },
 
   baby: { allAttrs: -6 },
 
