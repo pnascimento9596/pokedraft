@@ -43,8 +43,7 @@ function parsePanel(raw: unknown): PanelSettings {
     gens: gens.length > 0 ? gens : DEFAULT_PANEL.gens,
     legendaries: typeof r.legendaries === "boolean" ? r.legendaries : DEFAULT_PANEL.legendaries,
     style: r.style === "classic3" || r.style === "open" ? r.style : DEFAULT_PANEL.style,
-    order:
-      r.order === "positionFirst" || r.order === "squadFirst" ? r.order : DEFAULT_PANEL.order,
+    order: r.order === "positionFirst" || r.order === "squadFirst" ? r.order : DEFAULT_PANEL.order,
     showRatings: typeof r.showRatings === "boolean" ? r.showRatings : DEFAULT_PANEL.showRatings,
   };
 }

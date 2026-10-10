@@ -55,13 +55,7 @@ function Markings({ formation, edges }: { formation: FormationId; edges: readonl
         <path
           d={`M ${W / 2 - 7.3} ${y0 + dir * 16.5} A 9.15 9.15 0 0 ${top ? 0 : 1} ${W / 2 + 7.3} ${y0 + dir * 16.5}`}
         />
-        <rect
-          x={(W - 7.32) / 2}
-          y={top ? -2.2 : L}
-          width={7.32}
-          height={2.2}
-          className={s.goal}
-        />
+        <rect x={(W - 7.32) / 2} y={top ? -2.2 : L} width={7.32} height={2.2} className={s.goal} />
       </g>
     );
   };
@@ -217,7 +211,9 @@ export function Pitch({
         </span>
         <span className={s.tokenSlot}>{slotLabel}</span>
         {species !== null ? <span className={s.tokenName}>{species.name}</span> : null}
-        {species !== null && tokenNote ? <span className={s.tokenNote}>{tokenNote(ref)}</span> : null}
+        {species !== null && tokenNote ? (
+          <span className={s.tokenNote}>{tokenNote(ref)}</span>
+        ) : null}
       </button>
     );
   };
@@ -241,9 +237,7 @@ export function Pitch({
       {showBench ? (
         <div className={s.bench} role="group" aria-label="Bench">
           <span className={`kicker ${s.benchLabel}`}>Bench</span>
-          <div className={s.benchRow}>
-            {BENCH_REFS.map((ref, i) => token(ref, `SUB ${i + 1}`))}
-          </div>
+          <div className={s.benchRow}>{BENCH_REFS.map((ref, i) => token(ref, `SUB ${i + 1}`))}</div>
         </div>
       ) : null}
     </div>

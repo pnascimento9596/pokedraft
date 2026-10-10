@@ -35,7 +35,11 @@ export interface RunRecord {
 export interface BucketStats {
   readonly runs: number;
   readonly bestScore: number | null;
-  readonly bestRecord: { readonly wins: number; readonly draws: number; readonly losses: number } | null;
+  readonly bestRecord: {
+    readonly wins: number;
+    readonly draws: number;
+    readonly losses: number;
+  } | null;
 }
 
 const HISTORY_KEY = "pokedraft:history:v1";
@@ -46,7 +50,12 @@ export function loadHistory(): readonly RunRecord[] {
   return Array.isArray(raw) ? (raw as RunRecord[]) : [];
 }
 
-export function toRecord(token: string, settings: DraftSettings, cup: CupResult, at: string): RunRecord {
+export function toRecord(
+  token: string,
+  settings: DraftSettings,
+  cup: CupResult,
+  at: string,
+): RunRecord {
   return {
     token,
     bucket: bucketOf(settings),

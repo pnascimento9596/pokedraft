@@ -16,14 +16,14 @@ import {
   type SpeciesId,
 } from "@/engine";
 
-export const STARTER_REFS: readonly SlotRef[] = Array.from(
-  { length: 11 },
-  (_, i): SlotRef => ({ kind: "starter", index: i as Extract<SlotRef, { kind: "starter" }>["index"] }),
-);
-export const BENCH_REFS: readonly SlotRef[] = Array.from(
-  { length: 5 },
-  (_, i): SlotRef => ({ kind: "bench", index: i as Extract<SlotRef, { kind: "bench" }>["index"] }),
-);
+export const STARTER_REFS: readonly SlotRef[] = Array.from({ length: 11 }, (_, i): SlotRef => ({
+  kind: "starter",
+  index: i as Extract<SlotRef, { kind: "starter" }>["index"],
+}));
+export const BENCH_REFS: readonly SlotRef[] = Array.from({ length: 5 }, (_, i): SlotRef => ({
+  kind: "bench",
+  index: i as Extract<SlotRef, { kind: "bench" }>["index"],
+}));
 export const ALL_REFS: readonly SlotRef[] = [...STARTER_REFS, ...BENCH_REFS];
 
 export type RefKey = `s${number}` | `b${number}`;
