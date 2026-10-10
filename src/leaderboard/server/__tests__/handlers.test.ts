@@ -225,6 +225,25 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect([res.status, res.body.error.code]).toEqual([409, "DUPLICATE_TOKEN"]);
   });
 
+  it("rejects a resubmitted token or a taken daily nickname without replaying again", async () => {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    expect((await submit({ nickname: "Ash", token })).status).toBe(201);
+    for (const nickname of ["Misty", "Brock", "Gary", "Oak"]) {
+      expect((await submit({ nickname, token })).body.error.code).toBe("DUPLICATE_TOKEN");
+    }
+    const seed = dailySeed(TODAY);
+    expect(
+      (await submit({ nickname: "Ash", token: scriptedToken(dailySettings("4-3-3"), seed) }))
+        .status,
+    ).toBe(201);
+    const again = await submit({
+      nickname: "Ash",
+      token: scriptedToken(dailySettings("4-4-2"), seed),
+    });
+    expect(again.body.error.code).toBe("DAILY_ALREADY_SUBMITTED");
+    expect(replays).toBe(2);
+  });
+
   it("allows 10 submissions per IP per hour, counted in the table, then 429", async () => {
     const ipHash = hashIp("198.51.100.1");
     const base = {
@@ -340,6 +359,28 @@ describe("GET /api/leaderboard (catches a wrong board order or a read that write
     expect((await board("mode=kanto151&scope=all")).body.entries).toEqual([]);
   });
 
+  it("returns exactly the top 50 of 51 entries, ranked 1 to 50", async () => {
+    await db.insert(leaderboardEntries).values(
+      Array.from({ length: 51 }, (_, i) => ({
+        nickname: `p${String(i).padStart(2, "0")}`,
+        mode: "kanto151" as const,
+        variant: "squadFirst",
+        seed: "s",
+        token: `tok${i}`,
+        teamScore: 1000 - i,
+        wins: 3,
+        draws: 0,
+        losses: 2,
+        engineVersion: ENGINE_VERSION,
+        ipHash: "h",
+      })),
+    );
+    const entries = (await board("mode=kanto151&scope=all")).body.entries;
+    expect(entries).toHaveLength(50);
+    expect([entries[0]!.rank, entries[0]!.nickname]).toEqual([1, "p00"]);
+    expect([entries[49]!.rank, entries[49]!.nickname]).toEqual([50, "p49"]);
+  });
+
   it("matches the submit rank to the board position", async () => {
     await submit({ nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") });
     const second = await submit({ nickname: "Misty", token: scriptedToken(CUP8, "lb-cup8-b") });
@@ -361,7 +402,13 @@ describe("GET /api/leaderboard (catches a wrong board order or a read that write
   });
 
   it("returns 400 INVALID_QUERY for a bad query and 503 when the database fails", async () => {
-    for (const qs of ["mode=cup9&scope=all", "mode=cup8&scope=daily", "mode=cup8&scope=week"]) {
+    for (const qs of [
+      "mode=cup9&scope=all",
+      "mode=cup8&scope=daily",
+      "mode=cup8&scope=week",
+      "mode=cup8&scope=daily&date=2026-02-30",
+      "mode=cup8&scope=daily&date=2026-99-99",
+    ]) {
       const res = await board(qs);
       expect([res.status, res.body.error.code]).toEqual([400, "INVALID_QUERY"]);
     }

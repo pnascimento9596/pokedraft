@@ -99,7 +99,7 @@ describe("SubmitPanel", () => {
     [
       409,
       "DAILY_ALREADY_SUBMITTED",
-      "That nickname already has a run on today's daily board. Use another nickname or come back tomorrow.",
+      "That nickname already has a run on this daily board. One run per nickname per day.",
     ],
     [429, "RATE_LIMITED", "Too many submissions from here. Wait a minute and try again."],
     [503, "DB_UNAVAILABLE", "The leaderboard is offline right now. Try again in a few minutes."],

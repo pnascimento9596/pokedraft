@@ -78,5 +78,8 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     expect(safeNext("/\\evil.test")).toBe("/");
     expect(safeNext("https://evil.test")).toBe("/");
     expect(safeNext(null)).toBe("/");
+    expect(safeNext("/\t/evil.test")).toBe("/");
+    expect(safeNext("/\n/evil.test/x")).toBe("/");
+    expect(safeNext("/leaderboard?mode=cup8#top")).toBe("/leaderboard?mode=cup8#top");
   });
 });
