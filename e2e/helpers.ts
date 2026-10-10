@@ -21,9 +21,8 @@ export async function pngSize(download: Download): Promise<{ width: number; heig
   return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
 }
 
-export async function shareAndReplay(page: Page): Promise<void> {
-  const record = (await page.getByTestId("results-record").textContent())?.trim();
-  expect(record).toMatch(/^\d-\d-\d$/);
+export async function shareAndReplay(page: Page, record: string): Promise<void> {
+  await expect(page.getByTestId("results-record")).toHaveText(record);
   await page.getByRole("button", { name: "Share" }).click();
   const link = await page.evaluate(() => navigator.clipboard.readText());
   expect(link).toMatch(/\/r\/pd1\./);
@@ -33,5 +32,5 @@ export async function shareAndReplay(page: Page): Promise<void> {
   expect(await pngSize(await download)).toEqual({ width: 1200, height: 630 });
 
   await page.goto(link);
-  await expect(page.getByTestId("results-record")).toHaveText(record!);
+  await expect(page.getByTestId("results-record")).toHaveText(record);
 }

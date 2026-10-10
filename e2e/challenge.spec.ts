@@ -14,7 +14,7 @@ test("151 Challenge with a fixed seed drafts 16, shows results, and the share li
   await draftSixteen(page);
   await page.getByTestId("see-results").click();
   await expect(page.getByTestId("match-F")).toBeVisible();
-  await shareAndReplay(page);
+  await shareAndReplay(page, "3-0-2");
 });
 
 test("8-0 Challenge (Classic) with a fixed seed drafts 16, shows results, and the share link replays the same record", async ({
@@ -27,5 +27,5 @@ test("8-0 Challenge (Classic) with a fixed seed drafts 16, shows results, and th
   await draftSixteen(page);
   await page.getByTestId("see-results").click();
   await expect(page.getByTestId("match-G1")).toBeVisible();
-  await shareAndReplay(page);
+  await shareAndReplay(page, "2-1-1");
 });

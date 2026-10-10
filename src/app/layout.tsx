@@ -15,7 +15,10 @@ const barlow = Barlow_Semi_Condensed({
   variable: "--font-barlow",
 });
 
+const SITE_HOST = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_HOST ? `https://${SITE_HOST}` : "http://localhost:3000"),
   title: "pokedraft",
   description: "Draft Pokémon into a soccer formation and play a cup.",
 };
