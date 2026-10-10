@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { PGlite } from "@electric-sql/pglite";
 import { leaderboardEntries } from "@/db/schema";
+import { drizzleLimiter } from "@/ratelimit/store";
 import type { Db } from "@/db/types";
 import type { DraftSettings } from "@/engine";
 import { clientIp, handleSubmit, hashIp } from "../handlers";
@@ -40,9 +41,9 @@ function post(body: unknown, headers: Record<string, string>): Request {
 describe("client IP (catches a spoofable first x-forwarded-for hop beating Vercel's header)", () => {
   it("prefers x-real-ip, then the first x-forwarded-for hop, then unknown", () => {
     const h = (o: Record<string, string>) => new Request("http://local/", { headers: o });
-    expect(clientIp(h({ "x-real-ip": "198.51.100.9", "x-forwarded-for": "6.6.6.6, 10.0.0.1" }))).toBe(
-      "198.51.100.9",
-    );
+    expect(
+      clientIp(h({ "x-real-ip": "198.51.100.9", "x-forwarded-for": "6.6.6.6, 10.0.0.1" })),
+    ).toBe("198.51.100.9");
     expect(clientIp(h({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" }))).toBe("203.0.113.7");
     expect(clientIp(h({}))).toBe("unknown");
   });
@@ -63,13 +64,15 @@ describe("submit hardening", () => {
     for (let i = 0; i < 10; i++) {
       const res = await handleSubmit(post({ nickname: "Ash", token: "not-a-token" }, headers), {
         store,
+        limiter: drizzleLimiter(() => db),
+        ipHashSecret: SECRET,
         now: () => NOW,
       });
       expect(res.status).toBe(422);
     }
     const res = await handleSubmit(
       post({ nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") }, headers),
-      { store, now: () => NOW },
+      { store, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW },
     );
     expect(res.status).toBe(429);
     expect(await db.select().from(leaderboardEntries)).toHaveLength(0);
@@ -81,8 +84,11 @@ describe("submit hardening", () => {
       rankOf: () => Promise.reject(new Error("rank query timed out")),
     };
     const res = await handleSubmit(
-      post({ nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") }, { "x-real-ip": "198.51.100.2" }),
-      { store: flaky, now: () => NOW },
+      post(
+        { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
+        { "x-real-ip": "198.51.100.2" },
+      ),
+      { store: flaky, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW },
     );
     expect(res.status).toBe(201);
     const body = (await res.json()) as { entry: { rank: number | null; nickname: string } };

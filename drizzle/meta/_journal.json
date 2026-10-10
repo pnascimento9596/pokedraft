@@ -8,6 +8,13 @@
       "when": 1791595926232,
       "tag": "0000_leaderboard_entries",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791598655235,
+      "tag": "0001_rate_limit_events",
+      "breakpoints": true
     }
   ]
 }

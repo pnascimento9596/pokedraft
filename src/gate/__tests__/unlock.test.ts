@@ -45,7 +45,9 @@ function unlock(passcode: string, ip = "198.51.100.1", d: UnlockDeps = deps()) {
 }
 
 function location(res: Response): string {
-  return new URL(res.headers.get("location")!).pathname + new URL(res.headers.get("location")!).search;
+  return (
+    new URL(res.headers.get("location")!).pathname + new URL(res.headers.get("location")!).search
+  );
 }
 
 describe("passcode gate attempt limit (catches unlimited passcode guessing)", () => {
@@ -71,7 +73,9 @@ describe("passcode gate attempt limit (catches unlimited passcode guessing)", ()
 
   it("sets the passcode cookie on the right passcode", async () => {
     const res = await unlock(PASSCODE);
-    expect(res.headers.get("set-cookie")).toContain(`${PASSCODE_COOKIE}=${passcodeDigest(PASSCODE)}`);
+    expect(res.headers.get("set-cookie")).toContain(
+      `${PASSCODE_COOKIE}=${passcodeDigest(PASSCODE)}`,
+    );
   });
 
   it("fails closed when the limiter or its secret is unavailable", async () => {
@@ -89,7 +93,11 @@ describe("passcode gate attempt limit (catches unlimited passcode guessing)", ()
   });
 
   it("skips the limiter entirely when no passcode is configured", async () => {
-    const res = await unlock("anything", "198.51.100.4", deps({ passcode: undefined, ipHashSecret: undefined }));
+    const res = await unlock(
+      "anything",
+      "198.51.100.4",
+      deps({ passcode: undefined, ipHashSecret: undefined }),
+    );
     expect([res.status, location(res)]).toEqual([303, "/daily"]);
   });
 });

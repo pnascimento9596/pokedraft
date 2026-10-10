@@ -1,13 +1,35 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { decodeToken } from "./engine";
 import { PASSCODE_COOKIE, cookieMatches, isPublicPath } from "./passcode";
+
+const SHARE_PATH = /^\/r\/([^/]+)$/;
+
+// A page that streams has already sent 200, so an undecodable share link is answered here,
+// before the body starts. Tokens that decode but fail the replay keep the friendly 200 page.
+function brokenShareLink(pathname: string): boolean {
+  const m = SHARE_PATH.exec(pathname);
+  if (m === null) return false;
+  try {
+    decodeToken(decodeURIComponent(m[1]!));
+    return false;
+  } catch {
+    return true;
+  }
+}
+
+function pass(request: NextRequest): NextResponse {
+  return brokenShareLink(request.nextUrl.pathname)
+    ? NextResponse.rewrite(new URL("/run-not-found", request.url))
+    : NextResponse.next();
+}
 
 export function proxy(request: NextRequest): NextResponse {
   const passcode = process.env.FRIENDS_PASSCODE;
-  if (!passcode) return NextResponse.next();
+  if (!passcode) return pass(request);
   const { pathname, search } = request.nextUrl;
-  if (isPublicPath(pathname)) return NextResponse.next();
+  if (isPublicPath(pathname)) return pass(request);
   if (cookieMatches(request.cookies.get(PASSCODE_COOKIE)?.value, passcode)) {
-    return NextResponse.next();
+    return pass(request);
   }
   if (pathname.startsWith("/api/")) {
     return NextResponse.json(

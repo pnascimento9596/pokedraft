@@ -25,7 +25,8 @@
     "db:migrate": "tsx scripts/db/migrate.mts",
     "db:rollback": "tsx scripts/db/rollback.mts",
     "db:smoke": "tsx scripts/db/smoke.mts",
-    "db:delete-entry": "tsx scripts/db/delete-entry.mts"
+    "db:delete-entry": "tsx scripts/db/delete-entry.mts",
+    "test:live": "playwright test -c playwright.live.config.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",

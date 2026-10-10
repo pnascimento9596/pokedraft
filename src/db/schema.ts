@@ -58,3 +58,19 @@ export const leaderboardEntries = pgTable(
 
 export type LeaderboardRow = typeof leaderboardEntries.$inferSelect;
 export type NewLeaderboardRow = typeof leaderboardEntries.$inferInsert;
+
+// One row per throttled request (submit or gate attempt), whatever its outcome. The key is the
+// keyed IP hash, so no raw address is stored.
+export const rateLimitEvents = pgTable(
+  "rate_limit_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    scope: text("scope", { enum: ["submit", "gate"] }).notNull(),
+    keyHash: text("key_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("rate_limit_events_lookup_idx").on(t.scope, t.keyHash, t.createdAt),
+    check("rate_limit_events_scope_chk", sql`${t.scope} IN ('submit', 'gate')`),
+  ],
+);

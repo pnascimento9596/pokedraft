@@ -27,10 +27,16 @@ function firstParam(v: string | string[] | undefined): string | undefined {
   return Array.isArray(v) ? v[0] : v;
 }
 
+const GATE_ERROR: Readonly<Record<string, string>> = {
+  "1": "That passcode did not work.",
+  limited: "Too many attempts from this network. Wait 15 minutes and try again.",
+  unavailable: "The gate is unavailable right now. Try again in a few minutes.",
+};
+
 async function GateForm({ searchParams }: { searchParams: PageProps<"/gate">["searchParams"] }) {
   const q = await searchParams;
   const next = safeNext(firstParam(q.next));
-  const failed = firstParam(q.error) === "1";
+  const error = firstParam(q.error);
   return (
     <form method="post" action="/gate/unlock" className={s.form}>
       <input type="hidden" name="next" value={next} />
@@ -45,9 +51,9 @@ async function GateForm({ searchParams }: { searchParams: PageProps<"/gate">["se
           data-testid="gate-passcode"
         />
       </label>
-      {failed ? (
+      {error !== undefined ? (
         <p role="alert" className={s.error}>
-          That passcode did not work.
+          {GATE_ERROR[error] ?? GATE_ERROR["1"]}
         </p>
       ) : null}
       <button type="submit" className="btn btn--primary">

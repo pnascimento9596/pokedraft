@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { NICKNAME_MAX, NICKNAME_MIN, type BoardEntry } from "@/leaderboard/contract";
+import { NICKNAME_MAX, NICKNAME_MIN, type SubmitEntry } from "@/leaderboard/contract";
 import { readJson, writeJson } from "@/ui/storage";
 import { boardHref, submitRun, type SubmitFailure } from "./client";
 import s from "./SubmitPanel.module.css";
@@ -32,7 +32,7 @@ export const SUBMIT_ERROR_COPY: Readonly<Record<SubmitFailure, string>> = {
 type Status =
   | { readonly kind: "idle" }
   | { readonly kind: "submitting" }
-  | { readonly kind: "done"; readonly entry: BoardEntry }
+  | { readonly kind: "done"; readonly entry: SubmitEntry }
   | { readonly kind: "error"; readonly code: SubmitFailure };
 
 function savedNickname(): string {
@@ -63,9 +63,10 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
     return (
       <section className={s.panel} data-testid="submit-panel" aria-label="Leaderboard">
         <p className={s.success} data-testid="submit-success" role="status">
-          <span className={s.rank}>#{entry.rank}</span>
+          {entry.rank === null ? null : <span className={s.rank}>#{entry.rank}</span>}
           <span>
             {entry.nickname} is on {scope === "daily" ? "the daily board" : "the all-time board"}.
+            {entry.rank === null ? " Your rank could not be loaded right now." : ""}
           </span>
         </p>
         <Link
