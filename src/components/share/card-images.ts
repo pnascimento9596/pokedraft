@@ -59,8 +59,9 @@ function dataUri(pack: ImagePack, dexId: number): Promise<string | null> {
   return uri;
 }
 
-// A token always draws the same card, and the URL carries the token, pack and mirror flag.
-export const CARD_CACHE_CONTROL = "public, max-age=31536000, immutable";
+// A token always draws the same card, and the URL carries the token, pack and mirror flag. Browsers
+// keep it a day so a card design change reaches them; the CDN cache is per deployment, so it keeps a year.
+export const CARD_CACHE_CONTROL = "public, max-age=86400, s-maxage=31536000";
 
 /** Data URIs for every species on the card. A species without a picture maps to null. */
 export async function cardImages(
