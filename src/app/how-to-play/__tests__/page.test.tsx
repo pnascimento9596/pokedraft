@@ -66,6 +66,17 @@ describe("How to play", () => {
     expect(kanto.textContent).toMatch(/The same cap of 3 Legendary or Mythical Pokémon applies\./);
   });
 
+  it("says a region reroll rolls the type again and it can repeat (catches 'a new region and a new type')", () => {
+    render(<HowToPlayPage />);
+    const section = screen.getByRole("heading", { name: "The 8-0 Challenge" }).closest("section")!;
+    expect(
+      within(section).getByText(
+        "You get 3 rerolls for the whole run. Reroll the type to get a different type in the same region. Reroll the region to get a different region, and the type is rolled again, so it can come up the same.",
+      ),
+    ).toBeTruthy();
+    expect(section.textContent).not.toMatch(/a new region and a new type/);
+  });
+
   it("uses no em or en dash anywhere on the page", () => {
     const { container } = render(<HowToPlayPage />);
     expect(container.textContent).not.toMatch(DASHES);
