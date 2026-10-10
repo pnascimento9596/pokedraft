@@ -1,0 +1,10 @@
+.page {
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header h1 {
+  font-size: clamp(2rem, 8vw, 3rem);
+}

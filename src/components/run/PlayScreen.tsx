@@ -6,15 +6,19 @@ import { useMemo, useState } from "react";
 import {
   DRAFT_ROUNDS,
   GENS,
+  dailySeed,
   replay,
   type CupResult,
   type DraftSettings,
   type DraftState,
+  type IsoDate,
 } from "@/engine";
+import { longDate } from "@/components/leaderboard/format";
+import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
 import { ResultsView } from "@/components/results/ResultsView";
 import { unlockAudio } from "@/components/wheel/sound";
 import { GEN_REGION, MODE_LABEL, ORDER_LABEL, REGION_LABEL, STYLE_LABEL } from "@/ui/labels";
-import { freshSeed, parsePlayQuery } from "@/ui/settings";
+import { freshSeed, loadPanel, parsePlayQuery, playHref } from "@/ui/settings";
 import { DraftBoard } from "./DraftBoard";
 import { RoadStrip } from "./RoadStrip";
 import { runToken, startRun, step, type Run } from "./runState";
@@ -77,12 +81,15 @@ export function SettingsSummary({ settings }: { readonly settings: DraftSettings
   );
 }
 
-function Challenge({
+// `daily` pins the run to that date's shared seed and drops the fresh-seed New run.
+export function Challenge({
   settings,
   querySeed,
+  daily,
 }: {
   readonly settings: DraftSettings;
   readonly querySeed: string | null;
+  readonly daily?: IsoDate;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -93,7 +100,12 @@ function Challenge({
 
   const start = () => {
     unlockAudio();
-    const seed = useQuerySeed && querySeed !== null ? querySeed : freshSeed();
+    const seed =
+      daily !== undefined
+        ? dailySeed(daily)
+        : useQuerySeed && querySeed !== null
+          ? querySeed
+          : freshSeed();
     setScreen({ kind: "draft", run: startRun(settings, seed) });
   };
 
@@ -129,7 +141,21 @@ function Challenge({
         draft={screen.draft}
         cup={screen.cup}
         variant="live"
-        onNewRun={newRun}
+        onNewRun={daily === undefined ? newRun : undefined}
+        submit={
+          settings.mode === "builder" ? undefined : (
+            <>
+              <SubmitPanel token={screen.token} daily={daily !== undefined} />
+              {daily !== undefined ? (
+                <p className={s.dailyNext}>
+                  One daily seed per day.{" "}
+                  <Link href={playHref("cup8", loadPanel())}>Play a regular challenge</Link> for a
+                  fresh one.
+                </p>
+              ) : null}
+            </>
+          )
+        }
       />
     );
   }
@@ -151,9 +177,14 @@ function Challenge({
   return (
     <section className={s.start}>
       <div className={s.hero}>
-        <span className="kicker">Challenge</span>
-        <h1 className={s.title}>{title}</h1>
+        <span className="kicker" data-testid={daily !== undefined ? "daily-kicker" : undefined}>
+          {daily !== undefined ? `Daily challenge, ${longDate(daily)}` : "Challenge"}
+        </span>
+        <h1 className={s.title}>{daily !== undefined ? `Daily ${title}` : title}</h1>
         <p className={s.lede}>
+          {daily !== undefined
+            ? "Everyone plays the same seed today, and your run can go on the daily board. "
+            : null}
           {DRAFT_ROUNDS} rounds. Each round the wheel rolls, you sign one player and place them.
           Then your squad plays the cup.
         </p>

@@ -102,4 +102,14 @@ describe("ResultsView", () => {
     expect(await screen.findByText("Link copied")).toBeTruthy();
     expect(writeText.mock.calls).toEqual([[`${location.origin}/r/${ELIMINATED}`]]);
   });
+
+  it("renders the submit slot on a live run and never on a shared view", () => {
+    const { draft, cup } = replay(FLAWLESS);
+    const slot = <p data-testid="submit-slot">submit here</p>;
+    render(<ResultsView token={FLAWLESS} draft={draft} cup={cup} variant="live" submit={slot} />);
+    expect(screen.getByTestId("submit-slot").textContent).toBe("submit here");
+    cleanup();
+    render(<ResultsView token={FLAWLESS} draft={draft} cup={cup} variant="shared" submit={slot} />);
+    expect(screen.queryByTestId("submit-slot")).toBeNull();
+  });
 });

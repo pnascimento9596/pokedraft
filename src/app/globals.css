@@ -346,9 +346,10 @@ select {
 
 .site-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 4px 12px;
   padding: 12px var(--gutter);
   border-bottom: 1px solid var(--line);
 }
@@ -368,6 +369,7 @@ select {
 
 .site-header nav {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 2px;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { CupResult, DraftState, PlayerLine } from "@/engine";
 import { speciesById } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
@@ -21,6 +21,8 @@ export interface ResultsViewProps {
   /** `live` right after a run (records it locally, offers New run); `shared` on /r/[token]. */
   readonly variant: "live" | "shared";
   readonly onNewRun?: () => void;
+  /** Leaderboard submit panel; rendered for `live` runs only. */
+  readonly submit?: ReactNode;
 }
 
 function modeLine(draft: DraftState): string {
@@ -30,7 +32,7 @@ function modeLine(draft: DraftState): string {
   return MODE_LABEL[st.mode];
 }
 
-export function ResultsView({ token, draft, cup, variant, onNewRun }: ResultsViewProps) {
+export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: ResultsViewProps) {
   const recorded = useRef(false);
   useEffect(() => {
     if (variant !== "live" || recorded.current) return;
@@ -74,6 +76,7 @@ export function ResultsView({ token, draft, cup, variant, onNewRun }: ResultsVie
       </header>
 
       <ShareActions token={token} variant={variant} onNewRun={onNewRun} />
+      {variant === "live" ? submit : null}
 
       <div className={s.columns}>
         <section className={s.block} aria-labelledby="matches-h">
