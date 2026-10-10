@@ -3,6 +3,7 @@ import {
   ENGINE_VERSION,
   RunTokenError,
   decodeToken,
+  encodeToken,
   replay as engineReplay,
   type DraftSettings,
   type RunToken,
@@ -154,10 +155,13 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     );
   }
 
+  // One run has many encodings (JSON spacing, gens order, 25.0 for 25). Dedupe and store the
+  // canonical one, so the token index sees one run as one row.
+  const token = encodeToken(run);
   const mode = run.settings.mode;
   const board: Board = { mode, dailyDate };
   try {
-    const conflict = await deps.store.conflictFor(body.data.token, nick.nickname, board);
+    const conflict = await deps.store.conflictFor(token, nick.nickname, board);
     if (conflict !== null) return conflictError(conflict);
   } catch {
     return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
@@ -178,7 +182,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
       variant: variantOf(run.settings),
       dailyDate,
       seed: run.seed,
-      token: body.data.token,
+      token,
       teamScore: cup.rating.score,
       wins: cup.wins,
       draws: cup.draws,
