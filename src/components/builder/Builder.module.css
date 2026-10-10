@@ -87,3 +87,17 @@
   font-size: 0.82rem;
   color: var(--ink-soft);
 }
+
+/* The two lines inside a pitch token's rating pill (the pill is Pitch's .tokenNote). The label is
+   small enough for "vs other CBs" to fit a 56 px token on one line, and wraps if it cannot. */
+.noteScore {
+  display: block;
+}
+
+.noteLabel {
+  display: block;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}

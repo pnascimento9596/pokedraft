@@ -27,7 +27,8 @@
   display: grid;
   grid-template-columns: 3.4em 36px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
+  column-gap: 10px;
+  row-gap: 0;
 }
 
 .slot {
@@ -72,9 +73,24 @@
   font-family: var(--font-display);
   font-weight: 900;
   font-size: 1.5rem;
+  line-height: 1.05;
   font-variant-numeric: tabular-nums;
   min-width: 2.2ch;
   text-align: right;
+}
+
+/* Second grid row, under the name and the number: it never narrows the name column, and it wraps
+   instead of overflowing on a 320 px screen. */
+.fitLabel {
+  grid-column: 3 / -1;
+  justify-self: end;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: right;
+  color: var(--ink-soft);
 }
 
 .tags {
@@ -113,4 +129,10 @@
   margin: 4px 0 0;
   font-size: 0.88rem;
   color: var(--ink-soft);
+}
+
+.why .raw {
+  color: var(--ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
