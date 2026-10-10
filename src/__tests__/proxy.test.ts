@@ -25,6 +25,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       "/robots.txt",
       "/gate",
       "/gate/unlock",
+      "/api/csp-report",
     ];
     const gated = [
       "/",
@@ -36,6 +37,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       "/r/pd1.abc",
       "/api/leaderboard",
       "/api/anything",
+      "/api/csp-report/x",
       "/card/extra",
       "/r/pd1.abc/opengraph-image/x",
       "/_next/image",
