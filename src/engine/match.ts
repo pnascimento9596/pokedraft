@@ -10,6 +10,7 @@ import type {
   MatchResult,
   Opponent,
   PenKick,
+  Role,
   Score,
   Seed,
   Shirt,
@@ -23,6 +24,7 @@ export type Phase = "group" | "knockout";
 export interface MatchStarter {
   readonly species: Species;
   readonly line: Line;
+  readonly role: Role;
 }
 
 export interface MatchInput {
@@ -161,16 +163,17 @@ function userAttribution(
   c: EngineCoefficients,
 ): (minute: number, penalty: boolean) => GoalEvent {
   const byId = (s: MatchStarter): number => s.species.id;
-  const outfield = starters.filter((s) => s.line !== "GK");
+  // A zero role factor (GK) never scores from open play.
+  const shooters = starters.filter((s) => c.match.roleFactor[s.role] > 0);
   const [penaltyTaker] = canonicalSortBy(starters, (s) => [-s.species.attrs.SHO, s.species.id]);
   return (minute, penalty) => {
     if (penalty) {
       return { side: "user", minute, penalty, scorer: penaltyTaker!.species.id, assist: null };
     }
     const scorer = weightedPick(
-      outfield,
+      shooters,
       byId,
-      (s) => s.species.attrs.SHO * c.match.scorerLineFactor[s.line as Exclude<Line, "GK">],
+      (s) => s.species.attrs.SHO * c.match.roleFactor[s.role],
       rng,
     );
     let assist: SpeciesId | null = null;
@@ -179,7 +182,7 @@ function userAttribution(
       assist = weightedPick(
         creators,
         byId,
-        (s) => s.species.attrs.PAS * c.match.assistLineFactor[s.line],
+        (s) => s.species.attrs.PAS * c.match.roleFactor[s.role],
         rng,
       ).species.id;
     }

@@ -107,7 +107,7 @@ describe("runCup", () => {
       ["canalave-athletic", 3, 1, 2],
     ]);
     expect(r.awards).toEqual({
-      goldenBoot: { species: 27, goals: 2, assists: 0, appearances: 4 },
+      goldenBoot: { species: 29, goals: 2, assists: 0, appearances: 4 },
       topAssister: { species: 32, goals: 1, assists: 2, appearances: 4 },
       playerOfTournament: { species: 32, goals: 1, assists: 2, appearances: 4 },
     });
@@ -120,7 +120,7 @@ describe("runCup", () => {
     expect(absences).toEqual([{ slot: "4-3-3.LW", out: 25, in: 4 }]);
     const appearances = Object.fromEntries(r.players.map((p) => [p.species, p.appearances]));
     expect([appearances[25], appearances[4], appearances[1]]).toEqual([5, 1, 0]);
-    expect(r.awards.goldenBoot).toEqual({ species: 38, goals: 4, assists: 2, appearances: 6 });
+    expect(r.awards.goldenBoot).toEqual({ species: 38, goals: 7, assists: 2, appearances: 6 });
   });
 });
 
@@ -179,25 +179,37 @@ const attackingShare = (byRole: Partial<Record<Role, number>>): number => {
 };
 
 describe("scorer roles (catches defenders and holding midfielders scoring like forwards)", () => {
-  const KANTO_4231 = { ...KANTO, formation: "4-2-3-1" } as FullLineup;
+  // Three hand squads in two formations, pooled: one squad alone swings with who takes its
+  // penalties (KANTO's CB Dragonite, SHO 99, takes all of them). The line factors this replaced
+  // pool to 53.0%.
+  const squads = [P75, KANTO, MIDDLING].flatMap((l) =>
+    (["4-3-3", "4-2-3-1"] as const).map((formation) => ({ ...l, formation }) as FullLineup),
+  );
 
-  it("gives ST, W and AM 70 to 80% of user goals in a 4-3-3 and a 4-2-3-1", () => {
-    const share433 = attackingShare(goalRoles(KANTO, RUNS));
-    const share4231 = attackingShare(
-      goalRoles(
-        KANTO_4231,
-        SEEDS.map((seed) => runCup(KANTO_4231, seed, "cup8")),
-      ),
-    );
-    expect([share433, share4231].every((s) => s >= 0.7 && s <= 0.8)).toBe(true);
+  it("gives ST, W and AM 70 to 80% of user goals", () => {
+    const pooled: Partial<Record<Role, number>> = {};
+    for (const l of squads) {
+      const byRole = goalRoles(
+        l,
+        SEEDS.map((seed) => runCup(l, seed, "cup8")),
+      );
+      for (const [r, n] of Object.entries(byRole) as [Role, number][]) {
+        pooled[r] = (pooled[r] ?? 0) + n;
+      }
+    }
+    const share = attackingShare(pooled);
+    expect(share >= 0.7 && share <= 0.8).toBe(true);
   });
 
   it("never lets the goalkeeper score from open play", () => {
-    const keeperGoals = RUNS.flatMap((r) => r.matches).flatMap((m) =>
-      m.status === "played"
-        ? m.goals.filter((g) => g.side === "user" && !g.penalty && g.scorer === 9)
-        : [],
-    );
-    expect(keeperGoals).toEqual([]);
+    for (const l of squads) {
+      const keeper = l.starters[0];
+      const goals = SEEDS.slice(0, 50)
+        .map((seed) => runCup(l, seed, "cup8"))
+        .flatMap((r) => r.matches)
+        .flatMap((m) => (m.status === "played" ? m.goals : []))
+        .filter((g) => g.side === "user" && !g.penalty && g.scorer === keeper);
+      expect(goals).toEqual([]);
+    }
   });
 });

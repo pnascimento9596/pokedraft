@@ -154,6 +154,7 @@ export function runCup(
     const starters = fielded.starters.map((id, i): MatchStarter => ({
       species: speciesById(id),
       line: formation.slots[i]!.line,
+      role: formation.slots[i]!.role,
     }));
     const match = simulateMatch(
       {

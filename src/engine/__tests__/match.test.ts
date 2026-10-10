@@ -16,6 +16,7 @@ const RATING = rateTeam(KANTO);
 const STARTERS = KANTO.starters.map((id, i) => ({
   species: speciesById(id),
   line: FORMATIONS["4-3-3"].slots[i]!.line,
+  role: FORMATIONS["4-3-3"].slots[i]!.role,
 }));
 const LADDER = buildLadder("golden-1", "kanto151");
 
@@ -100,28 +101,28 @@ describe("simulateMatch", () => {
       943,
     ]);
     expect(m.goals).toEqual([
-      { side: "user", minute: 6, penalty: false, scorer: 55, assist: 6 },
-      { side: "user", minute: 35, penalty: false, scorer: 26, assist: 59 },
+      { side: "user", minute: 6, penalty: false, scorer: 80, assist: 26 },
+      { side: "user", minute: 35, penalty: false, scorer: 26, assist: 85 },
       { side: "user", minute: 52, penalty: false, scorer: 149, assist: 26 },
-      { side: "user", minute: 60, penalty: false, scorer: 6, assist: 3 },
-      { side: "user", minute: 62, penalty: false, scorer: 26, assist: 80 },
-      { side: "user", minute: 64, penalty: false, scorer: 80, assist: null },
-      { side: "user", minute: 71, penalty: false, scorer: 80, assist: 3 },
+      { side: "user", minute: 60, penalty: false, scorer: 26, assist: 6 },
+      { side: "user", minute: 62, penalty: false, scorer: 26, assist: 85 },
+      { side: "user", minute: 64, penalty: false, scorer: 85, assist: null },
+      { side: "user", minute: 71, penalty: false, scorer: 85, assist: 6 },
       { side: "user", minute: 80, penalty: true, scorer: 149, assist: null },
       { side: "opp", minute: 81, penalty: false, scorer: 10, assist: null },
-      { side: "user", minute: 90, penalty: false, scorer: 135, assist: 6 },
+      { side: "user", minute: 90, penalty: false, scorer: 135, assist: 26 },
     ]);
     expect(m.recap).toEqual([
       "Beat Pallet Town 9-1.",
-      "Golduck finishes in the 6th minute after a pass from Charizard.",
-      "Raichu scores in the 35th minute, set up by Arcanine.",
+      "Slowbro finishes in the 6th minute after a pass from Raichu.",
+      "Raichu scores in the 35th minute, set up by Dodrio.",
       "Raichu sets up Dragonite in the 52nd minute.",
-      "Charizard finishes in the 60th minute after a pass from Venusaur.",
-      "Raichu scores in the 62nd minute, set up by Slowbro.",
-      "Slowbro finds the net in the 64th minute.",
-      "Slowbro finishes in the 71st minute after a pass from Venusaur.",
+      "Raichu finishes in the 60th minute after a pass from Charizard.",
+      "Raichu scores in the 62nd minute, set up by Dodrio.",
+      "Dodrio finds the net in the 64th minute.",
+      "Dodrio finishes in the 71st minute after a pass from Charizard.",
       "Dragonite scores from the spot in the 80th minute.",
-      "Charizard sets up Jolteon in the 90th minute.",
+      "Raichu sets up Jolteon in the 90th minute.",
     ]);
   });
 
