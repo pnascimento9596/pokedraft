@@ -114,6 +114,19 @@ describe("ResultsView", () => {
     ]);
   });
 
+  it("describes the number on the cards: the pitch legend and the season details talk about ratings, 0 to 100 and the three lowest", () => {
+    view(FLAWLESS);
+    const legend = screen.getByRole("list", { name: "Pitch legend" });
+    expect(within(legend).getByText("Weak spot: one of the 3 lowest ratings")).toBeTruthy();
+    expect(within(legend).queryByText(/weakest spots/)).toBeNull();
+    const details = screen.getByText("Season details: how grading works").closest("details")!;
+    expect(
+      within(details).getByText(
+        /Each player's rating is a score from 0 to 100 against every other Pokémon for that job, and the three lowest are flagged as weak spots\. Each line, from goalkeeper to attack, is weighed on its own, and the weak spots drag the score down/,
+      ),
+    ).toBeTruthy();
+  });
+
   it("shows the player of the tournament's point breakdown, and none for an old-engine run", () => {
     const { cup } = replay(FLAWLESS);
     view(FLAWLESS);
