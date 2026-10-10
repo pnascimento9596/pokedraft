@@ -31,6 +31,7 @@ jobs:
           key: pokeapi-csv-c80757193bd0889054e36f4209762360bdaa4b95-${{ hashFiles('scripts/data/build-pokedex.mjs', 'scripts/data/build-type-chart.mjs') }}
       - run: pnpm check:mirrors
       - run: pnpm check:image-seam
+      - run: pnpm check:image-packs
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test

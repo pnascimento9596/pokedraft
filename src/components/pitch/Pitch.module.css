@@ -139,6 +139,17 @@
   transform: scale(1.1);
 }
 
+.tokenImage img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Right-half tokens face the center. Which half depends on the layout, and the player can turn
+   it off (data-mirror="off" on the wrap). */
+.wrap[data-mirror="on"] .token[data-half-portrait="right"] .tokenImage img {
+  transform: scaleX(-1);
+}
+
 .tokenEmpty {
   font-family: var(--font-display);
   font-weight: 800;
@@ -244,6 +255,12 @@
   .field > .token {
     left: calc(5% + var(--y) * 0.9%);
     top: calc(5% + var(--x) * 0.9%);
+  }
+  .wrap[data-mirror="on"] .token[data-half-portrait="right"] .tokenImage img {
+    transform: none;
+  }
+  .wrap[data-mirror="on"] .token[data-half-landscape="right"] .tokenImage img {
+    transform: scaleX(-1);
   }
   .token {
     width: 72px;

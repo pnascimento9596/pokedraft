@@ -1,8 +1,9 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { CARD_SIZE, Card, cardModel } from "@/components/share/card";
+import { cardImages } from "@/components/share/card-images";
 
-export function GET(request: NextRequest): Response {
+export async function GET(request: NextRequest): Promise<Response> {
   const q = request.nextUrl.searchParams;
   const t = q.get("t");
   const b = q.get("b");
@@ -13,5 +14,9 @@ export function GET(request: NextRequest): Response {
       headers: { "content-type": "text/plain; charset=utf-8" },
     });
   }
-  return new ImageResponse(<Card model={model} />, CARD_SIZE);
+  const images = await cardImages(model, q.get("pack"));
+  return new ImageResponse(
+    <Card model={model} images={images} mirror={q.get("mirror") !== "0"} />,
+    CARD_SIZE,
+  );
 }

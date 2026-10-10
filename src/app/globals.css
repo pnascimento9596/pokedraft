@@ -424,3 +424,72 @@ select {
     transition-duration: 0.01ms !important;
   }
 }
+
+.image-settings {
+  position: relative;
+}
+
+.image-settings summary {
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 6px 8px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.image-settings summary::-webkit-details-marker {
+  display: none;
+}
+
+.image-settings summary:hover,
+.image-settings[open] summary {
+  color: var(--ink);
+}
+
+.image-settings__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 30;
+  display: grid;
+  gap: 10px;
+  min-width: 210px;
+  padding: 12px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.image-settings__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.image-settings__row--check {
+  justify-content: flex-start;
+}
+
+.image-settings select {
+  min-height: 36px;
+  background: var(--bg-sunk);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  padding: 0 8px;
+}
+
+.image-settings input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}

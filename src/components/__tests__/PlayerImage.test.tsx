@@ -1,14 +1,15 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { PlayerImage, StaticPlayerImage } from "@/components/PlayerImage";
+import { PlayerImage } from "@/components/PlayerImage";
+import { StaticPlayerImage } from "@/components/PlayerPicture";
 import { writeSettings } from "@/images/settings";
 
 beforeEach(() => localStorage.clear());
 afterEach(cleanup);
 
 describe("PlayerImage", () => {
-  it("renders the default pixel pack as a lazy, async, pixelated <img> of the requested size", () => {
+  it("renders the default pixel pack as a lazy, async, pixelated image element of the requested size", () => {
     render(<PlayerImage dexId={25} size={36} alt="Pikachu" />);
     const img = screen.getByAltText("Pikachu") as HTMLImageElement;
     expect(img.getAttribute("src")).toBe("/creatures/pokeapi-pixel/0025.png");

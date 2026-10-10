@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Barlow_Semi_Condensed, Big_Shoulders } from "next/font/google";
+import { ImageSettings } from "@/components/ImageSettings";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import "./globals.css";
 
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/leaderboard">Leaderboard</Link>
             <Link href="/how-to-play">How to play</Link>
             <Link href="/history">History</Link>
+            <ImageSettings />
             <ThemeToggle />
           </nav>
         </header>

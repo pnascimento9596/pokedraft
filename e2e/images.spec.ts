@@ -96,6 +96,11 @@ test.describe("image style", () => {
         .evaluateAll((els) => els.map((el) => el.getAttribute("src")));
     expect((await srcs()).every((s) => s!.startsWith("/creatures/pokeapi-pixel/"))).toBe(true);
 
+    await page
+      .getByRole("group")
+      .filter({ has: page.getByLabel("Image style") })
+      .getByText("Images")
+      .click();
     await page.getByLabel("Image style").selectOption("pokeapi-art");
     await expect
       .poll(async () => (await srcs()).every((s) => s!.startsWith("/creatures/pokeapi-art/")))
@@ -104,6 +109,9 @@ test.describe("image style", () => {
 
     await page.reload();
     await expect(page.getByLabel("Image style")).toHaveValue("pokeapi-art");
+    await page.getByRole("button", { name: "Randomize" }).click();
+    await expectLoadedImages(page, pitch, 11);
+    expect((await srcs()).every((s) => s!.startsWith("/creatures/pokeapi-art/"))).toBe(true);
   });
 
   test("a picture that fails to load shows the blank square with the same footprint", async ({
