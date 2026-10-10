@@ -71,7 +71,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  /* 1 px, as on the 640-899 px pitch: at 390 px in 4-3-3 a 2 px gap put the keeper's picture
+     1.3 px into the left centre-back's name (Linux Chromium). The 900 px pitch sets 2 px again. */
+  gap: 1px;
   width: 60px;
   padding: 2px;
   border: 0;
