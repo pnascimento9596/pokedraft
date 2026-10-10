@@ -44,7 +44,8 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
     title: "Team Score",
     body: [
       "Team Score sums up how good your squad is. It mostly comes from how well each player suits the spot they play, so a natural striker up front beats a goalkeeper played out of position.",
-      "Each line counts, your weakest spots pull the score down, and neighbours who link up (shared type, same evolution line, same generation, or covering each other's weaknesses) add a bonus. A strong bench helps a little too.",
+      "On the results screen each player gets a rating from 0 to 100 for their spot. It ranks them against every other Pokémon for that job, so 78 vs other CBs means better than about 78 of every 100 other CBs. The three lowest ratings in your eleven are flagged as weak spots.",
+      "Each line counts, your weak spots pull the score down, and neighbours who link up (shared type, same evolution line, same generation, or covering each other's weaknesses) add a bonus. A strong bench helps a little too.",
     ],
   },
   {

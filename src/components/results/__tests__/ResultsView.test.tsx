@@ -9,6 +9,9 @@ import { loadHistory } from "@/ui/runs";
 afterEach(cleanup);
 beforeEach(() => localStorage.clear());
 
+// U+2013 and U+2014, spelled as code points so this file holds no dash itself.
+const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
+
 // Engine-1 tokens, replayed on the retained v1 bundle. Cut with scratch scripts: cup8 Open 4-3-3 seed "seed-9" (observed 8-0-0, Team Score 845),
 // cup8 Classic 4-2-3-1 seed "c-4" (observed 5-0-1, out in the quarter-final), and the same
 // 16 as a builder friendly with seed "friendly-1" (observed 7-0-1, Team Score 845).
@@ -119,7 +122,9 @@ describe("ResultsView", () => {
     const legend = screen.getByRole("list", { name: "Pitch legend" });
     expect(within(legend).getByText("Weak spot: one of the 3 lowest ratings")).toBeTruthy();
     expect(within(legend).queryByText(/weakest spots/)).toBeNull();
+    expect(legend.textContent).not.toMatch(DASHES);
     const details = screen.getByText("Season details: how grading works").closest("details")!;
+    expect(details.textContent).not.toMatch(DASHES);
     expect(
       within(details).getByText(
         /Each player's rating is a score from 0 to 100 against every other Pokémon for that job, and the three lowest are flagged as weak spots\. Each line, from goalkeeper to attack, is weighed on its own, and the weak spots drag the score down/,

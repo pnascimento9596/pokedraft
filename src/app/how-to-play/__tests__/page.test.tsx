@@ -5,6 +5,9 @@ import HowToPlayPage from "../page";
 
 afterEach(cleanup);
 
+// U+2013 and U+2014, spelled as code points so this file holds no dash itself.
+const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
+
 describe("How to play", () => {
   it("explains the 0 to 100 rating on the cards and what a weak spot is (catches copy that still describes the old fit number)", () => {
     render(<HowToPlayPage />);
@@ -20,6 +23,6 @@ describe("How to play", () => {
 
   it("uses no em or en dash anywhere on the page", () => {
     const { container } = render(<HowToPlayPage />);
-    expect(container.textContent).not.toMatch(/[–—]/);
+    expect(container.textContent).not.toMatch(DASHES);
   });
 });
