@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { pngSize } from "./helpers";
 
 test.use({ reducedMotion: "reduce" });
 
@@ -64,13 +65,50 @@ test("a seeded run survives a reload and Back then Forward mid-draft, and its re
 });
 
 test.describe("builder Download image feedback (SA-20, SB-05)", () => {
-  test("says Image saved and delivers a 1200x630 PNG", async ({ page }) => {
+  test("on a desktop, saves pokedraft-lineup.png through the download link and says Image saved", async ({
+    page,
+    hasTouch,
+  }) => {
+    test.skip(hasTouch, "a touch phone gets the share sheet, covered below");
     await page.goto("/");
     await page.getByRole("button", { name: "Randomize" }).click();
     const download = page.waitForEvent("download");
     await page.getByRole("button", { name: "Download image" }).click();
-    expect((await download).suggestedFilename()).toBe("pokedraft-lineup.png");
+    const file = await download;
+    expect(file.suggestedFilename()).toBe("pokedraft-lineup.png");
+    expect(await pngSize(file)).toEqual({ width: 1200, height: 630 });
     await expect(page.getByRole("toolbar").getByRole("status")).toHaveText("Image saved");
+  });
+
+  test("on a touch phone that can share files, hands the PNG to the share sheet and says Image shared", async ({
+    page,
+    hasTouch,
+  }) => {
+    test.skip(!hasTouch, "desktop keeps the download link");
+    // Headless browsers have no share sheet to answer, so the sheet is replaced by a recorder.
+    // WebKit's own canShare stays in place; Chromium has none, so it stands in for Android Chrome.
+    await page.addInitScript(() => {
+      const w = window as unknown as { shared: unknown[] };
+      w.shared = [];
+      if (typeof navigator.canShare !== "function") {
+        Object.defineProperty(navigator, "canShare", { value: () => true });
+      }
+      Object.defineProperty(navigator, "share", {
+        value: async (data: ShareData) => {
+          for (const f of data.files ?? []) {
+            const head = [...new Uint8Array(await f.slice(0, 8).arrayBuffer())];
+            w.shared.push({ name: f.name, type: f.type, head });
+          }
+        },
+      });
+    });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Randomize" }).click();
+    await page.getByRole("button", { name: "Download image" }).click();
+    await expect(page.getByRole("toolbar").getByRole("status")).toHaveText("Image shared");
+    expect(await page.evaluate(() => (window as unknown as { shared: unknown[] }).shared)).toEqual([
+      { name: "pokedraft-lineup.png", type: "image/png", head: [137, 80, 78, 71, 13, 10, 26, 10] },
+    ]);
   });
 
   test("says Download failed in an alert when the card cannot render, with no page error", async ({
