@@ -509,3 +509,125 @@ select {
   width: 20px;
   height: 20px;
 }
+
+/* The drawn checkbox for phones, where the real one becomes a transparent 44 px row. */
+.image-settings__box {
+  display: none;
+}
+
+.site-header__menu {
+  display: none;
+}
+
+/* Phones: every control is at least 44x44 CSS px and the header is one row (dispatch 7 GATE 4).
+   Wider screens keep the denser desktop sizes above. */
+@media (max-width: 480px) {
+  .btn,
+  .btn--sm,
+  .chip {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .site-header {
+    position: relative;
+    flex-wrap: nowrap;
+    padding-block: 6px;
+  }
+  .site-header__brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .site-header__menu {
+    display: inline-flex;
+  }
+  .site-header nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 4px 12px 12px;
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--line-strong);
+    box-shadow: var(--shadow);
+  }
+  .site-header nav[data-open="true"] {
+    display: flex;
+  }
+  .site-header nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 4px;
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header nav .btn {
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+  .image-settings summary {
+    display: flex;
+    min-height: 44px;
+    padding: 0 4px;
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .image-settings__panel {
+    position: static;
+    min-width: 0;
+    margin-top: 8px;
+    box-shadow: none;
+  }
+  /* WebKit ignores min-height on a styled select, so it gets a fixed height. */
+  .image-settings select {
+    height: 44px;
+  }
+  /* The whole row is the checkbox's hit box; the box beside the text is drawn. */
+  .image-settings__row--check {
+    position: relative;
+    min-height: 44px;
+  }
+  .image-settings input[type="checkbox"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .image-settings__box {
+    display: block;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    background: var(--bg-sunk);
+  }
+  .image-settings input:checked + .image-settings__box {
+    background: var(--flood);
+    border-color: var(--flood);
+  }
+  .image-settings input:checked + .image-settings__box::after {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 11px;
+    margin: 3px auto 0;
+    border: solid var(--flood-ink);
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+  }
+  .image-settings input:focus-visible + .image-settings__box {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+}

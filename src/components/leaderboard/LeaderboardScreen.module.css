@@ -64,3 +64,14 @@
   color: var(--ink-soft);
   font-size: 0.9rem;
 }
+
+/* Phones: 44 px tabs, mode radios and date field (dispatch 7 GATE 4). */
+@media (max-width: 480px) {
+  .tab,
+  .date input {
+    min-height: 44px;
+  }
+  .modes {
+    gap: 8px;
+  }
+}

@@ -208,7 +208,7 @@
 .stats thead th {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -244,5 +244,20 @@
 @media (min-width: 1024px) {
   .moreToggle {
     display: none;
+  }
+}
+
+/* Phones: 44 px controls (dispatch 7 GATE 4). */
+@media (max-width: 480px) {
+  /* WebKit ignores min-height on a styled select, so it gets a fixed height. */
+  .select {
+    height: 44px;
+  }
+  .segment,
+  .chips :global(.chip) {
+    min-height: 44px;
+  }
+  .chips {
+    gap: 8px;
   }
 }

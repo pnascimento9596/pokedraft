@@ -25,6 +25,12 @@
   text-decoration: none;
 }
 
+@media (max-width: 480px) {
+  .toc {
+    gap: 8px;
+  }
+}
+
 .section {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
