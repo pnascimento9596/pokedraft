@@ -47,7 +47,7 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
     <section className={s.results} data-testid="results" aria-label="Run results">
       <header className={s.hero} data-flawless={cup.flawless || undefined}>
         <div className={s.heroTop}>
-          <span className="kicker">{modeLine(draft)}</span>
+          <h1 className="kicker">{modeLine(draft)}</h1>
           <span className={s.formation}>{formation}</span>
           {friendly ? <span className={s.friendly}>{FRIENDLY_LABEL}</span> : null}
         </div>

@@ -139,7 +139,7 @@ export function Pitch({
     const weak = slotId !== null && weakest.includes(slotId);
     const dragging = drag !== null && sameRef(drag.from, ref) && drag.moved;
     const draggable = onSwap !== undefined && species !== null && !disabled;
-    const name = species === null ? `Empty ${slotLabel} slot` : `${species.name}, ${slotLabel}`;
+    const name = species === null ? `Empty ${slotLabel} slot` : `${slotLabel} ${species.name}`;
     return (
       <button
         key={key}
