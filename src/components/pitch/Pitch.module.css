@@ -72,7 +72,7 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  width: 70px;
+  width: 60px;
   padding: 2px;
   border: 0;
   background: none;
@@ -159,7 +159,7 @@
 }
 
 .tokenName {
-  max-width: 70px;
+  max-width: 60px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -246,14 +246,29 @@
     top: calc(5% + var(--x) * 0.9%);
   }
   .token {
+    width: 72px;
+    gap: 1px;
+  }
+  .tokenName {
+    max-width: 72px;
+  }
+  .tokenImage {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@container (min-width: 900px) {
+  .token {
     width: 84px;
+    gap: 2px;
   }
   .tokenName {
     max-width: 84px;
     font-size: 0.8rem;
   }
   .tokenImage {
-    width: 52px;
-    height: 52px;
+    width: 50px;
+    height: 50px;
   }
 }
