@@ -21,6 +21,17 @@ describe("How to play", () => {
     expect(within(section).queryByText(/weakest spots/)).toBeNull();
   });
 
+  it("describes the engine 3 ladder: gentle group, a step up every knockout round (catches the old cliff from the quarter-final)", () => {
+    render(<HowToPlayPage />);
+    const section = screen.getByRole("heading", { name: "The cup" }).closest("section")!;
+    expect(
+      within(section).getByText(
+        "The group games are the gentle start. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test. Win all 8 games for a flawless 8-0.",
+      ),
+    ).toBeTruthy();
+    expect(section.textContent).not.toMatch(/hard from the quarter-final/);
+  });
+
   it("uses no em or en dash anywhere on the page", () => {
     const { container } = render(<HowToPlayPage />);
     expect(container.textContent).not.toMatch(DASHES);
