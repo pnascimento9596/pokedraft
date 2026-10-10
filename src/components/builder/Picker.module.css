@@ -216,6 +216,12 @@
   color: var(--ink-soft);
 }
 
+/* Beside a Swap tag the cell keeps its old 48 px, so "vs other strikers" wraps to two lines and the
+   name keeps its room (at 320 px "Meowth" was cut to "Meo..."). */
+.rowTag + .rowFit {
+  max-width: 3rem;
+}
+
 @media (min-width: 720px) {
   .dialog {
     width: min(640px, calc(100vw - 48px));
