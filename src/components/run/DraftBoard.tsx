@@ -179,7 +179,7 @@ export function DraftBoard({
 
         {roll !== null ? (
           <RollReveal
-            key={rollId}
+            key={`reveal-${rollId}`}
             stages={stagesFor(roll, settings, run.cause)}
             instant={reduced}
             onDone={onRevealDone}
@@ -192,7 +192,7 @@ export function DraftBoard({
 
         {revealed ? (
           <Candidates
-            key={rollId}
+            key={`cands-${rollId}`}
             ids={candidates}
             big={roll?.kind === "species" || (roll?.kind === "combo" && roll.offers !== null)}
             selected={selected}
@@ -225,8 +225,11 @@ export function DraftBoard({
             New run
           </button>
         </div>
-        <RoadStrip compact />
       </section>
+
+      <div className={s.road}>
+        <RoadStrip compact />
+      </div>
 
       <section className={s.pitch} data-armed={armed || undefined} aria-label="Your squad">
         <Pitch
