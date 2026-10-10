@@ -90,6 +90,30 @@ describe("ResultsView", () => {
     expect(within(final).queryByText(/26-25 on pens/)).toBeNull();
   });
 
+  it("rates an old-engine run's eleven by quality, and a tie in the shown number keeps the engine's order (Swoobat at LCB and Swalot at CAM both show 39, only the LCB is flagged)", () => {
+    view(ELIMINATED);
+    const slots = ["GK", "LB", "LCB", "RCB", "RB", "LDM", "RDM", "LAM", "CAM", "RAM", "ST"];
+    const rows = slots.map((slot) => screen.getByTestId(`fit-4-2-3-1.${slot}`));
+    expect(rows.map((row) => within(row).getByText(/^\d+$/).textContent)).toEqual([
+      "6",
+      "62",
+      "39",
+      "16",
+      "56",
+      "73",
+      "88",
+      "43",
+      "39",
+      "77",
+      "71",
+    ]);
+    expect(slots.filter((_, i) => within(rows[i]!).queryByText("Weak spot") !== null)).toEqual([
+      "GK",
+      "LCB",
+      "RCB",
+    ]);
+  });
+
   it("shows the player of the tournament's point breakdown, and none for an old-engine run", () => {
     const { cup } = replay(FLAWLESS);
     view(FLAWLESS);
