@@ -10,7 +10,7 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
     id: "builder",
     title: "The builder",
     body: [
-      "Pick a formation and fill all 11 starting spots and 5 bench spots with any Pokémon you like. You can swap players around, clear a spot, or start over.",
+      "Pick a formation and fill all 11 starting spots and 5 bench spots with Pokémon from the generations you switch on. Legendary and Mythical Pokémon stay out until you switch on Legendaries in the settings. You can swap players around, clear a spot, or start over.",
       "Once all 16 spots are filled you get a Team Score and can play a friendly cup with that squad.",
     ],
   },
@@ -20,6 +20,7 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
     body: [
       "Every round the game rolls a region and then a type, for example Johto and Water. You draft one Pokémon that matches both, then the next round rolls again, until all 16 spots are filled.",
       "In Open you can take any Pokémon that matches the roll. In Classic you choose from just 3 offered. Open is easier than Classic. Your records keep them apart, but the all-time leaderboard ranks every draft setting together and names each run's settings on its row.",
+      "A squad can hold at most 3 Legendary or Mythical Pokémon. After the third, they stop appearing in rolls.",
       "You get 3 rerolls for the whole run. Reroll the type to keep the region, or reroll the region to get a new region and a new type.",
       "Squad First shows you the roll and lets you choose which spot to fill. Position First makes you commit to a spot before you see the roll.",
     ],
@@ -28,7 +29,7 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
     id: "kanto151",
     title: "The 151 Challenge",
     body: [
-      "Only the original 151. Each round rolls a single Pokémon and you place it in your squad. You get 5 rerolls for the whole run.",
+      "Only the original 151. Each round rolls a single Pokémon and you place it in your squad. You get 5 rerolls for the whole run. The same cap of 3 Legendary or Mythical Pokémon applies.",
     ],
   },
   {
