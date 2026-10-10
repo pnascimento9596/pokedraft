@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
-import { CARD_SIZE, Card, cardModel } from "@/components/share/card";
+import { CARD_SIZE, Card, runCardModel } from "@/components/share/card";
+import { loadRun } from "./run";
 
 export const alt = "pokedraft run card";
 export const size = CARD_SIZE;
@@ -7,8 +8,8 @@ export const contentType = "image/png";
 
 export default async function Image({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const model = cardModel({ t: token });
-  if (model === null) {
+  const run = loadRun(token);
+  if (run === null) {
     return new ImageResponse(
       <div
         style={{
@@ -27,5 +28,5 @@ export default async function Image({ params }: { params: Promise<{ token: strin
       size,
     );
   }
-  return new ImageResponse(<Card model={model} />, size);
+  return new ImageResponse(<Card model={runCardModel(run)} />, size);
 }

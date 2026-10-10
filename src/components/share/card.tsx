@@ -37,29 +37,32 @@ function isFull(lineup: Lineup): lineup is FullLineup {
   return filledCount(lineup) === 16;
 }
 
+export type ReplayedRun = ReturnType<typeof replay>;
+
+export function runCardModel({ draft, cup }: ReplayedRun): CardModel {
+  const st = draft.settings;
+  return {
+    formation: st.formation,
+    starters: draft.lineup.starters,
+    headline: {
+      kind: "run",
+      mode:
+        st.mode === "cup8" ? `${MODE_LABEL.cup8}, ${STYLE_LABEL[st.style]}` : MODE_LABEL[st.mode],
+      friendly: st.mode === "builder",
+      score: cup.rating.score,
+      record: record(cup.wins, cup.draws, cup.losses),
+      finish: cup.finish,
+    },
+  };
+}
+
 export function cardModel(source: CardSource): CardModel | null {
   if ("t" in source) {
-    let run: ReturnType<typeof replay>;
     try {
-      run = replay(source.t);
+      return runCardModel(replay(source.t));
     } catch {
       return null;
     }
-    const { draft, cup } = run;
-    const st = draft.settings;
-    return {
-      formation: st.formation,
-      starters: draft.lineup.starters,
-      headline: {
-        kind: "run",
-        mode:
-          st.mode === "cup8" ? `${MODE_LABEL.cup8}, ${STYLE_LABEL[st.style]}` : MODE_LABEL[st.mode],
-        friendly: st.mode === "builder",
-        score: cup.rating.score,
-        record: record(cup.wins, cup.draws, cup.losses),
-        finish: cup.finish,
-      },
-    };
   }
   const draft = draftFromBuilderToken(source.b);
   if (draft === null) return null;
