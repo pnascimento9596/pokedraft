@@ -21,7 +21,7 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
       "Every round the game rolls a region and then a type, for example Johto and Water. You draft one Pokémon that matches both, then the next round rolls again, until all 16 spots are filled.",
       "In Open you can take any Pokémon that matches the roll. In Classic you choose from just 3 offered. Open is easier than Classic. Your records keep them apart, but the all-time leaderboard ranks every draft setting together and names each run's settings on its row.",
       "A squad can hold at most 3 Legendary or Mythical Pokémon. After the third, they stop appearing in rolls.",
-      "You get 3 rerolls for the whole run. Reroll the type to keep the region, or reroll the region to get a new region and a new type.",
+      "You get 3 rerolls for the whole run. Reroll the type to get a different type in the same region. Reroll the region to get a different region, and the type is rolled again, so it can come up the same.",
       "Squad First shows you the roll and lets you choose which spot to fill. Position First makes you commit to a spot before you see the roll.",
     ],
   },
