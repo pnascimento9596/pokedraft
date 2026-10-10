@@ -96,16 +96,16 @@ Tools: Playwright e2e (`pnpm test:e2e`, 23 tests), a throwaway Playwright viewpo
 
 ### Viewports
 
-PASS at 360, 390, 430 and 1440 on all 9 routes: horizontal overflow 0 everywhere, local and production baseline. Tap-target size (44 px) was not measured.
+Horizontal overflow: PASS at 360, 390, 430 and 1440 on all 9 routes, 0 px everywhere, local and production baseline. Tap-target size (44 px): NOT RUN, so the viewport row is not a full pass.
 
 ### Accessibility
 
 | # | Result | Evidence |
 |---|---|---|
-| A1 | PASS | Tab walk (30 stops on `/`, 8 on `/play`, 15 on `/how-to-play`, 14 on `/leaderboard`, 390 px): every stop is visible and has an outline or shadow ring. The only "no ring" report is the browser's own date-picker button inside the native date input, which is not a page control |
+| A1 | PARTIAL | Tab walk (30 stops on `/`, 8 on `/play`, 15 on `/how-to-play`, 14 on `/leaderboard`, 390 px): every stop is visible and has an outline or shadow ring. The only "no ring" report is the browser's own date-picker button inside the native date input, which is not a page control. Operating a whole draft by keyboard alone was not done (see NOT RUN) |
 | A2 | PASS | `wheel-announce` holds one sentence (`Region: Galar. Type: Normal.`) after the wheel settles; unit test fails on the old code (K1) |
 | A3 | PASS | axe `image-alt` and the labelled blank fallback; `PlayerImage.test.tsx` |
-| A4 | PASS with a limit | axe `color-contrast` reports 0 violations on every route after the 404 fix. axe cannot evaluate text over gradients or images, so those spots are unverified |
+| A4 | PARTIAL | axe `color-contrast` reports 0 violations on every route after the 404 fix. The viewport script ran in Playwright's default light scheme and `e2e/a11y.spec.ts` runs in the configured dark scheme, so both schemes had an axe pass, but only on the routes listed. axe cannot evaluate text over gradients or images (the pitch, the hero), so those spots are unverified |
 | A5 | PASS | with reduced motion the 8-0 run shows candidates 1 ms after Start, versus 4808 ms with motion; both end on the same settled faces and the same announcement |
 | A6 | PASS | one `main` and one `h1` per route after the fixes (see findings 1 and 2); axe `heading-order` is on in `e2e/a11y.spec.ts` |
 | A7 | PARTIAL | axe `label` passes on all routes. `role="alert"` on submit and gate errors was not exercised in a browser |
@@ -142,7 +142,7 @@ PASS at 360, 390, 430 and 1440 on all 9 routes: horizontal overflow 0 everywhere
 |---|---|---|
 | C1 | PASS | 0 em dashes in rendered text on all 9 routes at 4 widths, and in `/gate` HTML |
 | C2 | PASS | footer disclaimer found on all 9 routes (incl. both 404s) and on `/gate` |
-| C3 | PASS | `data-testid="pack-credit"` present on all 9 routes after hydration locally: `Creature art, <label> pack: <author>. License: <license>.`; unit test in `PackCredit.test.tsx`. It renders client-side, so it is not in the first HTML |
+| C3 | PASS | `data-testid="pack-credit"` is in the first HTML of `/`, `/how-to-play` and `/history` (curl on the local build) with the default pack's credit, and on all 9 routes after hydration: `Creature art, <label> pack: <author>. License: <license>.`; the chosen pack's credit shows after hydration. `PackCredit.test.tsx` covers the switch |
 
 ### Data and ratings
 
@@ -175,7 +175,8 @@ D1: 20 seeded drafts, 7 oddities logged in `docs/reports/finish-ratings-notes.md
 
 ### NOT RUN
 
-- Browser drag-and-drop of tokens (F2) and manual reroll in the browser (F7).
+- Browser drag-and-drop of tokens, including touch-emulated drag swap on a phone-sized viewport (F2), and manual reroll in the browser (F7). Roll identity is therefore guarded by a unit test only.
+- A whole draft operated by keyboard alone (A1).
 - Daily submit and a real leaderboard row (F10): live suite after deploy.
 - Gate unlock and throttle (F14), `role="alert"` errors (A7).
 - 44 px tap-target measurement.
