@@ -241,6 +241,41 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect([res.status, res.body.error.code]).toEqual([409, "DUPLICATE_TOKEN"]);
   });
 
+  it("rejects a re-encoded copy of a listed run with 409 DUPLICATE_TOKEN (catches one run listed under many names)", async () => {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    const json = Buffer.from(token.slice("pd3.".length), "base64url").toString("utf8");
+    const reencode = (text: string) => `pd3.${Buffer.from(text, "utf8").toString("base64url")}`;
+    const spaced = reencode(JSON.stringify(JSON.parse(json), null, 1));
+    const gensShuffled = reencode(json.replace('"123456789"', '"213456789"'));
+    const floatSpecies = reencode(json.replace(/\["p",(\d+),/, '["p",$1.0,'));
+    expect(new Set([token, spaced, gensShuffled, floatSpecies]).size).toBe(4);
+
+    expect((await submit({ nickname: "Ash", token })).status).toBe(201);
+    for (const [nickname, variant] of [
+      ["Misty", spaced],
+      ["Brock", gensShuffled],
+      ["Gary", floatSpecies],
+    ] as const) {
+      const res = await submit({ nickname, token: variant });
+      expect([nickname, res.status, res.body.error?.code]).toEqual([
+        nickname,
+        409,
+        "DUPLICATE_TOKEN",
+      ]);
+    }
+    expect((await rows()).map((r) => [r.nickname, r.token])).toEqual([["Ash", token]]);
+  });
+
+  it("stores the canonical token when a run arrives in a non-canonical encoding", async () => {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    const json = Buffer.from(token.slice("pd3.".length), "base64url").toString("utf8");
+    const spaced = `pd3.${Buffer.from(JSON.stringify(JSON.parse(json), null, 1)).toString("base64url")}`;
+    const res = await submit({ nickname: "Ash", token: spaced });
+    expect(res.status).toBe(201);
+    expect(res.body.entry.token).toBe(token);
+    expect((await rows()).map((r) => r.token)).toEqual([token]);
+  });
+
   it("rejects a resubmitted token or a taken daily nickname without replaying again", async () => {
     const token = scriptedToken(CUP8, "lb-cup8");
     expect((await submit({ nickname: "Ash", token })).status).toBe(201);
