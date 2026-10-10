@@ -16,6 +16,9 @@ type UserGoal = Extract<GoalEvent, { side: "user" }>;
 type Template = (scorer: string, minute: string, assist: string) => string;
 
 const REGULATION_KICKS = ENGINE_COEFFICIENTS.shootout.kicks;
+// Engine-1 and engine-2 ended a capped shootout with one extra pair, the user scoring and the
+// opponent missing. It is an award, not a sudden-death round.
+const DECREE_AWARD_PAIRS = 1;
 
 const OPENING: Readonly<
   Record<"W" | "D" | "L", readonly ((score: string, club: string) => string)[]>
@@ -83,7 +86,8 @@ export function recapLines(input: RecapInput): string[] {
     } else {
       // Level at the cap means every regulation kick was taken, so the pairs past them are the
       // sudden-death rounds.
-      const rounds = kicks.length / 2 - REGULATION_KICKS;
+      const awarded = decider === "decree" ? DECREE_AWARD_PAIRS : 0;
+      const rounds = kicks.length / 2 - REGULATION_KICKS - awarded;
       const how = decider === "coin" ? "on a coin toss" : "by the engine";
       lines.push(
         `${input.outcome === "W" ? "Won" : "Lost"} ${how} after ${rounds} rounds of sudden death.`,
