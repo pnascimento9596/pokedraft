@@ -1,10 +1,20 @@
 "use client";
 
-import type { ReplayedRun } from "@/components/share/card";
+import type { ReplayedAnyRun } from "@/engine/versions";
+import { engineLabel } from "@/engine/versions/label";
 import { ResultsView } from "./ResultsView";
 import { BrokenRun } from "./BrokenRun";
 
-export function SharedRun({ token, run }: { token: string; run: ReplayedRun | null }) {
+export function SharedRun({ token, run }: { token: string; run: ReplayedAnyRun | null }) {
   if (run === null) return <BrokenRun />;
-  return <ResultsView token={token} draft={run.draft} cup={run.cup} variant="shared" />;
+  return (
+    <>
+      {!run.current && (
+        <p className="kicker" data-testid="engine-label">
+          Played on engine {engineLabel(run.engine)}
+        </p>
+      )}
+      <ResultsView token={token} draft={run.draft} cup={run.cup} variant="shared" />
+    </>
+  );
 }

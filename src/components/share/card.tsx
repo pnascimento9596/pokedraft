@@ -1,8 +1,9 @@
 import {
   FORMATIONS,
   rateTeam,
-  replay,
   speciesById,
+  type CupResult,
+  type DraftState,
   type CupFinish,
   type FormationId,
   type FullLineup,
@@ -37,7 +38,10 @@ function isFull(lineup: Lineup): lineup is FullLineup {
   return filledCount(lineup) === 16;
 }
 
-export type ReplayedRun = ReturnType<typeof replay>;
+export interface ReplayedRun {
+  readonly draft: DraftState;
+  readonly cup: CupResult;
+}
 
 export function runCardModel({ draft, cup }: ReplayedRun): CardModel {
   const st = draft.settings;
@@ -56,10 +60,13 @@ export function runCardModel({ draft, cup }: ReplayedRun): CardModel {
   };
 }
 
-export function cardModel(source: CardSource): CardModel | null {
+export function cardModel(
+  source: CardSource,
+  replayRun: (token: string) => ReplayedRun,
+): CardModel | null {
   if ("t" in source) {
     try {
-      return runCardModel(replay(source.t));
+      return runCardModel(replayRun(source.t));
     } catch {
       return null;
     }

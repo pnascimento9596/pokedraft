@@ -3,13 +3,13 @@ import { scriptedToken } from "@/leaderboard/server/__tests__/fixtures";
 
 const calls = vi.hoisted(() => ({ n: 0 }));
 
-vi.mock("@/engine", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/engine")>();
+vi.mock("@/engine/versions", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/engine/versions")>();
   return {
     ...actual,
-    replay: (t: Parameters<typeof actual.replay>[0]) => {
+    replayAnyVersion: (t: string) => {
       calls.n += 1;
-      return actual.replay(t);
+      return actual.replayAnyVersion(t);
     },
   };
 });
