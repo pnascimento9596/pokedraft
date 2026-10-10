@@ -6,8 +6,9 @@ import s from "./RoadStrip.module.css";
 const BIG_JUMP = new Set(["R32", "R16", "QF", "SF", "F"]);
 // Before a seed exists the bars follow the shape of the coefficient table. No number is printed.
 const SHAPE = ENGINE_COEFFICIENTS.ladder.score;
-// Holds the value row open, so the strip is the same height with and without ratings.
-const NO_RATING = " ";
+// A non-breaking space holds the value row open, so the strip is the same height with and
+// without ratings (an empty cell has no line box).
+const NO_RATING = <>&nbsp;</>;
 
 export function RoadStrip({
   seed,
