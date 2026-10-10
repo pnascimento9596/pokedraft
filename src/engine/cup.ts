@@ -40,6 +40,8 @@ const OTHER_PAIRS = [
   ["G2", "G3"],
 ] as const;
 const ADVANCE = 2;
+const REGULATION_MINUTES = 90;
+const EXTRA_TIME_MINUTES = 120;
 const POINTS = { win: 3, draw: 1 } as const;
 
 function pointsFor(own: number, other: number): number {
@@ -120,7 +122,9 @@ export function runCup(
         goals: 0,
         assists: 0,
         appearances: 0,
+        cleanSheets: 0,
         cleanSheetPoints: 0,
+        minutes: 0,
         quality: speciesById(id).quality[formation.slots[i]!.role],
       },
     ]),
@@ -131,7 +135,9 @@ export function runCup(
         goals: 0,
         assists: 0,
         appearances: 0,
+        cleanSheets: 0,
         cleanSheetPoints: 0,
+        minutes: 0,
         quality: benchQuality(speciesById(id), roles),
       },
     ]),
@@ -143,7 +149,9 @@ export function runCup(
       goals: t.goals + (change.goals ?? 0),
       assists: t.assists + (change.assists ?? 0),
       appearances: t.appearances + (change.appearances ?? 0),
+      cleanSheets: t.cleanSheets + (change.cleanSheets ?? 0),
       cleanSheetPoints: t.cleanSheetPoints + (change.cleanSheetPoints ?? 0),
+      minutes: t.minutes + (change.minutes ?? 0),
     });
   };
 
@@ -172,10 +180,15 @@ export function runCup(
       c,
     );
     const conceded = match.regulation.opp + (match.extraTime?.opp ?? 0);
+    const minutes = match.extraTime === null ? REGULATION_MINUTES : EXTRA_TIME_MINUTES;
     for (const s of starters) {
-      const sheet =
-        conceded === 0 && (s.line === "GK" || s.line === "DEF") ? c.awards.cleanSheet[s.line] : 0;
-      bump(s.species.id, { appearances: 1, cleanSheetPoints: sheet });
+      const sheet = conceded === 0 ? c.awards.cleanSheet[s.role] : undefined;
+      bump(s.species.id, {
+        appearances: 1,
+        cleanSheets: sheet === undefined ? 0 : 1,
+        cleanSheetPoints: sheet ?? 0,
+        minutes,
+      });
     }
     for (const g of match.goals) {
       if (g.side !== "user") continue;

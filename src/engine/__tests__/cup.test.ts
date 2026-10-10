@@ -110,6 +110,15 @@ describe("runCup", () => {
       goldenBoot: { species: 29, goals: 2, assists: 0, appearances: 4 },
       topAssister: { species: 32, goals: 1, assists: 2, appearances: 4 },
       playerOfTournament: { species: 32, goals: 1, assists: 2, appearances: 4 },
+      potContribution: {
+        species: 32,
+        goals: 1,
+        assists: 2,
+        cleanSheets: 0,
+        minutes: 360,
+        points: { goals: 3, assists: 4, cleanSheets: 0, minutes: 2 },
+        total: 9,
+      },
     });
   });
 

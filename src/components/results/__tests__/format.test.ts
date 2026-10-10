@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { PenKick, Shirt, SpeciesId } from "@/engine";
 import {
   absenceLine,
+  contributionLine,
   finalScore,
   goalLine,
   shootoutLine,
@@ -105,5 +106,19 @@ describe("results format", () => {
     expect(absenceLine({ slot: "s1" as never, out: sp(1), in: sp(43) })).toBe(
       "Bulbasaur missed this match; Oddish came in",
     );
+  });
+
+  it("spells out where the player of the tournament's points came from", () => {
+    expect(
+      contributionLine({
+        species: sp(32),
+        goals: 1,
+        assists: 2,
+        cleanSheets: 1,
+        minutes: 480,
+        points: { goals: 3, assists: 4, cleanSheets: 1, minutes: 2.67 },
+        total: 10.67,
+      }),
+    ).toBe("10.67 pts: goals 3, assists 4, clean sheets 1, minutes 2.67");
   });
 });

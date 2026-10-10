@@ -331,10 +331,30 @@ export interface PlayerLine {
   readonly appearances: number;
 }
 
+/** How the player of the tournament earned it: the counts, the points each earned, the sum. */
+export interface Contribution {
+  readonly species: SpeciesId;
+  readonly goals: number;
+  readonly assists: number;
+  /** Matches kept clean while in a GK, CB, FB or DM slot. */
+  readonly cleanSheets: number;
+  /** 90 a match, 120 after extra time. */
+  readonly minutes: number;
+  readonly points: {
+    readonly goals: number;
+    readonly assists: number;
+    readonly cleanSheets: number;
+    readonly minutes: number;
+  };
+  readonly total: number;
+}
+
 export interface Awards {
   readonly goldenBoot: PlayerLine | null;
   readonly topAssister: PlayerLine | null;
   readonly playerOfTournament: PlayerLine;
+  /** Null for a retained-engine run: those engines did not compute one. */
+  readonly potContribution: Contribution | null;
 }
 
 export interface CupResult {

@@ -2,6 +2,7 @@ import {
   ENGINE_COEFFICIENTS,
   speciesById,
   type Absence,
+  type Contribution,
   type CupResult,
   type CupRound,
   type GoalEvent,
@@ -34,6 +35,12 @@ export function shootoutLine(m: PlayedMatch): string | null {
       return `${m.outcome === "W" ? "Won" : "Lost"} on a coin toss after ${rounds} sudden-death rounds`;
     }
   }
+}
+
+// The player of the tournament's points, by source, as the engine scored them.
+export function contributionLine(c: Contribution): string {
+  const { points: p } = c;
+  return `${c.total} pts: goals ${p.goals}, assists ${p.assists}, clean sheets ${p.cleanSheets}, minutes ${p.minutes}`;
 }
 
 export function goalLine(g: GoalEvent): string {

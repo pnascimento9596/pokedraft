@@ -63,4 +63,9 @@ describe("fromLegacy (engine-1 and engine-2 results in today's shape)", () => {
     expect(unplayed.map((m) => m.round)).toEqual(["SF", "F"]);
     for (const m of unplayed) expect(m.opponent).toEqual(ladder[m.round]);
   });
+
+  it("gives an old run no contribution breakdown rather than inventing one", () => {
+    const run = replayAnyVersion(ELIMINATED_V1);
+    expect(run.cup.awards.potContribution).toBeNull();
+  });
 });

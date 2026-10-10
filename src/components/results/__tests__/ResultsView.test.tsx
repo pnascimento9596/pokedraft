@@ -90,6 +90,26 @@ describe("ResultsView", () => {
     expect(within(final).queryByText(/26-25 on pens/)).toBeNull();
   });
 
+  it("shows the player of the tournament's point breakdown, and none for an old-engine run", () => {
+    const { cup } = replay(FLAWLESS);
+    view(FLAWLESS);
+    expect(screen.queryByTestId("pot-contribution")).toBeNull();
+    cleanup();
+    const potContribution = {
+      species: cup.awards.playerOfTournament.species,
+      goals: 4,
+      assists: 1,
+      cleanSheets: 0,
+      minutes: 720,
+      points: { goals: 12, assists: 2, cleanSheets: 0, minutes: 4 },
+      total: 18,
+    };
+    view(FLAWLESS, "shared", { ...cup, awards: { ...cup.awards, potContribution } });
+    expect(screen.getByTestId("pot-contribution").textContent).toBe(
+      "18 pts: goals 12, assists 2, clean sheets 0, minutes 4",
+    );
+  });
+
   it("records a live run in local history exactly once and never records a shared view", () => {
     const first = view(FLAWLESS, "live");
     first.unmount();

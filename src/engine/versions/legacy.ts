@@ -12,8 +12,9 @@ interface LegacyNotPlayed {
   readonly round: CupRound;
   readonly opponent: null;
 }
-export type LegacyCupResult = Omit<CupResult, "matches"> & {
+export type LegacyCupResult = Omit<CupResult, "matches" | "awards"> & {
   readonly matches: readonly (LegacyPlayed | LegacyNotPlayed)[];
+  readonly awards: Omit<CupResult["awards"], "potContribution">;
 };
 export type LegacyLadder = (seed: Seed, mode: Mode) => Readonly<Record<CupRound, Opponent>>;
 
@@ -33,6 +34,7 @@ export function fromLegacy(cup: LegacyCupResult, ladderOf: LegacyLadder): CupRes
   const opponent = (round: CupRound): Opponent => (ladder ??= ladderOf(cup.seed, cup.mode))[round];
   return {
     ...cup,
+    awards: { ...cup.awards, potContribution: null },
     matches: cup.matches.map((m): MatchResult =>
       m.status === "notPlayed"
         ? { ...m, opponent: opponent(m.round) }

@@ -44,7 +44,12 @@ export interface EngineCoefficients {
   };
   shootout: { kicks: number; maxSuddenDeath: number; base: number; band: number };
   availability: { eventProb: number; familiarityFloor: number };
-  awards: { goal: number; assist: number; cleanSheet: { GK: number; DEF: number } };
+  awards: {
+    goal: number;
+    assist: number;
+    cleanSheet: Partial<Record<Role, number>>;
+    minutesPerPoint: number;
+  };
   ladder: {
     score: Record<CupRound, number>;
     jitter: number;
@@ -108,7 +113,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
   },
   shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.1 },
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
-  awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, DEF: 1 } },
+  awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, CB: 1, FB: 1, DM: 1 }, minutesPerPoint: 180 },
   ladder: {
     score: { G1: 300, G2: 320, G3: 340, R32: 360, R16: 480, QF: 760, SF: 850, F: 980 },
     jitter: 20,
