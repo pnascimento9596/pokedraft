@@ -32,8 +32,8 @@ reply="$out/reply-$head.txt"
 data_paths=(src/data/pokedex.json src/data/scouting.json src/scouting/review)
 exclude=(
   ':(exclude)src/data/*.json'
-  ':(exclude)src/engine/versions/v*/src'
-  ':(exclude)src/engine/versions/v*/scripts'
+  ':(exclude)src/engine/versions/v*/src/*'
+  ':(exclude)src/engine/versions/v*/scripts/*'
   ':(exclude)src/scouting/review/*.json'
   ':(exclude)pnpm-lock.yaml'
   ':(exclude)tools/pstack-core/skills/poteto-mode'
