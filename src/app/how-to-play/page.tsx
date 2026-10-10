@@ -19,7 +19,7 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
     title: "The 8-0 Challenge",
     body: [
       "Every round the game rolls a region and then a type, for example Johto and Water. You draft one Pokémon that matches both, then the next round rolls again, until all 16 spots are filled.",
-      "In Open you can take any Pokémon that matches the roll. In Classic you choose from just 3 offered. Open is easier than Classic, so they are tracked separately.",
+      "In Open you can take any Pokémon that matches the roll. In Classic you choose from just 3 offered. Open is easier than Classic. Your records keep them apart, but the all-time leaderboard ranks every draft setting together and names each run's settings on its row.",
       "You get 3 rerolls for the whole run. Reroll the type to keep the region, or reroll the region to get a new region and a new type.",
       "Squad First shows you the roll and lets you choose which spot to fill. Position First makes you commit to a spot before you see the roll.",
     ],
