@@ -123,9 +123,12 @@ describe("replayAnyVersion (routes a token to the engine that issued it)", () =>
       expect(run.draft).toEqual(raw.draft);
       expect(run.cup).toEqual(fromLegacy(raw.cup as unknown as LegacyCupResult, ladder));
     }
-    // The raw replay is still the dispatch 2 golden byte for byte.
+    // The raw replays are still the dispatch 2 goldens byte for byte.
     expect(sha256(JSON.stringify(v1.replay(GOLDEN_CUP8_V1)))).toBe(
       "13c141d47fd86051f7b7e5bea0808aa6bbf1d2dbb5851726b5c42fe3e441f998",
+    );
+    expect(sha256(JSON.stringify(v1.replay(GOLDEN_KANTO151_V1)))).toBe(
+      "2e6121c2a610b7af8145f50be16c4277864da14bd91743a979fdfd33e0264489",
     );
   });
 
