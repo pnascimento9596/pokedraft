@@ -18,7 +18,7 @@ async function PlayContent() {
 export default function PlayPage() {
   return (
     <main className="page">
-      <Suspense fallback={<p className="kicker">Loading the challenge</p>}>
+      <Suspense fallback={<p className="kicker page-loading">Loading the challenge</p>}>
         <PlayContent />
       </Suspense>
     </main>

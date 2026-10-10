@@ -47,6 +47,7 @@ for (const { path, ready } of ROUTES) {
     for (let load = 0; load < 3; load++) {
       await page.goto(path);
       await expect(page.locator("main")).toContainText(ready);
+      await expect(page.locator("footer.site-footer")).toBeVisible();
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(500);
       shifts.push(
