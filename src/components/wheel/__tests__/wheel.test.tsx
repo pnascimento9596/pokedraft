@@ -81,6 +81,9 @@ function expectedValues(roll: Roll, cause: RollCause): string[] {
 }
 
 describe("randomizer wheel", () => {
+  // 500 jsdom mount and unmount cycles in one synchronous body take 0.46 to 0.5 s alone and 1.2 s
+  // in the full suite on a loaded laptop, and up to 2.8 s on CI. One local run failed at 6.5 s
+  // against the 5 s default (SF-09). Keep all 500 cases and give the test its own budget.
   it("settles on the engine roll for 500 seeded rolls, so the wheel never shows a different result than the draft", () => {
     let checked = 0;
     for (const { settings, roll, cause } of CASES) {
@@ -95,7 +98,7 @@ describe("randomizer wheel", () => {
       checked++;
     }
     expect(checked).toBe(500);
-  });
+  }, 30_000);
 
   it("builds every strip to end on the landing face, so the decelerating reel stops on the roll and not on a decoration", () => {
     for (const { settings, roll, cause } of CASES) {
