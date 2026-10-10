@@ -38,7 +38,7 @@ export function layer1ModTotals(breakdown: Record<Attr, AttributeBreakdown>): Re
   const out = {} as Record<Attr, number>;
   for (const a of ATTRS) {
     const b = breakdown[a];
-    out[a] = Math.round(b.shape + b.heavy + b.baby + b.moves + b.abilities + b.type);
+    out[a] = Math.round(b.shape + b.heavy + b.frame + b.baby + b.moves + b.abilities + b.type);
   }
   return out;
 }

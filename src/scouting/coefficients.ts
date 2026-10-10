@@ -5,7 +5,7 @@ import type { Attr, Role } from "./types";
 // Every number the scouting model uses lives in this table. Logic files read it and hold none.
 
 export type Feature =
-  "hp" | "atk" | "def" | "spa" | "spd" | "spe" | "height" | "weight" | "small" | "light";
+  "hp" | "atk" | "def" | "spa" | "spd" | "spe" | "height" | "reach" | "weight" | "small" | "light";
 
 type AttrMods = Partial<Record<Attr, number>>;
 
@@ -14,6 +14,8 @@ export interface ScoutingCoefficients {
   blend: Record<Attr, Partial<Record<Feature, number>>>;
   shape: Record<Shape, AttrMods>;
   heavy: { thresholdKg: number; perDoubling: number; cap: number; attrs: AttrMods };
+  bodyLength: Partial<Record<Shape, number>>;
+  frame: { reach: number; weight: number; cap: number; attrs: AttrMods };
   baby: { allAttrs: number };
   moves: {
     points: Record<string, number>;
@@ -38,7 +40,8 @@ export const COEFFICIENTS: ScoutingCoefficients = {
   scale: { floor: 25, span: 70, min: 1, max: 99 },
 
   // Feature weights per attribute. Features are population percentiles (0..1).
-  // small = 1 - height percentile, light = 1 - weight percentile.
+  // small = 1 - height percentile, light = 1 - weight percentile. reach is the height
+  // percentile after the bodyLength discount below, so a serpent's length is not its reach.
   blend: {
     PAC: { spe: 0.9, height: 0.1 },
     ACC: { spe: 0.75, light: 0.15, small: 0.1 },
@@ -49,10 +52,10 @@ export const COEFFICIENTS: ScoutingCoefficients = {
     TEC: { atk: 0.4, spa: 0.4, spe: 0.2 },
     DEF: { def: 0.5, spd: 0.3, hp: 0.2 },
     TAK: { atk: 0.4, def: 0.35, weight: 0.25 },
-    AER: { height: 0.55, atk: 0.2, hp: 0.15, weight: 0.1 },
+    AER: { reach: 0.55, atk: 0.2, hp: 0.15, weight: 0.1 },
     PHY: { weight: 0.4, hp: 0.25, def: 0.2, atk: 0.15 },
     STA: { hp: 0.85, spd: 0.15 },
-    DIV: { spe: 0.35, height: 0.35, def: 0.3 },
+    DIV: { spe: 0.35, reach: 0.35, def: 0.3 },
     HAN: { def: 0.4, spd: 0.35, hp: 0.25 },
     REF: { spe: 0.6, spd: 0.4 },
     GKP: { spd: 0.45, spa: 0.3, def: 0.25 },
@@ -109,6 +112,13 @@ export const COEFFICIENTS: ScoutingCoefficients = {
     cap: 12,
     attrs: { ACC: 1, DRI: 1, DIV: 1, PAC: 0.5, AER: 0.5 },
   },
+
+  // Pokédex height is body length for these shapes; reach takes this share of it.
+  bodyLength: { squiggle: 0.4 },
+
+  // Keeper reach and frame: cap * (2 * blend - 1) from the reach and weight percentiles, so a
+  // big frame gains up to cap and a tiny body loses up to cap.
+  frame: { reach: 0.5, weight: 0.5, cap: 6, attrs: { DIV: 1, HAN: 1 } },
 
   baby: { allAttrs: -6 },
 

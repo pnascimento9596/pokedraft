@@ -24,7 +24,7 @@ const species = POKEDEX.filter((s) => s.gen === gen).map((s) => {
   const layer1Mods = Object.fromEntries(
     ATTRS.map((a) => {
       const d = b.breakdown[a];
-      return [a, Math.round(d.shape + d.heavy + d.baby + d.moves + d.abilities + d.type)];
+      return [a, Math.round(d.shape + d.heavy + d.frame + d.baby + d.moves + d.abilities + d.type)];
     }).filter(([, v]) => v !== 0),
   );
   return { ...s, baseline: b.attrs, layer1Mods, roleBlends: blendsAll.get(s.id) };
