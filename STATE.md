@@ -16,7 +16,7 @@ Measured ground truth. Updated in the same PR as every merge.
 | UI routes | `/` (home and builder), `/play` (challenge run), `/daily` (today's New York seed, cup8 Open), `/leaderboard` (daily and all-time, per mode), `/r/[token]` (shared run plus OG image, one replay per request), `/card` (1200x630 PNG, same satori renderer as OG), `/history`, `/how-to-play`, `/gate` (friends passcode, off unless `FRIENDS_PASSCODE` is set) | `src/app/` |
 | API | `POST /api/leaderboard` (server replay, typed 4xx codes, 10 per IP per hour), `GET /api/leaderboard?mode=&scope=daily\|all&date=` (top 50, read-only) | `src/leaderboard/contract.ts` |
 | Indexing | noindex, nofollow metadata, `X-Robots-Tag` on every response, robots.txt disallows `*` and allows link-preview bots, no sitemap | `src/app/robots.ts`, `next.config.ts` |
-| Unit and component tests | 37 files, 351 tests pass (API handlers run against PGlite with the real migration) | `pnpm test` |
+| Unit and component tests | 37 files, 353 tests pass (API handlers run against PGlite with the real migration) | `pnpm test` |
 | Playwright | 9 tests pass (151 run seed `e2e-151` pinned 3-0-2, cup8 classic seed `e2e-80` pinned 2-1-1, friendly cup, bad token, daily run and submit, board rows, board 503 error state, 390 and 1440 px fit; the leaderboard API is stubbed with `page.route`); runs in CI job `e2e` | `pnpm test:e2e` |
 | Image seam guard | `PlayerImage` is the only file under `src/` allowed `<img`, `next/image`, `background-image` or `url(`; runs in CI | `pnpm check:image-seam` |
 | Road to the Final | shows the nominal ladder labelled approximate; seeded ladder not exported by the engine | `docs/queue/engine-followups.md` item 1 |
