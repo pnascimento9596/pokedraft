@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { ENGINE_COEFFICIENTS } from "../coefficients";
 import { FORMATIONS } from "../formations";
 import { simulateMatch, type MatchInput, type Phase } from "../match";
 import { buildLadder } from "../opponents";
@@ -156,5 +157,40 @@ describe("simulateMatch", () => {
       "A 0-0 draw against Cinnabar FC after extra time.",
       "Won the shootout 6-5.",
     ]);
+  });
+});
+
+// No goal in regulation or extra time, and every penalty scores: the shootout can only end at
+// the sudden-death cap.
+const FORCED_TIE = {
+  ...ENGINE_COEFFICIENTS,
+  match: {
+    ...ENGINE_COEFFICIENTS.match,
+    chances: { ...ENGINE_COEFFICIENTS.match.chances, maxGoalProb: 0 },
+  },
+  shootout: { ...ENGINE_COEFFICIENTS.shootout, base: 1, band: 0 },
+};
+
+describe("shootout cap (catches the decree that handed the user every capped shootout)", () => {
+  it("keeps sudden death going for 200 level pairs, then a seeded coin decides", () => {
+    const m = simulateMatch(input("m-0", 7, "F", "knockout"), FORCED_TIE);
+    const s = m.shootout!;
+    expect([s.user, s.opp, s.kicks.length, s.decider]).toEqual([205, 205, 410, "coin"]);
+    expect(["W", "L"]).toContain(m.outcome);
+    expect(m.recap.at(-1)).toMatch(
+      /^(Won|Lost) on a coin toss after 200 rounds of sudden death\.$/,
+    );
+  });
+
+  it("flips a fair coin: over 200 forced ties the user wins between 80 and 120", () => {
+    const wins = SEEDS.slice(0, 200).filter(
+      (seed) => simulateMatch(input(seed, 7, "F", "knockout"), FORCED_TIE).outcome === "W",
+    ).length;
+    expect(wins).toBeGreaterThanOrEqual(80);
+    expect(wins).toBeLessThanOrEqual(120);
+  });
+
+  it("marks a shootout settled by kicks as decided by kicks", () => {
+    expect(simulateMatch(input("m-0", 7, "F", "knockout")).shootout!.decider).toBe("kicks");
   });
 });
