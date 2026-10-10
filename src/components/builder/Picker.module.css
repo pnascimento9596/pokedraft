@@ -66,15 +66,14 @@
   width: 100%;
   min-height: 40px;
   padding: 0 12px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-field);
   border-radius: var(--radius-sm);
   background: var(--bg-sunk);
 }
 
 .search input:focus,
 .genSelect select:focus {
-  border-color: var(--flood);
-  outline: none;
+  border-color: var(--flood-line);
 }
 
 .genSelect select {
@@ -99,8 +98,7 @@
 .typeChip[aria-pressed="true"] {
   background: var(--chip-type);
   border-color: var(--chip-type);
-  color: #fff;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  color: var(--chip-ink);
 }
 
 .count {
@@ -193,7 +191,7 @@
 
 .rowFit .num {
   font-size: 1.35rem;
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 .rowFitLabel {

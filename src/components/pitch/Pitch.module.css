@@ -7,6 +7,9 @@
 }
 
 .field {
+  --flood-line: var(--pitch-flood);
+  --synergy: var(--pitch-flood);
+  --focus: var(--pitch-focus);
   position: relative;
   width: 100%;
   aspect-ratio: 68 / 105;
@@ -124,13 +127,15 @@
 
 .token[data-highlight] .tokenImage {
   box-shadow:
-    0 0 0 3px var(--flood),
-    0 0 18px var(--flood);
+    0 0 0 3px var(--flood-line),
+    0 0 18px var(--flood-line);
 }
 
+/* No red reaches 3:1 on green grass, so the red ring sits inside a white halo that does. */
 .token[data-weak] .tokenImage {
   box-shadow:
     0 0 0 3px var(--token-weak),
+    0 0 0 5px var(--pitch-halo),
     0 0 14px var(--token-weak);
 }
 

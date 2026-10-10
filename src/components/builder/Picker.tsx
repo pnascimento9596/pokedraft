@@ -172,7 +172,12 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                 type="button"
                 className={`chip ${s.typeChip}`}
                 aria-pressed={type === t}
-                style={{ "--chip-type": `var(--type-${t})` } as CSSProperties}
+                style={
+                  {
+                    "--chip-type": `var(--type-${t})`,
+                    "--chip-ink": `var(--type-${t}-ink)`,
+                  } as CSSProperties
+                }
                 onClick={() => setType(type === t ? null : t)}
               >
                 {typeLabel(t)}

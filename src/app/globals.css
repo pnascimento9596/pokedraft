@@ -27,7 +27,7 @@
   --line-strong: rgba(232, 244, 236, 0.32);
   --ink: #eef6f0;
   --ink-soft: #a9bcb0;
-  --ink-faint: #6f8577;
+  --ink-faint: #788d7f;
 
   --grass-1: #0f5a32;
   --grass-2: #0c4f2b;
@@ -37,6 +37,11 @@
 
   --flood: #ffd23f;
   --flood-ink: #1d1600;
+  /* --flood stays the fill. Amber text needs 4.5:1 and amber rings and edges 3:1 on every surface,
+     which the light theme's fill colour cannot reach, so they read these. */
+  --flood-text: #ffd23f;
+  --flood-line: #ffd23f;
+  --line-field: #627369;
   --live: #ff4d3d;
   --win: #3ddc84;
   --draw: #c8d1cb;
@@ -48,29 +53,57 @@
   --token-weak: #ff6b5b;
   --synergy: #ffd23f;
 
+  /* The pitch grass is mid-tone in the light theme, where neither the page amber nor the page
+     focus blue reaches 3:1, so the pitch carries its own ring colours. The halo is the white edge
+     around the weak-spot ring. The results hero is a dark pitch in both themes. */
+  --pitch-flood: #ffd23f;
+  --pitch-focus: #7cc4ff;
+  --pitch-halo: #ffffff;
+  --hero-1: #0f5a32;
+  --hero-2: #0c4f2b;
+  --hero-3: #050b08;
+
   --radius: 10px;
   --radius-sm: 6px;
   --gutter: 16px;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 
   --type-normal: #a8a77a;
+  --type-normal-ink: #0b1f14;
   --type-fighting: #c22e28;
+  --type-fighting-ink: #ffffff;
   --type-flying: #a98ff3;
+  --type-flying-ink: #0b1f14;
   --type-poison: #a33ea1;
+  --type-poison-ink: #ffffff;
   --type-ground: #e2bf65;
+  --type-ground-ink: #0b1f14;
   --type-rock: #b6a136;
+  --type-rock-ink: #0b1f14;
   --type-bug: #a6b91a;
+  --type-bug-ink: #0b1f14;
   --type-ghost: #735797;
+  --type-ghost-ink: #ffffff;
   --type-steel: #b7b7ce;
+  --type-steel-ink: #0b1f14;
   --type-fire: #ee8130;
+  --type-fire-ink: #0b1f14;
   --type-water: #6390f0;
+  --type-water-ink: #0b1f14;
   --type-grass: #7ac74c;
+  --type-grass-ink: #0b1f14;
   --type-electric: #f7d02c;
+  --type-electric-ink: #0b1f14;
   --type-psychic: #f95587;
+  --type-psychic-ink: #0b1f14;
   --type-ice: #96d9d6;
+  --type-ice-ink: #0b1f14;
   --type-dragon: #6f35fc;
+  --type-dragon-ink: #ffffff;
   --type-dark: #705746;
+  --type-dark-ink: #ffffff;
   --type-fairy: #d685ad;
+  --type-fairy-ink: #0b1f14;
 
   color-scheme: dark;
 }
@@ -85,18 +118,23 @@
   --line-strong: rgba(10, 40, 24, 0.3);
   --ink: #0b1f14;
   --ink-soft: #3e5547;
-  --ink-faint: #6b8072;
-  --grass-1: #2f8f4e;
-  --grass-2: #2a8247;
-  --grass-edge: #23703c;
+  --ink-faint: #55695c;
+  --grass-1: #25763f;
+  --grass-2: #216b39;
+  --grass-edge: #1c592f;
   --flood: #f2b600;
   --flood-ink: #1d1600;
-  --win: #128a4a;
+  --flood-text: #7a5600;
+  --flood-line: #a67600;
+  --line-field: #788a7e;
+  --win: #0f7a41;
   --draw: #5b6b61;
   --loss: #c8372a;
   --focus: #0b6bcb;
   --token-bg: #ffffff;
   --token-ring: #0b1f14;
+  --token-weak: #c8372a;
+  --pitch-focus: #bfe3ff;
   --synergy: #f2b600;
   --shadow: 0 10px 30px rgba(10, 40, 24, 0.18);
   color-scheme: light;
@@ -113,18 +151,23 @@
     --line-strong: rgba(10, 40, 24, 0.3);
     --ink: #0b1f14;
     --ink-soft: #3e5547;
-    --ink-faint: #6b8072;
-    --grass-1: #2f8f4e;
-    --grass-2: #2a8247;
-    --grass-edge: #23703c;
+    --ink-faint: #55695c;
+    --grass-1: #25763f;
+    --grass-2: #216b39;
+    --grass-edge: #1c592f;
     --flood: #f2b600;
     --flood-ink: #1d1600;
-    --win: #128a4a;
+    --flood-text: #7a5600;
+    --flood-line: #a67600;
+    --line-field: #788a7e;
+    --win: #0f7a41;
     --draw: #5b6b61;
     --loss: #c8372a;
     --focus: #0b6bcb;
     --token-bg: #ffffff;
     --token-ring: #0b1f14;
+    --token-weak: #c8372a;
+    --pitch-focus: #bfe3ff;
     --synergy: #f2b600;
     --shadow: 0 10px 30px rgba(10, 40, 24, 0.18);
     color-scheme: light;
@@ -301,13 +344,12 @@ select {
   padding: 0.1em 0.55em;
   border-radius: 4px;
   background: var(--type-color, var(--ink-faint));
-  color: #fff;
+  color: var(--type-ink, #fff);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
 }
 
 .panel {
@@ -380,7 +422,7 @@ select {
 }
 
 .site-header__brand span {
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 .site-header nav {
@@ -500,7 +542,7 @@ select {
   min-height: 36px;
   background: var(--bg-sunk);
   color: var(--ink);
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-field);
   border-radius: var(--radius-sm);
   padding: 0 8px;
 }
