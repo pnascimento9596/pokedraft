@@ -11,7 +11,8 @@ import {
 
 export type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
-export const SHOOTOUT_CAP_LINE = `Won on penalties (decided after ${ENGINE_COEFFICIENTS.shootout.maxSuddenDeath} rounds)`;
+// Engine-1 and engine-2 awarded the user a shootout still level after 20 sudden-death pairs.
+export const SHOOTOUT_CAP_LINE = "Won on penalties (decided after 20 rounds)";
 
 export function finalScore(m: PlayedMatch): Score {
   if (m.extraTime === null) return m.regulation;
@@ -21,20 +22,18 @@ export function finalScore(m: PlayedMatch): Score {
   };
 }
 
-// The engine ends a shootout still level after the sudden-death cap by scoring one more user
-// kick and missing one opponent kick, so the decree shows as kicks past the cap. A win with
-// level shootout goals would be the same decree reported differently.
-export function decidedByCap(m: PlayedMatch): boolean {
-  if (m.outcome !== "W" || m.shootout === null) return false;
-  const { kicks, maxSuddenDeath } = ENGINE_COEFFICIENTS.shootout;
-  const userKicks = m.shootout.kicks.filter((k) => k.side === "user").length;
-  return m.shootout.user === m.shootout.opp || userKicks > kicks + maxSuddenDeath;
-}
-
 export function shootoutLine(m: PlayedMatch): string | null {
   if (m.shootout === null) return null;
-  if (decidedByCap(m)) return SHOOTOUT_CAP_LINE;
-  return `${m.shootout.user}-${m.shootout.opp} on pens`;
+  switch (m.shootout.decider) {
+    case "kicks":
+      return `${m.shootout.user}-${m.shootout.opp} on pens`;
+    case "decree":
+      return SHOOTOUT_CAP_LINE;
+    case "coin": {
+      const rounds = m.shootout.kicks.length / 2 - ENGINE_COEFFICIENTS.shootout.kicks;
+      return `${m.outcome === "W" ? "Won" : "Lost"} on a coin toss after ${rounds} sudden-death rounds`;
+    }
+  }
 }
 
 export function goalLine(g: GoalEvent): string {

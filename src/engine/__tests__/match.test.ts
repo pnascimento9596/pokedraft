@@ -152,6 +152,8 @@ describe("simulateMatch", () => {
         { side: "user", taker: 55, scored: true },
         { side: "opp", taker: 5, scored: false },
       ],
+      decider: "kicks",
+      coinWinner: null,
     });
     expect(m.recap).toEqual([
       "A 0-0 draw against Cinnabar FC after extra time.",

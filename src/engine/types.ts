@@ -268,6 +268,14 @@ export interface Shootout {
   readonly opp: number;
   readonly keeper: SpeciesId;
   readonly kicks: readonly PenKick[];
+  /**
+   * How the shootout ended. "kicks": on the penalties. "coin": still level after the
+   * sudden-death cap, settled by a seeded coin from the match stream. "decree": engine-1 and
+   * engine-2 only, which awarded the user the win after 20 level pairs.
+   */
+  readonly decider: "kicks" | "coin" | "decree";
+  /** The coin's winner when decider is "coin", else null. */
+  readonly coinWinner: "user" | "opp" | null;
 }
 
 export interface Score {

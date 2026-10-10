@@ -40,23 +40,46 @@ function kicks(pairs: number, finalUser: boolean, finalOpp: boolean): PenKick[] 
 }
 
 describe("results format", () => {
-  it("shows the decree line, not '26-25 on pens', when the engine forced the win after the sudden-death cap", () => {
+  it("shows the decree line, not '26-25 on pens', for an engine-1 or engine-2 capped shootout", () => {
     const m = knockout({
-      shootout: { user: 26, opp: 25, keeper: sp(1), kicks: kicks(25, true, false) },
+      shootout: {
+        user: 26,
+        opp: 25,
+        keeper: sp(1),
+        kicks: kicks(25, true, false),
+        decider: "decree",
+        coinWinner: null,
+      },
     });
     expect(shootoutLine(m)).toBe("Won on penalties (decided after 20 rounds)");
   });
 
-  it("shows the decree line when a shootout win is reported with level goals", () => {
-    const m = knockout({
-      shootout: { user: 5, opp: 5, keeper: sp(1), kicks: kicks(4, true, true) },
-    });
-    expect(shootoutLine(m)).toBe("Won on penalties (decided after 20 rounds)");
+  it("names the coin toss and its sudden-death rounds, for a loss as well as a win", () => {
+    const shootout = {
+      user: 205,
+      opp: 205,
+      keeper: sp(1),
+      kicks: kicks(204, true, true),
+      decider: "coin" as const,
+    };
+    expect(shootoutLine(knockout({ shootout: { ...shootout, coinWinner: "user" } }))).toBe(
+      "Won on a coin toss after 200 sudden-death rounds",
+    );
+    expect(
+      shootoutLine(knockout({ outcome: "L", shootout: { ...shootout, coinWinner: "opp" } })),
+    ).toBe("Lost on a coin toss after 200 sudden-death rounds");
   });
 
   it("keeps an ordinary shootout as a scoreline so real wins are not mislabelled as decrees", () => {
     const m = knockout({
-      shootout: { user: 4, opp: 3, keeper: sp(1), kicks: kicks(4, false, false) },
+      shootout: {
+        user: 4,
+        opp: 3,
+        keeper: sp(1),
+        kicks: kicks(4, false, false),
+        decider: "kicks",
+        coinWinner: null,
+      },
     });
     expect(shootoutLine(m)).toBe("4-3 on pens");
   });

@@ -34,7 +34,14 @@ const KNOCKOUT: RecapInput = {
   opponent: OPPONENT,
   regulation: { user: 2, opp: 2 },
   extraTime: { user: 1, opp: 1 },
-  shootout: { user: 3, opp: 4, keeper: 143 as SpeciesId, kicks: [] },
+  shootout: {
+    user: 3,
+    opp: 4,
+    keeper: 143 as SpeciesId,
+    kicks: [],
+    decider: "kicks",
+    coinWinner: null,
+  },
   outcome: "L",
   goals: [
     user(11, 25, 133),

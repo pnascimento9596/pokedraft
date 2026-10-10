@@ -94,7 +94,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     assistLineFactor: { GK: 0.05, DEF: 0.4, MID: 1, ATT: 0.7 },
     oppScorerWeights: [0, 1, 1, 1, 1, 3, 3, 3, 6, 8, 6],
   },
-  shootout: { kicks: 5, maxSuddenDeath: 20, base: 0.75, band: 0.1 },
+  shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.1 },
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
   awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, DEF: 1 } },
   ladder: {
