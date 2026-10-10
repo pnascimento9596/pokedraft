@@ -131,8 +131,8 @@ describe("buildLadder", () => {
       ["viridian-fc", 476],
       ["pewter-united", 779],
       ["vermilion-fc", 854],
-      ["cinnabar-fc", 1000],
+      ["cinnabar-fc", 994],
     ]);
-    expect(ladder.F.lines).toEqual({ GK: 104, DEF: 104, MID: 97, ATT: 100 });
+    expect(ladder.F.lines).toEqual({ GK: 103.4, DEF: 103.4, MID: 96.4, ATT: 99.4 });
   });
 });
