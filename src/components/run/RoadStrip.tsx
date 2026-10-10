@@ -5,7 +5,7 @@ import { NOMINAL_LADDER } from "@/ui/lineup";
 import s from "./RoadStrip.module.css";
 
 const TOP = Math.max(...CUP_ROUNDS.map((r) => NOMINAL_LADDER[r]));
-const BIG_JUMP = new Set(["QF", "SF", "F"]);
+const BIG_JUMP = new Set(["R32", "R16", "QF", "SF", "F"]);
 
 export function RoadStrip({ compact = false }: { readonly compact?: boolean }) {
   const titleId = useId();
@@ -43,8 +43,8 @@ export function RoadStrip({ compact = false }: { readonly compact?: boolean }) {
       </ol>
       {compact ? null : (
         <p className={s.caption}>
-          Opponent ratings climb. The group stage is a warm-up; the quarter-final, semi-final and
-          Final are the real test.
+          Opponent ratings climb. The group stage is the gentle start; every knockout round is a
+          step up, and the Final is the hardest test.
         </p>
       )}
     </section>
