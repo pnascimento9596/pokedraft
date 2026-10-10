@@ -415,6 +415,35 @@ Source: `docs/reports/audit-data/baseline-lighthouse.json`, targets.prod.routes[
 Source: `docs/reports/audit-data/baseline-lighthouse.json`, targets.local.routes[*].runs[*].milestones and observedFcpMs; all values are from the unthrottled run, in ms from the first request. The longest task is the longest top-level main-thread task over 5 ms that Lighthouse lists; n/a means none was listed.
 <!-- /audit:table -->
 
+### 2.6 Clean runs on a GitHub-hosted runner (the reference baseline)
+
+Because the Mac was busy for 98% of the window, the same tool ran on GitHub-hosted `ubuntu-latest` (4 vCPU, no other load) from a throwaway branch `ci/lh-baseline-928e4b1` (main `928e4b1` plus the audit tools and a workflow; deleted afterwards), run 38091674824, Lighthouse 13.5.0, Chrome 154 headless, mobile preset, simulated throttling, 3 runs per route, all 3 clean on both targets. `local` is `next start` of `928e4b1` on the same runner; `prod` is https://pokedraft-woad.vercel.app at deployment `928e4b1`. The local column is slower than production because the runner serves and audits on the same 4 vCPU. Data: `audit-data/ci/ci-baseline-lighthouse-{prod,local}.json`. These are the numbers the end of dispatch 7 compares against.
+
+| Target | Route | Perf (min/med/max) | LCP ms median (min to max) | TBT ms median | CLS max | A11y median | JS transfer B median |
+|---|---|---|---|---|---|---|---|
+| prod | / | 78/97/97 | 1821 (1673 to 2549) | 190 | 0.000 | 100 | 451089 |
+| prod | /play | 85/86/87 | 3775 (3696 to 3776) | 204 | 0.000 | 100 | 461871 |
+| prod | /daily | 68/86/87 | 3622 (3546 to 4345) | 206 | 0.046 | 100 | 451092 |
+| prod | /leaderboard | 85/85/85 | 3614 (3578 to 3771) | 222 | 0.000 | 100 | 454901 |
+| prod | /history | 84/96/97 | 1677 (1370 to 3774) | 205 | 0.000 | 100 | 451082 |
+| prod | /how-to-play | 99/100/100 | 1671 (1371 to 2128) | 28 | 0.000 | 100 | 451081 |
+| prod | /r/pd3.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3O | 74/74/76 | 3843 (3776 to 3855) | 220 | 0.211 | 100 | 452217 |
+| prod | /play?mode=kanto151&f=4-3-3&order=squadF | 84/96/99 | 2275 (1374 to 3772) | 194 | 0.028 | 100 | 461904 |
+| local | / | 66/83/84 | 2876 (2854 to 4081) | 482 | 0.000 | 100 | 443050 |
+| local | /play | 73/78/86 | 3909 (2721 to 4650) | 416 | 0.000 | 100 | 453620 |
+| local | /daily | 61/71/71 | 4688 (4680 to 4822) | 488 | 0.046 | 100 | 443050 |
+| local | /leaderboard | 74/74/88 | 4435 (2054 to 4438) | 427 | 0.000 | 100 | 446895 |
+| local | /history | 85/87/88 | 2572 (2140 to 2730) | 436 | 0.000 | 100 | 443050 |
+| local | /how-to-play | 95/98/98 | 2133 (2128 to 2713) | 128 | 0.000 | 100 | 443050 |
+| local | /r/pd3.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3O | 68/73/77 | 2984 (2731 to 4814) | 442 | 0.211 | 100 | 444266 |
+| local | /play?mode=kanto151&f=4-3-3&order=squadF | 86/86/88 | 2572 (2025 to 2752) | 436 | 0.028 | 100 | 453620 |
+
+What this shows:
+
+- Production LCP is over 2.5 s (median) on `/play`, `/daily`, `/leaderboard` and `/r/<token>` (3.6 to 3.8 s), and under it on `/`, `/history`, `/how-to-play` and the kanto151 start.
+- CLS is not 0 on `/r/<token>` (0.211, 3 of 3 runs) and `/daily` (0.046, 3 of 3); the shifting element is `body > footer.site-footer` in both (Lighthouse `layout-shifts` audit). Finding SX-01 in `platform-audit.md`.
+- Accessibility is 100 on every route, but see SC-01: the repo's own axe check ran 1 rule.
+
 ## 3. First-load JavaScript
 
 **Verdict.** Heavy, and heavier than the route needs. Every route that runs the engine needs 1.92 to 1.97 MB of JavaScript decoded (0.41 to 0.43 MB gzip), and `/how-to-play` needs 0.58 MB (`baseline-first-load-js.json`, `methodA.routes`). A browser fetches 1.99 to 2.02 MB on every route, `/how-to-play` included, because the router prefetches the pages behind visible links and they bring the 1.33 MB data chunk with them (`methodB.local.routes`). That chunk is 96.8% JSON. Method (a), built from `.next`, and method (b), measured in Chromium, agree within 5% on five of nine URLs and differ on four. The prefetch explains all four (section 3.4). Production sends brotli quality 3, so its bytes on the wire sit 41 to 47% above the quality 11 model of (a) until (a) is priced the same way.

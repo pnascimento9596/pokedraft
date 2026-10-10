@@ -9,7 +9,7 @@ Triage (GATE 2): no S1 was found. Every S2 goes to a one-theme fix PR (column Pl
 | Severity | Total | Fix PR | Deferred | Frozen |
 |---|---|---|---|---|
 | S1 | 0 | 0 | 0 | 0 |
-| S2 | 55 | 55 | 0 | 0 |
+| S2 | 56 | 56 | 0 | 0 |
 | S3 | 137 | 0 | 135 | 2 |
 
 ## Fix themes
@@ -22,6 +22,7 @@ Triage (GATE 2): no S1 was found. Every S2 goes to a one-theme fix PR (column Pl
 - **7H rules and copy**: SB-01, SB-02, SB-03, SB-04, SB-07
 - **7I client data split (Red, alone)**: SD-01
 - **7J leaderboard and server hardening (Red)**: SE-01, SE-02, SE-03, SE-04, SE-05, SF-06, SF-07
+- **7L footer layout shift**: SX-01
 - **7K test suite**: SC-01, SF-03, SF-04, SF-05, SF-08, SF-09
 - **7B mobile acceptance harness (PR #13)**: SF-01
 
@@ -66,6 +67,7 @@ Several findings are the same defect seen from two areas (for example SA-28 and 
 | [SE-02](#se-02) | E-backend | S2 | yes | Submit is not idempotent for the same (token, nickname): a retry after a lost response returns an error and spends an hourly attempt | Red | 7J |
 | [SF-01](#sf-01) | F-tests | S2 | yes | No phone profile, touch input or WebKit exists in any test or CI job, and the GATE 4 mobile spec is absent | Yellow | 7B |
 | [SF-02](#sf-02) | F-tests | S2 | yes | Touch drag-swap is tested only in jsdom with faked hit-testing, and a touch drag may leave the next tap swallowed | Yellow | 7F |
+| [SX-01](#sx-01) | D-performance | S2 | yes | The site footer shifts when the page content streams in: CLS 0.211 on /r/<token> and 0.046 on /daily on production, every run | Yellow | 7L |
 | [SB-01](#sb-01) | B-desktop | S2 | no | How to Play and the results page still say the ladder gets hard from the quarter-final (stale since the engine 3 ladder) | Yellow | 7H |
 | [SB-02](#sb-02) | B-desktop | S2 | no | How to Play says Open and Classic are 'tracked separately', but the leaderboard ranks them together | Yellow | 7H |
 | [SB-03](#sb-03) | B-desktop | S2 | no | How to Play promises 'any Pokémon', but the builder hides Legendary and Mythical by default and challenge squads cap them at 3 | Yellow | 7H |
@@ -507,6 +509,15 @@ Several findings are the same defect seen from two areas (for example SA-28 and 
 - Fix: In `e2e/mobile-acceptance.spec.ts` add a Chromium test that drags with CDP `Input.dispatchTouchEvent` (touchStart, touchMove steps past 6 px, touchEnd) between two filled tokens, asserts the two `aria-label`s swapped, then taps an empty slot once and asserts the picker `dialog` is open. Repeat on WebKit with dispatched pointer events and say so in the test title. In `Builder.test.tsx` restore `document.elementFromPoint` in `afterEach`. If the first tap after a drag is swallowed, clear `suppressClick` on `pointercancel` and on a short timer after `pointerup`. That code change belongs to the UI lane, not to this audit.
 - Acceptance: [5]
 - Notes: A browser-free probe exists. In jsdom `fireEvent.pointerUp` is never followed by a click, which matches the touch-drag case. After the existing drag test, a `fireEvent.click` on an empty slot would show whether the flag swallows it. This lane runs no suites, so the probe is listed in F-notrun-plan.md as NOT RUN. The jsdom result would still need a real touch device to confirm the browser's click rule. In the draft, drag is the only swap path (`src/components/run/DraftBoard.tsx:105,206`). A tap on a filled slot shows a hint or does nothing, and `src/components/pitch/Pitch.tsx` has no key handler, so a failed touch drag leaves a phone player without a way to reorder the squad and a keyboard user has none either. Whether that meets the single-pointer alternative to dragging (WCAG 2.5.7) is a question for the accessibility lane.
+
+### SX-01
+
+**The site footer shifts when the page content streams in: CLS 0.211 on /r/<token> and 0.046 on /daily on production, every run** (S2, Yellow, reproduced)
+
+- Evidence: GitHub-hosted Lighthouse 13.5.0 mobile preset on production 928e4b1 (run 38091674824, branch ci/lh-baseline-928e4b1, 3 runs per route): /r/<token> CLS 0.2114 in 3 of 3 runs, /daily 0.0460 in 3 of 3, the kanto151 start 0.028 in 1 of 3. The layout-shifts audit names one element in each: `body > footer.site-footer`. The same values appear on the local build in the same runner. The local Mac baseline saw the /r/ value as a lead only.
+- Fix: Reserve the height of the streamed main content (a min-height on the route's main or the Suspense fallback sized like the content) so the footer does not move, or keep the footer out of the first viewport until content lands. Prove with Lighthouse CLS 0.000 on CI for /r/<token>, /daily and the kanto151 start.
+- Acceptance: Lighthouse CLS 0.000 in 3 of 3 CI runs on /r/<token>, /daily and /play?mode=kanto151
+- Notes: Added by the lane owner from the CI baseline, after the six area audits.
 
 ### SB-01
 
