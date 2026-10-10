@@ -65,6 +65,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "scripts/data/.cache/**",
+    "scripts/calibration/out/**",
     "tools/**",
   ]),
 ]);
