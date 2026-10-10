@@ -72,4 +72,112 @@ Every flow above that has UI is checked at 360, 390 and 430 px wide (and 1440 px
 
 ## Results
 
-(Filled in as the checks run. See the sections below.)
+Run on 2026-10-10. "Local" is `pnpm build` then `next start` on this branch. "Production baseline" is `https://pokedraft-woad.vercel.app` at the PR A deploy (`32e966b`), run before this PR merges, so it shows what this PR fixes. The post-deploy production run is part of the live verification after merge and is not recorded in this file.
+
+Tools: Playwright e2e (`pnpm test:e2e`, 23 tests), a throwaway Playwright viewport script (9 routes at 360, 390, 430 and 1440 px: horizontal overflow, footer text, pack credit, em dashes, console errors, axe-core with every rule on), `curl`, Lighthouse.
+
+### Flows
+
+| # | Local | Production baseline | Evidence |
+|---|---|---|---|
+| F1 | PASS | PASS | 9 routes, 4 widths, all 200 (404 on the two bad URLs, as designed); console clean except the expected 503 on `/leaderboard` locally (no database) |
+| F2 | PASS (unit) | NOT RUN | `Builder.test.tsx` covers randomize, clear, tap-to-place and drag swap; no manual drag in a real browser this dispatch |
+| F3 | PASS | NOT RUN | e2e `shareAndReplay` checks a 1200x630 PNG download and replay; `curl /card` returns 1200x630 for default, art pack and pixel pack with `mirror=0` |
+| F4 | PASS | NOT RUN | e2e daily run (8-0 Open) drafts 16 and shows results |
+| F5, F6 | PASS | NOT RUN | e2e: 8-0 Classic (seed `e2e-80`, record 2-1-1) and 151 Challenge (seed `e2e-151`, record 3-0-2) draft 16 and show results |
+| F7 | PASS (unit) | NOT RUN | `runState.test.ts` and `announce.test.tsx`; see K2 for what that test did and did not prove |
+| F8 | PASS | NOT RUN | `/r/<token>/opengraph-image` and `/card` are 1200x630 PNG; e2e replay gives the same record |
+| F9 | PASS | PASS | e2e: friendly page, HTTP 404 |
+| F10 | NOT RUN | NOT RUN | needs the database; e2e stubs the API. The live suite after deploy covers submit and the board row |
+| F11 | PASS (layout, 503 state) | PASS (200, no console error) | no overflow at 4 widths; board rows from the real API are covered by the live suite after deploy |
+| F12 | PASS (unit) | PASS (renders) | `runs-validation.test.ts`: a bad saved row is dropped, not shown as NaN |
+| F13 | PASS | NOT RUN | e2e: switch pack, reload, choice persists; card follows the pack |
+| F14 | PARTIAL | NOT RUN | with `FRIENDS_PASSCODE` set locally `/gate` and `/gate?next=/leaderboard` return 200 with the disclaimer and no em dash. Unlock and throttle were not exercised in this dispatch (dispatch 4 tests cover them) |
+
+### Viewports
+
+PASS at 360, 390, 430 and 1440 on all 9 routes: horizontal overflow 0 everywhere, local and production baseline. Tap-target size (44 px) was not measured.
+
+### Accessibility
+
+| # | Result | Evidence |
+|---|---|---|
+| A1 | PASS | Tab walk (30 stops on `/`, 8 on `/play`, 15 on `/how-to-play`, 14 on `/leaderboard`, 390 px): every stop is visible and has an outline or shadow ring. The only "no ring" report is the browser's own date-picker button inside the native date input, which is not a page control |
+| A2 | PASS | `wheel-announce` holds one sentence (`Region: Galar. Type: Normal.`) after the wheel settles; unit test fails on the old code (K1) |
+| A3 | PASS | axe `image-alt` and the labelled blank fallback; `PlayerImage.test.tsx` |
+| A4 | PASS with a limit | axe `color-contrast` reports 0 violations on every route after the 404 fix. axe cannot evaluate text over gradients or images, so those spots are unverified |
+| A5 | PASS | with reduced motion the 8-0 run shows candidates 1 ms after Start, versus 4808 ms with motion; both end on the same settled faces and the same announcement |
+| A6 | PASS | one `main` and one `h1` per route after the fixes (see findings 1 and 2); axe `heading-order` is on in `e2e/a11y.spec.ts` |
+| A7 | PARTIAL | axe `label` passes on all routes. `role="alert"` on submit and gate errors was not exercised in a browser |
+
+`e2e/a11y.spec.ts` now runs axe (wcag2a, wcag2aa, wcag21a, wcag21aa, best-practice, plus the experimental `label-content-name-mismatch`) on `/`, `/play` builder, `/how-to-play`, `/history`, a real `/r/<token>`, a bad token and a 404 URL, and expects no violations.
+
+### Findings from QA and what happened to each
+
+1. `/r/<token>` had no `h1` (axe `page-has-heading-one`). Fixed: the hero kicker is the `h1`.
+2. `/r/<token>` pitch tokens failed `label-content-name-mismatch` x16: the button name was `Name, SLOT` while the visible text reads `SLOT` then `Name`, with no space between the two spans. Fixed in two steps: name is now `SLOT Name`, and the markup has a space so the visible text matches. The first step alone did not clear the rule; the second did. Four unit tests that named the old string were updated.
+3. The default 404 page had no `main`, low-contrast default styling and 2 `region` findings. Fixed with `src/app/not-found.tsx` (a `main`, an `h1`, the site link style).
+4. Every route had the footer disclaimer; the pack credit line was missing everywhere. Fixed (`PackCredit`, K-series test first).
+5. Production `/play` and `/leaderboard` rendered their main content only after hydration, which put LCP on text that arrived late. Fixed by rendering both on the server (`await connection()` inside Suspense). Measured below.
+
+### Performance (Lighthouse, mobile preset, simulated throttling, local production build)
+
+| Route | Performance | LCP | CLS | TBT | Accessibility | Best Practices | SEO |
+|---|---|---|---|---|---|---|---|
+| `/` | 88 (3 identical runs) | 3.8 s | 0 to 0.028 | 70 to 150 ms | 100 | 100 | 63 |
+| `/play?mode=kanto151...` | 96 | 2.6 s | 0 to 0.028 | 70 to 150 ms | 100 | 100 | 63 |
+| `/leaderboard` | 96 (one run 83, LCP 4.4 s) | 2.6 s | 0 to 0.028 | 70 to 150 ms | 100 | 96 locally (the expected 503, no database) | 63 |
+
+- Before the server-render fix (same build otherwise): `/` LCP 2.8 to 5.1 s, `/play` 2.9 s, `/leaderboard` 3.8 s. Production before this PR: `/` 2.5 to 3.7 s, `/play` 3.7 to 3.9 s, `/leaderboard` 3.7 s.
+- SEO 63 is the `is-crawlable` audit failing, which is the intended `noindex`.
+- Unthrottled LCP in a real browser was 36 to 65 ms on these routes. The numbers above are Lighthouse's simulated slow-4G/4x-CPU model, not what a phone on wifi sees.
+- `/` stays at 3.8 s, which is over the 2.5 s target. Its LCP contributor is the 1.33 MB data chunk (`pokedex.json` plus `scouting.json`) that the builder needs before it can draw. Moving that to lazy loading changes engine data loading and is not a finish-pass change; recorded as a follow-up in `docs/decisions/dispatch-5.md`. `/play` and `/leaderboard` are at 2.6 s, still just over 2.5 s; one leaderboard run was worse (4.4 s), so that number is noisy.
+- Tried and reverted because they did not help: `experimental.inlineCss`, `display: "optional"` for the display font.
+- P3: a `Big Shoulders Fallback` `@font-face` with size-adjust and ascent/descent overrides is in `globals.css` (test first). CLS stayed at 0 to 0.028. Next.js still prints "Failed to find font override values for font `Big Shoulders`" at build time, with or without `adjustFontFallback: false`; the manual fallback is what does the work.
+- Production numbers after this PR deploys: measured in the live verification, not here.
+
+### Copy and chrome
+
+| # | Result | Evidence |
+|---|---|---|
+| C1 | PASS | 0 em dashes in rendered text on all 9 routes at 4 widths, and in `/gate` HTML |
+| C2 | PASS | footer disclaimer found on all 9 routes (incl. both 404s) and on `/gate` |
+| C3 | PASS | `data-testid="pack-credit"` present on all 9 routes after hydration locally: `Creature art, <label> pack: <author>. License: <license>.`; unit test in `PackCredit.test.tsx`. It renders client-side, so it is not in the first HTML |
+
+### Data and ratings
+
+D1: 20 seeded drafts, 7 oddities logged in `docs/reports/finish-ratings-notes.md`. No retune.
+
+### Dispatch 3 carryovers
+
+| # | Result |
+|---|---|
+| K1 | Fixed. RED: the announcer spoke every stage line; GREEN: one sentence, after the last stop (`announce.test.tsx`) |
+| K2 | The key is now `round:rerollsUsed` (`rollKey`). **No failing test could be written first:** the existing code already replayed only on a new roll and never on a swap, so `runState.test.ts` passed before the change. The tests are kept as guards, and this row is not claimed as a bug fix |
+| K3 | Fixed with Zod (`RunRecordSchema`, `BucketStatsSchema`) in `loadHistory` and `loadStats`; RED test first (`runs-validation.test.ts`) |
+| K4 | Removed `challengeSettings` (and the unused `ROLE_LABEL`); a test asserts the export is gone |
+| K5 | Fixed, see P3 (`fonts.test.ts` first) |
+
+### PR A review warnings
+
+| # | Result |
+|---|---|
+| W1 | **NOT DONE as an end-to-end test.** Both packs cover 1025 of 1025 Dex ids, so no real route can render a missing id. The blank fallback for a missing id is covered by `PlayerImage.test.tsx`; the e2e image-error test covers the same blank footprint through a failing image |
+| W2 | Done: `preloadCreatures` deleted |
+| W3 | Held: `check:image-seam` allows only `PlayerImage.tsx` and `PlayerPicture.tsx` |
+
+### Cleanup
+
+| # | Result |
+|---|---|
+| X1 | knip 5: 0 unused dependencies. 37 exports are flagged unused by other files; every one is still referenced at least twice (in its own file or in tests), so none is dead and none was deleted. 5 files are flagged unused (`play-seeded.mts`, `win-curve.mts`, `review-packet.ts`, `validate-review.ts`, `import-pack.mjs`); they are command-line scripts run by hand. Removed by hand earlier in this PR: `preloadCreatures`, `challengeSettings`, `ROLE_LABEL` |
+| X2 | `README.md` rewritten: run, env var names, test, import a pack, deploy |
+
+### NOT RUN
+
+- Browser drag-and-drop of tokens (F2) and manual reroll in the browser (F7).
+- Daily submit and a real leaderboard row (F10): live suite after deploy.
+- Gate unlock and throttle (F14), `role="alert"` errors (A7).
+- 44 px tap-target measurement.
+- Lighthouse on production for this PR (after deploy).
+- A missing-id end-to-end test (W1).
