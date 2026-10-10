@@ -8,6 +8,7 @@ import {
   type DraftState,
 } from "../types";
 import * as v1 from "./v1";
+import * as v2 from "./v2";
 
 export { engineLabel } from "./label";
 
@@ -30,6 +31,7 @@ interface RetainedBundle {
 // issued those tokens, so it wins over the live engine even when the versions still match.
 const RETAINED: Readonly<Record<number, RetainedBundle>> = {
   [v1.RUN_TOKEN_VERSION]: v1,
+  [v2.RUN_TOKEN_VERSION]: v2,
 };
 
 const PREFIX = /^pd(\d+)\./;

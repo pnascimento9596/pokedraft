@@ -7,7 +7,14 @@ import { scriptedToken } from "@/leaderboard/server/__tests__/fixtures";
 import { replayAnyVersion, retainedTokenVersions, tokenVersion } from "..";
 import { RETAINED_TOKEN_VERSIONS } from "../label";
 import * as v1 from "../v1";
-import { A11Y_RUN_V1, GOLDEN_CUP8_V1, GOLDEN_KANTO151_V1 } from "./fixtures";
+import * as v2 from "../v2";
+import {
+  A11Y_RUN_V1,
+  GOLDEN_CUP8_V1,
+  GOLDEN_CUP8_V2,
+  GOLDEN_KANTO151_V1,
+  GOLDEN_KANTO151_V2,
+} from "./fixtures";
 
 const sha256 = (s: string | Buffer): string => createHash("sha256").update(s).digest("hex");
 
@@ -64,6 +71,38 @@ describe("retained engine-1 bundle (catches an old shared link replaying differe
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v1"))).toBe(
       "2cbcca39eec560ce5969e989c3e3460b39e53092cac2c7640c3d0fd9c8f8ba3a",
+    );
+  });
+});
+
+describe("retained engine-2 bundle (catches a dispatch 6 PR 6B run replaying differently)", () => {
+  it("replays the engine-2 goldens byte-identical to PR 6B", () => {
+    const cup8 = v2.replay(GOLDEN_CUP8_V2);
+    expect([cup8.cup.rating.score, cup8.cup.wins, cup8.cup.finish]).toEqual([593, 3, "R16"]);
+    expect(sha256(GOLDEN_CUP8_V2)).toBe(
+      "19d825f1e323eca01da9c3a92fd02428bfd0b7549e622a1ed6b4d34efe0f4107",
+    );
+    expect(sha256(JSON.stringify(cup8))).toBe(
+      "20e343f8bc4ac7414f1edfc9b56901533b84a27b1ae4deba5989824a9f0b684b",
+    );
+    const kanto = v2.replay(GOLDEN_KANTO151_V2);
+    expect([kanto.cup.rating.score, kanto.cup.wins, kanto.cup.finish]).toEqual([480, 3, "QF"]);
+    expect(sha256(GOLDEN_KANTO151_V2)).toBe(
+      "36035c63e7778a21d7b3a2d1c842bae057f7aacf43424b1be2ce0d965725de8e",
+    );
+    expect(sha256(JSON.stringify(kanto))).toBe(
+      "f050e3ff1848e655cc534d6d7c78015370b7ed7d21c00fe6878c66c3744ccf47",
+    );
+  });
+
+  it("routes pd2. tokens to the v2 bundle", () => {
+    const run = replayAnyVersion(GOLDEN_CUP8_V2);
+    expect([run.engine, run.bundle]).toEqual(["pokedraft-engine-2", "retained-engine-bundle:v2"]);
+  });
+
+  it("is frozen: no byte of the bundle changes", () => {
+    expect(bundleDigest(path.join(import.meta.dirname, "../v2"))).toBe(
+      "00c62f652808895871ea37e9306401f92ab14d38f999c4774876325783dbcd96",
     );
   });
 });
