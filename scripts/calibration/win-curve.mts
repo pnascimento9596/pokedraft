@@ -31,6 +31,7 @@ const ids = [9, 59, 149, 130, 3, 80, 6, 55, 26, 85, 135];
 const starters: MatchStarter[] = ids.map((id, i) => ({
   species: speciesById(id),
   line: formation.slots[i]!.line,
+  role: formation.slots[i]!.role,
 }));
 const flat = (score: number): LineStrength => ({
   GK: score / 10,

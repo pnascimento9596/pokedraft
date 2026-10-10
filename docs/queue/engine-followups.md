@@ -14,3 +14,13 @@ Logged by dispatch 3 (UI). The engine and scouting were frozen in that lane, so 
 |---|---|---|---|
 | 4 | Split `src/data/pokedex.json` and `src/data/scouting.json` so the home route loads only what its first screen needs | The 1.33 MB data chunk is the LCP contributor on `/` (Lighthouse mobile, simulated: 3.8 s against a 2.5 s target). It changes how engine data is loaded, so it is a Red-lane change, not a finish change | `/` ships both files up front |
 | 5 | Calibration review of the five ratings oddities in `docs/reports/finish-ratings-notes.md` (quarterfinal opponent step, keeper fit versus quality, `weakest` ranked by quality, Player of the Tournament, Golden Boot) | Observed in 20 seeded drafts; 20 runs is anecdote, so a `pnpm calibrate` sized sample must confirm before any coefficient moves | Nothing retuned |
+
+## Status after dispatch 6 PR 6C (engine-3)
+
+| # | Status |
+|---|---|
+| 1 | Done in the engine: `buildLadder(seed, mode)` is exported from `src/engine/index.ts`. The draft-screen strip still shows the nominal ladder (now 280, 300, 355, 480, 605, 730, 855, 980), labelled approximate; wiring the exact ladder into it is a UI follow-up |
+| 2 | Done: `notPlayed` matches carry the run's opponent (name and rating); the results screen shows both. Retained-engine runs get theirs from that engine's own ladder |
+| 3 | Done: sudden death runs to 200 pairs, then a seeded coin from the match stream decides (`decider: "coin"`). Old engine-1 and engine-2 decrees still read as decrees |
+| 4 | Open |
+| 5 | Three of five addressed with calibration-sized samples: the quarter-final cliff (max ladder step 280 to 125), Golden Boot to non-attackers (scorer and assist weight by slot role; attackers score 71.5% of user goals in 4-3-3, was 51.0%), and Player of the Tournament (a typed contribution score with its breakdown shown). Keeper fit versus quality and `weakest` by quality stay open |

@@ -1,3 +1,4 @@
+import { ENGINE_COEFFICIENTS } from "./coefficients";
 import { speciesById } from "./species";
 import type { GoalEvent, Opponent, Score, Shootout } from "./types";
 
@@ -13,6 +14,8 @@ export interface RecapInput {
 
 type UserGoal = Extract<GoalEvent, { side: "user" }>;
 type Template = (scorer: string, minute: string, assist: string) => string;
+
+const REGULATION_KICKS = ENGINE_COEFFICIENTS.shootout.kicks;
 
 const OPENING: Readonly<
   Record<"W" | "D" | "L", readonly ((score: string, club: string) => string)[]>
@@ -72,10 +75,20 @@ export function recapLines(input: RecapInput): string[] {
   userGoals.forEach((goal, goalIndex) => lines.push(goalLine(goal, input.matchIndex + goalIndex)));
 
   if (input.shootout !== null) {
-    const { user: u, opp: o } = input.shootout;
-    lines.push(
-      input.outcome === "W" ? `Won the shootout ${u}-${o}.` : `Lost the shootout ${o}-${u}.`,
-    );
+    const { user: u, opp: o, decider, kicks } = input.shootout;
+    if (decider === "kicks") {
+      lines.push(
+        input.outcome === "W" ? `Won the shootout ${u}-${o}.` : `Lost the shootout ${o}-${u}.`,
+      );
+    } else {
+      // Level at the cap means every regulation kick was taken, so the pairs past them are the
+      // sudden-death rounds.
+      const rounds = kicks.length / 2 - REGULATION_KICKS;
+      const how = decider === "coin" ? "on a coin toss" : "by the engine";
+      lines.push(
+        `${input.outcome === "W" ? "Won" : "Lost"} ${how} after ${rounds} rounds of sudden death.`,
+      );
+    }
   }
   return lines;
 }

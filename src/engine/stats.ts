@@ -1,10 +1,37 @@
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
 import { canonicalSortBy } from "./rng";
-import type { Awards, PlayerLine } from "./types";
+import type { Awards, Contribution, PlayerLine } from "./types";
 
 export interface PlayerTally extends PlayerLine {
+  readonly cleanSheets: number;
   readonly cleanSheetPoints: number;
+  readonly minutes: number;
   readonly quality: number;
+}
+
+const round2 = (x: number): number => Math.round(x * 100) / 100;
+
+export function contribution(
+  t: PlayerTally,
+  c: EngineCoefficients = ENGINE_COEFFICIENTS,
+): Contribution {
+  const minutes = t.minutes / c.awards.minutesPerPoint;
+  return {
+    species: t.species,
+    goals: t.goals,
+    assists: t.assists,
+    cleanSheets: t.cleanSheets,
+    minutes: t.minutes,
+    points: {
+      goals: c.awards.goal * t.goals,
+      assists: c.awards.assist * t.assists,
+      cleanSheets: t.cleanSheetPoints,
+      minutes: round2(minutes),
+    },
+    total: round2(
+      c.awards.goal * t.goals + c.awards.assist * t.assists + t.cleanSheetPoints + minutes,
+    ),
+  };
 }
 
 function line({ species, goals, assists, appearances }: PlayerTally): PlayerLine {
@@ -30,13 +57,12 @@ export function awards(
     tallies.filter((t) => t.assists > 0),
     (t) => [-t.assists, -t.goals, t.appearances, t.species],
   );
-  const points = (t: PlayerTally): number =>
-    c.awards.goal * t.goals + c.awards.assist * t.assists + t.cleanSheetPoints;
-  const star = best(tallies, (t) => [-points(t), -t.quality, t.species]);
+  const star = best(tallies, (t) => [-contribution(t, c).total, -t.quality, t.species]);
   if (star === undefined) throw new RangeError("awards() needs at least one player");
   return {
     goldenBoot: scorer ? line(scorer) : null,
     topAssister: creator ? line(creator) : null,
     playerOfTournament: line(star),
+    potContribution: contribution(star, c),
   };
 }

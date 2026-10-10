@@ -10,7 +10,16 @@ function tally(
   cleanSheetPoints = 0,
   quality = 0.5,
 ): PlayerTally {
-  return { species: species as SpeciesId, goals, assists, appearances, cleanSheetPoints, quality };
+  return {
+    species: species as SpeciesId,
+    goals,
+    assists,
+    appearances,
+    cleanSheets: 0,
+    cleanSheetPoints,
+    minutes: 0,
+    quality,
+  };
 }
 
 describe("awards", () => {
@@ -41,6 +50,15 @@ describe("awards", () => {
       goldenBoot: null,
       topAssister: null,
       playerOfTournament: { species: 7, goals: 0, assists: 0, appearances: 8 },
+      potContribution: {
+        species: 7,
+        goals: 0,
+        assists: 0,
+        cleanSheets: 0,
+        minutes: 0,
+        points: { goals: 0, assists: 0, cleanSheets: 4, minutes: 0 },
+        total: 4,
+      },
     });
   });
 

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { ENGINE_COEFFICIENTS } from "../coefficients";
 import { FORMATIONS } from "../formations";
 import { simulateMatch, type MatchInput, type Phase } from "../match";
 import { buildLadder } from "../opponents";
@@ -15,6 +16,7 @@ const RATING = rateTeam(KANTO);
 const STARTERS = KANTO.starters.map((id, i) => ({
   species: speciesById(id),
   line: FORMATIONS["4-3-3"].slots[i]!.line,
+  role: FORMATIONS["4-3-3"].slots[i]!.role,
 }));
 const LADDER = buildLadder("golden-1", "kanto151");
 
@@ -99,28 +101,28 @@ describe("simulateMatch", () => {
       943,
     ]);
     expect(m.goals).toEqual([
-      { side: "user", minute: 6, penalty: false, scorer: 55, assist: 6 },
-      { side: "user", minute: 35, penalty: false, scorer: 26, assist: 59 },
+      { side: "user", minute: 6, penalty: false, scorer: 80, assist: 26 },
+      { side: "user", minute: 35, penalty: false, scorer: 26, assist: 85 },
       { side: "user", minute: 52, penalty: false, scorer: 149, assist: 26 },
-      { side: "user", minute: 60, penalty: false, scorer: 6, assist: 3 },
-      { side: "user", minute: 62, penalty: false, scorer: 26, assist: 80 },
-      { side: "user", minute: 64, penalty: false, scorer: 80, assist: null },
-      { side: "user", minute: 71, penalty: false, scorer: 80, assist: 3 },
+      { side: "user", minute: 60, penalty: false, scorer: 26, assist: 6 },
+      { side: "user", minute: 62, penalty: false, scorer: 26, assist: 85 },
+      { side: "user", minute: 64, penalty: false, scorer: 85, assist: null },
+      { side: "user", minute: 71, penalty: false, scorer: 85, assist: 6 },
       { side: "user", minute: 80, penalty: true, scorer: 149, assist: null },
       { side: "opp", minute: 81, penalty: false, scorer: 10, assist: null },
-      { side: "user", minute: 90, penalty: false, scorer: 135, assist: 6 },
+      { side: "user", minute: 90, penalty: false, scorer: 135, assist: 26 },
     ]);
     expect(m.recap).toEqual([
       "Beat Pallet Town 9-1.",
-      "Golduck finishes in the 6th minute after a pass from Charizard.",
-      "Raichu scores in the 35th minute, set up by Arcanine.",
+      "Slowbro finishes in the 6th minute after a pass from Raichu.",
+      "Raichu scores in the 35th minute, set up by Dodrio.",
       "Raichu sets up Dragonite in the 52nd minute.",
-      "Charizard finishes in the 60th minute after a pass from Venusaur.",
-      "Raichu scores in the 62nd minute, set up by Slowbro.",
-      "Slowbro finds the net in the 64th minute.",
-      "Slowbro finishes in the 71st minute after a pass from Venusaur.",
+      "Raichu finishes in the 60th minute after a pass from Charizard.",
+      "Raichu scores in the 62nd minute, set up by Dodrio.",
+      "Dodrio finds the net in the 64th minute.",
+      "Dodrio finishes in the 71st minute after a pass from Charizard.",
       "Dragonite scores from the spot in the 80th minute.",
-      "Charizard sets up Jolteon in the 90th minute.",
+      "Raichu sets up Jolteon in the 90th minute.",
     ]);
   });
 
@@ -151,10 +153,47 @@ describe("simulateMatch", () => {
         { side: "user", taker: 55, scored: true },
         { side: "opp", taker: 5, scored: false },
       ],
+      decider: "kicks",
+      coinWinner: null,
     });
     expect(m.recap).toEqual([
       "A 0-0 draw against Cinnabar FC after extra time.",
       "Won the shootout 6-5.",
     ]);
+  });
+});
+
+// No goal in regulation or extra time, and every penalty scores: the shootout can only end at
+// the sudden-death cap.
+const FORCED_TIE = {
+  ...ENGINE_COEFFICIENTS,
+  match: {
+    ...ENGINE_COEFFICIENTS.match,
+    chances: { ...ENGINE_COEFFICIENTS.match.chances, maxGoalProb: 0 },
+  },
+  shootout: { ...ENGINE_COEFFICIENTS.shootout, base: 1, band: 0 },
+};
+
+describe("shootout cap (catches the decree that handed the user every capped shootout)", () => {
+  it("keeps sudden death going for 200 level pairs, then a seeded coin decides", () => {
+    const m = simulateMatch(input("m-0", 7, "F", "knockout"), FORCED_TIE);
+    const s = m.shootout!;
+    expect([s.user, s.opp, s.kicks.length, s.decider]).toEqual([205, 205, 410, "coin"]);
+    expect(["W", "L"]).toContain(m.outcome);
+    expect(m.recap.at(-1)).toMatch(
+      /^(Won|Lost) on a coin toss after 200 rounds of sudden death\.$/,
+    );
+  });
+
+  it("flips a fair coin: over 200 forced ties the user wins between 80 and 120", () => {
+    const wins = SEEDS.slice(0, 200).filter(
+      (seed) => simulateMatch(input(seed, 7, "F", "knockout"), FORCED_TIE).outcome === "W",
+    ).length;
+    expect(wins).toBeGreaterThanOrEqual(80);
+    expect(wins).toBeLessThanOrEqual(120);
+  });
+
+  it("marks a shootout settled by kicks as decided by kicks", () => {
+    expect(simulateMatch(input("m-0", 7, "F", "knockout")).shootout!.decider).toBe("kicks");
   });
 });

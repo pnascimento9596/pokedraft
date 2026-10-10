@@ -120,7 +120,8 @@ export const COEFFICIENTS: ScoutingCoefficients = {
     attrs: { ACC: 1, DRI: 1, DIV: 1, PAC: 0.5, AER: 0.5 },
   },
 
-  // Pokédex height is body length for these shapes; reach takes this share of it.
+  // Pokédex height is body length for these shapes; reach takes this share of it. Reach feeds
+  // AER and DIV (dispatch 6 item 5 named AER and PHY; PHY has no height feature to discount).
   bodyLength: { squiggle: 0.4 },
   // A body that levitates hangs upright, so its height is its height, not its length.
   uprightAbilities: ["levitate"],
@@ -128,6 +129,10 @@ export const COEFFICIENTS: ScoutingCoefficients = {
   // Keeper reach and frame: cap * (2 * blend - 1) from the reach and weight percentiles, so a
   // big frame gains up to cap and a tiny body loses up to cap. Skipped for species with an
   // ability in sizeAbilities, whose trait already sets the body in the goal mouth.
+  // DIV reads size three ways: reach in the blend, the heavy cut above 150 kg, and this term.
+  // Intended net of heavy plus frame, as measured at dispatch 6: about even for a big heavy
+  // body (Wailord +0.22, Regigigas -0.17), negative past the heavy cap (Groudon, 950 kg,
+  // -4.81), positive for a tall light one (Lugia +3.43), down to -6 for a tiny one.
   frame: {
     reach: 0.5,
     weight: 0.5,

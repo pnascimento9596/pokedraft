@@ -1,4 +1,4 @@
-import type { CupRound, Line } from "./types";
+import type { CupRound, Line, Role } from "./types";
 
 export interface EngineCoefficients {
   team: {
@@ -38,13 +38,18 @@ export interface EngineCoefficients {
     };
     penaltyShare: number;
     assistProb: number;
-    scorerLineFactor: Record<Exclude<Line, "GK">, number>;
-    assistLineFactor: Record<Line, number>;
+    // Open-play scorer weight is SHO times the slot's role factor; assist weight is PAS times it.
+    roleFactor: Record<Role, number>;
     oppScorerWeights: readonly number[];
   };
   shootout: { kicks: number; maxSuddenDeath: number; base: number; band: number };
   availability: { eventProb: number; familiarityFloor: number };
-  awards: { goal: number; assist: number; cleanSheet: { GK: number; DEF: number } };
+  awards: {
+    goal: number;
+    assist: number;
+    cleanSheet: Partial<Record<Role, number>>;
+    minutesPerPoint: number;
+  };
   ladder: {
     score: Record<CupRound, number>;
     jitter: number;
@@ -90,15 +95,27 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     },
     penaltyShare: 0.06,
     assistProb: 0.62,
-    scorerLineFactor: { DEF: 0.25, MID: 0.6, ATT: 1 },
-    assistLineFactor: { GK: 0.05, DEF: 0.4, MID: 1, ATT: 0.7 },
+    // Tuned from the dispatch 6 starting table so ST, W and AM score 70 to 80% of user goals
+    // in 4-3-3, 4-2-3-1 and 3-4-3 (docs/decisions/dispatch-6.md).
+    roleFactor: {
+      ST: 1,
+      W: 0.85,
+      AM: 0.6,
+      WM: 0.45,
+      CM: 0.22,
+      DM: 0.2,
+      WB: 0.1,
+      FB: 0.08,
+      CB: 0.08,
+      GK: 0,
+    },
     oppScorerWeights: [0, 1, 1, 1, 1, 3, 3, 3, 6, 8, 6],
   },
-  shootout: { kicks: 5, maxSuddenDeath: 20, base: 0.75, band: 0.1 },
+  shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.1 },
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
-  awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, DEF: 1 } },
+  awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, CB: 1, FB: 1, DM: 1 }, minutesPerPoint: 180 },
   ladder: {
-    score: { G1: 300, G2: 320, G3: 340, R32: 360, R16: 480, QF: 760, SF: 850, F: 980 },
+    score: { G1: 280, G2: 300, G3: 355, R32: 480, R16: 605, QF: 730, SF: 855, F: 980 },
     jitter: 20,
     tilt: 5,
   },

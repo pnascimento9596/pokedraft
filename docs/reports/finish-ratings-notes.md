@@ -38,3 +38,24 @@ Observations only. Nothing here retunes the engine; every item is a candidate fo
 
 - No retune and no engine change. Items 1 to 5 are the ones worth a calibration dispatch.
 - Browser play of these 20 drafts through the UI was not done; they were played through the engine and the bots only.
+
+## Dispatch 6 re-run: before and after
+
+Same command, same 20 seeds, run on three engines: engine-1 (`9af2a74`, the sample above), engine-2 (`d3502ef`, PR 6B scouting) and engine-3 (PR 6C). Each output was compared with a second run of the same engine and was byte-identical. Still 20 runs: anecdote, not measurement. The 5,000-draft numbers are in `docs/calibration.md`.
+
+| | engine-1 | engine-2 | engine-3 |
+|---|---|---|---|
+| good bot (odd) Team Score | 739 to 866 | 738 to 867 | 738 to 867 |
+| good bot cup results | 1 champion, 2 finalists, 3 semifinalists, 4 out in the QF | same | same |
+| good bot mean wins | 5.9 | 5.9 | 5.9 |
+| random bot (even) Team Score | 379 to 663 | 378 to 662 | 378 to 662 |
+| random bot cup results | 6 out in the QF, 3 in the R16, 1 in the group | same | 4 out in the R32, 3 in the R16, 2 in the QF, 1 in the SF |
+| random bot mean wins | 3.8 | 3.8 | 3.4 |
+| Opponent ratings, R16 then QF (oddity 1) | 460 to 500, then 741 to 780 | same | 585 to 625, then 711 to 748 |
+| Opponents weaker than the round before (oddity 7) | 10 | 10 | 2 (group games 20 apart, inside the ±20 jitter) |
+| Player of the Tournament: a keeper with no goals or assists (oddity 4) | 2 of 20 | 2 of 20 | 0 of 20; the award now shows its points by source |
+| Golden Boot to a CB, DM or CM (oddity 5) | 4 of 20 | 4 of 20 | 1 of 20 (a CM) |
+
+Oddities 2, 3 and 6 (keeper fit versus quality, `weakest` by quality, two 8-7 shootouts) were not addressed and are not re-judged here.
+
+The script prints the regulation score only, so a line like `R16 v598 0-0 aet W` is a win in extra time, not a 0-0 win.

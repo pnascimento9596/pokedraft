@@ -10,6 +10,7 @@ import type {
   MatchResult,
   Opponent,
   PenKick,
+  Role,
   Score,
   Seed,
   Shirt,
@@ -23,6 +24,7 @@ export type Phase = "group" | "knockout";
 export interface MatchStarter {
   readonly species: Species;
   readonly line: Line;
+  readonly role: Role;
 }
 
 export interface MatchInput {
@@ -161,16 +163,17 @@ function userAttribution(
   c: EngineCoefficients,
 ): (minute: number, penalty: boolean) => GoalEvent {
   const byId = (s: MatchStarter): number => s.species.id;
-  const outfield = starters.filter((s) => s.line !== "GK");
+  // A zero role factor (GK) never scores from open play.
+  const shooters = starters.filter((s) => c.match.roleFactor[s.role] > 0);
   const [penaltyTaker] = canonicalSortBy(starters, (s) => [-s.species.attrs.SHO, s.species.id]);
   return (minute, penalty) => {
     if (penalty) {
       return { side: "user", minute, penalty, scorer: penaltyTaker!.species.id, assist: null };
     }
     const scorer = weightedPick(
-      outfield,
+      shooters,
       byId,
-      (s) => s.species.attrs.SHO * c.match.scorerLineFactor[s.line as Exclude<Line, "GK">],
+      (s) => s.species.attrs.SHO * c.match.roleFactor[s.role],
       rng,
     );
     let assist: SpeciesId | null = null;
@@ -179,7 +182,7 @@ function userAttribution(
       assist = weightedPick(
         creators,
         byId,
-        (s) => s.species.attrs.PAS * c.match.assistLineFactor[s.line],
+        (s) => s.species.attrs.PAS * c.match.roleFactor[s.role],
         rng,
       ).species.id;
     }
@@ -221,17 +224,16 @@ function shootout(input: MatchInput, rng: EngineRng, c: EngineCoefficients): Sho
   let userKicks = 0;
   let oppKicks = 0;
 
-  const kickUser = (scoredOverride?: boolean): void => {
+  const kickUser = (): void => {
     const taker = userTakers[userKicks % userTakers.length]!.species;
-    const scored =
-      scoredOverride ?? rng.next() < convertProb(taker.attrs.SHO - input.opponent.lines.GK, c);
+    const scored = rng.next() < convertProb(taker.attrs.SHO - input.opponent.lines.GK, c);
     if (scored) user++;
     userKicks++;
     kicks.push({ side: "user", taker: taker.id, scored });
   };
-  const kickOpp = (scoredOverride?: boolean): void => {
+  const kickOpp = (): void => {
     const taker = OPP_SHOOTOUT_ORDER[oppKicks % OPP_SHOOTOUT_ORDER.length]!;
-    const scored = scoredOverride ?? rng.next() < pOpp;
+    const scored = rng.next() < pOpp;
     if (scored) opp++;
     oppKicks++;
     kicks.push({ side: "opp", taker, scored });
@@ -248,11 +250,16 @@ function shootout(input: MatchInput, rng: EngineRng, c: EngineCoefficients): Sho
     kickUser();
     kickOpp();
   }
-  if (user === opp) {
-    kickUser(true);
-    kickOpp(false);
-  }
-  return { user, opp, keeper: input.keeper.id, kicks };
+  // Still level at the cap: a coin from the same stream, with no side favoured.
+  const coinWinner = user === opp ? (rng.next() < 0.5 ? "user" : "opp") : null;
+  return {
+    user,
+    opp,
+    keeper: input.keeper.id,
+    kicks,
+    decider: coinWinner === null ? "kicks" : "coin",
+    coinWinner,
+  };
 }
 
 function count(goals: readonly GoalEvent[]): Score {
@@ -312,7 +319,12 @@ export function simulateMatch(
     outcome = outcomeOf(extraTime);
     if (outcome === "D") {
       penalties = shootout(input, rngs.struct, c);
-      outcome = outcomeOf(penalties);
+      outcome =
+        penalties.coinWinner === null
+          ? outcomeOf(penalties)
+          : penalties.coinWinner === "user"
+            ? "W"
+            : "L";
     }
   }
 

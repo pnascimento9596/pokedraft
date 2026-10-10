@@ -1,7 +1,6 @@
 import type { CSSProperties } from "react";
 import type { CupResult, MatchResult } from "@/engine";
 import { FINISH_LABEL, ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
-import { NOMINAL_LADDER } from "@/ui/lineup";
 import {
   absenceLine,
   eliminatedIn,
@@ -139,12 +138,13 @@ function NotPlayed({ m }: { m: Extract<MatchResult, { status: "notPlayed" }> }) 
         <span className={s.roundLong}>{ROUND_LABEL[m.round]}</span>
         <span className={s.outcome}>Not played</span>
       </div>
+      <p className={s.notPlayedOpp}>{m.opponent.name}</p>
       <div className={s.meter}>
         <span className={s.meterLabel}>Opp</span>
         <span className={s.track}>
-          <span className={s.fillGhost} style={bar(NOMINAL_LADDER[m.round])} />
+          <span className={s.fillGhost} style={bar(m.opponent.score)} />
         </span>
-        <span className={s.meterValue}>about {NOMINAL_LADDER[m.round]}</span>
+        <span className={s.meterValue}>{m.opponent.score}</span>
       </div>
     </article>
   );

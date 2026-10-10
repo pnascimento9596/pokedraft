@@ -13,7 +13,7 @@ export type Seed = Brand<string, "Seed">;
 export type IsoDate = Brand<string, "IsoDate">;
 export type Quality = Brand<number, "Quality">;
 
-export const ENGINE_VERSION = "pokedraft-engine-2" as const;
+export const ENGINE_VERSION = "pokedraft-engine-3" as const;
 
 export const GENS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 export type Gen = (typeof GENS)[number];
@@ -268,6 +268,14 @@ export interface Shootout {
   readonly opp: number;
   readonly keeper: SpeciesId;
   readonly kicks: readonly PenKick[];
+  /**
+   * How the shootout ended. "kicks": on the penalties. "coin": still level after the
+   * sudden-death cap, settled by a seeded coin from the match stream. "decree": engine-1 and
+   * engine-2 only, which awarded the user the win after 20 level pairs.
+   */
+  readonly decider: "kicks" | "coin" | "decree";
+  /** The coin's winner when decider is "coin", else null. */
+  readonly coinWinner: "user" | "opp" | null;
 }
 
 export interface Score {
@@ -298,7 +306,8 @@ export type MatchResult =
   | {
       readonly status: "notPlayed";
       readonly round: CupRound;
-      readonly opponent: Opponent | null;
+      /** The ladder opponent the run would have met in this round. */
+      readonly opponent: Opponent;
     };
 
 export interface GroupRow {
@@ -322,14 +331,35 @@ export interface PlayerLine {
   readonly appearances: number;
 }
 
+/** How the player of the tournament earned it: the counts, the points each earned, the sum. */
+export interface Contribution {
+  readonly species: SpeciesId;
+  readonly goals: number;
+  readonly assists: number;
+  /** Matches kept clean while in a GK, CB, FB or DM slot. */
+  readonly cleanSheets: number;
+  /** 90 a match, 120 after extra time. */
+  readonly minutes: number;
+  readonly points: {
+    readonly goals: number;
+    readonly assists: number;
+    readonly cleanSheets: number;
+    readonly minutes: number;
+  };
+  readonly total: number;
+}
+
 export interface Awards {
   readonly goldenBoot: PlayerLine | null;
   readonly topAssister: PlayerLine | null;
   readonly playerOfTournament: PlayerLine;
+  /** Null for a retained-engine run: those engines did not compute one. */
+  readonly potContribution: Contribution | null;
 }
 
 export interface CupResult {
-  readonly engine: typeof ENGINE_VERSION;
+  /** The engine that produced this result; older than ENGINE_VERSION for a retained run. */
+  readonly engine: `pokedraft-engine-${number}`;
   readonly seed: Seed;
   readonly mode: Mode;
   readonly rating: TeamRating;
@@ -344,7 +374,7 @@ export interface CupResult {
   readonly awards: Awards;
 }
 
-export const RUN_TOKEN_VERSION = 2 as const;
+export const RUN_TOKEN_VERSION = 3 as const;
 
 export interface RunToken {
   readonly v: typeof RUN_TOKEN_VERSION;

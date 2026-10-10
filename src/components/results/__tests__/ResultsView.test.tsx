@@ -41,20 +41,23 @@ describe("ResultsView", () => {
     expect(screen.getByTestId("results-record").textContent).toBe("7-0-1");
   });
 
-  it("lists the games after elimination as Not played with the nominal ladder rating", () => {
+  it("lists the games after elimination as Not played with the run's own opponent and rating", () => {
     view(ELIMINATED);
     expect(screen.getByTestId("results-record").textContent).toBe("5-0-1");
     const sf = screen.getByTestId("match-SF");
     const final = screen.getByTestId("match-F");
+    // Engine-1's ladder for seed c-4 (its frozen buildLadder): SF Wyndon FC 837, F Fortree Rovers 990.
     expect(within(sf).getByText("Not played")).toBeTruthy();
-    expect(within(sf).getByText("about 850")).toBeTruthy();
-    expect(within(final).getByText("about 980")).toBeTruthy();
+    expect(within(sf).getByText("Wyndon FC")).toBeTruthy();
+    expect(within(sf).getByText("837")).toBeTruthy();
+    expect(within(final).getByText("Fortree Rovers")).toBeTruthy();
+    expect(within(final).getByText("990")).toBeTruthy();
     expect(
       within(screen.getByTestId("match-QF")).getByText("Out in the quarter-final"),
     ).toBeTruthy();
   });
 
-  it("shows the decree line for a final the engine awarded after the sudden-death cap", () => {
+  it("shows the decree line for an engine-1 final awarded after the sudden-death cap", () => {
     const { cup } = replay(FLAWLESS);
     const kicks: PenKick[] = [];
     for (let i = 0; i < 25; i++) {
@@ -69,7 +72,14 @@ describe("ResultsView", () => {
             ...m,
             regulation: { user: 1, opp: 1 },
             extraTime: { user: 0, opp: 0 },
-            shootout: { user: 26, opp: 25, keeper: 1 as SpeciesId, kicks },
+            shootout: {
+              user: 26,
+              opp: 25,
+              keeper: 1 as SpeciesId,
+              kicks,
+              decider: "decree" as const,
+              coinWinner: null,
+            },
             outcome: "W" as const,
           }
         : m,
@@ -78,6 +88,26 @@ describe("ResultsView", () => {
     const final = screen.getByTestId("match-F");
     expect(within(final).getByText(/Won on penalties \(decided after 20 rounds\)/)).toBeTruthy();
     expect(within(final).queryByText(/26-25 on pens/)).toBeNull();
+  });
+
+  it("shows the player of the tournament's point breakdown, and none for an old-engine run", () => {
+    const { cup } = replay(FLAWLESS);
+    view(FLAWLESS);
+    expect(screen.queryByTestId("pot-contribution")).toBeNull();
+    cleanup();
+    const potContribution = {
+      species: cup.awards.playerOfTournament.species,
+      goals: 4,
+      assists: 1,
+      cleanSheets: 0,
+      minutes: 720,
+      points: { goals: 12, assists: 2, cleanSheets: 0, minutes: 4 },
+      total: 18,
+    };
+    view(FLAWLESS, "shared", { ...cup, awards: { ...cup.awards, potContribution } });
+    expect(screen.getByTestId("pot-contribution").textContent).toBe(
+      "18 pts: goals 12, assists 2, clean sheets 0, minutes 4",
+    );
   });
 
   it("records a live run in local history exactly once and never records a shared view", () => {

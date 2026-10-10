@@ -7,7 +7,17 @@ import { scriptedToken } from "@/leaderboard/server/__tests__/fixtures";
 import { replayAnyVersion, retainedTokenVersions, tokenVersion } from "..";
 import { RETAINED_TOKEN_VERSIONS } from "../label";
 import * as v1 from "../v1";
-import { A11Y_RUN_V1, GOLDEN_CUP8_V1, GOLDEN_KANTO151_V1 } from "./fixtures";
+import * as v2 from "../v2";
+import { fromLegacy, type LegacyCupResult } from "../legacy";
+import { buildLadder as v1Ladder } from "../v1/src/engine/opponents";
+import { buildLadder as v2Ladder } from "../v2/src/engine/opponents";
+import {
+  A11Y_RUN_V1,
+  GOLDEN_CUP8_V1,
+  GOLDEN_CUP8_V2,
+  GOLDEN_KANTO151_V1,
+  GOLDEN_KANTO151_V2,
+} from "./fixtures";
 
 const sha256 = (s: string | Buffer): string => createHash("sha256").update(s).digest("hex");
 
@@ -68,17 +78,54 @@ describe("retained engine-1 bundle (catches an old shared link replaying differe
   });
 });
 
-describe("replayAnyVersion (routes a token to the engine that issued it)", () => {
-  it("replays the goldens through the dispatcher with the same bytes and labels the engine", () => {
-    const cup8 = replayAnyVersion(GOLDEN_CUP8_V1);
-    expect(cup8.engine).toBe("pokedraft-engine-1");
-    expect(cup8.bundle).toBe("retained-engine-bundle:v1");
-    expect(sha256(JSON.stringify({ draft: cup8.draft, cup: cup8.cup }))).toBe(
-      "13c141d47fd86051f7b7e5bea0808aa6bbf1d2dbb5851726b5c42fe3e441f998",
+describe("retained engine-2 bundle (catches a dispatch 6 PR 6B run replaying differently)", () => {
+  it("replays the engine-2 goldens byte-identical to PR 6B", () => {
+    const cup8 = v2.replay(GOLDEN_CUP8_V2);
+    expect([cup8.cup.rating.score, cup8.cup.wins, cup8.cup.finish]).toEqual([593, 3, "R16"]);
+    expect(sha256(GOLDEN_CUP8_V2)).toBe(
+      "19d825f1e323eca01da9c3a92fd02428bfd0b7549e622a1ed6b4d34efe0f4107",
     );
-    const kanto = replayAnyVersion(GOLDEN_KANTO151_V1);
-    expect(sha256(JSON.stringify({ draft: kanto.draft, cup: kanto.cup }))).toBe(
-      "2e6121c2a610b7af8145f50be16c4277864da14bd91743a979fdfd33e0264489",
+    expect(sha256(JSON.stringify(cup8))).toBe(
+      "20e343f8bc4ac7414f1edfc9b56901533b84a27b1ae4deba5989824a9f0b684b",
+    );
+    const kanto = v2.replay(GOLDEN_KANTO151_V2);
+    expect([kanto.cup.rating.score, kanto.cup.wins, kanto.cup.finish]).toEqual([480, 3, "QF"]);
+    expect(sha256(GOLDEN_KANTO151_V2)).toBe(
+      "36035c63e7778a21d7b3a2d1c842bae057f7aacf43424b1be2ce0d965725de8e",
+    );
+    expect(sha256(JSON.stringify(kanto))).toBe(
+      "f050e3ff1848e655cc534d6d7c78015370b7ed7d21c00fe6878c66c3744ccf47",
+    );
+  });
+
+  it("routes pd2. tokens to the v2 bundle", () => {
+    const run = replayAnyVersion(GOLDEN_CUP8_V2);
+    expect([run.engine, run.bundle]).toEqual(["pokedraft-engine-2", "retained-engine-bundle:v2"]);
+  });
+
+  it("is frozen: no byte of the bundle changes", () => {
+    expect(bundleDigest(path.join(import.meta.dirname, "../v2"))).toBe(
+      "00c62f652808895871ea37e9306401f92ab14d38f999c4774876325783dbcd96",
+    );
+  });
+});
+
+describe("replayAnyVersion (routes a token to the engine that issued it)", () => {
+  it("replays the goldens through the dispatcher: the bundle's own bytes, adapted to today's shape", () => {
+    for (const [token, bundle, ladder, engine] of [
+      [GOLDEN_CUP8_V1, v1, v1Ladder, "pokedraft-engine-1"],
+      [GOLDEN_KANTO151_V1, v1, v1Ladder, "pokedraft-engine-1"],
+      [GOLDEN_CUP8_V2, v2, v2Ladder, "pokedraft-engine-2"],
+    ] as const) {
+      const run = replayAnyVersion(token);
+      const raw = bundle.replay(token);
+      expect([run.engine, run.bundle]).toEqual([engine, bundle.BUNDLE_MARKER]);
+      expect(run.draft).toEqual(raw.draft);
+      expect(run.cup).toEqual(fromLegacy(raw.cup as unknown as LegacyCupResult, ladder));
+    }
+    // The raw replay is still the dispatch 2 golden byte for byte.
+    expect(sha256(JSON.stringify(v1.replay(GOLDEN_CUP8_V1)))).toBe(
+      "13c141d47fd86051f7b7e5bea0808aa6bbf1d2dbb5851726b5c42fe3e441f998",
     );
   });
 

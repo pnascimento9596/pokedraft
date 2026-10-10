@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import type { CupResult, DraftState, PlayerLine } from "@/engine";
+import type { Contribution, CupResult, DraftState, PlayerLine } from "@/engine";
 import { speciesById } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { Pitch } from "@/components/pitch/Pitch";
 import { FINISH_LABEL, FRIENDLY_LABEL, MODE_LABEL, STYLE_LABEL, record } from "@/ui/labels";
 import { recordRun, toRecord } from "@/ui/runs";
+import { contributionLine } from "./format";
 import { FitReveal } from "./FitReveal";
 import { MatchList } from "./MatchList";
 import { ShareActions } from "./ShareActions";
@@ -141,6 +142,7 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
               line={cup.awards.playerOfTournament}
               stat="apps"
               empty=""
+              contribution={cup.awards.potContribution}
             />
           </div>
         </section>
@@ -208,11 +210,13 @@ function Award({
   line,
   stat,
   empty,
+  contribution = null,
 }: {
   title: string;
   line: PlayerLine | null;
   stat: "goals" | "assists" | "apps";
   empty: string;
+  contribution?: Contribution | null;
 }) {
   const species = line === null ? null : speciesById(line.species);
   const value =
@@ -234,6 +238,11 @@ function Award({
           <div>
             <div className={s.awardName}>{species.name}</div>
             <div className={s.awardStat}>{value}</div>
+            {contribution !== null ? (
+              <div className={s.awardStat} data-testid="pot-contribution">
+                {contributionLine(contribution)}
+              </div>
+            ) : null}
           </div>
         </div>
       )}
