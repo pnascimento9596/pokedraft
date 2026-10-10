@@ -21,7 +21,8 @@ if (name === undefined || !/^v\d+$/.test(name)) {
   throw new Error("pass --name v<N>, for example --name v1");
 }
 const bundleDir = path.join(ROOT, "src/engine/versions", name);
-if (existsSync(bundleDir)) throw new Error(`${path.relative(ROOT, bundleDir)} exists; bundles are frozen`);
+if (existsSync(bundleDir))
+  throw new Error(`${path.relative(ROOT, bundleDir)} exists; bundles are frozen`);
 
 function resolveSpecifier(from: string, spec: string): string | null {
   let base: string;
@@ -29,7 +30,11 @@ function resolveSpecifier(from: string, spec: string): string | null {
   else if (spec.startsWith(".")) base = path.resolve(path.dirname(from), spec);
   else return null;
   for (const ext of EXTENSIONS) {
-    if (existsSync(base + ext) && !base.endsWith("/") && (ext !== "" || path.extname(base) !== "")) {
+    if (
+      existsSync(base + ext) &&
+      !base.endsWith("/") &&
+      (ext !== "" || path.extname(base) !== "")
+    ) {
       return base + ext;
     }
   }

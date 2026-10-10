@@ -15,7 +15,11 @@ function bundleDigest(dir: string): string {
     .map((e) => path.relative(dir, path.join(e.parentPath, e.name)))
     .sort();
   const h = createHash("sha256");
-  for (const f of files) h.update(f).update("\0").update(readFileSync(path.join(dir, f))).update("\0");
+  for (const f of files)
+    h.update(f)
+      .update("\0")
+      .update(readFileSync(path.join(dir, f)))
+      .update("\0");
   return h.digest("hex");
 }
 
@@ -56,7 +60,9 @@ describe("retained engine-1 bundle (catches an old shared link replaying differe
   });
 
   it("is frozen: no byte of the bundle changes", () => {
-    expect(bundleDigest(path.join(import.meta.dirname, "../v1"))).toBe("2cbcca39eec560ce5969e989c3e3460b39e53092cac2c7640c3d0fd9c8f8ba3a");
+    expect(bundleDigest(path.join(import.meta.dirname, "../v1"))).toBe(
+      "2cbcca39eec560ce5969e989c3e3460b39e53092cac2c7640c3d0fd9c8f8ba3a",
+    );
   });
 });
 
@@ -77,7 +83,9 @@ describe("replayAnyVersion (routes a token to the engine that issued it)", () =>
   it("replays a real dispatch 5 era shared link", () => {
     const run = replayAnyVersion(A11Y_RUN_V1);
     expect(run.engine).toBe("pokedraft-engine-1");
-    expect([run.cup.rating.score, run.cup.wins, run.cup.draws, run.cup.losses]).toEqual([845, 8, 0, 0]);
+    expect([run.cup.rating.score, run.cup.wins, run.cup.draws, run.cup.losses]).toEqual([
+      845, 8, 0, 0,
+    ]);
   });
 
   it("reads the version from the pd<N>. prefix", () => {
