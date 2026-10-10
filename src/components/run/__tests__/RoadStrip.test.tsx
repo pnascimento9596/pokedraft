@@ -67,9 +67,13 @@ describe("RoadStrip", () => {
     const seeded = render(<RoadStrip seed="golden-1" mode="kanto151" />);
     const withNumbers = steps(seeded.container);
     seeded.unmount();
-    const withoutNumbers = steps(render(<RoadStrip seed={null} mode="kanto151" />).container);
+    const unseeded = render(<RoadStrip seed={null} mode="kanto151" />);
+    const withoutNumbers = steps(unseeded.container);
     expect(withoutNumbers).toHaveLength(8);
     expect(withoutNumbers).toEqual(withNumbers);
+    // An empty cell has no line box, so the row would shrink; a space keeps its height.
+    const cells = [...unseeded.container.querySelectorAll("li > :first-child")];
+    expect(cells.map((cell) => (cell.textContent ?? "").length > 0)).toEqual(Array(8).fill(true));
   });
 
   it("describes the even knockout climb, not the old cliff before the quarter-final", () => {
