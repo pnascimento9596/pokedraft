@@ -1,9 +1,19 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { PlayScreen } from "../PlayScreen";
+import type { IsoDate } from "@/engine";
+import { dailySettings } from "@/leaderboard/daily";
+import { Challenge, PlayScreen } from "../PlayScreen";
+import { DAILY_2026_10_10_CUP8, GOLDEN_1_KANTO151 } from "./ladders";
 
 const query = { current: "" };
+const fresh = { seed: "golden-1" };
+
+// A fresh run draws its seed at Start; the tests pin it so the drawn ladder has a literal value.
+vi.mock("@/ui/settings", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/ui/settings")>()),
+  freshSeed: () => fresh.seed,
+}));
 
 vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(query.current),
@@ -75,5 +85,53 @@ describe("challenge run screen", () => {
     render(<PlayScreen />);
     expect(screen.getByRole("heading").textContent).toBe("That challenge link does not work");
     expect(screen.getByRole("link", { name: "Back home" }).getAttribute("href")).toBe("/");
+  });
+});
+
+describe("road to the final on the run screens", () => {
+  const ratings = () => screen.queryAllByText(/, rating \d+$/).map((el) => el.textContent);
+  const SHARED = "mode=kanto151&f=4-4-2&order=squadFirst&seed=golden-1";
+  const FRESH = "mode=kanto151&f=4-4-2&order=squadFirst";
+
+  it("shows a shared link's exact ladder on the start screen and again on the draft board (catches a strip fed a different seed than the run)", () => {
+    query.current = SHARED;
+    render(<PlayScreen />);
+    expect(ratings()).toEqual(GOLDEN_1_KANTO151);
+    fireEvent.click(screen.getByTestId("run-start"));
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 1 of 16");
+    expect(ratings()).toEqual(GOLDEN_1_KANTO151);
+  });
+
+  it("shows no rating on a fresh start screen, then the ladder of the seed Start drew (catches a nominal or guessed number before the seed exists)", () => {
+    query.current = FRESH;
+    fresh.seed = "golden-1";
+    render(<PlayScreen />);
+    expect(ratings()).toEqual([]);
+    expect(screen.getByText("Your opponents are set the moment you start the run.")).toBeTruthy();
+    fireEvent.click(screen.getByTestId("run-start"));
+    expect(ratings()).toEqual(GOLDEN_1_KANTO151);
+  });
+
+  it("returns to no ratings after New run, because the next Start draws a new seed (catches the old link's ladder staying on a run that will not use it)", () => {
+    query.current = SHARED;
+    render(<PlayScreen />);
+    fireEvent.click(screen.getByTestId("run-start"));
+    expect(ratings()).toEqual(GOLDEN_1_KANTO151);
+    fireEvent.click(screen.getByTestId("new-run"));
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+    expect(ratings()).toEqual([]);
+  });
+
+  it("shows the daily seed's exact ladder on the Daily start screen and on its draft board", () => {
+    render(
+      <Challenge
+        settings={dailySettings("4-3-3")}
+        querySeed={null}
+        daily={"2026-10-10" as IsoDate}
+      />,
+    );
+    expect(ratings()).toEqual(DAILY_2026_10_10_CUP8);
+    fireEvent.click(screen.getByTestId("run-start"));
+    expect(ratings()).toEqual(DAILY_2026_10_10_CUP8);
   });
 });
