@@ -1,9 +1,31 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { draftSixteen } from "./helpers";
 
 // A real share token, so the shared-run page renders the full results view.
 const TOKEN =
   "pd1.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwic2VlZC05IixbWyJwIiw2MzAsInMwIl0sWyJwIiw4OTMsInMxIl0sWyJwIiw1NTgsInMyIl0sWyJwIiw2ODEsInMzIl0sWyJwIiw2NTIsInM0Il0sWyJwIiw0NjgsInM1Il0sWyJwIiwyMzMsInM2Il0sWyJwIiw3MTcsInM3Il0sWyJwIiw1NzMsInM4Il0sWyJwIiw2NjMsInM5Il0sWyJwIiw2OTcsInMxMCJdLFsicCIsMjAwLCJiMCJdLFsicCIsNDQ1LCJiMSJdLFsicCIsMjU3LCJiMiJdLFsicCIsNzI0LCJiMyJdLFsicCIsODY2LCJiNCJdXV0";
+
+const BOARD = {
+  mode: "cup8",
+  scope: "daily",
+  date: "2026-10-09",
+  entries: [
+    {
+      rank: 1,
+      nickname: "Misty",
+      mode: "cup8",
+      variant: "open.squadFirst.g123456789",
+      dailyDate: "2026-10-09",
+      token: "pd1.e2e-one",
+      teamScore: 845,
+      wins: 8,
+      draws: 0,
+      losses: 0,
+      createdAt: "2026-10-09T12:00:00.000Z",
+    },
+  ],
+};
 
 // One options object. withTags() and withRules() both overwrite runOnly, so chaining them ran a
 // single rule (SC-01). label-content-name-mismatch is experimental and off by default; tokens read
@@ -21,6 +43,21 @@ const AXE_OPTIONS = {
 // Rules that must be part of every scan, so an options edit cannot shrink the run unseen.
 const MUST_RUN = ["color-contrast", "target-size", "label-content-name-mismatch", "region"];
 
+// Violations a later dispatch 7 PR owns. This PR only adds tests, so each is matched by rule and
+// node markup, never by turning a rule off: the rule keeps guarding every other node. The PR that
+// fixes the finding deletes its entry.
+const KNOWN: readonly { finding: string; rule: string; html: RegExp }[] = [
+  // SA-27 and SC-06 (theme 7E): white text on 13 of 18 type colours, in both themes.
+  { finding: "SA-27/SC-06", rule: "color-contrast", html: /^<span class="type-chip"/ },
+  // No finding owns this yet (the SC-03 notes flag it as a lead). The name says "Reroll type, 3
+  // left" while the visible text is "Reroll type" then "3", so the text is not inside the name.
+  {
+    finding: "SC-03 lead",
+    rule: "label-content-name-mismatch",
+    html: /^<button[^>]*aria-label="Reroll[^"]*, \d+ left"/,
+  },
+];
+
 // axe cannot score text over the pitch grass, the results hero gradient or the creature images.
 // Those nodes land in "incomplete", and the manual contrast table in the audit covers them.
 async function scan(page: Page): Promise<void> {
@@ -31,21 +68,59 @@ async function scan(page: Page): Promise<void> {
     ),
   );
   expect(MUST_RUN.filter((id) => !ran.has(id))).toEqual([]);
-  expect(
-    results.violations.flatMap((v) =>
-      v.nodes.map((n) => `${v.id} (${v.impact}): ${n.target.join(" ")}`),
-    ),
-  ).toEqual([]);
+  const open = results.violations.flatMap((v) =>
+    v.nodes
+      .filter((n) => !KNOWN.some((k) => k.rule === v.id && k.html.test(n.html)))
+      .map((n) => `${v.id} (${v.impact}): ${n.target.join(" ")}`),
+  );
+  expect(open).toEqual([]);
 }
 
-const ROUTES = [
-  "/",
-  "/play?mode=builder&formation=4-3-3&gens=1",
-  "/how-to-play",
-  "/history",
-  `/r/${TOKEN}`,
-  "/r/garbage-not-a-token",
-  "/nope-404",
+const PAGES: { name: string; open: (page: Page) => Promise<void> }[] = [
+  ...["/", "/how-to-play", "/history", `/r/${TOKEN}`, "/r/garbage-not-a-token", "/nope-404"].map(
+    (route) => ({
+      name: route === `/r/${TOKEN}` ? "/r/<results token>" : route,
+      open: async (page: Page) => {
+        await page.goto(route);
+        // /r/ streams its body behind a "Loading run" fallback that has no h1 yet.
+        await page.getByRole("heading", { level: 1 }).first().waitFor();
+      },
+    }),
+  ),
+  {
+    name: "a live 8-0 draft",
+    open: async (page) => {
+      await page.goto("/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=a11y");
+      await page.getByTestId("run-start").click();
+      await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
+    },
+  },
+  {
+    name: "the builder picker",
+    open: async (page) => {
+      await page.goto("/");
+      await page.getByRole("button", { name: "Empty LCB slot" }).click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+    },
+  },
+  {
+    name: "/leaderboard with rows",
+    open: async (page) => {
+      await page.route("**/api/leaderboard?**", (route) => route.fulfill({ json: BOARD }));
+      await page.goto("/leaderboard?mode=cup8&scope=daily&date=2026-10-09");
+      await expect(page.getByTestId("board-row")).toHaveCount(1);
+    },
+  },
+  {
+    name: "/daily results with the submit panel",
+    open: async (page) => {
+      await page.goto("/daily");
+      await page.getByTestId("run-start").click();
+      await draftSixteen(page);
+      await page.getByTestId("see-results").click();
+      await expect(page.getByTestId("submit-panel")).toBeVisible();
+    },
+  },
 ];
 
 // The body background of each theme, so a scan cannot silently run the wrong theme.
@@ -55,13 +130,9 @@ for (const colorScheme of ["dark", "light"] as const) {
   test.describe(`${colorScheme} theme`, () => {
     test.use({ colorScheme, reducedMotion: "reduce" });
 
-    for (const route of ROUTES) {
-      test(`no axe violations on ${route === `/r/${TOKEN}` ? "/r/<results token>" : route}`, async ({
-        page,
-      }) => {
-        await page.goto(route);
-        // /r/ streams its body behind a "Loading run" fallback that has no h1 yet.
-        await page.getByRole("heading", { level: 1 }).first().waitFor();
+    for (const { name, open } of PAGES) {
+      test(`no axe violations on ${name}`, async ({ page }) => {
+        await open(page);
         await expect(page.locator("body")).toHaveCSS(
           "background-color",
           BODY_BACKGROUND[colorScheme],
