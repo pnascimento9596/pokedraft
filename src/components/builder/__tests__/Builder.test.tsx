@@ -206,3 +206,59 @@ describe("builder pitch token notes", () => {
     expect(screen.getByTestId("slot-b0").textContent).toBe("SUB 1 Pikachu 75 vs other wingers");
   });
 });
+
+describe("builder Download image feedback (SA-20, SB-05)", () => {
+  const png = () =>
+    ({
+      ok: true,
+      status: 200,
+      headers: new Headers({ "content-type": "image/png" }),
+      blob: async () => new Blob(["png"], { type: "image/png" }),
+    }) as unknown as Response;
+
+  const tools = async () => {
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    return screen.getByRole("toolbar", { name: "Builder actions" });
+  };
+
+  it("says Preparing image and disables the button while the card renders, so a second tap cannot start a second request", async () => {
+    vi.stubGlobal("fetch", () => new Promise<Response>(() => {}));
+    const bar = await tools();
+    const button = within(bar).getByRole("button", { name: "Download image" });
+    fireEvent.click(button);
+    expect(within(bar).getByRole("status").textContent).toBe("Preparing image");
+    expect((button as HTMLButtonElement).disabled).toBe(true);
+    vi.unstubAllGlobals();
+  });
+
+  it("tells the player the download failed when the card request fails, instead of an unhandled rejection and a button that did nothing", async () => {
+    vi.stubGlobal("fetch", async () => ({ ok: false, status: 500, headers: new Headers() }));
+    const bar = await tools();
+    fireEvent.click(within(bar).getByRole("button", { name: "Download image" }));
+    expect((await within(bar).findByRole("alert")).textContent).toBe("Download failed. Try again.");
+    expect(
+      (within(bar).getByRole("button", { name: "Download image" }) as HTMLButtonElement).disabled,
+    ).toBe(false);
+    vi.unstubAllGlobals();
+  });
+
+  it("says Image saved after the PNG is handed to the browser as pokedraft-lineup.png", async () => {
+    vi.stubGlobal("fetch", async () => png());
+    const created = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:card");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    const names: string[] = [];
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      names.push(this.download);
+    });
+    const bar = await tools();
+    fireEvent.click(within(bar).getByRole("button", { name: "Download image" }));
+    await act(async () => {});
+    expect(within(bar).getByRole("status").textContent).toBe("Image saved");
+    expect(names).toEqual(["pokedraft-lineup.png"]);
+    expect(created).toHaveBeenCalledTimes(1);
+    vi.unstubAllGlobals();
+  });
+});
