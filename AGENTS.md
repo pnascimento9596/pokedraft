@@ -37,6 +37,18 @@ Work under the `pokedraft-mode` skill: `tools/pstack-core/skills/pokedraft-mode/
   Never `--auto`.
 - Update `STATE.md` in the same PR that merges.
 
+## Hosting assumptions
+
+- The client IP comes from `x-real-ip`, which Vercel sets to the caller's address (it is what
+  `ipAddress()` from `@vercel/functions` reads). `x-forwarded-for` is only the fallback for other
+  hosts and local runs. Off Vercel, a caller can spoof both, and the per-IP limits stop being
+  trustworthy.
+- `IP_HASH_SECRET` (at least 32 characters) keys the stored IP hash. Submissions and gate unlocks
+  fail closed when it is missing. Rotating it orphans old hashes, which only resets rate-limit
+  history and the `ip_hash` column on past rows.
+- Preview deployments use the Neon `preview` branch through their own `DATABASE_URL`. Production
+  keeps the main branch.
+
 ## Risk tiers
 
 | Tier   | Scope                                                     | Gate                                                                                         |

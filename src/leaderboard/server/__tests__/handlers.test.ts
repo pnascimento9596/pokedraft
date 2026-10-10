@@ -10,15 +10,17 @@ import {
   type DraftSettings,
   type RunToken,
 } from "@/engine";
-import { leaderboardEntries } from "@/db/schema";
+import { leaderboardEntries, rateLimitEvents } from "@/db/schema";
 import type { Db } from "@/db/types";
 import type { BoardEntry } from "../../contract";
 import { dailySettings } from "../../daily";
 import { RATE_LIMIT, handleBoard, handleSubmit, hashIp } from "../handlers";
 import { drizzleStore, type LeaderboardStore } from "../store";
+import { drizzleLimiter } from "@/ratelimit/store";
 import { migratedDb, scriptedToken } from "./fixtures";
 
 const NOW = new Date("2026-10-09T16:00:00Z");
+const SECRET = "test-secret-0123456789abcdef01234567";
 const TODAY = toIsoDate("2026-10-09");
 const CUP8: DraftSettings = {
   mode: "cup8",
@@ -60,7 +62,13 @@ function post(body: unknown, ip = "203.0.113.7"): Request {
 }
 
 async function submit(body: unknown, ip?: string) {
-  const res = await handleSubmit(post(body, ip), { store, now: () => NOW, replay: countingReplay });
+  const res = await handleSubmit(post(body, ip), {
+    store,
+    limiter: drizzleLimiter(() => db),
+    ipHashSecret: SECRET,
+    now: () => NOW,
+    replay: countingReplay,
+  });
   return { status: res.status, body: (await res.json()) as Body };
 }
 
@@ -109,7 +117,7 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       losses: 1,
       teamScore: 622,
       engineVersion: "pokedraft-engine-1",
-      ipHash: hashIp("203.0.113.7"),
+      ipHash: hashIp("203.0.113.7", SECRET),
     });
   });
 
@@ -244,24 +252,12 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect(replays).toBe(2);
   });
 
-  it("allows 10 submissions per IP per hour, counted in the table, then 429", async () => {
-    const ipHash = hashIp("198.51.100.1");
-    const base = {
-      mode: "kanto151" as const,
-      variant: "squadFirst",
-      seed: "s",
-      teamScore: 700,
-      wins: 1,
-      draws: 0,
-      losses: 3,
-      engineVersion: ENGINE_VERSION,
-      ipHash,
-    };
-    await db.insert(leaderboardEntries).values(
-      Array.from({ length: RATE_LIMIT.max }, (_, i) => ({
-        ...base,
-        nickname: `old${i}`,
-        token: `t${i}`,
+  it("allows 10 attempts per IP per hour, counted in rate_limit_events, then 429", async () => {
+    const keyHash = hashIp("198.51.100.1", SECRET);
+    await db.insert(rateLimitEvents).values(
+      Array.from({ length: RATE_LIMIT.max }, () => ({
+        scope: "submit" as const,
+        keyHash,
         createdAt: new Date(NOW.getTime() - 30 * 60 * 1000),
       })),
     );
@@ -272,20 +268,11 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect((await submit({ nickname: "Ash", token }, "198.51.100.2")).status).toBe(201);
   });
 
-  it("ignores submissions older than an hour in the rate limit", async () => {
-    await db.insert(leaderboardEntries).values(
-      Array.from({ length: RATE_LIMIT.max }, (_, i) => ({
-        nickname: `old${i}`,
-        mode: "kanto151" as const,
-        variant: "squadFirst",
-        seed: "s",
-        token: `t${i}`,
-        teamScore: 700,
-        wins: 1,
-        draws: 0,
-        losses: 3,
-        engineVersion: ENGINE_VERSION,
-        ipHash: hashIp("198.51.100.1"),
+  it("ignores attempts older than an hour in the rate limit", async () => {
+    await db.insert(rateLimitEvents).values(
+      Array.from({ length: RATE_LIMIT.max }, () => ({
+        scope: "submit" as const,
+        keyHash: hashIp("198.51.100.1", SECRET),
         createdAt: new Date(NOW.getTime() - 61 * 60 * 1000),
       })),
     );
@@ -296,12 +283,29 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect(res.status).toBe(201);
   });
 
+  it("returns 503 DB_UNAVAILABLE when the secret is missing or too short, without touching the table", async () => {
+    for (const ipHashSecret of [undefined, "short"]) {
+      const res = await handleSubmit(post({ nickname: "Ash", token: "x" }), {
+        store,
+        limiter: drizzleLimiter(() => db),
+        ipHashSecret,
+        now: () => NOW,
+      });
+      expect(res.status).toBe(503);
+    }
+    expect(await db.select().from(rateLimitEvents)).toHaveLength(0);
+  });
+
   it("returns 503 DB_UNAVAILABLE when the database fails", async () => {
     const broken: LeaderboardStore = drizzleStore(() => {
       throw new Error("DATABASE_URL is not set");
     });
     const res = await handleSubmit(post({ nickname: "Ash", token: "x" }), {
       store: broken,
+      limiter: drizzleLimiter(() => {
+        throw new Error("DATABASE_URL is not set");
+      }),
+      ipHashSecret: SECRET,
       now: () => NOW,
     });
     expect(res.status).toBe(503);

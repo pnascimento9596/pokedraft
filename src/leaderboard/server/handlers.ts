@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHmac } from "node:crypto";
 import {
   ENGINE_VERSION,
   RunTokenError,
@@ -21,13 +21,17 @@ import {
 } from "../contract";
 import { dailyDateForSeed, isDailySettings } from "../daily";
 import { parseNickname } from "../nickname";
+import type { RateLimiter } from "@/ratelimit/store";
 import { toBoardEntry, type Board, type Conflict, type LeaderboardStore } from "./store";
 
 export const RATE_LIMIT = { max: 10, windowMs: 60 * 60 * 1000 } as const;
+export const IP_HASH_SECRET_MIN = 32;
 const MAX_BODY_BYTES = 16 * 1024;
 
 export interface SubmitDeps {
   readonly store: LeaderboardStore;
+  readonly limiter: RateLimiter;
+  readonly ipHashSecret: string | undefined;
   readonly now: () => Date;
   readonly replay?: (token: RunToken) => ReturnType<typeof engineReplay>;
 }
@@ -64,13 +68,21 @@ function conflictError(conflict: Conflict): Response {
     : submitError("DUPLICATE_TOKEN", "This run is already on the leaderboard.");
 }
 
+// Vercel sets x-real-ip to the client address (it is what @vercel/functions ipAddress() reads).
+// x-forwarded-for is only the fallback for other hosts and local runs.
 export function clientIp(req: Request): string {
+  const real = req.headers.get("x-real-ip")?.trim();
+  if (real) return real;
   const fwd = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  return fwd || req.headers.get("x-real-ip")?.trim() || "unknown";
+  return fwd || "unknown";
 }
 
-export function hashIp(ip: string): string {
-  return createHash("sha256").update(`pokedraft-ip:${ip}`).digest("hex");
+export function hashIp(ip: string, secret: string): string {
+  return createHmac("sha256", secret).update(ip).digest("hex");
+}
+
+export function usableSecret(secret: string | undefined): secret is string {
+  return secret !== undefined && secret.length >= IP_HASH_SECRET_MIN;
 }
 
 export function variantOf(s: DraftSettings): string {
@@ -92,6 +104,22 @@ async function readJson(req: Request): Promise<unknown> {
 
 export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Response> {
   const replay = deps.replay ?? engineReplay;
+  const now = deps.now();
+  if (!usableSecret(deps.ipHashSecret)) {
+    console.error("IP_HASH_SECRET is missing or shorter than 32 characters");
+    return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
+  }
+  const ipHash = hashIp(clientIp(req), deps.ipHashSecret);
+  try {
+    if (!(await deps.limiter.consume("submit", ipHash, now, RATE_LIMIT))) {
+      return submitError("RATE_LIMITED", "Ten submissions per hour. Try again later.", {
+        "retry-after": "3600",
+      });
+    }
+  } catch {
+    return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
+  }
+
   let raw: unknown;
   try {
     raw = await readJson(req);
@@ -108,22 +136,6 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
   }
   const nick = parseNickname(body.data.nickname);
   if (!nick.ok) return submitError("NICKNAME_INVALID", `Nickname rejected (${nick.reason}).`);
-
-  const now = deps.now();
-  const ipHash = hashIp(clientIp(req));
-  try {
-    const recent = await deps.store.countRecentByIp(
-      ipHash,
-      new Date(now.getTime() - RATE_LIMIT.windowMs),
-    );
-    if (recent >= RATE_LIMIT.max) {
-      return submitError("RATE_LIMITED", "Ten submissions per hour. Try again later.", {
-        "retry-after": "3600",
-      });
-    }
-  } catch {
-    return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
-  }
 
   let run: RunToken;
   try {
@@ -175,7 +187,8 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
       ipHash,
     });
     if (!inserted.ok) return conflictError(inserted.conflict);
-    const rank = await deps.store.rankOf(inserted.row, board);
+    // The run is saved. A rank that cannot be computed must not turn that into a failure.
+    const rank = await deps.store.rankOf(inserted.row, board).catch(() => null);
     const ok: SubmitOk = { entry: toBoardEntry(inserted.row, rank) };
     return json(ok, 201);
   } catch {

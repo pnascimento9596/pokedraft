@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, gt, gte, lt, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, lt, or, sql, type SQL } from "drizzle-orm";
 import { leaderboardEntries, type LeaderboardRow, type NewLeaderboardRow } from "@/db/schema";
 import type { Db } from "@/db/types";
 import { BOARD_LIMIT, type BoardEntry, type BoardMode } from "../contract";
@@ -12,7 +12,6 @@ export type InsertResult =
   | { readonly ok: false; readonly conflict: Conflict };
 
 export interface LeaderboardStore {
-  countRecentByIp(ipHash: string, since: Date): Promise<number>;
   conflictFor(token: string, nickname: string, board: Board): Promise<Conflict | null>;
   insert(row: NewLeaderboardRow): Promise<InsertResult>;
   rankOf(row: LeaderboardRow, board: Board): Promise<number>;
@@ -54,13 +53,6 @@ function uniqueViolation(e: unknown): string | null {
 
 export function drizzleStore(getDb: () => Db): LeaderboardStore {
   return {
-    async countRecentByIp(ipHash, since) {
-      const [r] = await getDb()
-        .select({ n: count() })
-        .from(t)
-        .where(and(eq(t.ipHash, ipHash), gte(t.createdAt, since)));
-      return r?.n ?? 0;
-    },
     async conflictFor(token, nickname, board) {
       const tokenHit = await getDb()
         .select({ id: t.id })
@@ -107,7 +99,10 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
   };
 }
 
-export function toBoardEntry(row: LeaderboardRow, rank: number): BoardEntry {
+export function toBoardEntry<R extends number | null>(
+  row: LeaderboardRow,
+  rank: R,
+): Omit<BoardEntry, "rank"> & { readonly rank: R } {
   return {
     rank,
     nickname: row.nickname,

@@ -7,6 +7,7 @@ import {
   type BoardEntry,
   type BoardMode,
   type BoardScope,
+  type SubmitEntry,
   type SubmitErrorCode,
 } from "@/leaderboard/contract";
 
@@ -34,7 +35,10 @@ const entrySchema = z.object({
 }) satisfies z.ZodType<BoardEntry>;
 
 const boardOkSchema = z.object({ entries: z.array(entrySchema) });
-const submitOkSchema = z.object({ entry: entrySchema });
+const submitEntrySchema = entrySchema.extend({
+  rank: z.number().nullable(),
+}) satisfies z.ZodType<SubmitEntry>;
+const submitOkSchema = z.object({ entry: submitEntrySchema });
 const apiErrorSchema = z.object({ error: z.object({ code: z.string() }) });
 
 export function parseBoardView(q: URLSearchParams, today: string): BoardView {
@@ -96,7 +100,7 @@ export async function fetchBoard(view: BoardView, signal?: AbortSignal): Promise
 export type SubmitFailure = SubmitErrorCode | "NETWORK" | "UNEXPECTED";
 
 export type SubmitResult =
-  | { readonly kind: "ok"; readonly entry: BoardEntry }
+  | { readonly kind: "ok"; readonly entry: SubmitEntry }
   | { readonly kind: "error"; readonly code: SubmitFailure };
 
 function isSubmitCode(code: string): code is SubmitErrorCode {

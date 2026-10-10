@@ -70,6 +70,20 @@ describe("SubmitPanel", () => {
     );
   });
 
+  it("confirms a saved run whose rank could not be loaded (catches a saved run shown as a failure)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json(201, { entry: { ...ENTRY, rank: null } })),
+    );
+    render(<SubmitPanel token="pd1.abc" daily />);
+    typeAndSubmit("Misty");
+    const success = await screen.findByTestId("submit-success");
+    expect(success.textContent).toBe(
+      "Misty is on the daily board. Your rank could not be loaded right now.",
+    );
+    expect(screen.queryByTestId("submit-error")).toBeNull();
+  });
+
   it("links an all-time success to the all-time board for that mode", async () => {
     vi.stubGlobal(
       "fetch",

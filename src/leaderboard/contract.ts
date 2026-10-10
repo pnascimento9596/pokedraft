@@ -59,8 +59,13 @@ export interface BoardEntry {
   readonly createdAt: string;
 }
 
+// The run is saved before its rank is looked up, so a failed lookup leaves rank null.
+export interface SubmitEntry extends Omit<BoardEntry, "rank"> {
+  readonly rank: number | null;
+}
+
 export interface SubmitOk {
-  readonly entry: BoardEntry;
+  readonly entry: SubmitEntry;
 }
 
 export interface BoardOk {
