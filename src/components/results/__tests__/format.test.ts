@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PenKick, Shirt, SpeciesId } from "@/engine";
+import { recapLines } from "@/engine/recap";
 import {
   absenceLine,
   contributionLine,
@@ -53,6 +54,23 @@ describe("results format", () => {
       },
     });
     expect(shootoutLine(m)).toBe("Won on penalties (decided after 20 rounds)");
+  });
+
+  it("says 20 rounds on the results line and in the recap for the same engine-1 or engine-2 decree (catches the recap counting the award pair as round 21)", () => {
+    const m = knockout({
+      shootout: {
+        user: 26,
+        opp: 25,
+        keeper: sp(1),
+        kicks: kicks(25, true, false),
+        decider: "decree",
+        coinWinner: null,
+      },
+    });
+    expect(shootoutLine(m)).toBe("Won on penalties (decided after 20 rounds)");
+    expect(recapLines({ matchIndex: 0, ...m }).at(-1)).toBe(
+      "Won by the engine after 20 rounds of sudden death.",
+    );
   });
 
   it("names the coin toss and its sudden-death rounds, for a loss as well as a win", () => {
