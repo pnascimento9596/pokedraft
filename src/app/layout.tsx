@@ -6,14 +6,16 @@ import { PackCredit } from "@/components/PackCredit";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import "./globals.css";
 
+// next/font has no fallback metrics for Big Shoulders, so the fallback face lives in globals.css.
 const shoulders = Big_Shoulders({
   subsets: ["latin"],
   weight: ["700", "800", "900"],
   variable: "--font-shoulders",
+  adjustFontFallback: false,
 });
 const barlow = Barlow_Semi_Condensed({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600", "700"],
   variable: "--font-barlow",
 });
 

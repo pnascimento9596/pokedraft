@@ -23,7 +23,9 @@ afterEach(() => {
 describe("wheel announcement", () => {
   it("speaks the result once, after the last wheel stops, so a screen reader never hears the region twice", () => {
     const onDone = vi.fn();
-    render(<RollReveal stages={stagesFor(ROLL, SETTINGS, "new")} instant={false} onDone={onDone} />);
+    render(
+      <RollReveal stages={stagesFor(ROLL, SETTINGS, "new")} instant={false} onDone={onDone} />,
+    );
     const spoken: string[] = [];
     for (let t = 0; t < 12_000; t += 50) {
       act(() => {
