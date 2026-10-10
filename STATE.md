@@ -4,7 +4,7 @@ Measured ground truth. Updated in the same PR as every merge.
 
 | Field | Value | Source |
 |---|---|---|
-| Vercel linked | no; dispatch 4 links it right after this PR merges (follow-up commit records the URL and deploy SHA) | dispatch 4 GATE 5 |
+| Vercel linked | **yes.** Merge = ship. Project `pokedraft` (`prj_GfNWnE8gbjY2YXOPOWszq7vxGOnL`, team `pnascimento9596s-projects`, Hobby, Git-linked to `main`). Production URL `https://pokedraft-woad.vercel.app`, first deploy `dpl_ARD2HPXQ1GY73ZEzeY3bkuFAEtxK` at `fb3c18e6d77f4b3495864275f27e4e7da73d23b2`. Env var names: `DATABASE_URL` (Production, Preview; Neon pooled main branch) | dispatch 4 GATE 5; `docs/decisions/dispatch-4.md` |
 | Database | Neon project `pokedraft` (`summer-lab-87419384`, org Launch plan, aws-us-east-1, 0.25 CU fixed, 300 s autosuspend); main branch `br-morning-snow-b7dn8iy8` at migration `0000_leaderboard_entries`; proof branch `migration-proof` (`br-rough-bird-b79ahwsx`) | `pnpm db:migrate`; `docs/decisions/dispatch-4.md` |
 | Species in `pokedex.json` | 1025 | `jq length src/data/pokedex.json`; PokéAPI CSVs pinned at c80757193bd0889054e36f4209762360bdaa4b95 |
 | `scouting.json` sha256 | 5969709fca53bf0dbea4d1cbfdc3499836c2d8f6654ddfabc78a6af93d807775 | `shasum -a 256 src/data/scouting.json` |
@@ -20,4 +20,4 @@ Measured ground truth. Updated in the same PR as every merge.
 | Playwright | 9 tests pass (151 run seed `e2e-151` pinned 3-0-2, cup8 classic seed `e2e-80` pinned 2-1-1, friendly cup, bad token, daily run and submit, board rows, board 503 error state, 390 and 1440 px fit; the leaderboard API is stubbed with `page.route`); runs in CI job `e2e` | `pnpm test:e2e` |
 | Image seam guard | `PlayerImage` is the only file under `src/` allowed `<img`, `next/image`, `background-image` or `url(`; runs in CI | `pnpm check:image-seam` |
 | Road to the Final | shows the nominal ladder labelled approximate; seeded ladder not exported by the engine | `docs/queue/engine-followups.md` item 1 |
-| Last reviewer | GLM 5.3 Flash (`glm-5.3-flash:cloud --think high`), dispatch 3 PR #3 | receipt on the PR, pinned to the reviewed head SHA |
+| Last reviewer | GLM 5.3 Flash (`glm-5.3-flash:cloud --think high`), dispatch 4 PR #4 (APPROVE on `7ec6f79`) | receipt on the PR, pinned to the reviewed head SHA |
