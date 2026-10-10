@@ -74,3 +74,27 @@ test.describe("builder with Show ratings on, 390 px wide", () => {
     expect(await overlappingTokens(page)).toEqual([]);
   });
 });
+
+test.describe("builder picker with Show ratings on, 320 px wide", () => {
+  test.use({
+    viewport: { width: 320, height: 640 },
+    deviceScaleFactor: 2,
+    isMobile: true,
+    hasTouch: true,
+    reducedMotion: "reduce",
+  });
+
+  // The rating cell grew from 48 px to 70 px ("vs other strikers" on one line). Next to the Swap
+  // tag that left "Meowth" 42 px of room for 50 px of text, so it was cut to "Meo...".
+  test("a row that carries the Swap tag leaves its name untruncated", async ({ page }) => {
+    await openLineup(page);
+    await page.getByTestId("slot-s9").click();
+    await page.getByRole("searchbox").fill("Meowth");
+    const row = page.getByTestId("pick-52");
+    await expect(row).toContainText("Swap with SUB 1");
+    const name = await row
+      .getByText("Meowth", { exact: true })
+      .evaluate((el) => ({ scrollWidth: el.scrollWidth, clientWidth: el.clientWidth }));
+    expect(name.scrollWidth).toBeLessThanOrEqual(name.clientWidth);
+  });
+});
