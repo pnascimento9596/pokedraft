@@ -3,13 +3,13 @@ import { decodeToken, encodeToken } from "../token";
 import type { DraftAction, RunToken, RunTokenErrorCode, Seed, SlotRef, SpeciesId } from "../types";
 
 const GOLDEN_TOKEN =
-  "pd1.W1siYyIsIjQtMi0zLTEiLCIxNCIsImMiLCJwIl0sImFiYyIsW1siYyIsInMzIl0sWyJyIiwidCJdLFsicCIsMjUsbnVsbF0sWyJ3IiwiczAiLCJiNCJdXV0";
+  "pd2.W1siYyIsIjQtMi0zLTEiLCIxNCIsImMiLCJwIl0sImFiYyIsW1siYyIsInMzIl0sWyJyIiwidCJdLFsicCIsMjUsbnVsbF0sWyJ3IiwiczAiLCJiNCJdXV0";
 const FULL_TOKEN_LENGTH = 407;
 const id = (n: number): SpeciesId => n as SpeciesId;
 const s = (index: number): SlotRef => ({ kind: "starter", index }) as SlotRef;
 const b = (index: number): SlotRef => ({ kind: "bench", index }) as SlotRef;
 const token = (body: unknown): string =>
-  `pd1.${Buffer.from(JSON.stringify(body), "utf8").toString("base64url")}`;
+  `pd2.${Buffer.from(JSON.stringify(body), "utf8").toString("base64url")}`;
 
 function codeOf(fn: () => unknown): RunTokenErrorCode | "no error" {
   try {
@@ -21,7 +21,7 @@ function codeOf(fn: () => unknown): RunTokenErrorCode | "no error" {
 }
 
 const GOLDEN: RunToken = {
-  v: 1,
+  v: 2,
   settings: {
     mode: "cup8",
     formation: "4-2-3-1",
@@ -38,13 +38,13 @@ const GOLDEN: RunToken = {
   ],
 };
 
-describe("run token golden (catches drift in the compact v1 encoding)", () => {
+describe("run token golden (catches drift in the compact token encoding)", () => {
   it("encodes the pinned token string", () => {
     expect(encodeToken(GOLDEN)).toBe(GOLDEN_TOKEN);
   });
 
   it("the body is base64url of the compact JSON, checked with Node's own decoder", () => {
-    const body = encodeToken(GOLDEN).slice("pd1.".length);
+    const body = encodeToken(GOLDEN).slice("pd2.".length);
     expect(Buffer.from(body, "base64url").toString("utf8")).toBe(
       '[["c","4-2-3-1","14","c","p"],"abc",[["c","s3"],["r","t"],["p",25,null],["w","s0","b4"]]]',
     );
@@ -55,7 +55,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
   const cases: readonly RunToken[] = [
     GOLDEN,
     {
-      v: 1,
+      v: 2,
       settings: { mode: "builder", formation: "5-3-2", gens: [2, 9], legendaries: true },
       seed: "builder seed é" as Seed,
       actions: [
@@ -66,7 +66,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
       ],
     },
     {
-      v: 1,
+      v: 2,
       settings: { mode: "kanto151", formation: "3-4-3", order: "squadFirst" },
       seed: "k" as Seed,
       actions: [
@@ -102,7 +102,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
       slot: b(i),
     }));
     const full: RunToken = {
-      v: 1,
+      v: 2,
       settings: {
         mode: "cup8",
         formation: "4-3-3",
@@ -119,11 +119,12 @@ describe("run token round trip (catches lossy encoding of any action or setting)
 
 describe("run token errors (catches decoding untrusted input into an invalid run)", () => {
   it.each([
-    ["a future version", "pd2.W10", "unknownVersion"],
+    ["a future version", "pd3.W10", "unknownVersion"],
+    ["a retired version, replayed only by its retained bundle", "pd1.W10", "unknownVersion"],
     ["no prefix", "hello", "malformed"],
-    ["bad base64url characters", "pd1.!!!!", "malformed"],
-    ["non-zero trailing bits", "pd1.W11", "malformed"],
-    ["non-JSON body", `pd1.${Buffer.from("not json").toString("base64url")}`, "malformed"],
+    ["bad base64url characters", "pd2.!!!!", "malformed"],
+    ["non-zero trailing bits", "pd2.W11", "malformed"],
+    ["non-JSON body", `pd2.${Buffer.from("not json").toString("base64url")}`, "malformed"],
     ["wrong top-level shape", token({ settings: 1 }), "malformed"],
     ["empty seed", token([["k", "4-3-3", "s"], " ", []]), "malformed"],
     ["unknown mode", token([["z", "4-3-3", "s"], "x", []]), "invalidSettings"],

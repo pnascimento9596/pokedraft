@@ -2,13 +2,14 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ResultsView } from "@/components/results/ResultsView";
-import { replay, type CupResult, type PenKick, type Shirt, type SpeciesId } from "@/engine";
+import { type CupResult, type PenKick, type Shirt, type SpeciesId } from "@/engine";
+import { replayAnyVersion as replay } from "@/engine/versions";
 import { loadHistory } from "@/ui/runs";
 
 afterEach(cleanup);
 beforeEach(() => localStorage.clear());
 
-// Cut with scratch scripts: cup8 Open 4-3-3 seed "seed-9" (observed 8-0-0, Team Score 845),
+// Engine-1 tokens, replayed on the retained v1 bundle. Cut with scratch scripts: cup8 Open 4-3-3 seed "seed-9" (observed 8-0-0, Team Score 845),
 // cup8 Classic 4-2-3-1 seed "c-4" (observed 5-0-1, out in the quarter-final), and the same
 // 16 as a builder friendly with seed "friendly-1" (observed 7-0-1, Team Score 845).
 const FLAWLESS =

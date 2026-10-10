@@ -52,7 +52,7 @@ describe("/r/[token] replay count (catches the dispatch 3 page that replayed a t
   it("replays once for the page and its metadata in one request", async () => {
     const page = await import("../page");
     const meta = await page.generateMetadata({ params } as never);
-    expect(meta.title).toBe("pokedraft run: 4-1-1, Team Score 622");
+    expect(meta.title).toBe("pokedraft run: 4-1-1, Team Score 623");
     const main = page.default({ params } as never) as {
       props: {
         children: { props: { children: Promise<{ props: { run: { cup: { wins: number } } } }> } };

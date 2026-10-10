@@ -60,7 +60,7 @@ test("the daily run completes on /daily and its submission posts the token and s
   await page.getByTestId("submit-button").click();
   await expect(page.getByTestId("submit-success")).toHaveText("#4Misty is on the daily board.");
 
-  expect(posted).toMatchObject({ nickname: "Misty", engineVersion: "pokedraft-engine-1" });
+  expect(posted).toMatchObject({ nickname: "Misty", engineVersion: "pokedraft-engine-2" });
   expect((posted as { token: string }).token).toMatch(/^pd1\./);
   await expect(page.getByRole("link", { name: "View leaderboard" })).toHaveAttribute(
     "href",
