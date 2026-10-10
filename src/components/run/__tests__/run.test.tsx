@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import type { ReactElement } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { IsoDate } from "@/engine";
 import { dailySettings } from "@/leaderboard/daily";
@@ -34,6 +35,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  sessionStorage.clear();
 });
 
 describe("challenge run screen", () => {
@@ -133,5 +135,121 @@ describe("road to the final on the run screens", () => {
     expect(ratings()).toEqual(DAILY_2026_10_10_CUP8);
     fireEvent.click(screen.getByTestId("run-start"));
     expect(ratings()).toEqual(DAILY_2026_10_10_CUP8);
+  });
+});
+
+describe("a run survives a reload (SA-08, SB-06)", () => {
+  const RUN_TEST = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
+  const E2E_151 = "mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151";
+
+  // Unmounting and mounting again is what a reload, a discarded tab or Back then Forward does to
+  // the screen: React state is gone and only what the tab stored can bring the run back.
+  const reload = (ui: ReactElement) => {
+    cleanup();
+    render(ui);
+  };
+
+  const pickGulpinAtStriker = () => {
+    fireEvent.click(screen.getByTestId("run-start"));
+    fireEvent.click(screen.getByTestId("candidate-316"));
+    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+  };
+
+  const draftSixteen = () => {
+    for (let round = 1; round <= 16; round++) {
+      expect(screen.getByTestId("round-header").textContent).toBe(`Round ${round} of 16`);
+      fireEvent.click(document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!);
+      fireEvent.click(
+        document.querySelector<HTMLElement>(
+          '[data-testid^="slot-"][data-filled="false"]:not([disabled])',
+        )!,
+      );
+    }
+  };
+
+  it("brings a draft in progress back at the same round with the same squad after a reload (catches a run that lives only in React state)", () => {
+    query.current = RUN_TEST;
+    render(<PlayScreen />);
+    pickGulpinAtStriker();
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+
+    reload(<PlayScreen />);
+
+    expect(screen.queryByTestId("run-start")).toBeNull();
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
+  });
+
+  it("brings a finished, unsubmitted run back to its results with the same record and the submit form (catches losing the only chance to submit)", () => {
+    query.current = E2E_151;
+    render(<PlayScreen />);
+    fireEvent.click(screen.getByTestId("run-start"));
+    draftSixteen();
+    fireEvent.click(screen.getByTestId("see-results"));
+    expect(screen.getByTestId("results-record").textContent).toBe("3-0-2");
+
+    reload(<PlayScreen />);
+
+    expect(screen.getByTestId("results-record").textContent).toBe("3-0-2");
+    expect(screen.getByTestId("submit-panel")).toBeTruthy();
+  });
+
+  it("forgets the run after New run, so the next load starts clean", () => {
+    query.current = RUN_TEST;
+    render(<PlayScreen />);
+    pickGulpinAtStriker();
+    fireEvent.click(screen.getByTestId("new-run"));
+
+    reload(<PlayScreen />);
+
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+  });
+
+  it("does not put a stored run on a different shared seed (catches a saved run hijacking another link)", () => {
+    query.current = RUN_TEST;
+    render(<PlayScreen />);
+    pickGulpinAtStriker();
+
+    query.current = RUN_TEST.replace("seed=run-test", "seed=other-seed");
+    reload(<PlayScreen />);
+
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+  });
+
+  it("restores a Daily run on the same New York date only", () => {
+    const daily = (date: string) => (
+      <Challenge settings={dailySettings("4-3-3")} querySeed={null} daily={date as IsoDate} />
+    );
+    render(daily("2026-10-10"));
+    fireEvent.click(screen.getByTestId("run-start"));
+    fireEvent.click(document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!);
+    fireEvent.click(
+      document.querySelector<HTMLElement>(
+        '[data-testid^="slot-"][data-filled="false"]:not([disabled])',
+      )!,
+    );
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+
+    reload(daily("2026-10-10"));
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+
+    reload(daily("2026-10-11"));
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+  });
+
+  it("still plays when the browser refuses storage (private windows, blocked site data)", () => {
+    const refuse = () => {
+      throw new DOMException("blocked", "SecurityError");
+    };
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(refuse);
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(refuse);
+    vi.spyOn(Storage.prototype, "removeItem").mockImplementation(refuse);
+    query.current = RUN_TEST;
+    render(<PlayScreen />);
+    pickGulpinAtStriker();
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+    fireEvent.click(screen.getByTestId("new-run"));
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+    vi.restoreAllMocks();
   });
 });
