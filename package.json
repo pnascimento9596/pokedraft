@@ -22,6 +22,7 @@
     "test:e2e": "playwright test",
     "check:image-seam": "bash scripts/check-image-seam.sh",
     "check:image-packs": "node scripts/images/check-packs.mjs",
+    "check:client-bundle": "bash scripts/check-client-bundle.sh",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db/migrate.mts",
     "db:rollback": "tsx scripts/db/rollback.mts",

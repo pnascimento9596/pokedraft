@@ -32,6 +32,8 @@ reply="$out/reply-$head.txt"
 data_paths=(src/data/pokedex.json src/data/scouting.json src/scouting/review)
 exclude=(
   ':(exclude)src/data/*.json'
+  ':(exclude)src/engine/versions/v*/src/*'
+  ':(exclude)src/engine/versions/v*/scripts/*'
   ':(exclude)src/scouting/review/*.json'
   ':(exclude)pnpm-lock.yaml'
   ':(exclude)tools/pstack-core/skills/poteto-mode'
@@ -61,6 +63,8 @@ Check, in order:
 
 Generated data files are summarized (stat, sha256, samples) because they are too large to inline.
 Vendored upstream skill files are listed in the stat only; they are byte copies.
+Retained engine bundles (src/engine/versions/v*/src and /scripts) are frozen copies; the gate
+outputs prove their provenance against the commit they were frozen from.
 
 Reply format, exactly:
 Line 1: VERDICT: APPROVE   or   VERDICT: REQUEST_CHANGES

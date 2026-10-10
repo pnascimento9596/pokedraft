@@ -2,12 +2,14 @@ import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { CARD_SIZE, Card, cardModel } from "@/components/share/card";
 import { cardImages } from "@/components/share/card-images";
+import { replayAnyVersion } from "@/engine/versions";
 
 export async function GET(request: NextRequest): Promise<Response> {
   const q = request.nextUrl.searchParams;
   const t = q.get("t");
   const b = q.get("b");
-  const model = t !== null ? cardModel({ t }) : b !== null ? cardModel({ b }) : null;
+  const source = t !== null ? { t } : b !== null ? { b } : null;
+  const model = source === null ? null : cardModel(source, replayAnyVersion);
   if (model === null) {
     return new Response("Bad or missing run token.", {
       status: 400,

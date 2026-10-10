@@ -36,6 +36,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - run: pnpm check:client-bundle
       - name: Rebuild data artifacts and require zero diff
         run: |
           pnpm data:pokedex
