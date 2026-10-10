@@ -1,0 +1,237 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  --accent: var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--panel);
+  min-width: 0;
+}
+
+.card[data-outcome="W"] {
+  --accent: var(--win);
+}
+.card[data-outcome="D"] {
+  --accent: var(--draw);
+}
+.card[data-outcome="L"] {
+  --accent: var(--loss);
+}
+.card[data-outcome="none"] {
+  opacity: 0.7;
+  border-style: dashed;
+  border-left-style: solid;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.round {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--ink);
+  color: var(--bg);
+  text-transform: uppercase;
+}
+
+.roundLong {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.outcome {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+.scoreline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.side {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  overflow-wrap: anywhere;
+}
+
+.oppName {
+  text-align: right;
+}
+
+.goals {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  font-size: 2rem;
+  line-height: 1;
+  padding: 2px 10px;
+  border-radius: 4px;
+  background: var(--bg-sunk);
+  border: 1px solid var(--line);
+}
+
+.extra {
+  margin: -4px 0 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+  color: var(--flood);
+  text-transform: uppercase;
+}
+
+.ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meter {
+  display: grid;
+  grid-template-columns: 2.6em minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+
+.meterLabel {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.meterValue {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  min-width: 3ch;
+  text-align: right;
+}
+
+.track {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-sunk);
+  overflow: hidden;
+}
+
+.fillUser,
+.fillOpp,
+.fillGhost {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--w);
+  border-radius: 3px;
+}
+
+.fillUser {
+  background: var(--flood);
+}
+
+.fillOpp {
+  background: var(--ink-soft);
+}
+
+.fillGhost {
+  background: repeating-linear-gradient(90deg, var(--ink-faint) 0 4px, transparent 4px 7px);
+}
+
+.below {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.scorers {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+@media (min-width: 520px) {
+  .scorers {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+  .goalOpp {
+    text-align: right;
+  }
+}
+
+.goalList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.goalOpp {
+  color: var(--ink-soft);
+}
+
+.absence {
+  margin: 0;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--live) 14%, transparent);
+}
+
+.recap {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line);
+  padding-top: 6px;
+}
+
+.recap p {
+  margin: 0 0 2px;
+}
+
+.out {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--loss);
+}
