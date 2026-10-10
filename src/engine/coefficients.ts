@@ -98,7 +98,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
   awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, DEF: 1 } },
   ladder: {
-    score: { G1: 300, G2: 320, G3: 340, R32: 360, R16: 480, QF: 760, SF: 850, F: 990 },
+    score: { G1: 300, G2: 320, G3: 340, R32: 360, R16: 480, QF: 760, SF: 850, F: 980 },
     jitter: 20,
     tilt: 5,
   },
