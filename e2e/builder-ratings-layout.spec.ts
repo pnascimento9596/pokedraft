@@ -19,12 +19,23 @@ async function ratingsOn(page: Page): Promise<void> {
   });
 }
 
-async function openLineup(page: Page): Promise<void> {
+// A full 3-4-2-1 lineup (run token version 3, no long names): the formation with the most tokens
+// side by side on the pitch.
+const LINEUP_3421 =
+  "pd3.W1siYiIsIjMtNC0yLTEiLCIxMjM0NTY3ODkiLDFdLCJwcm9vZi0zLTQtMi0xIixbWyJsIiwyNDksInMwIl0sWyJsIiwxMDA3LCJzMSJdLFsibCIsNDgzLCJzMiJdLFsibCIsNDkzLCJzMyJdLFsibCIsNjQ4LCJzNCJdLFsibCIsMTUwLCJzNSJdLFsibCIsNDg0LCJzNiJdLFsibCIsMTAxNSwiczciXSxbImwiLDQ5NCwiczgiXSxbImwiLDgwNiwiczkiXSxbImwiLDgwNywiczEwIl0sWyJsIiw1MiwiYjAiXSxbImwiLDU0LCJiMSJdLFsibCIsNTYsImIyIl0sWyJsIiw1OCwiYjMiXSxbImwiLDYwLCJiNCJdXV0";
+
+async function openLineup(page: Page, lineup: string = LINEUP): Promise<void> {
   await ratingsOn(page);
-  await page.goto(`/?b=${LINEUP}`);
+  await page.goto(`/?b=${lineup}`);
   await expect(page.locator('[data-testid^="slot-"][data-filled="true"]')).toHaveCount(16);
-  await expect(page.getByTestId("slot-s0")).toContainText(/Machamp.*\d/);
-  await page.evaluate(() => document.fonts.ready);
+  await expect(page.getByTestId("slot-s0")).toContainText(/\w.*\d/);
+  // fonts.ready can resolve before the first web font starts loading; the pill wraps differently
+  // in the fallback font, so wait for the real one.
+  await page.waitForFunction(() => document.fonts.status === "loaded");
+  await page.evaluate(
+    () =>
+      new Promise<void>((done) => requestAnimationFrame(() => requestAnimationFrame(() => done()))),
+  );
 }
 
 // Every pair of pitch tokens whose visible parts (picture, slot code, name, rating pill) overlap by
@@ -96,5 +107,48 @@ test.describe("builder picker with Show ratings on, 320 px wide", () => {
       .getByText("Meowth", { exact: true })
       .evaluate((el) => ({ scrollWidth: el.scrollWidth, clientWidth: el.clientWidth }));
     expect(name.scrollWidth).toBeLessThanOrEqual(name.clientWidth);
+  });
+});
+
+test.describe("builder with Show ratings on, a 700 px window", () => {
+  test.use({ viewport: { width: 700, height: 900 }, reducedMotion: "reduce" });
+
+  // The pitch is 668 px wide here, past the 640 px landscape switch. The two-line "vs other
+  // <role>s" pill made Dialga's and Lugia's pills touch their neighbours in 3-4-2-1 (400 px2); the
+  // label now needs a pitch of 800 px, and below that the pill is the number alone.
+  test("no two pitch tokens overlap on a 3-4-2-1 pitch", async ({ page }) => {
+    await openLineup(page, LINEUP_3421);
+    expect(await overlappingTokens(page)).toEqual([]);
+  });
+});
+
+// The smallest text this feature adds must stay readable: visible rating labels are at least 11 px.
+async function smallestLabelPx(page: Page, selector: string): Promise<number[]> {
+  return page.evaluate((sel) => {
+    return [...document.querySelectorAll<HTMLElement>(sel)]
+      .filter((el) => {
+        const r = el.getBoundingClientRect();
+        return getComputedStyle(el).display !== "none" && r.width > 0 && r.height > 0;
+      })
+      .map((el) => parseFloat(getComputedStyle(el).fontSize));
+  }, selector);
+}
+
+test.describe("rating label size", () => {
+  test.use({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+
+  test("the pitch pill label is at least 11 px where it is shown", async ({ page }) => {
+    await openLineup(page);
+    const sizes = await smallestLabelPx(page, '[data-testid="pitch"] [class*="noteLabel"]');
+    expect(sizes.length).toBeGreaterThan(0);
+    expect(Math.min(...sizes)).toBeGreaterThanOrEqual(11);
+  });
+
+  test("the picker row label is at least 11 px", async ({ page }) => {
+    await openLineup(page);
+    await page.getByTestId("slot-s9").click();
+    await expect(page.locator('dialog[open] [class*="rowFitVs"]').first()).toBeVisible();
+    const sizes = await smallestLabelPx(page, 'dialog[open] [class*="rowFitVs"]');
+    expect(Math.min(...sizes)).toBeGreaterThanOrEqual(11);
   });
 });
