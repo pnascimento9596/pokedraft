@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PGlite } from "@electric-sql/pglite";
 import { PASSCODE_COOKIE, passcodeDigest } from "@/passcode";
 import { drizzleLimiter } from "@/ratelimit/store";
@@ -99,5 +99,33 @@ describe("passcode gate attempt limit (catches unlimited passcode guessing)", ()
       deps({ passcode: undefined, ipHashSecret: undefined }),
     );
     expect([res.status, location(res)]).toEqual([303, "/daily"]);
+  });
+
+  it("logs a limiter failure with the request id and no IP or passcode", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const form = new FormData();
+    form.set("passcode", PASSCODE);
+    form.set("next", "/daily");
+    const req = new Request("https://pokedraft.test/gate/unlock", {
+      method: "POST",
+      headers: { "x-real-ip": "198.51.100.5", "x-vercel-id": "iad1::gate-1" },
+      body: form,
+    });
+    const broken = deps({
+      limiter: drizzleLimiter(() => {
+        throw Object.assign(new Error("198.51.100.5 correct horse"), { code: "57P01" });
+      }),
+    });
+    expect(location(await handleUnlock(req, broken))).toBe("/gate?next=%2Fdaily&error=unavailable");
+    expect(spy.mock.calls.map((a) => JSON.parse(String(a[0])))).toEqual([
+      {
+        level: "error",
+        where: "gate.limiter",
+        requestId: "iad1::gate-1",
+        name: "Error",
+        sqlstate: "57P01",
+      },
+    ]);
+    spy.mockRestore();
   });
 });
