@@ -15,6 +15,7 @@ import {
   type SlotRef,
   type SpeciesId,
 } from "@/engine";
+import { RETAINED_TOKEN_VERSIONS } from "@/engine/versions/label";
 
 export const STARTER_REFS: readonly SlotRef[] = Array.from({ length: 11 }, (_, i): SlotRef => ({
   kind: "starter",
@@ -60,9 +61,18 @@ export function builderToken(settings: DraftSettings, lineup: Lineup, seed: Seed
   return encodeToken({ v: RUN_TOKEN_VERSION, settings, seed, actions });
 }
 
+// A builder token only names a lineup; it replays no cup. So one shared under a retained
+// engine (same token format) opens on today's engine, which rates the lineup afresh.
+function asLiveToken(token: string): string {
+  const m = /^pd(\d+)\./.exec(token);
+  return m !== null && RETAINED_TOKEN_VERSIONS.includes(Number(m[1]))
+    ? `pd${RUN_TOKEN_VERSION}.${token.slice(m[0].length)}`
+    : token;
+}
+
 export function draftFromBuilderToken(token: string): DraftState | null {
   try {
-    const run = decodeToken(token);
+    const run = decodeToken(asLiveToken(token));
     if (run.settings.mode !== "builder") return null;
     return runDraft(run.settings, run.seed, run.actions);
   } catch (e) {

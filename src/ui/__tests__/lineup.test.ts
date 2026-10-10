@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { RUN_TOKEN_VERSION } from "@/engine";
 import { draftFromBuilderToken, filledCount } from "../lineup";
 
-// A partial builder lineup shared as /?b=... under engine-1 (src/app/card/__tests__ at 90fa976).
+// A partial builder lineup (11 of 16 placed) shared as /?b=... under engine-1 (src/app/card/__tests__ at 90fa976).
 const BUILDER_V1 =
   "pd1.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiYnVpbGRlciIsW1sibCIsNjMwLCJzMCJdLFsibCIsODkzLCJzMSJdLFsibCIsNTU4LCJzMiJdLFsibCIsNjgxLCJzMyJdLFsibCIsNjUyLCJzNCJdLFsibCIsNDY4LCJzNSJdLFsibCIsMjMzLCJzNiJdLFsibCIsNzE3LCJzNyJdLFsibCIsNTczLCJzOCJdLFsibCIsNjYzLCJzOSJdLFsibCIsNjk3LCJzMTAiXV1d";
 
@@ -12,7 +12,7 @@ describe("draftFromBuilderToken (catches old shared builder links opening an emp
     const draft = draftFromBuilderToken(BUILDER_V1);
     expect(draft === null ? null : [draft.settings.mode, filledCount(draft.lineup)]).toEqual([
       "builder",
-      10,
+      11,
     ]);
   });
 
