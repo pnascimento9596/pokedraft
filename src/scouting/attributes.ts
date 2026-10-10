@@ -60,7 +60,8 @@ function featureVectors(dex: readonly Species[], c: ScoutingCoefficients): Featu
   const spd = pct((s) => s.spd);
   const spe = pct((s) => s.spe);
   const height = pct((s) => s.heightDm);
-  const reach = pct((s) => s.heightDm * (c.bodyLength[s.shape] ?? 1));
+  const upright = (s: Species) => s.abilities.some((a) => c.uprightAbilities.includes(a.id));
+  const reach = pct((s) => s.heightDm * (upright(s) ? 1 : (c.bodyLength[s.shape] ?? 1)));
   const weight = pct((s) => s.weightHg);
   return dex.map((_, i) => ({
     hp: hp[i]!,

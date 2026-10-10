@@ -80,8 +80,8 @@ describe("Layer 1 baseline", () => {
     const arbok = speciesByName("Arbok");
     const asSquiggle = all.get(arbok.id)!.breakdown;
     const asUpright = baselineFor({ ...arbok, shape: "upright" }).breakdown;
-    expect([asSquiggle.AER.base, asUpright.AER.base]).toEqual([73.04, 85.2]);
-    expect([asSquiggle.DIV.base, asUpright.DIV.base]).toEqual([72.84, 83.22]);
+    expect([asSquiggle.AER.base, asUpright.AER.base]).toEqual([72.98, 85.2]);
+    expect([asSquiggle.DIV.base, asUpright.DIV.base]).toEqual([72.77, 83.15]);
   });
 
   it("keeps a levitating squiggle body's height as its reach (Cresselia, Levitate, 1.5 m)", () => {

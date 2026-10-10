@@ -15,6 +15,7 @@ export interface ScoutingCoefficients {
   shape: Record<Shape, AttrMods>;
   heavy: { thresholdKg: number; perDoubling: number; cap: number; attrs: AttrMods };
   bodyLength: Partial<Record<Shape, number>>;
+  uprightAbilities: readonly string[];
   frame: {
     reach: number;
     weight: number;
@@ -121,6 +122,8 @@ export const COEFFICIENTS: ScoutingCoefficients = {
 
   // Pokédex height is body length for these shapes; reach takes this share of it.
   bodyLength: { squiggle: 0.4 },
+  // A body that levitates hangs upright, so its height is its height, not its length.
+  uprightAbilities: ["levitate"],
 
   // Keeper reach and frame: cap * (2 * blend - 1) from the reach and weight percentiles, so a
   // big frame gains up to cap and a tiny body loses up to cap. Skipped for species with an
