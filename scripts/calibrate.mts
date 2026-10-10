@@ -164,6 +164,30 @@ interface RunRecord {
   readonly rerolls: number;
   readonly lineup: FullLineup;
   readonly picks: readonly PickRecord[];
+  readonly goalsByRole: Readonly<Partial<Record<Role, number>>>;
+}
+
+const ATTACKING_ROLES: readonly Role[] = ["ST", "W", "AM"];
+
+// User goals by the role of the slot the scorer filled in that match (a replacement takes the
+// absent starter's slot).
+function goalsByRole(lineup: FullLineup, cup: ReturnType<typeof runCup>) {
+  const slots = FORMATIONS[lineup.formation].slots;
+  const out: Partial<Record<Role, number>> = {};
+  for (const m of cup.matches) {
+    if (m.status !== "played") continue;
+    const role = new Map(lineup.starters.map((id, i) => [id, slots[i]!.role]));
+    for (const a of m.absences) {
+      role.delete(a.out);
+      if (a.in !== null) role.set(a.in, slots.find((s) => s.id === a.slot)!.role);
+    }
+    for (const g of m.goals) {
+      if (g.side !== "user") continue;
+      const r = role.get(g.scorer)!;
+      out[r] = (out[r] ?? 0) + 1;
+    }
+  }
+  return out;
 }
 
 function applyFirst(
@@ -215,6 +239,7 @@ function runOne(row: Row, bot: BotName, i: number): RunRecord {
     rerolls: state.rerollsUsed,
     lineup,
     picks,
+    goalsByRole: goalsByRole(lineup, cup),
   };
 }
 
@@ -380,6 +405,7 @@ const log = (msg: string) => {
 
 const results = [];
 const pooled: { score: number; wins: number; flawless: boolean }[] = [];
+const goalRoles: Partial<Record<Role, number>> = {};
 let carryoverRuns: RunRecord[] | null = null;
 let totalErrors = 0;
 
@@ -421,7 +447,12 @@ for (const row of selectedRows) {
       meanSpecials: meanOf(runs.map((r) => r.specials)),
       meanRerolls: meanOf(runs.map((r) => r.rerolls)),
     });
-    for (const r of runs) pooled.push({ score: r.score, wins: r.wins, flawless: r.flawless });
+    for (const r of runs) {
+      pooled.push({ score: r.score, wins: r.wins, flawless: r.flawless });
+      for (const [role, n] of Object.entries(r.goalsByRole) as [Role, number][]) {
+        goalRoles[role] = (goalRoles[role] ?? 0) + n;
+      }
+    }
     if (row.id === CARRYOVER_ROW && bot === CARRYOVER_BOT) carryoverRuns = runs;
     log(
       `${row.id} ${bot}: ${runs.length} runs, ${errors} errors, ${((performance.now() - started) / 1000).toFixed(1)}s`,
@@ -454,6 +485,17 @@ const histogram = Array.from({ length: 20 }, (_, k) =>
   ),
 ).filter((b) => b.count > 0);
 
+function goalShare() {
+  const total = Object.values(goalRoles).reduce((a, b) => a + b, 0);
+  const attacking = ATTACKING_ROLES.reduce((a, r) => a + (goalRoles[r] ?? 0), 0);
+  return {
+    total,
+    byRole: goalRoles,
+    attackingRoles: ATTACKING_ROLES,
+    attackingShare: attacking / total,
+  };
+}
+
 const carryovers =
   carryoverRuns === null ? null : CARRYOVERS.map((item) => measureCarryover(item, carryoverRuns!));
 
@@ -467,6 +509,7 @@ const report = {
   totalErrors,
   results,
   buckets: { near, histogram },
+  goals: goalShare(),
   carryovers,
 };
 
@@ -539,6 +582,21 @@ const bucketRows = (bs: readonly ReturnType<typeof bucketStats>[]) =>
 table(["Team Score", "runs", "mean wins", "P(8-0)"], bucketRows(near));
 out.push("### 50-point histogram (empty buckets omitted)", "");
 table(["Team Score", "runs", "mean wins", "P(8-0)"], bucketRows(histogram));
+{
+  const g = report.goals;
+  out.push(
+    `## User goals by scorer role (pooled over ${pooled.length} runs)`,
+    "",
+    `Attacking roles (${g.attackingRoles.join(", ")}) scored ${pct(g.attackingShare)} of ${g.total} user goals.`,
+    "",
+  );
+  table(
+    ["role", "goals", "share"],
+    (Object.entries(g.byRole) as [Role, number][])
+      .sort((x, y) => y[1] - x[1])
+      .map(([r, n]) => [r, n, pct(n / g.total)]),
+  );
+}
 if (carryovers === null) {
   out.push(`## Carryovers`, "", `NOT RUN: row ${CARRYOVER_ROW} was not selected.`, "");
 } else {

@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { runCup } from "../cup";
+import { FORMATIONS } from "../formations";
 import { buildLadder } from "../opponents";
 import * as engine from "..";
-import { CUP_ROUNDS, type FullLineup, type Seed } from "../types";
+import { CUP_ROUNDS, type CupResult, type FullLineup, type Role, type Seed } from "../types";
 
 const P75 = {
   formation: "4-3-3",
@@ -151,5 +152,52 @@ describe("exact ladder (catches the UI showing a nominal ladder or a nameless un
     const unplayed = r.matches.filter((m) => m.status === "notPlayed");
     expect(unplayed.map((m) => m.round)).toEqual(["R16", "QF", "SF", "F"]);
     for (const m of unplayed) expect(m.opponent).toEqual(ladder[m.round]);
+  });
+});
+
+// User goals by the role of the slot the scorer filled (a replacement takes the absent starter's slot).
+function goalRoles(lineup: FullLineup, cups: readonly CupResult[]): Partial<Record<Role, number>> {
+  const slots = FORMATIONS[lineup.formation].slots;
+  const out: Partial<Record<Role, number>> = {};
+  for (const m of cups.flatMap((r) => r.matches)) {
+    if (m.status !== "played") continue;
+    const role = new Map(lineup.starters.map((id, i) => [id, slots[i]!.role]));
+    for (const a of m.absences) {
+      role.delete(a.out);
+      if (a.in !== null) role.set(a.in, slots.find((s) => s.id === a.slot)!.role);
+    }
+    for (const g of m.goals) {
+      if (g.side === "user") out[role.get(g.scorer)!] = (out[role.get(g.scorer)!] ?? 0) + 1;
+    }
+  }
+  return out;
+}
+
+const attackingShare = (byRole: Partial<Record<Role, number>>): number => {
+  const total = Object.values(byRole).reduce((a, b) => a + b, 0);
+  return ((byRole.ST ?? 0) + (byRole.W ?? 0) + (byRole.AM ?? 0)) / total;
+};
+
+describe("scorer roles (catches defenders and holding midfielders scoring like forwards)", () => {
+  const KANTO_4231 = { ...KANTO, formation: "4-2-3-1" } as FullLineup;
+
+  it("gives ST, W and AM 70 to 80% of user goals in a 4-3-3 and a 4-2-3-1", () => {
+    const share433 = attackingShare(goalRoles(KANTO, RUNS));
+    const share4231 = attackingShare(
+      goalRoles(
+        KANTO_4231,
+        SEEDS.map((seed) => runCup(KANTO_4231, seed, "cup8")),
+      ),
+    );
+    expect([share433, share4231].every((s) => s >= 0.7 && s <= 0.8)).toBe(true);
+  });
+
+  it("never lets the goalkeeper score from open play", () => {
+    const keeperGoals = RUNS.flatMap((r) => r.matches).flatMap((m) =>
+      m.status === "played"
+        ? m.goals.filter((g) => g.side === "user" && !g.penalty && g.scorer === 9)
+        : [],
+    );
+    expect(keeperGoals).toEqual([]);
   });
 });
