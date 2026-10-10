@@ -181,6 +181,10 @@ WCAG 2.5.8 exempts a link that sits inside a sentence. The suite does not. It ta
 
 Group 6 passes on the pristine app, so the `keyboard` theme has no entry above. A headless viewport shrink does not reproduce an iOS keyboard, so that is an absence of evidence from this suite and not a clean bill.
 
+## Inner scroll, not a page overflow
+
+At 320 px the results table scrolls sideways inside its own wrapper. It is 301 px wide on macOS and WebKit and 312 px on Linux Chromium, in a 286 px wrapper. The page scroll width stays 320. The overflow checks cut an element at its nearest `overflow-x: auto` or `scroll` ancestor and list such a wrapper as an inner scroll note, so this is reported and not counted as a page overflow. A fix that narrows the table removes the note.
+
 ## Not proven by this suite
 
 - WebKit has no touch drag, swipe or wheel API. On `iphone-se` and `iphone-14` a drag is a mouse drag (Pointer Events with pointerType mouse), a list scroll is a `scrollTop` write, and a page scroll is `scrollBy`. Each such test carries a `NOT RUN` annotation.
