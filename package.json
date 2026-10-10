@@ -14,9 +14,11 @@
     "check:mirrors": "bash scripts/check-mirrors.sh",
     "data:pokedex": "node scripts/data/build-pokedex.mjs",
     "data:scouting": "tsx scripts/data/build-scouting.ts",
+    "data:type-chart": "node scripts/data/build-type-chart.mjs",
     "data:report": "tsx scripts/data/scouting-report.ts",
     "data:audit-sample": "tsx scripts/data/audit-sample.ts",
-    "data:check-moves": "tsx scripts/data/check-review-moves.ts"
+    "data:check-moves": "tsx scripts/data/check-review-moves.ts",
+    "calibrate": "tsx scripts/calibrate.mts"
   },
   "dependencies": {
     "next": "16.4.0",

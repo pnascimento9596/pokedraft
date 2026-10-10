@@ -72,7 +72,10 @@ CI runs install, lint, typecheck, test, build, and the mirror check on GitHub-ho
 
 - Determinism. Build scripts produce byte-identical output from the same inputs. Randomness comes
   only from `src/lib/rng.ts` with an explicit seed. ESLint forbids `Math.random`, `Date.now`, and
-  `new Date()` in `src/scouting`, `src/lib`, and `scripts/data`.
+  `new Date()` in `src/scouting`, `src/lib`, and `scripts/data`. `src/engine` draws only through
+  `src/engine/rng.ts` (cyrb128 + sfc32 with rejection sampling, named substreams) and ESLint bans
+  `Date`, `crypto`, `performance`, DOM globals, `Math.random`, `Math.exp/log/pow`, and
+  `localeCompare` there. Engine output is pinned by `src/engine/__tests__/goldens.test.ts`.
 - Golden tests for any engine or data change. A change to `pokedex.json` or `scouting.json` ships
   with updated golden assertions and the regenerated artifact in the same PR.
 - PlayerImage is the only image seam. No other component loads Pokémon art.
