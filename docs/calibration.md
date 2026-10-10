@@ -80,6 +80,8 @@ The good and oracle builder bots pick one fixed lineup per row, so their runs sh
 
 | Team Score | runs | mean wins | P(8-0) |
 |---|---|---|---|
+| 200-249 | 4 | 0.50 | 0.0% |
+| 250-299 | 140 | 1.00 | 0.0% |
 | 300-349 | 1,239 | 1.50 | 0.0% |
 | 350-399 | 3,899 | 2.19 | 0.0% |
 | 400-449 | 7,284 | 2.93 | 0.0% |
