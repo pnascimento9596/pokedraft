@@ -14,11 +14,13 @@ import { rateTeam } from "@/engine/team";
 import {
   DraftError,
   ENGINE_VERSION,
+  FORMATION_IDS,
   GENS,
   type CupFinish,
   type DraftAction,
   type DraftSettings,
   type DraftState,
+  type FormationId,
   type FullLineup,
   type Role,
   type Seed,
@@ -33,7 +35,22 @@ interface Row {
   readonly settings: DraftSettings;
 }
 
-const FORMATION = "4-3-3";
+const { values: args } = parseArgs({
+  options: {
+    n: { type: "string", default: "5000" },
+    coeffs: { type: "string" },
+    rows: { type: "string" },
+    out: { type: "string", default: "scripts/calibration/out/latest.json" },
+    quiet: { type: "boolean", default: false },
+    formation: { type: "string", default: "4-3-3" },
+  },
+});
+
+if (!(FORMATION_IDS as readonly string[]).includes(args.formation))
+  throw new RangeError(
+    `--formation must be one of ${FORMATION_IDS.join(", ")}, got ${args.formation}`,
+  );
+const FORMATION = args.formation as FormationId;
 const ROWS: readonly Row[] = [
   {
     id: "cup8-full",
@@ -81,16 +98,6 @@ const FINISHES: readonly CupFinish[] = ["group", "R32", "R16", "QF", "SF", "F", 
 const MAX_STEPS = 200;
 const Z95 = 1.96;
 const ERROR_SAMPLES = 3;
-
-const { values: args } = parseArgs({
-  options: {
-    n: { type: "string", default: "5000" },
-    coeffs: { type: "string" },
-    rows: { type: "string" },
-    out: { type: "string", default: "scripts/calibration/out/latest.json" },
-    quiet: { type: "boolean", default: false },
-  },
-});
 
 const N = Number(args.n);
 if (!Number.isSafeInteger(N) || N < 1)

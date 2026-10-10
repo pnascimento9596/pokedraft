@@ -9,8 +9,10 @@ Each item gets two numbers from `scripts/calibrate.mts`:
 
 | # | Carryover | Flagged species and role | Placement rate | Score delta |
 |---|---|---|---|---|
-| 1 | Claw and blade bodies keep a "handling" weakness at HAN 70 or more, because shape cannot tell claws from hands | 11 non-quadruped species (Scizor, Garchomp, Escavalier, Ceruledge, Koraidon and others) at GK | pending GATE 6 | pending GATE 6 |
-| 2 | HAN and DIV have no size signal | GK species at the extremes of height and weight | pending GATE 6 | pending GATE 6 |
-| 3 | 12 pace-weak species list FB first among their best roles | those 12 at FB | pending GATE 6 | pending GATE 6 |
-| 4 | Barboach, Burmy and Tynamo have PAC 27 to 28 from shape cuts but keep W or WB best roles (spe 36 to 60) | those 3 at W and WB | pending GATE 6 | pending GATE 6 |
-| 5 | Squiggle (serpentine) height is body length, which inflates AER | squiggle species at CB and ST | pending GATE 6 | pending GATE 6 |
+| 1 | Claw and blade bodies keep a "handling" weakness at HAN 70 or more, because shape cannot tell claws from hands | 11 non-quadruped species (Scizor, Garchomp, Escavalier, Ceruledge, Koraidon and others) at GK | 10 of 5,000 = 0.2% (4-3-3); 7 = 0.1% (3-5-2) | mean +42.3 (n 10; 3-5-2 +28.0, n 7) |
+| 2 | HAN and DIV have no size signal | GK species at the extremes of height and weight | 1,198 of 5,000 = 24.0% (4-3-3); 1,201 = 24.0% (3-5-2) | mean +30.1 (n 1,189; 3-5-2 +30.0) |
+| 3 | 12 pace-weak species list FB first among their best roles | those 12 at FB | 14 of 5,000 = 0.3% (4-3-3); 0 (3-5-2) | mean +22.6 (n 14) |
+| 4 | Barboach, Burmy and Tynamo have PAC 27 to 28 from shape cuts but keep W or WB best roles (spe 36 to 60) | those 3 at W and WB | 0 of 5,000 in 4-3-3 (W slots) and 3-5-2 (WB slots) | n/a, never placed |
+| 5 | Squiggle (serpentine) height is body length, which inflates AER | squiggle species at CB and ST | 512 of 5,000 = 10.2% (4-3-3); 726 = 14.5% (3-5-2) | mean +27.8 (n 522; 3-5-2 +25.4, n 760) |
+
+Measured in GATE 6 with the final coefficients (`docs/calibration.md`, Scouting carryovers). A positive score delta means the flagged species rates higher than the good bot's best alternative from the same pick. Each item flags a rating that may be wrong, so the delta is how much Team Score rides on that rating: if the flag is a real error, that much score is unearned. Recommendation for the next Red lane: items 2 (keeper size, 24% of good-bot drafts, about +30) and 5 (squiggle AER, 10 to 15%, about +26) reach typical players and carry real score. Items 1, 3 and 4 are below 0.5% placement and can wait.
