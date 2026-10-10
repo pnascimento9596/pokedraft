@@ -62,9 +62,9 @@ function post(body: unknown, ip = "203.0.113.7"): Request {
   });
 }
 
-async function submit(body: unknown, ip?: string) {
+async function submit(body: unknown, ip?: string, using: LeaderboardStore = store) {
   const res = await handleSubmit(post(body, ip), {
-    store,
+    store: using,
     limiter: drizzleLimiter(() => db),
     ipHashSecret: SECRET,
     now: () => NOW,
@@ -395,6 +395,150 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     });
     expect(res.status).toBe(503);
     expect(((await res.json()) as Body).error.code).toBe("DB_UNAVAILABLE");
+  });
+});
+
+describe("double submit (catches a race that makes two rows, a lost row or a 503 for a duplicate)", () => {
+  // A store whose token probe misses the first `misses` times, as when two requests probe
+  // before either has inserted.
+  function blindProbe(misses: number): LeaderboardStore {
+    let left = misses;
+    return {
+      ...store,
+      byToken: (token) => (left-- > 0 ? Promise.resolve(null) : store.byToken(token)),
+    };
+  }
+
+  // A store that holds every insert until two have arrived, so both requests pass the probes
+  // before either writes: the insert-time race, made deterministic.
+  function raceStore(): LeaderboardStore & { readonly inserts: string[] } {
+    let release!: () => void;
+    const bothThere = new Promise<void>((r) => (release = r));
+    const inserts: string[] = [];
+    return {
+      ...store,
+      inserts,
+      insert: async (row) => {
+        inserts.push("held");
+        if (inserts.length === 2) release();
+        await bothThere;
+        const out = await store.insert(row);
+        inserts.push(out.ok ? "saved" : `conflict:${out.conflict}`);
+        return out;
+      },
+    };
+  }
+
+  it("a second nickname that slips past the probe still gets 409 DUPLICATE_TOKEN and one row", async () => {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    const blind = blindProbe(2);
+    const first = await submit({ nickname: "Ash", token }, undefined, blind);
+    const second = await submit({ nickname: "Misty", token }, undefined, blind);
+    expect([first.status, second.status, second.body.error.code]).toEqual([
+      201,
+      409,
+      "DUPLICATE_TOKEN",
+    ]);
+    expect((await rows()).map((r) => r.nickname)).toEqual(["Ash"]);
+  });
+
+  it("the same nickname that slips past the probe gets 200 and the saved entry", async () => {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    const blind = blindProbe(2);
+    const first = await submit({ nickname: "Ash", token }, undefined, blind);
+    const second = await submit({ nickname: "Ash", token }, undefined, blind);
+    expect([first.status, second.status]).toEqual([201, 200]);
+    expect(second.body.entry).toEqual(first.body.entry);
+    expect(await rows()).toHaveLength(1);
+  });
+
+  it("two concurrent copies of one daily submission give 201 and 200 and one row", async () => {
+    const race = raceStore();
+    const token = scriptedToken(dailySettings("4-3-3"), dailySeed(TODAY));
+    const both = await Promise.all([
+      submit({ nickname: "Ash", token }, undefined, race),
+      submit({ nickname: "Ash", token }, undefined, race),
+    ]);
+    expect(both.map((r) => r.status).sort()).toEqual([200, 201]);
+    expect(race.inserts.slice(2).sort()).toEqual(["conflict:daily", "saved"]);
+    expect(await rows()).toHaveLength(1);
+  });
+
+  it("two concurrent daily runs under one nickname give 201 and 409 DAILY_ALREADY_SUBMITTED", async () => {
+    const race = raceStore();
+    const seed = dailySeed(TODAY);
+    const both = await Promise.all([
+      submit(
+        { nickname: "Ash", token: scriptedToken(dailySettings("4-3-3"), seed) },
+        undefined,
+        race,
+      ),
+      submit(
+        { nickname: "Ash", token: scriptedToken(dailySettings("4-4-2"), seed) },
+        undefined,
+        race,
+      ),
+    ]);
+    expect(both.map((r) => [r.status, r.body.error?.code ?? null]).sort()).toEqual([
+      [201, null],
+      [409, "DAILY_ALREADY_SUBMITTED"],
+    ]);
+    expect(race.inserts.slice(2).sort()).toEqual(["conflict:daily", "saved"]);
+    expect(await rows()).toHaveLength(1);
+  });
+
+  it("one daily run sent concurrently under two nicknames gives 201 and 409 DUPLICATE_TOKEN", async () => {
+    const race = raceStore();
+    const token = scriptedToken(dailySettings("4-3-3"), dailySeed(TODAY));
+    const both = await Promise.all([
+      submit({ nickname: "Ash", token }, undefined, race),
+      submit({ nickname: "Misty", token }, undefined, race),
+    ]);
+    expect(both.map((r) => [r.status, r.body.error?.code ?? null]).sort()).toEqual([
+      [201, null],
+      [409, "DUPLICATE_TOKEN"],
+    ]);
+    expect(race.inserts.slice(2).sort()).toEqual(["conflict:token", "saved"]);
+    expect(await rows()).toHaveLength(1);
+  });
+
+  it.each([
+    ["at the top", { code: "23505", constraint: "unknown_uq" }],
+    [
+      "two causes deep",
+      new Error("insert failed", { cause: new Error("driver", { cause: { code: "23505" } }) }),
+    ],
+  ])(
+    "maps a unique violation %s on an unknown constraint to 409 DUPLICATE_TOKEN",
+    async (_, err) => {
+      const failing: LeaderboardStore = {
+        ...store,
+        insert: (row) =>
+          drizzleStore(() => {
+            throw err;
+          }).insert(row),
+      };
+      const token = scriptedToken(CUP8, "lb-cup8");
+      const res = await submit({ nickname: "Ash", token }, undefined, failing);
+      expect([res.status, res.body.error.code]).toEqual([409, "DUPLICATE_TOKEN"]);
+      expect(await rows()).toHaveLength(0);
+    },
+  );
+
+  it("maps any other insert failure to 503 DB_UNAVAILABLE", async () => {
+    const failing: LeaderboardStore = {
+      ...store,
+      insert: (row) =>
+        drizzleStore(() => {
+          throw Object.assign(new Error("connection reset"), { code: "08006" });
+        }).insert(row),
+    };
+    const res = await submit(
+      { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
+      undefined,
+      failing,
+    );
+    expect([res.status, res.body.error.code]).toEqual([503, "DB_UNAVAILABLE"]);
   });
 });
 
