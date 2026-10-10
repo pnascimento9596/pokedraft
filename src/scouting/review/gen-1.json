@@ -229,7 +229,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Shell cannons are its signature, so long-range shooting deserves more than the baseline. Def 100 and spd 105 make a sturdy wall, and hands with HAN 90 make goal a real option."
+      "rationale": "Shell cannons are its signature, so long-range shooting deserves more than the baseline. Def 100 and spd 105 make a sturdy wall, and hands with HAN 94 make goal a real option."
     },
     {
       "id": 10,
@@ -456,7 +456,7 @@
         "tackling",
         "close-control"
       ],
-      "rationale": "Spe 101 and hp 83 on a wings shape give a long-range wide flier, matching PAC 89 and AER 90. Talons limit close control, already reflected in the wings DRI penalty."
+      "rationale": "Spe 101 and hp 83 on a wings shape give a long-range wide flier, matching PAC 89 and AER 91. Talons limit close control, already reflected in the wings DRI penalty."
     },
     {
       "id": 19,
@@ -556,13 +556,12 @@
         "passing",
         "close-control"
       ],
-      "rationale": "Genus Beak with spe 100 and atk 90 on a wings shape is a direct flier, already shown in PAC 87 and AER 83. Spa 61 keeps its passing plain."
+      "rationale": "Genus Beak with spe 100 and atk 90 on a wings shape is a direct flier, already shown in PAC 87 and AER 84. Spa 61 keeps its passing plain."
     },
     {
       "id": 23,
       "name": "Ekans",
       "adjustments": {
-        "AER": -6,
         "TAK": 3
       },
       "bestRoles": [
@@ -583,7 +582,7 @@
         "kicking-technique",
         "close-control"
       ],
-      "rationale": "Squiggle shape at weight 69 has no limbs to jump with, so AER 67 driven by height 20 body length is too high. Wrap and ability Intimidate suit a marker."
+      "rationale": "Squiggle shape at weight 69 has no limbs, and Layer 1 already reads height 20 as body length, so AER 47 stands. Wrap and ability Intimidate suit a marker."
     },
     {
       "id": 24,
@@ -608,7 +607,7 @@
         "close-control",
         "dribbling"
       ],
-      "rationale": "Genus Cobra at height 35 rears up with its hood, so AER 86 is earned. Ability Intimidate and atk 95 suit a marker, while the squiggle shape already cut its technique."
+      "rationale": "Genus Cobra rears up with its hood, and Layer 1 already reads height 35 as body length, so AER 74 stands. Ability Intimidate and atk 95 suit a marker, while the squiggle shape already cut its technique."
     },
     {
       "id": 25,
@@ -1540,7 +1539,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Type water/fighting with hp 90, def 95 and big muscled arms, already shown in HAN 94 and DEF 87. Spe 70 suits a central defender over a runner."
+      "rationale": "Type water/fighting with hp 90, def 95 and big muscled arms, already shown in HAN 96 and DEF 87. Spe 70 suits a central defender over a runner."
     },
     {
       "id": 63,
@@ -1812,7 +1811,7 @@
         "shot-power",
         "kicking-technique"
       ],
-      "rationale": "Tentacles shape with spd 120 and many grasping limbs, already reflected in HAN 81 and REF 93. A jellyfish has no kicking leg, so it plays back."
+      "rationale": "Tentacles shape with spd 120 and many grasping limbs, already reflected in HAN 83 and REF 93. A jellyfish has no kicking leg, so it plays back."
     },
     {
       "id": 74,
@@ -1863,7 +1862,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Four rocky arms on a body of weight 1050 give extra reach to catch and block, beyond the humanoid HAN bonus. Spe 35 and def 115 make it a slow wall."
+      "rationale": "Four rocky arms give extra limbs to catch and block that the humanoid HAN bonus does not count, while weight 1050 and height already set its keeper frame. Spe 35 and def 115 make it a slow wall."
     },
     {
       "id": 76,
@@ -2419,7 +2418,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Spd 115 and hp 85 with ability Inner Focus on a humanoid shape gives a composed controller, already in GKP 87 and HAN 86. Spe 67 keeps it central."
+      "rationale": "Spd 115 and hp 85 with ability Inner Focus on a humanoid shape gives a composed controller, already in GKP 87 and HAN 90. Spe 67 keeps it central."
     },
     {
       "id": 98,
@@ -3072,7 +3071,7 @@
         "handling",
         "passing"
       ],
-      "rationale": "Genus Mantis with scythes for arms cannot catch, so HAN 65 drops, while the blades sharpen its tackling. Spe 105 and atk 110 make a fast, aggressive forward."
+      "rationale": "Genus Mantis with scythes for arms cannot catch, so HAN 68 drops, while the blades sharpen its tackling. Spe 105 and atk 110 make a fast, aggressive forward."
     },
     {
       "id": 124,
@@ -3245,7 +3244,7 @@
         "kicking-technique",
         "close-control"
       ],
-      "rationale": "Genus Atrocious at height 65 and weight 2350 with ability Intimidate, already in AER 98 and PHY 90. The squiggle shape rightly strips its technique."
+      "rationale": "Genus Atrocious at height 65 and weight 2350 with ability Intimidate, already in AER 96 and PHY 90. The squiggle shape rightly strips its technique."
     },
     {
       "id": 131,
@@ -3516,7 +3515,7 @@
         "handling",
         "passing"
       ],
-      "rationale": "Scythe arms mean it cannot catch, so HAN 69 is too high, while the blades sharpen its tackling. Atk 115 and def 105 on an upright body suit a forward who defends."
+      "rationale": "Scythe arms mean it cannot catch, so HAN 71 is too high, while the blades sharpen its tackling. Atk 115 and def 105 on an upright body suit a forward who defends."
     },
     {
       "id": 142,
@@ -3594,7 +3593,7 @@
         "dribbling",
         "close-control"
       ],
-      "rationale": "Legendary ice/flying bird with def 100 and spd 125, already in DEF 93 and AER 96. Wings shape trims its ball skills, so it anchors the back."
+      "rationale": "Legendary ice/flying bird with def 100 and spd 125, already in DEF 93 and AER 97. Wings shape trims its ball skills, so it anchors the back."
     },
     {
       "id": 145,
@@ -3691,7 +3690,7 @@
         "kicking-technique",
         "footwork"
       ],
-      "rationale": "Squiggle shape at height 40 with spe 70, a graceful limbless dragon that rises without wings, already in AER 83. No legs keeps its technique low."
+      "rationale": "Squiggle shape at height 40 with spe 70, a graceful limbless dragon that rises without wings, already in AER 75. No legs keeps its technique low."
     },
     {
       "id": 149,
@@ -3746,9 +3745,7 @@
     {
       "id": 151,
       "name": "Mew",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "ST",
@@ -3768,7 +3765,7 @@
         "size",
         "strength"
       ],
-      "rationale": "Base stats all 100 with kickMoves spanning blaze-kick to triple-axel, already in TEC 99. Weight 40 already holds PHY at 65 and TAK at 72, so those stand, but height 4 gives no reach to handle a shot, so HAN drops."
+      "rationale": "Base stats all 100 with kickMoves spanning blaze-kick to triple-axel, already in TEC 99. Weight 40 already holds PHY at 65 and TAK at 72, and height 4 already trims HAN through the Layer 1 frame term, so the baseline stands."
     }
   ]
 }

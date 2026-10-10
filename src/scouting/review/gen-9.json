@@ -366,7 +366,7 @@
         "vision",
         "discipline"
       ],
-      "rationale": "Genus Grasshopper with kickMoves axe-kick and double-kick already maxed its kicking in Layer 1; jumping identity lifts AER from 65. Dark type and spa 52 point to a direct forward, not a creator."
+      "rationale": "Genus Grasshopper with kickMoves axe-kick and double-kick already maxed its kicking in Layer 1; jumping identity lifts AER from 66. Dark type and spa 52 point to a direct forward, not a creator."
     },
     {
       "id": 921,
@@ -533,7 +533,7 @@
         "size",
         "aerial"
       ],
-      "rationale": "Spe 95 with def 115 and ability Well-Baked Body make a tough, busy full-back; at height 5 dm and quadruped shape it cannot cover goal or win headers, which baseline AER 46 shows."
+      "rationale": "Spe 95 with def 115 and ability Well-Baked Body make a tough, busy full-back; at height 5 dm and quadruped shape it cannot cover goal or win headers, which baseline AER 47 shows."
     },
     {
       "id": 928,
@@ -603,7 +603,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Spa 125 and spd 109 give PAS 92 and VIS 93, with humanoid hands backing HAN 93; spe 39 and a rooted olive-tree identity keep it a deep organiser. Baseline is right."
+      "rationale": "Spa 125 and spd 109 give PAS 92 and VIS 93, with humanoid hands backing HAN 95; spe 39 and a rooted olive-tree identity keep it a deep organiser. Baseline is right."
     },
     {
       "id": 931,
@@ -778,7 +778,7 @@
         "handling",
         "distribution"
       ],
-      "rationale": "Genus Fire Blades means bladed arms, so the HAN 87 baseline overstates catching; atk 125 and spe 85 make it a cutting forward rather than a keeper."
+      "rationale": "Genus Fire Blades means bladed arms, so the HAN 90 baseline overstates catching; atk 125 and spe 85 make it a cutting forward rather than a keeper."
     },
     {
       "id": 938,
@@ -1471,7 +1471,7 @@
         "passing",
         "handling"
       ],
-      "rationale": "Genus Multi-Cyl is a revving engine built to launch, so ACC +3. Its legs shape has no hands, so HAN 72 drops; spa 54 caps passing."
+      "rationale": "Genus Multi-Cyl is a revving engine built to launch, so ACC +3. Its legs shape has no hands, so HAN 76 drops; spa 54 caps passing."
     },
     {
       "id": 967,
@@ -1891,7 +1891,7 @@
         "acceleration",
         "pace"
       ],
-      "rationale": "Genus Big Blade means blade arms, so HAN 98 drops; ability Supreme Overlord leads a troop, so VIS rises. Atk 135 and def 120 with spe 50 fit a commanding centre-back."
+      "rationale": "Genus Big Blade means blade arms, so HAN 99 drops; ability Supreme Overlord leads a troop, so VIS rises. Atk 135 and def 120 with spe 50 fit a commanding centre-back."
     },
     {
       "id": 984,
@@ -2258,7 +2258,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Atk 145 on a 210 kg upright dragon gives SHO 97 and PHY 95, but its short forelimbs relative to that frame make HAN 89 too high. Spe 87 with ACC 66 keeps it central."
+      "rationale": "Atk 145 on a 210 kg upright dragon gives SHO 97 and PHY 95, but its short forelimbs relative to that frame make HAN 94 too high. Spe 87 with ACC 66 keeps it central."
     },
     {
       "id": 999,
@@ -2455,7 +2455,7 @@
         "durability",
         "stamina"
       ],
-      "rationale": "Atk 130, spa 120 and spe 116 already max its attacking baseline; its humanoid shape has bladed arms, so HAN 74 drops. Hp 74 and spd 60 make it fragile."
+      "rationale": "Atk 130, spa 120 and spe 116 already max its attacking baseline; its humanoid shape has bladed arms, so HAN 76 drops. Hp 74 and spd 60 make it fragile."
     },
     {
       "id": 1007,
@@ -2886,7 +2886,7 @@
         "aerial",
         "size"
       ],
-      "rationale": "A 2 dm turtle with hp 90 and def 85 suits a steady defensive role; height and weight already feed the ACC blend, so its small body gets no further cut, and AER 40 is its low point. Ability Tera Shift does not apply in default form."
+      "rationale": "A 2 dm turtle with hp 90 and def 85 suits a steady defensive role; height and weight already feed the ACC blend, so its small body gets no further cut, and AER 41 is its low point. Ability Tera Shift does not apply in default form."
     },
     {
       "id": 1025,

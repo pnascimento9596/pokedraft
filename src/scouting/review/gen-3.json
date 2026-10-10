@@ -1172,7 +1172,7 @@
         "acceleration",
         "dribbling"
       ],
-      "rationale": "Def 135 and weight 970 make it an immovable rock, but its stubby humanoid arms do not earn HAN 85; it plays as a wall in front of goal, not in it."
+      "rationale": "Def 135 and weight 970 make it an immovable rock, but its stubby humanoid arms do not earn HAN 87; it plays as a wall in front of goal, not in it."
     },
     {
       "id": 300,
@@ -1606,7 +1606,7 @@
         "dribbling",
         "pace"
       ],
-      "rationale": "Genus Poison Bag with hp 100, weight 800 and a mouth that swallows whole is a natural keeper, already HAN 95; spe 55 rules out wide roles."
+      "rationale": "Genus Poison Bag with hp 100, weight 800 and a mouth that swallows whole is a natural keeper, already HAN 98; spe 55 rules out wide roles."
     },
     {
       "id": 318,
@@ -2054,9 +2054,7 @@
     {
       "id": 336,
       "name": "Seviper",
-      "adjustments": {
-        "AER": -5
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -2076,7 +2074,7 @@
         "kicking-technique",
         "handling"
       ],
-      "rationale": "Squiggle shape with no legs cannot leap, so AER 89 overstates it despite height 27; atk 100 and its bladed tail make it an aggressive presence."
+      "rationale": "Squiggle shape with no legs, and Layer 1 already reads height 27 as body length, so AER 72 stands; atk 100 and its bladed tail make it an aggressive presence."
     },
     {
       "id": 337,
@@ -2268,7 +2266,7 @@
         "dribbling",
         "kicking-technique"
       ],
-      "rationale": "Spd 120 and def 105 on an arms-shaped levitating body give HAN 96 and GKP 91; it has no legs, so dribbling and kicking stay weak."
+      "rationale": "Spd 120 and def 105 on an arms-shaped levitating body give HAN 99 and GKP 91; it has no legs, so dribbling and kicking stay weak."
     },
     {
       "id": 345,
@@ -2555,7 +2553,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Def 130 and spd 130 with genus Beckon and large hands make an imposing keeper, already HAN 88; spe 25 is very slow."
+      "rationale": "Def 130 and spd 130 with genus Beckon and large hands make an imposing keeper, already HAN 90; spe 25 is very slow."
     },
     {
       "id": 357,
@@ -3017,7 +3015,7 @@
         "pace",
         "dribbling"
       ],
-      "rationale": "Arms shape with weight 2025 and def 100 give a strong blocker with HAN 83; spe 50 limits range."
+      "rationale": "Arms shape with weight 2025 and def 100 give a strong blocker with HAN 86; spe 50 limits range."
     },
     {
       "id": 376,
@@ -3244,9 +3242,7 @@
     {
       "id": 385,
       "name": "Jirachi",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "CM",
@@ -3265,7 +3261,7 @@
         "strength",
         "size"
       ],
-      "rationale": "Weight 11 already holds PHY at 63 and TAK at 69, so those stand, but height 3 gives no reach to handle a shot, so HAN drops; base stats all 100 still make it a gifted creator."
+      "rationale": "Weight 11 already holds PHY at 63 and TAK at 69, and height 3 already trims HAN through the Layer 1 frame term, so the baseline stands; base stats all 100 still make it a gifted creator."
     },
     {
       "id": 386,

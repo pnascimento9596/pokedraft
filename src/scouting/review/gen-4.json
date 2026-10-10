@@ -202,7 +202,7 @@
         "pace",
         "acceleration"
       ],
-      "rationale": "Penguin genus with flippers rather than hands makes HAN 60 generous. Spa 81 and spd 76 point to a measured central passer; spe 50 keeps it off the wings."
+      "rationale": "Penguin genus with flippers rather than hands makes HAN 59 generous. Spa 81 and spd 76 point to a measured central passer; spe 50 keeps it off the wings."
     },
     {
       "id": 395,
@@ -230,7 +230,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "Genus Emperor and spa 111 suit a commanding deep playmaker, and water/steel type with def 88 holds the middle. Steel flippers, not hands, so HAN 87 drops; spe 60 and height 17 make it slow to turn."
+      "rationale": "Genus Emperor and spa 111 suit a commanding deep playmaker, and water/steel type with def 88 holds the middle. Steel flippers, not hands, so HAN 90 drops; spe 60 and height 17 make it slow to turn."
     },
     {
       "id": 396,
@@ -959,7 +959,7 @@
         "marking",
         "strength"
       ],
-      "rationale": "Genus Long Tail refers to its hand-tipped twin tails, which give it far better grip than HAN 60 shows. Spe 115 with the technician and skill-link abilities make it a slippery wide attacker."
+      "rationale": "Genus Long Tail refers to its hand-tipped twin tails, which give it far better grip than HAN 61 shows. Spe 115 with the technician and skill-link abilities make it a slippery wide attacker."
     },
     {
       "id": 425,
@@ -1484,7 +1484,7 @@
         "handling",
         "vision"
       ],
-      "rationale": "Genus Mach describes a jet-like burst beyond what ACC 80 shows, so ACC gets a small lift. Its arms end in fins and claws, so HAN 89 overstates a keeper's grip; atk 130 makes it an elite striker."
+      "rationale": "Genus Mach describes a jet-like burst beyond what ACC 80 shows, so ACC gets a small lift. Its arms end in fins and claws, so HAN 93 overstates a keeper's grip; atk 130 makes it an elite striker."
     },
     {
       "id": 446,
@@ -2036,7 +2036,7 @@
         "handling",
         "marking"
       ],
-      "rationale": "Genus Blast with spa 125 suits a long-range creator, but its arms are cannons rather than hands, so HAN 71 drops. Def 67 keeps it out of defence."
+      "rationale": "Genus Blast with spa 125 suits a long-range creator, but its arms are cannons rather than hands, so HAN 74 drops. Def 67 keeps it out of defence."
     },
     {
       "id": 468,
@@ -2264,7 +2264,7 @@
         "acceleration",
         "footwork"
       ],
-      "rationale": "Genus Compass with def 145 and weight 3400 hg is a fixed blocker. A heads shape with no hands should not carry HAN 96, so it drops."
+      "rationale": "Genus Compass with def 145 and weight 3400 hg is a fixed blocker. A heads shape with no hands should not carry HAN 99, so it drops."
     },
     {
       "id": 477,
@@ -2440,7 +2440,7 @@
         "agility",
         "footwork"
       ],
-      "rationale": "A 6830 hg quadruped cannot dive, and the Layer 1 heavy penalty of DIV -9 already says so; height 54 still gives it aerial reach. Def 120 and spa 150 suit a dominant central anchor."
+      "rationale": "A 6830 hg quadruped is a poor diver, and Layer 1 already sets DIV from its weight and height, so it gets no further cut; height 54 still gives it aerial reach. Def 120 and spa 150 suit a dominant central anchor."
     },
     {
       "id": 484,
@@ -2490,7 +2490,7 @@
         "agility",
         "footwork"
       ],
-      "rationale": "Genus Lava Dome, a 4300 hg quadruped, cannot dive, and the Layer 1 heavy penalty of DIV -6 already covers it. Def 106 and spa 130 suit a deep anchor."
+      "rationale": "Genus Lava Dome, a 4300 hg quadruped, is a poor diver, and Layer 1 already sets DIV from its weight and height. Def 106 and spa 130 suit a deep anchor."
     },
     {
       "id": 486,
@@ -2543,7 +2543,7 @@
         "footwork",
         "dribbling"
       ],
-      "rationale": "Genus Renegade at weight 7500 hg on a tentacles shape cannot dive, and the Layer 1 heavy penalty of DIV -9 already covers it. Hp 150 and def 120 make it a towering anchor."
+      "rationale": "Genus Renegade at weight 7500 hg on a tentacles shape is a poor diver, and Layer 1 already sets DIV from its weight and height. Hp 150 and def 120 make it a towering anchor."
     },
     {
       "id": 488,
@@ -2597,9 +2597,7 @@
     {
       "id": 490,
       "name": "Manaphy",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "AM",
         "CM",
@@ -2619,7 +2617,7 @@
         "size",
         "aerial"
       ],
-      "rationale": "Even 100 stats on a humanoid shape at height 3 and weight 14 hg make a gifted little creator with no physical presence. Weight already holds PHY at 62, so only HAN drops, for a body with no reach to handle a shot."
+      "rationale": "Even 100 stats on a humanoid shape at height 3 and weight 14 hg make a gifted little creator with no physical presence. Weight already holds PHY at 62 and height already trims HAN through the Layer 1 frame term, so the baseline stands."
     },
     {
       "id": 491,
@@ -2649,9 +2647,7 @@
     {
       "id": 492,
       "name": "Shaymin",
-      "adjustments": {
-        "HAN": -6
-      },
+      "adjustments": {},
       "bestRoles": [
         "W",
         "AM",
@@ -2671,7 +2667,7 @@
         "size",
         "aerial"
       ],
-      "rationale": "Even 100 stats on a quadruped hedgehog at height 2 and weight 21 hg give quickness and stamina but no physical game, and weight already holds PHY at 63. Height 2 gives no reach to handle a shot, so HAN drops."
+      "rationale": "Even 100 stats on a quadruped hedgehog at height 2 and weight 21 hg give quickness and stamina but no physical game, and weight already holds PHY at 63. Height 2 already trims HAN through the Layer 1 frame term, so the baseline stands."
     },
     {
       "id": 493,

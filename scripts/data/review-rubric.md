@@ -40,7 +40,11 @@ and bad at, and does the baseline already say that?
   call, make no adjustment. An empty object `{}` is fine.
 - Do not adjust an attribute for a field that already feeds it. Speed already feeds PAC, ACC,
   DRI, PAS and TEC; weight over 150 kg already lowers ACC, DRI, DIV, PAC and AER; the arms
-  shape (no legs) already lowers DRI, TEC and KIC. Check `layer1Mods` and the blend inputs.
+  shape (no legs) already lowers DRI, TEC and KIC; height and weight already move DIV and HAN
+  through the keeper frame term (a tiny body loses up to 6, a big frame gains up to 6; skipped
+  when an ability such as Schooling already sets the body size); and a
+  squiggle (serpentine) body's height is read as body length, so it no longer lifts AER or DIV.
+  Check `layer1Mods` and the blend inputs.
 - KIC is goalkeeper kicking (goal kicks and distribution) and only feeds GK. Outfield kicking
   power and technique live in SHO and TEC. Raise KIC only when GK is a best role.
 - `bestRoles`: exactly 3 distinct roles, best first. These are the positions it would naturally
