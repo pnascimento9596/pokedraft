@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LADDER_SHAPE } from "@/ui/labels";
 import s from "./page.module.css";
 
 export const metadata: Metadata = { title: "How to play pokedraft" };
@@ -35,7 +36,7 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
     title: "The cup",
     body: [
       "Your squad plays 3 group games. The top 2 in the group go through to the Round of 32, then the Round of 16, the quarter-final, the semi-final and the Final.",
-      "Opponents get stronger every round, and the ladder gets hard from the quarter-final on. Win all 8 games for a flawless 8-0.",
+      `${LADDER_SHAPE} Win all 8 games for a flawless 8-0.`,
       "Players can miss a match. When that happens someone from the bench comes in for that game.",
     ],
   },
