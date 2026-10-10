@@ -206,3 +206,104 @@ describe("builder pitch token notes", () => {
     expect(screen.getByTestId("slot-b0").textContent).toBe("SUB 1 Pikachu 75 vs other wingers");
   });
 });
+
+// The ?b= token of openWithTwoPlaced() under engine 3. It decodes to
+// [["b","4-3-3","1",0],"builder",[["l",1,"s2"],["l",4,"s9"]]]: Bulbasaur at LCB, Charmander at ST.
+const TWO_PLACED_TOKEN =
+  "pd3.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDEsInMyIl0sWyJsIiw0LCJzOSJdXV0";
+
+function filledSlots() {
+  return document.querySelectorAll('[data-testid^="slot-"][data-filled="true"]').length;
+}
+
+describe("builder toolbar (catches buttons that stop doing what they say)", () => {
+  it("picking a species fills the empty slot and closes the picker", () => {
+    render(<HomeScreen />);
+    const dialog = openPicker("Empty LCB slot");
+    fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
+    fireEvent.click(within(dialog).getByTestId("pick-25"));
+
+    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Pikachu");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(filledSlots()).toBe(1);
+  });
+
+  it("Clear all empties every slot and then disables itself", async () => {
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    expect(filledSlots()).toBe(2);
+    fireEvent.click(screen.getByRole("button", { name: "Clear all" }));
+
+    expect(filledSlots()).toBe(0);
+    expect(screen.getByRole("button", { name: "Empty LCB slot" })).toBeTruthy();
+    expect((screen.getByRole("button", { name: "Clear all" }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
+  });
+
+  it("Reset restores the default panel and an empty 4-3-3 lineup", async () => {
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    const style = screen.getByRole("group", { name: "Draft style" });
+    fireEvent.click(within(style).getByRole("button", { name: "Classic" }));
+    fireEvent.change(screen.getByLabelText("Formation"), { target: { value: "3-5-2" } });
+    expect((screen.getByLabelText("Formation") as HTMLSelectElement).value).toBe("3-5-2");
+    expect(filledSlots()).toBe(2);
+
+    fireEvent.click(screen.getByRole("button", { name: "Reset" }));
+
+    expect((screen.getByLabelText("Formation") as HTMLSelectElement).value).toBe("4-3-3");
+    expect(within(style).getByRole("button", { name: "Open" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    const gens = screen.getByRole("group", { name: "Generations" });
+    expect(within(gens).getByRole("button", { name: "All" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(filledSlots()).toBe(0);
+    expect(screen.getByRole("button", { name: "Empty LCB slot" })).toBeTruthy();
+  });
+
+  it("Copy link writes the share URL and says so, and says when the copy fails", async () => {
+    const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
+    });
+    expect(writeText.mock.calls).toEqual([[`http://localhost:3000/?b=${TWO_PLACED_TOKEN}`]]);
+    expect(screen.getByRole("status").textContent).toBe("Link copied");
+
+    writeText.mockRejectedValueOnce(new Error("denied"));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
+    });
+    expect(screen.getByRole("status").textContent).toBe("Could not copy the link");
+  });
+
+  it("Download image requests the builder card and saves it as pokedraft-lineup.png", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(new Uint8Array([137, 80, 78, 71]), {
+        headers: { "content-type": "image/png" },
+      }),
+    );
+    URL.createObjectURL = vi.fn(() => "blob:card");
+    URL.revokeObjectURL = vi.fn();
+    const saved: string[] = [];
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      saved.push(`${this.download} ${this.href}`);
+    });
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Download image" }));
+    });
+    expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([`/card?b=${TWO_PLACED_TOKEN}`]);
+    expect(saved).toEqual(["pokedraft-lineup.png blob:card"]);
+  });
+});
