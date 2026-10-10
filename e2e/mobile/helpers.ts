@@ -39,26 +39,45 @@ export function nextFrame(page: Page): Promise<void> {
 
 /**
  * Waits until layout and finite animations have finished. Without it a measurement can land on the
- * first frame of an entrance animation (a dialog opens 16px low, candidates slide in 14px low).
+ * first frame of an entrance animation (a dialog opens 16px low, candidates slide in 14px low) or
+ * on the start value of a colour transition. It polls `playState` once per frame and never awaits
+ * `Animation.finished`: Chromium leaves that promise pending for a transition that ends between
+ * frames, which hung the suite. The frame cap keeps a stuck animation from hanging a test.
  */
 export async function settle(page: Page): Promise<void> {
   await page.evaluate(async () => {
     const frame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-    await frame();
-    await Promise.all(
+    const running = () =>
       document
         .getAnimations()
-        .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
-        .map((a) =>
-          a.finished.then(
-            () => undefined,
-            () => undefined,
-          ),
-        ),
-    );
+        .some(
+          (a) => a.effect?.getComputedTiming().iterations !== Infinity && a.playState === "running",
+        );
+    await frame();
+    for (let frames = 0; frames < 300 && running(); frames++) await frame();
     await frame();
     await frame();
   });
+}
+
+export interface Size {
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
+ * Resizes the viewport and waits until the page has laid out at that size, so a measurement cannot
+ * run against the old width. Mobile emulation keeps a device width in some engines, which would
+ * turn every overflow check into a check of one width.
+ */
+export async function resizeTo(page: Page, size: Size): Promise<void> {
+  await page.setViewportSize(size);
+  await expect
+    .poll(() => page.evaluate(() => [document.documentElement.clientWidth, window.innerHeight]), {
+      message: `the page did not lay out at ${size.width}x${size.height}`,
+    })
+    .toEqual([size.width, size.height]);
+  await settle(page);
 }
 
 /** A server-rendered element is only live once React has attached its props to it. */
@@ -191,6 +210,31 @@ async function tapCentre(page: Page, check: ViewportCheck): Promise<void> {
 }
 
 /**
+ * A tap precondition failed: the control is off screen, covered, or the page moved. This is a
+ * verdict about the app. Any other error from these helpers is a harness fault and must not be
+ * mistaken for it.
+ */
+export class ReachError extends Error {
+  constructor(
+    readonly label: string,
+    readonly problems: readonly string[],
+    readonly check: ViewportCheck,
+  ) {
+    super(`tap "${label}": ${problems.join("; ")}\n${viewportReport(check)}`);
+    this.name = "ReachError";
+  }
+
+  /** The same facts on one line, for lists of failed steps. */
+  oneLine(): string {
+    const { box, viewport } = this.check;
+    const where = box
+      ? `element spans y ${Math.round(box.y)} to ${Math.round(box.y + box.height)}`
+      : "element has no box";
+    return `${this.label}: ${this.problems.join("; ")} (${where}, viewport ${Math.round(viewport.width)}x${Math.round(viewport.height)}, scrollY ${Math.round(viewport.scrollY)})`;
+  }
+}
+
+/**
  * Taps an element that is on screen and uncovered, with a real touch at its centre. It never calls
  * `locator.tap()` and never scrolls: Playwright's own scroll-into-view would hide the defect.
  * Unlike `tapInView` it allows the page to have moved since the last step, so it suits setup steps
@@ -200,7 +244,7 @@ export async function tapNow(page: Page, locator: Locator, label: string): Promi
   await locator.first().waitFor({ state: "visible" });
   await settle(page);
   const check = await inViewport(page, locator);
-  if (!check.ok) throw new Error(`tap "${label}": ${check.problem}\n${viewportReport(check)}`);
+  if (!check.ok) throw new ReachError(label, [check.problem!], check);
   await tapCentre(page, check);
 }
 
@@ -212,10 +256,15 @@ export function resetScrollBaseline(page: Page): void {
 }
 
 /**
- * One step of a tap-only flow. Fails when the element is not fully on screen and uncovered, or when
- * `window.scrollY` differs from the previous step. Otherwise taps its centre with a real touch.
+ * The reach verdict for one step of a flow, without tapping. Fails when the element is not fully on
+ * screen and uncovered, or when `window.scrollY` differs from the previous step. On success it
+ * remembers the scroll position for the next step.
  */
-export async function tapInView(page: Page, locator: Locator, label: string): Promise<void> {
+export async function reachInView(
+  page: Page,
+  locator: Locator,
+  label: string,
+): Promise<ViewportCheck> {
   await locator.first().waitFor({ state: "visible" });
   await settle(page);
   const check = await inViewport(page, locator);
@@ -227,10 +276,17 @@ export async function tapInView(page: Page, locator: Locator, label: string): Pr
       `the page scrolled from ${Math.round(before)} to ${Math.round(check.viewport.scrollY)} since the previous step`,
     );
   }
-  if (problems.length > 0) {
-    throw new Error(`tap "${label}": ${problems.join("; ")}\n${viewportReport(check)}`);
-  }
+  if (problems.length > 0) throw new ReachError(label, problems, check);
   scrollBaselines.set(page, check.viewport.scrollY);
+  return check;
+}
+
+/**
+ * One step of a tap-only flow: `reachInView`, then a real touch at the element centre. It never
+ * calls `locator.tap()` and never scrolls, so a control the player would have to scroll to fails.
+ */
+export async function tapInView(page: Page, locator: Locator, label: string): Promise<void> {
+  const check = await reachInView(page, locator, label);
   await tapCentre(page, check);
 }
 
@@ -243,10 +299,11 @@ export async function tapInView(page: Page, locator: Locator, label: string): Pr
  */
 export function widestRight(page: Page): Promise<number> {
   return page.evaluate(() =>
-    [...document.body.querySelectorAll("*")].reduce(
-      (widest, el) => Math.max(widest, el.getBoundingClientRect().right),
-      0,
-    ),
+    // checkVisibility() is false for display:none and for the contents of a closed <details>,
+    // which WebKit still lays out when asked.
+    [...document.body.querySelectorAll("*")]
+      .filter((el) => el.checkVisibility())
+      .reduce((widest, el) => Math.max(widest, el.getBoundingClientRect().right), 0),
   );
 }
 
@@ -274,11 +331,13 @@ export interface TargetInfo {
 /**
  * Every visible interactive element with the box of the element itself. Excluded: anything inside
  * `[inert]` or an `aria-hidden` ancestor, `display:none` and `visibility:hidden` elements, the
- * contents of a closed `<details>`, and zero-size boxes. Disabled controls stay in: they have the
- * same size when they are enabled. A pseudo-element hit area is never counted.
+ * contents of a closed `<details>`, and zero-size boxes. While a modal `<dialog>` is open only its
+ * contents are scanned, because the browser makes the page behind it inert. Disabled controls stay
+ * in: they have the same size when they are enabled. A pseudo-element hit area is never counted.
  */
 export function interactiveTargets(page: Page): Promise<TargetInfo[]> {
   return page.evaluate(() => {
+    const modal = document.querySelector("dialog:modal");
     const SELECTOR = [
       "a[href]",
       "button",
@@ -310,6 +369,7 @@ export function interactiveTargets(page: Page): Promise<TargetInfo[]> {
     };
 
     const visible = (el: Element): boolean => {
+      if (modal !== null && !modal.contains(el)) return false;
       if (el.closest("[inert]") !== null || el.closest('[aria-hidden="true"]') !== null)
         return false;
       if (hiddenByDetails(el)) return false;
@@ -336,14 +396,15 @@ export function interactiveTargets(page: Page): Promise<TargetInfo[]> {
     };
 
     const labelOf = (el: Element): string => {
-      const input = el as HTMLInputElement;
+      const field = el as HTMLInputElement;
+      const labels = [...(field.labels ?? [])].map((l) => l.textContent ?? "").join(" ");
+      const own =
+        el.tagName === "SELECT"
+          ? ((el as HTMLSelectElement).selectedOptions[0]?.text ?? "")
+          : (el.textContent?.trim() ?? "");
       const raw =
-        el.textContent?.trim() ||
-        el.getAttribute("aria-label") ||
-        input.placeholder ||
-        input.value ||
-        "";
-      return raw.replace(/\s+/g, " ").slice(0, 40);
+        el.getAttribute("aria-label") || labels || own || field.placeholder || field.value || "";
+      return raw.replace(/\s+/g, " ").trim().slice(0, 40);
     };
 
     const isInlineLink = (el: Element): boolean => {
@@ -428,19 +489,35 @@ export function touchScroll(page: Page, at: Point, distance: number): Promise<vo
  * A drag with the mouse (down, several moves, up). It runs the app's Pointer Events handlers, which
  * is what `Pitch` and a bottom sheet listen to, but the events carry pointerType "mouse". It is NOT
  * a touch gesture: it proves nothing about touch-action, scroll arbitration or palm rejection.
+ * A mouse drag that starts on an <img> begins the browser's native image drag in WebKit, which
+ * ends the pointer stream. A finger drag never does that, so the harness cancels `dragstart` to let
+ * the mouse stand in for a finger.
  */
 export async function pointerDrag(page: Page, from: Point, to: Point, steps = 12): Promise<void> {
-  await page.mouse.move(from.x, from.y);
-  await page.mouse.down();
-  for (let i = 1; i <= steps; i++) {
-    await page.mouse.move(
-      from.x + ((to.x - from.x) * i) / steps,
-      from.y + ((to.y - from.y) * i) / steps,
-    );
+  await page.evaluate(() => {
+    const w = window as unknown as { __cancelNativeDrag?: (e: Event) => void };
+    w.__cancelNativeDrag = (e) => e.preventDefault();
+    document.addEventListener("dragstart", w.__cancelNativeDrag, true);
+  });
+  try {
+    await page.mouse.move(from.x, from.y);
+    await page.mouse.down();
+    for (let i = 1; i <= steps; i++) {
+      await page.mouse.move(
+        from.x + ((to.x - from.x) * i) / steps,
+        from.y + ((to.y - from.y) * i) / steps,
+      );
+      await nextFrame(page);
+    }
     await nextFrame(page);
+    await page.mouse.up();
+  } finally {
+    await page.evaluate(() => {
+      const w = window as unknown as { __cancelNativeDrag?: (e: Event) => void };
+      if (w.__cancelNativeDrag)
+        document.removeEventListener("dragstart", w.__cancelNativeDrag, true);
+    });
   }
-  await nextFrame(page);
-  await page.mouse.up();
 }
 
 /**
@@ -452,9 +529,232 @@ export async function drag(page: Page, from: Point, to: Point): Promise<"touch" 
     await touchDrag(page, from, to);
     return "touch";
   }
-  notRun("real touch drag on WebKit: no API (a mouse drag ran the pointer handlers instead)");
+  notRun("real touch drag on WebKit: no API");
+  note(
+    "pointerDrag",
+    "a mouse drag exercised the Pointer Events handlers (pointerType mouse), not touch",
+  );
   await pointerDrag(page, from, to);
   return "pointer";
 }
 
 export { isChromium };
+
+// ---------------------------------------------------------------------------------------------
+// Touch-action: can a swipe that starts here pan the page?
+
+/**
+ * True when no element from `locator` up to the root forbids vertical panning with its computed
+ * `touch-action`. It reads CSS, so it works on WebKit where no touch gesture can be sent. It says
+ * a swipe is allowed to scroll, not that it did.
+ */
+export function panYAllowed(locator: Locator): Promise<boolean> {
+  return locator.first().evaluate((el) => {
+    for (let n: Element | null = el; n !== null; n = n.parentElement) {
+      const value = getComputedStyle(n).touchAction;
+      if (["none", "pan-x", "pinch-zoom", "pan-x pinch-zoom"].includes(value)) return false;
+    }
+    return true;
+  });
+}
+
+// ---------------------------------------------------------------------------------------------
+// Environment
+
+/**
+ * Safari on iOS does not focus a button or a link when it is tapped. WebKit on Linux does, and so
+ * does Chromium (as Chrome on Android does). This capture-phase listener drops that focus before
+ * the app's click handler runs. The suite installs it on its WebKit projects only, so they see iOS
+ * behaviour on every operating system. Text fields keep their focus.
+ */
+export const IOS_BUTTON_FOCUS_SCRIPT = `
+document.addEventListener(
+  "click",
+  () => {
+    const active = document.activeElement;
+    if (
+      active instanceof HTMLElement &&
+      active !== document.body &&
+      active.matches('button, a[href], summary, [role="button"], [role="tab"], [role="radio"], [role="switch"], [role="checkbox"]')
+    ) {
+      active.blur();
+    }
+  },
+  true,
+);`;
+
+export async function installIosButtonFocus(page: Page): Promise<void> {
+  await page.addInitScript(IOS_BUTTON_FOCUS_SCRIPT);
+}
+
+export type Scheme = "dark" | "light";
+
+/**
+ * Switches prefers-color-scheme and returns the computed body background and text colour, to show
+ * it took effect.
+ */
+export async function setColorScheme(page: Page, scheme: Scheme): Promise<string> {
+  await page.emulateMedia({ colorScheme: scheme });
+  await expect
+    .poll(() => page.evaluate((s) => matchMedia(`(prefers-color-scheme: ${s})`).matches, scheme))
+    .toBe(true);
+  // The app transitions its colours, so read them only once the transitions have ended.
+  await settle(page);
+  return page.evaluate(() => {
+    const style = getComputedStyle(document.body);
+    return `${style.backgroundColor} ${style.color}`;
+  });
+}
+
+// ---------------------------------------------------------------------------------------------
+// Diagnostics for failure messages. None of these decides a verdict.
+
+/** The element whose right edge is furthest right, for the message that explains an overflow. */
+export function widestElement(page: Page): Promise<string> {
+  return page.evaluate(() => {
+    let best: Element | null = null;
+    let right = -1;
+    for (const el of document.body.querySelectorAll("*")) {
+      if (!el.checkVisibility()) continue;
+      const r = el.getBoundingClientRect();
+      if (r.right > right) {
+        right = r.right;
+        best = el;
+      }
+    }
+    if (best === null) return "no element";
+    const tag = (el: Element) => {
+      const id = el.getAttribute("data-testid");
+      const cls = [...el.classList].slice(0, 1).join(".");
+      return `${el.tagName.toLowerCase()}${id ? `[testid=${id}]` : ""}${cls ? `.${cls}` : ""}`;
+    };
+    const text = (best.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 30);
+    const parent = best.parentElement ? `${tag(best.parentElement)} > ` : "";
+    return `${parent}${tag(best)}${text ? ` "${text}"` : ""} reaches x=${Math.round(right)}`;
+  });
+}
+
+// ---------------------------------------------------------------------------------------------
+// Landscape: can the page be scrolled to everything it shows, and is any text cut away?
+
+export interface ScrollReach {
+  readonly scrollHeight: number;
+  readonly clientHeight: number;
+  readonly innerHeight: number;
+  /** Bottom edge of the lowest meaningful element, in document coordinates. */
+  readonly contentBottom: number;
+  /** Bottom edge of the document after scrolling as far as the page allows. */
+  readonly reachableBottom: number;
+  readonly scrolledTo: number;
+  /**
+   * The overflow-y the viewport takes: html's, or body's when html's is visible. A script can
+   * scroll a hidden viewport, a player cannot.
+   */
+  readonly viewportOverflowY: string;
+}
+
+/** Scrolls to the end and reports whether the lowest content can be brought into view. */
+export function pageScrollReach(page: Page): Promise<ScrollReach> {
+  return page.evaluate(() => {
+    const doc = document.scrollingElement ?? document.documentElement;
+    window.scrollTo(0, 0);
+    const MEANINGFUL = new Set([
+      "BUTTON",
+      "A",
+      "INPUT",
+      "SELECT",
+      "TEXTAREA",
+      "IMG",
+      "SVG",
+      "CANVAS",
+    ]);
+    let contentBottom = 0;
+    for (const el of document.body.querySelectorAll("*")) {
+      if (el.closest('[aria-hidden="true"], [inert]') !== null || !el.checkVisibility()) continue;
+      const own = [...el.childNodes].some(
+        (n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? "").trim() !== "",
+      );
+      if (!own && !MEANINGFUL.has(el.tagName.toUpperCase())) continue;
+      const style = getComputedStyle(el);
+      if (style.position === "fixed" || style.display === "none" || style.visibility === "hidden") {
+        continue;
+      }
+      const r = el.getBoundingClientRect();
+      if (r.width <= 1 || r.height <= 1) continue;
+      contentBottom = Math.max(contentBottom, r.bottom + window.scrollY);
+    }
+    window.scrollTo(0, doc.scrollHeight);
+    const scrolledTo = window.scrollY;
+    const reachableBottom = scrolledTo + window.innerHeight;
+    window.scrollTo(0, 0);
+    const html = getComputedStyle(document.documentElement).overflowY;
+    return {
+      scrollHeight: doc.scrollHeight,
+      clientHeight: doc.clientHeight,
+      innerHeight: window.innerHeight,
+      contentBottom,
+      reachableBottom,
+      scrolledTo,
+      viewportOverflowY: html !== "visible" ? html : getComputedStyle(document.body).overflowY,
+    };
+  });
+}
+
+/**
+ * Elements that hold text but have no box, or whose box lies wholly outside an ancestor that hides
+ * overflow. Content that sits below the fold of a scrolling ancestor is reachable and not reported:
+ * once the walk up passes a scroller, what is judged is the scroller's own box.
+ */
+export function clippedText(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const out: string[] = [];
+    const SKIP = new Set([
+      "SCRIPT",
+      "STYLE",
+      "NOSCRIPT",
+      "TEMPLATE",
+      "OPTION",
+      "OPTGROUP",
+      "TITLE",
+      "TEXTAREA",
+    ]);
+    const hides = (value: string) => value === "hidden" || value === "clip";
+    const scrolls = (value: string) => value === "auto" || value === "scroll";
+    const name = (el: Element) => {
+      const id = el.getAttribute("data-testid");
+      const cls = [...el.classList].slice(0, 1).join(".");
+      const text = (el.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 30);
+      return `${el.tagName.toLowerCase()}${id ? `[testid=${id}]` : ""}${cls ? `.${cls}` : ""} "${text}"`;
+    };
+    for (const el of document.body.querySelectorAll("*")) {
+      if (SKIP.has(el.tagName.toUpperCase())) continue;
+      const own = [...el.childNodes].some(
+        (n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? "").trim() !== "",
+      );
+      if (!own) continue;
+      if (el.closest('[aria-hidden="true"], [inert]') !== null) continue;
+      const style = getComputedStyle(el);
+      if (style.display === "none" || style.visibility === "hidden") continue;
+      if (!el.checkVisibility()) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0) {
+        out.push(`${name(el)} has a ${Math.round(r.width)}x${Math.round(r.height)} box`);
+        continue;
+      }
+      let { top, bottom, left, right } = r;
+      for (let a = el.parentElement; a !== null && a !== document.body; a = a.parentElement) {
+        const cs = getComputedStyle(a);
+        const ar = a.getBoundingClientRect();
+        const above = hides(cs.overflowY) && (bottom <= ar.top + 0.5 || top >= ar.bottom - 0.5);
+        const aside = hides(cs.overflowX) && (right <= ar.left + 0.5 || left >= ar.right - 0.5);
+        if (above || aside) {
+          out.push(`${name(el)} lies wholly outside ${name(a)}, which hides overflow`);
+          break;
+        }
+        if (scrolls(cs.overflowY)) [top, bottom] = [ar.top, ar.bottom];
+        if (scrolls(cs.overflowX)) [left, right] = [ar.left, ar.right];
+      }
+    }
+    return out;
+  });
+}
