@@ -1,0 +1,89 @@
+.builder {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+.title {
+  font-size: clamp(1.9rem, 6vw, 2.8rem);
+}
+
+.score {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.score :global(.scorebug) {
+  font-size: 1.35rem;
+}
+
+.scoreValue {
+  min-width: 2.4em;
+  justify-content: center;
+  font-size: 1.25em;
+}
+
+.pending {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px 4px 4px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.pendingCount {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--bg-sunk);
+  color: var(--ink);
+  font-size: 1.1rem;
+}
+
+.pitch {
+  min-width: 0;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.status {
+  margin: 0;
+  min-height: 1.2em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--flood);
+}
+
+.friendly {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.friendlyNote {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}

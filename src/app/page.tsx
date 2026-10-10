@@ -1,9 +1,9 @@
-import { Placeholder } from "@/components/builder/Placeholder";
+import { HomeScreen } from "@/components/home/HomeScreen";
 
 export default function Home() {
   return (
     <main className="page">
-      <Placeholder />
+      <HomeScreen />
     </main>
   );
 }

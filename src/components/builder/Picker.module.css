@@ -1,0 +1,219 @@
+.dialog {
+  width: 100%;
+  max-width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--bg-raised);
+  color: var(--ink);
+}
+
+.dialog::backdrop {
+  background: rgba(2, 8, 5, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+.dialog[open] {
+  animation: rise 160ms ease-out;
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px var(--gutter) 10px;
+  border-bottom: 3px solid var(--flood);
+  background: var(--bg-sunk);
+}
+
+.title {
+  font-size: 1.6rem;
+}
+
+.headActions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 12px var(--gutter) 6px;
+}
+
+.search input,
+.genSelect select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunk);
+}
+
+.search input:focus,
+.genSelect select:focus {
+  border-color: var(--flood);
+  outline: none;
+}
+
+.genSelect select {
+  max-width: 44vw;
+}
+
+.types {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.typeChip {
+  min-height: 28px;
+  font-size: 0.72rem;
+  padding: 0.1em 0.6em;
+  border-color: color-mix(in srgb, var(--chip-type) 70%, transparent);
+  box-shadow: inset 3px 0 0 var(--chip-type);
+}
+
+.typeChip[aria-pressed="true"] {
+  background: var(--chip-type);
+  border-color: var(--chip-type);
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.count {
+  margin: 0;
+  padding: 4px var(--gutter) 8px;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--gutter) 16px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.row:hover:not(:disabled),
+.row:focus-visible {
+  background: color-mix(in srgb, var(--flood) 10%, transparent);
+}
+
+.row:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.rowMain {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.rowName {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.rowTag {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  padding: 0 5px;
+}
+
+.rowFit {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 48px;
+  line-height: 1;
+}
+
+.rowFit .num {
+  font-size: 1.35rem;
+  color: var(--flood);
+}
+
+.rowFitLabel {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media (min-width: 720px) {
+  .dialog {
+    width: min(640px, calc(100vw - 48px));
+    height: min(760px, calc(100dvh - 64px));
+    margin: auto;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .genSelect select {
+    max-width: none;
+  }
+}
