@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Barlow_Semi_Condensed, Big_Shoulders } from "next/font/google";
 import { ImageSettings } from "@/components/ImageSettings";
@@ -28,6 +28,10 @@ export const metadata: Metadata = {
   description: "Draft Pokémon into a soccer formation and play a cup.",
   robots: { index: false, follow: false },
 };
+
+// The page draws under the notch and the home indicator; globals.css pads the edges with the
+// safe-area insets.
+export const viewport: Viewport = { viewportFit: "cover" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

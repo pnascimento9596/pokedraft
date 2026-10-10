@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   DRAFT_ROUNDS,
   REROLLS,
@@ -42,6 +42,9 @@ const REROLL_BUTTONS: Readonly<Record<"cup8" | "kanto151", readonly [RerollTarge
   kanto151: [["species", "Reroll"]],
 };
 
+// How long a hint for a tap that did nothing stays up.
+const HINT_MS = 4000;
+
 interface Selection {
   readonly rollId: number;
   readonly species: SpeciesId;
@@ -62,6 +65,12 @@ export function DraftBoard({
   const [revealedId, setRevealedId] = useState(-1);
   const [selection, setSelection] = useState<Selection | null>(null);
   const onRevealDone = useCallback(() => setRevealedId(rollId), [rollId]);
+
+  useEffect(() => {
+    if (run.error === null) return;
+    const id = window.setTimeout(() => onRun(withHint(run, null)), HINT_MS);
+    return () => window.clearTimeout(id);
+  }, [run, onRun]);
 
   if (settings.mode === "builder") return null;
   const mode = settings.mode;
@@ -116,7 +125,7 @@ export function DraftBoard({
   const roll = choosing?.roll ?? null;
 
   return (
-    <div className={s.board}>
+    <div className={s.board} data-revealed={revealed || undefined}>
       <section className={s.side} aria-label="Draft">
         <header className={s.header}>
           <div className={s.titleRow}>
@@ -178,12 +187,14 @@ export function DraftBoard({
         ) : null}
 
         {roll !== null ? (
-          <RollReveal
-            key={`reveal-${rollId}`}
-            stages={stagesFor(roll, settings, run.cause)}
-            instant={reduced}
-            onDone={onRevealDone}
-          />
+          <div className={s.wheels}>
+            <RollReveal
+              key={`reveal-${rollId}`}
+              stages={stagesFor(roll, settings, run.cause)}
+              instant={reduced}
+              onDone={onRevealDone}
+            />
+          </div>
         ) : null}
 
         {phase.kind === "awaitingSlot" ? (
@@ -239,6 +250,7 @@ export function DraftBoard({
           onSwap={(a, b) => onAction({ type: "swap", a, b })}
           highlight={choosing?.slot ?? null}
           label="Your formation"
+          fit
         />
       </section>
     </div>

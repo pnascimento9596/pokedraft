@@ -19,7 +19,7 @@ import {
 import { Pitch } from "@/components/pitch/Pitch";
 import { downloadCard } from "@/components/share/download";
 import { FRIENDLY_LABEL, qualityScore, versusLabel } from "@/ui/labels";
-import { BUILDER_URL_SEED, builderToken, filledCount, valueAt } from "@/ui/lineup";
+import { BUILDER_URL_SEED, builderToken, filledCount, refKey, valueAt } from "@/ui/lineup";
 import { freshSeed } from "@/ui/settings";
 import { CASCADE_TOTAL_MS, cascadeFrame, fullLineup, randomDraft } from "./model";
 import { Picker } from "./Picker";
@@ -53,6 +53,24 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
   const [elapsed, setElapsed] = useState(0);
   const [status, setStatus] = useState("");
   const statusTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const rootRef = useRef<HTMLElement>(null);
+  const pickedFrom = useRef<SlotRef | null>(null);
+
+  // When the picker closes, focus goes back to its slot. iOS never focuses a tapped button, so
+  // the dialog alone would leave focus on the page.
+  useEffect(() => {
+    if (picking !== null || pickedFrom.current === null) return;
+    const key = refKey(pickedFrom.current);
+    pickedFrom.current = null;
+    rootRef.current
+      ?.querySelector<HTMLElement>(`[data-slot-key="${key}"]`)
+      ?.focus({ preventScroll: true });
+  }, [picking]);
+
+  const openPicker = (ref: SlotRef) => {
+    pickedFrom.current = ref;
+    setPicking(ref);
+  };
 
   useEffect(() => {
     if (cascade === null) return;
@@ -130,7 +148,7 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
   };
 
   return (
-    <section className={s.builder} aria-label="Pitch builder">
+    <section ref={rootRef} className={s.builder} aria-label="Pitch builder">
       <div className={s.bar}>
         <div className={s.titleBlock}>
           <p className="kicker">Friendly builder</p>
@@ -158,7 +176,7 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
           formation={lineup.formation}
           lineup={shown}
           label={`${lineup.formation} lineup`}
-          onSlotTap={animating ? () => {} : setPicking}
+          onSlotTap={animating ? () => {} : openPicker}
           onSwap={
             animating ? undefined : (a, b) => onChange(applyAction(draft, { type: "swap", a, b }))
           }

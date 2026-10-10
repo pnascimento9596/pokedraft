@@ -59,7 +59,14 @@
   gap: 10px;
   margin: 0;
   flex: 1 1 220px;
+  min-width: 0;
   font-weight: 600;
+}
+
+/* A 20 character nickname has no break point, so it breaks anywhere instead of widening the page. */
+.success > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .rank {

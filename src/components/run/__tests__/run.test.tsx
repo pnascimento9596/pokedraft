@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { IsoDate } from "@/engine";
 import { dailySettings } from "@/leaderboard/daily";
@@ -50,6 +50,24 @@ describe("challenge run screen", () => {
 
     expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+  });
+
+  it("clears the hint for a tap that did nothing after 4 seconds, and not before", () => {
+    vi.useFakeTimers();
+    try {
+      query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
+      render(<PlayScreen />);
+      fireEvent.click(screen.getByTestId("run-start"));
+      fireEvent.click(screen.getByTestId("candidate-316"));
+      fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+      fireEvent.click(screen.getByRole("button", { name: "ST Gulpin" }));
+      act(() => vi.advanceTimersByTime(3999));
+      expect(screen.queryAllByRole("status").length).toBe(1);
+      act(() => vi.advanceTimersByTime(1));
+      expect(screen.queryAllByRole("status").length).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("shows the rolled Hoenn poison list without any fit or rating, so ranked runs stay blind", () => {
