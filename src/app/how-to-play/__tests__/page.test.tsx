@@ -43,6 +43,29 @@ describe("How to play", () => {
     expect(section.textContent).not.toMatch(/tracked separately/);
   });
 
+  it("says the builder pool follows your generations and leaves out Legendary and Mythical until Legendaries is on (catches 'any Pokémon you like')", () => {
+    render(<HowToPlayPage />);
+    const section = screen.getByRole("heading", { name: "The builder" }).closest("section")!;
+    expect(
+      within(section).getByText(
+        "Pick a formation and fill all 11 starting spots and 5 bench spots with Pokémon from the generations you switch on. Legendary and Mythical Pokémon stay out until you switch on Legendaries in the settings. You can swap players around, clear a spot, or start over.",
+      ),
+    ).toBeTruthy();
+    expect(section.textContent).not.toMatch(/any Pokémon you like/);
+  });
+
+  it("states the cap of 3 Legendary or Mythical Pokémon in both challenges", () => {
+    render(<HowToPlayPage />);
+    const cup8 = screen.getByRole("heading", { name: "The 8-0 Challenge" }).closest("section")!;
+    expect(
+      within(cup8).getByText(
+        "A squad can hold at most 3 Legendary or Mythical Pokémon. After the third, they stop appearing in rolls.",
+      ),
+    ).toBeTruthy();
+    const kanto = screen.getByRole("heading", { name: "The 151 Challenge" }).closest("section")!;
+    expect(kanto.textContent).toMatch(/The same cap of 3 Legendary or Mythical Pokémon applies\./);
+  });
+
   it("uses no em or en dash anywhere on the page", () => {
     const { container } = render(<HowToPlayPage />);
     expect(container.textContent).not.toMatch(DASHES);
