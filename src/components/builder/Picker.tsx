@@ -36,6 +36,7 @@ function dex(id: number): string {
 
 export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: PickerProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
   const titleId = useId();
   const [query, setQuery] = useState("");
   const [type, setType] = useState<PokemonType | null>(null);
@@ -52,6 +53,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
   useEffect(() => {
     const d = ref.current;
     if (d && !d.open) d.showModal();
+    searchRef.current?.focus();
   }, []);
 
   const onField = useMemo(() => {
@@ -126,7 +128,11 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           <label className={s.search}>
             <span className="visually-hidden">Search by name</span>
             <input
-              type="search"
+              type="text"
+              role="searchbox"
+              inputMode="search"
+              enterKeyHint="search"
+              ref={searchRef}
               placeholder="Search by name or #"
               value={query}
               onChange={(e) => setQuery(e.target.value)}

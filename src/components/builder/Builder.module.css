@@ -87,3 +87,8 @@
   font-size: 0.82rem;
   color: var(--ink-soft);
 }
+
+/* The dragged token follows the pointer, so it must not be what elementFromPoint finds at drop. */
+.pitch :global([data-dragging]) {
+  pointer-events: none;
+}

@@ -77,7 +77,8 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
   const token = builderToken(settings, lineup, BUILDER_URL_SEED);
   const filled = filledCount(lineup);
   const full = fullLineup(lineup);
-  const score = full === null ? null : rateTeam(full).score;
+  const animating = cascade !== null;
+  const score = full === null || animating ? null : rateTeam(full).score;
   const shown = cascade === null ? lineup : cascadeFrame(cascade.target, cascade.pool, elapsed);
 
   const say = (message: string) => {
@@ -125,8 +126,6 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
     return `${best} ${sp.fits[best]}`;
   };
 
-  const animating = cascade !== null;
-
   return (
     <section className={s.builder} aria-label="Pitch builder">
       <div className={s.bar}>
@@ -143,7 +142,7 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
           ) : (
             <span className={s.pending}>
               <span className={`num ${s.pendingCount}`}>
-                {filled}/{SQUAD}
+                {filledCount(shown)}/{SQUAD}
               </span>
               <span>Fill all 16 to see your Team Score</span>
             </span>
