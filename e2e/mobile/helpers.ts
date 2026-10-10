@@ -38,26 +38,60 @@ export function nextFrame(page: Page): Promise<void> {
 }
 
 /**
- * Waits until layout and finite animations have finished. Without it a measurement can land on the
- * first frame of an entrance animation (a dialog opens 16px low, candidates slide in 14px low) or
- * on the start value of a colour transition. It polls `playState` once per frame and never awaits
- * `Animation.finished`: Chromium leaves that promise pending for a transition that ends between
- * frames, which hung the suite. The frame cap keeps a stuck animation from hanging a test.
+ * Brings the page to rest before a measurement. Without it a measurement can land on the first
+ * frame of an entrance animation (a dialog opens 16px low, candidates slide in 14px low) or on the
+ * start value of a colour transition.
+ *
+ * It waits for one rendering update, because that is where a resize event, a media query change
+ * and a ResizeObserver callback run. Then it jumps every finite animation to its end state with
+ * `Animation.finish()` and gives the handlers that start (React's scheduled work, `transitionend`)
+ * a turn, until none is left. It never waits for a second frame and never awaits
+ * `Animation.finished`, which Chromium leaves pending for a transition that ends between frames.
+ * Waiting out the frames cost far more than it proved: WebKit on Linux paints each frame in
+ * software, a frame after a layout change took 100 to 300 ms there, and the suite spent most of its
+ * time in that wait. A layout read forces the layout the measurement needs, so the paint is not.
+ * The pass cap keeps an animation that restarts itself from hanging a test.
  */
-export async function settle(page: Page): Promise<void> {
-  await page.evaluate(async () => {
-    const frame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-    const running = () =>
-      document
+export function settle(page: Page): Promise<void> {
+  return bringToRest(page, true);
+}
+
+/**
+ * `settle` without the rendering update, for the moment after a tap or a click. React has already
+ * committed the change, because a discrete event is flushed before its dispatch returns, and
+ * `getAnimations()` makes the browser resolve style, so the animations the change started exist and
+ * can be finished. One task turn first lets the passive effects of that commit run. Use `settle`
+ * after a resize, a colour scheme change or a navigation: those reach the page in a rendering update.
+ */
+export function settleNow(page: Page): Promise<void> {
+  return bringToRest(page, false);
+}
+
+async function bringToRest(page: Page, renderingUpdate: boolean): Promise<void> {
+  await page.evaluate(async (frame) => {
+    const turn = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+    if (frame) await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    else await turn();
+    for (let pass = 0; pass < 50; pass++) {
+      const live = document
         .getAnimations()
-        .some(
-          (a) => a.effect?.getComputedTiming().iterations !== Infinity && a.playState === "running",
+        .filter(
+          (a) =>
+            a.effect?.getComputedTiming().iterations !== Infinity &&
+            (a.playState === "running" || a.pending),
         );
-    await frame();
-    for (let frames = 0; frames < 300 && running(); frames++) await frame();
-    await frame();
-    await frame();
-  });
+      if (live.length === 0) break;
+      for (const animation of live) {
+        try {
+          animation.finish();
+        } catch {
+          // An animation that cannot be finished (a negative rate with no start) is left alone.
+        }
+      }
+      await turn();
+    }
+    void document.documentElement.offsetWidth;
+  }, renderingUpdate);
 }
 
 export interface Size {
@@ -242,7 +276,7 @@ export class ReachError extends Error {
  */
 export async function tapNow(page: Page, locator: Locator, label: string): Promise<void> {
   await locator.first().waitFor({ state: "visible" });
-  await settle(page);
+  await settleNow(page);
   const check = await inViewport(page, locator);
   if (!check.ok) throw new ReachError(label, [check.problem!], check);
   await tapCentre(page, check);
@@ -266,7 +300,7 @@ export async function reachInView(
   label: string,
 ): Promise<ViewportCheck> {
   await locator.first().waitFor({ state: "visible" });
-  await settle(page);
+  await settleNow(page);
   const check = await inViewport(page, locator);
   const before = scrollBaselines.get(page);
   const problems: string[] = [];
@@ -290,21 +324,113 @@ export async function tapInView(page: Page, locator: Locator, label: string): Pr
   await tapCentre(page, check);
 }
 
+/**
+ * What a player does with a control that is off screen: scrolls it to the middle of the screen and
+ * taps it. A walk uses it after a step has been judged, to carry on from where the player would be.
+ * If the control is still not on screen and uncovered after the scroll (a fixed bar over it), it
+ * falls back to Playwright's own `locator.tap()`, which tries harder.
+ */
+export async function scrollThenTap(page: Page, locator: Locator): Promise<void> {
+  await locator
+    .first()
+    .evaluate((el) =>
+      el.scrollIntoView({ block: "center", inline: "center", behavior: "instant" }),
+    );
+  await settleNow(page);
+  const check = await inViewport(page, locator);
+  if (check.ok) await tapCentre(page, check);
+  else await locator.first().tap({ timeout: 10_000 });
+}
+
 // ---------------------------------------------------------------------------------------------
 // Overflow
 
+export interface Scroller {
+  /** The box that scrolls sideways, named like the other messages name an element. */
+  readonly name: string;
+  readonly clientWidth: number;
+  readonly scrollWidth: number;
+}
+
+export interface HorizontalExtent {
+  /** The right edge of the widest element the player can see, in CSS px. */
+  readonly right: number;
+  /** `documentElement.scrollWidth`, which html and body can hide. */
+  readonly scrollWidth: number;
+  /** The element that sets `right`, for the message that explains an overflow. */
+  readonly widest: string;
+  /** Boxes that scroll sideways inside themselves, such as a table in its own wrapper. */
+  readonly scrollers: readonly Scroller[];
+}
+
 /**
- * The right edge of the widest element. html and body clip sideways overflow, so
- * `scrollWidth` alone hides a clipped header or button: measure every element instead.
+ * How far right the page reaches. html and body clip sideways overflow, so `scrollWidth` alone
+ * hides a clipped header or button: the right edge of every element is measured as well.
+ *
+ * An element inside a box the player can scroll sideways (`overflow-x: auto` or `scroll`, between
+ * the element and body) counts only up to that box. A wide table in its own scroller does not make
+ * the page wider, and the player reaches the rest by scrolling it. Such scrollers are returned in
+ * `scrollers`, so a test can report them. Content cut off by `overflow: hidden` or `clip` gets no
+ * such allowance, because the player cannot reach it, and neither does a positioned element
+ * (absolute or fixed), whose clipping depends on its containing block.
+ *
+ * `checkVisibility()` is false for `display:none` and for the contents of a closed `<details>`,
+ * which WebKit still lays out when asked.
  */
-export function widestRight(page: Page): Promise<number> {
-  return page.evaluate(() =>
-    // checkVisibility() is false for display:none and for the contents of a closed <details>,
-    // which WebKit still lays out when asked.
-    [...document.body.querySelectorAll("*")]
-      .filter((el) => el.checkVisibility())
-      .reduce((widest, el) => Math.max(widest, el.getBoundingClientRect().right), 0),
-  );
+export function horizontalExtent(page: Page): Promise<HorizontalExtent> {
+  return page.evaluate((): HorizontalExtent => {
+    const scrolls = (value: string) => value === "auto" || value === "scroll";
+    const tag = (el: Element) => {
+      const id = el.getAttribute("data-testid");
+      const cls = [...el.classList].slice(0, 1).join(".");
+      return `${el.tagName.toLowerCase()}${id ? `[testid=${id}]` : ""}${cls ? `.${cls}` : ""}`;
+    };
+    // The right edge of the nearest scroller at or above `el`, then the next one up, and so on.
+    const limits = new Map<Element, number>();
+    const limitAt = (el: Element | null): number => {
+      if (el === null || el === document.body || el === document.documentElement) return Infinity;
+      const known = limits.get(el);
+      if (known !== undefined) return known;
+      const own = scrolls(getComputedStyle(el).overflowX)
+        ? el.getBoundingClientRect().right
+        : Infinity;
+      const limit = Math.min(own, limitAt(el.parentElement));
+      limits.set(el, limit);
+      return limit;
+    };
+
+    let best: Element | null = null;
+    let right = 0;
+    const scrollers: Scroller[] = [];
+    for (const el of document.body.querySelectorAll("*")) {
+      if (!el.checkVisibility()) continue;
+      const style = getComputedStyle(el);
+      const positioned = style.position === "absolute" || style.position === "fixed";
+      const seen = Math.min(
+        el.getBoundingClientRect().right,
+        positioned ? Infinity : limitAt(el.parentElement),
+      );
+      if (seen > right) {
+        right = seen;
+        best = el;
+      }
+      if (scrolls(style.overflowX) && el.scrollWidth > el.clientWidth + 1) {
+        scrollers.push({ name: tag(el), clientWidth: el.clientWidth, scrollWidth: el.scrollWidth });
+      }
+    }
+
+    let widest = "no element";
+    if (best !== null) {
+      const text = (best.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 30);
+      const parent = best.parentElement ? `${tag(best.parentElement)} > ` : "";
+      widest = `${parent}${tag(best)}${text ? ` "${text}"` : ""} reaches x=${Math.round(right)}`;
+    }
+    return { right, scrollWidth: document.documentElement.scrollWidth, widest, scrollers };
+  });
+}
+
+export async function widestRight(page: Page): Promise<number> {
+  return (await horizontalExtent(page)).right;
 }
 
 export function documentScrollWidth(page: Page): Promise<number> {
@@ -610,28 +736,8 @@ export async function setColorScheme(page: Page, scheme: Scheme): Promise<string
 // Diagnostics for failure messages. None of these decides a verdict.
 
 /** The element whose right edge is furthest right, for the message that explains an overflow. */
-export function widestElement(page: Page): Promise<string> {
-  return page.evaluate(() => {
-    let best: Element | null = null;
-    let right = -1;
-    for (const el of document.body.querySelectorAll("*")) {
-      if (!el.checkVisibility()) continue;
-      const r = el.getBoundingClientRect();
-      if (r.right > right) {
-        right = r.right;
-        best = el;
-      }
-    }
-    if (best === null) return "no element";
-    const tag = (el: Element) => {
-      const id = el.getAttribute("data-testid");
-      const cls = [...el.classList].slice(0, 1).join(".");
-      return `${el.tagName.toLowerCase()}${id ? `[testid=${id}]` : ""}${cls ? `.${cls}` : ""}`;
-    };
-    const text = (best.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 30);
-    const parent = best.parentElement ? `${tag(best.parentElement)} > ` : "";
-    return `${parent}${tag(best)}${text ? ` "${text}"` : ""} reaches x=${Math.round(right)}`;
-  });
+export async function widestElement(page: Page): Promise<string> {
+  return (await horizontalExtent(page)).widest;
 }
 
 // ---------------------------------------------------------------------------------------------

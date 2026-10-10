@@ -141,19 +141,54 @@ export async function seedStorage(
 }
 
 // ---------------------------------------------------------------------------------------------
-// Driving the draft with plain clicks, for scenes that only need the app in a state. Flows that
-// judge reach use tapInView instead.
+// Driving the draft from inside the page, for scenes that only need the app in a state. It clicks
+// the first offered player and then the first open slot, once per round, without Playwright's
+// actionability waits: each of the 32 clicks of a draft waits for the page to hold still, and on
+// WebKit for Linux every wait is several software-painted frames, so one draft took over 20 s
+// there. A DOM click runs the same React handlers. Flows that judge reach use tapInView instead.
+// The waits are on the DOM (a MutationObserver with a 15 s cap), not on time.
 
 export async function draftRounds(page: Page, rounds: number): Promise<void> {
-  const header = page.getByTestId("round-header");
-  for (let round = 1; round <= rounds; round++) {
-    await expect(header).toContainText(`Round ${round} of 16`);
-    await page.locator('[data-testid^="candidate-"]').first().click();
-    await page
-      .locator('[data-testid^="slot-"][data-filled="false"]:not([disabled])')
-      .first()
-      .click();
-  }
+  const failure = await page.evaluate(async (count): Promise<string | null> => {
+    const until = (ok: () => boolean): Promise<boolean> =>
+      new Promise((resolve) => {
+        if (ok()) return resolve(true);
+        const finish = (value: boolean) => {
+          observer.disconnect();
+          clearTimeout(timer);
+          resolve(value);
+        };
+        const observer = new MutationObserver(() => {
+          if (ok()) finish(true);
+        });
+        const timer = setTimeout(() => finish(ok()), 15_000);
+        observer.observe(document.body, {
+          subtree: true,
+          childList: true,
+          attributes: true,
+          characterData: true,
+        });
+      });
+    const header = () =>
+      (document.querySelector('[data-testid="round-header"]')?.textContent ?? "").trim();
+    const candidate = () => document.querySelector<HTMLElement>('[data-testid^="candidate-"]');
+    const openSlot = () =>
+      document.querySelector<HTMLElement>(
+        '[data-testid^="slot-"][data-filled="false"]:not([disabled])',
+      );
+
+    for (let round = 1; round <= count; round++) {
+      if (!(await until(() => header().includes(`Round ${round} of 16`))))
+        return `round ${round}: the header reads "${header()}"`;
+      if (!(await until(() => candidate() !== null))) return `round ${round}: no player is offered`;
+      candidate()!.click();
+      if (!(await until(() => openSlot() !== null)))
+        return `round ${round}: no open slot after picking a player`;
+      openSlot()!.click();
+    }
+    return null;
+  }, rounds);
+  if (failure !== null) throw new Error(`harness: the draft stopped. ${failure}`);
 }
 
 /** The locator is on screen, hydrated by React, and no entrance animation is still running. */

@@ -47,6 +47,7 @@ import {
   describeBox,
   documentScrollWidth,
   drag,
+  horizontalExtent,
   inViewport,
   installIosButtonFocus,
   interactiveTargets,
@@ -59,6 +60,7 @@ import {
   reachInView,
   resetScrollBaseline,
   resizeTo,
+  scrollThenTap,
   setColorScheme,
   settle,
   settledScrollTop,
@@ -398,6 +400,30 @@ test("0 self-check: tapInView taps with a real touch, never scrolls, and fails w
   ]);
 });
 
+test("0 self-check: scrollThenTap scrolls an off-screen control to the middle of the screen and taps it with a real touch", async ({
+  page,
+}) => {
+  await load(
+    page,
+    `
+    <button data-testid="far" style="position:absolute;top:3000px;left:10px;width:120px;height:50px">far</button>
+    <div style="height:4200px"></div>
+    <script>
+      window.log = [];
+      document.addEventListener("touchstart", () => window.log.push("touchstart"), { capture: true, passive: true });
+      document.addEventListener("click", (e) => window.log.push("click:" + e.target.dataset.testid), true);
+    </script>
+    `,
+  );
+  await scrollThenTap(page, page.getByTestId("far"));
+  expect(await eventLog(page)).toEqual(["touchstart", "click:far"]);
+  const { middle, screen } = await page.evaluate(() => {
+    const r = document.querySelector('[data-testid="far"]')!.getBoundingClientRect();
+    return { middle: r.top + r.height / 2, screen: window.innerHeight };
+  });
+  expect(Math.abs(middle - screen / 2)).toBeLessThan(2);
+});
+
 test("0 self-check: widestRight and documentScrollWidth pass a clean page and catch an overflowing child, even when html and body clip it", async ({
   page,
 }) => {
@@ -435,6 +461,57 @@ test("0 self-check: widestRight and documentScrollWidth pass a clean page and ca
   expect(await widestRight(page)).toBeLessThanOrEqual(await width());
   await page.getByTestId("more").evaluate((el) => ((el as HTMLDetailsElement).open = true));
   expect(await widestRight(page)).toBe(900);
+});
+
+test("0 self-check: a wide child in a box the player can scroll sideways does not widen the page, and is reported as an inner scroller", async ({
+  page,
+}) => {
+  const wide = '<div style="width:900px;height:20px;background:#a33">wide</div>';
+
+  // overflow-x:auto and scroll: the page ends at the scroller. The scroller is reported.
+  for (const overflow of ["auto", "scroll"]) {
+    await load(
+      page,
+      `<div class="box" style="width:200px;overflow-x:${overflow};background:#333">${wide}</div>`,
+    );
+    const extent = await horizontalExtent(page);
+    expect(extent.right, `overflow-x:${overflow}`).toBe(200);
+    expect(extent.scrollers).toHaveLength(1);
+    expect(extent.scrollers[0]).toMatchObject({ clientWidth: 200, scrollWidth: 900 });
+    expect(extent.scrollers[0].name).toContain("div.box");
+  }
+
+  // A scroller with room to spare is not reported.
+  await load(
+    page,
+    '<div style="width:200px;overflow-x:auto"><div style="width:100px;height:20px"></div></div>',
+  );
+  expect((await horizontalExtent(page)).scrollers).toEqual([]);
+
+  // overflow:hidden and clip cut the child off for good, so the child still counts.
+  for (const overflow of ["hidden", "clip"]) {
+    await load(page, `<div style="width:200px;overflow-x:${overflow}">${wide}</div>`);
+    expect((await horizontalExtent(page)).right, `overflow-x:${overflow}`).toBe(900);
+  }
+
+  // A positioned child is not judged by the scroller around it.
+  await load(
+    page,
+    '<div style="width:200px;overflow-x:auto"><div style="position:absolute;left:0;width:900px;height:20px;background:#a33">abs</div></div>',
+  );
+  expect((await horizontalExtent(page)).right).toBe(900);
+
+  // The scroller itself can be too wide, and then it counts.
+  await load(page, `<div style="width:500px;overflow-x:auto">${wide}</div>`);
+  expect((await horizontalExtent(page)).right).toBe(500);
+
+  // Two scrollers deep: every element is cut at the scrollers around it and the page ends at the
+  // outer one, although the block between them is 600px wide.
+  await load(
+    page,
+    `<div style="width:300px;overflow-x:auto"><div style="width:600px"><div style="width:150px;overflow-x:auto">${wide}</div></div></div>`,
+  );
+  expect((await horizontalExtent(page)).right).toBe(300);
 });
 
 test("0 self-check: resizeTo lays the page out at every width and size the suite measures", async ({
@@ -676,14 +753,18 @@ test("0 self-check: touch gestures are real touch in Chromium, and the WebKit dr
   }
 });
 
-test("0 self-check: settle waits for a finite entrance animation to finish", async ({ page }) => {
+test("0 self-check: settle brings a finite entrance animation to its end state at once and leaves an infinite one running", async ({
+  page,
+}) => {
+  // The rise lasts a minute. A settle that waited for it would run into the test timeout, and one
+  // that did not finish it would read the start value.
   await load(
     page,
     `
     <style>
       @keyframes rise { from { transform: translateY(40px); } to { transform: translateY(0); } }
       #m { position: absolute; top: 100px; left: 10px; width: 100px; height: 40px;
-           animation: rise 500ms ease-out both; }
+           animation: rise 60s linear both; }
       @keyframes spin { to { transform: rotate(360deg); } }
       #s { position: absolute; top: 300px; left: 10px; width: 40px; height: 40px;
            animation: spin 1s linear infinite; }
@@ -691,11 +772,18 @@ test("0 self-check: settle waits for a finite entrance animation to finish", asy
     <div id="m"></div><div id="s"></div>
     `,
   );
-  await settle(page);
-  // An infinite animation must not block settle, and the finite one must be at its end state.
-  expect(await page.evaluate(() => document.querySelector("#m")!.getBoundingClientRect().top)).toBe(
-    100,
+  const top = () => page.evaluate(() => document.querySelector("#m")!.getBoundingClientRect().top);
+  expect(await top(), "before settle the element is at the start of its animation").toBeGreaterThan(
+    139,
   );
+  await settle(page);
+  expect(await top(), "after settle it is at the end").toBe(100);
+  expect(
+    await page.evaluate(
+      () => document.getAnimations().filter((a) => a.playState === "running").length,
+    ),
+    "the infinite animation keeps running",
+  ).toBe(1);
 });
 
 test("0 self-check: settle returns the end value of a colour transition that lasts 0.01 ms", async ({
@@ -786,7 +874,7 @@ class Walk {
       if (!(error instanceof ReachError)) throw error;
       this.failures.push(error);
       // A player would scroll the control into view and tap it. Judge the next step from there.
-      await locator.first().tap({ timeout: 10_000 });
+      await scrollThenTap(this.page, locator);
       resetScrollBaseline(this.page);
     }
   }
@@ -882,20 +970,27 @@ for (const scene of SCENES) {
     const lines: string[] = [];
     let measurements = 0;
     let tightest = { spare: Infinity, at: "" };
+    // Boxes that scroll sideways inside themselves are reported, never asserted: the page is not wider.
+    const scrolling = new Map<string, Map<number, string>>();
     const fingerprints = new Map<Scheme, string>();
     for (const scheme of SCHEMES) {
       fingerprints.set(scheme, await setColorScheme(page, scheme));
       for (const width of OVERFLOW_WIDTHS) {
         await resizeTo(page, { width, height: 800 });
         measurements++;
-        const right = await widestRight(page);
-        const scroll = await documentScrollWidth(page);
-        if (width - right < tightest.spare)
-          tightest = { spare: width - right, at: `${scheme} ${width}px` };
-        if (right > width || scroll > width) {
+        const extent = await horizontalExtent(page);
+        if (width - extent.right < tightest.spare)
+          tightest = { spare: width - extent.right, at: `${scheme} ${width}px` };
+        if (extent.right > width || extent.scrollWidth > width) {
           lines.push(
-            `${scene.route} ${scheme} ${width}px: widest right edge ${round1(right)}, documentElement.scrollWidth ${scroll}; ${await widestElement(page)}`,
+            `${scene.route} ${scheme} ${width}px: widest right edge ${round1(extent.right)}, documentElement.scrollWidth ${extent.scrollWidth}; ${extent.widest}`,
           );
+        }
+        for (const scroller of extent.scrollers) {
+          const widths = scrolling.get(scroller.name) ?? new Map<number, string>();
+          if (!widths.has(width))
+            widths.set(width, `${scroller.scrollWidth}px of content in ${scroller.clientWidth}px`);
+          scrolling.set(scroller.name, widths);
         }
       }
     }
@@ -905,6 +1000,12 @@ for (const scene of SCENES) {
       "overflow",
       `${measurements} measurements; the tightest fit is ${tightest.spare.toFixed(3)}px spare at ${tightest.at}`,
     );
+    for (const [name, widths] of scrolling) {
+      note(
+        "inner scroll",
+        `${name} scrolls sideways inside itself at ${[...widths].map(([w, text]) => `${w}px (${text})`).join(", ")}`,
+      );
+    }
 
     conclude(
       `2 overflow: ${scene.id}`,
@@ -1337,11 +1438,10 @@ for (const scene of SCENES) {
       const at = `${scene.route} ${size.width}x${size.height}`;
       await resizeTo(page, size);
 
-      const right = await widestRight(page);
-      const scroll = await documentScrollWidth(page);
-      if (right > size.width || scroll > size.width) {
+      const extent = await horizontalExtent(page);
+      if (extent.right > size.width || extent.scrollWidth > size.width) {
         lines.push(
-          `${at}: horizontal overflow, widest right edge ${round1(right)}, scrollWidth ${scroll}; ${await widestElement(page)}`,
+          `${at}: horizontal overflow, widest right edge ${round1(extent.right)}, scrollWidth ${extent.scrollWidth}; ${extent.widest}`,
         );
       }
 
