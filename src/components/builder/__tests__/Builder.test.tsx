@@ -67,27 +67,27 @@ function openPicker(slotName: string) {
 describe("builder drag and swap", () => {
   it("dragging one filled token onto another swaps them instead of dropping or duplicating", async () => {
     openWithTwoPlaced();
-    const from = await screen.findByRole("button", { name: "Bulbasaur, LCB" });
-    const to = screen.getByRole("button", { name: "Charmander, ST" });
+    const from = await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    const to = screen.getByRole("button", { name: "ST Charmander" });
     document.elementFromPoint = () => to;
 
     fireEvent.pointerDown(from, { pointerId: 1, button: 0, clientX: 10, clientY: 10 });
     fireEvent.pointerMove(from, { pointerId: 1, clientX: 120, clientY: 140 });
     fireEvent.pointerUp(from, { pointerId: 1, clientX: 120, clientY: 140 });
 
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("Charmander, LCB");
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("Bulbasaur, ST");
+    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Charmander");
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Bulbasaur");
   });
 
   it("picking a species already on the field into another slot swaps the two, never duplicates it", async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "Bulbasaur, LCB" });
-    const dialog = openPicker("Charmander, ST");
+    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    const dialog = openPicker("ST Charmander");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "bulba" } });
     fireEvent.click(within(dialog).getByTestId("pick-1"));
 
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("Bulbasaur, ST");
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("Charmander, LCB");
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Bulbasaur");
+    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Charmander");
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 });

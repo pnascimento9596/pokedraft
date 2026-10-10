@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import type { IsoDate } from "@/engine";
 import { BOARD_LIMIT, BOARD_MODES, BOARD_SCOPES, type BoardScope } from "@/leaderboard/contract";
 import { MODE_LABEL } from "@/ui/labels";
 import { Board } from "./Board";
@@ -11,8 +12,8 @@ import s from "./LeaderboardScreen.module.css";
 
 const SCOPE_LABEL: Readonly<Record<BoardScope, string>> = { daily: "Daily", all: "All-time" };
 
-export function LeaderboardScreen() {
-  const today = useToday();
+export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoDate }) {
+  const today = useToday(serverToday ?? null);
   const params = useSearchParams();
   const router = useRouter();
 

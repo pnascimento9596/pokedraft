@@ -18,7 +18,7 @@ import {
 import type { RollCause } from "@/components/wheel/reel";
 
 // The engine DraftState is the single source of truth. The action log doubles as the run token;
-// `rollId` bumps whenever the engine produces a new roll so the wheel replays exactly once per roll.
+// `rollId` bumps when a new roll appears (a new round or a reroll) so the wheel replays exactly once per roll.
 export interface Run {
   readonly seed: Seed;
   readonly actions: readonly DraftAction[];
@@ -55,6 +55,12 @@ function rollOf(state: DraftState): Roll | null {
   return state.phase.kind === "choosing" ? state.phase.roll : null;
 }
 
+// A roll is new when the round or the reroll count moved, or when none was showing before. Object
+// identity is not used, so an action that rebuilds the state (a swap) can never replay the wheel.
+function rollKey(state: DraftState): string {
+  return `${state.round}:${state.rerollsUsed}`;
+}
+
 export function step(run: Run, action: DraftAction): Run {
   let next: DraftState;
   try {
@@ -64,7 +70,8 @@ export function step(run: Run, action: DraftAction): Run {
     return { ...run, error: ERROR_COPY[e.code] ?? "That move is not allowed." };
   }
   const roll = rollOf(next);
-  const fresh = roll !== null && roll !== rollOf(run.state);
+  const fresh =
+    roll !== null && (rollOf(run.state) === null || rollKey(next) !== rollKey(run.state));
   return {
     ...run,
     actions: [...run.actions, action],

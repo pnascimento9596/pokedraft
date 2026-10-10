@@ -38,7 +38,7 @@ describe("challenge run screen", () => {
     expect(gulpin.getAttribute("aria-pressed")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
 
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("Gulpin, ST");
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
   });
 
@@ -63,7 +63,7 @@ describe("challenge run screen", () => {
     fireEvent.click(screen.getByTestId("run-start"));
     fireEvent.click(screen.getByTestId("candidate-316"));
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
-    fireEvent.click(screen.getByRole("button", { name: "Gulpin, ST" }));
+    fireEvent.click(screen.getByRole("button", { name: "ST Gulpin" }));
     expect(screen.getByRole("status").textContent).toBe(
       "That slot is taken. Drag one player onto another to swap them.",
     );

@@ -15,7 +15,12 @@ function readPicture(pack: ImagePack, dexId: number): Buffer | null {
   if (!hasImage(pack, dexId)) return null;
   try {
     return readFileSync(
-      path.join(process.cwd(), "public/creatures", pack.id, imageFile(pack, dexId)),
+      path.join(
+        /* turbopackIgnore: true */ process.cwd(),
+        "public/creatures",
+        pack.id,
+        imageFile(pack, dexId),
+      ),
     );
   } catch {
     return null;

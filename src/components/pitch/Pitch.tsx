@@ -139,7 +139,7 @@ export function Pitch({
     const weak = slotId !== null && weakest.includes(slotId);
     const dragging = drag !== null && sameRef(drag.from, ref) && drag.moved;
     const draggable = onSwap !== undefined && species !== null && !disabled;
-    const name = species === null ? `Empty ${slotLabel} slot` : `${species.name}, ${slotLabel}`;
+    const name = species === null ? `Empty ${slotLabel} slot` : `${slotLabel} ${species.name}`;
     return (
       <button
         key={key}
@@ -219,10 +219,19 @@ export function Pitch({
             <PlayerImage dexId={species.id} size={36} alt={species.name} />
           )}
         </span>
+        {/* The spaces keep the visible text "GK Name", which is also the button's accessible name. */}
         <span className={s.tokenSlot}>{slotLabel}</span>
-        {species !== null ? <span className={s.tokenName}>{species.name}</span> : null}
+        {species !== null ? (
+          <>
+            {" "}
+            <span className={s.tokenName}>{species.name}</span>
+          </>
+        ) : null}
         {species !== null && tokenNote ? (
-          <span className={s.tokenNote}>{tokenNote(ref)}</span>
+          <>
+            {" "}
+            <span className={s.tokenNote}>{tokenNote(ref)}</span>
+          </>
         ) : null}
       </button>
     );
