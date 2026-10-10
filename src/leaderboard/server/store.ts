@@ -1,16 +1,19 @@
-import { and, asc, count, desc, eq, gt, gte, lt, or, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, gte, lt, or, sql, type SQL } from "drizzle-orm";
 import { leaderboardEntries, type LeaderboardRow, type NewLeaderboardRow } from "@/db/schema";
 import type { Db } from "@/db/types";
 import { BOARD_LIMIT, type BoardEntry, type BoardMode } from "../contract";
 
 export type Board = { readonly mode: BoardMode; readonly dailyDate: string | null };
 
+export type Conflict = "daily" | "token";
+
 export type InsertResult =
   | { readonly ok: true; readonly row: LeaderboardRow }
-  | { readonly ok: false; readonly conflict: "daily" | "token" };
+  | { readonly ok: false; readonly conflict: Conflict };
 
 export interface LeaderboardStore {
   countRecentByIp(ipHash: string, since: Date): Promise<number>;
+  conflictFor(token: string, nickname: string, board: Board): Promise<Conflict | null>;
   insert(row: NewLeaderboardRow): Promise<InsertResult>;
   rankOf(row: LeaderboardRow, board: Board): Promise<number>;
   top(board: Board): Promise<readonly LeaderboardRow[]>;
@@ -58,6 +61,21 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
         .where(and(eq(t.ipHash, ipHash), gte(t.createdAt, since)));
       return r?.n ?? 0;
     },
+    async conflictFor(token, nickname, board) {
+      const tokenHit = await getDb()
+        .select({ id: t.id })
+        .from(t)
+        .where(sql`md5(${t.token}) = md5(${token})`)
+        .limit(1);
+      if (tokenHit.length > 0) return "token";
+      if (board.dailyDate === null) return null;
+      const dailyHit = await getDb()
+        .select({ id: t.id })
+        .from(t)
+        .where(and(eq(t.nickname, nickname), boardFilter(board)))
+        .limit(1);
+      return dailyHit.length > 0 ? "daily" : null;
+    },
     async insert(row) {
       try {
         const [inserted] = await getDb().insert(t).values(row).returning();
@@ -67,7 +85,7 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
         if (constraint === null) throw e;
         return {
           ok: false,
-          conflict: constraint === "leaderboard_entries_token_uq" ? "token" : "daily",
+          conflict: constraint === "leaderboard_entries_daily_nickname_uq" ? "daily" : "token",
         };
       }
     },

@@ -13,7 +13,7 @@ export async function generateMetadata({ searchParams }: PageProps<"/gate">): Pr
   const next = safeNext(firstParam((await searchParams).next));
   const share = SHARE.exec(next);
   if (share === null) return { title: "pokedraft" };
-  const token = decodeURIComponent(share[1]!);
+  const token = share[1]!;
   const title = runTitle(loadRun(token));
   const image = `/r/${encodeURIComponent(token)}/opengraph-image`;
   return {

@@ -21,7 +21,7 @@ import {
 } from "../contract";
 import { dailyDateForSeed, isDailySettings } from "../daily";
 import { parseNickname } from "../nickname";
-import { toBoardEntry, type Board, type LeaderboardStore } from "./store";
+import { toBoardEntry, type Board, type Conflict, type LeaderboardStore } from "./store";
 
 export const RATE_LIMIT = { max: 10, windowMs: 60 * 60 * 1000 } as const;
 const MAX_BODY_BYTES = 16 * 1024;
@@ -56,6 +56,12 @@ const TOKEN_ERROR: Record<RunTokenErrorCode, SubmitErrorCode> = {
 function tokenError(e: unknown): Response {
   if (e instanceof RunTokenError) return submitError(TOKEN_ERROR[e.code], e.message);
   throw e;
+}
+
+function conflictError(conflict: Conflict): Response {
+  return conflict === "daily"
+    ? submitError("DAILY_ALREADY_SUBMITTED", "That nickname already has a run on this daily board.")
+    : submitError("DUPLICATE_TOKEN", "This run is already on the leaderboard.");
 }
 
 export function clientIp(req: Request): string {
@@ -136,6 +142,15 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     );
   }
 
+  const mode = run.settings.mode;
+  const board: Board = { mode, dailyDate };
+  try {
+    const conflict = await deps.store.conflictFor(body.data.token, nick.nickname, board);
+    if (conflict !== null) return conflictError(conflict);
+  } catch {
+    return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
+  }
+
   let result: ReturnType<typeof engineReplay>;
   try {
     result = replay(run);
@@ -143,8 +158,6 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     return tokenError(e);
   }
   const { cup } = result;
-  const mode = run.settings.mode;
-  const board: Board = { mode, dailyDate };
 
   try {
     const inserted = await deps.store.insert({
@@ -161,14 +174,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
       engineVersion: cup.engine,
       ipHash,
     });
-    if (!inserted.ok) {
-      return inserted.conflict === "daily"
-        ? submitError(
-            "DAILY_ALREADY_SUBMITTED",
-            "That nickname already has a run on today's board.",
-          )
-        : submitError("DUPLICATE_TOKEN", "This run is already on the leaderboard.");
-    }
+    if (!inserted.ok) return conflictError(inserted.conflict);
     const rank = await deps.store.rankOf(inserted.row, board);
     const ok: SubmitOk = { entry: toBoardEntry(inserted.row, rank) };
     return json(ok, 201);

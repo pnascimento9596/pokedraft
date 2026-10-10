@@ -34,7 +34,16 @@ export function passcodeMatches(attempt: string, passcode: string): boolean {
   return cookieMatches(passcodeDigest(attempt), passcode);
 }
 
+const ORIGIN = "https://gate.invalid";
+
+// Resolve exactly as the browser will, so tabs, newlines or backslashes cannot turn a path
+// into a protocol-relative URL on another host.
 export function safeNext(next: string | null | undefined): string {
-  if (!next || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return "/";
-  return next;
+  if (!next || !next.startsWith("/")) return "/";
+  try {
+    const url = new URL(next, ORIGIN);
+    return url.origin === ORIGIN ? `${url.pathname}${url.search}${url.hash}` : "/";
+  } catch {
+    return "/";
+  }
 }

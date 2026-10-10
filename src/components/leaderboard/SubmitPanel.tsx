@@ -21,7 +21,7 @@ export const SUBMIT_ERROR_COPY: Readonly<Record<SubmitFailure, string>> = {
   ENGINE_VERSION_MISMATCH:
     "The game was updated after this run started. Reload the page and play a new run to submit.",
   DAILY_ALREADY_SUBMITTED:
-    "That nickname already has a run on today's daily board. Use another nickname or come back tomorrow.",
+    "That nickname already has a run on this daily board. One run per nickname per day.",
   DUPLICATE_TOKEN: "This run is already on the leaderboard.",
   RATE_LIMITED: "Too many submissions from here. Wait a minute and try again.",
   DB_UNAVAILABLE: "The leaderboard is offline right now. Try again in a few minutes.",

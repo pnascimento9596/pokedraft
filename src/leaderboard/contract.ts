@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { toIsoDate } from "@/engine";
 
 export const BOARD_MODES = ["cup8", "kanto151"] as const;
 export type BoardMode = (typeof BOARD_MODES)[number];
@@ -73,7 +74,14 @@ export const boardQuerySchema = z.discriminatedUnion("scope", [
   z.object({
     mode: z.enum(BOARD_MODES),
     scope: z.literal("daily"),
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    date: z.string().refine((d) => {
+      try {
+        toIsoDate(d);
+        return true;
+      } catch {
+        return false;
+      }
+    }),
   }),
   z.object({ mode: z.enum(BOARD_MODES), scope: z.literal("all"), date: z.undefined() }),
 ]);
