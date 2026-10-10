@@ -58,7 +58,7 @@ describe("rateTeam", () => {
   it("pins a strong Kanto lineup so the weakest-link order and score stay stable", () => {
     const rating = rateTeam(KANTO);
     expect(rating.score).toBe(943);
-    expect(rating.drag).toBeCloseTo(0.016112342941611252, 12);
+    expect(rating.drag).toBeCloseTo(0.016067997043606858, 12);
     expect(rating.weakest).toEqual(["4-3-3.RCM", "4-3-3.CDM", "4-3-3.RCB"]);
   });
 

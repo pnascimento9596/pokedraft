@@ -24,3 +24,15 @@ Measured in GATE 6 with the final coefficients (`docs/calibration.md`, Scouting 
 - Layer 2 was reconciled so no review counts these twice: 14 adjustments removed, 7 trimmed and stale citations refreshed (`docs/decisions/dispatch-6.md`).
 - Items 1, 3 and 4 stay queued with the numbers above (0.3% placement or less).
 - The placement and score-delta numbers for items 2 and 5 are not re-measured here. They are re-measured with the PR 6C calibration, which runs on the final scouting and engine.
+
+## Queued from the PR 6B audit (`docs/reports/scouting-audit-v2.md`)
+
+| # | Item | Source |
+|---|---|---|
+| 6 | Jigglypuff (39) lists GK as a best role while GK is its lowest blend; suggested bestRoles CM, DM, WM | audit DISAGREE 4 |
+| 7 | Upright squiggle bodies that do not levitate (Metapod, Kakuna, Pupitar, Palossand, Mimikyu, Applin) still get the body-length discount; the audit judged their lower numbers plausible | audit observation 1 |
+| 8 | Other GKP calls that may price size (Snorlax, Onix, Stakataka, Garganacl; cuts on Comfey, Orbeetle and others) need a re-check under the new rubric line | audit observation 4 |
+| 9 | The frame term adds HAN to handless bodies; consider scaling it by shape | audit observation 2 |
+| 10 | A review-rules test that GK cannot be a best role when it is the lowest blend | audit follow-up 6 |
+| 11 | Reword the Serperior and Onix rationales that still call serpent height reach | audit observation 7 |
+| 12 | Audit the 18 reconciled reviews this fit-movement sample did not reach, with a review-diff sampler | audit observation 6 |

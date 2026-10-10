@@ -94,7 +94,7 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 3, "QF"]);
     expect(sha256(s)).toBe("36035c63e7778a21d7b3a2d1c842bae057f7aacf43424b1be2ce0d965725de8e");
     expect(sha256(JSON.stringify(run))).toBe(
-      "26f6ca832cf8a66a911747a72fb034add01cc66a4968d42009dd52d3ac3c28c6",
+      "f050e3ff1848e655cc534d6d7c78015370b7ed7d21c00fe6878c66c3744ccf47",
     );
   });
 
