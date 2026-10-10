@@ -276,6 +276,48 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect((await rows()).map((r) => r.token)).toEqual([token]);
   });
 
+  it("answers a retry of the same run and nickname with 200 and the saved entry, spending no attempt (catches a lost response turning into a 409)", async () => {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    const first = await submit({ nickname: "Ash", token });
+    expect(first.status).toBe(201);
+    const retry = await submit({ nickname: " Ash ", token });
+    expect(retry.status).toBe(200);
+    expect(retry.body.entry).toEqual(first.body.entry);
+    expect(retry.body.entry).toMatchObject({ rank: 1, nickname: "Ash", wins: 5, teamScore: 623 });
+    expect(await rows()).toHaveLength(1);
+    expect(await db.select().from(rateLimitEvents)).toHaveLength(1);
+    expect(replays).toBe(1);
+  });
+
+  it("answers a daily retry of the same run and nickname with 200, not DAILY_ALREADY_SUBMITTED or DUPLICATE_TOKEN", async () => {
+    const token = scriptedToken(dailySettings("4-3-3"), dailySeed(TODAY));
+    const first = await submit({ nickname: "Ash", token });
+    expect(first.status).toBe(201);
+    const retry = await submit({ nickname: "Ash", token });
+    expect([retry.status, retry.body.entry.dailyDate, retry.body.entry.rank]).toEqual([
+      200,
+      "2026-10-09",
+      1,
+    ]);
+    expect(await rows()).toHaveLength(1);
+  });
+
+  it("answers a retry with 200 even when the hour's attempts are used up", async () => {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    expect((await submit({ nickname: "Ash", token }, "198.51.100.1")).status).toBe(201);
+    await db.insert(rateLimitEvents).values(
+      Array.from({ length: RATE_LIMIT.max - 1 }, () => ({
+        scope: "submit" as const,
+        keyHash: hashIp("198.51.100.1", SECRET),
+        createdAt: NOW,
+      })),
+    );
+    const retry = await submit({ nickname: "Ash", token }, "198.51.100.1");
+    expect([retry.status, retry.body.entry.nickname]).toEqual([200, "Ash"]);
+    const other = await submit({ nickname: "Misty", token }, "198.51.100.1");
+    expect([other.status, other.body.error.code]).toEqual([429, "RATE_LIMITED"]);
+  });
+
   it("rejects a resubmitted token or a taken daily nickname without replaying again", async () => {
     const token = scriptedToken(CUP8, "lb-cup8");
     expect((await submit({ nickname: "Ash", token })).status).toBe(201);
