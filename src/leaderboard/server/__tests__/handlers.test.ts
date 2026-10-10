@@ -104,8 +104,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       variant: "classic3.squadFirst.g123456789",
       dailyDate: null,
       token,
-      wins: 4,
-      draws: 1,
+      wins: 5,
+      draws: 0,
       losses: 1,
       teamScore: 623,
     });
@@ -113,11 +113,11 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect(row).toMatchObject({
       nickname: "Ash",
       seed: "lb-cup8",
-      wins: 4,
-      draws: 1,
+      wins: 5,
+      draws: 0,
       losses: 1,
       teamScore: 623,
-      engineVersion: "pokedraft-engine-2",
+      engineVersion: "pokedraft-engine-3",
       ipHash: hashIp("203.0.113.7", SECRET),
     });
   });
@@ -171,7 +171,7 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect((await submit({ nickname: "Gary", token: "not-a-token" })).body.error.code).toBe(
       "TOKEN_MALFORMED",
     );
-    const future = scriptedToken(CUP8, "lb-cup8").replace(/^pd2\./, "pd3.");
+    const future = scriptedToken(CUP8, "lb-cup8").replace(/^pd3\./, "pd4.");
     const res = await submit({ nickname: "Gary", token: future });
     expect(res.status).toBe(409);
     expect(res.body.error.code).toBe("ENGINE_VERSION_MISMATCH");

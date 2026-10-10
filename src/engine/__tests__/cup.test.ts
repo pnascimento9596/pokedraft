@@ -81,7 +81,7 @@ describe("runCup", () => {
       );
       if (r.flawless) flawless++;
     }
-    expect(flawless).toBe(50);
+    expect(flawless).toBe(49);
   });
 
   it("replays identically from the same lineup and seed", () => {
@@ -91,33 +91,35 @@ describe("runCup", () => {
   });
 
   it("pins a cup run where the group is decided past points, GD and GF", () => {
-    const r = runCup(WEAK, "golden-177" as Seed, "cup8");
+    // golden-177 pinned this until the dispatch 6 ladder; golden-622 ties the user and Jubilife
+    // on 4 points, 2-3. Its player of the tournament is the DM, credited a clean sheet.
+    const r = runCup(WEAK, "golden-622" as Seed, "cup8");
     expect([r.rating.score, r.wins, r.draws, r.losses, r.finish, r.flawless]).toEqual([
       220,
       1,
-      0,
-      3,
+      1,
+      2,
       "R32",
       false,
     ]);
     expect(r.group.map((g) => [g.team, g.points, g.goalsFor, g.goalsAgainst])).toEqual([
-      ["motostoke-united", 9, 3, 0],
-      ["user", 3, 2, 3],
-      ["mesagoza-fc", 3, 2, 3],
-      ["canalave-athletic", 3, 1, 2],
+      ["vermilion-athletic", 6, 4, 1],
+      ["user", 4, 2, 3],
+      ["jubilife-fc", 4, 2, 3],
+      ["slateport-united", 3, 2, 3],
     ]);
     expect(r.awards).toEqual({
-      goldenBoot: { species: 29, goals: 2, assists: 0, appearances: 4 },
-      topAssister: { species: 32, goals: 1, assists: 2, appearances: 4 },
-      playerOfTournament: { species: 32, goals: 1, assists: 2, appearances: 4 },
+      goldenBoot: { species: 43, goals: 1, assists: 0, appearances: 1 },
+      topAssister: { species: 27, goals: 0, assists: 1, appearances: 4 },
+      playerOfTournament: { species: 19, goals: 1, assists: 0, appearances: 4 },
       potContribution: {
-        species: 32,
+        species: 19,
         goals: 1,
-        assists: 2,
-        cleanSheets: 0,
+        assists: 0,
+        cleanSheets: 1,
         minutes: 360,
-        points: { goals: 3, assists: 4, cleanSheets: 0, minutes: 2 },
-        total: 9,
+        points: { goals: 3, assists: 0, cleanSheets: 1, minutes: 2 },
+        total: 6,
       },
     });
   });
@@ -129,7 +131,7 @@ describe("runCup", () => {
     expect(absences).toEqual([{ slot: "4-3-3.LW", out: 25, in: 4 }]);
     const appearances = Object.fromEntries(r.players.map((p) => [p.species, p.appearances]));
     expect([appearances[25], appearances[4], appearances[1]]).toEqual([5, 1, 0]);
-    expect(r.awards.goldenBoot).toEqual({ species: 38, goals: 7, assists: 2, appearances: 6 });
+    expect(r.awards.goldenBoot).toEqual({ species: 38, goals: 5, assists: 2, appearances: 6 });
   });
 });
 
@@ -137,13 +139,13 @@ describe("buildLadder", () => {
   it("draws kanto151 opponents from Kanto towns only, with the per-round score ladder", () => {
     const ladder = buildLadder("golden-1", "kanto151");
     expect(CUP_ROUNDS.map((r) => [ladder[r].id, ladder[r].score])).toEqual([
-      ["celadon-city", 287],
-      ["fuchsia-united", 322],
-      ["pallet-town", 331],
-      ["indigo-plateau-united", 369],
-      ["viridian-fc", 476],
-      ["pewter-united", 779],
-      ["vermilion-fc", 854],
+      ["celadon-city", 267],
+      ["fuchsia-united", 302],
+      ["pallet-town", 346],
+      ["indigo-plateau-united", 489],
+      ["viridian-fc", 601],
+      ["pewter-united", 749],
+      ["vermilion-fc", 859],
       ["cinnabar-fc", 994],
     ]);
     expect(ladder.F.lines).toEqual({ GK: 103.4, DEF: 103.4, MID: 96.4, ATT: 99.4 });
@@ -159,7 +161,7 @@ describe("exact ladder (catches the UI showing a nominal ladder or a nameless un
     const r = runCup(WEAK, "golden-177" as Seed, "cup8");
     const ladder = buildLadder("golden-177", "cup8");
     const unplayed = r.matches.filter((m) => m.status === "notPlayed");
-    expect(unplayed.map((m) => m.round)).toEqual(["R16", "QF", "SF", "F"]);
+    expect(unplayed.map((m) => m.round)).toEqual(["R32", "R16", "QF", "SF", "F"]);
     for (const m of unplayed) expect(m.opponent).toEqual(ladder[m.round]);
   });
 });
