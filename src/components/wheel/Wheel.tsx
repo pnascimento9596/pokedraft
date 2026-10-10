@@ -52,7 +52,7 @@ function FaceView({ face, result }: { face: Face; result?: boolean }) {
   if (face.kind === "species") {
     return (
       <div {...common}>
-        <PlayerImage dexId={face.value} size={32} alt={face.label} />
+        <PlayerImage dexId={face.value} size={32} alt={face.label} eager />
         <span className={s.faceName}>{face.label}</span>
         <span className={`num ${s.faceDex}`}>{dexLabel(face.value)}</span>
       </div>

@@ -11,6 +11,7 @@ import {
   type SynergyEdge,
 } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
+import { useImageSettings } from "@/images/settings";
 import { BENCH_REFS, STARTER_REFS, refFromKey, refKey, sameRef, valueAt } from "@/ui/lineup";
 import s from "./Pitch.module.css";
 
@@ -114,6 +115,7 @@ export function Pitch({
   label = "Pitch",
 }: PitchProps) {
   const slots = FORMATIONS[formation].slots;
+  const { mirror } = useImageSettings();
   const [drag, setDrag] = useState<DragState | null>(null);
   const [dropKey, setDropKey] = useState<string | null>(null);
   const suppressClick = useRef(false);
@@ -123,7 +125,12 @@ export function Pitch({
     return el?.dataset.slotKey ?? null;
   };
 
-  const token = (ref: SlotRef, slotLabel: string, style?: CSSProperties) => {
+  const token = (
+    ref: SlotRef,
+    slotLabel: string,
+    style?: CSSProperties,
+    at?: { readonly x: number; readonly y: number },
+  ) => {
     const id = valueAt(lineup, ref);
     const species = id === null ? null : speciesById(id);
     const key = refKey(ref);
@@ -139,6 +146,9 @@ export function Pitch({
         type="button"
         className={s.token}
         data-slot-key={key}
+        // Which half of the field the token sits in, per layout, so CSS can face it to the center.
+        data-half-portrait={at !== undefined && at.x > 50 ? "right" : undefined}
+        data-half-landscape={at !== undefined && at.y > 50 ? "right" : undefined}
         data-testid={`slot-${key}`}
         data-filled={species !== null}
         data-highlight={sameRef(highlight, ref) || undefined}
@@ -219,7 +229,7 @@ export function Pitch({
   };
 
   return (
-    <div className={s.wrap} data-testid="pitch">
+    <div className={s.wrap} data-testid="pitch" data-mirror={mirror ? "on" : "off"}>
       <div className={s.field} role="group" aria-label={label}>
         <svg className={`${s.lines} ${s.vertical}`} viewBox={`0 0 ${W} ${L}`} aria-hidden="true">
           <Markings formation={formation} edges={edges} />
@@ -231,7 +241,7 @@ export function Pitch({
         </svg>
         {STARTER_REFS.map((ref, i) => {
           const sl = slots[i]!;
-          return token(ref, sl.label, { "--x": sl.x, "--y": sl.y } as CSSProperties);
+          return token(ref, sl.label, { "--x": sl.x, "--y": sl.y } as CSSProperties, sl);
         })}
       </div>
       {showBench ? (

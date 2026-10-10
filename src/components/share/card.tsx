@@ -9,7 +9,7 @@ import {
   type Lineup,
   type SpeciesId,
 } from "@/engine";
-import { PlayerImage } from "@/components/PlayerImage";
+import { StaticPlayerImage } from "@/components/PlayerPicture";
 import { FINISH_LABEL, FRIENDLY_LABEL, MODE_LABEL, STYLE_LABEL, record } from "@/ui/labels";
 import { draftFromBuilderToken, filledCount } from "@/ui/lineup";
 import type { CardSource } from "./download";
@@ -79,6 +79,29 @@ const FLOOD = "#ffd23f";
 const CHALK = "rgba(255,255,255,0.8)";
 const PITCH_W = 760;
 const PITCH_H = 492;
+const CARD_PAD_X = 40;
+const CARD_PAD_Y = (CARD_SIZE.height - PITCH_H) / 2;
+const TOKEN_W = 120;
+const TOKEN_IMAGE = 52;
+
+export interface CardSlot {
+  readonly x: number;
+  readonly y: number;
+}
+
+/** Where a slot's picture sits on the finished 1200x630 card, in pixels. */
+export function tokenImageRect(slot: CardSlot): { left: number; top: number; size: number } {
+  return {
+    left: Math.round(
+      CARD_PAD_X + 20 + (slot.y / 100) * (PITCH_W - 40) - TOKEN_W / 2 + (TOKEN_W - TOKEN_IMAGE) / 2,
+    ),
+    top: Math.round(CARD_PAD_Y + 16 + (slot.x / 100) * (PITCH_H - 32) - 40),
+    size: TOKEN_IMAGE,
+  };
+}
+
+/** Pictures for the species on a card: data URIs by Dex id, null when a pack lacks one. */
+export type CardImages = ReadonlyMap<number, string | null>;
 
 function Line(style: Record<string, string | number>) {
   return (
@@ -129,7 +152,21 @@ function cardName(name: string): string {
   return name.replace("♀", " F").replace("♂", " M").replace("’", "'");
 }
 
-function Token({ id, label, x, y }: { id: SpeciesId | null; label: string; x: number; y: number }) {
+function Token({
+  id,
+  label,
+  x,
+  y,
+  images,
+  mirror,
+}: {
+  id: SpeciesId | null;
+  label: string;
+  x: number;
+  y: number;
+  images: CardImages;
+  mirror: boolean;
+}) {
   const species = id === null ? null : speciesById(id);
   return (
     <div
@@ -137,7 +174,7 @@ function Token({ id, label, x, y }: { id: SpeciesId | null; label: string; x: nu
         position: "absolute",
         left: 20 + (y / 100) * (PITCH_W - 40) - 60,
         top: 16 + (x / 100) * (PITCH_H - 32) - 40,
-        width: 120,
+        width: TOKEN_W,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -154,7 +191,13 @@ function Token({ id, label, x, y }: { id: SpeciesId | null; label: string; x: nu
           }}
         />
       ) : (
-        <PlayerImage dexId={species.id} size={52} alt={species.name} />
+        <StaticPlayerImage
+          dexId={species.id}
+          size={TOKEN_IMAGE}
+          alt={species.name}
+          src={images.get(species.id) ?? null}
+          mirror={mirror && y > 50}
+        />
       )}
       <div
         style={{
@@ -175,7 +218,15 @@ function Token({ id, label, x, y }: { id: SpeciesId | null; label: string; x: nu
   );
 }
 
-export function Card({ model }: { model: CardModel }) {
+export function Card({
+  model,
+  images = new Map(),
+  mirror = true,
+}: {
+  model: CardModel;
+  images?: CardImages;
+  mirror?: boolean;
+}) {
   const slots = FORMATIONS[model.formation].slots;
   const h = model.headline;
   const score = h.score === null ? null : String(h.score);
@@ -206,7 +257,15 @@ export function Card({ model }: { model: CardModel }) {
       >
         <Markings />
         {slots.map((sl, i) => (
-          <Token key={sl.id} id={model.starters[i] ?? null} label={sl.label} x={sl.x} y={sl.y} />
+          <Token
+            key={sl.id}
+            id={model.starters[i] ?? null}
+            label={sl.label}
+            x={sl.x}
+            y={sl.y}
+            images={images}
+            mirror={mirror}
+          />
         ))}
       </div>
       <div
