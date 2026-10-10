@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { PASSCODE_COOKIE, isPublicPath, passcodeDigest, safeNext } from "../passcode";
 import { proxy } from "../proxy";
+import { scriptedToken } from "../leaderboard/server/__tests__/fixtures";
 
 function req(path: string, cookie?: string): NextRequest {
   const headers = cookie ? { cookie: `${PASSCODE_COOKIE}=${cookie}` } : undefined;
@@ -44,7 +45,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
 
   it("is off when FRIENDS_PASSCODE is unset", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "");
-    expect(proxy(req("/r/pd1.abc")).headers.get("x-middleware-next")).toBe("1");
+    expect(proxy(req("/play")).headers.get("x-middleware-next")).toBe("1");
   });
 
   it("redirects gated pages to /gate with the original path", () => {
@@ -70,6 +71,20 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     expect(proxy(req("/r/pd1.abc/opengraph-image")).headers.get("x-middleware-next")).toBe("1");
     expect(proxy(req("/", passcodeDigest("pikachu"))).headers.get("x-middleware-next")).toBe("1");
     expect(proxy(req("/", passcodeDigest("old-passcode"))).status).toBe(307);
+  });
+
+  it("rewrites an undecodable share link to the 404 route and passes a real token through", () => {
+    vi.stubEnv("FRIENDS_PASSCODE", "");
+    for (const bad of ["garbage", "pd1.%%%", "pd2.abc", "pd1.e30"]) {
+      const res = proxy(req(`/r/${bad}`));
+      expect(res.headers.get("x-middleware-rewrite")).toBe("https://pokedraft.test/run-not-found");
+    }
+    const real = scriptedToken(
+      { mode: "kanto151", formation: "4-4-2", order: "squadFirst" },
+      "proxy-seed",
+    );
+    expect(proxy(req(`/r/${real}`)).headers.get("x-middleware-next")).toBe("1");
+    expect(proxy(req("/r/garbage/opengraph-image")).headers.get("x-middleware-next")).toBe("1");
   });
 
   it("only follows same-site relative next paths", () => {
