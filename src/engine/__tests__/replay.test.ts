@@ -53,7 +53,7 @@ function tokenCode(fn: () => unknown): RunTokenErrorCode | "no error" {
 }
 
 const ACTIONS = scriptedActions();
-const TOKEN = encodeToken({ v: 1, settings: SETTINGS, seed: SEED, actions: ACTIONS });
+const TOKEN = encodeToken({ v: 2, settings: SETTINGS, seed: SEED, actions: ACTIONS });
 
 describe("replay (catches a share link that re-derives a different cup)", () => {
   it("rebuilds the same draft and the same CupResult as running draft and cup directly", () => {
@@ -77,13 +77,13 @@ describe("replay (catches a share link that re-derives a different cup)", () => 
   });
 
   it("accepts a decoded RunToken object the same as its string", () => {
-    const object = replay({ v: 1, settings: SETTINGS, seed: SEED, actions: ACTIONS });
+    const object = replay({ v: 2, settings: SETTINGS, seed: SEED, actions: ACTIONS });
     expect(JSON.stringify(object.cup)).toBe(JSON.stringify(replay(TOKEN).cup));
   });
 
   it("raises invalidAction when the actions stop one pick short of a full squad", () => {
     const short = encodeToken({
-      v: 1,
+      v: 2,
       settings: SETTINGS,
       seed: SEED,
       actions: ACTIONS.slice(0, -1),
@@ -93,7 +93,7 @@ describe("replay (catches a share link that re-derives a different cup)", () => 
 
   it("raises invalidAction when an action is illegal for the draft state", () => {
     const illegal = encodeToken({
-      v: 1,
+      v: 2,
       settings: SETTINGS,
       seed: SEED,
       actions: [{ type: "chooseSlot", slot: { kind: "starter", index: 0 } }, ...ACTIONS],
