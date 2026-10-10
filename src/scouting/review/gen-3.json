@@ -1684,7 +1684,6 @@
       "id": 321,
       "name": "Wailord",
       "adjustments": {
-        "GKP": 8,
         "DEF": 6
       },
       "bestRoles": [
@@ -1706,7 +1705,7 @@
         "agility",
         "dribbling"
       ],
-      "rationale": "Height 145 and weight 3980 make it the largest body on any pitch, so it blocks the goal and the box by sheer size; hp 170 backs it, and the fish shape already removed its mobility."
+      "rationale": "Height 145 and weight 3980 make it the largest body on any pitch, so it blocks the box by sheer size and DEF rises; hp 170 backs it. The keeper frame term already prices that size into DIV and HAN, so GKP gets no size bonus, and the fish shape already removed its mobility."
     },
     {
       "id": 322,

@@ -1715,9 +1715,7 @@
     {
       "id": 977,
       "name": "Dondozo",
-      "adjustments": {
-        "GKP": 6
-      },
+      "adjustments": {},
       "bestRoles": [
         "CB",
         "DM",
@@ -1738,7 +1736,7 @@
         "acceleration",
         "agility"
       ],
-      "rationale": "At height 120 dm and weight 220 kg with hp 150, it physically fills the goal mouth, so GKP rises; abilities Unaware and Oblivious fit an unflappable wall. Spe 35 in fish shape rules out running roles."
+      "rationale": "At height 120 dm and weight 220 kg with hp 150, it physically fills the goal mouth, which the keeper frame term already prices into DIV and HAN, so no adjustment; abilities Unaware and Oblivious fit an unflappable wall. Spe 35 in fish shape rules out running roles."
     },
     {
       "id": 978,
