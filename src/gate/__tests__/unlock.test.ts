@@ -71,6 +71,20 @@ describe("passcode gate attempt limit (catches unlimited passcode guessing)", ()
     expect([later.status, location(later)]).toEqual([303, "/daily"]);
   });
 
+  it("sets an HttpOnly, SameSite=Lax, Path=/ cookie that lasts 90 days (catches a script-readable or short-lived cookie)", async () => {
+    vi.useFakeTimers({ toFake: ["Date"], now: NOW });
+    vi.stubEnv("NODE_ENV", "test");
+    expect((await unlock(PASSCODE)).headers.get("set-cookie")).toBe(
+      "pokedraft_pass=dc6e586e6ea1b89d5818e4467281bedef5967f38e81090af7932aa29d8d94490; Path=/; Expires=Thu, 07 Jan 2027 16:00:00 GMT; Max-Age=7776000; HttpOnly; SameSite=lax",
+    );
+    vi.stubEnv("NODE_ENV", "production");
+    expect((await unlock(PASSCODE, "198.51.100.9")).headers.get("set-cookie")).toBe(
+      "pokedraft_pass=dc6e586e6ea1b89d5818e4467281bedef5967f38e81090af7932aa29d8d94490; Path=/; Expires=Thu, 07 Jan 2027 16:00:00 GMT; Max-Age=7776000; Secure; HttpOnly; SameSite=lax",
+    );
+    vi.unstubAllEnvs();
+    vi.useRealTimers();
+  });
+
   it("sets the passcode cookie on the right passcode", async () => {
     const res = await unlock(PASSCODE);
     expect(res.headers.get("set-cookie")).toContain(

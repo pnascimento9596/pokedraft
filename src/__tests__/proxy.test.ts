@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { PASSCODE_COOKIE, isPublicPath, passcodeDigest, safeNext } from "../passcode";
-import { proxy } from "../proxy";
+import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
+import { config, proxy } from "../proxy";
 import { scriptedToken } from "../leaderboard/server/__tests__/fixtures";
 import { RUN_TOKEN_VERSION } from "../engine";
 import { A11Y_RUN_V1 } from "../engine/versions/__tests__/fixtures";
@@ -43,6 +44,22 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     ];
     expect(exempt.filter((p) => !isPublicPath(p))).toEqual([]);
     expect(gated.filter((p) => isPublicPath(p))).toEqual([]);
+  });
+
+  it("runs the proxy on every path except static assets (catches a matcher that skips the API or gates /_next/static)", () => {
+    const runs = (url: string) => unstable_doesMiddlewareMatch({ config, url });
+    const matched = [
+      "/",
+      "/play",
+      "/api/leaderboard",
+      "/card",
+      "/gate/unlock",
+      "/r/pd3.abc",
+      "/_next/image",
+    ];
+    const skipped = ["/_next/static/chunks/app.js", "/favicon.ico", "/robots.txt"];
+    expect(matched.filter((u) => !runs(u))).toEqual([]);
+    expect(skipped.filter((u) => runs(u))).toEqual([]);
   });
 
   it("is off when FRIENDS_PASSCODE is unset", () => {
