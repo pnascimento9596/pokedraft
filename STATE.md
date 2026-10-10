@@ -17,11 +17,55 @@ Measured ground truth. Updated in the same PR as every merge.
 | UI routes | `/` (home and builder), `/play` (challenge run), `/daily` (today's New York seed, cup8 Open), `/leaderboard` (daily and all-time, per mode), `/r/[token]` (shared run plus OG image, one replay per request), `/card` (1200x630 PNG, same satori renderer as OG), `/history`, `/how-to-play`, `/gate` (friends passcode, off unless `FRIENDS_PASSCODE` is set) | `src/app/` |
 | API | `POST /api/leaderboard` (server replay, typed 4xx codes, 10 per IP per hour, every attempt counted in `rate_limit_events`; rank may be `null` after a saved insert), `POST /gate/unlock` (10 attempts per IP per 15 minutes), `GET /api/leaderboard?mode=&scope=daily\|all&date=` (top 50, read-only) | `src/leaderboard/contract.ts` |
 | Indexing | noindex, nofollow metadata, `X-Robots-Tag` on every response, robots.txt disallows `*` and allows link-preview bots, no sitemap | `src/app/robots.ts`, `next.config.ts` |
-| Unit and component tests | 53 files, 466 tests pass (API handlers run against PGlite with the real migration) | `pnpm test` |
-| Playwright | 24 tests pass. Includes: `old-links.spec.ts` (a real engine-1 `/r/` link replays and reads "Played on engine v1"), 151 and 8-0 Classic runs with pinned records (seeds `e2e-151` 3-0-2, `e2e-80` 2-1-1), image tests (pictures everywhere, no blank squares in the exported card, pack switch persists, a failing image keeps its footprint), daily run and submit, board rows and 503 state, 390 and 1440 px fit, `server-html.spec.ts` (the first response of `/play` and `/leaderboard` already holds their content), `a11y.spec.ts` (axe on `/`, `/play`, `/how-to-play`, `/history`, a real `/r/<token>`, a bad token, a 404 URL: zero violations); the leaderboard API is stubbed with `page.route`; runs in CI job `e2e` | `pnpm test:e2e` |
+| Unit and component tests | COUNTS-PENDING-STAGE-2 (API handlers run against PGlite with the real migration) | `pnpm test` |
+| Playwright | COUNTS-PENDING-STAGE-2. Includes: `old-links.spec.ts` (a real engine-1 `/r/` link replays and reads "Played on engine v1"), 151 and 8-0 Classic runs with pinned records (seeds `e2e-151` 3-0-2, `e2e-80` 2-1-1), image tests (pictures everywhere, no blank squares in the exported card, pack switch persists, a failing image keeps its footprint), daily run and submit, board rows and 503 state, 390 and 1440 px fit, `server-html.spec.ts` (the first response of `/play` and `/leaderboard` already holds their content), `a11y.spec.ts` (axe on `/`, `/play`, `/how-to-play`, `/history`, a real `/r/<token>`, a bad token, a 404 URL: zero violations); the leaderboard API is stubbed with `page.route`; runs in CI job `e2e` | `pnpm test:e2e` |
 | Image seam guard | `PlayerImage.tsx` and its pure half `PlayerPicture.tsx` are the only files under `src/` allowed `<img`, `next/image`, `background-image` or `url(`; runs in CI | `pnpm check:image-seam` |
 | Image packs | `pokeapi-pixel` (default, 96x96 PNG, 4.0 MB) and `pokeapi-art` (256 px WebP, 13 MB), each 1025 of 1025 Dex ids, from `PokeAPI/sprites` @ `35fdbe9bdec8f519f882c3edc3c0185f08af4d86`. Credit and license are in each `pack.json`; `src/data/image-packs.json` is generated. The card re-encodes WebP to PNG with `sharp` (now a runtime dependency) | `pnpm check:image-packs`; `docs/reports/image-pack-*.md` |
 | Lighthouse (local production build, mobile preset, simulated throttling, dispatch 5 PR B) | `/` Performance 88, LCP 3.8 s (over 2.5 s; the 1.33 MB `pokedex.json` plus `scouting.json` chunk, deferred); `/play` 96, LCP 2.6 s; `/leaderboard` 96, LCP 2.6 s (one run 4.4 s, 83); CLS 0 to 0.028; TBT 70 to 150 ms; Accessibility 100; Best Practices 100 (96 on `/leaderboard` locally, expected 503 with no database); SEO 63 (`is-crawlable`, intentional noindex). Production numbers for this PR are measured after deploy and recorded in the PR, not here | `docs/reports/finish-qa.md` |
 | Ratings notes | 20 seeded drafts, 7 oddities logged; re-run on engine-1, engine-2 and engine-3 with a before/after table (oddities 1, 4, 5 and 7 addressed in dispatch 6) | `docs/reports/finish-ratings-notes.md`; `scripts/calibration/play-seeded.mts` |
-| Road to the Final | shows the nominal ladder (now an even knockout climb), labelled approximate; the engine exports the seeded ladder (`buildLadder`), not yet wired into the strip | `docs/queue/engine-followups.md` item 1 |
+| Road to the Final | shows this run's exact opponents. `RoadStrip` takes the run's seed and mode, calls `buildLadder(seed, mode)` and prints each round's rating; a screen reader hears the round, the opponent's name and the rating. The draft screen always has the run's seed. On the start screen the seed is known for the Daily (today's seed) and for a shared `seed=` link; a fresh run draws its seed at Start, so until then the bars follow the shape of the coefficient table's ladder, no rating is printed, and the caption reads "Your opponents are set the moment you start the run." No nominal or approximate number is shown anywhere. Unit tests pin the eight names and ratings for seed `golden-1`, the start and draft screens for a shared link, a fresh run and the Daily, and the strip against the cup the same run plays. Not yet looked at in a browser (see NOT RUN) | `src/components/run/RoadStrip.tsx`, `PlayScreen.tsx`, `DraftBoard.tsx`; `src/components/run/__tests__/RoadStrip.test.tsx`, `run.test.tsx`; `docs/queue/engine-followups.md` item 1 |
 | Last reviewer | GLM 5.3 Flash (`glm-5.3-flash:cloud --think high`), dispatch 6 PR #10 (APPROVE on `17bb7cd`); PR 6C's receipt is on its PR | receipt on the PR, pinned to the reviewed head SHA |
+
+## NOT RUN
+
+What the repo's own records say was not run or not measured, copied from those records, and what dispatch 7 PR 7A could not run. A line here is not a pass. When a check is run, its result replaces the line.
+
+### Recorded by dispatch 5
+
+From `docs/reports/finish-qa.md`, run on 2026-10-10 against a local production build and the production baseline at the PR A deploy (`32e966b`), before that PR merged. The file says: "The post-deploy production run is part of the live verification after merge and is not recorded in this file."
+
+| Not run | As recorded | Source |
+|---|---|---|
+| Browser drag-and-drop of tokens, including touch-emulated drag swap on a phone-sized viewport (F2), and manual reroll in the browser (F7) | "Roll identity is therefore guarded by a unit test only." F2: "no manual drag in a real browser this dispatch" | `docs/reports/finish-qa.md` lines 84, 88, 178 |
+| A whole draft operated by keyboard alone (A1) | "Operating a whole draft by keyboard alone was not done" | `docs/reports/finish-qa.md` lines 105, 179 |
+| Daily submit and a real leaderboard row (F10) | "needs the database; e2e stubs the API. The live suite after deploy covers submit and the board row" | `docs/reports/finish-qa.md` lines 91, 180 |
+| Gate unlock and throttle (F14) | "Unlock and throttle were not exercised in this dispatch (dispatch 4 tests cover them)" | `docs/reports/finish-qa.md` lines 95, 181 |
+| `role="alert"` errors on submit and gate (A7) | "`role="alert"` on submit and gate errors was not exercised in a browser" | `docs/reports/finish-qa.md` lines 111, 181 |
+| 44 px tap-target measurement | "Tap-target size (44 px): NOT RUN, so the viewport row is not a full pass." | `docs/reports/finish-qa.md` lines 99, 182 |
+| Lighthouse on production for this PR | "(after deploy)" | `docs/reports/finish-qa.md` line 183 |
+| A missing-id end-to-end test (W1) | "NOT DONE as an end-to-end test. Both packs cover 1025 of 1025 Dex ids, so no real route can render a missing id. The blank fallback for a missing id is covered by `PlayerImage.test.tsx`; the e2e image-error test covers the same blank footprint through a failing image" | `docs/reports/finish-qa.md` lines 165, 184 |
+| The production baseline column for F2, F3, F4, F5 and F6, F7, F8, F10, F13 and F14 | "NOT RUN" | `docs/reports/finish-qa.md` lines 84 to 95 |
+| Text over gradients or images (the pitch, the hero) under axe (A4) | "axe cannot evaluate text over gradients or images (the pitch, the hero), so those spots are unverified" | `docs/reports/finish-qa.md` line 108 |
+
+From `docs/decisions/dispatch-5.md`:
+
+| Not measured | As recorded | Source |
+|---|---|---|
+| Whether a cold connection shows an unloaded face in the first frames of the wheel's spin | "NOT MEASURED: whether a cold connection shows an unloaded face in the first frames of the spin" | `docs/decisions/dispatch-5.md` line 58 |
+| The fallback font's metrics (`Big Shoulders Fallback`) | "The numbers are computed in the CSS comment from Next's bundled capsize metrics for Big Shoulders Display at weight 800 against Arial Bold; they are NOT measured from the font file the site loads" | `docs/decisions/dispatch-5.md` line 77 |
+| The pack credit with scripting disabled | "A no-JS visitor with a saved other-pack choice would see the default credit. Not measured with scripting disabled." | `docs/decisions/dispatch-5.md` line 91 |
+
+### Recorded by dispatch 6
+
+`docs/decisions/dispatch-6.md` has no NOT RUN or NOT MEASURED entry. Its playbook checklist records these skipped steps: "`how` over the affected subsystem. skip: not installed; GATE 0 recon above stands in, per pokedraft-mode." (line 40), "`architect` for parallel design exploration. skip: architect skipped, dispatch fixed the design." (line 41) and "The multi-phase plan playbook is `skip: the dispatch is the plan and the autonomy grant`." (line 53).
+
+### Dispatch 7 PR 7A
+
+Written when only narrow checks had run: the unit tests of the touched folders, `tsc --noEmit` and `eslint` on the touched files.
+
+| Not run | Why |
+|---|---|
+| Road to the Final in a browser: the fresh, Daily and shared-link start screens and the draft screen's compact strip, at 390x844, 360 and 320 px wide, and the layout shift on the start screen | no build, server or browser was started for these changes. RESULT-PENDING-STAGE-2 |
+| The quality number and its "vs other" label in a browser: results card rows, picker rows with ratings shown, pitch token notes and bench tokens, at 320, 360 and 390 px wide | no build, server or browser was started for these changes. RESULT-PENDING-STAGE-2 |
+| `pnpm build`, the whole `pnpm test`, `pnpm test:e2e`, `pnpm check:client-bundle`, `pnpm check:image-seam` and `pnpm exec knip` | not started. `.next` held only the generated route types, so `check:client-bundle` had no build to read. knip is owed because `NOMINAL_LADDER` was removed. RESULT-PENDING-STAGE-2 |
+| Golden Boot winners by role per formation, 5,000 seeded runs per formation | not done by the commits that wrote this section; a separate task owns it |
