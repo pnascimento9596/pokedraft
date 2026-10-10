@@ -22,6 +22,7 @@ import {
 } from "../contract";
 import { dailyDateForSeed, isDailySettings } from "../daily";
 import { parseNickname } from "../nickname";
+import { logServerError, requestIdOf } from "@/observability/log";
 import type { RateLimiter } from "@/ratelimit/store";
 import type { LeaderboardRow } from "@/db/schema";
 import { toBoardEntry, type Board, type Conflict, type LeaderboardStore } from "./store";
@@ -47,9 +48,16 @@ function submitError(code: SubmitErrorCode, message: string, headers?: Record<st
   return json(body, SUBMIT_ERROR_STATUS[code], headers);
 }
 
-function boardError(code: BoardErrorCode, message: string) {
+function boardError(code: BoardErrorCode, message: string, headers?: Record<string, string>) {
   const body: ApiError<BoardErrorCode> = { error: { code, message } };
-  return json(body, BOARD_ERROR_STATUS[code]);
+  return json(body, BOARD_ERROR_STATUS[code], headers);
+}
+
+function unavailable(where: string, requestId: string, e: unknown): Response {
+  logServerError(where, requestId, e);
+  return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.", {
+    "x-request-id": requestId,
+  });
 }
 
 const TOKEN_ERROR: Record<RunTokenErrorCode, SubmitErrorCode> = {
@@ -169,9 +177,27 @@ async function parseSubmission(
 }
 
 // A retry of an accepted run (same run, same nickname) gets the saved entry back with 200.
-async function savedEntry(row: LeaderboardRow, store: LeaderboardStore): Promise<Response> {
+async function rankOrNull(
+  store: LeaderboardStore,
+  row: LeaderboardRow,
+  board: Board,
+  requestId: string,
+): Promise<number | null> {
+  try {
+    return await store.rankOf(row, board);
+  } catch (e) {
+    logServerError("submit.rank", requestId, e);
+    return null;
+  }
+}
+
+async function savedEntry(
+  row: LeaderboardRow,
+  store: LeaderboardStore,
+  requestId: string,
+): Promise<Response> {
   const board: Board = { mode: row.mode, dailyDate: row.dailyDate };
-  const rank = await store.rankOf(row, board).catch(() => null);
+  const rank = await rankOrNull(store, row, board, requestId);
   const ok: SubmitOk = { entry: toBoardEntry(row, rank) };
   return json(ok, 200);
 }
@@ -179,6 +205,7 @@ async function savedEntry(row: LeaderboardRow, store: LeaderboardStore): Promise
 export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Response> {
   const replay = deps.replay ?? engineReplay;
   const now = deps.now();
+  const rid = requestIdOf(req.headers);
   if (!usableSecret(deps.ipHashSecret)) {
     console.error("IP_HASH_SECRET is missing or shorter than 32 characters");
     return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
@@ -191,10 +218,10 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
   if (parsed.ok) {
     try {
       existing = await deps.store.byToken(parsed.sub.token);
-    } catch {
-      return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
+    } catch (e) {
+      return unavailable("submit.probe", rid, e);
     }
-    if (existing?.nickname === parsed.sub.nickname) return savedEntry(existing, deps.store);
+    if (existing?.nickname === parsed.sub.nickname) return savedEntry(existing, deps.store, rid);
   }
 
   try {
@@ -203,16 +230,16 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
         "retry-after": "3600",
       });
     }
-  } catch {
-    return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
+  } catch (e) {
+    return unavailable("submit.limiter", rid, e);
   }
   if (!parsed.ok) return parsed.res;
   const { nickname, run, token, board } = parsed.sub;
   if (existing !== null) return conflictError("token");
   try {
     if (await deps.store.dailyTaken(nickname, board)) return conflictError("daily");
-  } catch {
-    return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
+  } catch (e) {
+    return unavailable("submit.daily", rid, e);
   }
 
   let result: ReturnType<typeof engineReplay>;
@@ -241,19 +268,23 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     if (!inserted.ok) {
       // A concurrent copy of this same submission won the insert race.
       const winner = await deps.store.byToken(token);
-      if (winner?.nickname === nickname) return savedEntry(winner, deps.store);
+      if (winner?.nickname === nickname) return savedEntry(winner, deps.store, rid);
       return conflictError(inserted.conflict);
     }
     // The run is saved. A rank that cannot be computed must not turn that into a failure.
-    const rank = await deps.store.rankOf(inserted.row, board).catch(() => null);
+    const rank = await rankOrNull(deps.store, inserted.row, board, rid);
     const ok: SubmitOk = { entry: toBoardEntry(inserted.row, rank) };
     return json(ok, 201);
-  } catch {
-    return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
+  } catch (e) {
+    return unavailable("submit.insert", rid, e);
   }
 }
 
-export async function handleBoard(url: URL, store: LeaderboardStore): Promise<Response> {
+export async function handleBoard(
+  url: URL,
+  store: LeaderboardStore,
+  requestId: string = requestIdOf(new Headers()),
+): Promise<Response> {
   const q = url.searchParams;
   const parsed = boardQuerySchema.safeParse({
     mode: q.get("mode") ?? undefined,
@@ -272,7 +303,10 @@ export async function handleBoard(url: URL, store: LeaderboardStore): Promise<Re
     const rows = await store.top({ mode, dailyDate: date });
     const ok: BoardOk = { mode, scope, date, entries: rows.map((r, i) => toBoardEntry(r, i + 1)) };
     return json(ok, 200);
-  } catch {
-    return boardError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
+  } catch (e) {
+    logServerError("board.read", requestId, e);
+    return boardError("DB_UNAVAILABLE", "The leaderboard is unavailable.", {
+      "x-request-id": requestId,
+    });
   }
 }
