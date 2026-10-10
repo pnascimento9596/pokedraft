@@ -16,3 +16,11 @@ Each item gets two numbers from `scripts/calibrate.mts`:
 | 5 | Squiggle (serpentine) height is body length, which inflates AER | squiggle species at CB and ST | 512 of 5,000 = 10.2% (4-3-3); 726 = 14.5% (3-5-2) | mean +27.8 (n 522; 3-5-2 +25.4, n 760) |
 
 Measured in GATE 6 with the final coefficients (`docs/calibration.md`, Scouting carryovers). A positive score delta means the flagged species rates higher than the good bot's best alternative from the same pick. Each item flags a rating that may be wrong, so the delta is how much Team Score rides on that rating: if the flag is a real error, that much score is unearned. Recommendation for the next Red lane: items 2 (keeper size, 24% of good-bot drafts, about +30) and 5 (squiggle AER, 10 to 15%, about +26) reach typical players and carry real score. Items 1, 3 and 4 are below 0.5% placement and can wait.
+
+## Status after dispatch 6 PR 6B
+
+- **Item 2: fixed in Layer 1.** A bounded keeper frame term on DIV and HAN: `cap * (2 * blend - 1)` from the reach and weight percentiles, cap 6 (`frame` in `src/scouting/coefficients.ts`). It is skipped for species whose ability already sets the body size (`frame.sizeAbilities`, Schooling).
+- **Item 5: fixed in Layer 1.** For `squiggle` shapes, height is read as body length: reach is the percentile of 0.4 times height (`bodyLength`), and it feeds AER and DIV in place of raw height. PHY has no height input, so nothing changes there.
+- Layer 2 was reconciled so no review counts these twice: 14 adjustments removed, 7 trimmed and stale citations refreshed (`docs/decisions/dispatch-6.md`).
+- Items 1, 3 and 4 stay queued with the numbers above (0.3% placement or less).
+- The placement and score-delta numbers for items 2 and 5 are not re-measured here. They are re-measured with the PR 6C calibration, which runs on the final scouting and engine.
