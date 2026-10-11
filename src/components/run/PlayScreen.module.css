@@ -82,6 +82,15 @@
   font-size: 0.9rem;
 }
 
+.loadFailed {
+  margin: 0;
+  color: var(--loss);
+}
+
+.hero [aria-busy="true"] {
+  cursor: progress;
+}
+
 /* A 44 px high hit box around the link; the negative margin keeps the line where it was. */
 .dailyNext a {
   display: inline-block;

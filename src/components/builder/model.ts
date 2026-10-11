@@ -1,43 +1,5 @@
-import {
-  DraftError,
-  applyAction,
-  createDraft,
-  eligibleSpecies,
-  type DraftSettings,
-  type DraftState,
-  type FullLineup,
-  type Lineup,
-  type SpeciesId,
-} from "@/engine";
-import { createRng } from "@/lib/rng";
+import type { FullLineup, Lineup, SpeciesId } from "@/engine/types";
 import { ALL_REFS, valueAt } from "@/ui/lineup";
-
-// Rebuilds the draft under new settings and keeps every species that is still eligible there.
-export function rebuildDraft(settings: DraftSettings, lineup: Lineup, seed: DraftState["seed"]) {
-  let state = createDraft(settings, seed);
-  for (const slot of ALL_REFS) {
-    const species = valueAt(lineup, slot);
-    if (species === null) continue;
-    try {
-      state = applyAction(state, { type: "place", species, slot });
-    } catch (e) {
-      if (!(e instanceof DraftError)) throw e;
-    }
-  }
-  return state;
-}
-
-export function randomDraft(settings: DraftSettings, seed: DraftState["seed"], rngSeed: string) {
-  const rng = createRng(rngSeed);
-  const pool = [...eligibleSpecies(createDraft(settings, seed))];
-  let state = createDraft(settings, seed);
-  for (const slot of ALL_REFS) {
-    if (pool.length === 0) break;
-    const [species] = pool.splice(rng.int(pool.length), 1) as [SpeciesId];
-    state = applyAction(state, { type: "place", species, slot });
-  }
-  return state;
-}
 
 export function fullLineup(lineup: Lineup): FullLineup | null {
   const full = [...lineup.starters, ...lineup.bench].every((v) => v !== null);

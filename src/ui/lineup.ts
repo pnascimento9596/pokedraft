@@ -1,21 +1,5 @@
-import {
-  DraftError,
-  FORMATIONS,
-  RUN_TOKEN_VERSION,
-  RunTokenError,
-  decodeToken,
-  encodeToken,
-  runDraft,
-  speciesById,
-  type DraftAction,
-  type DraftSettings,
-  type DraftState,
-  type Lineup,
-  type Seed,
-  type SlotRef,
-  type SpeciesId,
-} from "@/engine";
-import { RETAINED_TOKEN_VERSIONS } from "@/engine/versions/label";
+import type { FormationId, Lineup, Seed, SlotRef, SpeciesId } from "@/engine/types";
+import { FORMATIONS } from "@/engine/formations";
 
 export const STARTER_REFS: readonly SlotRef[] = Array.from({ length: 11 }, (_, i): SlotRef => ({
   kind: "starter",
@@ -52,17 +36,6 @@ export function slotLabel(lineup: Lineup, ref: SlotRef): string {
     : `SUB ${ref.index + 1}`;
 }
 
-/** What swapping slots `a` and `b` of `lineup` (the lineup before the swap) does, in words. */
-export function swapMessage(lineup: Lineup, a: SlotRef, b: SlotRef): string {
-  const first = valueAt(lineup, a);
-  const second = valueAt(lineup, b);
-  if (first === null) return second === null ? "" : swapMessage(lineup, b, a);
-  const moved = `Moved ${speciesById(first).name} to ${slotLabel(lineup, b)}`;
-  return second === null
-    ? `${moved}.`
-    : `${moved} and ${speciesById(second).name} to ${slotLabel(lineup, a)}.`;
-}
-
 export function filledCount(lineup: Lineup): number {
   return [...lineup.starters, ...lineup.bench].filter((v) => v !== null).length;
 }
@@ -71,30 +44,11 @@ export function filledCount(lineup: Lineup): number {
 // slot. The same format, with a real seed and all 16 slots, is the friendly-cup token.
 export const BUILDER_URL_SEED = "builder" as Seed;
 
-export function builderToken(settings: DraftSettings, lineup: Lineup, seed: Seed): string {
-  const actions: DraftAction[] = ALL_REFS.flatMap((slot) => {
-    const species = valueAt(lineup, slot);
-    return species === null ? [] : [{ type: "place" as const, species, slot }];
-  });
-  return encodeToken({ v: RUN_TOKEN_VERSION, settings, seed, actions });
+export function emptyLineup(formation: FormationId): Lineup {
+  return {
+    formation,
+    starters: STARTER_REFS.map(() => null) as unknown as Lineup["starters"],
+    bench: BENCH_REFS.map(() => null) as unknown as Lineup["bench"],
+  };
 }
 
-// A builder token only names a lineup; it replays no cup. So one shared under a retained
-// engine (same token format) opens on today's engine, which rates the lineup afresh.
-function asLiveToken(token: string): string {
-  const m = /^pd(\d+)\./.exec(token);
-  return m !== null && RETAINED_TOKEN_VERSIONS.includes(Number(m[1]))
-    ? `pd${RUN_TOKEN_VERSION}.${token.slice(m[0].length)}`
-    : token;
-}
-
-export function draftFromBuilderToken(token: string): DraftState | null {
-  try {
-    const run = decodeToken(asLiveToken(token));
-    if (run.settings.mode !== "builder") return null;
-    return runDraft(run.settings, run.seed, run.actions);
-  } catch (e) {
-    if (e instanceof RunTokenError || e instanceof DraftError) return null;
-    throw e;
-  }
-}

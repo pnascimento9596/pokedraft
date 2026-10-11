@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { Pitch } from "@/components/pitch/Pitch";
-import { applyAction, createDraft, type Seed, type SpeciesId } from "@/engine";
+import { applyAction, createDraft, speciesById, type Seed, type SpeciesId } from "@/engine";
 
 const realElementFromPoint = document.elementFromPoint;
 
@@ -63,7 +63,9 @@ function tap(el: HTMLElement) {
 describe("Pitch", () => {
   it("labels every starter and bench slot so taps reach the right SlotRef", () => {
     const onSlotTap = vi.fn();
-    render(<Pitch formation="4-3-3" lineup={empty} onSlotTap={onSlotTap} />);
+    render(
+      <Pitch formation="4-3-3" lineup={empty} speciesOf={speciesById} onSlotTap={onSlotTap} />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Empty LCB slot" }));
     fireEvent.click(screen.getByRole("button", { name: "Empty SUB 2 slot" }));
     expect(onSlotTap.mock.calls).toEqual([
@@ -75,7 +77,7 @@ describe("Pitch", () => {
   it("still takes the next tap after a touch drag, which ends with no click (SF-02: a stuck drag flag swallowed it)", () => {
     const onSlotTap = vi.fn();
     const onSwap = vi.fn();
-    render(<Pitch formation="4-3-3" lineup={twoPlaced} onSlotTap={onSlotTap} onSwap={onSwap} />);
+    render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSlotTap={onSlotTap} onSwap={onSwap} />);
     touchDrag(
       screen.getByRole("button", { name: "LCB Bulbasaur" }),
       screen.getByRole("button", { name: "ST Charmander" }),
@@ -94,7 +96,7 @@ describe("Pitch", () => {
 
   it("still takes Enter or Space on a slot after a touch drag (the keyboard click has no pointer events)", () => {
     const onSlotTap = vi.fn();
-    render(<Pitch formation="4-3-3" lineup={twoPlaced} onSlotTap={onSlotTap} onSwap={() => {}} />);
+    render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSlotTap={onSlotTap} onSwap={() => {}} />);
     touchDrag(
       screen.getByRole("button", { name: "LCB Bulbasaur" }),
       screen.getByRole("button", { name: "ST Charmander" }),
@@ -105,7 +107,7 @@ describe("Pitch", () => {
 
   it("drops the click a mouse drag ends with, so a drag never also opens the slot", () => {
     const onSlotTap = vi.fn();
-    render(<Pitch formation="4-3-3" lineup={twoPlaced} onSlotTap={onSlotTap} onSwap={() => {}} />);
+    render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSlotTap={onSlotTap} onSwap={() => {}} />);
     const from = screen.getByRole("button", { name: "LCB Bulbasaur" });
     document.elementFromPoint = () => screen.getByRole("button", { name: "ST Charmander" });
     const mouse = { pointerId: 1, pointerType: "mouse", button: 0 };
@@ -121,6 +123,7 @@ describe("Pitch", () => {
       <Pitch
         formation="4-3-3"
         lineup={twoPlaced}
+        speciesOf={speciesById}
         onSlotTap={() => {}}
         selected={{ kind: "starter", index: 9 }}
       />,

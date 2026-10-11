@@ -6,7 +6,7 @@ import {
   type DraftStyle,
   type FormationId,
   type Gen,
-} from "@/engine";
+} from "@/engine/types";
 import { readJson, writeJson } from "./storage";
 
 // Everything the home panel controls. Challenge settings are derived from it.

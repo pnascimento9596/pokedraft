@@ -1,5 +1,5 @@
 import { compareCodePointStrings } from "./rng";
-import { ROLE_LINE } from "./species";
+import { ROLE_LINE } from "./roles";
 import {
   FORMATION_IDS,
   LINES,

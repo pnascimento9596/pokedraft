@@ -21,7 +21,8 @@ import { announce as stageLine, dexLabel, stagesFor } from "@/components/wheel/r
 import { unlockAudio } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { REGION_LABEL } from "@/ui/labels";
-import { sameRef, slotLabel, swapMessage, valueAt } from "@/ui/lineup";
+import { sameRef, slotLabel, valueAt } from "@/ui/lineup";
+import { swapMessage } from "@/ui/swap-message";
 import { RoadStrip } from "./RoadStrip";
 import { candidatesFor, withHint, type Run } from "./runState";
 import s from "./DraftBoard.module.css";
@@ -353,6 +354,7 @@ export function DraftBoard({
         <Pitch
           formation={settings.formation}
           lineup={state.lineup}
+          speciesOf={speciesById}
           onSlotTap={tapSlot}
           onSwap={(a, b) => act({ type: "swap", a, b })}
           highlight={committed}

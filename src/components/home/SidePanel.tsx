@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
-import { FORMATION_IDS, GENS, type FormationId, type Gen } from "@/engine";
+import { FORMATION_IDS, GENS, type FormationId, type Gen } from "@/engine/types";
 import { ORDER_LABEL, STYLE_LABEL, genLabel, record } from "@/ui/labels";
 import { BUCKET_LABEL, STAT_BUCKETS, type BucketStats, type StatBucket } from "@/ui/runs";
 import { playHref, type PanelSettings } from "@/ui/settings";

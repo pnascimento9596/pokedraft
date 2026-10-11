@@ -1,4 +1,4 @@
-import { GENS, type DraftOrder, type DraftStyle } from "@/engine";
+import { GENS, type DraftOrder, type DraftStyle } from "@/engine/types";
 import { ORDER_LABEL, STYLE_LABEL } from "@/ui/labels";
 
 function isStyle(v: string): v is DraftStyle {

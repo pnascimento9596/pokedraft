@@ -38,10 +38,11 @@ const pressed = (key: string) => screen.getByTestId(`slot-${key}`).getAttribute(
 const hint = () => screen.queryByTestId("draft-hint")?.textContent ?? null;
 const header = () => screen.getByTestId("round-header").textContent;
 
-function start(q: string) {
+async function start(q: string) {
   query.current = q;
   render(<PlayScreen />);
   fireEvent.click(screen.getByTestId("run-start"));
+  await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
 }
 
 // The first offered player into the first open slot, every round, as e2e/helpers.ts drafts.
@@ -57,8 +58,8 @@ function draftAll() {
 }
 
 describe("tap to swap on the draft board", () => {
-  it("after the draft, a tap on one player and then another swaps them (SB-26: the second tap did nothing)", () => {
-    start(SQUAD_FIRST);
+  it("after the draft, a tap on one player and then another swaps them (SB-26: the second tap did nothing)", async () => {
+    await start(SQUAD_FIRST);
     draftAll();
     expect(header()).toBe("Draft complete");
     expect([label("s0"), label("s9")]).toEqual(["GK Dustox", "ST Yamper"]);
@@ -79,8 +80,8 @@ describe("tap to swap on the draft board", () => {
     }).toEqual({ gk: "GK Yamper", st: "ST Dustox", pressed: ["false", "false"], hint: null });
   });
 
-  it("a second tap on the same player cancels the swap and changes nothing", () => {
-    start(SQUAD_FIRST);
+  it("a second tap on the same player cancels the swap and changes nothing", async () => {
+    await start(SQUAD_FIRST);
     draftAll();
     fireEvent.click(screen.getByTestId("slot-s0"));
     fireEvent.click(screen.getByTestId("slot-s0"));
@@ -91,8 +92,8 @@ describe("tap to swap on the draft board", () => {
     });
   });
 
-  it("Escape cancels a picked swap", () => {
-    start(SQUAD_FIRST);
+  it("Escape cancels a picked swap", async () => {
+    await start(SQUAD_FIRST);
     draftAll();
     fireEvent.click(screen.getByTestId("slot-s4"));
     expect(pressed("s4")).toBe("true");
@@ -105,8 +106,8 @@ describe("tap to swap on the draft board", () => {
     });
   });
 
-  it("mid-draft, a tap on a placed player picks them to swap and a tap on an open slot moves them there, without a pick", () => {
-    start(SQUAD_FIRST);
+  it("mid-draft, a tap on a placed player picks them to swap and a tap on an open slot moves them there, without a pick", async () => {
+    await start(SQUAD_FIRST);
     fireEvent.click(screen.getByTestId("candidate-316"));
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
     expect(header()).toBe("Round 2 of 16");
@@ -121,8 +122,8 @@ describe("tap to swap on the draft board", () => {
     });
   });
 
-  it("names each reroll button by what it shows, count included, so the visible text is part of its name", () => {
-    start(SQUAD_FIRST);
+  it("names each reroll button by what it shows, count included, so the visible text is part of its name", async () => {
+    await start(SQUAD_FIRST);
     expect(
       screen
         .getAllByRole("button", { name: /^Reroll/ })
@@ -133,8 +134,8 @@ describe("tap to swap on the draft board", () => {
     ]);
   });
 
-  it("keeps the last reroll button focusable when its count runs out, and a press then does nothing", () => {
-    start(SQUAD_FIRST);
+  it("keeps the last reroll button focusable when its count runs out, and a press then does nothing", async () => {
+    await start(SQUAD_FIRST);
     const reroll = () => screen.getByRole("button", { name: /^Reroll type/ });
     for (let i = 0; i < 3; i++) {
       reroll().focus();
@@ -163,16 +164,18 @@ describe("focus after the screen changes (SC-11)", () => {
     return el === null || el === document.body ? "body" : `${el.tagName}: ${el.textContent}`;
   };
 
-  it("Start run moves focus to the round heading", () => {
+  it("Start run moves focus to the round heading", async () => {
     query.current = SQUAD_FIRST;
     render(<PlayScreen />);
     screen.getByTestId("run-start").focus();
     fireEvent.click(screen.getByTestId("run-start"));
+    // Start loads the draft with import(), so the board and its focus move arrive a tick later.
+    await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
     expect(focused()).toBe("H1: Round 1 of 16");
   });
 
-  it("a Position First pick, whose player list goes away, moves focus to the round heading", () => {
-    start(POSITION_FIRST);
+  it("a Position First pick, whose player list goes away, moves focus to the round heading", async () => {
+    await start(POSITION_FIRST);
     fireEvent.click(screen.getByRole("button", { name: "Empty GK slot" }));
     const candidate = document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!;
     candidate.focus();
@@ -180,8 +183,8 @@ describe("focus after the screen changes (SC-11)", () => {
     expect(focused()).toBe("H1: Round 2 of 16");
   });
 
-  it("See results moves focus to the results heading, and New run to the start heading", () => {
-    start(SQUAD_FIRST);
+  it("See results moves focus to the results heading, and New run to the start heading", async () => {
+    await start(SQUAD_FIRST);
     draftAll();
     screen.getByTestId("see-results").focus();
     fireEvent.click(screen.getByTestId("see-results"));
@@ -192,8 +195,8 @@ describe("focus after the screen changes (SC-11)", () => {
     expect(focused()).toBe("H1: 8-0 Challenge");
   });
 
-  it("New run from the draft board moves focus to the start heading", () => {
-    start(SQUAD_FIRST);
+  it("New run from the draft board moves focus to the start heading", async () => {
+    await start(SQUAD_FIRST);
     screen.getByTestId("new-run").focus();
     fireEvent.click(screen.getByTestId("new-run"));
     expect(focused()).toBe("H1: 8-0 Challenge");

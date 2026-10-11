@@ -1,13 +1,10 @@
 import { POKEDEX } from "@/data/pokedex";
-import { COEFFICIENTS } from "@/scouting/coefficients";
 import { SCOUTING } from "@/scouting/scouting-data";
 import { ROLES } from "@/scouting/types";
 import {
   GENS,
-  LINES,
   REGIONS,
   type Gen,
-  type Line,
   type Quality,
   type Region,
   type Role,
@@ -18,9 +15,7 @@ import {
 const MAX_SPECIES_ID = 1025;
 const MAX_FIT = 100;
 
-export const ROLE_LINE: Readonly<Record<Role, Line>> = Object.fromEntries(
-  ROLES.map((role) => [role, LINES[COEFFICIENTS.roleLine[role]]]),
-) as Record<Role, Line>;
+export { ROLE_LINE } from "./roles";
 
 export function asSpeciesId(n: number): SpeciesId {
   if (!Number.isInteger(n) || n < 1 || n > MAX_SPECIES_ID) {

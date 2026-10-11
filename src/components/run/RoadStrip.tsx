@@ -1,5 +1,8 @@
 import { useId, useMemo, type CSSProperties } from "react";
-import { CUP_ROUNDS, ENGINE_COEFFICIENTS, buildLadder, type Mode } from "@/engine";
+import { ENGINE_COEFFICIENTS } from "@/engine/coefficients";
+import { buildLadder } from "@/engine/opponents";
+import { CUP_ROUNDS, type Mode } from "@/engine/types";
+
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import s from "./RoadStrip.module.css";
 

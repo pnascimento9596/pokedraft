@@ -6,7 +6,8 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 import { Announcer } from "@/components/Announcer";
 import { HomeScreen } from "@/components/home/HomeScreen";
 import { applyAction, createDraft, type DraftSettings, type SpeciesId } from "@/engine";
-import { BUILDER_URL_SEED, builderToken } from "@/ui/lineup";
+import { builderToken } from "@/ui/builder-token";
+import { BUILDER_URL_SEED } from "@/ui/lineup";
 
 const GEN1: DraftSettings = { mode: "builder", formation: "4-3-3", gens: [1], legendaries: false };
 const realElementFromPoint = document.elementFromPoint;

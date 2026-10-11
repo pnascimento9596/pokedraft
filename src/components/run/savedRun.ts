@@ -3,11 +3,9 @@ import {
   decodeToken,
   replay,
   type CupResult,
-  type DraftSettings,
   type DraftState,
-  type IsoDate,
 } from "@/engine";
-import { readSession, writeSession } from "@/ui/storage";
+import { readSession, runSlotKey, writeSession, type RunSlot } from "@/ui/storage";
 import { runToken, startRun, step, type Run } from "./runState";
 
 // The tab keeps only the run token (settings, seed, actions) and which screen it was on. Everything
@@ -29,23 +27,15 @@ export type Restored =
       readonly cup: CupResult;
     };
 
-export interface RunSlot {
-  readonly settings: DraftSettings;
-  /** The seed the page pins (a shared link or the Daily), or null when Start draws a fresh one. */
-  readonly seed: string | null;
-  readonly daily: IsoDate | null;
-}
-
-const keyOf = (slot: RunSlot) =>
-  `pokedraft.run.${slot.daily !== null ? "daily" : slot.settings.mode}`;
+export type { RunSlot };
 
 export function saveRun(slot: RunSlot, screen: Saved["screen"], token: string): void {
   const saved: Saved = { screen, token, daily: slot.daily };
-  writeSession(keyOf(slot), JSON.stringify(saved));
+  writeSession(runSlotKey(slot), JSON.stringify(saved));
 }
 
 export function forgetRun(slot: RunSlot): void {
-  writeSession(keyOf(slot), null);
+  writeSession(runSlotKey(slot), null);
 }
 
 function parse(raw: string): Saved | null {
@@ -71,7 +61,7 @@ function rebuild(slot: RunSlot, saved: Saved): Run | null {
 }
 
 export function restoreRun(slot: RunSlot): Restored | null {
-  const raw = readSession(keyOf(slot));
+  const raw = readSession(runSlotKey(slot));
   if (raw === null) return null;
   const saved = parse(raw);
   if (saved === null || saved.daily !== slot.daily) {

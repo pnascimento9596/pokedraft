@@ -52,6 +52,12 @@ function open(q: string) {
   );
 }
 
+// Start loads the draft with import(), so the board appears a tick later.
+async function begin(): Promise<void> {
+  fireEvent.click(screen.getByTestId("run-start"));
+  await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
+}
+
 async function draftAll() {
   for (let round = 1; round <= 16; round++) {
     fireEvent.click(document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!);
@@ -72,7 +78,7 @@ describe("draft announcements", () => {
       role: "status",
       text: "",
     });
-    fireEvent.click(screen.getByTestId("run-start"));
+    await begin();
     await flush();
     expect({ same: screen.getByTestId("announcer") === region, text: said() }).toEqual({
       same: true,
@@ -82,7 +88,7 @@ describe("draft announcements", () => {
 
   it("says the pick, the new round and its roll as one message", async () => {
     open(SQUAD_FIRST);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await begin();
     await flush();
     fireEvent.click(screen.getByTestId("candidate-316"));
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
@@ -92,7 +98,7 @@ describe("draft announcements", () => {
 
   it("says a reroll, how many are left, and the new roll", async () => {
     open(SQUAD_FIRST);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await begin();
     await flush();
     fireEvent.click(screen.getByRole("button", { name: /^Reroll type/ }));
     await flush();
@@ -101,7 +107,7 @@ describe("draft announcements", () => {
 
   it("says when the draft is complete, and then each tap swap", async () => {
     open(SQUAD_FIRST);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await begin();
     await flush();
     await draftAll();
     expect(said()).toBe(
@@ -124,7 +130,7 @@ describe("draft announcements", () => {
 
   it("says the same hint again when it is repeated, by changing the region's text", async () => {
     open(SQUAD_FIRST);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await begin();
     await flush();
     const texts: (string | null)[] = [];
     for (let i = 0; i < 2; i++) {
@@ -140,9 +146,9 @@ describe("draft announcements", () => {
 
   it("with motion on, says the roll once, after the last wheel stops, never the region alone", async () => {
     motion.reduce = false;
-    vi.useFakeTimers();
     open(SQUAD_FIRST);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await begin();
+    vi.useFakeTimers();
     const spoken: string[] = [];
     for (let t = 0; t < 12_000; t += 50) {
       await act(async () => {

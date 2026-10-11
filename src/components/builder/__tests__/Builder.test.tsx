@@ -9,7 +9,8 @@ import {
   type SlotRef,
   type SpeciesId,
 } from "@/engine";
-import { BUILDER_URL_SEED, builderToken } from "@/ui/lineup";
+import { builderToken } from "@/ui/builder-token";
+import { BUILDER_URL_SEED } from "@/ui/lineup";
 
 const GEN1: DraftSettings = { mode: "builder", formation: "4-3-3", gens: [1], legendaries: false };
 
@@ -88,9 +89,10 @@ function showRatings() {
   });
 }
 
-function openPicker(slotName: string) {
+// The first tap on an idle builder loads the engine with import(), so the sheet opens a tick later.
+async function openPicker(slotName: string) {
   fireEvent.click(screen.getByRole("button", { name: slotName }));
-  return screen.getByRole("dialog");
+  return screen.findByRole("dialog", undefined, { timeout: 10_000 });
 }
 
 describe("builder drag and swap", () => {
@@ -111,7 +113,7 @@ describe("builder drag and swap", () => {
   it("picking a species already on the field into another slot swaps the two, never duplicates it", async () => {
     openWithTwoPlaced();
     await screen.findByRole("button", { name: "LCB Bulbasaur" });
-    const dialog = openPicker("ST Charmander");
+    const dialog = await openPicker("ST Charmander");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "bulba" } });
     fireEvent.click(within(dialog).getByTestId("pick-1"));
 
@@ -130,7 +132,7 @@ describe("the picker sheet", () => {
 
   it("owns one history entry, so the browser Back button closes it and the page stays on /", async () => {
     render(<HomeScreen />);
-    openPicker("Empty LCB slot");
+    await openPicker("Empty LCB slot");
     expect(onSheetEntry()).toBe(true);
 
     act(() => window.history.back());
@@ -144,7 +146,7 @@ describe("the picker sheet", () => {
 
   it("writes a pick's ?b= link on the page's own entry, not on the sheet's entry that Back drops", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
     fireEvent.click(within(dialog).getByTestId("pick-25"));
 
@@ -159,7 +161,7 @@ describe("the picker sheet", () => {
 
   it("closes on a downward swipe of more than 80 px on its header, and not on a shorter one", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     const head = within(dialog).getByRole("heading").closest("header")!;
 
     fireEvent.pointerDown(head, { pointerId: 1, button: 0, clientY: 100 });
@@ -175,7 +177,7 @@ describe("the picker sheet", () => {
 
   it("gives focus back to the tapped slot when it closes", async () => {
     render(<HomeScreen />);
-    openPicker("Empty LCB slot");
+    await openPicker("Empty LCB slot");
     act(() => window.history.back());
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(document.activeElement).toBe(screen.getByTestId("slot-s2"));
@@ -183,9 +185,9 @@ describe("the picker sheet", () => {
 });
 
 describe("builder picker", () => {
-  it("search by name narrows the list to matches (pika shows Pikachu #025, hides Bulbasaur)", () => {
+  it("search by name narrows the list to matches (pika shows Pikachu #025, hides Bulbasaur)", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     expect(within(dialog).getByRole("heading").textContent).toBe("Pick for LCB");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
 
@@ -195,18 +197,18 @@ describe("builder picker", () => {
     expect(within(dialog).queryByText("Bulbasaur")).toBeNull();
   });
 
-  it("type filter keeps only that type (fire shows Charmander, hides Squirtle)", () => {
+  it("type filter keeps only that type (fire shows Charmander, hides Squirtle)", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.click(within(dialog).getByRole("button", { name: "Fire" }));
 
     expect(within(dialog).getByText("Charmander")).toBeTruthy();
     expect(within(dialog).queryByText("Squirtle")).toBeNull();
   });
 
-  it("a search for a species the settings hide says why instead of a bare No matches (Mewtwo is Legendary, Legendaries is off by default)", () => {
+  it("a search for a species the settings hide says why instead of a bare No matches (Mewtwo is Legendary, Legendaries is off by default)", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "mewtwo" } });
     expect(
       within(dialog).getByText(
@@ -215,15 +217,15 @@ describe("builder picker", () => {
     ).toBeTruthy();
   });
 
-  it("a search that matches no Pokémon at all still says just No matches", () => {
+  it("a search that matches no Pokémon at all still says just No matches", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "zzzz" } });
     expect(within(dialog).getByText("No matches")).toBeTruthy();
   });
-  it("the rating stays hidden with Show ratings off, so the blind default never leaks a number, a label or the raw fit", () => {
+  it("the rating stays hidden with Show ratings off, so the blind default never leaks a number, a label or the raw fit", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
 
     const row = within(dialog).getByTestId("pick-25");
@@ -235,10 +237,10 @@ describe("builder picker", () => {
     expect(row.hasAttribute("aria-describedby")).toBe(false);
   });
 
-  it("with Show ratings on, a slot's row says where the player ranks for that role (Pikachu at CB: 7 vs other CBs, raw fit 30 on the row's description)", () => {
+  it("with Show ratings on, a slot's row says where the player ranks for that role (Pikachu at CB: 7 vs other CBs, raw fit 30 on the row's description)", async () => {
     render(<HomeScreen />);
     showRatings();
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
 
     expect(within(dialog).getByTestId("fit-25").textContent).toBe("7 vs other CBs");
@@ -251,10 +253,10 @@ describe("builder picker", () => {
     ).toBeTruthy();
   });
 
-  it("a bench slot keeps Best: <role> and rates the player at that role (Pikachu: Best W, 75 vs other wingers, raw fit 72)", () => {
+  it("a bench slot keeps Best: <role> and rates the player at that role (Pikachu: Best W, 75 vs other wingers, raw fit 72)", async () => {
     render(<HomeScreen />);
     showRatings();
-    const dialog = openPicker("Empty SUB 1 slot");
+    const dialog = await openPicker("Empty SUB 1 slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
 
     expect(within(dialog).getByTestId("fit-25").textContent).toBe("Best: W 75 vs other wingers");
@@ -312,7 +314,7 @@ function filledSlots() {
 describe("builder toolbar (catches buttons that stop doing what they say)", () => {
   it("picking a species fills the empty slot and closes the picker", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
     fireEvent.click(within(dialog).getByTestId("pick-25"));
 

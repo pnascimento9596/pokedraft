@@ -3,38 +3,34 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  DRAFT_ROUNDS,
-  GENS,
-  dailySeed,
-  replay,
-  type CupResult,
-  type DraftSettings,
-  type DraftState,
-  type IsoDate,
-} from "@/engine";
+import { dailySeed } from "@/engine/rng";
+import { DRAFT_ROUNDS, GENS, type DraftSettings, type IsoDate } from "@/engine/types";
 import { longDate } from "@/components/leaderboard/format";
-import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
-import { ResultsView } from "@/components/results/ResultsView";
 import { unlockAudio } from "@/components/wheel/sound";
 import { focusHeading } from "@/ui/focus";
 import { GEN_REGION, MODE_LABEL, ORDER_LABEL, REGION_LABEL, STYLE_LABEL } from "@/ui/labels";
-import { freshSeed, loadPanel, parsePlayQuery, playHref } from "@/ui/settings";
-import { DraftBoard } from "./DraftBoard";
+import { freshSeed, parsePlayQuery } from "@/ui/settings";
+import { readSession, runSlotKey, writeSession } from "@/ui/storage";
+import type { LiveRun } from "./LiveRun";
 import { RoadStrip } from "./RoadStrip";
-import { forgetRun, restoreRun, saveRun, type RunSlot } from "./savedRun";
-import { runToken, startRun, step, type Run } from "./runState";
 import s from "./PlayScreen.module.css";
 
-type Screen =
-  | { readonly kind: "start" }
-  | { readonly kind: "draft"; readonly run: Run }
-  | {
-      readonly kind: "results";
-      readonly token: string;
-      readonly draft: DraftState;
-      readonly cup: CupResult;
-    };
+// The draft, the results and the species data they need load on demand. Pointing at or focusing
+// Start fetches them early, so the draft is usually ready by the time the tap lands.
+const loadLiveRun = () => import("./LiveRun");
+
+function whenIdleAfterLoad(task: () => void): () => void {
+  let id = 0;
+  const idle = () => {
+    id = window.requestIdleCallback ? window.requestIdleCallback(task) : window.setTimeout(task, 1);
+  };
+  if (document.readyState === "complete") idle();
+  else window.addEventListener("load", idle, { once: true });
+  return () => {
+    window.removeEventListener("load", idle);
+    if (window.cancelIdleCallback) window.cancelIdleCallback(id);
+  };
+}
 
 export function PlayScreen() {
   const params = useSearchParams();
@@ -96,55 +92,80 @@ export function Challenge({
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const [screen, setScreen] = useState<Screen>({ kind: "start" });
+  const [live, setLive] = useState<{
+    readonly seed: string;
+    readonly LiveRun: typeof LiveRun;
+    readonly restore: boolean;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [useQuerySeed, setUseQuerySeed] = useState(true);
-  const [failure, setFailure] = useState<string | null>(null);
-  // Set by the buttons that swap the screen, so the new screen's heading takes focus.
-  const swapped = useRef(false);
+  const wasLive = useRef(live !== null);
 
+  // New run swaps the whole screen back to Start; its heading takes focus.
   useEffect(() => {
-    if (!swapped.current) return;
-    swapped.current = false;
-    focusHeading();
-  }, [screen.kind]);
+    if (wasLive.current === (live !== null)) return;
+    wasLive.current = live !== null;
+    if (live === null) focusHeading();
+  }, [live]);
 
   // The seed this run will use, when it is known before Start: today's Daily seed or a shared
   // link's. A fresh run draws its seed at Start (random, so never during render), and until then
   // the road strip shows no rating.
   const fixedSeed = daily !== undefined ? dailySeed(daily) : useQuerySeed ? querySeed : null;
-  const slot: RunSlot = { settings, seed: fixedSeed, daily: daily ?? null };
+
+  useEffect(() => whenIdleAfterLoad(() => void loadLiveRun().catch(() => {})), []);
+
+  const preload = () => {
+    loadLiveRun().catch(() => {});
+  };
+
+  const start = (restore = false) => {
+    if (loading) return;
+    unlockAudio();
+    const seed = fixedSeed ?? freshSeed();
+    setLoading(true);
+    setLoadFailed(false);
+    loadLiveRun().then(
+      (mod) => {
+        setLoading(false);
+        setLive({ seed, LiveRun: mod.LiveRun, restore });
+      },
+      () => {
+        setLoading(false);
+        setLoadFailed(true);
+      },
+    );
+  };
 
   // A reload, a discarded tab or Back then Forward mounts this screen again with nothing in React
-  // state. The tab's stored run brings the draft or the unsubmitted results back. The server renders
-  // the start panel, so the restore waits for hydration.
+  // state. When the tab holds a saved run for these settings, the draft loads straight into it.
+  // The peek reads only the settings key, never the species data.
   useEffect(() => {
-    const restored = restoreRun(slot);
-    if (restored === null) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync from sessionStorage after hydration
-    setScreen(restored);
-    // Only on mount: later changes are this screen's own writes.
+    const slot = {
+      settings,
+      seed: daily !== undefined ? dailySeed(daily) : querySeed,
+      daily: daily ?? null,
+    };
+    if (readSession(runSlotKey(slot)) === null) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- auto-enter the saved run after hydration
+    start(true);
+    // Only on mount: later starts come from the Start button.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Every screen change goes through here, so the tab always holds the run that is showing.
-  const show = (next: Screen) => {
-    if (next.kind === "draft") saveRun(slot, "draft", runToken(next.run));
-    else if (next.kind === "results") saveRun(slot, "results", next.token);
-    else forgetRun(slot);
-    setScreen(next);
-  };
-
-  const start = () => {
-    unlockAudio();
-    swapped.current = true;
-    show({ kind: "draft", run: startRun(settings, fixedSeed ?? freshSeed()) });
-  };
-
   const newRun = () => {
     setUseQuerySeed(false);
-    setFailure(null);
-    swapped.current = true;
-    show({ kind: "start" });
+    setLive(null);
+    // The run on screen is gone, so a later mount must not bring it back.
+    writeSession(
+      runSlotKey({
+        settings,
+        seed: daily !== undefined ? dailySeed(daily) : querySeed,
+        daily: daily ?? null,
+      }),
+      null,
+    );
     if (params.has("seed")) {
       const q = new URLSearchParams(params.toString());
       q.delete("seed");
@@ -153,56 +174,17 @@ export function Challenge({
     window.scrollTo({ top: 0 });
   };
 
-  const seeResults = (run: Run) => {
-    const token = runToken(run);
-    try {
-      const { draft, cup } = replay(token);
-      swapped.current = true;
-      show({ kind: "results", token, draft, cup });
-      window.scrollTo({ top: 0 });
-    } catch {
-      setFailure("This run could not be scored. Start a new run.");
-    }
-  };
-
   const title = settings.mode === "builder" ? MODE_LABEL.builder : MODE_LABEL[settings.mode];
 
-  if (screen.kind === "results") {
+  if (live !== null) {
     return (
-      <ResultsView
-        token={screen.token}
-        draft={screen.draft}
-        cup={screen.cup}
-        variant="live"
-        onNewRun={daily === undefined ? newRun : undefined}
-        submit={
-          settings.mode === "builder" ? undefined : (
-            <>
-              <SubmitPanel token={screen.token} daily={daily !== undefined} />
-              {daily !== undefined ? (
-                <p className={s.dailyNext}>
-                  One daily seed per day.{" "}
-                  <Link href={playHref("cup8", loadPanel())}>Play a regular challenge</Link> for a
-                  fresh one.
-                </p>
-              ) : null}
-            </>
-          )
-        }
-      />
-    );
-  }
-
-  if (screen.kind === "draft") {
-    return (
-      <DraftBoard
+      <live.LiveRun
+        settings={settings}
+        seed={live.seed}
+        daily={daily}
         title={title}
-        run={screen.run}
-        failure={failure}
-        onRun={(run) => show({ kind: "draft", run })}
-        onAction={(action) => show({ kind: "draft", run: step(screen.run, action) })}
+        restore={live.restore}
         onNewRun={newRun}
-        onSeeResults={() => seeResults(screen.run)}
       />
     );
   }
@@ -222,9 +204,23 @@ export function Challenge({
           Then your squad plays the cup.
         </p>
         <SettingsSummary settings={settings} />
-        <button type="button" className="btn btn--primary" data-testid="run-start" onClick={start}>
-          Start run
+        <button
+          type="button"
+          className="btn btn--primary"
+          data-testid="run-start"
+          aria-busy={loading || undefined}
+          onClick={() => start()}
+          onPointerEnter={preload}
+          onPointerDown={preload}
+          onFocus={preload}
+        >
+          {loading ? "Loading the draft" : "Start run"}
         </button>
+        {loadFailed ? (
+          <p className={s.loadFailed} role="alert">
+            The game could not load. Check your connection and tap Start again.
+          </p>
+        ) : null}
       </div>
       <RoadStrip seed={fixedSeed} mode={settings.mode} />
     </section>

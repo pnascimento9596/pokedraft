@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { RUN_TOKEN_VERSION, applyAction, createDraft, type Seed, type SpeciesId } from "@/engine";
-import { draftFromBuilderToken, filledCount, slotLabel, swapMessage } from "../lineup";
+import { draftFromBuilderToken } from "../builder-token";
+import { filledCount, slotLabel } from "../lineup";
+import { swapMessage } from "../swap-message";
 
 // A partial builder lineup (11 of 16 placed) shared as /?b=... under engine-1 (src/app/card/__tests__ at 90fa976).
 const BUILDER_V1 =
