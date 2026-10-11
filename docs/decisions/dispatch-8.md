@@ -207,3 +207,5 @@ Unit734/80, lint/typecheck/build and mirror/image/bundle/contrast/color/CVD gate
 ### PR 8D results guards before implementation
 
 Four results module/header figure guards at390/1440 in light/dark fail against the unchanged8C local build before this area's implementation. They retain literal Team Score593 and record3-0-2, one h1, header figures at32px mobile/28px desktop and zero axe violations. PR8C review and CI remain pending; this isolated next-area worktree must rebase onto its shipped squash before its own review.
+
+The first8D guard mistakenly opened the older mobile share fixture (845/8-0-0) while asserting the audit fixture's593/3-0-2. That run is not a valid module RED proof. The guard now opens scripts/audit/fixtures.json's independently captured share run; it still asserts literal593/3-0-2. Corrected module RED precedes implementation.

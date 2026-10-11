@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { SHARED_RUN } from "./mobile/scenes";
+import fixture from "../scripts/audit/fixtures.json";
 
 for (const width of [390, 1440]) {
   for (const theme of ["light", "dark"] as const) {
@@ -9,7 +9,7 @@ for (const width of [390, 1440]) {
     }) => {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
-      await page.goto(`/r/${SHARED_RUN}`);
+      await page.goto(`/r/${fixture.shareRun.token}`);
       await expect(page.getByTestId("results-score")).toHaveText("593");
       await expect(page.getByTestId("results-record")).toHaveText("3-0-2");
       await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
