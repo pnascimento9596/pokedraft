@@ -1,0 +1,13 @@
+{
+  "reviewedSha": "e0c79031d063ee19c9cc84c17e94be0741699242",
+  "mergeSha": "b3ab2c790007494e611918b13b3b5284832f6522",
+  "deployment": "dpl_AqbAZRSeQ9XoPRs45VXaJj1H2ZXs",
+  "state": "READY",
+  "ciRun": 38171993380,
+  "unit": 734,
+  "unitFiles": 80,
+  "browserPassed": 528,
+  "browserSkipped": 51,
+  "lighthouseRun": 38173121186,
+  "lighthouseStatus": "pending"
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "path": "/card",
+    "status": 200,
+    "width": 1200,
+    "height": 630,
+    "bytes": 93360,
+    "contentType": "image/png"
+  },
+  {
+    "path": "/r/[token]/opengraph-image",
+    "status": 200,
+    "width": 1200,
+    "height": 630,
+    "bytes": 93360,
+    "contentType": "image/png"
+  }
+]

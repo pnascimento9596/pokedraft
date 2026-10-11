@@ -1,0 +1,66 @@
+[
+  {
+    "phase": "production",
+    "state": "shared",
+    "width": 390,
+    "theme": "light",
+    "file": "shared__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "production",
+    "state": "live",
+    "width": 390,
+    "theme": "light",
+    "file": "live__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "production",
+    "state": "friendly",
+    "width": 390,
+    "theme": "light",
+    "file": "friendly__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "production",
+    "state": "missing",
+    "width": 390,
+    "theme": "light",
+    "file": "missing__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "production",
+    "state": "shared",
+    "width": 390,
+    "theme": "dark",
+    "file": "shared__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "production",
+    "state": "live",
+    "width": 390,
+    "theme": "dark",
+    "file": "live__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "production",
+    "state": "friendly",
+    "width": 390,
+    "theme": "dark",
+    "file": "friendly__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "production",
+    "state": "missing",
+    "width": 390,
+    "theme": "dark",
+    "file": "missing__390__dark.webp",
+    "overflow": 0
+  }
+]

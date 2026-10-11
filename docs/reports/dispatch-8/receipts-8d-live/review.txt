@@ -1,0 +1,42 @@
+
+VERDICT: APPROVE
+CANARY-619861c83b29b81cc9fd77aa
+WARNING STATE.md: the exact-head Linux 579-case suite on e0c7903106aee19dcc
+e0c7903106aee19dcc84c17e94be0741699242 is not yet green, and the contract s
+says it MUST be green before merge with any later commit voiding the receip
+receipt, so this APPROVE does not authorize merging on the 61-focused evide
+evidence alone.
+WARNING src/components/share/card-fonts.ts: the "build trace contains all t
+three Inter TTF paths" claim has no committed receipt; build.log and bundle
+bundle.log never list NFT entries, and the passing unit-card tests read the
+the fonts from the repo checkout, so serverless availability is asserted ra
+rather than proven; attach a build-trace artifact or confirm via the post-m
+post-merge production /card and OG fetches before claiming the NFT gate gre
+green.
+WARNING docs/decisions/dispatch-8.md: production 8D receipts (post-merge ca
+cache-busted health proving the merge SHA, live suite, three-profile mobile
+mobile acceptance with 390 spot captures, exact verify-bot cleanup, same-wo
+same-workflow three-run Lighthouse medians) are rightly listed pending, so 
+record them after merge before the lane counts as verified.
+NIT src/components/results/MatchList.module.css: the appended `.card[data-o
+`.card[data-outcome=...]` blocks supersede the top definitions (`--ok-text`
+(`--ok-text`/`--text-muted`/`--risk-text` over `--win`/`--draw`/`--loss` an
+and `--line-strong`) purely by source order; consolidate so the ok/neutral/
+ok/neutral/risk family mapping reads once.
+NIT src/components/results/FitReveal.module.css: `.row[data-weak]` is redef
+redefined in a trailing block whose border-color and box-shadow win only by
+by cascade order over the original rule; consolidate to one definition.
+NIT src/components/results/ResultsView.module.css: `.details` sets box-shad
+box-shadow var(--shadow-rest); the audit scripts lint stray colors, not var
+variable names, so if that token does not exist the shadow silently renders
+renders nothing; confirm it exists in the theme.
+NIT docs/reports/dispatch-8/receipts-8d-local/e2e-final.log: the name says 
+final but the run is the failing full 522/51/6; the green evidence is focus
+focused-final.log plus the still-pending Linux 579, so rename or annotate s
+so the file cannot be skimmed as a green final gate.
+NIT docs/reports/dispatch-8/lighthouse-8c/environment.json: lacks the trail
+trailing newline, duplicating the lighthouse-8b hygiene NIT.
+NIT scripts/audit/theme-figures.mjs: the gate still compares numbers and na
+named fields only; the full text readback is retained in figures-8d JSON bu
+but never diffed, and since the user authorized prose changes a loose text 
+check, not none, would still catch accidental loss.
