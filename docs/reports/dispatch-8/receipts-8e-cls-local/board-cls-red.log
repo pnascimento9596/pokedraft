@@ -1,0 +1,186 @@
+
+Running 6 tests using 2 workers
+
+(node:8601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8600) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px dark (2.4s)
+  ✘  1 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px light (2.5s)
+(node:8655) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8657) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px light (1.9s)
+(node:8706) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px dark (2.0s)
+(node:8707) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px light (1.7s)
+  ✘  6 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px dark (1.7s)
+
+
+  1) [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px light 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 0.01197645457377434
+
+      22 |         await page.evaluate(() => document.fonts.ready);
+      23 |         await page.waitForTimeout(500);
+    > 24 |         expect(await page.evaluate(() => (window as unknown as { __boardShifts: number[] }).__boardShifts.reduce((sum, value) => sum + value, 0))).toBe(0);
+         |                                                                                                                                                    ^
+      25 |       }
+      26 |     });
+      27 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/leaderboard-cls.spec.ts:24:148
+
+    Error Context: output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-88fee-tly-zero-CLS-at-360px-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-88fee-tly-zero-CLS-at-360px-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-88fee-tly-zero-CLS-at-360px-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px dark 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 0.01197645457377434
+
+      22 |         await page.evaluate(() => document.fonts.ready);
+      23 |         await page.waitForTimeout(500);
+    > 24 |         expect(await page.evaluate(() => (window as unknown as { __boardShifts: number[] }).__boardShifts.reduce((sum, value) => sum + value, 0))).toBe(0);
+         |                                                                                                                                                    ^
+      25 |       }
+      26 |     });
+      27 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/leaderboard-cls.spec.ts:24:148
+
+    Error Context: output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-cb2d6-ctly-zero-CLS-at-360px-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-cb2d6-ctly-zero-CLS-at-360px-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-cb2d6-ctly-zero-CLS-at-360px-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px light 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 0.025087974234087127
+
+      22 |         await page.evaluate(() => document.fonts.ready);
+      23 |         await page.waitForTimeout(500);
+    > 24 |         expect(await page.evaluate(() => (window as unknown as { __boardShifts: number[] }).__boardShifts.reduce((sum, value) => sum + value, 0))).toBe(0);
+         |                                                                                                                                                    ^
+      25 |       }
+      26 |     });
+      27 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/leaderboard-cls.spec.ts:24:148
+
+    Error Context: output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-b05df-tly-zero-CLS-at-390px-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-b05df-tly-zero-CLS-at-390px-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-b05df-tly-zero-CLS-at-390px-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px dark 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 0.025087974234087127
+
+      22 |         await page.evaluate(() => document.fonts.ready);
+      23 |         await page.waitForTimeout(500);
+    > 24 |         expect(await page.evaluate(() => (window as unknown as { __boardShifts: number[] }).__boardShifts.reduce((sum, value) => sum + value, 0))).toBe(0);
+         |                                                                                                                                                    ^
+      25 |       }
+      26 |     });
+      27 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/leaderboard-cls.spec.ts:24:148
+
+    Error Context: output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-a67eb-ctly-zero-CLS-at-390px-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-a67eb-ctly-zero-CLS-at-390px-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-a67eb-ctly-zero-CLS-at-390px-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px light 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 0.016596347565215722
+
+      22 |         await page.evaluate(() => document.fonts.ready);
+      23 |         await page.waitForTimeout(500);
+    > 24 |         expect(await page.evaluate(() => (window as unknown as { __boardShifts: number[] }).__boardShifts.reduce((sum, value) => sum + value, 0))).toBe(0);
+         |                                                                                                                                                    ^
+      25 |       }
+      26 |     });
+      27 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/leaderboard-cls.spec.ts:24:148
+
+    Error Context: output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-3b140-tly-zero-CLS-at-412px-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-3b140-tly-zero-CLS-at-412px-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-3b140-tly-zero-CLS-at-412px-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px dark 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 0.008282533303608734
+
+      22 |         await page.evaluate(() => document.fonts.ready);
+      23 |         await page.waitForTimeout(500);
+    > 24 |         expect(await page.evaluate(() => (window as unknown as { __boardShifts: number[] }).__boardShifts.reduce((sum, value) => sum + value, 0))).toBe(0);
+         |                                                                                                                                                    ^
+      25 |       }
+      26 |     });
+      27 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/leaderboard-cls.spec.ts:24:148
+
+    Error Context: output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-eeda9-ctly-zero-CLS-at-412px-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-eeda9-ctly-zero-CLS-at-412px-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-cls-red/leaderboard-cls-leaderboar-eeda9-ctly-zero-CLS-at-412px-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6 failed
+    [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px light 
+    [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px dark 
+    [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px light 
+    [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px dark 
+    [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px light 
+    [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px dark 
