@@ -80,7 +80,9 @@ describe("health endpoint deployment proof", () => {
   });
 
   it("reports an unconfigured database as unavailable only for the requested probe", async () => {
-    mocks.getDb.mockImplementation(() => { throw new Error("DATABASE_URL is not set"); });
+    mocks.getDb.mockImplementation(() => {
+      throw new Error("DATABASE_URL is not set");
+    });
     expect((await health()).status).toBe(200);
     const response = await health("?db=1");
     expect(response.status).toBe(503);
