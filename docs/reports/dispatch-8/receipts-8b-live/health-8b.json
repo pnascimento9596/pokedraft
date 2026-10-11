@@ -1,0 +1,32 @@
+{
+  "identity": {
+    "sha": "6e7d34e6071f21c976f875a0cbb1b7303407054e",
+    "env": "production",
+    "region": "iad1",
+    "engine": "pokedraft-engine-3",
+    "tokenVersions": [
+      1,
+      2,
+      3
+    ]
+  },
+  "headers": {
+    "age": "0",
+    "cache-control": "no-store",
+    "content-encoding": "br",
+    "content-security-policy-report-only": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; report-uri /api/csp-report",
+    "content-type": "application/json",
+    "date": "Sun, 11 Oct 2026 15:31:03 GMT",
+    "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "server": "Vercel",
+    "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+    "transfer-encoding": "chunked",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "x-matched-path": "/api/health",
+    "x-robots-tag": "noindex, nofollow",
+    "x-vercel-cache": "MISS",
+    "x-vercel-id": "iad1::iad1::55wlb-1791732662245-4a1fd22bc243"
+  }
+}

@@ -1,0 +1,144 @@
+
+Running 71 tests using 4 workers
+
+(node:78074) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78071) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78073) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   3 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /history (1.0s)
+  ✓   2 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /how-to-play (1.1s)
+  ✓   1 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on / (1.3s)
+  ✓   5 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /r/garbage-not-a-token (482ms)
+  ✓   6 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /nope-404 (495ms)
+  ✓   4 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /r/<results token> (1.9s)
+  ✓   9 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /leaderboard with rows (587ms)
+  ✓   7 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on a live 8-0 draft (1.2s)
+  ✓   8 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on the builder picker (1.4s)
+  ✓  11 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on / (740ms)
+  ✓  12 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /how-to-play (485ms)
+  ✓  13 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /history (426ms)
+  ✓  15 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /r/garbage-not-a-token (535ms)
+  ✓  16 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /nope-404 (446ms)
+  ✓  14 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /r/<results token> (1.3s)
+  ✓  17 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on a live 8-0 draft (908ms)
+  ✓  10 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /daily results with the submit panel (2.6s)
+  ✓  19 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /leaderboard with rows (565ms)
+  ✓  21 [chromium] › e2e/builder-ratings-layout.spec.ts:83:7 › builder with Show ratings on, 390 px wide › no two pitch tokens overlap (307ms)
+  ✓  18 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on the builder picker (1.3s)
+  ✓  23 [chromium] › e2e/builder-ratings-layout.spec.ts:98:7 › builder with Show ratings on, 390 px wide › no legend with Show ratings off (285ms)
+  ✓  22 [chromium] › e2e/builder-ratings-layout.spec.ts:90:7 › builder with Show ratings on, 390 px wide › a legend under the pitch says what the rating compares against (302ms)
+  ✓  24 [chromium] › e2e/builder-ratings-layout.spec.ts:135:7 › builder with Show ratings on, a 700 px window › no two pitch tokens overlap on a 3-4-2-1 pitch (413ms)
+  ✓  26 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on how to play (420ms)
+  ✓  25 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on home (541ms)
+  ✓  28 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on leaderboard (444ms)
+  ✓  27 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on shared results (700ms)
+  ✓  29 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on live draft with a selected candidate (956ms)
+  ✓  30 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on builder picker with a type filter on (770ms)
+  ✓  20 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /daily results with the submit panel (2.6s)
+  ✓  32 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on home (469ms)
+  ✓  33 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on how to play (370ms)
+  ✓  35 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on leaderboard (477ms)
+  ✓  34 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on shared results (744ms)
+  ✓  36 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on live draft with a selected candidate (745ms)
+(node:78252) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  37 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on builder picker with a type filter on (683ms)
+(node:78261) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  31 [chromium] › e2e/contrast.spec.ts:253:9 › dark theme contrast › axe color-contrast finds nothing on daily results, the submitted rank and history (3.2s)
+  ✓  39 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home (1.0s)
+  ✓  40 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home settings open (815ms)
+(node:78289) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  41 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture (594ms)
+  ✓  42 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture (661ms)
+  ✓  43 [iphone-se] › e2e/mobile-draft.spec.ts:173:1 › at draft complete in 4-4-2, no centre-back's name touches the keeper's picture (686ms)
+  ✓  44 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture (551ms)
+  ✓  45 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture (616ms)
+  ✓  38 [chromium] › e2e/contrast.spec.ts:253:9 › light theme contrast › axe color-contrast finds nothing on daily results, the submitted rank and history (3.3s)
+  ✓  46 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture (630ms)
+  ✓  47 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture (567ms)
+(node:78322) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  48 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture (516ms)
+(node:78323) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78326) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  49 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture (1.0s)
+  ✓  50 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home (974ms)
+  ✓  51 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home settings open (1.2s)
+  ✓  52 [iphone-14] › e2e/mobile-draft.spec.ts:173:1 › at draft complete in 4-4-2, no centre-back's name touches the keeper's picture (826ms)
+(node:78375) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  53 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture (635ms)
+  ✓  54 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture (631ms)
+  ✓  55 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture (633ms)
+  ✓  57 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture (885ms)
+  ✓  58 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture (1.2s)
+  ✓  59 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture (1.2s)
+  ✓  56 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture (1.4s)
+  ✓  60 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture (832ms)
+(node:78437) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78439) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78447) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78451) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  61 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home (562ms)
+  ✓  63 [pixel-7] › e2e/mobile-draft.spec.ts:173:1 › at draft complete in 4-4-2, no centre-back's name touches the keeper's picture (453ms)
+  ✓  62 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home settings open (594ms)
+  ✓  64 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture (496ms)
+  ✓  67 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture (399ms)
+  ✘  65 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture (441ms)
+  ✓  66 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture (651ms)
+(node:78590) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  69 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture (323ms)
+  ✓  68 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture (636ms)
+  ✓  70 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture (382ms)
+  ✓  71 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture (363ms)
+
+
+  1) [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "slot-s7 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/geometry-final/mobile-draft-warm-short-fi-1f607--every-other-player-picture-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/geometry-final/mobile-draft-warm-short-fi-1f607--every-other-player-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/geometry-final/mobile-draft-warm-short-fi-1f607--every-other-player-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture
+  70 passed (18.1s)

@@ -1,0 +1,272 @@
+$ tsx scripts/audit/theme-contrast.mts
+{
+  "lowest": [
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "viz-8 heat fill 0.48",
+      "ratio": 4.658766517738325,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-soft",
+      "surface": "--canvas",
+      "ratio": 9.488186600774757,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-muted",
+      "surface": "--surface-sunken",
+      "ratio": 5.199715611252354,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-faint",
+      "surface": "--surface-sunken",
+      "ratio": 4.762137917261816,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--link",
+      "surface": "--canvas",
+      "ratio": 5.246060640588725,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--accent-fg",
+      "surface": "--accent",
+      "ratio": 5.433837485734052,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--ok-text",
+      "surface": "--ok-bg",
+      "ratio": 6.836741874435922,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--risk-text",
+      "surface": "risk pill tint",
+      "ratio": 5.291626164296436,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--viz-1",
+      "surface": "--surface",
+      "ratio": 3.411053061939352,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-2",
+      "surface": "--surface",
+      "ratio": 3.0073801166099483,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-3",
+      "surface": "--surface",
+      "ratio": 3.3005859774546367,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-4",
+      "surface": "--surface",
+      "ratio": 3.846742593091505,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-5",
+      "surface": "--surface",
+      "ratio": 3.049017113484908,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-6",
+      "surface": "--surface",
+      "ratio": 3.914783521789215,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-7",
+      "surface": "--surface",
+      "ratio": 3.4397059936488232,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--risk-mark",
+      "surface": "--surface",
+      "ratio": 4.479394206355619,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--border-control",
+      "surface": "--surface",
+      "ratio": 3.5157506587615797,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--focus",
+      "surface": "--surface",
+      "ratio": 5.813077404885046,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--action-border",
+      "surface": "--surface",
+      "ratio": 7.9809129136746355,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-normal",
+      "surface": "type pill 0.18",
+      "ratio": 4.896380056676874,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fighting",
+      "surface": "type pill 0.18",
+      "ratio": 5.402022021452123,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-flying",
+      "surface": "type pill 0.18",
+      "ratio": 5.41441965459524,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-poison",
+      "surface": "type pill 0.18",
+      "ratio": 5.936168867267756,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ground",
+      "surface": "type pill 0.18",
+      "ratio": 5.314587939886777,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-rock",
+      "surface": "type pill 0.18",
+      "ratio": 6.012700009298428,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-bug",
+      "surface": "type pill 0.18",
+      "ratio": 6.185441698668277,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ghost",
+      "surface": "type pill 0.18",
+      "ratio": 4.675612784816652,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-steel",
+      "surface": "type pill 0.18",
+      "ratio": 5.311592639194664,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fire",
+      "surface": "type pill 0.18",
+      "ratio": 4.7330227383598835,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-water",
+      "surface": "type pill 0.18",
+      "ratio": 6.911700962191898,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-grass",
+      "surface": "type pill 0.18",
+      "ratio": 5.022879310710919,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-electric",
+      "surface": "type pill 0.18",
+      "ratio": 4.9859591703981785,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-psychic",
+      "surface": "type pill 0.18",
+      "ratio": 5.277608842279719,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ice",
+      "surface": "type pill 0.18",
+      "ratio": 4.819207504347384,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dragon",
+      "surface": "type pill 0.18",
+      "ratio": 5.105577963498147,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dark",
+      "surface": "type pill 0.18",
+      "ratio": 8.407640439172205,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fairy",
+      "surface": "type pill 0.18",
+      "ratio": 5.976832433864851,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--pitch-line",
+      "surface": "--pitch-stripe",
+      "ratio": 5.776376074429299,
+      "minimum": 3
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,13 @@
+$ vitest run --maxWorkers=4
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel
+
+
+ Test Files  80 passed (80)
+      Tests  734 passed (734)
+   Start at  12:01:35
+   Duration  22.91s (tests 71%, import 15%, environment 10%, transform 4%)
+
+    Isolate  80 workers spawned · ~161ms startup each (spawn + environment, per file)
+             at least ~3.06s faster with isolate: false — reuses workers across files instead of one per file
+

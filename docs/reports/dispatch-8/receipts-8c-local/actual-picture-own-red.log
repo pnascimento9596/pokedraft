@@ -1,0 +1,1122 @@
+
+Running 24 tests using 4 workers
+
+(node:35787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35784) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35785) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35783) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture (2.2s)
+  ✘   2 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture (2.4s)
+  ✘   4 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture (2.3s)
+  ✘   3 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture (2.5s)
+(node:35969) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35985) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35991) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   5 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture (2.1s)
+  ✘   6 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture (1.9s)
+  ✘   8 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture (1.6s)
+  ✘   7 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture (1.9s)
+(node:36201) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36206) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36210) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36214) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  11 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture (2.1s)
+  ✘  10 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture (2.1s)
+  ✘   9 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture (2.1s)
+  ✘  12 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture (1.9s)
+(node:36563) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36565) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36566) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36568) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  14 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture (1.5s)
+  ✘  13 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture (1.5s)
+  ✘  15 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture (1.5s)
+  ✘  16 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture (1.3s)
+(node:36779) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36780) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36788) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  18 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture (1.5s)
+  ✘  20 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture (1.0s)
+  ✘  19 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture (1.4s)
+(node:36936) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36945) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36947) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  17 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture (1.4s)
+  ✘  21 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture (951ms)
+(node:37040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  22 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture (1.1s)
+  ✘  23 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture (1.3s)
+  ✘  24 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture (931ms)
+
+
+  1) [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 15
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s0 name touches slot-s3 picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s2 name touches slot-s0 picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-ebf16--every-other-player-picture-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-ebf16--every-other-player-picture-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-ebf16--every-other-player-picture-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s0 name touches slot-s3 picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s2 name touches slot-s0 picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s5 name touches slot-s7 picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s6 name touches slot-s5 picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-6517b--every-other-player-picture-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-6517b--every-other-player-picture-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-6517b--every-other-player-picture-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 15
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s0 name touches slot-s3 picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s2 name touches slot-s0 picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-1f607--every-other-player-picture-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-1f607--every-other-player-picture-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-1f607--every-other-player-picture-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s0 name touches slot-s3 picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s2 name touches slot-s0 picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s5 name touches slot-s8 picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s7 name touches slot-s5 picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-2e132--every-other-player-picture-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-2e132--every-other-player-picture-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-2e132--every-other-player-picture-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 21
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s0 name touches slot-s3 picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s1 name touches slot-s2 picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s2 name touches slot-s3 picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s3 name touches slot-s0 picture",
+    +   "slot-s3 name touches slot-s4 picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s4 name touches slot-s5 picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s6 name touches slot-s7 picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s7 name touches slot-s8 picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-c0505--every-other-player-picture-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-c0505--every-other-player-picture-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-c0505--every-other-player-picture-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 21
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s0 name touches slot-s2 picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s1 name touches slot-s2 picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s2 name touches slot-s0 picture",
+    +   "slot-s2 name touches slot-s3 picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s4 name touches slot-s5 picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s5 name touches slot-s6 picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s6 name touches slot-s7 picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s7 name touches slot-s8 picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-97aae--every-other-player-picture-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-97aae--every-other-player-picture-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-97aae--every-other-player-picture-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s0 name touches slot-s2 picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s1 name touches slot-s2 picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s2 name touches slot-s0 picture",
+    +   "slot-s2 name touches slot-s3 picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-57b58--every-other-player-picture-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-57b58--every-other-player-picture-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-57b58--every-other-player-picture-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s0 name touches slot-s2 picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s1 name touches slot-s2 picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s2 name touches slot-s0 picture",
+    +   "slot-s2 name touches slot-s3 picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-4a244--every-other-player-picture-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-4a244--every-other-player-picture-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-4a244--every-other-player-picture-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-ebf16--every-other-player-picture-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-ebf16--every-other-player-picture-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-ebf16--every-other-player-picture-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-6517b--every-other-player-picture-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-6517b--every-other-player-picture-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-6517b--every-other-player-picture-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11) [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-1f607--every-other-player-picture-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-1f607--every-other-player-picture-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-1f607--every-other-player-picture-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  12) [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-2e132--every-other-player-picture-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-2e132--every-other-player-picture-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-2e132--every-other-player-picture-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  13) [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-c0505--every-other-player-picture-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-c0505--every-other-player-picture-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-c0505--every-other-player-picture-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  14) [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-97aae--every-other-player-picture-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-97aae--every-other-player-picture-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-97aae--every-other-player-picture-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  15) [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-57b58--every-other-player-picture-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-57b58--every-other-player-picture-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-57b58--every-other-player-picture-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  16) [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-4a244--every-other-player-picture-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-4a244--every-other-player-picture-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-4a244--every-other-player-picture-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  17) [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-ebf16--every-other-player-picture-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-ebf16--every-other-player-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-ebf16--every-other-player-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  18) [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-6517b--every-other-player-picture-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-6517b--every-other-player-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-6517b--every-other-player-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  19) [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-1f607--every-other-player-picture-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-1f607--every-other-player-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-1f607--every-other-player-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  20) [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-2e132--every-other-player-picture-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-2e132--every-other-player-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-2e132--every-other-player-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  21) [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-c0505--every-other-player-picture-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-c0505--every-other-player-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-c0505--every-other-player-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  22) [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-97aae--every-other-player-picture-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-97aae--every-other-player-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-97aae--every-other-player-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  23) [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-57b58--every-other-player-picture-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-57b58--every-other-player-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-57b58--every-other-player-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  24) [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 13
+
+    - Array []
+    + Array [
+    +   "slot-s0 name touches its own picture",
+    +   "slot-s1 name touches its own picture",
+    +   "slot-s2 name touches its own picture",
+    +   "slot-s3 name touches its own picture",
+    +   "slot-s4 name touches its own picture",
+    +   "slot-s5 name touches its own picture",
+    +   "slot-s6 name touches its own picture",
+    +   "slot-s7 name touches its own picture",
+    +   "slot-s8 name touches its own picture",
+    +   "slot-s9 name touches its own picture",
+    +   "slot-s10 name touches its own picture",
+    + ]
+
+      249 |       return out;
+      250 |     });
+    > 251 |     expect(collisions).toEqual([]);
+          |                        ^
+      252 |   });
+      253 | }
+      254 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-draft.spec.ts:251:24
+
+    Error Context: output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-4a244--every-other-player-picture-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-4a244--every-other-player-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/actual-picture-own-red/mobile-draft-warm-short-fi-4a244--every-other-player-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  24 failed
+    [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture
+    [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture
+    [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture
+    [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture
+    [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture
+    [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture
+    [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture
+    [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture
+    [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture
+    [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture
+    [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture
+    [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture
+    [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture
+    [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture
+    [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture
+    [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture
+    [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture
+    [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture
+    [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture
+    [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture
+    [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture
+    [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture
+    [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture
+    [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture

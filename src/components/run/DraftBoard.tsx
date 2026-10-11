@@ -24,11 +24,13 @@ import { REGION_LABEL } from "@/ui/labels";
 import { sameRef, slotLabel, valueAt } from "@/ui/lineup";
 import { swapMessage } from "@/ui/swap-message";
 import { RoadStrip } from "./RoadStrip";
+import { NavIcon } from "@/components/ui/nav-icons";
 import { candidatesFor, withHint, type Run } from "./runState";
 import s from "./DraftBoard.module.css";
 
 export interface DraftBoardProps {
   readonly title: string;
+  readonly navFamily?: "play" | "daily";
   readonly run: Run;
   readonly failure: string | null;
   readonly onAction: (action: DraftAction) => void;
@@ -90,6 +92,7 @@ interface Selection {
 
 export function DraftBoard({
   title,
+  navFamily = "play",
   run,
   failure,
   onAction,
@@ -231,7 +234,10 @@ export function DraftBoard({
       <section className={s.side} aria-label="Draft">
         <header className={s.header}>
           <div className={s.titleRow}>
-            <span className="kicker">{title}</span>
+            <span className="kicker">
+              <NavIcon family={navFamily} />
+              {title}
+            </span>
             <SoundToggle />
           </div>
           <h1 ref={headingRef} className={s.round} data-testid="round-header" tabIndex={-1}>

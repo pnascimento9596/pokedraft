@@ -169,21 +169,10 @@ test.describe("scrollable regions at 320 px", () => {
   }
 });
 
-// Theme 7F. In 4-4-2 the centre-backs stand 15 rows above the keeper and 13 columns to each side,
-// so on a short phone pitch their names ran into the keeper's picture once the squad was full.
-// Still red on iPhone SE: its 227 px field puts the centre-backs' pictures 30 px above the keeper's,
-// and a token is 58 px tall, so only the side gap keeps them apart, and a 40 px name closes it. In
-// 3-5-2 the middle centre-back covers the keeper outright. That needs a short-field token layout
-// (the 7C fit tier), not a swap fix, so it is marked here and turns green with that layout.
-// Pixel 7 (412x839) fails the same way: LCB Excadrill name 139-184 x 502-515 and RCB Bergmite name
-// 226-274 x 502-515 against keeper picture 184-228 x 506-550, measured on CI 2026-10-11.
+// Dispatch8 short-field layout resolves the retained4-4-2 regression on all three devices.
 test("at draft complete in 4-4-2, no centre-back's name touches the keeper's picture", async ({
   page,
 }) => {
-  test.fail(
-    test.info().project.name !== "iphone-14",
-    "carryover to the short-field layout: LCB Excadrill and RCB Bergmite names touch the keeper's picture on a short field",
-  );
   await start(page, PLAY_8_0);
   await draftRounds(page, 16);
   await expect(page.getByTestId("see-results")).toBeVisible();
@@ -208,3 +197,57 @@ test("at draft complete in 4-4-2, no centre-back's name touches the keeper's pic
   });
   expect(touching).toEqual([]);
 });
+
+for (const formation of [
+  "4-4-2",
+  "4-3-3",
+  "4-2-3-1",
+  "4-1-4-1",
+  "5-3-2",
+  "3-5-2",
+  "3-4-3",
+  "3-4-2-1",
+]) {
+  test(`warm short field: ${formation} names clear every other player picture`, async ({
+    page,
+  }) => {
+    await start(page, PLAY_8_0.replace("f=4-4-2", `f=${formation}`));
+    await draftRounds(page, 16);
+    await expect(page.getByTestId("see-results")).toBeVisible();
+    await settle(page);
+    const collisions = await page.evaluate(() => {
+      const tokens = [
+        ...document.querySelectorAll('[data-testid="pitch"] [data-testid^="slot-s"]'),
+      ];
+      const out: string[] = [];
+      for (const token of tokens) {
+        const parts = token.querySelectorAll(":scope > span");
+        const name = parts[parts.length - 1]!;
+        const n = name.getBoundingClientRect();
+        const ownPicture = token.querySelector("[data-player-image]")!.getBoundingClientRect();
+        if (
+          Math.max(ownPicture.left - n.right, n.left - ownPicture.right) < 1 &&
+          Math.max(ownPicture.top - n.bottom, n.top - ownPicture.bottom) < 1
+        )
+          out.push(`${token.getAttribute("data-testid")} name touches its own picture`);
+        for (const other of tokens) {
+          if (token === other) continue;
+          const image = (
+            other.querySelector("[data-player-image]") ?? other.querySelector(":scope > span")!
+          ).getBoundingClientRect();
+          const gapX = Math.max(image.left - n.right, n.left - image.right);
+          const gapY = Math.max(image.top - n.bottom, n.top - image.bottom);
+          if (gapX < 1 && gapY < 1)
+            out.push(
+              `${token.getAttribute("data-testid")} name touches ${other.getAttribute("data-testid")} picture`,
+            );
+        }
+        const style = getComputedStyle(name);
+        if (innerWidth >= 390 && parseFloat(style.fontSize) < 12)
+          out.push(`${token.getAttribute("data-testid")} name is below12px`);
+      }
+      return out;
+    });
+    expect(collisions).toEqual([]);
+  });
+}

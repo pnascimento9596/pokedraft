@@ -158,3 +158,48 @@ GitHub Ubuntu run38150015655 passed against productione8ce2d3, with the same pin
 ### PR 8B full browser target corrections
 
 The rebased full local browser run recorded490 passes,51 skips and6 failures. The six failures reproduce two regressions on each device: the builder Team Score label inherited10.4px text, and the image-settings checkbox hit box was43px inside its new bordered row. The label now explicitly uses13/18 at600; the checkbox row reserves45px so its inner hit box is44px. No test or assertion changed. The six focused unchanged guards now all pass. Build and lint pass, and the after captures were regenerated. The required full Linux rerun and independent exact-head review are pending.
+### PR 8C short-field guards before implementation
+
+A literal eight-formation matrix on iPhone SE, iPhone14 and Pixel7 fails24 cases against the unchanged8B build. It checks every starter name against every other picture and requires12px names at390px and wider. RED includes keeper and other line collisions, beyond the original4-4-2 carryover. The existing expected-fail remains unchanged until the layout is corrected.
+
+
+### PR 8B shipped and production verified
+
+PR #27 squash6e7d34e6071f21c976f875a0cbb1b7303407054e, reviewed249a6dd5151bbe52899600ade150f0ca50a2a970, GLM5.3Flash APPROVE with verified canary. LinuxCI38150679435 passed734 tests/80files and496 browser cases/51skips. Vercel initialpreview failed pre-build with git_info_fail, no build events; retry pinned to the same immutable GitSHA succeeded asdpl_2pKSfi6qjGtfR6KSbbTQbMCuqYB8. No paid tier, source change or production promotion was used for the retry. Official MCP documentation specifies that omitting target creates a preview; explicit target preview was rejected400 before any deployment, then corrected.
+
+Productiondpl_Aiwm5aTj3vb9uwk3imYYJvtaXQTH is READY. First cache-busted health proves mergeSHA andno-store. Live4 passed; unchangedmobile242 passed/46skipped. Exact dailyverify-bot8b2e004b-fce6-40ef-aa73-cbe73e5019d7 deleted with id/name/mode/date predicate; readbackcount0. Eight production390px captures coverhome, filled ratedbuilder,picker,emptysearchinbothschemes, overflow0. GitHubUbuntuLighthouse38151791031 is running againstthe8Bmerge; no numbers claimed untilcomplete.
+
+Reviewer16pxinput concern was verified in a real390pxbrowser: Formationselect16px andpickersearch16px, supplied by theglobalinput/select/textarea floor. The full post-fixLinuxsuite resolves the earlier6 local failures. The checkpoint STATE count is corrected inthis nextPR; no commits were made after8BAPPROVE. The numbers-only gate deliberately allowsprose/layout changes, as the dispatch requests; verbatimtext remains retained. REDbuilder receipt is now archived. The picker count and reason-bearingempty state remain two shortmessages; no accessibility violation is claimed from that duplication.
+
+### PR 8C draft and wheel implementation checkpoint
+
+The draft becomes the single emphasizedmodule with a warm pitch, quiet token depth and palette name surfaces. The short-field layout puts picture and name beside eachother, keeps44px token targets and12px names, and removes the originalexpected-fail onlyafter the24 formation/device guards pass. No formation positions, engine actions, seed/timing functions or PlayerImage implementation changed. Pitch stripes are the onlyremaining gradients inthis area. Wheel segments alternate palette surfaces with14% tint, accentrim and the existingtiming/reduced-motion path.
+
+Challenge starts and RoadtoFinal use titledModuleCard headers. Chart marks gain keyboard-accessible detailtriggers with opponent/rating/source, neutral missing-opponent reason and internallyscrolling44px columns. The same source figures and ladderheight calculations remain. A narrow unit check22/2 and full734/80 pass; palette/color/CVD/type/build/image/bundle checks pass.
+
+The first broadbrowser run recorded331 passes,50skips and16 failures:15 overflow failures from absolute tooltipwrappers inside the internal chart scroller, plus360px restored-resultCLS0.08412322274881516. Tooltip triggers now remain in flow and panels stay within the viewport. The play page reserves at least oneviewport of content height so a compactstart footer does not move visibly while a saved result restores. No guard was relaxed. The corrected focusedrun44/44 passes:24 allformation/device pairs,3 original4-4-2 cases,15 affectedoverflow cases and2 strictzero restoredCLS cases. Full finalbrowserverification after rebasingonto shipped8B is pending. Beforematrix16 captures includesstart,draft,completed squad andspinningwheel at390/1440both themes; aftermatrix andnumericdiff stilldue.
+
+
+### PR 8C actual-picture guard correction before image-frame fix
+
+Visual inspection showed that the frozen picture seam sets a nonshrinking36px wrapper. A20px circle alone did not constrain that picture. The earlier guard measured circle frames; the strengthened guard measures actual data-player-image rectangles. Against the same build, actual other-picture checks fail8 cases and pass16; adding own-picture separation failsall24 cases. The stronger guard is committed before the wrapper constraint/layout fix. No image component, pack or engine position is changed.
+
+The broader pre-correction suite recorded510 passes,51skips and10 failures: four axe/contrast cases on transparent chart labels over bars, and six home tap-target cases because shrinking empty compact pictures left40px buttons. These are fixes to presentation; no acceptance assertion is relaxed. This run predates the actual-picture guard and is not a final-head pass.
+
+### PR 8C measured layout corrections
+
+The actual-picture guard exposed a remaining own-picture clearance failure in 4-2-3-1 on Pixel 7 while the other 70 focused cases passed. Browser geometry showed the legacy hover transform enlarged the last-tapped 34px picture to 36.04px, leaving only 0.98px before its name. The draft reserves a 2px gap and removes hover scaling; focus, selection and drag indicators remain. The image wrapper constrains the frozen picture seam without changing PlayerImage or the packs. Slot pills move to the upper corner so they do not obscure the artwork; bench labels cannot wrap. The final full browser rerun is pending.
+
+A source inspection also corrected a misplaced chart selector: the eight round columns share the 44px floor and scroll internally in both compact and normal modules. Round labels use surface/control tokens rather than transparent text over chart bars. Loaded-image screenshots are refreshed against the actual unchanged 8B build for before, and the current 8C build for after. All 16 captures in each set have zero horizontal overflow. Results/leaderboard readback preserves 186/10 figures in each theme.
+
+PR 8B clean-runner measurement 38151791031 completed against 6e7d34e: every individual sample Accessibility 100, CLS exactly 0; three-run median LCP home 2134.5ms, play 2278.4ms, daily 2231.8ms, leaderboard 1978.0ms, history 1977.7ms, help 1976.4ms, results 3556.6ms, Kanto start 2259.6ms. This is an intermediate measurement, not the whole-lane final report.
+
+### PR 8C chart control guard before final layout fix
+
+The final full local run passed519 cases and skipped51; one unchanged daily390px right-edge guard found a413px element inside the horizontal chart. The24 strengthened actual-picture formation/device cases and original4-4-2 cases all pass. Visual inspection also found vertically clipped chart triggers. Four new literal44px/visible-bounds/keyboard-tooltip guards fail in both themes at390/1440 on this build and are committed before the chart layout correction. The phone chart will use two rows of four rounds to preserve readable44px controls within the viewport, with unchanged rating values and proportional heights.
+
+### PR 8C local gates ready for review
+
+The final chart layout passes99 focused checks: four new chart visibility/keyboard cases, unchanged390/1440 daily/board bounds, route axe, all mobile overflow cases and layout-shift cases. The last full local run519/51 with one chart overflow failure remains archived honestly; that exact failure now passes in the focused run. Full final Linux575-case suite remains required before merge. All24 actual-picture formation/device guards passed in the full local run, including the Pixel own-picture hover regression; the chart-only correction does not alter pitch geometry.
+
+Unit734/80, lint/typecheck/build and mirror/image/bundle/contrast/color/CVD gates pass. Before/after16 loaded-image captures per set and numeric186/10 per-theme readback are retained. No frozen path changes. Independent exact pushed-head review and production8C verification are pending.

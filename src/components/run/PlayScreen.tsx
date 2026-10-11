@@ -13,6 +13,8 @@ import { freshSeed, parsePlayQuery } from "@/ui/settings";
 import { readSession, runSlotKey, writeSession } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
 import { RoadStrip } from "./RoadStrip";
+import { ModuleCard } from "@/components/ui/primitives";
+import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./PlayScreen.module.css";
 
 // The draft, the results and the species data they need load on demand. Pointing at or focusing
@@ -191,18 +193,15 @@ export function Challenge({
 
   return (
     <section className={s.start}>
-      <div className={s.hero}>
-        <span className="kicker" data-testid={daily !== undefined ? "daily-kicker" : undefined}>
-          {daily !== undefined ? `Daily challenge, ${longDate(daily)}` : "Challenge"}
-        </span>
-        <h1 className={s.title}>{daily !== undefined ? `Daily ${title}` : title}</h1>
-        <p className={s.lede}>
-          {daily !== undefined
-            ? "Everyone plays the same seed today, and your run can go on the daily board. "
-            : null}
-          {DRAFT_ROUNDS} rounds. Each round the wheel rolls, you sign one player and place them.
-          Then your squad plays the cup.
-        </p>
+      <ModuleCard
+        className={s.hero}
+        eyebrow={daily !== undefined ? `Daily challenge, ${longDate(daily)}` : "Challenge"}
+        title={daily !== undefined ? `Daily ${title}` : title}
+        description={`${daily !== undefined ? "Everyone plays the same seed today, and your run can go on the daily board. " : ""}${DRAFT_ROUNDS} rounds. Each round the wheel rolls, you sign one player and place them. Then your squad plays the cup.`}
+        headingLevel={1}
+        icon={<NavIcon family={daily !== undefined ? "daily" : "play"} />}
+        data-testid={daily !== undefined ? "daily-kicker" : undefined}
+      >
         <SettingsSummary settings={settings} />
         <button
           type="button"
@@ -221,7 +220,7 @@ export function Challenge({
             The game could not load. Check your connection and tap Start again.
           </p>
         ) : null}
-      </div>
+      </ModuleCard>
       <RoadStrip seed={fixedSeed} mode={settings.mode} />
     </section>
   );

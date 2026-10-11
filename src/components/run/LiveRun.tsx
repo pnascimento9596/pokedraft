@@ -115,6 +115,7 @@ export function LiveRun({
   return (
     <DraftBoard
       title={title}
+      navFamily={daily === undefined ? "play" : "daily"}
       run={screen.run}
       failure={failure}
       onRun={(run) => show({ kind: "draft", run })}

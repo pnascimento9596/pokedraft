@@ -15,7 +15,7 @@
 .start {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 20px;
+  gap: 16px;
   max-width: 1040px;
   margin: 0 auto;
 }
@@ -23,8 +23,8 @@
 @media (min-width: 900px) {
   .start {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center;
-    padding-top: 32px;
+    align-items: start;
+    padding-top: 16px;
   }
 }
 
@@ -96,4 +96,24 @@
   display: inline-block;
   padding-block: 12px;
   margin-block: -12px;
+}
+
+.hero {
+  display: block;
+}
+.hero :global(.module-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.summary {
+  gap: 8px 16px;
+}
+.summary dt,
+.summary dd {
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0;
+  text-transform: none;
 }

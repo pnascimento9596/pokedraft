@@ -1,0 +1,72 @@
+
+VERDICT: APPROVE
+CANARY-0d21689d0c8aa0f987e7b1f5
+WARNING .github/workflows/ci.yml - merge is not authorized yet: the full Li
+Linux CI on the exact reviewed head 249a6dd5151bbe52899600ade150f0ca50a2a97
+249a6dd5151bbe52899600ade150f0ca50a2a970 is pending per the gate receipt, s
+so the squash must wait for a green rerun proving 734/734 unit tests in 80 
+files, zero unexpected browser failures with the two mobile-draft 4-4-2 exp
+expected fails on iPhone SE and Pixel 7 remaining only as the documented SX
+SX-05 carryover to 8C, and the six previously failing mobile-targets guards
+guards green alongside the theme-contrast, theme-colors, theme-cvd, mirror,
+mirror, image-seam and client-bundle gates on this tree.
+WARNING docs/decisions/dispatch-8.md - no post-fix full local browser rerun
+rerun exists: the 490 pass/51 skip/6 fail rebased run predates the Team Sco
+Score label and checkbox hit box CSS fixes, and only the six focused guards
+guards were rerun (6 passed in targets-8b-fixed.log); this is honestly reco
+recorded, but the fixed tree's full-suite evidence rests entirely on the pe
+pending Linux run, so do not merge on the strength of the focused rerun alo
+alone.
+WARNING src/components/home/SidePanel.module.css - the reworked `.select` n
+no longer declares any font-size (it was 1.1rem, contract says inputs 16px)
+16px); the same holds for `.search input` in src/components/builder/Picker.
+src/components/builder/Picker.module.css, and no test enforces 16px (mobile
+(mobile-targets enforces an 11px floor only), so confirm the 8A global inpu
+input token actually targets select and input, or set 16px explicitly on th
+the new control styles.
+NIT STATE.md - the 8B checkpoint says "Full rebased e2e … pending" although
+although e2e-rebased.log records that run as complete at 490/51/6; only the
+the post-fix full rerun and Linux CI are pending, so tighten the wording.
+NIT STATE.md - the Playwright row still says "539 total" while this PR adds
+adds 8 tests (4 theme-builder SX-03 guards, 4 layout-shift SX-02/SX-06), ma
+making the full suite 547 as e2e-rebased.log shows; update the table at the
+the next checkpoint.
+NIT src/components/builder/Picker.tsx - an empty search now announces both 
+the count paragraph "No matches" and the StatusNote "No players found" with
+with its reason body; axe passes, but the two messages overlap aurally, so 
+consider merging or suppressing one in a later area PR.
+NIT scripts/audit/theme-figures.mjs - the report writes the verbatim `text`
+`text` readback but only asserts `numbers` and `fields` against the baselin
+baseline, so a prose change that removes no digits would pass the gate sile
+silently; deep-compare `text` (or pin key sentences) when reusing this scri
+script for 8C through 8F.
+NIT e2e/theme-builder.spec.ts - the RED-before-fix state of the four SX-03 
+guards is documented in docs/decisions/dispatch-8.md but no failing-run rec
+receipt is committed, so the "guards precede the implementation" claim rest
+rests on commit history; archive the RED log with the next guard set.
+NIT src/components/builder/Builder.module.css - the trailing `.pitch`, `.fr
+`.friendly` and min-width 768 blocks redeclare properties set earlier in th
+the same module; consolidate so the cascade stays reviewable.
+
+Scope and honesty check notes for the record: SX-03/SX-02/SX-06 guards are 
+committed as specified (theme-builder four viewport/theme cases with label-
+label-content-name-mismatch and image-redundant-alt enabled; strict-zero CL
+CLS at 360/390 for cold ratings-on load and saved-run restore, with the lit
+literal 3-0-2 record assertion); before/after pairs are complete at 16 capt
+captures per side with overflow 0 in both manifests; the numeric readback i
+is genuinely unchanged (figures-baseline and figures-8b blobs are byte-iden
+byte-identical, 186 result numbers and 10 board numbers per theme with scor
+score 593, record 3-0-2 and named board rows asserted); results/leaderboard
+results/leaderboard figures, engine, data, scouting, image packs and player
+player-image seam are untouched and only measured; the counts in STATE.md a
+and the decisions doc (734/80, 311/46, 490/51/6, 547 total, 186/10) match t
+the receipts line for line; the lighthouse medians in summary.json reconcil
+reconcile with runs.jsonl per route; the six failures were real regressions
+regressions fixed in CSS with no test or assertion modified; data build det
+determinism is CI-proven via data:pokedex/scouting/type-chart plus git diff
+diff exit zero; no em dashes or Pokédex flavor text appear in the new user-
+user-facing copy; settings and picker keep all actions and figures, the rec
+records empty states say exactly No saved runs/Unavailable, and future area
+areas (8C through 8F) remain honestly unstyled and recorded as pending. Thi
+This approval does not authorize merge: the exact-head green Linux CI, then
+then the post-merge production 8B receipts, are still required.

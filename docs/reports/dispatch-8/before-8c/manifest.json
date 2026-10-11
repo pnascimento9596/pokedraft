@@ -1,0 +1,130 @@
+[
+  {
+    "phase": "before",
+    "state": "start",
+    "width": 390,
+    "theme": "light",
+    "file": "start__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "draft",
+    "width": 390,
+    "theme": "light",
+    "file": "draft__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "complete",
+    "width": 390,
+    "theme": "light",
+    "file": "complete__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "wheel",
+    "width": 390,
+    "theme": "light",
+    "file": "wheel__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "start",
+    "width": 390,
+    "theme": "dark",
+    "file": "start__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "draft",
+    "width": 390,
+    "theme": "dark",
+    "file": "draft__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "complete",
+    "width": 390,
+    "theme": "dark",
+    "file": "complete__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "wheel",
+    "width": 390,
+    "theme": "dark",
+    "file": "wheel__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "start",
+    "width": 1440,
+    "theme": "light",
+    "file": "start__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "draft",
+    "width": 1440,
+    "theme": "light",
+    "file": "draft__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "complete",
+    "width": 1440,
+    "theme": "light",
+    "file": "complete__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "wheel",
+    "width": 1440,
+    "theme": "light",
+    "file": "wheel__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "start",
+    "width": 1440,
+    "theme": "dark",
+    "file": "start__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "draft",
+    "width": 1440,
+    "theme": "dark",
+    "file": "draft__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "complete",
+    "width": 1440,
+    "theme": "dark",
+    "file": "complete__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "wheel",
+    "width": 1440,
+    "theme": "dark",
+    "file": "wheel__1440__dark.webp",
+    "overflow": 0
+  }
+]
