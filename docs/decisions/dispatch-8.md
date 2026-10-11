@@ -153,3 +153,8 @@ Fixed-fixture results and leaderboard text is captured verbatim alongside its nu
 ### Font-change clean-runner measurement complete
 
 GitHub Ubuntu run38150015655 passed against productione8ce2d3, with the same pinned environment and three runs per route as baseline38130597740. All individual samples retain Accessibility100 and exact CLS0. Every route median LCP is below baseline: home2112.9ms, play2260.5, daily2382.3, leaderboard1812.3, history1659.0, help1808.4, results3688.0, Kanto start2262.0. These are measurements after the foundation, not causal estimates isolating the font. Raw reports remain in the run artifact and summaries/sample metrics/environment are committed in lighthouse-font-8a/. The final lane measurement remains due after all area PRs.
+
+
+### PR 8B full browser target corrections
+
+The rebased full local browser run recorded490 passes,51 skips and6 failures. The six failures reproduce two regressions on each device: the builder Team Score label inherited10.4px text, and the image-settings checkbox hit box was43px inside its new bordered row. The label now explicitly uses13/18 at600; the checkbox row reserves45px so its inner hit box is44px. No test or assertion changed. The six focused unchanged guards now all pass. Build and lint pass, and the after captures were regenerated. The required full Linux rerun and independent exact-head review are pending.

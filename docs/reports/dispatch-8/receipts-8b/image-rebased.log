@@ -1,0 +1,4 @@
+$ bash scripts/check-image-seam.sh
+image seam clean
+$ node scripts/images/check-packs.mjs
+image packs clean

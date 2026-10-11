@@ -15,6 +15,12 @@
   font-size: 13px;
 }
 
+.score :global(.scorebug__label) {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
 .scoreValue {
   min-width: 2.4em;
   justify-content: center;

@@ -487,7 +487,7 @@ body:has(.page-loading) > .site-footer {
   /* The whole row is the checkbox's hit box; the box beside the text is drawn. */
   .image-settings__row--check {
     position: relative;
-    min-height: 44px;
+    min-height: 45px;
   }
   .image-settings input[type="checkbox"] {
     position: absolute;
