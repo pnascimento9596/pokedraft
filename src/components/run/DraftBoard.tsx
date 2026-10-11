@@ -235,6 +235,7 @@ export function DraftBoard({
         <Pitch
           formation={settings.formation}
           lineup={state.lineup}
+          speciesOf={speciesById}
           onSlotTap={tapSlot}
           onSwap={(a, b) => onAction({ type: "swap", a, b })}
           highlight={choosing?.slot ?? null}

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { RUN_TOKEN_VERSION } from "@/engine";
-import { draftFromBuilderToken, filledCount } from "../lineup";
+import { draftFromBuilderToken } from "../builder-token";
+import { filledCount } from "../lineup";
 
 // A partial builder lineup (11 of 16 placed) shared as /?b=... under engine-1 (src/app/card/__tests__ at 90fa976).
 const BUILDER_V1 =

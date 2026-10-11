@@ -36,11 +36,17 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+// Start loads the draft (and the species data) with import(), so the board appears a tick later.
+async function start(): Promise<void> {
+  fireEvent.click(screen.getByTestId("run-start"));
+  await screen.findByTestId("round-header");
+}
+
 describe("challenge run screen", () => {
-  it("places the selected candidate into the tapped open slot and advances the round, so Squad First picks reach the engine", () => {
+  it("places the selected candidate into the tapped open slot and advances the round, so Squad First picks reach the engine", async () => {
     query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
     render(<PlayScreen />);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await start();
     expect(screen.getByTestId("round-header").textContent).toBe("Round 1 of 16");
 
     const gulpin = screen.getByTestId("candidate-316");
@@ -52,10 +58,10 @@ describe("challenge run screen", () => {
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
   });
 
-  it("shows the rolled Hoenn poison list without any fit or rating, so ranked runs stay blind", () => {
+  it("shows the rolled Hoenn poison list without any fit or rating, so ranked runs stay blind", async () => {
     query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
     render(<PlayScreen />);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await start();
     const names = screen.getAllByTestId(/^candidate-/).map((el) => el.getAttribute("data-testid"));
     expect(names).toEqual([
       "candidate-269",
@@ -67,10 +73,10 @@ describe("challenge run screen", () => {
     expect(screen.getByTestId("candidate-269").textContent).toBe("Dustox#269BugPoison");
   });
 
-  it("refuses a pick into a filled slot with a message instead of crashing", () => {
+  it("refuses a pick into a filled slot with a message instead of crashing", async () => {
     query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
     render(<PlayScreen />);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await start();
     fireEvent.click(screen.getByTestId("candidate-316"));
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
     fireEvent.click(screen.getByRole("button", { name: "ST Gulpin" }));
@@ -93,36 +99,36 @@ describe("road to the final on the run screens", () => {
   const SHARED = "mode=kanto151&f=4-4-2&order=squadFirst&seed=golden-1";
   const FRESH = "mode=kanto151&f=4-4-2&order=squadFirst";
 
-  it("shows a shared link's exact ladder on the start screen and again on the draft board (catches a strip fed a different seed than the run)", () => {
+  it("shows a shared link's exact ladder on the start screen and again on the draft board (catches a strip fed a different seed than the run)", async () => {
     query.current = SHARED;
     render(<PlayScreen />);
     expect(ratings()).toEqual(GOLDEN_1_KANTO151);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await start();
     expect(screen.getByTestId("round-header").textContent).toBe("Round 1 of 16");
     expect(ratings()).toEqual(GOLDEN_1_KANTO151);
   });
 
-  it("shows no rating on a fresh start screen, then the ladder of the seed Start drew (catches a nominal or guessed number before the seed exists)", () => {
+  it("shows no rating on a fresh start screen, then the ladder of the seed Start drew (catches a nominal or guessed number before the seed exists)", async () => {
     query.current = FRESH;
     fresh.seed = "golden-1";
     render(<PlayScreen />);
     expect(ratings()).toEqual([]);
     expect(screen.getByText("Your opponents are set the moment you start the run.")).toBeTruthy();
-    fireEvent.click(screen.getByTestId("run-start"));
+    await start();
     expect(ratings()).toEqual(GOLDEN_1_KANTO151);
   });
 
-  it("returns to no ratings after New run, because the next Start draws a new seed (catches the old link's ladder staying on a run that will not use it)", () => {
+  it("returns to no ratings after New run, because the next Start draws a new seed (catches the old link's ladder staying on a run that will not use it)", async () => {
     query.current = SHARED;
     render(<PlayScreen />);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await start();
     expect(ratings()).toEqual(GOLDEN_1_KANTO151);
     fireEvent.click(screen.getByTestId("new-run"));
     expect(screen.getByTestId("run-start")).toBeTruthy();
     expect(ratings()).toEqual([]);
   });
 
-  it("shows the daily seed's exact ladder on the Daily start screen and on its draft board", () => {
+  it("shows the daily seed's exact ladder on the Daily start screen and on its draft board", async () => {
     render(
       <Challenge
         settings={dailySettings("4-3-3")}
@@ -131,7 +137,7 @@ describe("road to the final on the run screens", () => {
       />,
     );
     expect(ratings()).toEqual(DAILY_2026_10_10_CUP8);
-    fireEvent.click(screen.getByTestId("run-start"));
+    await start();
     expect(ratings()).toEqual(DAILY_2026_10_10_CUP8);
   });
 });

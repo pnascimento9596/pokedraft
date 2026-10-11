@@ -5,7 +5,7 @@ import {
   type CupResult,
   type DraftSettings,
   type FormationId,
-} from "@/engine";
+} from "@/engine/types";
 import { MODE_LABEL, STYLE_LABEL } from "./labels";
 import { readJson, writeJson } from "./storage";
 

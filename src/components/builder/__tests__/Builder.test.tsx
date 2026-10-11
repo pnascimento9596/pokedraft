@@ -9,7 +9,8 @@ import {
   type SlotRef,
   type SpeciesId,
 } from "@/engine";
-import { BUILDER_URL_SEED, builderToken } from "@/ui/lineup";
+import { builderToken } from "@/ui/builder-token";
+import { BUILDER_URL_SEED } from "@/ui/lineup";
 
 const GEN1: DraftSettings = { mode: "builder", formation: "4-3-3", gens: [1], legendaries: false };
 
@@ -88,9 +89,10 @@ function showRatings() {
   });
 }
 
-function openPicker(slotName: string) {
+// The first tap on an idle builder loads the engine with import(), so the sheet opens a tick later.
+async function openPicker(slotName: string) {
   fireEvent.click(screen.getByRole("button", { name: slotName }));
-  return screen.getByRole("dialog");
+  return screen.findByRole("dialog");
 }
 
 describe("builder drag and swap", () => {
@@ -111,7 +113,7 @@ describe("builder drag and swap", () => {
   it("picking a species already on the field into another slot swaps the two, never duplicates it", async () => {
     openWithTwoPlaced();
     await screen.findByRole("button", { name: "LCB Bulbasaur" });
-    const dialog = openPicker("ST Charmander");
+    const dialog = await openPicker("ST Charmander");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "bulba" } });
     fireEvent.click(within(dialog).getByTestId("pick-1"));
 
@@ -122,9 +124,9 @@ describe("builder drag and swap", () => {
 });
 
 describe("builder picker", () => {
-  it("search by name narrows the list to matches (pika shows Pikachu #025, hides Bulbasaur)", () => {
+  it("search by name narrows the list to matches (pika shows Pikachu #025, hides Bulbasaur)", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     expect(within(dialog).getByRole("heading").textContent).toBe("Pick for LCB");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
 
@@ -134,18 +136,18 @@ describe("builder picker", () => {
     expect(within(dialog).queryByText("Bulbasaur")).toBeNull();
   });
 
-  it("type filter keeps only that type (fire shows Charmander, hides Squirtle)", () => {
+  it("type filter keeps only that type (fire shows Charmander, hides Squirtle)", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.click(within(dialog).getByRole("button", { name: "Fire" }));
 
     expect(within(dialog).getByText("Charmander")).toBeTruthy();
     expect(within(dialog).queryByText("Squirtle")).toBeNull();
   });
 
-  it("the rating stays hidden with Show ratings off, so the blind default never leaks a number, a label or the raw fit", () => {
+  it("the rating stays hidden with Show ratings off, so the blind default never leaks a number, a label or the raw fit", async () => {
     render(<HomeScreen />);
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
 
     const row = within(dialog).getByTestId("pick-25");
@@ -157,10 +159,10 @@ describe("builder picker", () => {
     expect(row.hasAttribute("aria-describedby")).toBe(false);
   });
 
-  it("with Show ratings on, a slot's row says where the player ranks for that role (Pikachu at CB: 7 vs other CBs, raw fit 30 on the row's description)", () => {
+  it("with Show ratings on, a slot's row says where the player ranks for that role (Pikachu at CB: 7 vs other CBs, raw fit 30 on the row's description)", async () => {
     render(<HomeScreen />);
     showRatings();
-    const dialog = openPicker("Empty LCB slot");
+    const dialog = await openPicker("Empty LCB slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
 
     expect(within(dialog).getByTestId("fit-25").textContent).toBe("7 vs other CBs");
@@ -173,10 +175,10 @@ describe("builder picker", () => {
     ).toBeTruthy();
   });
 
-  it("a bench slot keeps Best: <role> and rates the player at that role (Pikachu: Best W, 75 vs other wingers, raw fit 72)", () => {
+  it("a bench slot keeps Best: <role> and rates the player at that role (Pikachu: Best W, 75 vs other wingers, raw fit 72)", async () => {
     render(<HomeScreen />);
     showRatings();
-    const dialog = openPicker("Empty SUB 1 slot");
+    const dialog = await openPicker("Empty SUB 1 slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
 
     expect(within(dialog).getByTestId("fit-25").textContent).toBe("Best: W 75 vs other wingers");
@@ -192,7 +194,8 @@ describe("builder picker", () => {
 describe("builder pitch token notes", () => {
   it("show no rating on any token with Show ratings off", async () => {
     openWithBenchToo();
-    expect((await screen.findByTestId("slot-s2")).textContent).toBe("LCB Bulbasaur");
+    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    expect(screen.getByTestId("slot-s2").textContent).toBe("LCB Bulbasaur");
     expect(screen.getByTestId("slot-s9").textContent).toBe("ST Charmander");
     expect(screen.getByTestId("slot-b0").textContent).toBe("SUB 1 Pikachu");
   });

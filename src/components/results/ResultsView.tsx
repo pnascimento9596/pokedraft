@@ -157,6 +157,7 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
             <Pitch
               formation={formation}
               lineup={draft.lineup}
+              speciesOf={speciesById}
               edges={cup.rating.edges}
               weakest={cup.rating.weakest}
               label="Your lineup"

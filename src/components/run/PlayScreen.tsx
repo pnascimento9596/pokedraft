@@ -3,36 +3,19 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import {
-  DRAFT_ROUNDS,
-  GENS,
-  dailySeed,
-  replay,
-  type CupResult,
-  type DraftSettings,
-  type DraftState,
-  type IsoDate,
-} from "@/engine";
+import { dailySeed } from "@/engine/rng";
+import { DRAFT_ROUNDS, GENS, type DraftSettings, type IsoDate } from "@/engine/types";
 import { longDate } from "@/components/leaderboard/format";
-import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
-import { ResultsView } from "@/components/results/ResultsView";
 import { unlockAudio } from "@/components/wheel/sound";
 import { GEN_REGION, MODE_LABEL, ORDER_LABEL, REGION_LABEL, STYLE_LABEL } from "@/ui/labels";
-import { freshSeed, loadPanel, parsePlayQuery, playHref } from "@/ui/settings";
-import { DraftBoard } from "./DraftBoard";
+import { freshSeed, parsePlayQuery } from "@/ui/settings";
+import type { LiveRun } from "./LiveRun";
 import { RoadStrip } from "./RoadStrip";
-import { runToken, startRun, step, type Run } from "./runState";
 import s from "./PlayScreen.module.css";
 
-type Screen =
-  | { readonly kind: "start" }
-  | { readonly kind: "draft"; readonly run: Run }
-  | {
-      readonly kind: "results";
-      readonly token: string;
-      readonly draft: DraftState;
-      readonly cup: CupResult;
-    };
+// The draft, the results and the species data they need load on demand. Pointing at or focusing
+// Start fetches them early, so the draft is usually ready by the time the tap lands.
+const loadLiveRun = () => import("./LiveRun");
 
 export function PlayScreen() {
   const params = useSearchParams();
@@ -94,24 +77,44 @@ export function Challenge({
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const [screen, setScreen] = useState<Screen>({ kind: "start" });
+  const [live, setLive] = useState<{
+    readonly seed: string;
+    readonly LiveRun: typeof LiveRun;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [useQuerySeed, setUseQuerySeed] = useState(true);
-  const [failure, setFailure] = useState<string | null>(null);
 
   // The seed this run will use, when it is known before Start: today's Daily seed or a shared
   // link's. A fresh run draws its seed at Start (random, so never during render), and until then
   // the road strip shows no rating.
   const fixedSeed = daily !== undefined ? dailySeed(daily) : useQuerySeed ? querySeed : null;
 
+  const preload = () => {
+    loadLiveRun().catch(() => {});
+  };
+
   const start = () => {
+    if (loading) return;
     unlockAudio();
-    setScreen({ kind: "draft", run: startRun(settings, fixedSeed ?? freshSeed()) });
+    const seed = fixedSeed ?? freshSeed();
+    setLoading(true);
+    setLoadFailed(false);
+    loadLiveRun().then(
+      (mod) => {
+        setLoading(false);
+        setLive({ seed, LiveRun: mod.LiveRun });
+      },
+      () => {
+        setLoading(false);
+        setLoadFailed(true);
+      },
+    );
   };
 
   const newRun = () => {
     setUseQuerySeed(false);
-    setFailure(null);
-    setScreen({ kind: "start" });
+    setLive(null);
     if (params.has("seed")) {
       const q = new URLSearchParams(params.toString());
       q.delete("seed");
@@ -120,55 +123,16 @@ export function Challenge({
     window.scrollTo({ top: 0 });
   };
 
-  const seeResults = (run: Run) => {
-    const token = runToken(run);
-    try {
-      const { draft, cup } = replay(token);
-      setScreen({ kind: "results", token, draft, cup });
-      window.scrollTo({ top: 0 });
-    } catch {
-      setFailure("This run could not be scored. Start a new run.");
-    }
-  };
-
   const title = settings.mode === "builder" ? MODE_LABEL.builder : MODE_LABEL[settings.mode];
 
-  if (screen.kind === "results") {
+  if (live !== null) {
     return (
-      <ResultsView
-        token={screen.token}
-        draft={screen.draft}
-        cup={screen.cup}
-        variant="live"
-        onNewRun={daily === undefined ? newRun : undefined}
-        submit={
-          settings.mode === "builder" ? undefined : (
-            <>
-              <SubmitPanel token={screen.token} daily={daily !== undefined} />
-              {daily !== undefined ? (
-                <p className={s.dailyNext}>
-                  One daily seed per day.{" "}
-                  <Link href={playHref("cup8", loadPanel())}>Play a regular challenge</Link> for a
-                  fresh one.
-                </p>
-              ) : null}
-            </>
-          )
-        }
-      />
-    );
-  }
-
-  if (screen.kind === "draft") {
-    return (
-      <DraftBoard
+      <live.LiveRun
+        settings={settings}
+        seed={live.seed}
+        daily={daily}
         title={title}
-        run={screen.run}
-        failure={failure}
-        onRun={(run) => setScreen({ kind: "draft", run })}
-        onAction={(action) => setScreen({ kind: "draft", run: step(screen.run, action) })}
         onNewRun={newRun}
-        onSeeResults={() => seeResults(screen.run)}
       />
     );
   }
@@ -188,9 +152,23 @@ export function Challenge({
           Then your squad plays the cup.
         </p>
         <SettingsSummary settings={settings} />
-        <button type="button" className="btn btn--primary" data-testid="run-start" onClick={start}>
+        <button
+          type="button"
+          className="btn btn--primary"
+          data-testid="run-start"
+          aria-busy={loading || undefined}
+          onClick={start}
+          onPointerEnter={preload}
+          onPointerDown={preload}
+          onFocus={preload}
+        >
           Start run
         </button>
+        {loadFailed ? (
+          <p className={s.loadFailed} role="alert">
+            The game could not load. Check your connection and tap Start again.
+          </p>
+        ) : null}
       </div>
       <RoadStrip seed={fixedSeed} mode={settings.mode} />
     </section>

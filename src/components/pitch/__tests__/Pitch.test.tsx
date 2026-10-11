@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Pitch } from "@/components/pitch/Pitch";
-import { createDraft, type Seed } from "@/engine";
+import { createDraft, speciesById, type Seed } from "@/engine";
 
 afterEach(cleanup);
 
@@ -14,7 +14,9 @@ const empty = createDraft(
 describe("Pitch", () => {
   it("labels every starter and bench slot so taps reach the right SlotRef", () => {
     const onSlotTap = vi.fn();
-    render(<Pitch formation="4-3-3" lineup={empty} onSlotTap={onSlotTap} />);
+    render(
+      <Pitch formation="4-3-3" lineup={empty} speciesOf={speciesById} onSlotTap={onSlotTap} />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Empty LCB slot" }));
     fireEvent.click(screen.getByRole("button", { name: "Empty SUB 2 slot" }));
     expect(onSlotTap.mock.calls).toEqual([

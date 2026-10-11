@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createDraft, type DraftState } from "@/engine";
-import { Builder, type Friendly } from "@/components/builder/Builder";
-import { rebuildDraft } from "@/components/builder/model";
-import { ResultsView } from "@/components/results/ResultsView";
-import { BUILDER_URL_SEED, builderToken, draftFromBuilderToken, filledCount } from "@/ui/lineup";
+import { useEffect, useRef, useState } from "react";
+import {
+  Builder,
+  type BuilderEngine,
+  type Desk,
+  type Friendly,
+  type LiveDesk,
+} from "@/components/builder/Builder";
+import { BUILDER_URL_SEED, filledCount } from "@/ui/lineup";
 import { loadStats, type BucketStats, type StatBucket } from "@/ui/runs";
 import {
   DEFAULT_PANEL,
@@ -17,8 +20,12 @@ import {
 import { SidePanel } from "./SidePanel";
 import s from "./HomeScreen.module.css";
 
-function freshDraft(panel: PanelSettings): DraftState {
-  return createDraft(builderSettings(panel), BUILDER_URL_SEED);
+// The builder engine and the species data load on first use (a pointer over the builder, a tap, a
+// focus, or a ?b= link), not with the page.
+const loadEngine = () => import("@/components/builder/live");
+
+function freshDraft(engine: BuilderEngine, panel: PanelSettings) {
+  return engine.createDraft(builderSettings(panel), BUILDER_URL_SEED);
 }
 
 function poolChanged(a: PanelSettings, b: PanelSettings): boolean {
@@ -32,52 +39,82 @@ function poolChanged(a: PanelSettings, b: PanelSettings): boolean {
 
 export function HomeScreen() {
   const [panel, setPanel] = useState<PanelSettings>(DEFAULT_PANEL);
-  const [draft, setDraft] = useState<DraftState>(() => freshDraft(DEFAULT_PANEL));
+  const [live, setLive] = useState<LiveDesk | null>(null);
   const [stats, setStats] = useState<Readonly<Record<StatBucket, BucketStats>> | null>(null);
   const [friendly, setFriendly] = useState<Friendly | null>(null);
-  const [ready, setReady] = useState(false);
+  const panelRef = useRef(panel);
+  const loading = useRef<Promise<LiveDesk> | null>(null);
+
+  const updatePanel = (next: PanelSettings) => {
+    panelRef.current = next;
+    setPanel(next);
+  };
+
+  // A shared ?b= lineup sets the formation and pool it was built with.
+  const startLive = (b: string | null): Promise<LiveDesk> => {
+    loading.current ??= loadEngine().then(
+      (engine) => {
+        const saved = panelRef.current;
+        const shared = b === null ? null : engine.draftFromBuilderToken(b);
+        const next =
+          shared !== null && shared.settings.mode === "builder"
+            ? {
+                ...saved,
+                formation: shared.settings.formation,
+                gens: shared.settings.gens,
+                legendaries: shared.settings.legendaries,
+              }
+            : saved;
+        if (next !== saved) updatePanel(next);
+        const desk = { engine, draft: shared ?? freshDraft(engine, next) };
+        setLive(desk);
+        return desk;
+      },
+      (e: unknown) => {
+        loading.current = null;
+        throw e;
+      },
+    );
+    return loading.current;
+  };
+
+  const ensureLive = () => (live !== null ? Promise.resolve(live) : startLive(null));
 
   useEffect(() => {
-    const saved = loadPanel();
     const b = new URLSearchParams(window.location.search).get("b");
-    const shared = b === null ? null : draftFromBuilderToken(b);
-    const next =
-      shared !== null && shared.settings.mode === "builder"
-        ? {
-            ...saved,
-            formation: shared.settings.formation,
-            gens: shared.settings.gens,
-            legendaries: shared.settings.legendaries,
-          }
-        : saved;
     /* eslint-disable react-hooks/set-state-in-effect -- sync from localStorage and the URL after hydration */
-    setPanel(next);
-    setDraft(shared ?? freshDraft(next));
+    updatePanel(loadPanel());
     setStats(loadStats());
-    setReady(true);
     /* eslint-enable react-hooks/set-state-in-effect */
+    if (b !== null) startLive(b).catch(() => {});
+    // Runs once after hydration; startLive only reads refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
+    if (live === null) return;
+    const { engine, draft } = live;
     const url =
       filledCount(draft.lineup) === 0
         ? window.location.pathname
-        : `${window.location.pathname}?b=${builderToken(draft.settings, draft.lineup, BUILDER_URL_SEED)}`;
+        : `${window.location.pathname}?b=${engine.builderToken(draft.settings, draft.lineup, BUILDER_URL_SEED)}`;
     window.history.replaceState(window.history.state, "", url);
-  }, [draft, ready]);
+  }, [live]);
 
   const changePanel = (next: PanelSettings) => {
-    setPanel(next);
+    updatePanel(next);
     savePanel(next);
-    if (poolChanged(panel, next)) {
-      setDraft(rebuildDraft(builderSettings(next), draft.lineup, BUILDER_URL_SEED));
+    if (live !== null && poolChanged(panel, next)) {
+      setLive({
+        ...live,
+        draft: live.engine.rebuildDraft(builderSettings(next), live.draft.lineup, BUILDER_URL_SEED),
+      });
     }
   };
 
-  if (friendly !== null) {
+  if (friendly !== null && live !== null) {
     return (
-      <ResultsView
+      <live.engine.ResultsView
         token={friendly.token}
         draft={friendly.draft}
         cup={friendly.cup}
@@ -90,17 +127,21 @@ export function HomeScreen() {
     );
   }
 
+  const desk: Desk =
+    live === null ? { kind: "idle", formation: panel.formation } : { kind: "live", ...live };
+
   return (
     <div className={s.home}>
       <SidePanel panel={panel} onChange={changePanel} stats={stats} />
       <Builder
-        draft={draft}
-        onChange={setDraft}
+        desk={desk}
+        ensureLive={ensureLive}
+        onChange={(draft) => setLive((cur) => (cur === null ? cur : { ...cur, draft }))}
         showRatings={panel.showRatings}
         onReset={() => {
-          setPanel(DEFAULT_PANEL);
+          updatePanel(DEFAULT_PANEL);
           savePanel(DEFAULT_PANEL);
-          setDraft(freshDraft(DEFAULT_PANEL));
+          if (live !== null) setLive({ ...live, draft: freshDraft(live.engine, DEFAULT_PANEL) });
         }}
         onFriendly={setFriendly}
       />

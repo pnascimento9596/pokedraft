@@ -12,7 +12,8 @@ import {
 } from "@/engine";
 import { StaticPlayerImage } from "@/components/PlayerPicture";
 import { FINISH_LABEL, FRIENDLY_LABEL, MODE_LABEL, STYLE_LABEL, record } from "@/ui/labels";
-import { draftFromBuilderToken, filledCount } from "@/ui/lineup";
+import { draftFromBuilderToken } from "@/ui/builder-token";
+import { filledCount } from "@/ui/lineup";
 import type { CardSource } from "./download";
 
 export const CARD_SIZE = { width: 1200, height: 630 } as const;

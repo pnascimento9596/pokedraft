@@ -81,3 +81,8 @@
   color: var(--ink-soft);
   font-size: 0.9rem;
 }
+
+.loadFailed {
+  margin: 0;
+  color: var(--loss);
+}

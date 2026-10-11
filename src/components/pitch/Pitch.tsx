@@ -1,15 +1,16 @@
 "use client";
 
 import { useRef, useState, type CSSProperties, type ReactNode } from "react";
-import {
-  FORMATIONS,
-  speciesById,
-  type FormationId,
-  type Lineup,
-  type SlotId,
-  type SlotRef,
-  type SynergyEdge,
-} from "@/engine";
+import { FORMATIONS } from "@/engine/formations";
+import type {
+  FormationId,
+  Lineup,
+  SlotId,
+  SlotRef,
+  Species,
+  SpeciesId,
+  SynergyEdge,
+} from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { useImageSettings } from "@/images/settings";
 import { BENCH_REFS, STARTER_REFS, refFromKey, refKey, sameRef, valueAt } from "@/ui/lineup";
@@ -18,6 +19,9 @@ import s from "./Pitch.module.css";
 export interface PitchProps {
   readonly formation: FormationId;
   readonly lineup: Lineup;
+  /** Looks up a filled slot's species. The pitch never imports the species data itself, so the
+   *  builder can draw an empty lineup before that data has loaded. */
+  readonly speciesOf: (id: SpeciesId) => Species;
   readonly onSlotTap?: (ref: SlotRef) => void;
   /** Enables drag-to-swap between filled tokens (pointer events, works on touch). */
   readonly onSwap?: (a: SlotRef, b: SlotRef) => void;
@@ -104,6 +108,7 @@ const DRAG_THRESHOLD = 6;
 export function Pitch({
   formation,
   lineup,
+  speciesOf,
   onSlotTap,
   onSwap,
   tokenNote,
@@ -132,7 +137,7 @@ export function Pitch({
     at?: { readonly x: number; readonly y: number },
   ) => {
     const id = valueAt(lineup, ref);
-    const species = id === null ? null : speciesById(id);
+    const species = id === null ? null : speciesOf(id);
     const key = refKey(ref);
     const disabled = isSlotDisabled?.(ref) ?? false;
     const slotId = ref.kind === "starter" ? slots[ref.index]!.id : null;
