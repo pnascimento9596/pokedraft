@@ -89,3 +89,7 @@ PR28 shipped: reviewed6568b06, squashbac8bea, GLMAPPROVE, Linux734/524/51, produ
 Daily/leaderboard presentation restyle; local unit734/80 and browser536/51skip, 587total. Figures unchanged, zero axe/CLS in focused checks. Exact-head review/CI and production pending. 8F support area remains pending.
 
 8D shippedPR29 mergeb3ab2c7; reviewed e0c7903 GLM APPROVE, CI734unit and528/51browser, productionlive4/mobile242/46, card+OG1200x630, exactverifybotcleanup0. 8E candidate nowrebased onto8Dmain; exactreview/CIpending.
+
+## Dispatch 8E production correction
+
+PR30 shippedf5e2256, reviewedb47a8e3 GLMAPPROVE, CI38173336275 unit734/browser536+51skip. Productionlive4/mobile242+46skipgreen, exactbotcleanup0. Lighthouse38174354317 exposedboardfooterCLS0.011626827583050482 all3samples; gateRED. SixnewcoldloadguardscommittedRED, candidate viewportreservation yields21focusedpass. ExactLinuxCI/review/productionpending. Support8F workcontinuesisolated.

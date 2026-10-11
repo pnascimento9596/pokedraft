@@ -239,3 +239,9 @@ Daily results now repeat the Daily nav icon. Leaderboard controls and list rows 
 ### PR 8D shipped and verified
 
 PR29 reviewed e0c79031d063ee19c9cc84c17e94be0741699242 by GLM5.3Flash APPROVE/canary. ExactLinuxCI38171993380 green734unit/80files,528browser/51skips. Squashb3ab2c790007494e611918b13b3b5284832f6522, productiondpl_AqbAZRSeQ9XoPRs45VXaJj1H2ZXs READY. Firstcachebustedhealth provesmergeSHA/no-store. Live4pass, unchangedmobile242pass46skip,8production390capturesoverflow0, realcardandOG200PNG1200x630. This provesproductionfontavailability,closingreviewwarning. Verifybotb3845772-b312-4ad5-aa71-cf9bc049f47e exactdelete/count0. SameUbuntuLH38173121186 running; no newmediansclaimed. ReviewerCSScleanupNITs deferred;shadow-rest exists. The retained e2e-final.log is explicitly the failed interim522/51/6, superseded byexactLinux528/51; it is not green evidence.
+
+### 8E production CLS correction
+
+PR30 reviewedb47a8e3, squashf5e2256, GLMAPPROVE, Linux38173336275 unit734/80 browser536/51skip. ProductionhealthSHA/no-store,live4/mobile242/46green. Exactverifybotc339336f-f37a-43ef-a61d-5e12c2be7213 deletedwithnickname/mode/date predicates, remaining0. CleanUbuntuLighthouse38174354317 failed: leaderboard CLS0.011626827583050482 inallthree samples, Accessibility100everyroute. Rawreportsretainedinworkflowartifact; thisisnotacceptedfinalevidence. Lighthouse identifiesbody>footer.site-footer asboth shiftingnodes.
+
+Six literalexactzero360/390/412 light/dark coldloadguards fail against productionbeforefix, committedRED. A small8E followup reservesoneviewport formain (sameexistingplaystrategy), align-content:start preventsgridstretch. Serverstreaming/loading/boardfetch/API unchanged. Corrected21focusedchecks passincluding18coldloads,existing8boardguards and7CLSguards. Bothwidththeme screenshotpairsretained. Full exactLinuxCI/review/productionLighthouse requiredbeforethis correction is closed.

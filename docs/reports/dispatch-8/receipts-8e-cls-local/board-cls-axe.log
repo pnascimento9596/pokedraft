@@ -1,0 +1,41 @@
+
+Running 30 tests using 3 workers
+
+(node:10343) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10342) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on how to play (411ms)
+  ✓   3 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on home (487ms)
+  ✓   1 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on shared results (651ms)
+  ✓   5 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on live draft with a selected candidate (550ms)
+  ✓   4 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on leaderboard (635ms)
+  ✓   6 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on builder picker with a type filter on (577ms)
+  ✓   9 [chromium] › e2e/contrast.spec.ts:298:9 › dark theme contrast › results header text reaches its ratio on the rendered module (569ms)
+  ✓   8 [chromium] › e2e/contrast.spec.ts:279:9 › dark theme contrast › token names on the pitch reach 4.5:1 on their rendered surface (970ms)
+  ✓  10 [chromium] › e2e/contrast.spec.ts:332:9 › dark theme contrast › weak-spot rings on the results pitch reach 3:1 against the grass (429ms)
+  ✓  11 [chromium] › e2e/contrast.spec.ts:346:9 › dark theme contrast › a focused pitch token shows a focus ring that reaches 3:1 on the grass (267ms)
+  ✓  13 [chromium] › e2e/contrast.spec.ts:391:9 › dark theme contrast › the selected candidate ring and the wheel payline reach 3:1 (574ms)
+  ✓  12 [chromium] › e2e/contrast.spec.ts:363:9 › dark theme contrast › armed slots and the focused armed slot are both visible on the grass and tell apart (700ms)
+  ✓  15 [chromium] › e2e/contrast.spec.ts:438:9 › dark theme contrast › settings switches show a 3:1 track edge off and on (237ms)
+  ✓  14 [chromium] › e2e/contrast.spec.ts:414:9 › dark theme contrast › picker fields keep a 3:1 focus ring and a 3:1 border (342ms)
+  ✓  17 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on how to play (354ms)
+  ✓  16 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on home (410ms)
+  ✓   7 [chromium] › e2e/contrast.spec.ts:253:9 › dark theme contrast › axe color-contrast finds nothing on daily results, the submitted rank and history (2.9s)
+  ✓  19 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on leaderboard (384ms)
+  ✓  18 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on shared results (604ms)
+  ✓  21 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on builder picker with a type filter on (573ms)
+  ✓  20 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on live draft with a selected candidate (819ms)
+  ✓  24 [chromium] › e2e/contrast.spec.ts:298:9 › light theme contrast › results header text reaches its ratio on the rendered module (531ms)
+  ✓  23 [chromium] › e2e/contrast.spec.ts:279:9 › light theme contrast › token names on the pitch reach 4.5:1 on their rendered surface (952ms)
+  ✓  26 [chromium] › e2e/contrast.spec.ts:346:9 › light theme contrast › a focused pitch token shows a focus ring that reaches 3:1 on the grass (242ms)
+  ✓  25 [chromium] › e2e/contrast.spec.ts:332:9 › light theme contrast › weak-spot rings on the results pitch reach 3:1 against the grass (663ms)
+  ✓  27 [chromium] › e2e/contrast.spec.ts:363:9 › light theme contrast › armed slots and the focused armed slot are both visible on the grass and tell apart (410ms)
+  ✓  28 [chromium] › e2e/contrast.spec.ts:391:9 › light theme contrast › the selected candidate ring and the wheel payline reach 3:1 (296ms)
+  ✓  29 [chromium] › e2e/contrast.spec.ts:414:9 › light theme contrast › picker fields keep a 3:1 focus ring and a 3:1 border (289ms)
+  ✓  30 [chromium] › e2e/contrast.spec.ts:438:9 › light theme contrast › settings switches show a 3:1 track edge off and on (264ms)
+  ✓  22 [chromium] › e2e/contrast.spec.ts:253:9 › light theme contrast › axe color-contrast finds nothing on daily results, the submitted rank and history (2.9s)
+
+  30 passed (7.5s)
