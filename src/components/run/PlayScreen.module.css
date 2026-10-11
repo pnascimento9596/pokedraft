@@ -86,3 +86,7 @@
   margin: 0;
   color: var(--loss);
 }
+
+.hero [aria-busy="true"] {
+  cursor: progress;
+}

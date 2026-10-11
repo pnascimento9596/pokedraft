@@ -117,7 +117,14 @@ export function Builder({
       void act(desk);
       return;
     }
-    ensureLive().then(act, () => say("The builder could not load. Check your connection."));
+    setStatus("Loading the players");
+    ensureLive().then(
+      (live) => {
+        setStatus("");
+        return act(live);
+      },
+      () => say("The builder could not load. Check your connection."),
+    );
   };
 
   const tokenOf = ({ engine, draft }: LiveDesk) =>

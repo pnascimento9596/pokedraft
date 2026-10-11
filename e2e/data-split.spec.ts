@@ -81,3 +81,30 @@ test("the daily start panel does not download the species data until Start", asy
   await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
   expect(await data.requested()).toHaveLength(1);
 });
+
+test("on a slow connection Start says it is loading, then opens the draft", async ({ page }) => {
+  await coldLoad(page, PLAY);
+  await page.route("**/_next/static/chunks/**", async (route) => {
+    await new Promise((r) => setTimeout(r, 1500));
+    await route.continue();
+  });
+  const start = page.getByTestId("run-start");
+  await start.click();
+  await expect(start).toHaveText("Loading the draft");
+  await expect(start).toHaveAttribute("aria-busy", "true");
+  await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
+});
+
+test("on a slow connection the first slot tap says the players are loading, then opens the picker", async ({
+  page,
+}) => {
+  await coldLoad(page, "/");
+  await page.route("**/_next/static/chunks/**", async (route) => {
+    await new Promise((r) => setTimeout(r, 1500));
+    await route.continue();
+  });
+  await page.getByTestId("slot-s0").click();
+  await expect(page.getByRole("status")).toHaveText("Loading the players");
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("status")).toHaveText("");
+});

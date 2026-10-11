@@ -162,7 +162,7 @@ export function Challenge({
           onPointerDown={preload}
           onFocus={preload}
         >
-          Start run
+          {loading ? "Loading the draft" : "Start run"}
         </button>
         {loadFailed ? (
           <p className={s.loadFailed} role="alert">
