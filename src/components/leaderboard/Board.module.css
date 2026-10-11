@@ -46,7 +46,7 @@
 }
 
 .row[data-top] .rank {
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 .main {
@@ -96,7 +96,7 @@
 }
 
 .score {
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 @media (max-width: 479px) {
