@@ -18,7 +18,7 @@ export function DailyScreen() {
     () => null,
   );
   if (today === null || formation === null) {
-    return <p className="kicker">Loading the daily challenge</p>;
+    return <p className="kicker page-loading">Loading the daily challenge</p>;
   }
   return (
     <Challenge
