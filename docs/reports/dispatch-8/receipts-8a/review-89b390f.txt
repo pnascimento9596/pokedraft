@@ -1,0 +1,83 @@
+
+VERDICT: APPROVE
+CANARY-dc681690e81942d3565cd12a
+
+WARNING .github/workflows/ci.yml — no passing full Linux e2e exists for the
+the exact reviewed head 89b390f0c4e1f7538c8166652d31cc05f91e6dbe; run 38132
+38132610243 failed (733/734 unit, 474 pass/51 skip/14 fail browser). All co
+corrections are honestly committed but unverified on Linux: unit bounded to
+to --maxWorkers=4, the ten linux/ primitives references taken from that CI 
+artifact, slot-pill relative line-height, and the 320px picker Swap-below-n
+Swap-below-name grid. Per contract, squash merge is contingent on a green L
+Linux run on exactly this SHA: 734/734 unit in 80 files, zero browser failu
+failures with all 44 linux/ snapshots matching their committed references a
+at the unchanged 2.5% allowance, plus check:theme-contrast, check:theme-col
+check:theme-colors and check:theme-cvd green on the rerun.
+WARNING docs/reports/dispatch-8/visual-linux-provenance.json — the ten linu
+linux/* snapshot bytes are pinned to head 28399647d82f52c9fc88bda8b7a9e6fb5
+28399647d82f52c9fc88bda8b7a9e6fb50acdd8c, not the review head; they stay va
+valid only while primitive markup and tokens are byte-unchanged since that 
+head, and only the pending exact-head Linux rerun proves that; the provenan
+provenance file honestly does not claim 34 Linux captures, and the 34 byte-
+byte-identical macOS references remain reviewable as such.
+WARNING docs/reports/dispatch-8/after-8a/README.md — the before-8A capture 
+set is neither added by this diff nor demonstrated in the packet; unchanged
+unchanged main files are invisible here, so confirm docs/reports/dispatch-8
+docs/reports/dispatch-8/before/README.md and the before 390x844/1440x900 bo
+both-theme webp captures (archived per the 8.0 merge) actually resolve on t
+the merge tree, or the dispatch's "before/after captures included" delivera
+deliverable is unmet.
+NIT scripts/audit/theme-contrast.mts — the explicit module-surface loop re-
+re-adds --text rows already covered by the text-role loop, so contrast-foun
+contrast-foundation.json carries six duplicate rows (e.g. --text/--surface 
+twice per theme); harmless, but prune for a cleaner record.
+NIT docs/design/tokens.md — pairings outside the gate's enumerated list are
+are unrecorded: the neutral Pill and Tooltip/Sheet use --border-strong on -
+--surface/--surface-sunken (roughly 1.4:1), and Pill--risk draws its border
+border in --risk-mark on the 16% tint; the source's own uncorrected values 
+permit these, but record or mark them decorative before these primitives la
+land on real pages in 8B.
+NIT src/components/ui/primitives.tsx — Sheet renders a statically open `<di
+`<dialog open>`, which is non-modal (no top layer, no ::backdrop, no focus 
+trap); correct for the prototype contract and its cancel-event test, but 8B
+8B/8C consumers must toggle via showModal/close, so pin that in the compone
+component contract before pages adopt it.
+NIT scripts/audit/theme-color-lint.mjs — the guard only rejects #-hex liter
+literal colors, so rgba literals in application code (e.g. CHALK in src/com
+src/components/share/card.tsx) still bypass the token namespace; consistent
+consistent with the contract's "rejects hex" wording, but note the limit be
+before the 8D restyle.
+NIT docs/decisions/dispatch-8.md — "the final report retains every closest 
+pair" slightly overstates: docs/reports/dispatch-8/cvd/report.json computes
+computes all 153 pairs and surfaces the five closest plus the minimum per t
+theme/vision; either commit the full pair list or amend the wording to "the
+"the five closest pairs".
+NIT .github/workflows/ci.yml — confirm `pnpm test --maxWorkers=4` forwards 
+the worker bound to vitest on the runner exactly as the local receipts (`vi
+(`vitest run --maxWorkers=4`) did; the pending Linux run is the proof eithe
+either way.
+
+Scope confirmation for the record: the exact source card at docs/design/the
+docs/design/theme-source-biotraxiq.md with section 3 installed verbatim fir
+first in src/design/tokens.css and game/AA overrides (darker border-control
+border-control #7C856F, game pitch roles, 18 muted type colors) following; 
+explicit dark blocks mirrored byte-equal under prefers-color-scheme and enf
+enforced by the vitest mirror test; Inter alone at 400/600/700 swap with th
+the verified Arial metrics; body 15/22 and 14/21, labels 13/18, eyebrows 11
+11/16, titles 17/23 and 15/21, buttons 15/20 600 min-height 44, inputs 16px
+16px, global tabular figures; all nine primitives with unit contracts and 4
+44 platform-ref visual/axe cases; the icon registry matching viz 1/2/4/6/7 
+with 28px tiles and 14px glyphs; viz-8 honestly recorded as 1.6524:1 and re
+reserved to heat fills with numeric AA at both ceilings; dark action-border
+action-border derived from link; tokens.md minima reconciled against contra
+contrast-foundation.json and the CVD report; card renderer colors relocated
+relocated verbatim to LEGACY_CARD with values unchanged; zero axe exemption
+exemptions with image-redundant-alt explicitly enabled; mobile acceptance u
+untouched; data, image packs, engine and figures absent from the diff; rece
+receipts match gate outputs, tests pin literal values (stripe steps, [109,9
+[109,95,0]/[163,144,0] simulations, 18-pill counts), the captures log hones
+honestly shows the local console errors and leaderboard Unavailable, and no
+no em dashes or Pokédex flavor text appear in shipped copy. The pending Lin
+Linux rerun and the post-merge production receipts (health SHA proof, live 
+smoke, mobile acceptance, Inter-only HTML/network proof, three-run Lighthou
+Lighthouse median) remain required and must not be waived by this approval.

@@ -1,0 +1,293 @@
+{
+  "sha": "e8ce2d332824def968132287e07b8cbbe89b34c2",
+  "identity": {
+    "sha": "e8ce2d332824def968132287e07b8cbbe89b34c2",
+    "env": "production",
+    "region": "iad1",
+    "engine": "pokedraft-engine-3",
+    "tokenVersions": [
+      1,
+      2,
+      3
+    ]
+  },
+  "htmlStyles": [
+    "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+    "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1e2qm56c9wpmz.css"
+  ],
+  "faces": [
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "400",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "400",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "400",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "400",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "400",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "400",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "400",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "600",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "600",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "600",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "600",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "600",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "600",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "600",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "700",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "700",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "700",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "700",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "700",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "700",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter",
+      "weight": "700",
+      "display": "swap",
+      "local": false
+    },
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/chunks/1fibkpyf-xy7i.css",
+      "family": "Inter Fallback",
+      "local": true
+    }
+  ],
+  "network": [
+    {
+      "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/83afe278b6a6bb3c-s.p.45535valc9rzk.woff2",
+      "status": 200
+    }
+  ],
+  "rendered": {
+    "body": "Inter, \"Inter Fallback\", Arial, sans-serif",
+    "faces": [
+      {
+        "family": "Inter",
+        "weight": "400",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "400",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "400",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "400",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "400",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "400",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "400",
+        "status": "loaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "600",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "600",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "600",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "600",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "600",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "600",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "600",
+        "status": "loaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "700",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "700",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "700",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "700",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "700",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "700",
+        "status": "unloaded"
+      },
+      {
+        "family": "Inter",
+        "weight": "700",
+        "status": "loaded"
+      },
+      {
+        "family": "Inter Fallback",
+        "weight": "normal",
+        "status": "unloaded"
+      }
+    ]
+  }
+}
