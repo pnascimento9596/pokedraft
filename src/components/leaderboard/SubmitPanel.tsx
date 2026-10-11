@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ModuleCard, Pill, StatusNote } from "@/components/ui/primitives";
 import { NICKNAME_MAX, NICKNAME_MIN, type SubmitEntry } from "@/leaderboard/contract";
 import { readJson, writeJson } from "@/ui/storage";
 import { boardHref, submitRun, type SubmitFailure } from "./client";
@@ -68,26 +69,46 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
     const { entry } = status;
     const scope = entry.dailyDate === null ? "all" : "daily";
     return (
-      <section className={s.panel} data-testid="submit-panel" aria-label="Leaderboard">
+      <ModuleCard
+        className={s.panel}
+        data-testid="submit-panel"
+        eyebrow="Leaderboard"
+        title="Submission saved"
+        description="Your run has been submitted."
+      >
         <p ref={successRef} className={s.success} data-testid="submit-success" tabIndex={-1}>
-          {entry.rank === null ? null : <span className={s.rank}>#{entry.rank}</span>}
+          {entry.rank === null ? null : (
+            <Pill tone="ok" className={s.rank}>
+              #{entry.rank}
+            </Pill>
+          )}
           <span>
             {entry.nickname} is on {scope === "daily" ? "the daily board" : "the all-time board"}.
-            {entry.rank === null ? " Your rank could not be loaded right now." : ""}
           </span>
         </p>
+        {entry.rank === null ? (
+          <StatusNote title="Rank unavailable" data-testid="rank-unavailable">
+            Your rank could not be loaded right now.
+          </StatusNote>
+        ) : null}
         <Link
           href={boardHref({ mode: entry.mode, scope, date: entry.dailyDate })}
           className="btn btn--primary"
         >
           View leaderboard
         </Link>
-      </section>
+      </ModuleCard>
     );
   }
 
   return (
-    <section className={s.panel} data-testid="submit-panel" aria-label="Leaderboard">
+    <ModuleCard
+      className={s.panel}
+      data-testid="submit-panel"
+      eyebrow="Leaderboard"
+      title="Submit your run"
+      description="Choose the nickname shown next to your record."
+    >
       <form className={s.form} onSubmit={submit}>
         <label className={s.label} htmlFor="submit-nickname">
           <span className="kicker">Submit to {target}</span>
@@ -117,11 +138,21 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
           {NICKNAME_MIN} to {NICKNAME_MAX} characters. Shown publicly next to your record.
         </p>
         {status.kind === "error" ? (
-          <p className={s.error} data-testid="submit-error" role="alert">
+          <p
+            className={
+              status.code === "DB_UNAVAILABLE" ||
+              status.code === "NETWORK" ||
+              status.code === "UNEXPECTED"
+                ? s.unavailable
+                : s.error
+            }
+            data-testid="submit-error"
+            role="alert"
+          >
             {SUBMIT_ERROR_COPY[status.code]}
           </p>
         ) : null}
       </form>
-    </section>
+    </ModuleCard>
   );
 }

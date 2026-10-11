@@ -20,7 +20,7 @@ import { MatchList } from "./MatchList";
 import { ShareActions } from "./ShareActions";
 import s from "./ResultsView.module.css";
 import { ModuleCard, Pill, Table } from "@/components/ui/primitives";
-import { NavIcon } from "@/components/ui/nav-icons";
+import { NavIcon, type NavFamily } from "@/components/ui/nav-icons";
 
 export interface ResultsViewProps {
   /** The run token: `encodeToken` output that `replay` accepts. */
@@ -33,6 +33,7 @@ export interface ResultsViewProps {
   readonly onNewRun?: () => void;
   /** Leaderboard submit panel; rendered for `live` runs only. */
   readonly submit?: ReactNode;
+  readonly navFamily?: NavFamily;
 }
 
 function modeLine(draft: DraftState): string {
@@ -42,7 +43,15 @@ function modeLine(draft: DraftState): string {
   return MODE_LABEL[st.mode];
 }
 
-export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: ResultsViewProps) {
+export function ResultsView({
+  token,
+  draft,
+  cup,
+  variant,
+  onNewRun,
+  submit,
+  navFamily = "play",
+}: ResultsViewProps) {
   const recorded = useRef(false);
   useEffect(() => {
     if (variant !== "live" || recorded.current) return;
@@ -61,7 +70,7 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
         title={modeLine(draft)}
         headingLevel={1}
         description="Your record, Team Score and cup finish."
-        icon={<NavIcon family="play" />}
+        icon={<NavIcon family={navFamily} />}
         meta={
           <div className={s.heroMain}>
             <div className={s.recordBlock}>

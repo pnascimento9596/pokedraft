@@ -78,8 +78,9 @@ describe("SubmitPanel", () => {
     render(<SubmitPanel token="pd1.abc" daily />);
     typeAndSubmit("Misty");
     const success = await screen.findByTestId("submit-success");
-    expect(success.textContent).toBe(
-      "Misty is on the daily board. Your rank could not be loaded right now.",
+    expect(success.textContent).toBe("Misty is on the daily board.");
+    expect(screen.getByTestId("rank-unavailable").textContent).toBe(
+      "Rank unavailableYour rank could not be loaded right now.",
     );
     expect(screen.queryByTestId("submit-error")).toBeNull();
   });

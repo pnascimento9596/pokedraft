@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { StatusNote } from "@/components/ui/primitives";
 import { announce } from "@/components/Announcer";
 import { record } from "@/ui/labels";
 import { fetchBoard, type BoardResult, type BoardView } from "./client";
@@ -56,8 +57,13 @@ export function Board({ view }: { readonly view: BoardView }) {
 
   if (result.kind === "error") {
     return (
-      <div className={s.error} data-testid="board-error" role="alert">
-        <p>{ERROR_COPY[result.reason]} The board could not be loaded.</p>
+      <StatusNote
+        className={s.error}
+        title="Board unavailable"
+        data-testid="board-error"
+        role="alert"
+      >
+        <span>{ERROR_COPY[result.reason]} The board could not be loaded.</span>
         <button
           ref={target}
           type="button"
@@ -69,14 +75,14 @@ export function Board({ view }: { readonly view: BoardView }) {
         >
           Try again
         </button>
-      </div>
+      </StatusNote>
     );
   }
 
   if (result.entries.length === 0) {
     return (
-      <div className={s.empty} data-testid="board-empty">
-        <p>No entries yet. Finish a run and submit it to claim the top spot.</p>
+      <StatusNote className={s.empty} title="No entries yet." data-testid="board-empty">
+        <span>Finish a run and submit it to claim the top spot.</span>
         <Link
           ref={target}
           href={view.scope === "daily" ? "/daily" : "/"}
@@ -84,7 +90,7 @@ export function Board({ view }: { readonly view: BoardView }) {
         >
           {view.scope === "daily" ? "Play the daily" : "Play a run"}
         </Link>
-      </div>
+      </StatusNote>
     );
   }
 

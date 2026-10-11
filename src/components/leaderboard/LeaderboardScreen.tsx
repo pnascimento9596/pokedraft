@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type { IsoDate } from "@/engine";
 import { BOARD_LIMIT, BOARD_MODES, BOARD_SCOPES, type BoardScope } from "@/leaderboard/contract";
 import { MODE_LABEL } from "@/ui/labels";
+import { ModuleCard } from "@/components/ui/primitives";
 import { Board } from "./Board";
 import { boardHref, parseBoardView, type BoardView } from "./client";
 import { longDate } from "./format";
@@ -25,7 +26,12 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
   };
 
   return (
-    <div className={s.screen}>
+    <ModuleCard
+      className={s.screen}
+      eyebrow={view.scope === "daily" ? "Daily board" : "All-time board"}
+      title="Completed runs"
+      description="Choose a board, then open a run to see its squad."
+    >
       <div className={s.controls}>
         <div role="tablist" aria-label="Board" className={s.tabs}>
           {BOARD_SCOPES.map((scope) => (
@@ -79,6 +85,6 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
         {BOARD_LIMIT}.
       </p>
       <Board view={view} />
-    </div>
+    </ModuleCard>
   );
 }

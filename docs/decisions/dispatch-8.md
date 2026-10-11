@@ -231,3 +231,7 @@ Current61focusedbrowserchecks pass:4resultsmodules/figures,20fullrouteaxe,30rend
 ### PR 8E guards
 
 Eight leaderboard module/readability/neutral missing-state guards fail against unchanged 8D build at 390 and 1440 px in both themes. Literal score 983 comes from the existing mobile board fixture. Commit RED before presentation changes. Ranking, queries, submission and every displayed figure remain frozen.
+
+### PR 8E candidate gates
+
+Daily results now repeat the Daily nav icon. Leaderboard controls and list rows sit inside titled modules, with 13px mobile and 12px desktop values, 44px links, and neutral sunken empty/offline states. Submission is a sibling module; unavailable rank has its own honest note. All request/ranking/submission/storage logic remains unchanged. A unit failure caught missing punctuation in No entries yet.; restored the literal sentence. Unit734/80, focused65 and fullbrowser536pass/51skip all green. Lint/type/build/contrast/color/CVD/image/bundle/mirrors pass. Fixed186results/10boardfigures pertheme unchanged. Before/after20viewport+20fullpage each have zero overflow. Exact-head LinuxCI and independentreview pending.

@@ -93,6 +93,7 @@ export function LiveRun({
         draft={screen.draft}
         cup={screen.cup}
         variant="live"
+        navFamily={daily === undefined ? "play" : "daily"}
         onNewRun={daily === undefined ? onNewRun : undefined}
         submit={
           settings.mode === "builder" ? undefined : (
