@@ -1,0 +1,11 @@
+
+Running 2 tests using 2 workers
+
+(node:32019) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › e2e/theme-choice.spec.ts:4:7 › theme toggle remembers explicit choice and Auto follows dark preference (835ms)
+  ✓  1 [chromium] › e2e/theme-choice.spec.ts:4:7 › theme toggle remembers explicit choice and Auto follows light preference (862ms)
+
+  2 passed (6.1s)
