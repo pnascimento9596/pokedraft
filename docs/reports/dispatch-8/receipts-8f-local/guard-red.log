@@ -1,0 +1,486 @@
+
+Running 16 tests using 4 workers
+
+(node:35390) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35392) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35393) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35391) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   4 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 390 light (283ms)
+  ✘   1 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 390 light (290ms)
+  ✘   2 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 390 light (321ms)
+  ✘   3 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light (363ms)
+(node:35431) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35430) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35432) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35433) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   7 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 390 dark (294ms)
+  ✘   5 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 390 dark (394ms)
+  ✘   8 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark (341ms)
+  ✘   6 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 390 dark (445ms)
+(node:35463) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35464) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35465) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35469) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  11 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 1440 light (876ms)
+  ✘  12 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light (896ms)
+  ✘   9 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 1440 light (1.0s)
+(node:35521) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35525) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35529) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 1440 light (999ms)
+  ✘  13 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 1440 dark (275ms)
+  ✘  14 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 1440 dark (301ms)
+  ✘  15 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 1440 dark (261ms)
+(node:35551) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  16 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark (223ms)
+
+
+  1) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 390 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 2
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-b9e09-ble-state-history-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-b9e09-ble-state-history-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-b9e09-ble-state-history-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 390 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 8
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-59b54-state-how-to-play-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-59b54-state-how-to-play-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-59b54-state-how-to-play-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 390 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-2e837-issing-theme-page-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-2e837-issing-theme-page-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-2e837-issing-theme-page-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-ab0a9-error-unavailable-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-ab0a9-error-unavailable-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-ab0a9-error-unavailable-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 390 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 2
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-c67d0-able-state-history-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-c67d0-able-state-history-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-c67d0-able-state-history-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 390 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 8
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-30123--state-how-to-play-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-30123--state-how-to-play-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-30123--state-how-to-play-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 390 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-c1fd1-missing-theme-page-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-c1fd1-missing-theme-page-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-c1fd1-missing-theme-page-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-009f2--error-unavailable-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-009f2--error-unavailable-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-009f2--error-unavailable-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 1440 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 2
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-62a30-le-state-history-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-62a30-le-state-history-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-62a30-le-state-history-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 1440 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 8
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-da601-tate-how-to-play-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-da601-tate-how-to-play-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-da601-tate-how-to-play-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 1440 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-7952b-ssing-theme-page-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-7952b-ssing-theme-page-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-7952b-ssing-theme-page-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  12) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-46043-rror-unavailable-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-46043-rror-unavailable-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-46043-rror-unavailable-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  13) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 1440 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 2
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-6515e-ble-state-history-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-6515e-ble-state-history-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-6515e-ble-state-history-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  14) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 1440 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 8
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-bc52c-state-how-to-play-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-bc52c-state-how-to-play-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-bc52c-state-how-to-play-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  15) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 1440 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-22f82-issing-theme-page-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-22f82-issing-theme-page-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-22f82-issing-theme-page-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  16) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      17 |         await page.goto(route);
+      18 |         await expect(page.locator("h1")).toHaveCount(1);
+    > 19 |         expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(
+         |                                                            ^
+      20 |           route === "/how-to-play" ? 8 : route === "/history" ? 2 : 1,
+      21 |         );
+      22 |         if (route === "/history")
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-support.spec.ts:19:60
+
+    Error Context: output/dispatch-8/red/theme-support-support-modu-d2616-error-unavailable-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/red/theme-support-support-modu-d2616-error-unavailable-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/red/theme-support-support-modu-d2616-error-unavailable-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  16 failed
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 390 light 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 390 light 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 390 light 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 390 dark 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 390 dark 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 390 dark 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 1440 light 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 1440 light 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 1440 light 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /history 1440 dark 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /how-to-play 1440 dark 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 1440 dark 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark 
