@@ -98,15 +98,14 @@ export function Challenge({
   const [useQuerySeed, setUseQuerySeed] = useState(true);
   const [failure, setFailure] = useState<string | null>(null);
 
+  // The seed this run will use, when it is known before Start: today's Daily seed or a shared
+  // link's. A fresh run draws its seed at Start (random, so never during render), and until then
+  // the road strip shows no rating.
+  const fixedSeed = daily !== undefined ? dailySeed(daily) : useQuerySeed ? querySeed : null;
+
   const start = () => {
     unlockAudio();
-    const seed =
-      daily !== undefined
-        ? dailySeed(daily)
-        : useQuerySeed && querySeed !== null
-          ? querySeed
-          : freshSeed();
-    setScreen({ kind: "draft", run: startRun(settings, seed) });
+    setScreen({ kind: "draft", run: startRun(settings, fixedSeed ?? freshSeed()) });
   };
 
   const newRun = () => {
@@ -193,7 +192,7 @@ export function Challenge({
           Start run
         </button>
       </div>
-      <RoadStrip />
+      <RoadStrip seed={fixedSeed} mode={settings.mode} />
     </section>
   );
 }

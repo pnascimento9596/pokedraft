@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { recapLines, type RecapInput } from "../recap";
-import type { GoalEvent, Opponent, Shirt, SpeciesId } from "../types";
+import type { GoalEvent, Opponent, PenKick, Shirt, SpeciesId } from "../types";
 
 const OPPONENT: Opponent = {
   id: "lumiose-fc",
@@ -53,6 +53,21 @@ const KNOCKOUT: RecapInput = {
   ],
 };
 
+const kick = (side: PenKick["side"], scored: boolean): PenKick =>
+  side === "user" ? { side, taker: 1 as SpeciesId, scored } : { side, taker: 9 as Shirt, scored };
+
+// Pairs in which both sides score.
+const levelPairs = (n: number): PenKick[] =>
+  Array.from({ length: n }, () => [kick("user", true), kick("opp", true)]).flat();
+
+const AFTER_EXTRA_TIME = {
+  matchIndex: 0,
+  opponent: OPPONENT,
+  regulation: { user: 1, opp: 1 },
+  extraTime: { user: 0, opp: 0 },
+  goals: [],
+} satisfies Partial<RecapInput>;
+
 describe("recapLines", () => {
   it("writes the opening, one line per user goal and the shootout from fixed templates", () => {
     expect(recapLines(KNOCKOUT)).toEqual([
@@ -87,6 +102,50 @@ describe("recapLines", () => {
         goals: [user(1, 6, 25)],
       }),
     ).toEqual(["Beat Lumiose FC 1-0.", "Charizard scores in the 1st minute, set up by Pikachu."]);
+  });
+
+  it("counts 20 sudden-death rounds for an engine-1 or engine-2 decree, not the award pair as a 21st (catches 21 rounds in the recap against 20 on the results screen)", () => {
+    // 5 regulation pairs and 20 level sudden-death pairs, then the award pair: the user scores,
+    // the opponent misses. 26 pairs, 26 scored to 25.
+    const kicks = [...levelPairs(25), kick("user", true), kick("opp", false)];
+    const lines = recapLines({
+      ...AFTER_EXTRA_TIME,
+      shootout: {
+        user: 26,
+        opp: 25,
+        keeper: 143 as SpeciesId,
+        kicks,
+        decider: "decree",
+        coinWinner: null,
+      },
+      outcome: "W",
+    });
+    expect(lines.at(-1)).toBe("Won by the engine after 20 rounds of sudden death.");
+  });
+
+  it("counts a coin toss's rounds as every pair past the five regulation kicks, for a win and a loss", () => {
+    // 5 regulation pairs and the 200 sudden-death pairs the cap allows, all scored, level at 205.
+    const shootout = {
+      user: 205,
+      opp: 205,
+      keeper: 143 as SpeciesId,
+      kicks: levelPairs(205),
+      decider: "coin" as const,
+    };
+    expect(
+      recapLines({
+        ...AFTER_EXTRA_TIME,
+        shootout: { ...shootout, coinWinner: "user" },
+        outcome: "W",
+      }).at(-1),
+    ).toBe("Won on a coin toss after 200 rounds of sudden death.");
+    expect(
+      recapLines({
+        ...AFTER_EXTRA_TIME,
+        shootout: { ...shootout, coinWinner: "opp" },
+        outcome: "L",
+      }).at(-1),
+    ).toBe("Lost on a coin toss after 200 rounds of sudden death.");
   });
 
   it("never writes a long dash or a mid-sentence colon", () => {
