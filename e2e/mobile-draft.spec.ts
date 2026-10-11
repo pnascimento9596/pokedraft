@@ -14,7 +14,14 @@ import {
   settle,
   tapNow,
 } from "./mobile/helpers";
-import { PLAY_8_0, SHARED_RUN, blockCardRequests, ready, stubLeaderboard } from "./mobile/scenes";
+import {
+  PLAY_8_0,
+  SHARED_RUN,
+  blockCardRequests,
+  draftRounds,
+  ready,
+  stubLeaderboard,
+} from "./mobile/scenes";
 
 const test = base.extend({
   page: async ({ page, browserName }, provide) => {
@@ -159,4 +166,34 @@ test.describe("scrollable regions at 320 px", () => {
       expect(violations.map((v) => `${v.id} x${v.nodes.length}`)).toEqual([]);
     });
   }
+});
+
+// Theme 7F. In 4-4-2 the centre-backs stand 15 rows above the keeper and 13 columns to each side,
+// so on a short phone pitch their names ran into the keeper's picture once the squad was full.
+test("at draft complete in 4-4-2, no centre-back's name touches the keeper's picture", async ({
+  page,
+}) => {
+  await start(page, PLAY_8_0);
+  await draftRounds(page, 16);
+  await expect(page.getByTestId("see-results")).toBeVisible();
+  await settle(page);
+  const touching = await page.evaluate(() => {
+    const box = (el: Element) => el.getBoundingClientRect();
+    const keeper = document.querySelector('[data-testid="slot-s0"] > span')!;
+    const k = box(keeper);
+    const out: string[] = [];
+    for (const key of ["s2", "s3"]) {
+      const token = document.querySelector(`[data-testid="slot-${key}"]`)!;
+      const parts = token.querySelectorAll(":scope > span");
+      const name = box(parts[parts.length - 1]!);
+      const gapX = Math.max(k.left - name.right, name.left - k.right);
+      const gapY = Math.max(k.top - name.bottom, name.top - k.bottom);
+      if (gapX < 1 && gapY < 1)
+        out.push(
+          `${token.getAttribute("aria-label")}: name ${Math.round(name.left)}-${Math.round(name.right)} x ${Math.round(name.top)}-${Math.round(name.bottom)}, keeper picture ${Math.round(k.left)}-${Math.round(k.right)} x ${Math.round(k.top)}-${Math.round(k.bottom)}`,
+        );
+    }
+    return out;
+  });
+  expect(touching).toEqual([]);
 });
