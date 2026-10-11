@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { ModuleCard, StatusNote } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
+import s from "./not-found.module.css";
 
 export default function NotFound() {
   return (
     <main className="page">
       <ModuleCard
+        className={s.module}
         eyebrow="Page unavailable"
         title="Page not found"
         headingLevel={1}

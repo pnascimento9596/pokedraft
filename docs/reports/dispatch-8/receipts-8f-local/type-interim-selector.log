@@ -1,0 +1,158 @@
+
+Running 4 tests using 2 workers
+
+(node:11822) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11821) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 390 dark (5.9s)
+  ✘  2 [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 390 light (5.9s)
+(node:11913) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11912) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 dark (5.9s)
+  ✘  4 [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 light (5.9s)
+
+
+  1) [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 390 light 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('main .btn--sm').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('main .btn--sm').first() with timeout 5000ms
+      - waiting for locator('main .btn--sm').first()
+
+
+      4 |
+      5 | async function type(locator: Locator, size: number, line: number, weight?: string) {
+    > 6 |   await expect(locator.first()).toBeVisible();
+        |                                 ^
+      7 |   const values = await locator.evaluateAll((els) =>
+      8 |     els.map((el) => {
+      9 |       const s = getComputedStyle(el);
+        at type (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:6:33)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:41:13
+
+    Error Context: output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-77f8b-le-type-overrides-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-77f8b-le-type-overrides-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-77f8b-le-type-overrides-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 390 dark 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('main .btn--sm').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('main .btn--sm').first() with timeout 5000ms
+      - waiting for locator('main .btn--sm').first()
+
+
+      4 |
+      5 | async function type(locator: Locator, size: number, line: number, weight?: string) {
+    > 6 |   await expect(locator.first()).toBeVisible();
+        |                                 ^
+      7 |   const values = await locator.evaluateAll((els) =>
+      8 |     els.map((el) => {
+      9 |       const s = getComputedStyle(el);
+        at type (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:6:33)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:41:13
+
+    Error Context: output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-240fe-ile-type-overrides-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-240fe-ile-type-overrides-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-240fe-ile-type-overrides-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 light 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('main .btn--sm').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('main .btn--sm').first() with timeout 5000ms
+      - waiting for locator('main .btn--sm').first()
+
+
+      4 |
+      5 | async function type(locator: Locator, size: number, line: number, weight?: string) {
+    > 6 |   await expect(locator.first()).toBeVisible();
+        |                                 ^
+      7 |   const values = await locator.evaluateAll((els) =>
+      8 |     els.map((el) => {
+      9 |       const s = getComputedStyle(el);
+        at type (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:6:33)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:41:13
+
+    Error Context: output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-b9df0-e-type-overrides-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-b9df0-e-type-overrides-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-b9df0-e-type-overrides-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 dark 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('main .btn--sm').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('main .btn--sm').first() with timeout 5000ms
+      - waiting for locator('main .btn--sm').first()
+
+
+      4 |
+      5 | async function type(locator: Locator, size: number, line: number, weight?: string) {
+    > 6 |   await expect(locator.first()).toBeVisible();
+        |                                 ^
+      7 |   const values = await locator.evaluateAll((els) =>
+      8 |     els.map((el) => {
+      9 |       const s = getComputedStyle(el);
+        at type (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:6:33)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:41:13
+
+    Error Context: output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-49269-le-type-overrides-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-49269-le-type-overrides-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/type-green-corrected/theme-type-labels-pills-an-49269-le-type-overrides-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 390 light 
+    [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 390 dark 
+    [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 light 
+    [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 dark 

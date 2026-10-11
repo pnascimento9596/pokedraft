@@ -1,0 +1,199 @@
+$ tsx scripts/audit/theme-cvd.mts
+{
+  "source": "https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html",
+  "method": "Machado 2009, severity 1.0, linear sRGB; Oklab Euclidean distance scaled by 100",
+  "rows": [
+    {
+      "theme": "light",
+      "vision": "normal",
+      "closest": [
+        {
+          "a": "--type-normal",
+          "b": "--type-ground",
+          "deltaEOK100": 4.71580476722046
+        },
+        {
+          "a": "--type-rock",
+          "b": "--type-grass",
+          "deltaEOK100": 4.721059538032486
+        },
+        {
+          "a": "--type-psychic",
+          "b": "--type-fairy",
+          "deltaEOK100": 4.922352553461547
+        },
+        {
+          "a": "--type-bug",
+          "b": "--type-grass",
+          "deltaEOK100": 5.366716957807129
+        },
+        {
+          "a": "--type-flying",
+          "b": "--type-dragon",
+          "deltaEOK100": 5.632525467186522
+        }
+      ],
+      "minimum": 4.71580476722046
+    },
+    {
+      "theme": "light",
+      "vision": "protanopia",
+      "closest": [
+        {
+          "a": "--type-rock",
+          "b": "--type-grass",
+          "deltaEOK100": 4.2112431166357
+        },
+        {
+          "a": "--type-fighting",
+          "b": "--type-grass",
+          "deltaEOK100": 4.45281189261001
+        },
+        {
+          "a": "--type-rock",
+          "b": "--type-bug",
+          "deltaEOK100": 4.610058224601768
+        },
+        {
+          "a": "--type-normal",
+          "b": "--type-ground",
+          "deltaEOK100": 4.641993397453687
+        },
+        {
+          "a": "--type-ghost",
+          "b": "--type-fairy",
+          "deltaEOK100": 4.773693882157431
+        }
+      ],
+      "minimum": 4.2112431166357
+    },
+    {
+      "theme": "light",
+      "vision": "deuteranopia",
+      "closest": [
+        {
+          "a": "--type-fighting",
+          "b": "--type-fire",
+          "deltaEOK100": 4.084570538347796
+        },
+        {
+          "a": "--type-ground",
+          "b": "--type-dark",
+          "deltaEOK100": 4.530049647432842
+        },
+        {
+          "a": "--type-normal",
+          "b": "--type-ground",
+          "deltaEOK100": 4.586768887614016
+        },
+        {
+          "a": "--type-fighting",
+          "b": "--type-psychic",
+          "deltaEOK100": 4.640423671671407
+        },
+        {
+          "a": "--type-fire",
+          "b": "--type-electric",
+          "deltaEOK100": 4.835931774183915
+        }
+      ],
+      "minimum": 4.084570538347796
+    },
+    {
+      "theme": "dark",
+      "vision": "normal",
+      "closest": [
+        {
+          "a": "--type-rock",
+          "b": "--type-fire",
+          "deltaEOK100": 4.116962120699887
+        },
+        {
+          "a": "--type-electric",
+          "b": "--type-dark",
+          "deltaEOK100": 4.585482375890515
+        },
+        {
+          "a": "--type-poison",
+          "b": "--type-fairy",
+          "deltaEOK100": 4.594662153713246
+        },
+        {
+          "a": "--type-normal",
+          "b": "--type-ground",
+          "deltaEOK100": 4.620587896330648
+        },
+        {
+          "a": "--type-bug",
+          "b": "--type-fire",
+          "deltaEOK100": 4.775183665164729
+        }
+      ],
+      "minimum": 4.116962120699887
+    },
+    {
+      "theme": "dark",
+      "vision": "protanopia",
+      "closest": [
+        {
+          "a": "--type-ground",
+          "b": "--type-grass",
+          "deltaEOK100": 4.000517060492848
+        },
+        {
+          "a": "--type-ice",
+          "b": "--type-dragon",
+          "deltaEOK100": 4.120971525805402
+        },
+        {
+          "a": "--type-water",
+          "b": "--type-psychic",
+          "deltaEOK100": 4.221680791684683
+        },
+        {
+          "a": "--type-steel",
+          "b": "--type-dark",
+          "deltaEOK100": 4.271564316271704
+        },
+        {
+          "a": "--type-flying",
+          "b": "--type-poison",
+          "deltaEOK100": 4.301762486755921
+        }
+      ],
+      "minimum": 4.000517060492848
+    },
+    {
+      "theme": "dark",
+      "vision": "deuteranopia",
+      "closest": [
+        {
+          "a": "--type-rock",
+          "b": "--type-fire",
+          "deltaEOK100": 4.001353206980928
+        },
+        {
+          "a": "--type-fighting",
+          "b": "--type-fairy",
+          "deltaEOK100": 4.068190346472894
+        },
+        {
+          "a": "--type-ice",
+          "b": "--type-dragon",
+          "deltaEOK100": 4.109977855188714
+        },
+        {
+          "a": "--type-electric",
+          "b": "--type-dark",
+          "deltaEOK100": 4.253063166872775
+        },
+        {
+          "a": "--type-bug",
+          "b": "--type-fire",
+          "deltaEOK100": 4.28666316321712
+        }
+      ],
+      "minimum": 4.001353206980928
+    }
+  ]
+}

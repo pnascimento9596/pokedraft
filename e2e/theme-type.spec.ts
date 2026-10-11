@@ -36,9 +36,10 @@ for (const width of [390, 1440])
       await page.goto(PLAY_8_0);
       await expect(page.getByTestId("run-start")).toBeVisible();
       await type(page.getByRole("list", { name: "Cup rounds" }).getByRole("button"), 15, 20, "600");
+      await page.getByTestId("run-start").click();
+      await type(page.locator("main .btn--sm"), 15, 20, "600");
       await page.goto(`/r/${fixture.shareRun.token}`);
       await expect(page.getByTestId("results-score")).toHaveText("593");
-      await type(page.locator(".btn--sm"), 15, 20, "600");
       if (width === 390) await type(page.locator("table thead th"), 13, 18);
       await type(page.locator('[class*="weakTag"]'), 13, 18);
     });

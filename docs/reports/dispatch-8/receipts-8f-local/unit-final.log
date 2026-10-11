@@ -1,0 +1,13 @@
+$ vitest run --maxWorkers=4
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate
+
+
+ Test Files  80 passed (80)
+      Tests  735 passed (735)
+   Start at  17:08:42
+   Duration  16.87s (tests 71%, import 16%, environment 10%, transform 2%)
+
+    Isolate  80 workers spawned · ~124ms startup each (spawn + environment, per file)
+             at least ~2.36s faster with isolate: false — reuses workers across files instead of one per file
+

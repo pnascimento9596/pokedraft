@@ -1,0 +1,162 @@
+[
+  {
+    "phase": "before",
+    "state": "builder",
+    "width": 390,
+    "theme": "light",
+    "file": "builder__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "picker",
+    "width": 390,
+    "theme": "light",
+    "file": "picker__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "rounds",
+    "width": 390,
+    "theme": "light",
+    "file": "rounds__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "draft",
+    "width": 390,
+    "theme": "light",
+    "file": "draft__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "results",
+    "width": 390,
+    "theme": "light",
+    "file": "results__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "builder",
+    "width": 390,
+    "theme": "dark",
+    "file": "builder__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "picker",
+    "width": 390,
+    "theme": "dark",
+    "file": "picker__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "rounds",
+    "width": 390,
+    "theme": "dark",
+    "file": "rounds__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "draft",
+    "width": 390,
+    "theme": "dark",
+    "file": "draft__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "results",
+    "width": 390,
+    "theme": "dark",
+    "file": "results__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "builder",
+    "width": 1440,
+    "theme": "light",
+    "file": "builder__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "picker",
+    "width": 1440,
+    "theme": "light",
+    "file": "picker__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "rounds",
+    "width": 1440,
+    "theme": "light",
+    "file": "rounds__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "draft",
+    "width": 1440,
+    "theme": "light",
+    "file": "draft__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "results",
+    "width": 1440,
+    "theme": "light",
+    "file": "results__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "builder",
+    "width": 1440,
+    "theme": "dark",
+    "file": "builder__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "picker",
+    "width": 1440,
+    "theme": "dark",
+    "file": "picker__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "rounds",
+    "width": 1440,
+    "theme": "dark",
+    "file": "rounds__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "draft",
+    "width": 1440,
+    "theme": "dark",
+    "file": "draft__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "results",
+    "width": 1440,
+    "theme": "dark",
+    "file": "results__1440__dark.webp",
+    "overflow": 0
+  }
+]

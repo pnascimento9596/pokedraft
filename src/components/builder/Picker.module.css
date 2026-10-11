@@ -100,7 +100,9 @@
 
 .typeChip {
   min-height: 44px;
-  font-size: 13px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
   padding: 0.1em 0.6em;
   border-radius: 999px;
   border-color: var(--chip-type);

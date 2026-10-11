@@ -96,3 +96,7 @@ PR30 shippedf5e2256, reviewedb47a8e3 GLMAPPROVE, CI38173336275 unit734/browser53
 ## Dispatch 8F candidate
 
 Support pages and final type/table/static-figure presentation implemented. Currentbase8D; 8E will be integrated before finalgates/review. Correctedfocused73pass; priorfull540/51skip/4testselectorfail preserved. Finalexact-headLinuxCI andproductionpending.
+
+## Dispatch 8F final candidate
+
+History/help/404/gate plusreadabilityandhumanroundlabels: unit735/80, fullbrowser560/51skip(611cases), primitives44 unchangedvisualrefs, figures186/10both themesunchanged. Targetedtype4passaftertestselectorfixes; historicalfailedruns preserved. Beforeafter52viewport+52full eachzerooverflow/card1200x630. Rebaseonto8ECLSfix, exact617-caseLinuxCI/independentreview/productionremainpending. PR31correctionhasGLMAPPROVE; firstLinuxcheckfailed733/1duetotheunchangedbuilderlazyrestore1swait, fullgateunaccepteduntilgreen.

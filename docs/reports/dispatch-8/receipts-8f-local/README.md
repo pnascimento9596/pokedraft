@@ -1,0 +1,3 @@
+# 8F candidate evidence
+
+The611-case fullbrowser runpassed560/51skip, includingunchangedmobileacceptance andallformationguards. Unit735/80pass. Type/primitives focused54/2failwasatestscopeerror: desktopMenuhidden; another4failusedaresultsselectorwithnocompactbuttons. Thecorrectedguard entersdraftandrequiresliteral15/20/600;4pass. FirsttypeREDfailedmissingpillbeforepickeropened, notvalidRED; correctedbefore-fixREDfailsactual12vs13. ReadableroundlabelunitRED1fail/4pass beforefix. Priorunit-interim733/1fail waslazybuilder1srestorewaitunderparallelCPUload; isolated735passed. Olde2e-before-width552/51predatesfourwidthguards. CurrentCIafterrebasingalsoincludessixleaderboardCLSguards; expected617cases. Allfailedinterimruns retained honestly, notacceptedfinalevidence.

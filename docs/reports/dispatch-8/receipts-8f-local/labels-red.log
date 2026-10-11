@@ -1,0 +1,48 @@
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate
+
+ ❯ src/ui/__tests__/labels.test.ts (5 tests | 1 failed) 5ms
+   × prints readable round names instead of internal round codes 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/ui/__tests__/labels.test.ts > prints readable round names instead of internal round codes
+AssertionError: expected { G1: 'G1', G2: 'G2', G3: 'G3', …(5) } to deeply equal { G1: 'Game 1', G2: 'Game 2', …(6) }
+
+- Expected
++ Received
+
+  {
+    "F": "Final",
+-   "G1": "Game 1",
+-   "G2": "Game 2",
+-   "G3": "Game 3",
+-   "QF": "Quarter",
+-   "R16": "Round 16",
+-   "R32": "Round 32",
+-   "SF": "Semi",
++   "G1": "G1",
++   "G2": "G2",
++   "G3": "G3",
++   "QF": "QF",
++   "R16": "R16",
++   "R32": "R32",
++   "SF": "SF",
+  }
+
+ ❯ src/ui/__tests__/labels.test.ts:54:23
+     52|
+     53| it("prints readable round names instead of internal round codes", () =…
+     54|   expect(ROUND_SHORT).toEqual({ G1: "Game 1", G2: "Game 2", G3: "Game …
+       |                       ^
+     55| });
+     56|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  17:06:33
+   Duration  84ms (transform 53%, import 21%, tests 19%, worker 7%)
+

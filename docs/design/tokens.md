@@ -40,7 +40,7 @@ The engineering guard requires every pair to retain at least 4.0 on that scale i
 
 ## Compatibility and retirement
 
-Existing night/bg/panel/ink/flood/grass tokens resolve to the new semantic roles during the page-by-page migration. The mapping is recorded in [dispatch-8.md](../decisions/dispatch-8.md). Legacy card renderer colors are isolated in `src/design/card-tokens.ts` and retain their original values until the results/share PR replaces them. They are not new palette additions.
+Existing night/bg/panel/ink/flood/grass tokens resolve to the new semantic roles during the page-by-page migration. The mapping is recorded in [dispatch-8.md](../decisions/dispatch-8.md). The 1200x630 card and OG renderer use the source light palette in `src/design/card-tokens.ts`, with bundled Inter400/600/700. Its score, record and formation use explicit tabular digit cells because the static font subset has proportional advances. The content and image model are preserved.
 
 ## CI commands
 
