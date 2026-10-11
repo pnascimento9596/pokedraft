@@ -168,3 +168,22 @@
     box-shadow: 0 0 0 10px rgba(255, 210, 63, 0);
   }
 }
+
+/* Phones: the wheel sits in the draft's bottom tray, so its window shows only the payline face. */
+@media (max-width: 480px), (orientation: landscape) and (max-height: 500px) and (max-width: 959px) {
+  .window {
+    height: var(--face-h);
+  }
+
+  .reel {
+    top: calc(-1 * var(--face-h));
+  }
+
+  .payline {
+    inset: 0 0 auto;
+  }
+
+  .shade {
+    display: none;
+  }
+}

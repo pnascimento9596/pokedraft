@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { HomeScreen } from "@/components/home/HomeScreen";
 import {
@@ -115,9 +115,70 @@ describe("builder drag and swap", () => {
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "bulba" } });
     fireEvent.click(within(dialog).getByTestId("pick-1"));
 
+    // The pick lands once the sheet's history entry is gone (see "the picker sheet" below).
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Bulbasaur");
     expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Charmander");
-    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+});
+
+describe("the picker sheet", () => {
+  const onSheetEntry = () => {
+    const state: unknown = window.history.state;
+    return typeof state === "object" && state !== null && "pokedraftSheet" in state;
+  };
+
+  it("owns one history entry, so the browser Back button closes it and the page stays on /", async () => {
+    render(<HomeScreen />);
+    openPicker("Empty LCB slot");
+    expect(onSheetEntry()).toBe(true);
+
+    act(() => window.history.back());
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect({ path: window.location.pathname, sheet: onSheetEntry() }).toEqual({
+      path: "/",
+      sheet: false,
+    });
+  });
+
+  it("writes a pick's ?b= link on the page's own entry, not on the sheet's entry that Back drops", async () => {
+    render(<HomeScreen />);
+    const dialog = openPicker("Empty LCB slot");
+    fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
+    fireEvent.click(within(dialog).getByTestId("pick-25"));
+
+    await waitFor(() =>
+      expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Pikachu"),
+    );
+    expect({ sheet: onSheetEntry(), link: window.location.search.startsWith("?b=") }).toEqual({
+      sheet: false,
+      link: true,
+    });
+  });
+
+  it("closes on a downward swipe of more than 80 px on its header, and not on a shorter one", async () => {
+    render(<HomeScreen />);
+    const dialog = openPicker("Empty LCB slot");
+    const head = within(dialog).getByRole("heading").closest("header")!;
+
+    fireEvent.pointerDown(head, { pointerId: 1, button: 0, clientY: 100 });
+    fireEvent.pointerMove(head, { pointerId: 1, clientY: 160 });
+    fireEvent.pointerUp(head, { pointerId: 1, clientY: 160 });
+    expect(screen.queryByRole("dialog")).not.toBeNull();
+
+    fireEvent.pointerDown(head, { pointerId: 2, button: 0, clientY: 100 });
+    fireEvent.pointerMove(head, { pointerId: 2, clientY: 200 });
+    fireEvent.pointerUp(head, { pointerId: 2, clientY: 200 });
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  it("gives focus back to the tapped slot when it closes", async () => {
+    render(<HomeScreen />);
+    openPicker("Empty LCB slot");
+    act(() => window.history.back());
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(document.activeElement).toBe(screen.getByTestId("slot-s2"));
   });
 });
 
@@ -160,7 +221,6 @@ describe("builder picker", () => {
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "zzzz" } });
     expect(within(dialog).getByText("No matches")).toBeTruthy();
   });
-
   it("the rating stays hidden with Show ratings off, so the blind default never leaks a number, a label or the raw fit", () => {
     render(<HomeScreen />);
     const dialog = openPicker("Empty LCB slot");
@@ -250,14 +310,16 @@ function filledSlots() {
 }
 
 describe("builder toolbar (catches buttons that stop doing what they say)", () => {
-  it("picking a species fills the empty slot and closes the picker", () => {
+  it("picking a species fills the empty slot and closes the picker", async () => {
     render(<HomeScreen />);
     const dialog = openPicker("Empty LCB slot");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
     fireEvent.click(within(dialog).getByTestId("pick-25"));
 
+    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("Empty LCB slot");
+    // The pick lands once the sheet's history entry is gone (see "the picker sheet" above).
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Pikachu");
-    expect(screen.queryByRole("dialog")).toBeNull();
     expect(filledSlots()).toBe(1);
   });
 

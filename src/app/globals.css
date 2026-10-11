@@ -188,8 +188,11 @@ body {
   overflow-x: hidden;
 }
 
+/* viewport-fit=cover (layout.tsx) lets the page run under a landscape notch and the home
+   indicator, so the sides keep clear of them. */
 body {
   min-height: 100dvh;
+  padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
   display: flex;
   flex-direction: column;
   color: var(--ink);
@@ -391,7 +394,7 @@ select {
 
 .site-footer {
   margin-top: auto;
-  padding: 20px var(--gutter) 28px;
+  padding: 20px var(--gutter) calc(28px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--line);
   color: var(--ink-faint);
   font-size: 0.82rem;
@@ -578,9 +581,15 @@ body:has(.page-loading) > .site-footer {
     min-width: 44px;
   }
 
+  :root {
+    /* One 44 px row, 6 px above and below, and the 1 px rule. The draft screen sizes its pitch
+       from it. */
+    --site-header-h: 57px;
+  }
   .site-header {
     position: relative;
     flex-wrap: nowrap;
+    height: var(--site-header-h);
     padding-block: 6px;
   }
   .site-header__brand {

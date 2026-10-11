@@ -36,6 +36,22 @@ function dex(id: number): string {
   return `#${String(id).padStart(3, "0")}`;
 }
 
+// The sheet owns one history entry while it is open, so the browser Back button (and the Android
+// back gesture) closes it instead of leaving the page.
+const SHEET_ENTRY = "pokedraftSheet";
+// A downward drag on the sheet's header longer than this closes it.
+const SWIPE_CLOSE_PX = 80;
+
+function onSheetEntry(): boolean {
+  const state: unknown = window.history.state;
+  return typeof state === "object" && state !== null && SHEET_ENTRY in state;
+}
+
+interface Swipe {
+  readonly pointerId: number;
+  readonly y0: number;
+}
+
 export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: PickerProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -53,11 +69,45 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
   const current = valueAt(lineup, slot);
   const gens = settings.mode === "builder" ? settings.gens : [];
 
+  const [swipeY, setSwipeY] = useState(0);
+  const swipe = useRef<Swipe | null>(null);
+  // What to run once Back has removed the sheet's history entry: a pick, a clear or a close.
+  const pending = useRef<(() => void) | null>(null);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
   useEffect(() => {
     const d = ref.current;
     if (d && !d.open) d.showModal();
-    searchRef.current?.focus();
+    // On a touch screen the keyboard would open over the list; the search waits for a tap there.
+    const fine =
+      typeof window.matchMedia !== "function" || window.matchMedia("(pointer: fine)").matches;
+    if (fine) searchRef.current?.focus();
+    if (!onSheetEntry()) {
+      window.history.pushState({ ...window.history.state, [SHEET_ENTRY]: true }, "");
+    }
+    const onPop = () => {
+      const then = pending.current ?? onCloseRef.current;
+      pending.current = null;
+      then();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
   }, []);
+
+  // Every way out goes through here: drop the sheet's history entry first, then act, so the
+  // builder's ?b= write lands on the page's own entry.
+  const leave = (then: () => void) => {
+    if (pending.current !== null) return;
+    if (!onSheetEntry()) {
+      then();
+      return;
+    }
+    pending.current = then;
+    window.history.back();
+  };
 
   const onField = useMemo(() => {
     const at = new Map<SpeciesId, string>();
@@ -105,14 +155,38 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
       ref={ref}
       className={s.dialog}
       aria-labelledby={titleId}
-      onClose={onClose}
+      style={swipeY > 0 ? { transform: `translateY(${swipeY}px)` } : undefined}
+      onClose={() => leave(onClose)}
       onClick={(e) => {
         if (e.target === e.currentTarget) e.currentTarget.close();
       }}
     >
       <div className={s.sheet}>
-        <header className={s.head}>
-          <div>
+        <header
+          className={s.head}
+          onPointerDown={(e) => {
+            if (e.button !== 0 || (e.target as Element).closest("button") !== null) return;
+            e.currentTarget.setPointerCapture(e.pointerId);
+            swipe.current = { pointerId: e.pointerId, y0: e.clientY };
+          }}
+          onPointerMove={(e) => {
+            if (swipe.current?.pointerId !== e.pointerId) return;
+            setSwipeY(Math.max(0, e.clientY - swipe.current.y0));
+          }}
+          onPointerUp={(e) => {
+            if (swipe.current?.pointerId !== e.pointerId) return;
+            const moved = e.clientY - swipe.current.y0;
+            swipe.current = null;
+            if (moved > SWIPE_CLOSE_PX) ref.current?.close();
+            else setSwipeY(0);
+          }}
+          onPointerCancel={() => {
+            swipe.current = null;
+            setSwipeY(0);
+          }}
+        >
+          <span className={s.handle} data-testid="sheet-handle" aria-hidden="true" />
+          <div className={s.titleBlock}>
             <p className="kicker">{role === null ? "Bench" : role}</p>
             <h2 id={titleId} className={s.title}>
               Pick for {slotLabel}
@@ -120,7 +194,11 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           </div>
           <div className={s.headActions}>
             {current !== null ? (
-              <button type="button" className="btn btn--ghost btn--sm" onClick={onClear}>
+              <button
+                type="button"
+                className="btn btn--ghost btn--sm"
+                onClick={() => leave(onClear)}
+              >
                 Clear slot
               </button>
             ) : null}
@@ -211,7 +289,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   disabled={here}
                   data-testid={`pick-${sp.id}`}
                   aria-describedby={rating !== null ? `${rawFitId}-${sp.id}` : undefined}
-                  onClick={() => onPick(sp.id)}
+                  onClick={() => leave(() => onPick(sp.id))}
                 >
                   <PlayerImage dexId={sp.id} size={32} alt={sp.name} />
                   <span className={s.rowMain}>

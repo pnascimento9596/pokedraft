@@ -25,22 +25,22 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
-      testIgnore: /mobile-(acceptance|targets)/,
+      testIgnore: /mobile-(acceptance|targets|draft)/,
     },
     {
       name: "iphone-se",
       use: { ...devices["iPhone SE"] },
-      testMatch: /mobile-(acceptance|targets)\.spec\.ts/,
+      testMatch: /mobile-(acceptance|targets|draft)\.spec\.ts/,
     },
     {
       name: "iphone-14",
       use: { ...devices["iPhone 14"] },
-      testMatch: /mobile-(acceptance|targets)\.spec\.ts/,
+      testMatch: /mobile-(acceptance|targets|draft)\.spec\.ts/,
     },
     {
       name: "pixel-7",
       use: { ...devices["Pixel 7"] },
-      testMatch: /mobile-(acceptance|targets)\.spec\.ts/,
+      testMatch: /mobile-(acceptance|targets|draft)\.spec\.ts/,
     },
   ],
   webServer: BASE_URL

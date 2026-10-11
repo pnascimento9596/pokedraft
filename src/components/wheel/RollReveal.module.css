@@ -46,3 +46,25 @@
   font-size: 0.9rem;
   color: var(--ink-soft);
 }
+
+/* Phones: the one-face wheel of Wheel.module.css, and the result line is for screen readers only
+   (the header row shows it). */
+@media (max-width: 480px), (orientation: landscape) and (max-height: 500px) and (max-width: 959px) {
+  .reveal {
+    gap: 0;
+  }
+
+  .waitingWindow {
+    height: 48px;
+  }
+
+  .live {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
