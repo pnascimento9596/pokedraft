@@ -205,4 +205,19 @@ describe("builder pitch token notes", () => {
     expect(screen.getByTestId("slot-s9").textContent).toBe("ST Charmander 43 vs other strikers");
     expect(screen.getByTestId("slot-b0").textContent).toBe("SUB 1 Pikachu 75 vs other wingers");
   });
+
+  // Below an 800 px pitch the token pill is the number alone (the "vs other <role>s" line is
+  // hidden by CSS), so phone players saw a bare number with nothing saying what it compares
+  // against. One legend line under the pitch says it; the CSS hides it where the labels show.
+  it("with Show ratings on, a legend under the pitch says what the number compares against, and it is absent with ratings off", async () => {
+    openWithBenchToo();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    expect(screen.queryByText(/Ratings are 0 to 100/)).toBeNull();
+    showRatings();
+    expect(screen.getByTestId("ratings-legend").textContent).toBe(
+      "Ratings are 0 to 100, vs other players in the same role.",
+    );
+    showRatings();
+    expect(screen.queryByTestId("ratings-legend")).toBeNull();
+  });
 });
