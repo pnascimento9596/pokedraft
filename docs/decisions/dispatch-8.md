@@ -82,3 +82,15 @@ The later checkpoint supersedes the initial screenshot and source-document avail
 GLM 5.3 Flash approved pushed head `269ea75a3465e5c7defc3f15ca251b0fc52ca9bb`, with a valid echoed canary. Linux CI run `38128867885` passed: 705 unit/component tests in 76 files, 444 Playwright tests passed and 51 skipped. The reviewer identified stale STATE counts, mutable measurement action tags and local-only evidence references. Before shipment, this lane corrected STATE, pinned the measurement actions to their verified upstream commit SHAs, and archived the receipts and before captures in `docs/reports/dispatch-8/`. The changed head requires a new review.
 
 The `.mjs` import specifier for the `.mts` measurement helper follows TypeScript's output-extension resolution and is verified by typecheck, Vitest and tsx. Retained token versions currently exclude the live version by contract; the health test asserts the literal supported set `[1, 2, 3]`. No speculative version semantics change was added.
+
+### PR 8.0 shipped and verified
+
+PR #25 squash-merged as `56b9f754d88388223725ad2f3512f239b18fd229`, reviewed head `2eda683327f9ff7cd08cdf05b7f7e1211497b2b0`. GLM 5.3 Flash APPROVE, canary verified. Linux CI `38129942178` passed both jobs on that exact head: 705 unit/component cases in 76 files, 444 browser cases passed and 51 skipped. Vercel production deployment `dpl_6ePJi9yKfokXhk1CvqbzkyasCEyg` serves the merge SHA, proven by a cache-busted `/api/health` response: HTTP 200, `no-store`, production, iad1, engine 3, token versions 1/2/3.
+
+Production `pnpm test:live`: 4 passed. Unchanged production mobile acceptance: 242 passed, 46 skipped across iPhone SE, iPhone 14 and Pixel 7. The daily `verify-bot` row (`95917e19-bb08-4f7f-9f91-c9c002407671`, 2026-10-11) was removed by an exact id/nickname/mode/date predicate; readback found zero remaining verify-bot rows. A 390 px production home screenshot was captured. Clean-runner Lighthouse baseline workflow `38130597740` is running against this merge SHA. No baseline numbers are claimed before its complete three-run receipts.
+
+Additional before scans with Show ratings ON reproduce SX-03 on all 16 filled slots, at 390 and 1440 in both themes. Their accessible names omit the visible token note. SX-04 is not reproduced in the checked states, including completed results; no fictitious nodes or fixes are reported. Chromium layout-shift observers recorded no entries for ratings-on builder cold loads and saved-result reloads at 360 and 390. These become strict-zero regression cases in the corresponding restyles.
+
+### PR 8A guard before implementation
+
+Added component contracts for all nine requested primitives and installed lucide-react. The guard run fails during collection because `../primitives` does not exist yet (one failed suite, no executed cases). This failing guard is committed before implementation. The font fallback is supported by Next's Inter metrics: Arial, size adjust 107.12%, ascent 90.44%, descent 22.52%, line gap 0%.
