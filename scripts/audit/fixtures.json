@@ -1,0 +1,27 @@
+{
+  "engineVersion": "pokedraft-engine-3",
+  "shareRun": {
+    "name": "golden-cup8",
+    "token": "pd3.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
+    "tokenSha256": "8b62814e23eb70225707d31c2dfcb6118ce067e537d65652376487c5d6f24d54",
+    "expected": {
+      "score": 593,
+      "record": "3-0-2",
+      "finish": "R16"
+    },
+    "source": "Rebuilt by scripts/audit/tokens.mts from the action script in src/engine/__tests__/goldens.test.ts."
+  },
+  "postTiming": {
+    "settings": {
+      "mode": "cup8",
+      "formation": "4-3-3",
+      "gens": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "style": "classic3",
+      "order": "squadFirst"
+    },
+    "bot": "good",
+    "seedPattern": "audit-<label>-<n>",
+    "nicknamePattern": "bl-<n>",
+    "count": 30
+  }
+}

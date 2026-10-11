@@ -164,6 +164,18 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
           }
           tokenNote={showRatings && !animating ? tokenNote : undefined}
         />
+        {/* Below an 800 px pitch each pill is the number alone, so this line says what it compares
+            against. The CSS hides it where every pill carries its own "vs other <role>s" label. Its
+            line is reserved even with ratings off: the saved setting loads after hydration, and
+            the line appearing then pushed the tools down (layout shift). It stays up while
+            Randomize animates. */}
+        <div className={s.legendSlot}>
+          {showRatings ? (
+            <p className={s.legend} data-testid="ratings-legend">
+              Ratings are 0 to 100, vs other players in the same role.
+            </p>
+          ) : null}
+        </div>
       </div>
 
       <div className={s.tools} role="toolbar" aria-label="Builder actions">
