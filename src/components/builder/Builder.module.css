@@ -53,7 +53,31 @@
 }
 
 .pitch {
+  /* The same width as Pitch's own container, so the legend below hides exactly where the pill
+     labels show. */
+  container-type: inline-size;
   min-width: 0;
+}
+
+/* One line under the pitch while Show ratings is on: what a pill's number compares against. The
+   same 11.2 px as the pill label it stands in for. The slot keeps that line's height with ratings
+   off, so turning the saved setting on after hydration shifts nothing. */
+.legendSlot {
+  margin-top: 8px;
+  min-height: calc(0.7rem * 1.3);
+}
+
+.legend {
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: var(--ink-soft);
+}
+
+@container (min-width: 800px) {
+  .legendSlot {
+    display: none;
+  }
 }
 
 .tools {
@@ -71,7 +95,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.85rem;
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 .friendly {

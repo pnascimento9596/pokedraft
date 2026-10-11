@@ -81,8 +81,8 @@ Tools: Playwright e2e (`pnpm test:e2e`, 23 tests), a throwaway Playwright viewpo
 | # | Local | Production baseline | Evidence |
 |---|---|---|---|
 | F1 | PASS | PASS | 9 routes, 4 widths, all 200 (404 on the two bad URLs, as designed); console clean except the expected 503 on `/leaderboard` locally (no database) |
-| F2 | PASS (unit) | NOT RUN | `Builder.test.tsx` covers randomize, clear, tap-to-place and drag swap; no manual drag in a real browser this dispatch |
-| F3 | PASS | NOT RUN | e2e `shareAndReplay` checks a 1200x630 PNG download and replay; `curl /card` returns 1200x630 for default, art pack and pixel pack with `mirror=0` |
+| F2 | PASS (unit) | NOT RUN | `Builder.test.tsx` covers randomize, clear, tap-to-place and drag swap; no manual drag in a real browser this dispatch. Corrected in dispatch 7 (SF-04): at the time it covered drag swap, picker swap, search, a type filter and the fit display only. Clear all, Reset, first placement, Copy link and Download image got tests in PR 7K |
+| F3 | PASS | NOT RUN | e2e `shareAndReplay` checks a 1200x630 PNG download and replay; `curl /card` returns 1200x630 for default, art pack and pixel pack with `mirror=0`. Corrected in dispatch 7 (SF-04): `shareAndReplay` runs on a challenge results page, not the builder. The builder Download image e2e test arrived in PR 7K |
 | F4 | PASS | NOT RUN | e2e daily run (8-0 Open) drafts 16 and shows results |
 | F5, F6 | PASS | NOT RUN | e2e: 8-0 Classic (seed `e2e-80`, record 2-1-1) and 151 Challenge (seed `e2e-151`, record 3-0-2) draft 16 and show results |
 | F7 | PASS (unit) | NOT RUN | `runState.test.ts` and `announce.test.tsx`; see K2 for what that test did and did not prove |
@@ -107,10 +107,10 @@ Horizontal overflow: PASS at 360, 390, 430 and 1440 on all 9 routes, 0 px everyw
 | A3 | PASS | axe `image-alt` and the labelled blank fallback; `PlayerImage.test.tsx` |
 | A4 | PARTIAL | axe `color-contrast` reports 0 violations on every route after the 404 fix. The viewport script ran in Playwright's default light scheme and `e2e/a11y.spec.ts` runs in the configured dark scheme, so both schemes had an axe pass, but only on the routes listed. axe cannot evaluate text over gradients or images (the pitch, the hero), so those spots are unverified |
 | A5 | PASS | with reduced motion the 8-0 run shows candidates 1 ms after Start, versus 4808 ms with motion; both end on the same settled faces and the same announcement |
-| A6 | PASS | one `main` and one `h1` per route after the fixes (see findings 1 and 2); axe `heading-order` is on in `e2e/a11y.spec.ts` |
+| A6 | PASS | one `main` and one `h1` per route after the fixes (see findings 1 and 2); axe `heading-order` is on in `e2e/a11y.spec.ts`. Corrected in dispatch 7 (SC-01): the spec ran only `label-content-name-mismatch` until PR 7K |
 | A7 | PARTIAL | axe `label` passes on all routes. `role="alert"` on submit and gate errors was not exercised in a browser |
 
-`e2e/a11y.spec.ts` now runs axe (wcag2a, wcag2aa, wcag21a, wcag21aa, best-practice, plus the experimental `label-content-name-mismatch`) on `/`, `/play` builder, `/how-to-play`, `/history`, a real `/r/<token>`, a bad token and a 404 URL, and expects no violations.
+`e2e/a11y.spec.ts` now runs axe (wcag2a, wcag2aa, wcag21a, wcag21aa, best-practice, plus the experimental `label-content-name-mismatch`) on `/`, `/play` builder, `/how-to-play`, `/history`, a real `/r/<token>`, a bad token and a 404 URL, and expects no violations. Corrected in dispatch 7 (SC-01, SF-08): chaining `withTags` and `withRules` left only `label-content-name-mismatch` running, and the `/play` URL rendered the broken-link page. PR 7K runs the full tag set in both themes.
 
 ### Findings from QA and what happened to each
 

@@ -17,16 +17,27 @@ export function cardHref(source: CardSource, look?: CardLook): string {
   return `/card?${q.toString()}`;
 }
 
-export async function downloadCard(
-  source: CardSource,
-  filename: string,
-  look: CardLook = readSettings(),
-): Promise<void> {
-  const res = await fetch(cardHref(source, look));
-  if (!res.ok) throw new Error(`card request failed with ${res.status}`);
-  const type = res.headers.get("content-type") ?? "";
-  if (!type.startsWith("image/png")) throw new Error(`card is ${type || "untyped"}, not a PNG`);
-  const url = URL.createObjectURL(await res.blob());
+/** How the PNG reached the player: the share sheet, the download link, or a share sheet they closed. */
+export type CardDelivery = "shared" | "saved" | "cancelled";
+
+// On a phone the share sheet is where Save Image lives, and iOS handles a download link to a blob
+// unevenly. A desktop keeps the plain download, even where it could share files.
+async function shareFile(file: File): Promise<CardDelivery | null> {
+  if (typeof navigator.share !== "function" || !navigator.canShare?.({ files: [file] }))
+    return null;
+  if (!window.matchMedia("(pointer: coarse)").matches) return null;
+  try {
+    await navigator.share({ files: [file] });
+    return "shared";
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "AbortError") return "cancelled";
+    // NotAllowedError when a slow render outlived the tap's activation: the link still works.
+    return null;
+  }
+}
+
+function saveWithLink(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
   try {
     const a = document.createElement("a");
     a.href = url;
@@ -37,4 +48,20 @@ export async function downloadCard(
   } finally {
     setTimeout(() => URL.revokeObjectURL(url), 0);
   }
+}
+
+export async function downloadCard(
+  source: CardSource,
+  filename: string,
+  look: CardLook = readSettings(),
+): Promise<CardDelivery> {
+  const res = await fetch(cardHref(source, look));
+  if (!res.ok) throw new Error(`card request failed with ${res.status}`);
+  const type = res.headers.get("content-type") ?? "";
+  if (!type.startsWith("image/png")) throw new Error(`card is ${type || "untyped"}, not a PNG`);
+  const blob = await res.blob();
+  const shared = await shareFile(new File([blob], filename, { type: "image/png" }));
+  if (shared !== null) return shared;
+  saveWithLink(blob, filename);
+  return "saved";
 }

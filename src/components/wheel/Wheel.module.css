@@ -31,7 +31,7 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--flood);
+  color: var(--flood-text);
   cursor: pointer;
 }
 
@@ -109,8 +109,8 @@
   position: absolute;
   inset: var(--face-h) 0 auto;
   height: var(--face-h);
-  border-top: 2px solid var(--flood);
-  border-bottom: 2px solid var(--flood);
+  border-top: 2px solid var(--flood-line);
+  border-bottom: 2px solid var(--flood-line);
   background: linear-gradient(
     90deg,
     rgba(255, 210, 63, 0.14),
@@ -131,12 +131,12 @@
 
 .payline::before {
   left: 0;
-  border-left-color: var(--flood);
+  border-left-color: var(--flood-line);
 }
 
 .payline::after {
   right: 0;
-  border-right-color: var(--flood);
+  border-right-color: var(--flood-line);
 }
 
 /* Curvature: faces fade and darken toward the top and bottom of the drum. */
