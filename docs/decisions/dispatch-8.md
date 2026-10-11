@@ -227,3 +227,15 @@ The full8Dcandidatebrowserrun522pass/51skip/6fail reproducedthe same selectedrow
 ### PR 8D local gates ready for review
 
 Current61focusedbrowserchecks pass:4resultsmodules/figures,20fullrouteaxe,30renderedcontrast and7layoutshift includingstrictSX02/SX06. This resolvesallsixdarkselectedrowfailuresfromthe522/51/6fullrun; Linux579-casefullsuiteonexactheadisstillmandatorybeforemerge. Unit734/80 andalllint/type/build/image/mirror/bundle/contrast/color/CVD gatespass. RealcardandOGunit10cases passincluding1200x630, imagepixels/cache/errorcontracts. Buildtracecontainsall3InterTTFfiles. Before/aftereach16viewportand16fullpagecapturesplus1200x630PNG; alloverflow0. Figures186/10pertheme unchanged. Sourcefrozenpathsunchanged. Independentreviewandproduction8Dpending.
+
+### PR 8E guards
+
+Eight leaderboard module/readability/neutral missing-state guards fail against unchanged 8D build at 390 and 1440 px in both themes. Literal score 983 comes from the existing mobile board fixture. Commit RED before presentation changes. Ranking, queries, submission and every displayed figure remain frozen.
+
+### PR 8E candidate gates
+
+Daily results now repeat the Daily nav icon. Leaderboard controls and list rows sit inside titled modules, with 13px mobile and 12px desktop values, 44px links, and neutral sunken empty/offline states. Submission is a sibling module; unavailable rank has its own honest note. All request/ranking/submission/storage logic remains unchanged. A unit failure caught missing punctuation in No entries yet.; restored the literal sentence. Unit734/80, focused65 and fullbrowser536pass/51skip all green. Lint/type/build/contrast/color/CVD/image/bundle/mirrors pass. Fixed186results/10boardfigures pertheme unchanged. Before/after20viewport+20fullpage each have zero overflow. Exact-head LinuxCI and independentreview pending.
+
+### PR 8D shipped and verified
+
+PR29 reviewed e0c79031d063ee19c9cc84c17e94be0741699242 by GLM5.3Flash APPROVE/canary. ExactLinuxCI38171993380 green734unit/80files,528browser/51skips. Squashb3ab2c790007494e611918b13b3b5284832f6522, productiondpl_AqbAZRSeQ9XoPRs45VXaJj1H2ZXs READY. Firstcachebustedhealth provesmergeSHA/no-store. Live4pass, unchangedmobile242pass46skip,8production390capturesoverflow0, realcardandOG200PNG1200x630. This provesproductionfontavailability,closingreviewwarning. Verifybotb3845772-b312-4ad5-aa71-cf9bc049f47e exactdelete/count0. SameUbuntuLH38173121186 running; no newmediansclaimed. ReviewerCSScleanupNITs deferred;shadow-rest exists. The retained e2e-final.log is explicitly the failed interim522/51/6, superseded byexactLinux528/51; it is not green evidence.

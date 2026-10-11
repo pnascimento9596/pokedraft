@@ -1,0 +1,1203 @@
+﻿2026-10-11T20:23:23.6732489Z Current runner version: '2.337.0'
+2026-10-11T20:23:23.6757719Z ##[group]Runner Image Provisioner
+2026-10-11T20:23:23.6758681Z Hosted Compute Agent
+2026-10-11T20:23:23.6759284Z Version: 20261002.596
+2026-10-11T20:23:23.6760025Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-11T20:23:23.6760799Z Build Date: 2026-10-02T22:28:27Z
+2026-10-11T20:23:23.6761797Z Worker ID: {70961270-df1d-4b19-bbbf-0593272c9745}
+2026-10-11T20:23:23.6762597Z Region: westus
+2026-10-11T20:23:23.6763162Z Cloud: Azure
+2026-10-11T20:23:23.6763764Z ##[endgroup]
+2026-10-11T20:23:23.6765281Z ##[group]Operating System
+2026-10-11T20:23:23.6765939Z Ubuntu
+2026-10-11T20:23:23.6766611Z 24.04.5
+2026-10-11T20:23:23.6767209Z LTS
+2026-10-11T20:23:23.6767824Z ##[endgroup]
+2026-10-11T20:23:23.6768392Z ##[group]Runner Image
+2026-10-11T20:23:23.6768989Z Image: ubuntu-24.04
+2026-10-11T20:23:23.6769650Z Version: 20261004.327.1
+2026-10-11T20:23:23.6770954Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-11T20:23:23.6772925Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-11T20:23:23.6773924Z ##[endgroup]
+2026-10-11T20:23:23.6775125Z ##[group]GITHUB_TOKEN Permissions
+2026-10-11T20:23:23.6777057Z Contents: read
+2026-10-11T20:23:23.6777796Z Metadata: read
+2026-10-11T20:23:23.6778373Z ##[endgroup]
+2026-10-11T20:23:23.6780579Z Secret source: Actions
+2026-10-11T20:23:23.6781838Z Cache mode: write
+2026-10-11T20:23:23.6782629Z Prepare workflow directory
+2026-10-11T20:23:23.7124987Z Prepare all required actions
+2026-10-11T20:23:23.7175694Z Getting action download info
+2026-10-11T20:23:24.0988984Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-11T20:23:24.1960432Z Download action repository 'pnpm/action-setup@v6' (SHA:0977fd99725f1db4007ccb2928dbb4e90d06cc86)
+2026-10-11T20:23:24.5079998Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+2026-10-11T20:23:25.0011852Z Download action repository 'actions/cache@v6' (SHA:55cc8345863c7cc4c66a329aec7e433d2d1c52a9)
+2026-10-11T20:23:25.2314286Z Complete job name: check
+2026-10-11T20:23:25.3280255Z ##[group]Run actions/checkout@v7
+2026-10-11T20:23:25.3281575Z with:
+2026-10-11T20:23:25.3282159Z   repository: pnascimento9596/pokedraft
+2026-10-11T20:23:25.3290461Z   token: ***
+2026-10-11T20:23:25.3290969Z   ssh-strict: true
+2026-10-11T20:23:25.3291910Z   ssh-user: git
+2026-10-11T20:23:25.3292480Z   persist-credentials: true
+2026-10-11T20:23:25.3293105Z   clean: true
+2026-10-11T20:23:25.3293646Z   sparse-checkout-cone-mode: true
+2026-10-11T20:23:25.3294332Z   fetch-depth: 1
+2026-10-11T20:23:25.3294841Z   fetch-tags: false
+2026-10-11T20:23:25.3295377Z   show-progress: true
+2026-10-11T20:23:25.3295945Z   lfs: false
+2026-10-11T20:23:25.3296428Z   submodules: false
+2026-10-11T20:23:25.3296975Z   set-safe-directory: true
+2026-10-11T20:23:25.3297622Z   allow-unsafe-pr-checkout: false
+2026-10-11T20:23:25.3298679Z ##[endgroup]
+2026-10-11T20:23:25.4328947Z Syncing repository: pnascimento9596/pokedraft
+2026-10-11T20:23:25.4331949Z ##[group]Getting Git version info
+2026-10-11T20:23:25.4333120Z Working directory is '/home/runner/work/pokedraft/pokedraft'
+2026-10-11T20:23:25.4334639Z [command]/usr/bin/git version
+2026-10-11T20:23:25.4399892Z git version 2.55.0
+2026-10-11T20:23:25.4420943Z ##[endgroup]
+2026-10-11T20:23:25.4433170Z Temporarily overriding HOME='/home/runner/work/_temp/8a7243be-c9b7-44c4-9151-edf5b4941672' before making global git config changes
+2026-10-11T20:23:25.4436779Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-11T20:23:25.4439833Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pokedraft/pokedraft
+2026-10-11T20:23:25.4484594Z Deleting the contents of '/home/runner/work/pokedraft/pokedraft'
+2026-10-11T20:23:25.4488169Z ##[group]Determining repository object format
+2026-10-11T20:23:25.4490050Z ##[endgroup]
+2026-10-11T20:23:25.4492163Z ##[group]Initializing the repository
+2026-10-11T20:23:25.4493898Z [command]/usr/bin/git init /home/runner/work/pokedraft/pokedraft
+2026-10-11T20:23:25.4601926Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-11T20:23:25.4604053Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-11T20:23:25.4606799Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-11T20:23:25.4608700Z hint: call:
+2026-10-11T20:23:25.4609589Z hint:
+2026-10-11T20:23:25.4610292Z hint: 	git config --global init.defaultBranch <name>
+2026-10-11T20:23:25.4611249Z hint:
+2026-10-11T20:23:25.4612376Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-11T20:23:25.4614109Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-11T20:23:25.4615494Z hint:
+2026-10-11T20:23:25.4615982Z hint: 	git branch -m <name>
+2026-10-11T20:23:25.4616579Z hint:
+2026-10-11T20:23:25.4617485Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-11T20:23:25.4619191Z Initialized empty Git repository in /home/runner/work/pokedraft/pokedraft/.git/
+2026-10-11T20:23:25.4622566Z [command]/usr/bin/git remote add origin https://github.com/pnascimento9596/pokedraft
+2026-10-11T20:23:25.4687075Z ##[endgroup]
+2026-10-11T20:23:25.4688053Z ##[group]Disabling automatic garbage collection
+2026-10-11T20:23:25.4690244Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-11T20:23:25.4722148Z ##[endgroup]
+2026-10-11T20:23:25.4723491Z ##[group]Setting up auth
+2026-10-11T20:23:25.4724395Z Removing SSH command configuration
+2026-10-11T20:23:25.4727705Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-11T20:23:25.4759362Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-11T20:23:25.5085307Z Removing HTTP extra header
+2026-10-11T20:23:25.5091261Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-11T20:23:25.5123525Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-11T20:23:25.5340805Z Removing includeIf entries pointing to credentials config files
+2026-10-11T20:23:25.5345954Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-11T20:23:25.5384563Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-11T20:23:25.5607441Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-11T20:23:25.5646873Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/pokedraft/pokedraft/.git.path /home/runner/work/_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config
+2026-10-11T20:23:25.5679503Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/pokedraft/pokedraft/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config
+2026-10-11T20:23:25.5714713Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config
+2026-10-11T20:23:25.5746491Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config
+2026-10-11T20:23:25.5786115Z ##[endgroup]
+2026-10-11T20:23:25.5787121Z ##[group]Fetching the repository
+2026-10-11T20:23:25.5793629Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +be7740eaa388d4f8aab6ab1c75bf38af90f1bcbc:refs/remotes/pull/29/merge
+2026-10-11T20:23:27.6755288Z From https://github.com/pnascimento9596/pokedraft
+2026-10-11T20:23:27.6762953Z  * [new ref]         be7740eaa388d4f8aab6ab1c75bf38af90f1bcbc -> pull/29/merge
+2026-10-11T20:23:27.6765710Z ##[endgroup]
+2026-10-11T20:23:27.6766614Z ##[group]Determining the checkout info
+2026-10-11T20:23:27.6767504Z ##[endgroup]
+2026-10-11T20:23:27.6768105Z [command]/usr/bin/git sparse-checkout disable
+2026-10-11T20:23:27.6834106Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-11T20:23:27.6862160Z ##[group]Checking out the ref
+2026-10-11T20:23:27.6865821Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/29/merge
+2026-10-11T20:23:27.9410139Z Note: switching to 'refs/remotes/pull/29/merge'.
+2026-10-11T20:23:27.9410903Z 
+2026-10-11T20:23:27.9411600Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-11T20:23:27.9412613Z changes and commit them, and you can discard any commits you make in this
+2026-10-11T20:23:27.9413647Z state without impacting any branches by switching back to a branch.
+2026-10-11T20:23:27.9414220Z 
+2026-10-11T20:23:27.9414664Z If you want to create a new branch to retain commits you create, you may
+2026-10-11T20:23:27.9415536Z do so (now or later) by using -c with the switch command. Example:
+2026-10-11T20:23:27.9416076Z 
+2026-10-11T20:23:27.9416316Z   git switch -c <new-branch-name>
+2026-10-11T20:23:27.9416744Z 
+2026-10-11T20:23:27.9417014Z Or undo this operation with:
+2026-10-11T20:23:27.9417417Z 
+2026-10-11T20:23:27.9417664Z   git switch -
+2026-10-11T20:23:27.9418015Z 
+2026-10-11T20:23:27.9418496Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-11T20:23:27.9431808Z 
+2026-10-11T20:23:27.9432545Z HEAD is now at be7740e Merge e0c79031d063ee19c9cc84c17e94be0741699242 into bac8beafd762397a638903ae3bcd3e469ae47478
+2026-10-11T20:23:27.9434685Z ##[endgroup]
+2026-10-11T20:23:27.9484783Z [command]/usr/bin/git log -1 --format=%H
+2026-10-11T20:23:27.9512418Z be7740eaa388d4f8aab6ab1c75bf38af90f1bcbc
+2026-10-11T20:23:27.9753549Z ##[group]Run pnpm/action-setup@v6
+2026-10-11T20:23:27.9753873Z with:
+2026-10-11T20:23:27.9754087Z   dest: ~/setup-pnpm
+2026-10-11T20:23:27.9754311Z   run_install: null
+2026-10-11T20:23:27.9754516Z   cache: false
+2026-10-11T20:23:27.9754746Z   cache_dependency_path: pnpm-lock.yaml
+2026-10-11T20:23:27.9755051Z   package_json_file: package.json
+2026-10-11T20:23:27.9755327Z   standalone: false
+2026-10-11T20:23:27.9755539Z ##[endgroup]
+2026-10-11T20:23:28.1313097Z ##[group]Running self-installer...
+2026-10-11T20:23:34.9235588Z 
+2026-10-11T20:23:34.9236164Z added 1 package, and audited 2 packages in 3s
+2026-10-11T20:23:34.9236677Z 
+2026-10-11T20:23:34.9236892Z 1 package is looking for funding
+2026-10-11T20:23:34.9237421Z   run `npm fund` for details
+2026-10-11T20:23:34.9247237Z 
+2026-10-11T20:23:34.9247450Z found 0 vulnerabilities
+2026-10-11T20:23:35.5795048Z Checking for updates...
+2026-10-11T20:23:35.8342944Z Switching pnpm from v11.19.0 to v11.5.1...
+2026-10-11T20:23:36.9669949Z .../v11/927-1a12ca29c75-2273ad3d2d236a05 | Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-11T20:23:36.9688364Z .../v11/927-1a12ca29c75-2273ad3d2d236a05 |   +1 +
+2026-10-11T20:23:37.1442930Z .../v11/927-1a12ca29c75-2273ad3d2d236a05 | Progress: resolved 1, reused 0, downloaded 1, added 1, done
+2026-10-11T20:23:37.8429393Z [WARN] Detected a pnpm v10 installation layout at PNPM_HOME. The pnpm shims at PNPM_HOME have been refreshed so the new version is active, but pnpm v11 expects bins in PNPM_HOME/bin. Run "pnpm setup" to migrate your PATH to the v11 layout.
+2026-10-11T20:23:37.8458792Z Successfully updated pnpm to v11.5.1
+2026-10-11T20:23:37.8735115Z ##[endgroup]
+2026-10-11T20:23:37.8735704Z Installation Completed!
+2026-10-11T20:23:37.8941266Z ##[group]Run actions/setup-node@v7
+2026-10-11T20:23:37.8941904Z with:
+2026-10-11T20:23:37.8942112Z   node-version: 22
+2026-10-11T20:23:37.8942325Z   cache: pnpm
+2026-10-11T20:23:37.8942769Z   check-latest: false
+2026-10-11T20:23:37.8945108Z   token: ***
+2026-10-11T20:23:37.8945340Z   package-manager-cache: true
+2026-10-11T20:23:37.8945586Z env:
+2026-10-11T20:23:37.8945833Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:37.8946143Z ##[endgroup]
+2026-10-11T20:23:38.0239805Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-11T20:23:38.1035667Z ##[group]Environment details
+2026-10-11T20:23:38.4124038Z node: v22.23.3
+2026-10-11T20:23:38.4124791Z npm: 10.9.9
+2026-10-11T20:23:38.4125273Z yarn: 1.22.22
+2026-10-11T20:23:38.4126233Z ##[endgroup]
+2026-10-11T20:23:38.4149770Z [command]/home/runner/setup-pnpm/node_modules/.bin/bin/pnpm store path --silent
+2026-10-11T20:23:38.8769492Z /home/runner/setup-pnpm/node_modules/.bin/store/v11
+2026-10-11T20:23:39.1426600Z Cache hit for: node-cache-Linux-x64-pnpm-34e0f34f962a5c85b7143efe2470ecadb9caf63cc94c71a956d35737efdba6aa
+2026-10-11T20:23:40.4506610Z Received 0 of 204128591 (0.0%), 0.0 MBs/sec
+2026-10-11T20:23:41.4508254Z Received 104857600 of 204128591 (51.4%), 50.0 MBs/sec
+2026-10-11T20:23:42.2878220Z Received 204128591 of 204128591 (100.0%), 68.6 MBs/sec
+2026-10-11T20:23:42.2879703Z Cache Size: ~195 MB (204128591 B)
+2026-10-11T20:23:42.2947965Z [command]/usr/bin/tar -xf /home/runner/work/_temp/dd796d71-f534-4566-afc3-072f5b3b5596/cache.tzst -P -C /home/runner/work/pokedraft/pokedraft --use-compress-program unzstd
+2026-10-11T20:23:44.6178371Z Cache restored successfully
+2026-10-11T20:23:44.6273741Z Cache restored from key: node-cache-Linux-x64-pnpm-34e0f34f962a5c85b7143efe2470ecadb9caf63cc94c71a956d35737efdba6aa
+2026-10-11T20:23:44.6454217Z ##[group]Run pnpm install --frozen-lockfile
+2026-10-11T20:23:44.6454644Z pnpm install --frozen-lockfile
+2026-10-11T20:23:44.6712954Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:23:44.6713296Z env:
+2026-10-11T20:23:44.6713629Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:44.6714041Z ##[endgroup]
+2026-10-11T20:23:45.2952172Z ? Verifying lockfile against supply-chain policies (686 entries)...
+2026-10-11T20:23:48.8169180Z ✓ Lockfile passes supply-chain policies (686 entries in 3.5s)
+2026-10-11T20:23:48.8206940Z Lockfile is up to date, resolution step is skipped
+2026-10-11T20:23:48.8735961Z Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-11T20:23:48.9533116Z Packages: +532
+2026-10-11T20:23:48.9537533Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-10-11T20:23:49.8255832Z Progress: resolved 532, reused 532, downloaded 0, added 532, done
+2026-10-11T20:23:50.5095655Z 
+2026-10-11T20:23:50.5096391Z dependencies:
+2026-10-11T20:23:50.5097012Z + @neondatabase/serverless 1.2.0
+2026-10-11T20:23:50.5097558Z + drizzle-orm 0.45.4
+2026-10-11T20:23:50.5098033Z + lucide-react 1.55.0
+2026-10-11T20:23:50.5098444Z + next 16.4.0
+2026-10-11T20:23:50.5098800Z + react 19.3.0
+2026-10-11T20:23:50.5099203Z + react-dom 19.3.0
+2026-10-11T20:23:50.5099626Z + server-only 0.0.1
+2026-10-11T20:23:50.5100030Z + sharp 0.35.5
+2026-10-11T20:23:50.5100417Z + zod 4.6.5
+2026-10-11T20:23:50.5100620Z 
+2026-10-11T20:23:50.5100808Z devDependencies:
+2026-10-11T20:23:50.5101273Z + @axe-core/playwright 4.13.0
+2026-10-11T20:23:50.5102116Z + @electric-sql/pglite 0.5.8
+2026-10-11T20:23:50.5102616Z + @playwright/test 1.64.0
+2026-10-11T20:23:50.5103097Z + @testing-library/dom 10.4.2
+2026-10-11T20:23:50.5103591Z + @testing-library/react 16.3.3
+2026-10-11T20:23:50.5104092Z + @types/node 20.19.43
+2026-10-11T20:23:50.5104522Z + @types/react 19.3.0
+2026-10-11T20:23:50.5104961Z + @types/react-dom 19.3.0
+2026-10-11T20:23:50.5105413Z + drizzle-kit 0.31.11
+2026-10-11T20:23:50.5105672Z + eslint 9.39.5
+2026-10-11T20:23:50.5106135Z + eslint-config-next 16.4.0
+2026-10-11T20:23:50.5106711Z + eslint-config-prettier 10.1.8
+2026-10-11T20:23:50.5107248Z + jsdom 30.1.2
+2026-10-11T20:23:50.5107677Z + lighthouse 13.5.0
+2026-10-11T20:23:50.5108088Z + prettier 3.9.9
+2026-10-11T20:23:50.5108498Z + tsx 4.23.15
+2026-10-11T20:23:50.5108918Z + typescript 5.9.3
+2026-10-11T20:23:50.5144250Z + vitest 5.0.3
+2026-10-11T20:23:50.5144505Z 
+2026-10-11T20:23:50.5752664Z Done in 5.8s using pnpm v11.5.1
+2026-10-11T20:23:50.6941198Z ##[group]Run actions/cache@v6
+2026-10-11T20:23:50.6941930Z with:
+2026-10-11T20:23:50.6942235Z   path: scripts/data/.cache/c80757193bd0889054e36f4209762360bdaa4b95
+2026-10-11T20:23:50.6942929Z   key: pokeapi-csv-c80757193bd0889054e36f4209762360bdaa4b95-6a796e75936a0e5223329398370d8eb5b28fc83fb3ee9b95e05c9ad88bfea552
+2026-10-11T20:23:50.6943551Z   enableCrossOsArchive: false
+2026-10-11T20:23:50.6943818Z   fail-on-cache-miss: false
+2026-10-11T20:23:50.6944065Z   lookup-only: false
+2026-10-11T20:23:50.6944288Z   save-always: false
+2026-10-11T20:23:50.6944508Z env:
+2026-10-11T20:23:50.6944756Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:50.6945074Z ##[endgroup]
+2026-10-11T20:23:51.0860380Z Cache hit for: pokeapi-csv-c80757193bd0889054e36f4209762360bdaa4b95-6a796e75936a0e5223329398370d8eb5b28fc83fb3ee9b95e05c9ad88bfea552
+2026-10-11T20:23:52.1983769Z Received 1742849 of 1742849 (100.0%), 2.0 MBs/sec
+2026-10-11T20:23:52.1984476Z Cache Size: ~2 MB (1742849 B)
+2026-10-11T20:23:52.2013139Z [command]/usr/bin/tar -xf /home/runner/work/_temp/93078d97-1362-4cf5-999c-47f4213a7fa5/cache.tzst -P -C /home/runner/work/pokedraft/pokedraft --use-compress-program unzstd
+2026-10-11T20:23:52.2258731Z Cache restored successfully
+2026-10-11T20:23:52.2339111Z Cache restored from key: pokeapi-csv-c80757193bd0889054e36f4209762360bdaa4b95-6a796e75936a0e5223329398370d8eb5b28fc83fb3ee9b95e05c9ad88bfea552
+2026-10-11T20:23:52.2438625Z ##[group]Run pnpm check:mirrors
+2026-10-11T20:23:52.2438990Z pnpm check:mirrors
+2026-10-11T20:23:52.2502173Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:23:52.2502450Z env:
+2026-10-11T20:23:52.2502723Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:52.2503066Z ##[endgroup]
+2026-10-11T20:23:52.7019480Z $ bash scripts/check-mirrors.sh
+2026-10-11T20:23:52.7128439Z mirrors identical
+2026-10-11T20:23:52.7300523Z ##[group]Run pnpm check:image-seam
+2026-10-11T20:23:52.7301130Z pnpm check:image-seam
+2026-10-11T20:23:52.7372285Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:23:52.7372569Z env:
+2026-10-11T20:23:52.7372847Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:52.7373186Z ##[endgroup]
+2026-10-11T20:23:53.1685659Z $ bash scripts/check-image-seam.sh
+2026-10-11T20:23:53.1890846Z image seam clean
+2026-10-11T20:23:53.2056908Z ##[group]Run pnpm check:image-packs
+2026-10-11T20:23:53.2057275Z pnpm check:image-packs
+2026-10-11T20:23:53.2119258Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:23:53.2119533Z env:
+2026-10-11T20:23:53.2119802Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:53.2120129Z ##[endgroup]
+2026-10-11T20:23:53.6439176Z $ node scripts/images/check-packs.mjs
+2026-10-11T20:23:53.6867799Z image packs clean
+2026-10-11T20:23:53.7079044Z ##[group]Run pnpm check:theme-contrast
+2026-10-11T20:23:53.7079661Z pnpm check:theme-contrast
+2026-10-11T20:23:53.7161035Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:23:53.7161588Z env:
+2026-10-11T20:23:53.7161887Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:53.7162212Z ##[endgroup]
+2026-10-11T20:23:54.1548660Z $ tsx scripts/audit/theme-contrast.mts
+2026-10-11T20:23:54.3629417Z {
+2026-10-11T20:23:54.3629721Z   "lowest": [
+2026-10-11T20:23:54.3629983Z     {
+2026-10-11T20:23:54.3630219Z       "theme": "dark",
+2026-10-11T20:23:54.3630504Z       "role": "--text",
+2026-10-11T20:23:54.3630822Z       "surface": "viz-8 heat fill 0.48",
+2026-10-11T20:23:54.3631180Z       "ratio": 4.658766517738325,
+2026-10-11T20:23:54.3631897Z       "minimum": 4.5
+2026-10-11T20:23:54.3632309Z     },
+2026-10-11T20:23:54.3632656Z     {
+2026-10-11T20:23:54.3633002Z       "theme": "light",
+2026-10-11T20:23:54.3633425Z       "role": "--text-soft",
+2026-10-11T20:23:54.3633967Z       "surface": "--canvas",
+2026-10-11T20:23:54.3634466Z       "ratio": 9.488186600774757,
+2026-10-11T20:23:54.3634959Z       "minimum": 4.5
+2026-10-11T20:23:54.3635742Z     },
+2026-10-11T20:23:54.3636276Z     {
+2026-10-11T20:23:54.3636629Z       "theme": "dark",
+2026-10-11T20:23:54.3637055Z       "role": "--text-muted",
+2026-10-11T20:23:54.3637584Z       "surface": "--surface-sunken",
+2026-10-11T20:23:54.3638121Z       "ratio": 5.199715611252354,
+2026-10-11T20:23:54.3638591Z       "minimum": 4.5
+2026-10-11T20:23:54.3638982Z     },
+2026-10-11T20:23:54.3639224Z     {
+2026-10-11T20:23:54.3639454Z       "theme": "dark",
+2026-10-11T20:23:54.3639730Z       "role": "--text-faint",
+2026-10-11T20:23:54.3640073Z       "surface": "--surface-sunken",
+2026-10-11T20:23:54.3640525Z       "ratio": 4.762137917261816,
+2026-10-11T20:23:54.3640963Z       "minimum": 4.5
+2026-10-11T20:23:54.3641223Z     },
+2026-10-11T20:23:54.3641733Z     {
+2026-10-11T20:23:54.3641967Z       "theme": "light",
+2026-10-11T20:23:54.3642310Z       "role": "--link",
+2026-10-11T20:23:54.3642590Z       "surface": "--canvas",
+2026-10-11T20:23:54.3642915Z       "ratio": 5.246060640588725,
+2026-10-11T20:23:54.3643223Z       "minimum": 4.5
+2026-10-11T20:23:54.3643477Z     },
+2026-10-11T20:23:54.3643696Z     {
+2026-10-11T20:23:54.3643927Z       "theme": "dark",
+2026-10-11T20:23:54.3644196Z       "role": "--accent-fg",
+2026-10-11T20:23:54.3644482Z       "surface": "--accent",
+2026-10-11T20:23:54.3644748Z       "ratio": 5.433837485734052,
+2026-10-11T20:23:54.3645008Z       "minimum": 4.5
+2026-10-11T20:23:54.3645220Z     },
+2026-10-11T20:23:54.3645403Z     {
+2026-10-11T20:23:54.3645605Z       "theme": "light",
+2026-10-11T20:23:54.3645842Z       "role": "--ok-text",
+2026-10-11T20:23:54.3646090Z       "surface": "--ok-bg",
+2026-10-11T20:23:54.3646364Z       "ratio": 6.836741874435924,
+2026-10-11T20:23:54.3646626Z       "minimum": 4.5
+2026-10-11T20:23:54.3646840Z     },
+2026-10-11T20:23:54.3647026Z     {
+2026-10-11T20:23:54.3647229Z       "theme": "light",
+2026-10-11T20:23:54.3647473Z       "role": "--risk-text",
+2026-10-11T20:23:54.3647763Z       "surface": "risk pill tint",
+2026-10-11T20:23:54.3648061Z       "ratio": 5.291626164296438,
+2026-10-11T20:23:54.3648316Z       "minimum": 4.5
+2026-10-11T20:23:54.3648527Z     },
+2026-10-11T20:23:54.3648715Z     {
+2026-10-11T20:23:54.3648906Z       "theme": "light",
+2026-10-11T20:23:54.3649136Z       "role": "--viz-1",
+2026-10-11T20:23:54.3649386Z       "surface": "--surface",
+2026-10-11T20:23:54.3649657Z       "ratio": 3.411053061939352,
+2026-10-11T20:23:54.3649913Z       "minimum": 3
+2026-10-11T20:23:54.3650124Z     },
+2026-10-11T20:23:54.3650395Z     {
+2026-10-11T20:23:54.3650621Z       "theme": "light",
+2026-10-11T20:23:54.3650859Z       "role": "--viz-2",
+2026-10-11T20:23:54.3651097Z       "surface": "--surface",
+2026-10-11T20:23:54.3652052Z       "ratio": 3.0073801166099483,
+2026-10-11T20:23:54.3652493Z       "minimum": 3
+2026-10-11T20:23:54.3652859Z     },
+2026-10-11T20:23:54.3653188Z     {
+2026-10-11T20:23:54.3653880Z       "theme": "light",
+2026-10-11T20:23:54.3654336Z       "role": "--viz-3",
+2026-10-11T20:23:54.3654760Z       "surface": "--surface",
+2026-10-11T20:23:54.3655285Z       "ratio": 3.3005859774546367,
+2026-10-11T20:23:54.3655774Z       "minimum": 3
+2026-10-11T20:23:54.3656177Z     },
+2026-10-11T20:23:54.3656527Z     {
+2026-10-11T20:23:54.3656901Z       "theme": "light",
+2026-10-11T20:23:54.3657341Z       "role": "--viz-4",
+2026-10-11T20:23:54.3657799Z       "surface": "--surface",
+2026-10-11T20:23:54.3658312Z       "ratio": 3.846742593091505,
+2026-10-11T20:23:54.3658784Z       "minimum": 3
+2026-10-11T20:23:54.3659178Z     },
+2026-10-11T20:23:54.3659512Z     {
+2026-10-11T20:23:54.3659845Z       "theme": "light",
+2026-10-11T20:23:54.3660228Z       "role": "--viz-5",
+2026-10-11T20:23:54.3660629Z       "surface": "--surface",
+2026-10-11T20:23:54.3661086Z       "ratio": 3.049017113484908,
+2026-10-11T20:23:54.3661820Z       "minimum": 3
+2026-10-11T20:23:54.3676978Z     },
+2026-10-11T20:23:54.3677445Z     {
+2026-10-11T20:23:54.3677888Z       "theme": "light",
+2026-10-11T20:23:54.3678248Z       "role": "--viz-6",
+2026-10-11T20:23:54.3678565Z       "surface": "--surface",
+2026-10-11T20:23:54.3679143Z       "ratio": 3.914783521789215,
+2026-10-11T20:23:54.3679444Z       "minimum": 3
+2026-10-11T20:23:54.3679691Z     },
+2026-10-11T20:23:54.3679929Z     {
+2026-10-11T20:23:54.3680162Z       "theme": "light",
+2026-10-11T20:23:54.3680409Z       "role": "--viz-7",
+2026-10-11T20:23:54.3680701Z       "surface": "--surface",
+2026-10-11T20:23:54.3681065Z       "ratio": 3.4397059936488232,
+2026-10-11T20:23:54.3681818Z       "minimum": 3
+2026-10-11T20:23:54.3682148Z     },
+2026-10-11T20:23:54.3682370Z     {
+2026-10-11T20:23:54.3682599Z       "theme": "dark",
+2026-10-11T20:23:54.3682862Z       "role": "--risk-mark",
+2026-10-11T20:23:54.3683128Z       "surface": "--surface",
+2026-10-11T20:23:54.3683427Z       "ratio": 4.479394206355619,
+2026-10-11T20:23:54.3683708Z       "minimum": 3
+2026-10-11T20:23:54.3683935Z     },
+2026-10-11T20:23:54.3684162Z     {
+2026-10-11T20:23:54.3684399Z       "theme": "light",
+2026-10-11T20:23:54.3684704Z       "role": "--border-control",
+2026-10-11T20:23:54.3685018Z       "surface": "--surface",
+2026-10-11T20:23:54.3685311Z       "ratio": 3.5157506587615797,
+2026-10-11T20:23:54.3685611Z       "minimum": 3
+2026-10-11T20:23:54.3685835Z     },
+2026-10-11T20:23:54.3686063Z     {
+2026-10-11T20:23:54.3686286Z       "theme": "light",
+2026-10-11T20:23:54.3686546Z       "role": "--focus",
+2026-10-11T20:23:54.3686789Z       "surface": "--surface",
+2026-10-11T20:23:54.3687058Z       "ratio": 5.813077404885046,
+2026-10-11T20:23:54.3687311Z       "minimum": 3
+2026-10-11T20:23:54.3687514Z     },
+2026-10-11T20:23:54.3687726Z     {
+2026-10-11T20:23:54.3687920Z       "theme": "light",
+2026-10-11T20:23:54.3688216Z       "role": "--action-border",
+2026-10-11T20:23:54.3688635Z       "surface": "--surface",
+2026-10-11T20:23:54.3688942Z       "ratio": 7.9809129136746355,
+2026-10-11T20:23:54.3689225Z       "minimum": 3
+2026-10-11T20:23:54.3689435Z     },
+2026-10-11T20:23:54.3689626Z     {
+2026-10-11T20:23:54.3689816Z       "theme": "dark",
+2026-10-11T20:23:54.3690077Z       "role": "--type-normal",
+2026-10-11T20:23:54.3690366Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3690651Z       "ratio": 4.896380056676874,
+2026-10-11T20:23:54.3690901Z       "minimum": 4.5
+2026-10-11T20:23:54.3691114Z     },
+2026-10-11T20:23:54.3691522Z     {
+2026-10-11T20:23:54.3691852Z       "theme": "light",
+2026-10-11T20:23:54.3692126Z       "role": "--type-fighting",
+2026-10-11T20:23:54.3692418Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3692741Z       "ratio": 5.402022021452122,
+2026-10-11T20:23:54.3692994Z       "minimum": 4.5
+2026-10-11T20:23:54.3693234Z     },
+2026-10-11T20:23:54.3693418Z     {
+2026-10-11T20:23:54.3693608Z       "theme": "dark",
+2026-10-11T20:23:54.3693890Z       "role": "--type-flying",
+2026-10-11T20:23:54.3694200Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3694512Z       "ratio": 5.414419654595239,
+2026-10-11T20:23:54.3695016Z       "minimum": 4.5
+2026-10-11T20:23:54.3695251Z     },
+2026-10-11T20:23:54.3695431Z     {
+2026-10-11T20:23:54.3695651Z       "theme": "dark",
+2026-10-11T20:23:54.3695926Z       "role": "--type-poison",
+2026-10-11T20:23:54.3696225Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3696507Z       "ratio": 5.936168867267756,
+2026-10-11T20:23:54.3696774Z       "minimum": 4.5
+2026-10-11T20:23:54.3696986Z     },
+2026-10-11T20:23:54.3697186Z     {
+2026-10-11T20:23:54.3697380Z       "theme": "dark",
+2026-10-11T20:23:54.3697643Z       "role": "--type-ground",
+2026-10-11T20:23:54.3697934Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3698221Z       "ratio": 5.314587939886778,
+2026-10-11T20:23:54.3698491Z       "minimum": 4.5
+2026-10-11T20:23:54.3698700Z     },
+2026-10-11T20:23:54.3698904Z     {
+2026-10-11T20:23:54.3699102Z       "theme": "light",
+2026-10-11T20:23:54.3699358Z       "role": "--type-rock",
+2026-10-11T20:23:54.3699632Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3699933Z       "ratio": 6.012700009298428,
+2026-10-11T20:23:54.3700201Z       "minimum": 4.5
+2026-10-11T20:23:54.3700413Z     },
+2026-10-11T20:23:54.3700760Z     {
+2026-10-11T20:23:54.3700957Z       "theme": "dark",
+2026-10-11T20:23:54.3701209Z       "role": "--type-bug",
+2026-10-11T20:23:54.3701773Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3702054Z       "ratio": 6.185441698668278,
+2026-10-11T20:23:54.3702329Z       "minimum": 4.5
+2026-10-11T20:23:54.3702557Z     },
+2026-10-11T20:23:54.3702740Z     {
+2026-10-11T20:23:54.3702956Z       "theme": "dark",
+2026-10-11T20:23:54.3703188Z       "role": "--type-ghost",
+2026-10-11T20:23:54.3703497Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3703798Z       "ratio": 4.675612784816652,
+2026-10-11T20:23:54.3704071Z       "minimum": 4.5
+2026-10-11T20:23:54.3704291Z     },
+2026-10-11T20:23:54.3704472Z     {
+2026-10-11T20:23:54.3704688Z       "theme": "light",
+2026-10-11T20:23:54.3704957Z       "role": "--type-steel",
+2026-10-11T20:23:54.3705252Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3705557Z       "ratio": 5.311592639194664,
+2026-10-11T20:23:54.3705815Z       "minimum": 4.5
+2026-10-11T20:23:54.3706032Z     },
+2026-10-11T20:23:54.3706229Z     {
+2026-10-11T20:23:54.3706433Z       "theme": "light",
+2026-10-11T20:23:54.3706683Z       "role": "--type-fire",
+2026-10-11T20:23:54.3706973Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3707272Z       "ratio": 4.7330227383598835,
+2026-10-11T20:23:54.3707521Z       "minimum": 4.5
+2026-10-11T20:23:54.3707754Z     },
+2026-10-11T20:23:54.3707958Z     {
+2026-10-11T20:23:54.3708155Z       "theme": "dark",
+2026-10-11T20:23:54.3708404Z       "role": "--type-water",
+2026-10-11T20:23:54.3708694Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3708977Z       "ratio": 6.911700962191898,
+2026-10-11T20:23:54.3709242Z       "minimum": 4.5
+2026-10-11T20:23:54.3709474Z     },
+2026-10-11T20:23:54.3709660Z     {
+2026-10-11T20:23:54.3709875Z       "theme": "dark",
+2026-10-11T20:23:54.3710109Z       "role": "--type-grass",
+2026-10-11T20:23:54.3710407Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3710702Z       "ratio": 5.022879310710919,
+2026-10-11T20:23:54.3710979Z       "minimum": 4.5
+2026-10-11T20:23:54.3711191Z     },
+2026-10-11T20:23:54.3711618Z     {
+2026-10-11T20:23:54.3711854Z       "theme": "light",
+2026-10-11T20:23:54.3712138Z       "role": "--type-electric",
+2026-10-11T20:23:54.3712448Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3712751Z       "ratio": 4.9859591703981785,
+2026-10-11T20:23:54.3713034Z       "minimum": 4.5
+2026-10-11T20:23:54.3713264Z     },
+2026-10-11T20:23:54.3713450Z     {
+2026-10-11T20:23:54.3713673Z       "theme": "light",
+2026-10-11T20:23:54.3713956Z       "role": "--type-psychic",
+2026-10-11T20:23:54.3714247Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3714516Z       "ratio": 5.277608842279719,
+2026-10-11T20:23:54.3714792Z       "minimum": 4.5
+2026-10-11T20:23:54.3714999Z     },
+2026-10-11T20:23:54.3715180Z     {
+2026-10-11T20:23:54.3715550Z       "theme": "dark",
+2026-10-11T20:23:54.3715809Z       "role": "--type-ice",
+2026-10-11T20:23:54.3716098Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3716384Z       "ratio": 4.819207504347384,
+2026-10-11T20:23:54.3716663Z       "minimum": 4.5
+2026-10-11T20:23:54.3716876Z     },
+2026-10-11T20:23:54.3717068Z     {
+2026-10-11T20:23:54.3717260Z       "theme": "dark",
+2026-10-11T20:23:54.3717606Z       "role": "--type-dragon",
+2026-10-11T20:23:54.3718132Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3718461Z       "ratio": 5.105577963498147,
+2026-10-11T20:23:54.3718715Z       "minimum": 4.5
+2026-10-11T20:23:54.3718925Z     },
+2026-10-11T20:23:54.3719153Z     {
+2026-10-11T20:23:54.3719350Z       "theme": "dark",
+2026-10-11T20:23:54.3719586Z       "role": "--type-dark",
+2026-10-11T20:23:54.3719862Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3720143Z       "ratio": 8.407640439172205,
+2026-10-11T20:23:54.3720396Z       "minimum": 4.5
+2026-10-11T20:23:54.3720603Z     },
+2026-10-11T20:23:54.3720797Z     {
+2026-10-11T20:23:54.3720987Z       "theme": "dark",
+2026-10-11T20:23:54.3721226Z       "role": "--type-fairy",
+2026-10-11T20:23:54.3722482Z       "surface": "type pill 0.18",
+2026-10-11T20:23:54.3722803Z       "ratio": 5.9768324338648515,
+2026-10-11T20:23:54.3723065Z       "minimum": 4.5
+2026-10-11T20:23:54.3723288Z     },
+2026-10-11T20:23:54.3723492Z     {
+2026-10-11T20:23:54.3723692Z       "theme": "light",
+2026-10-11T20:23:54.3723951Z       "role": "--pitch-line",
+2026-10-11T20:23:54.3724242Z       "surface": "--pitch-stripe",
+2026-10-11T20:23:54.3724539Z       "ratio": 5.776376074429299,
+2026-10-11T20:23:54.3724793Z       "minimum": 3
+2026-10-11T20:23:54.3725010Z     }
+2026-10-11T20:23:54.3725199Z   ],
+2026-10-11T20:23:54.3725400Z   "failures": []
+2026-10-11T20:23:54.3725614Z }
+2026-10-11T20:23:54.3966221Z ##[group]Run pnpm check:theme-colors
+2026-10-11T20:23:54.3966589Z pnpm check:theme-colors
+2026-10-11T20:23:54.4028526Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:23:54.4028797Z env:
+2026-10-11T20:23:54.4029065Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:54.4029417Z ##[endgroup]
+2026-10-11T20:23:54.8410529Z $ node scripts/audit/theme-color-lint.mjs
+2026-10-11T20:23:54.8833038Z No stray hex colors; viz-8 remains reserved for heat fills.
+2026-10-11T20:23:54.9086608Z ##[group]Run pnpm check:theme-cvd
+2026-10-11T20:23:54.9086961Z pnpm check:theme-cvd
+2026-10-11T20:23:54.9148994Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:23:54.9149269Z env:
+2026-10-11T20:23:54.9149544Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:54.9149881Z ##[endgroup]
+2026-10-11T20:23:55.3554807Z $ tsx scripts/audit/theme-cvd.mts
+2026-10-11T20:23:55.5671624Z {
+2026-10-11T20:23:55.5672672Z   "source": "https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html",
+2026-10-11T20:23:55.5673595Z   "method": "Machado 2009, severity 1.0, linear sRGB; Oklab Euclidean distance scaled by 100",
+2026-10-11T20:23:55.5674067Z   "rows": [
+2026-10-11T20:23:55.5674269Z     {
+2026-10-11T20:23:55.5674483Z       "theme": "light",
+2026-10-11T20:23:55.5674739Z       "vision": "normal",
+2026-10-11T20:23:55.5675018Z       "closest": [
+2026-10-11T20:23:55.5675240Z         {
+2026-10-11T20:23:55.5675476Z           "a": "--type-normal",
+2026-10-11T20:23:55.5675935Z           "b": "--type-ground",
+2026-10-11T20:23:55.5676235Z           "deltaEOK100": 4.715804767220461
+2026-10-11T20:23:55.5676512Z         },
+2026-10-11T20:23:55.5676710Z         {
+2026-10-11T20:23:55.5677089Z           "a": "--type-rock",
+2026-10-11T20:23:55.5677616Z           "b": "--type-grass",
+2026-10-11T20:23:55.5678130Z           "deltaEOK100": 4.721059538032486
+2026-10-11T20:23:55.5678628Z         },
+2026-10-11T20:23:55.5678883Z         {
+2026-10-11T20:23:55.5679123Z           "a": "--type-psychic",
+2026-10-11T20:23:55.5679425Z           "b": "--type-fairy",
+2026-10-11T20:23:55.5679714Z           "deltaEOK100": 4.922352553461547
+2026-10-11T20:23:55.5679993Z         },
+2026-10-11T20:23:55.5680187Z         {
+2026-10-11T20:23:55.5680402Z           "a": "--type-bug",
+2026-10-11T20:23:55.5680677Z           "b": "--type-grass",
+2026-10-11T20:23:55.5681012Z           "deltaEOK100": 5.366716957807129
+2026-10-11T20:23:55.5681461Z         },
+2026-10-11T20:23:55.5681770Z         {
+2026-10-11T20:23:55.5682014Z           "a": "--type-flying",
+2026-10-11T20:23:55.5682298Z           "b": "--type-dragon",
+2026-10-11T20:23:55.5682579Z           "deltaEOK100": 5.632525467186522
+2026-10-11T20:23:55.5682845Z         }
+2026-10-11T20:23:55.5683049Z       ],
+2026-10-11T20:23:55.5683277Z       "minimum": 4.715804767220461
+2026-10-11T20:23:55.5683711Z     },
+2026-10-11T20:23:55.5684061Z     {
+2026-10-11T20:23:55.5684326Z       "theme": "light",
+2026-10-11T20:23:55.5684583Z       "vision": "protanopia",
+2026-10-11T20:23:55.5684837Z       "closest": [
+2026-10-11T20:23:55.5685050Z         {
+2026-10-11T20:23:55.5685261Z           "a": "--type-rock",
+2026-10-11T20:23:55.5685539Z           "b": "--type-grass",
+2026-10-11T20:23:55.5686064Z           "deltaEOK100": 4.211243116635695
+2026-10-11T20:23:55.5686423Z         },
+2026-10-11T20:23:55.5686883Z         {
+2026-10-11T20:23:55.5687115Z           "a": "--type-fighting",
+2026-10-11T20:23:55.5687418Z           "b": "--type-grass",
+2026-10-11T20:23:55.5687721Z           "deltaEOK100": 4.452811892610006
+2026-10-11T20:23:55.5688000Z         },
+2026-10-11T20:23:55.5688191Z         {
+2026-10-11T20:23:55.5688397Z           "a": "--type-rock",
+2026-10-11T20:23:55.5688660Z           "b": "--type-bug",
+2026-10-11T20:23:55.5688941Z           "deltaEOK100": 4.610058224601768
+2026-10-11T20:23:55.5689211Z         },
+2026-10-11T20:23:55.5689396Z         {
+2026-10-11T20:23:55.5689627Z           "a": "--type-normal",
+2026-10-11T20:23:55.5689914Z           "b": "--type-ground",
+2026-10-11T20:23:55.5690203Z           "deltaEOK100": 4.641993397453687
+2026-10-11T20:23:55.5690474Z         },
+2026-10-11T20:23:55.5690838Z         {
+2026-10-11T20:23:55.5691207Z           "a": "--type-ghost",
+2026-10-11T20:23:55.5691999Z           "b": "--type-fairy",
+2026-10-11T20:23:55.5692487Z           "deltaEOK100": 4.77369388215744
+2026-10-11T20:23:55.5692979Z         }
+2026-10-11T20:23:55.5693329Z       ],
+2026-10-11T20:23:55.5693735Z       "minimum": 4.211243116635695
+2026-10-11T20:23:55.5694550Z     },
+2026-10-11T20:23:55.5694929Z     {
+2026-10-11T20:23:55.5695289Z       "theme": "light",
+2026-10-11T20:23:55.5695786Z       "vision": "deuteranopia",
+2026-10-11T20:23:55.5696261Z       "closest": [
+2026-10-11T20:23:55.5696638Z         {
+2026-10-11T20:23:55.5697043Z           "a": "--type-fighting",
+2026-10-11T20:23:55.5697560Z           "b": "--type-fire",
+2026-10-11T20:23:55.5698088Z           "deltaEOK100": 4.0845705383477915
+2026-10-11T20:23:55.5698590Z         },
+2026-10-11T20:23:55.5698942Z         {
+2026-10-11T20:23:55.5699380Z           "a": "--type-ground",
+2026-10-11T20:23:55.5699838Z           "b": "--type-dark",
+2026-10-11T20:23:55.5700355Z           "deltaEOK100": 4.530049647432842
+2026-10-11T20:23:55.5700862Z         },
+2026-10-11T20:23:55.5701215Z         {
+2026-10-11T20:23:55.5701910Z           "a": "--type-normal",
+2026-10-11T20:23:55.5702454Z           "b": "--type-ground",
+2026-10-11T20:23:55.5702941Z           "deltaEOK100": 4.586768887614016
+2026-10-11T20:23:55.5703220Z         },
+2026-10-11T20:23:55.5703431Z         {
+2026-10-11T20:23:55.5703655Z           "a": "--type-fighting",
+2026-10-11T20:23:55.5703949Z           "b": "--type-psychic",
+2026-10-11T20:23:55.5704251Z           "deltaEOK100": 4.640423671671407
+2026-10-11T20:23:55.5704521Z         },
+2026-10-11T20:23:55.5704715Z         {
+2026-10-11T20:23:55.5704917Z           "a": "--type-fire",
+2026-10-11T20:23:55.5705200Z           "b": "--type-electric",
+2026-10-11T20:23:55.5705487Z           "deltaEOK100": 4.835931774183925
+2026-10-11T20:23:55.5705760Z         }
+2026-10-11T20:23:55.5706056Z       ],
+2026-10-11T20:23:55.5706453Z       "minimum": 4.0845705383477915
+2026-10-11T20:23:55.5706860Z     },
+2026-10-11T20:23:55.5707054Z     {
+2026-10-11T20:23:55.5707257Z       "theme": "dark",
+2026-10-11T20:23:55.5707500Z       "vision": "normal",
+2026-10-11T20:23:55.5707746Z       "closest": [
+2026-10-11T20:23:55.5707968Z         {
+2026-10-11T20:23:55.5708174Z           "a": "--type-rock",
+2026-10-11T20:23:55.5708446Z           "b": "--type-fire",
+2026-10-11T20:23:55.5708733Z           "deltaEOK100": 4.116962120699887
+2026-10-11T20:23:55.5709013Z         },
+2026-10-11T20:23:55.5709202Z         {
+2026-10-11T20:23:55.5709438Z           "a": "--type-electric",
+2026-10-11T20:23:55.5709702Z           "b": "--type-dark",
+2026-10-11T20:23:55.5709979Z           "deltaEOK100": 4.585482375890515
+2026-10-11T20:23:55.5710244Z         },
+2026-10-11T20:23:55.5710437Z         {
+2026-10-11T20:23:55.5710662Z           "a": "--type-poison",
+2026-10-11T20:23:55.5710943Z           "b": "--type-fairy",
+2026-10-11T20:23:55.5711237Z           "deltaEOK100": 4.594662153713235
+2026-10-11T20:23:55.5711837Z         },
+2026-10-11T20:23:55.5712041Z         {
+2026-10-11T20:23:55.5712269Z           "a": "--type-normal",
+2026-10-11T20:23:55.5712557Z           "b": "--type-ground",
+2026-10-11T20:23:55.5712838Z           "deltaEOK100": 4.620587896330648
+2026-10-11T20:23:55.5713320Z         },
+2026-10-11T20:23:55.5713524Z         {
+2026-10-11T20:23:55.5713737Z           "a": "--type-bug",
+2026-10-11T20:23:55.5714113Z           "b": "--type-fire",
+2026-10-11T20:23:55.5714599Z           "deltaEOK100": 4.775183665164729
+2026-10-11T20:23:55.5715359Z         }
+2026-10-11T20:23:55.5715645Z       ],
+2026-10-11T20:23:55.5715996Z       "minimum": 4.116962120699887
+2026-10-11T20:23:55.5716411Z     },
+2026-10-11T20:23:55.5716698Z     {
+2026-10-11T20:23:55.5717011Z       "theme": "dark",
+2026-10-11T20:23:55.5717400Z       "vision": "protanopia",
+2026-10-11T20:23:55.5717901Z       "closest": [
+2026-10-11T20:23:55.5718292Z         {
+2026-10-11T20:23:55.5718705Z           "a": "--type-ground",
+2026-10-11T20:23:55.5719185Z           "b": "--type-grass",
+2026-10-11T20:23:55.5719726Z           "deltaEOK100": 4.000517060492848
+2026-10-11T20:23:55.5720200Z         },
+2026-10-11T20:23:55.5720539Z         {
+2026-10-11T20:23:55.5720881Z           "a": "--type-ice",
+2026-10-11T20:23:55.5721645Z           "b": "--type-dragon",
+2026-10-11T20:23:55.5722190Z           "deltaEOK100": 4.120971525805402
+2026-10-11T20:23:55.5722963Z         },
+2026-10-11T20:23:55.5723311Z         {
+2026-10-11T20:23:55.5723726Z           "a": "--type-water",
+2026-10-11T20:23:55.5724217Z           "b": "--type-psychic",
+2026-10-11T20:23:55.5724777Z           "deltaEOK100": 4.221680791684688
+2026-10-11T20:23:55.5725254Z         },
+2026-10-11T20:23:55.5725612Z         {
+2026-10-11T20:23:55.5726061Z           "a": "--type-steel",
+2026-10-11T20:23:55.5726541Z           "b": "--type-dark",
+2026-10-11T20:23:55.5727058Z           "deltaEOK100": 4.271564316271708
+2026-10-11T20:23:55.5727584Z         },
+2026-10-11T20:23:55.5727945Z         {
+2026-10-11T20:23:55.5728360Z           "a": "--type-flying",
+2026-10-11T20:23:55.5728897Z           "b": "--type-poison",
+2026-10-11T20:23:55.5729401Z           "deltaEOK100": 4.301762486755913
+2026-10-11T20:23:55.5729885Z         }
+2026-10-11T20:23:55.5730250Z       ],
+2026-10-11T20:23:55.5730667Z       "minimum": 4.000517060492848
+2026-10-11T20:23:55.5731167Z     },
+2026-10-11T20:23:55.5731842Z     {
+2026-10-11T20:23:55.5732228Z       "theme": "dark",
+2026-10-11T20:23:55.5732729Z       "vision": "deuteranopia",
+2026-10-11T20:23:55.5733205Z       "closest": [
+2026-10-11T20:23:55.5733681Z         {
+2026-10-11T20:23:55.5734036Z           "a": "--type-rock",
+2026-10-11T20:23:55.5734456Z           "b": "--type-fire",
+2026-10-11T20:23:55.5734947Z           "deltaEOK100": 4.001353206980928
+2026-10-11T20:23:55.5735444Z         },
+2026-10-11T20:23:55.5735826Z         {
+2026-10-11T20:23:55.5736212Z           "a": "--type-fighting",
+2026-10-11T20:23:55.5736737Z           "b": "--type-fairy",
+2026-10-11T20:23:55.5737264Z           "deltaEOK100": 4.068190346472894
+2026-10-11T20:23:55.5737780Z         },
+2026-10-11T20:23:55.5738141Z         {
+2026-10-11T20:23:55.5738506Z           "a": "--type-ice",
+2026-10-11T20:23:55.5739013Z           "b": "--type-dragon",
+2026-10-11T20:23:55.5739564Z           "deltaEOK100": 4.109977855188714
+2026-10-11T20:23:55.5740127Z         },
+2026-10-11T20:23:55.5740560Z         {
+2026-10-11T20:23:55.5741036Z           "a": "--type-electric",
+2026-10-11T20:23:55.5748682Z           "b": "--type-dark",
+2026-10-11T20:23:55.5749348Z           "deltaEOK100": 4.253063166872768
+2026-10-11T20:23:55.5749955Z         },
+2026-10-11T20:23:55.5750373Z         {
+2026-10-11T20:23:55.5750818Z           "a": "--type-bug",
+2026-10-11T20:23:55.5751592Z           "b": "--type-fire",
+2026-10-11T20:23:55.5752218Z           "deltaEOK100": 4.286663163217126
+2026-10-11T20:23:55.5752839Z         }
+2026-10-11T20:23:55.5753205Z       ],
+2026-10-11T20:23:55.5753677Z       "minimum": 4.001353206980928
+2026-10-11T20:23:55.5754212Z     }
+2026-10-11T20:23:55.5754618Z   ]
+2026-10-11T20:23:55.5754954Z }
+2026-10-11T20:23:55.6059646Z ##[group]Run pnpm lint
+2026-10-11T20:23:55.6059956Z pnpm lint
+2026-10-11T20:23:55.6122261Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:23:55.6122748Z env:
+2026-10-11T20:23:55.6123029Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:23:55.6123390Z ##[endgroup]
+2026-10-11T20:23:56.0675531Z $ eslint
+2026-10-11T20:24:07.0088982Z ##[group]Run pnpm typecheck
+2026-10-11T20:24:07.0089421Z pnpm typecheck
+2026-10-11T20:24:07.0151838Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:24:07.0152123Z env:
+2026-10-11T20:24:07.0152399Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:24:07.0152744Z ##[endgroup]
+2026-10-11T20:24:07.4524407Z $ next typegen && tsc --noEmit
+2026-10-11T20:24:07.7834929Z Generating route types...
+2026-10-11T20:24:07.8050465Z ✓ Types generated successfully
+2026-10-11T20:24:23.2454877Z ##[group]Run pnpm test --maxWorkers=4
+2026-10-11T20:24:23.2455456Z pnpm test --maxWorkers=4
+2026-10-11T20:24:23.2521950Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:24:23.2522236Z env:
+2026-10-11T20:24:23.2522516Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:24:23.2522861Z ##[endgroup]
+2026-10-11T20:24:23.7054857Z $ vitest run --maxWorkers=4
+2026-10-11T20:24:24.0217414Z 
+2026-10-11T20:24:24.0221944Z  RUN  v5.0.3 /home/runner/work/pokedraft/pokedraft
+2026-10-11T20:24:24.0222651Z 
+2026-10-11T20:24:25.7384515Z  ✓ src/engine/__tests__/draft.test.ts (34 tests) 405ms
+2026-10-11T20:24:29.3123688Z  ✓ src/engine/__tests__/cup.test.ts (13 tests) 2301ms
+2026-10-11T20:24:29.3178270Z    ✓ scorer roles (catches defenders and holding midfielders scoring like forwards) (2)
+2026-10-11T20:24:29.3232977Z      ✓ gives ST, W and AM 70 to 80% of user goals 1219ms
+2026-10-11T20:24:29.3286102Z      ✓ never lets the goalkeeper score from open play 615ms
+2026-10-11T20:24:33.2374315Z  ✓ src/components/run/__tests__/run.test.tsx (15 tests) 7133ms
+2026-10-11T20:24:33.2388497Z    ✓ challenge run screen (5)
+2026-10-11T20:24:33.2390574Z      ✓ places the selected candidate into the tapped open slot and advances the round, so Squad First picks reach the engine 2250ms
+2026-10-11T20:24:33.2393003Z      ✓ clears the hint for a tap that did nothing after 4 seconds, and not before 482ms
+2026-10-11T20:24:33.2395040Z      ✓ never picks into a filled slot: with a player chosen, a tap on a placed one picks it for a swap 578ms
+2026-10-11T20:24:33.2396740Z    ✓ a run survives a reload (SA-08, SB-06) (6)
+2026-10-11T20:24:33.2398727Z      ✓ brings a draft in progress back at the same round with the same squad after a reload (catches a run that lives only in React state) 437ms
+2026-10-11T20:24:33.2401550Z      ✓ brings a finished, unsubmitted run back to its results with the same record and the submit form (catches losing the only chance to submit) 1183ms
+2026-10-11T20:24:33.2403743Z      ✓ restores a Daily run on the same New York date only 321ms
+2026-10-11T20:24:33.2405471Z      ✓ still plays when the browser refuses storage (private windows, blocked site data) 328ms
+2026-10-11T20:24:34.4589269Z  ✓ scripts/images/import.test.ts (15 tests) 643ms
+2026-10-11T20:24:34.4632637Z    ✓ import-pack on a 5-image fixture (1)
+2026-10-11T20:24:34.4653040Z      ✓ writes identical bytes on a second run, and reports the unmatched file 587ms
+2026-10-11T20:24:35.5347993Z  ✓ src/engine/__tests__/match.test.ts (10 tests) 255ms
+2026-10-11T20:24:37.6963714Z  ✓ src/components/results/__tests__/ResultsView.test.tsx (11 tests) 3447ms
+2026-10-11T20:24:37.6992772Z    ✓ ResultsView (11)
+2026-10-11T20:24:37.7023009Z      ✓ shows the replayed record and Team Score, not a placeholder or a recomputed value 488ms
+2026-10-11T20:24:37.7025560Z      ✓ describes the number on the cards: the pitch legend and the season details talk about ratings, 0 to 100 and the three lowest 508ms
+2026-10-11T20:24:37.7053604Z      ✓ records a live run in local history exactly once and never records a shared view 467ms
+2026-10-11T20:24:37.7083107Z      ✓ copies the /r/ link on Share and says so, and offers Play your own instead of New run when shared 396ms
+2026-10-11T20:24:43.8219604Z  ✓ src/components/builder/__tests__/Builder.test.tsx (24 tests) 16591ms
+2026-10-11T20:24:43.8228958Z    ✓ builder drag and swap (2)
+2026-10-11T20:24:43.8327539Z      ✓ dragging one filled token onto another swaps them instead of dropping or duplicating 1431ms
+2026-10-11T20:24:43.8333070Z      ✓ picking a species already on the field into another slot swaps the two, never duplicates it 1280ms
+2026-10-11T20:24:43.8352536Z    ✓ the picker sheet (4)
+2026-10-11T20:24:43.8373175Z      ✓ owns one history entry, so the browser Back button closes it and the page stays on / 949ms
+2026-10-11T20:24:43.8392001Z      ✓ writes a pick's ?b= link on the page's own entry, not on the sheet's entry that Back drops 888ms
+2026-10-11T20:24:43.8453780Z      ✓ closes on a downward swipe of more than 80 px on its header, and not on a shorter one 1127ms
+2026-10-11T20:24:43.8455478Z      ✓ gives focus back to the tapped slot when it closes 671ms
+2026-10-11T20:24:43.8456580Z    ✓ builder picker (7)
+2026-10-11T20:24:43.8457987Z      ✓ search by name narrows the list to matches (pika shows Pikachu #025, hides Bulbasaur) 528ms
+2026-10-11T20:24:43.8459720Z      ✓ type filter keeps only that type (fire shows Charmander, hides Squirtle) 2021ms
+2026-10-11T20:24:43.8462189Z      ✓ a search for a species the settings hide says why instead of a bare No matches (Mewtwo is Legendary, Legendaries is off by default) 765ms
+2026-10-11T20:24:43.8464195Z      ✓ a search that matches no Pokémon at all still says just No matches 752ms
+2026-10-11T20:24:43.8493962Z      ✓ the rating stays hidden with Show ratings off, so the blind default never leaks a number, a label or the raw fit 603ms
+2026-10-11T20:24:43.8496243Z      ✓ with Show ratings on, a slot's row says where the player ranks for that role (Pikachu at CB: 7 vs other CBs, raw fit 30 on the row's description) 976ms
+2026-10-11T20:24:43.8498470Z      ✓ a bench slot keeps Best: <role> and rates the player at that role (Pikachu: Best W, 75 vs other wingers, raw fit 72) 922ms
+2026-10-11T20:24:43.8500024Z    ✓ builder toolbar (catches buttons that stop doing what they say) (5)
+2026-10-11T20:24:43.8501627Z      ✓ picking a species fills the empty slot and closes the picker 693ms
+2026-10-11T20:24:43.8503082Z      ✓ Clear all empties every slot and then disables itself 411ms
+2026-10-11T20:24:43.8504507Z      ✓ Reset restores the default panel and an empty 4-3-3 lineup 439ms
+2026-10-11T20:24:43.8506032Z      ✓ Copy link writes the share URL and says so, and says when the copy fails 336ms
+2026-10-11T20:24:43.8508350Z      ✓ Download image requests the builder card and saves it as pokedraft-lineup.png 334ms
+2026-10-11T20:24:46.2164000Z  ✓ src/components/run/__tests__/swap.test.tsx (10 tests) 8547ms
+2026-10-11T20:24:46.2192809Z    ✓ tap to swap on the draft board (6)
+2026-10-11T20:24:46.2223581Z      ✓ after the draft, a tap on one player and then another swaps them (SB-26: the second tap did nothing) 2485ms
+2026-10-11T20:24:46.2252850Z      ✓ a second tap on the same player cancels the swap and changes nothing 1237ms
+2026-10-11T20:24:46.2282490Z      ✓ Escape cancels a picked swap 923ms
+2026-10-11T20:24:46.2284652Z      ✓ mid-draft, a tap on a placed player picks them to swap and a tap on an open slot moves them there, without a pick 748ms
+2026-10-11T20:24:46.2313288Z      ✓ keeps the last reroll button focusable when its count runs out, and a press then does nothing 1149ms
+2026-10-11T20:24:46.2342493Z    ✓ focus after the screen changes (SC-11) (4)
+2026-10-11T20:24:46.2372826Z      ✓ See results moves focus to the results heading, and New run to the start heading 1294ms
+2026-10-11T20:24:48.5095558Z  ✓ src/engine/__tests__/draft-runs.test.ts (4 tests) 10027ms
+2026-10-11T20:24:48.5152986Z    ✓ 10,000 seeded bot runs per mode (catches empty rolls, cap breaches and stuck drafts) (3)
+2026-10-11T20:24:48.5192544Z      ✓ cup8 open squadFirst 3317ms
+2026-10-11T20:24:48.5212527Z      ✓ cup8 classic3 positionFirst 3017ms
+2026-10-11T20:24:48.5335673Z      ✓ kanto151 squadFirst 3147ms
+2026-10-11T20:24:48.5372936Z    ✓ reroll isolation (catches a substream keyed on the run-wide reroll count) (1)
+2026-10-11T20:24:48.5453807Z      ✓ picking the same species with or without a type reroll gives the same next roll 541ms
+2026-10-11T20:24:48.8954143Z stderr | scripts/audit/lib.test.ts > whenQuiet > goes ahead after the maximum wait on a busy machine and says so
+2026-10-11T20:24:48.8992718Z test: load 4.02 is above -1; waiting up to 0 min for a quiet machine
+2026-10-11T20:24:48.9021909Z 
+2026-10-11T20:24:49.0203139Z stderr | scripts/audit/lib.test.ts > whenQuiet > never lets two tasks overlap
+2026-10-11T20:24:49.0206318Z b: waiting for the measurement lock
+2026-10-11T20:24:49.0207138Z 
+2026-10-11T20:24:49.4393751Z  ✓ scripts/audit/lib.test.ts (14 tests) 585ms
+2026-10-11T20:24:49.4444586Z    ✓ timedFetch (1)
+2026-10-11T20:24:49.4502984Z      ✓ says which requests had to open a connection 307ms
+2026-10-11T20:24:49.5859253Z  ✓ src/components/leaderboard/__tests__/SubmitPanel.test.tsx (14 tests) 685ms
+2026-10-11T20:24:49.5932176Z    ✓ SubmitPanel (14)
+2026-10-11T20:24:49.5953553Z      ✓ posts the trimmed nickname, token and engine version, remembers the nickname, and links to the daily board 391ms
+2026-10-11T20:24:50.0983641Z  ✓ src/engine/__tests__/rng.test.ts (39 tests) 192ms
+2026-10-11T20:24:53.2553596Z  ✓ src/engine/versions/__tests__/versions.test.ts (14 tests) 171ms
+2026-10-11T20:24:54.2172562Z  ✓ src/scouting/__tests__/panel.test.ts (42 tests) 58ms
+2026-10-11T20:24:55.4533613Z  ✓ src/scouting/__tests__/attributes.test.ts (20 tests) 486ms
+2026-10-11T20:24:56.9113640Z  ✓ src/components/wheel/__tests__/wheel.test.tsx (5 tests) 4074ms
+2026-10-11T20:24:56.9152273Z    ✓ randomizer wheel (5)
+2026-10-11T20:24:56.9168171Z      ✓ settles on the engine roll for 500 seeded rolls, so the wheel never shows a different result than the draft 3662ms
+2026-10-11T20:24:57.7197829Z stderr | src/leaderboard/server/__tests__/hardening.test.ts > submit hardening > returns 201 with rank null when the rank lookup fails after the insert (catches a 503 for a saved run)
+2026-10-11T20:24:57.7213282Z {"level":"error","where":"submit.rank","requestId":"local-d59b0cd2-0f65-448a-8668-b158923f80ad","name":"Error","sqlstate":null}
+2026-10-11T20:24:57.7241895Z 
+2026-10-11T20:24:59.2073513Z  ✓ src/components/pitch/__tests__/Pitch.test.tsx (5 tests) 1175ms
+2026-10-11T20:24:59.2152667Z    ✓ Pitch (5)
+2026-10-11T20:24:59.2183029Z      ✓ labels every starter and bench slot so taps reach the right SlotRef 505ms
+2026-10-11T20:25:05.1683828Z  ✓ src/components/builder/__tests__/announce-builder.test.tsx (6 tests) 5555ms
+2026-10-11T20:25:05.1712653Z    ✓ builder announcements (4)
+2026-10-11T20:25:05.1742814Z      ✓ Randomize says the Team Score the screen shows 1084ms
+2026-10-11T20:25:05.1772553Z      ✓ Clear all says the slots are empty 495ms
+2026-10-11T20:25:05.1802471Z      ✓ Reset says what it did 474ms
+2026-10-11T20:25:05.1833114Z      ✓ a drag swap says who moved where 395ms
+2026-10-11T20:25:05.1862350Z    ✓ Picker focus return (SC-12) (2)
+2026-10-11T20:25:05.1863627Z      ✓ a pick gives focus back to the slot that opened the Picker 865ms
+2026-10-11T20:25:05.1865170Z      ✓ Clear slot gives focus back to the slot that opened the Picker 2235ms
+2026-10-11T20:25:05.4833743Z  ✓ src/engine/__tests__/formations.test.ts (22 tests) 31ms
+2026-10-11T20:25:07.0773542Z  ✓ src/leaderboard/server/__tests__/hardening.test.ts (7 tests) 21641ms
+2026-10-11T20:25:07.0802802Z    ✓ client IP (catches a spoofable first x-forwarded-for hop beating Vercel's header) (1)
+2026-10-11T20:25:07.0836575Z      ✓ prefers x-real-ip, then the first x-forwarded-for hop, then unknown 4147ms
+2026-10-11T20:25:07.0893415Z    ✓ IP hash (catches an unkeyed hash that anyone can brute-force from the IPv4 space) (1)
+2026-10-11T20:25:07.0895431Z      ✓ is HMAC-SHA256 of the IP under the secret 2614ms
+2026-10-11T20:25:07.0922193Z    ✓ submit hardening (2)
+2026-10-11T20:25:07.0923725Z      ✓ counts rejected submissions toward the per-IP limit (catches 422s that never throttle) 2702ms
+2026-10-11T20:25:07.0925844Z      ✓ returns 201 with rank null when the rank lookup fails after the insert (catches a 503 for a saved run) 2828ms
+2026-10-11T20:25:07.0927615Z    ✓ server error logging (catches a 503 whose cause is lost, or a log that leaks personal data) (3)
+2026-10-11T20:25:07.0929448Z      ✓ logs one JSON line with the request id and SQLSTATE, and returns the id in x-request-id 2981ms
+2026-10-11T20:25:07.0932094Z      ✓ logs a failed rank lookup after a saved run instead of dropping it 3445ms
+2026-10-11T20:25:07.0933606Z      ✓ logs a failed board read with the request id 2921ms
+2026-10-11T20:25:09.3393320Z  ✓ src/__tests__/proxy.test.ts (9 tests) 50ms
+2026-10-11T20:25:12.5854506Z  ✓ src/components/run/__tests__/announce-draft.test.tsx (6 tests) 4799ms
+2026-10-11T20:25:12.5897724Z    ✓ draft announcements (6)
+2026-10-11T20:25:12.5899179Z      ✓ has one polite status region that is empty before Start and says the first roll after it 1306ms
+2026-10-11T20:25:12.5943020Z      ✓ says the pick, the new round and its roll as one message 567ms
+2026-10-11T20:25:12.5947502Z      ✓ says a reroll, how many are left, and the new roll 357ms
+2026-10-11T20:25:12.5972721Z      ✓ says when the draft is complete, and then each tap swap 1429ms
+2026-10-11T20:25:12.6023171Z      ✓ says the same hint again when it is repeated, by changing the region's text 610ms
+2026-10-11T20:25:12.6052824Z      ✓ with motion on, says the roll once, after the last wheel stops, never the region alone 526ms
+2026-10-11T20:25:12.7549948Z  ✓ src/components/run/__tests__/RoadStrip.test.tsx (7 tests) 726ms
+2026-10-11T20:25:13.4255969Z  ✓ src/engine/__tests__/token.test.ts (23 tests) 29ms
+2026-10-11T20:25:14.2853141Z  ✓ src/components/results/__tests__/format.test.ts (9 tests) 11ms
+2026-10-11T20:25:14.8012045Z  ✓ src/app/api/csp-report/__tests__/route.test.ts (5 tests) 93ms
+2026-10-11T20:25:16.7684299Z stderr | src/gate/__tests__/unlock.test.ts > passcode gate attempt limit (catches unlimited passcode guessing) > fails closed when the limiter or its secret is unavailable
+2026-10-11T20:25:16.7713276Z {"level":"error","where":"gate.limiter","requestId":"local-17ad9086-d79f-410e-b196-864801f5675c","name":"Error","sqlstate":null}
+2026-10-11T20:25:16.7741724Z 
+2026-10-11T20:25:16.7773636Z stderr | src/gate/__tests__/unlock.test.ts > passcode gate attempt limit (catches unlimited passcode guessing) > fails closed when the limiter or its secret is unavailable
+2026-10-11T20:25:16.7802585Z IP_HASH_SECRET is missing or shorter than 32 characters
+2026-10-11T20:25:16.7841766Z 
+2026-10-11T20:25:17.8851130Z  ✓ src/components/results/__tests__/FitReveal.test.tsx (5 tests) 2643ms
+2026-10-11T20:25:17.8902406Z    ✓ FitReveal (5)
+2026-10-11T20:25:17.8911977Z      ✓ flags three numbers no higher than any unflagged one, on every formation (four random squads each) 2122ms
+2026-10-11T20:25:18.6620932Z  ✓ src/engine/__tests__/recap.test.ts (5 tests) 11ms
+2026-10-11T20:25:18.9283649Z  ✓ scripts/audit/stats.test.ts (23 tests) 35ms
+2026-10-11T20:25:19.2253367Z  ✓ src/app/card/__tests__/route.test.ts (8 tests) 2173ms
+2026-10-11T20:25:19.2318717Z    ✓ GET /card (8)
+2026-10-11T20:25:19.2323508Z      ✓ renders a run token as a real 1200x630 PNG so Download image and the OG preview are not blank or mis-sized 638ms
+2026-10-11T20:25:19.2325473Z      ✓ renders an incomplete builder lineup instead of rejecting it 364ms
+2026-10-11T20:25:19.2327723Z      ✓ draws real creature pixels from the pokeapi-pixel pack, not an empty square 545ms
+2026-10-11T20:25:19.2329486Z      ✓ draws real creature pixels from the pokeapi-art pack, not an empty square 341ms
+2026-10-11T20:25:21.7883696Z  ✓ src/components/ui/__tests__/primitives.test.tsx (9 tests) 589ms
+2026-10-11T20:25:21.7892749Z    ✓ warm game primitives (9)
+2026-10-11T20:25:21.7924710Z      ✓ names a module from its title and keeps its description and figure together 325ms
+2026-10-11T20:25:21.9043397Z  ✓ src/app/how-to-play/__tests__/page.test.tsx (7 tests) 852ms
+2026-10-11T20:25:21.9072608Z    ✓ How to play (7)
+2026-10-11T20:25:21.9103323Z      ✓ explains the 0 to 100 rating on the cards and what a weak spot is (catches copy that still describes the old fit number) 400ms
+2026-10-11T20:25:22.3613689Z  ✓ src/gate/__tests__/unlock.test.ts (7 tests) 21218ms
+2026-10-11T20:25:22.3630376Z    ✓ passcode gate attempt limit (catches unlimited passcode guessing) (7)
+2026-10-11T20:25:22.3632378Z      ✓ allows 10 attempts per IP per 15 minutes, then locks that IP out even for the right passcode 4400ms
+2026-10-11T20:25:22.3634113Z      ✓ does not lock out other IPs, and frees the IP after 15 minutes 2863ms
+2026-10-11T20:25:22.3636011Z      ✓ sets an HttpOnly, SameSite=Lax, Path=/ cookie that lasts 90 days (catches a script-readable or short-lived cookie) 2909ms
+2026-10-11T20:25:22.3637808Z      ✓ sets the passcode cookie on the right passcode 2775ms
+2026-10-11T20:25:22.3639336Z      ✓ fails closed when the limiter or its secret is unavailable 2697ms
+2026-10-11T20:25:22.3640811Z      ✓ skips the limiter entirely when no passcode is configured 2722ms
+2026-10-11T20:25:22.3642674Z      ✓ logs a limiter failure with the request id and no IP or passcode 2847ms
+2026-10-11T20:25:23.3270632Z  ✓ src/engine/__tests__/goldens.test.ts (5 tests) 169ms
+2026-10-11T20:25:24.4372739Z  ✓ src/components/leaderboard/__tests__/Board.test.tsx (5 tests) 365ms
+2026-10-11T20:25:25.9611973Z  ✓ src/images/__tests__/packs.test.ts (11 tests) 21ms
+2026-10-11T20:25:25.9863696Z  ✓ src/components/leaderboard/__tests__/announce-board.test.tsx (4 tests) 506ms
+2026-10-11T20:25:25.9865545Z    ✓ Board (3)
+2026-10-11T20:25:25.9893099Z      ✓ says how many entries arrived, and its loading line is not a status inserted with its text 317ms
+2026-10-11T20:25:26.6919746Z  ✓ src/engine/__tests__/team.test.ts (7 tests) 16ms
+2026-10-11T20:25:27.7708589Z  ✓ src/engine/__tests__/species.test.ts (15 tests) 317ms
+2026-10-11T20:25:28.1633339Z  ✓ src/components/__tests__/PlayerImage.test.tsx (8 tests) 353ms
+2026-10-11T20:25:28.6178706Z  ✓ src/engine/__tests__/replay.test.ts (5 tests) 60ms
+2026-10-11T20:25:29.1370950Z  ✓ src/app/api/health/__tests__/route.test.ts (8 tests) 672ms
+2026-10-11T20:25:29.1442925Z    ✓ health endpoint deployment proof (8)
+2026-10-11T20:25:29.1444256Z      ✓ performs exactly one read-only connectivity query only when db=1 589ms
+2026-10-11T20:25:30.0194516Z  ✓ src/engine/versions/__tests__/legacy.test.ts (4 tests) 44ms
+2026-10-11T20:25:30.3713388Z  ✓ scripts/images/check-packs.test.ts (6 tests) 97ms
+2026-10-11T20:25:30.6348231Z  ✓ src/components/share/__tests__/downloadCard.test.ts (4 tests) 21ms
+2026-10-11T20:25:31.3654511Z  ✓ src/scouting/__tests__/citations.test.ts (8 tests) 55ms
+2026-10-11T20:25:31.4048692Z  ✓ src/ui/__tests__/lineup.test.ts (4 tests) 25ms
+2026-10-11T20:25:31.5993616Z  ✓ src/app/__tests__/contrast.test.ts (45 tests) 37ms
+2026-10-11T20:25:31.8533589Z  ✓ scripts/audit/theme-metrics.test.ts (9 tests) 20ms
+2026-10-11T20:25:32.1873668Z  ✓ src/ui/__tests__/settings.test.ts (5 tests) 10ms
+2026-10-11T20:25:32.3986719Z  ✓ src/engine/__tests__/stats.test.ts (5 tests) 8ms
+2026-10-11T20:25:32.5455201Z stderr | src/leaderboard/server/__tests__/handlers.test.ts > POST /api/leaderboard (catches client-trusted scores and unranked runs on the board) > returns 503 DB_UNAVAILABLE when the secret is missing or too short, without touching the table
+2026-10-11T20:25:32.5482776Z IP_HASH_SECRET is missing or shorter than 32 characters
+2026-10-11T20:25:32.5492051Z 
+2026-10-11T20:25:32.5524463Z stderr | src/leaderboard/server/__tests__/handlers.test.ts > POST /api/leaderboard (catches client-trusted scores and unranked runs on the board) > returns 503 DB_UNAVAILABLE when the secret is missing or too short, without touching the table
+2026-10-11T20:25:32.5545006Z IP_HASH_SECRET is missing or shorter than 32 characters
+2026-10-11T20:25:32.5571995Z 
+2026-10-11T20:25:33.0013717Z  ✓ src/ui/__tests__/runs-validation.test.ts (4 tests) 23ms
+2026-10-11T20:25:33.5377396Z  ✓ src/data/__tests__/pokedex.test.ts (8 tests) 24ms
+2026-10-11T20:25:35.1444618Z stderr | src/leaderboard/server/__tests__/handlers.test.ts > POST /api/leaderboard (catches client-trusted scores and unranked runs on the board) > returns 503 DB_UNAVAILABLE when the database fails
+2026-10-11T20:25:35.1459851Z {"level":"error","where":"submit.limiter","requestId":"local-30ee68d8-965f-47cc-947c-cae91ffc6115","name":"Error","sqlstate":null}
+2026-10-11T20:25:35.1463773Z 
+2026-10-11T20:25:35.6950817Z  ✓ src/app/r/[token]/__tests__/replay-count.test.ts (2 tests) 1736ms
+2026-10-11T20:25:35.7006521Z    ✓ /r/[token] replay count (catches the dispatch 3 page that replayed a token three times per view) (2)
+2026-10-11T20:25:35.7013602Z      ✓ replays once for the page and its metadata in one request 1386ms
+2026-10-11T20:25:35.7015451Z      ✓ replays once for the OG image, which is its own request 344ms
+2026-10-11T20:25:35.9494336Z  ✓ src/components/leaderboard/__tests__/LeaderboardScreen.test.tsx (3 tests) 143ms
+2026-10-11T20:25:36.1683352Z  ✓ src/scouting/__tests__/fit.test.ts (6 tests) 12ms
+2026-10-11T20:25:36.3930552Z  ✓ src/ui/__tests__/labels.test.ts (4 tests) 8ms
+2026-10-11T20:25:37.2292074Z  ✓ scripts/audit/tokens.test.ts (5 tests) 84ms
+2026-10-11T20:25:37.3914951Z stderr | src/app/gate/unlock/__tests__/route.test.ts > POST /gate/unlock wiring (catches the route reading the wrong env or skipping the limiter) > fails closed with error=unavailable when IP_HASH_SECRET is too short
+2026-10-11T20:25:37.3917604Z IP_HASH_SECRET is missing or shorter than 32 characters
+2026-10-11T20:25:37.3942026Z 
+2026-10-11T20:25:37.4377629Z  ✓ src/app/gate/unlock/__tests__/route.test.ts (3 tests) 1311ms
+2026-10-11T20:25:37.4463470Z    ✓ POST /gate/unlock wiring (catches the route reading the wrong env or skipping the limiter) (3)
+2026-10-11T20:25:37.4506372Z      ✓ fails closed with error=unavailable when IP_HASH_SECRET is too short 1300ms
+2026-10-11T20:25:37.5545194Z  ✓ scripts/audit/theme-contrast.test.ts (4 tests) 47ms
+2026-10-11T20:25:38.2678112Z  ✓ scripts/calibration/golden-boot-by-role.test.ts (5 tests) 7ms
+2026-10-11T20:25:38.4903482Z  ✓ src/components/run/__tests__/runState.test.ts (2 tests) 9ms
+2026-10-11T20:25:38.9853231Z  ✓ src/leaderboard/__tests__/daily-nickname.test.ts (4 tests) 9ms
+2026-10-11T20:25:39.6563683Z  ✓ src/engine/__tests__/type-chart.test.ts (6 tests) 9ms
+2026-10-11T20:25:39.8864734Z  ✓ src/__tests__/security-headers.test.ts (2 tests) 7ms
+2026-10-11T20:25:40.1760701Z  ✓ src/app/gate/__tests__/page.test.tsx (5 tests) 56ms
+2026-10-11T20:25:41.8053520Z  ✓ src/components/__tests__/PackCredit.test.tsx (3 tests) 56ms
+2026-10-11T20:25:42.0233543Z  ✓ src/__tests__/instrumentation.test.ts (1 test) 13ms
+2026-10-11T20:25:42.3603504Z  ✓ scripts/audit/theme-cvd.test.ts (3 tests) 36ms
+2026-10-11T20:25:42.7485954Z  ✓ src/components/wheel/__tests__/announce.test.tsx (1 test) 310ms
+2026-10-11T20:25:42.7553486Z    ✓ wheel announcement (1)
+2026-10-11T20:25:42.7580659Z      ✓ writes the result line once, after the last wheel stops, so it never shows the region alone (the draft board reads it out, see announce-draft.test.tsx) 304ms
+2026-10-11T20:25:43.3772848Z  ✓ src/scouting/__tests__/golden.test.ts (2 tests) 241ms
+2026-10-11T20:25:43.5163381Z  ✓ src/scouting/__tests__/review-rules.test.ts (3 tests) 9ms
+2026-10-11T20:25:46.2562097Z  ✓ src/app/r/[token]/__tests__/opengraph-image.test.ts (2 tests) 134ms
+2026-10-11T20:25:46.4592511Z  ✓ src/app/__tests__/fonts.test.ts (2 tests) 6ms
+2026-10-11T20:25:46.9943544Z  ✓ src/components/ui/__tests__/nav-icons.test.tsx (1 test) 75ms
+2026-10-11T20:25:47.1473747Z  ✓ src/components/results/__tests__/SharedRun.test.tsx (2 tests) 629ms
+2026-10-11T20:25:47.1512967Z    ✓ SharedRun engine label (catches an old-engine run passing as a current one) (2)
+2026-10-11T20:25:47.1542621Z      ✓ labels a run replayed on an older engine 329ms
+2026-10-11T20:25:47.2793444Z  ✓ src/components/share/__tests__/download.test.ts (3 tests) 9ms
+2026-10-11T20:25:47.4058303Z  ✓ src/lib/rng.test.ts (2 tests) 6ms
+2026-10-11T20:25:47.7476017Z  ✓ src/engine/__tests__/fairness.test.ts (4 tests) 25082ms
+2026-10-11T20:25:47.7477621Z    ✓ roll fairness, chi-square over 200,000 seeded draws (4)
+2026-10-11T20:25:47.7480883Z      ✓ region roll is uniform over all 9 regions (catches a region weighted by species count) 1900ms
+2026-10-11T20:25:47.7483720Z      ✓ type roll in kanto is uniform over its 17 non-empty types (catches a type weighted by species count) 8175ms
+2026-10-11T20:25:47.7485844Z      ✓ classic3 offer positions are each uniform over the combo (catches sorted or biased offer order) 13238ms
+2026-10-11T20:25:47.7487936Z      ✓ kanto151 roll is uniform over ids 1 to 151 (catches an off-by-one or weighted species pool) 1765ms
+2026-10-11T20:25:51.2450198Z stderr | src/leaderboard/server/__tests__/handlers.test.ts > double submit (catches a race that makes two rows, a lost row or a 503 for a duplicate) > maps any other insert failure to 503 DB_UNAVAILABLE
+2026-10-11T20:25:51.2453288Z {"level":"error","where":"submit.insert","requestId":"local-13988356-9eb3-45d2-a217-76252e2723cb","name":"Error","sqlstate":"08006"}
+2026-10-11T20:25:51.2454227Z 
+2026-10-11T20:25:57.4648660Z stderr | src/leaderboard/server/__tests__/handlers.test.ts > GET /api/leaderboard (catches a wrong board order or a read that writes) > returns 400 INVALID_QUERY for a bad query and 503 when the database fails
+2026-10-11T20:25:57.4650797Z {"level":"error","where":"board.read","requestId":"local-2ad9c9a7-38fc-4c2d-9067-45028d4c929c","name":"Error","sqlstate":null}
+2026-10-11T20:25:57.4651687Z 
+2026-10-11T20:25:57.4679311Z  ✓ src/leaderboard/server/__tests__/handlers.test.ts (37 tests) 90994ms
+2026-10-11T20:25:57.4681244Z    ✓ POST /api/leaderboard (catches client-trusted scores and unranked runs on the board) (24)
+2026-10-11T20:25:57.4683612Z      ✓ stores the server's replay numbers and ignores numbers the client sends 4431ms
+2026-10-11T20:25:57.4684709Z      ✓ replays the token exactly once per submission 2846ms
+2026-10-11T20:25:57.4685922Z      ✓ rejects builder tokens with 422 BUILDER_NOT_RANKED before replaying and writes nothing 2866ms
+2026-10-11T20:25:57.4687135Z      ✓ rejects an action the seed never offered with 422 ILLEGAL_ACTION 2738ms
+2026-10-11T20:25:57.4688206Z      ✓ rejects an extra reroll past the cap with 422 ILLEGAL_ACTION 2466ms
+2026-10-11T20:25:57.4689441Z      ✓ rejects an incomplete draft with 422 ILLEGAL_ACTION 2607ms
+2026-10-11T20:25:57.4690956Z      ✓ maps garbage to 422 TOKEN_MALFORMED and an unknown token version to 409 2679ms
+2026-10-11T20:25:57.4692747Z      ✓ refuses a real engine-1 run with 409, so a daily board never mixes engines 2990ms
+2026-10-11T20:25:57.4694442Z      ✓ returns 409 ENGINE_VERSION_MISMATCH when the page runs another engine 3087ms
+2026-10-11T20:25:57.4695876Z      ✓ rejects bad bodies and bad nicknames 2826ms
+2026-10-11T20:25:57.4697344Z      ✓ files today's daily seed under today's New York date, once per nickname 2888ms
+2026-10-11T20:25:57.4698897Z      ✓ still accepts yesterday's daily seed and dates it yesterday 3055ms
+2026-10-11T20:25:57.4701067Z      ✓ rejects a daily seed played with non-daily settings 3517ms
+2026-10-11T20:25:57.4702745Z      ✓ rejects the same token twice with 409 DUPLICATE_TOKEN 2931ms
+2026-10-11T20:25:57.4704665Z      ✓ rejects a re-encoded copy of a listed run with 409 DUPLICATE_TOKEN (catches one run listed under many names) 2958ms
+2026-10-11T20:25:57.4706463Z      ✓ stores the canonical token when a run arrives in a non-canonical encoding 2826ms
+2026-10-11T20:25:57.4708243Z      ✓ answers a retry of the same run and nickname with 200 and the saved entry, spending no attempt (catches a lost response turning into a 409) 2957ms
+2026-10-11T20:25:57.4710235Z      ✓ answers a daily retry of the same run and nickname with 200, not DAILY_ALREADY_SUBMITTED or DUPLICATE_TOKEN 2970ms
+2026-10-11T20:25:57.4712125Z      ✓ answers a retry with 200 even when the hour's attempts are used up 2718ms
+2026-10-11T20:25:57.4713869Z      ✓ rejects a resubmitted token or a taken daily nickname without replaying again 2627ms
+2026-10-11T20:25:57.4744780Z      ✓ allows 10 attempts per IP per hour, counted in rate_limit_events, then 429 2391ms
+2026-10-11T20:25:57.4746447Z      ✓ ignores attempts older than an hour in the rate limit 2265ms
+2026-10-11T20:25:57.4748233Z      ✓ returns 503 DB_UNAVAILABLE when the secret is missing or too short, without touching the table 2432ms
+2026-10-11T20:25:57.4749668Z      ✓ returns 503 DB_UNAVAILABLE when the database fails 2588ms
+2026-10-11T20:25:57.4750990Z    ✓ double submit (catches a race that makes two rows, a lost row or a 503 for a duplicate) (8)
+2026-10-11T20:25:57.4752842Z      ✓ a second nickname that slips past the probe still gets 409 DUPLICATE_TOKEN and one row 2531ms
+2026-10-11T20:25:57.4754342Z      ✓ the same nickname that slips past the probe gets 200 and the saved entry 2457ms
+2026-10-11T20:25:57.4755794Z      ✓ two concurrent copies of one daily submission give 201 and 200 and one row 2583ms
+2026-10-11T20:25:57.4757367Z      ✓ two concurrent daily runs under one nickname give 201 and 409 DAILY_ALREADY_SUBMITTED 2415ms
+2026-10-11T20:25:57.4758995Z      ✓ one daily run sent concurrently under two nicknames gives 201 and 409 DUPLICATE_TOKEN 2420ms
+2026-10-11T20:25:57.4760626Z      ✓ maps a unique violation at the top on an unknown constraint to 409 DUPLICATE_TOKEN 1262ms
+2026-10-11T20:25:57.4762499Z      ✓ maps a unique violation two causes deep on an unknown constraint to 409 DUPLICATE_TOKEN 1218ms
+2026-10-11T20:25:57.4763941Z      ✓ maps any other insert failure to 503 DB_UNAVAILABLE 1217ms
+2026-10-11T20:25:57.4765373Z    ✓ GET /api/leaderboard (catches a wrong board order or a read that writes) (5)
+2026-10-11T20:25:57.4772681Z      ✓ ranks by wins, then draws, then Team Score, then first to submit 1228ms
+2026-10-11T20:25:57.4774303Z      ✓ returns exactly the top 50 of 51 entries, ranked 1 to 50 1250ms
+2026-10-11T20:25:57.4775592Z      ✓ matches the submit rank to the board position 1245ms
+2026-10-11T20:25:57.4776824Z      ✓ scopes the daily board to one date 1246ms
+2026-10-11T20:25:57.4778511Z      ✓ returns 400 INVALID_QUERY for a bad query and 503 when the database fails 1250ms
+2026-10-11T20:25:57.4779235Z 
+2026-10-11T20:25:57.4779752Z  Test Files  80 passed (80)
+2026-10-11T20:25:57.4780468Z       Tests  734 passed (734)
+2026-10-11T20:25:57.4780916Z    Start at  20:24:24
+2026-10-11T20:25:57.4781837Z    Duration  93.44s (tests 74%, import 14%, environment 9%, transform 2%)
+2026-10-11T20:25:57.4795303Z 
+2026-10-11T20:25:57.4796608Z     Isolate  80 workers spawned · ~568ms startup each (spawn + environment, per file)
+2026-10-11T20:25:57.4798489Z              at least ~10.79s faster with isolate: false — reuses workers across files instead of one per file
+2026-10-11T20:25:57.4799306Z 
+2026-10-11T20:25:57.5656414Z ##[group]Run pnpm build
+2026-10-11T20:25:57.5656708Z pnpm build
+2026-10-11T20:25:57.5719343Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:25:57.5719618Z env:
+2026-10-11T20:25:57.5719892Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:25:57.5720224Z ##[endgroup]
+2026-10-11T20:25:58.0028086Z $ next build
+2026-10-11T20:25:58.4315693Z ▲ Next.js 16.4.0 (Turbopack)
+2026-10-11T20:25:58.4592941Z ✓ Running next.config.ts took 27ms
+2026-10-11T20:25:58.4596685Z ⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+2026-10-11T20:25:58.4640938Z Attention: Next.js now collects completely anonymous telemetry regarding usage.
+2026-10-11T20:25:58.4642578Z This information is used to shape Next.js' roadmap and prioritize features.
+2026-10-11T20:25:58.4644370Z You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+2026-10-11T20:25:58.4645441Z https://nextjs.org/telemetry
+2026-10-11T20:25:58.4645668Z 
+2026-10-11T20:25:58.5090130Z - Cache Components enabled
+2026-10-11T20:25:58.5094057Z - Partial Prefetching enabled
+2026-10-11T20:25:58.5094504Z 
+2026-10-11T20:25:58.5584166Z   Creating an optimized production build ...
+2026-10-11T20:26:05.9183322Z ✓ Compiled successfully in 7.4s
+2026-10-11T20:26:05.9292467Z   Running TypeScript ...
+2026-10-11T20:26:22.2892513Z   Finished TypeScript in 16.4s ...
+2026-10-11T20:26:22.2930347Z   Collecting page data using 3 workers ...
+2026-10-11T20:26:24.0116699Z   Generating static pages using 3 workers (0/18) ...
+2026-10-11T20:26:24.2230473Z   Generating static pages using 3 workers (4/18) 
+2026-10-11T20:26:24.3193200Z   Generating static pages using 3 workers (8/18) 
+2026-10-11T20:26:24.9272434Z   Generating static pages using 3 workers (13/18) 
+2026-10-11T20:26:24.9814367Z ✓ Generating static pages using 3 workers (18/18) in 970ms
+2026-10-11T20:26:24.9867835Z   Finalizing page optimization ...
+2026-10-11T20:26:24.9982922Z 
+2026-10-11T20:26:25.0012288Z Route (app)
+2026-10-11T20:26:25.0042216Z ┌ ○ /
+2026-10-11T20:26:25.0072120Z ├ ○ /_not-found
+2026-10-11T20:26:25.0072692Z ├ ƒ /api/csp-report
+2026-10-11T20:26:25.0082832Z ├ ƒ /api/health
+2026-10-11T20:26:25.0083674Z ├ ƒ /api/leaderboard
+2026-10-11T20:26:25.0084263Z ├ ƒ /card
+2026-10-11T20:26:25.0084742Z ├ ○ /daily
+2026-10-11T20:26:25.0085216Z ├ ◐ /gate
+2026-10-11T20:26:25.0085691Z ├ ƒ /gate/unlock
+2026-10-11T20:26:25.0086202Z ├ ○ /history
+2026-10-11T20:26:25.0086681Z ├ ○ /how-to-play
+2026-10-11T20:26:25.0087166Z ├ ◐ /leaderboard
+2026-10-11T20:26:25.0087635Z ├ ◐ /play
+2026-10-11T20:26:25.0088142Z ├   /r/[token]
+2026-10-11T20:26:25.0088647Z │ └ ◐ /r/[token]
+2026-10-11T20:26:25.0089255Z ├ ƒ /r/[token]/opengraph-image
+2026-10-11T20:26:25.0089844Z ├ ○ /robots.txt
+2026-10-11T20:26:25.0090373Z └ ○ /run-not-found
+2026-10-11T20:26:25.0090698Z 
+2026-10-11T20:26:25.0090792Z 
+2026-10-11T20:26:25.0091119Z ƒ Proxy (Middleware)
+2026-10-11T20:26:25.0091687Z 
+2026-10-11T20:26:25.0092270Z ○  (Static)             prerendered as static content
+2026-10-11T20:26:25.0093943Z ◐  (Partial Prerender)  prerendered as static HTML with dynamic server-streamed content
+2026-10-11T20:26:25.0095082Z ƒ  (Dynamic)            server-rendered on demand
+2026-10-11T20:26:25.0095557Z 
+2026-10-11T20:26:25.0814281Z ##[group]Run pnpm check:client-bundle
+2026-10-11T20:26:25.0814678Z pnpm check:client-bundle
+2026-10-11T20:26:25.0878558Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:26:25.0878844Z env:
+2026-10-11T20:26:25.0879128Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:26:25.0879521Z ##[endgroup]
+2026-10-11T20:26:25.5285648Z $ bash scripts/check-client-bundle.sh
+2026-10-11T20:26:25.5833092Z client bundle holds no retained engine bundle; server build holds 8 files with it
+2026-10-11T20:26:25.6010154Z ##[group]Run pnpm data:pokedex
+2026-10-11T20:26:25.6010502Z pnpm data:pokedex
+2026-10-11T20:26:25.6010795Z pnpm data:scouting
+2026-10-11T20:26:25.6011076Z pnpm data:type-chart
+2026-10-11T20:26:25.6011900Z git diff --exit-code -- src/data
+2026-10-11T20:26:25.6074750Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:26:25.6075020Z env:
+2026-10-11T20:26:25.6075291Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:26:25.6075630Z ##[endgroup]
+2026-10-11T20:26:26.0532972Z $ node scripts/data/build-pokedex.mjs
+2026-10-11T20:26:27.2468134Z wrote 1025 species to src/data/pokedex.json
+2026-10-11T20:26:27.7442693Z $ tsx scripts/data/build-scouting.ts
+2026-10-11T20:26:28.3018720Z wrote 1025 species to src/data/scouting.json
+2026-10-11T20:26:28.7629918Z $ node scripts/data/build-type-chart.mjs
+2026-10-11T20:26:28.9963233Z ##[group]Run pnpm data:check-moves
+2026-10-11T20:26:28.9963592Z pnpm data:check-moves
+2026-10-11T20:26:29.0025535Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:26:29.0025812Z env:
+2026-10-11T20:26:29.0026086Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-11T20:26:29.0026422Z ##[endgroup]
+2026-10-11T20:26:29.4390495Z $ tsx scripts/data/check-review-moves.ts
+2026-10-11T20:26:31.8353976Z 1025 rationales, 159 move citations, 0 not learnable
+2026-10-11T20:26:31.9642910Z Post job cleanup.
+2026-10-11T20:26:32.0909111Z Cache hit occurred on the primary key pokeapi-csv-c80757193bd0889054e36f4209762360bdaa4b95-6a796e75936a0e5223329398370d8eb5b28fc83fb3ee9b95e05c9ad88bfea552, not saving cache.
+2026-10-11T20:26:32.1042819Z Post job cleanup.
+2026-10-11T20:26:32.2242752Z Cache hit occurred on the primary key node-cache-Linux-x64-pnpm-34e0f34f962a5c85b7143efe2470ecadb9caf63cc94c71a956d35737efdba6aa, not saving cache.
+2026-10-11T20:26:32.2354811Z Post job cleanup.
+2026-10-11T20:26:32.3865666Z Pruning is unnecessary.
+2026-10-11T20:26:32.4013272Z Post job cleanup.
+2026-10-11T20:26:32.4894975Z [command]/usr/bin/git version
+2026-10-11T20:26:32.4941570Z git version 2.55.0
+2026-10-11T20:26:32.4981886Z Temporarily overriding HOME='/home/runner/work/_temp/1376cfc7-ac4c-4736-b738-40e1218e9e8b' before making global git config changes
+2026-10-11T20:26:32.4983484Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-11T20:26:32.4988748Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pokedraft/pokedraft
+2026-10-11T20:26:32.5022186Z Removing SSH command configuration
+2026-10-11T20:26:32.5029191Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-11T20:26:32.5064237Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-11T20:26:32.5292006Z Removing HTTP extra header
+2026-10-11T20:26:32.5297127Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-11T20:26:32.5332003Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-11T20:26:32.5553609Z Removing includeIf entries pointing to credentials config files
+2026-10-11T20:26:32.5560757Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-11T20:26:32.5587844Z includeif.gitdir:/home/runner/work/pokedraft/pokedraft/.git.path
+2026-10-11T20:26:32.5589049Z includeif.gitdir:/home/runner/work/pokedraft/pokedraft/.git/worktrees/*.path
+2026-10-11T20:26:32.5590009Z includeif.gitdir:/github/workspace/.git.path
+2026-10-11T20:26:32.5590839Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-11T20:26:32.5597573Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/pokedraft/pokedraft/.git.path
+2026-10-11T20:26:32.5619986Z /home/runner/work/_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config
+2026-10-11T20:26:32.5629961Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/pokedraft/pokedraft/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-405a3c55\-682e\-4455\-9f9d\-d448cc8cb21f\.config
+2026-10-11T20:26:32.5667223Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/pokedraft/pokedraft/.git/worktrees/*.path
+2026-10-11T20:26:32.5692540Z /home/runner/work/_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config
+2026-10-11T20:26:32.5700305Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/pokedraft/pokedraft/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-405a3c55\-682e\-4455\-9f9d\-d448cc8cb21f\.config
+2026-10-11T20:26:32.5744906Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-11T20:26:32.5767300Z /github/runner_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config
+2026-10-11T20:26:32.5774999Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-405a3c55\-682e\-4455\-9f9d\-d448cc8cb21f\.config
+2026-10-11T20:26:32.5808217Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-11T20:26:32.5830079Z /github/runner_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config
+2026-10-11T20:26:32.5840331Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-405a3c55\-682e\-4455\-9f9d\-d448cc8cb21f\.config
+2026-10-11T20:26:32.5875534Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-11T20:26:32.6100590Z Removing credentials config '/home/runner/work/_temp/git-credentials-405a3c55-682e-4455-9f9d-d448cc8cb21f.config'
+2026-10-11T20:26:32.6289439Z Cleaning up orphan processes

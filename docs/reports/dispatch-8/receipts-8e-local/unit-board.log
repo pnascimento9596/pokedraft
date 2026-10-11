@@ -1,0 +1,8 @@
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board
+
+
+ Test Files  4 passed (4)
+      Tests  26 passed (26)
+   Start at  16:31:52
+   Duration  886ms (environment 39%, import 27%, transform 23%, tests 10%)

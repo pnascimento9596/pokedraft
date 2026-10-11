@@ -2,132 +2,93 @@
   margin: 0;
   padding: 20px 0;
 }
-
 .list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-
 .row {
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--line-strong);
-  border-radius: var(--radius);
-  background: var(--panel);
+  border-bottom: 1px solid var(--border-soft);
 }
-
-.row[data-top] {
-  border-left-color: var(--flood);
+.row:last-child {
+  border-bottom: 0;
 }
-
 .link {
   display: grid;
   grid-template-columns: 2.4ch minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 10px 4px;
+  min-height: 44px;
   text-decoration: none;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
 }
-
+.link:hover {
+  background: var(--surface-sunken);
+}
 .link:hover .nick {
   text-decoration: underline;
 }
-
 .rank {
-  font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.6rem;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
   text-align: right;
+  color: var(--text);
 }
-
 .row[data-top] .rank {
-  color: var(--flood-text);
+  color: var(--link);
 }
-
 .main {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
-
 .nick {
-  font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.1rem;
-  letter-spacing: 0.03em;
+  color: var(--text);
   overflow-wrap: anywhere;
 }
-
 .meta {
-  color: var(--ink-soft);
-  font-size: 0.82rem;
+  color: var(--text-muted);
   overflow-wrap: anywhere;
 }
-
 .recordCol,
 .scoreCol {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
-
 .label {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
+  color: var(--text-faint);
   white-space: nowrap;
 }
-
 .record,
 .score {
-  font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.35rem;
-  line-height: 1.05;
+  font-size: 13px;
+  line-height: 18px;
   font-variant-numeric: tabular-nums;
 }
-
 .score {
-  color: var(--flood-text);
+  color: var(--link);
 }
-
-@media (max-width: 479px) {
-  .link {
-    gap: 8px;
-    padding: 9px 10px;
-  }
-  .record,
-  .score {
-    font-size: 1.15rem;
-  }
-}
-
 .empty,
 .error {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 20px 16px;
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius);
+  margin-top: 12px;
 }
-
-.error {
-  border-style: solid;
-  border-color: var(--loss);
+.empty :global(.btn),
+.error :global(.btn) {
+  display: inline-flex;
+  margin-top: 12px;
 }
-
-.empty p,
-.error p {
-  margin: 0;
-  color: var(--ink-soft);
+@media (min-width: 768px) {
+  .link,
+  .record,
+  .score {
+    font-size: 12px;
+  }
 }

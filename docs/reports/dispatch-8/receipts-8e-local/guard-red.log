@@ -1,0 +1,282 @@
+
+Running 8 tests using 4 workers
+
+(node:28223) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28222) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 390 light (332ms)
+  ✘  1 [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 390 dark (333ms)
+(node:28273) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28274) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 1440 light (491ms)
+(node:28311) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  7 [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 1440 dark (197ms)
+(node:28338) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 390 dark (5.2s)
+  ✘  3 [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 390 light (5.2s)
+  ✘  5 [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 1440 light (5.2s)
+  ✘  8 [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 1440 dark (5.2s)
+
+
+  1) [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 390 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 2
+    Received:    0
+
+      14 |       const row = page.getByTestId("board-row").first();
+      15 |       await expect(row).toBeVisible();
+    > 16 |       expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(2);
+         |                                                          ^
+      17 |       const score = row.locator("span").filter({ hasText: /^983$/ });
+      18 |       await expect(score).toHaveCount(1);
+      19 |       expect(await score.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBe(
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/theme-board.spec.ts:16:58
+
+    Error Context: output/dispatch-8/board-red/theme-board-leaderboard-mo-4ee62--and-reachable-at-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-red/theme-board-leaderboard-mo-4ee62--and-reachable-at-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-red/theme-board-leaderboard-mo-4ee62--and-reachable-at-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 390 light 
+
+    Error: expect(locator).toHaveClass(expected) failed
+
+    Locator: getByTestId('board-empty')
+    Expected pattern: /status-note/
+    Received string:  "d8h8bG_empty"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveClass" getByTestId('board-empty') with timeout 5000ms
+      - waiting for getByTestId('board-empty')
+        13 × locator resolved to <div class="d8h8bG_empty" data-testid="board-empty">…</div>
+           - unexpected value "d8h8bG_empty"
+
+
+      33 |       await stubLeaderboard(page, BOARD_EMPTY);
+      34 |       await page.goto("/leaderboard");
+    > 35 |       await expect(page.getByTestId("board-empty")).toHaveClass(/status-note/);
+         |                                                     ^
+      36 |       await expect(page.getByTestId("board-empty")).toContainText("No entries yet");
+      37 |       await page.unroute(/\/api\/leaderboard(\?|$)/);
+      38 |       await stubLeaderboard(page, BOARD_DOWN);
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/theme-board.spec.ts:35:53
+
+    Error Context: output/dispatch-8/board-red/theme-board-empty-and-unav-57394-eutral-reasons-at-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-red/theme-board-empty-and-unav-57394-eutral-reasons-at-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-red/theme-board-empty-and-unav-57394-eutral-reasons-at-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 390 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 2
+    Received:    0
+
+      14 |       const row = page.getByTestId("board-row").first();
+      15 |       await expect(row).toBeVisible();
+    > 16 |       expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(2);
+         |                                                          ^
+      17 |       const score = row.locator("span").filter({ hasText: /^983$/ });
+      18 |       await expect(score).toHaveCount(1);
+      19 |       expect(await score.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBe(
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/theme-board.spec.ts:16:58
+
+    Error Context: output/dispatch-8/board-red/theme-board-leaderboard-mo-e5f5f-e-and-reachable-at-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-red/theme-board-leaderboard-mo-e5f5f-e-and-reachable-at-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-red/theme-board-leaderboard-mo-e5f5f-e-and-reachable-at-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 390 dark 
+
+    Error: expect(locator).toHaveClass(expected) failed
+
+    Locator: getByTestId('board-empty')
+    Expected pattern: /status-note/
+    Received string:  "d8h8bG_empty"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveClass" getByTestId('board-empty') with timeout 5000ms
+      - waiting for getByTestId('board-empty')
+        12 × locator resolved to <div class="d8h8bG_empty" data-testid="board-empty">…</div>
+           - unexpected value "d8h8bG_empty"
+
+
+      33 |       await stubLeaderboard(page, BOARD_EMPTY);
+      34 |       await page.goto("/leaderboard");
+    > 35 |       await expect(page.getByTestId("board-empty")).toHaveClass(/status-note/);
+         |                                                     ^
+      36 |       await expect(page.getByTestId("board-empty")).toContainText("No entries yet");
+      37 |       await page.unroute(/\/api\/leaderboard(\?|$)/);
+      38 |       await stubLeaderboard(page, BOARD_DOWN);
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/theme-board.spec.ts:35:53
+
+    Error Context: output/dispatch-8/board-red/theme-board-empty-and-unav-2d8aa-neutral-reasons-at-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-red/theme-board-empty-and-unav-2d8aa-neutral-reasons-at-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-red/theme-board-empty-and-unav-2d8aa-neutral-reasons-at-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 1440 light 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 2
+    Received:    0
+
+      14 |       const row = page.getByTestId("board-row").first();
+      15 |       await expect(row).toBeVisible();
+    > 16 |       expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(2);
+         |                                                          ^
+      17 |       const score = row.locator("span").filter({ hasText: /^983$/ });
+      18 |       await expect(score).toHaveCount(1);
+      19 |       expect(await score.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBe(
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/theme-board.spec.ts:16:58
+
+    Error Context: output/dispatch-8/board-red/theme-board-leaderboard-mo-1d7eb-and-reachable-at-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-red/theme-board-leaderboard-mo-1d7eb-and-reachable-at-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-red/theme-board-leaderboard-mo-1d7eb-and-reachable-at-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 1440 light 
+
+    Error: expect(locator).toHaveClass(expected) failed
+
+    Locator: getByTestId('board-empty')
+    Expected pattern: /status-note/
+    Received string:  "d8h8bG_empty"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveClass" getByTestId('board-empty') with timeout 5000ms
+      - waiting for getByTestId('board-empty')
+        10 × locator resolved to <div class="d8h8bG_empty" data-testid="board-empty">…</div>
+           - unexpected value "d8h8bG_empty"
+
+
+      33 |       await stubLeaderboard(page, BOARD_EMPTY);
+      34 |       await page.goto("/leaderboard");
+    > 35 |       await expect(page.getByTestId("board-empty")).toHaveClass(/status-note/);
+         |                                                     ^
+      36 |       await expect(page.getByTestId("board-empty")).toContainText("No entries yet");
+      37 |       await page.unroute(/\/api\/leaderboard(\?|$)/);
+      38 |       await stubLeaderboard(page, BOARD_DOWN);
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/theme-board.spec.ts:35:53
+
+    Error Context: output/dispatch-8/board-red/theme-board-empty-and-unav-2d25e-utral-reasons-at-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-red/theme-board-empty-and-unav-2d25e-utral-reasons-at-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-red/theme-board-empty-and-unav-2d25e-utral-reasons-at-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 1440 dark 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 2
+    Received:    0
+
+      14 |       const row = page.getByTestId("board-row").first();
+      15 |       await expect(row).toBeVisible();
+    > 16 |       expect(await page.locator(".module-card").count()).toBeGreaterThanOrEqual(2);
+         |                                                          ^
+      17 |       const score = row.locator("span").filter({ hasText: /^983$/ });
+      18 |       await expect(score).toHaveCount(1);
+      19 |       expect(await score.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBe(
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/theme-board.spec.ts:16:58
+
+    Error Context: output/dispatch-8/board-red/theme-board-leaderboard-mo-91a2f--and-reachable-at-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-red/theme-board-leaderboard-mo-91a2f--and-reachable-at-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-red/theme-board-leaderboard-mo-91a2f--and-reachable-at-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 1440 dark 
+
+    Error: expect(locator).toHaveClass(expected) failed
+
+    Locator: getByTestId('board-empty')
+    Expected pattern: /status-note/
+    Received string:  "d8h8bG_empty"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveClass" getByTestId('board-empty') with timeout 5000ms
+      - waiting for getByTestId('board-empty')
+        14 × locator resolved to <div class="d8h8bG_empty" data-testid="board-empty">…</div>
+           - unexpected value "d8h8bG_empty"
+
+
+      33 |       await stubLeaderboard(page, BOARD_EMPTY);
+      34 |       await page.goto("/leaderboard");
+    > 35 |       await expect(page.getByTestId("board-empty")).toHaveClass(/status-note/);
+         |                                                     ^
+      36 |       await expect(page.getByTestId("board-empty")).toContainText("No entries yet");
+      37 |       await page.unroute(/\/api\/leaderboard(\?|$)/);
+      38 |       await stubLeaderboard(page, BOARD_DOWN);
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/daily-board/e2e/theme-board.spec.ts:35:53
+
+    Error Context: output/dispatch-8/board-red/theme-board-empty-and-unav-7d144-eutral-reasons-at-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/board-red/theme-board-empty-and-unav-7d144-eutral-reasons-at-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/board-red/theme-board-empty-and-unav-7d144-eutral-reasons-at-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8 failed
+    [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 390 light 
+    [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 390 light 
+    [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 390 dark 
+    [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 390 dark 
+    [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 1440 light 
+    [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 1440 light 
+    [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 1440 dark 
+    [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 1440 dark 
