@@ -84,7 +84,7 @@ Ratios below are unrounded during validation. Displayed rounding never turns a f
 | --link | 5.2461 | light / --canvas | 4.5 |
 | --accent-fg | 5.4338 | dark / --accent | 4.5 |
 | --ok-text | 6.8367 | light / --ok-bg | 4.5 |
-| --risk-text | 5.2916 | light / --surface | 4.5 |
+| --risk-text | 5.2916 | light / risk pill tint | 4.5 |
 | --viz-1 | 3.4111 | light / --surface | 3 |
 | --viz-2 | 3.0074 | light / --surface | 3 |
 | --viz-3 | 3.3006 | light / --surface | 3 |

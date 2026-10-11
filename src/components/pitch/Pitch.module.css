@@ -177,6 +177,7 @@
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 0.7rem;
+  line-height: 1.2;
   letter-spacing: 0.1em;
   padding: 0 4px;
   border-radius: 3px;

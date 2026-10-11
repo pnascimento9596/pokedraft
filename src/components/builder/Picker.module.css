@@ -332,3 +332,24 @@
     min-height: 44px;
   }
 }
+
+@media (max-width: 480px) {
+  .row {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+  .rowTag {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    max-width: 100%;
+  }
+  .rowFit {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .rowTag + .rowFit {
+    max-width: 3rem;
+  }
+}

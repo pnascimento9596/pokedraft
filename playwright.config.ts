@@ -16,8 +16,9 @@ export default defineConfig({
   // The phone projects paint in software on Linux CI, so they are CPU bound. Use all four vCPUs.
   workers: process.env.CI ? 4 : undefined,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
+  // Small text has different font metrics on macOS and Linux; each has a reviewed reference.
   expect: {
-    toHaveScreenshot: { pathTemplate: "{testDir}/{testFilePath}-snapshots/{arg}{ext}" },
+    toHaveScreenshot: { pathTemplate: "{testDir}/{testFilePath}-snapshots/{platform}/{arg}{ext}" },
   },
   use: {
     baseURL: BASE_URL ?? `http://localhost:${PORT}`,

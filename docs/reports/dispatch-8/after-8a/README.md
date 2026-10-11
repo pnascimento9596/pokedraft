@@ -1,5 +1,7 @@
 # PR 8A local after captures
 
+Compare with the [before capture set](../before/README.md).
+
 Local production build, 390x844 and 1440x900, both themes. The leaderboard shows Unavailable because local credentials are absent. Production spot-checks follow merge.
 
 - [daily__1440x900__dark.webp](daily__1440x900__dark.webp)

@@ -178,7 +178,7 @@
     {
       "theme": "light",
       "role": "--risk-text",
-      "surface": "--surface",
+      "surface": "risk pill tint",
       "ratio": 5.291626164296436,
       "minimum": 4.5
     },
@@ -990,7 +990,7 @@
     {
       "theme": "dark",
       "role": "--risk-text",
-      "surface": "--surface",
+      "surface": "risk pill tint",
       "ratio": 6.071219616000253,
       "minimum": 4.5
     },

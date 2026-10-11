@@ -72,7 +72,7 @@ export function checkContrast(css: string) {
     for (const surface of ["--info-bg", "--warn-bg"]) add("--text-soft", surface, 4.5);
     add(
       "--risk-text",
-      "--surface",
+      "risk pill tint",
       4.5,
       resolve(tokens, "--risk-text"),
       mix(resolve(tokens, "--risk-mark"), resolve(tokens, "--surface"), 0.16),
