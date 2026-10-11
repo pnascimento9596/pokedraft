@@ -143,6 +143,24 @@ describe("builder picker", () => {
     expect(within(dialog).queryByText("Squirtle")).toBeNull();
   });
 
+  it("a search for a species the settings hide says why instead of a bare No matches (Mewtwo is Legendary, Legendaries is off by default)", () => {
+    render(<HomeScreen />);
+    const dialog = openPicker("Empty LCB slot");
+    fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "mewtwo" } });
+    expect(
+      within(dialog).getByText(
+        "No matches. Your Generations or Legendaries setting hides some Pokémon.",
+      ),
+    ).toBeTruthy();
+  });
+
+  it("a search that matches no Pokémon at all still says just No matches", () => {
+    render(<HomeScreen />);
+    const dialog = openPicker("Empty LCB slot");
+    fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "zzzz" } });
+    expect(within(dialog).getByText("No matches")).toBeTruthy();
+  });
+
   it("the rating stays hidden with Show ratings off, so the blind default never leaks a number, a label or the raw fit", () => {
     render(<HomeScreen />);
     const dialog = openPicker("Empty LCB slot");
@@ -204,6 +222,21 @@ describe("builder pitch token notes", () => {
     expect(screen.getByTestId("slot-s2").textContent).toBe("LCB Bulbasaur 23 vs other CBs");
     expect(screen.getByTestId("slot-s9").textContent).toBe("ST Charmander 43 vs other strikers");
     expect(screen.getByTestId("slot-b0").textContent).toBe("SUB 1 Pikachu 75 vs other wingers");
+  });
+
+  // Below an 800 px pitch the token pill is the number alone (the "vs other <role>s" line is
+  // hidden by CSS), so phone players saw a bare number with nothing saying what it compares
+  // against. One legend line under the pitch says it; the CSS hides it where the labels show.
+  it("with Show ratings on, a legend under the pitch says what the number compares against, and it is absent with ratings off", async () => {
+    openWithBenchToo();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    expect(screen.queryByText(/Ratings are 0 to 100/)).toBeNull();
+    showRatings();
+    expect(screen.getByTestId("ratings-legend").textContent).toBe(
+      "Ratings are 0 to 100, vs other players in the same role.",
+    );
+    showRatings();
+    expect(screen.queryByTestId("ratings-legend")).toBeNull();
   });
 });
 
