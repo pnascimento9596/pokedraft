@@ -13,6 +13,8 @@ const PUBLIC: readonly RegExp[] = [
   /^\/robots\.txt$/,
   /^\/gate$/,
   /^\/gate\/unlock$/,
+  // Browsers send CSP reports without cookies.
+  /^\/api\/csp-report$/,
 ];
 
 export function isPublicPath(pathname: string): boolean {

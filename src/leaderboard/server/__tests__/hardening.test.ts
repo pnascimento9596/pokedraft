@@ -1,10 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PGlite } from "@electric-sql/pglite";
 import { leaderboardEntries } from "@/db/schema";
 import { drizzleLimiter } from "@/ratelimit/store";
 import type { Db } from "@/db/types";
 import type { DraftSettings } from "@/engine";
-import { clientIp, handleSubmit, hashIp } from "../handlers";
+import { clientIp, handleBoard, handleSubmit, hashIp } from "../handlers";
 import { drizzleStore, type LeaderboardStore } from "../store";
 import { migratedDb, scriptedToken } from "./fixtures";
 
@@ -95,5 +95,88 @@ describe("submit hardening", () => {
     expect(body.entry.nickname).toBe("Ash");
     expect(body.entry.rank).toBeNull();
     expect(await db.select().from(leaderboardEntries)).toHaveLength(1);
+  });
+});
+
+describe("server error logging (catches a 503 whose cause is lost, or a log that leaks personal data)", () => {
+  const RID = "iad1::7xq2k-1791600000000-0a1b2c3d4e5f";
+  const NICK = "Ashketchum";
+  const IP = "198.51.100.77";
+
+  function driverError(): Error {
+    const neon = Object.assign(new Error(`insert ... values ('${NICK}', '${IP}')`), {
+      code: "08006",
+    });
+    return Object.assign(new Error(`Failed query: insert ... params: ${NICK},${IP}`), {
+      name: "DrizzleQueryError",
+      cause: neon,
+    });
+  }
+
+  function logged(spy: { mock: { calls: unknown[][] } }): unknown[] {
+    return spy.mock.calls.map((args) => JSON.parse(String(args[0])));
+  }
+
+  it("logs one JSON line with the request id and SQLSTATE, and returns the id in x-request-id", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const token = scriptedToken(CUP8, "lb-cup8");
+    const broken: LeaderboardStore = { ...store, byToken: () => Promise.reject(driverError()) };
+    const res = await handleSubmit(
+      post({ nickname: NICK, token }, { "x-real-ip": IP, "x-vercel-id": RID }),
+      { store: broken, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW },
+    );
+    expect([res.status, res.headers.get("x-request-id")]).toEqual([503, RID]);
+    expect(logged(spy)).toEqual([
+      {
+        level: "error",
+        where: "submit.probe",
+        requestId: RID,
+        name: "DrizzleQueryError",
+        sqlstate: "08006",
+      },
+    ]);
+    const line = String(spy.mock.calls[0]![0]);
+    for (const secret of [NICK, IP, token, hashIp(IP, SECRET), "Failed query"]) {
+      expect(line).not.toContain(secret);
+    }
+    spy.mockRestore();
+  });
+
+  it("logs a failed rank lookup after a saved run instead of dropping it", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const flaky: LeaderboardStore = { ...store, rankOf: () => Promise.reject(driverError()) };
+    const res = await handleSubmit(
+      post({ nickname: NICK, token: scriptedToken(CUP8, "lb-cup8") }, { "x-vercel-id": RID }),
+      { store: flaky, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW },
+    );
+    expect(res.status).toBe(201);
+    expect(logged(spy)).toEqual([
+      {
+        level: "error",
+        where: "submit.rank",
+        requestId: RID,
+        name: "DrizzleQueryError",
+        sqlstate: "08006",
+      },
+    ]);
+    spy.mockRestore();
+  });
+
+  it("logs a failed board read with the request id", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const broken: LeaderboardStore = {
+      ...store,
+      top: () => Promise.reject(new TypeError("fetch failed")),
+    };
+    const res = await handleBoard(
+      new URL("http://local/api/leaderboard?mode=cup8&scope=all"),
+      broken,
+      RID,
+    );
+    expect([res.status, res.headers.get("x-request-id")]).toEqual([503, RID]);
+    expect(logged(spy)).toEqual([
+      { level: "error", where: "board.read", requestId: RID, name: "TypeError", sqlstate: null },
+    ]);
+    spy.mockRestore();
   });
 });

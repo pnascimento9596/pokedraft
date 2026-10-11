@@ -97,6 +97,30 @@ describe("SubmitPanel", () => {
     );
   });
 
+  it("sends one request for a double tap while submitting (catches a second POST from one panel)", async () => {
+    const fetchMock = vi.fn(() => new Promise<Response>(() => {}));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<SubmitPanel token="pd1.abc" daily />);
+    typeAndSubmit("Misty");
+    fireEvent.click(screen.getByTestId("submit-button"));
+    fireEvent.submit(screen.getByTestId("submit-button").closest("form")!);
+    const button = (await screen.findByText("Submitting")) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows success for a 200 retry reply the same way as a 201", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json(200, { entry: ENTRY })),
+    );
+    render(<SubmitPanel token="pd1.abc" daily />);
+    typeAndSubmit("Misty");
+    expect((await screen.findByTestId("submit-success")).textContent).toBe(
+      "#3Misty is on the daily board.",
+    );
+  });
+
   it("keeps Submit disabled until the trimmed nickname is 2 to 20 characters", () => {
     vi.stubGlobal("fetch", vi.fn());
     render(<SubmitPanel token="pd1.abc" daily />);
