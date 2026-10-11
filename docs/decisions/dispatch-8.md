@@ -203,3 +203,7 @@ The final full local run passed519 cases and skipped51; one unchanged daily390px
 The final chart layout passes99 focused checks: four new chart visibility/keyboard cases, unchanged390/1440 daily/board bounds, route axe, all mobile overflow cases and layout-shift cases. The last full local run519/51 with one chart overflow failure remains archived honestly; that exact failure now passes in the focused run. Full final Linux575-case suite remains required before merge. All24 actual-picture formation/device guards passed in the full local run, including the Pixel own-picture hover regression; the chart-only correction does not alter pitch geometry.
 
 Unit734/80, lint/typecheck/build and mirror/image/bundle/contrast/color/CVD gates pass. Before/after16 loaded-image captures per set and numeric186/10 per-theme readback are retained. No frozen path changes. Independent exact pushed-head review and production8C verification are pending.
+
+### PR 8D results guards before implementation
+
+Four results module/header figure guards at390/1440 in light/dark fail against the unchanged8C local build before this area's implementation. They retain literal Team Score593 and record3-0-2, one h1, header figures at32px mobile/28px desktop and zero axe violations. PR8C review and CI remain pending; this isolated next-area worktree must rebase onto its shipped squash before its own review.
