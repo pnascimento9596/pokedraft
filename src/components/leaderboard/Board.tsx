@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { announce } from "@/components/Announcer";
 import { record } from "@/ui/labels";
 import { fetchBoard, type BoardResult, type BoardView } from "./client";
 import { variantLabel } from "./format";
@@ -29,20 +30,43 @@ export function Board({ view }: { readonly view: BoardView }) {
   }, [key]);
 
   const result = loaded?.key === key ? loaded.result : null;
+  // Try again unmounts itself, so the next board, empty state or error takes focus.
+  const retried = useRef(false);
+  const focusTarget = useRef<HTMLElement | null>(null);
+  const target = (el: HTMLElement | null) => {
+    focusTarget.current = el;
+  };
+
+  useEffect(() => {
+    if (result === null) return;
+    // An error is a role="alert" and speaks for itself.
+    if (result.kind === "ok") {
+      const n = result.entries.length;
+      announce(n === 0 ? "No entries yet." : n === 1 ? "1 entry." : `${n} entries.`);
+    }
+    if (retried.current) {
+      retried.current = false;
+      focusTarget.current?.focus({ preventScroll: true });
+    }
+  }, [result]);
 
   if (result === null) {
-    return (
-      <p className={`kicker ${s.loading}`} role="status">
-        Loading the board
-      </p>
-    );
+    return <p className={`kicker ${s.loading}`}>Loading the board</p>;
   }
 
   if (result.kind === "error") {
     return (
       <div className={s.error} data-testid="board-error" role="alert">
         <p>{ERROR_COPY[result.reason]} The board could not be loaded.</p>
-        <button type="button" className="btn" onClick={() => setAttempt((n) => n + 1)}>
+        <button
+          ref={target}
+          type="button"
+          className="btn"
+          onClick={() => {
+            retried.current = true;
+            setAttempt((n) => n + 1);
+          }}
+        >
           Try again
         </button>
       </div>
@@ -53,7 +77,11 @@ export function Board({ view }: { readonly view: BoardView }) {
     return (
       <div className={s.empty} data-testid="board-empty">
         <p>No entries yet. Finish a run and submit it to claim the top spot.</p>
-        <Link href={view.scope === "daily" ? "/daily" : "/"} className="btn btn--primary">
+        <Link
+          ref={target}
+          href={view.scope === "daily" ? "/daily" : "/"}
+          className="btn btn--primary"
+        >
           {view.scope === "daily" ? "Play the daily" : "Play a run"}
         </Link>
       </div>
@@ -61,7 +89,7 @@ export function Board({ view }: { readonly view: BoardView }) {
   }
 
   return (
-    <ol className={s.list} data-testid="board" aria-label="Leaderboard">
+    <ol ref={target} className={s.list} data-testid="board" aria-label="Leaderboard" tabIndex={-1}>
       {result.entries.map((e) => (
         <li
           key={e.token}

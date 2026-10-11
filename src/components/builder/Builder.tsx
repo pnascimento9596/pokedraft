@@ -16,10 +16,18 @@ import {
   type SlotRef,
   type SpeciesId,
 } from "@/engine";
+import { announce } from "@/components/Announcer";
 import { Pitch } from "@/components/pitch/Pitch";
 import { downloadCard } from "@/components/share/download";
 import { FRIENDLY_LABEL, qualityScore, versusLabel } from "@/ui/labels";
-import { BUILDER_URL_SEED, builderToken, filledCount, refKey, valueAt } from "@/ui/lineup";
+import {
+  BUILDER_URL_SEED,
+  builderToken,
+  filledCount,
+  refKey,
+  swapMessage,
+  valueAt,
+} from "@/ui/lineup";
 import { freshSeed } from "@/ui/settings";
 import { CASCADE_TOTAL_MS, cascadeFrame, fullLineup, randomDraft } from "./model";
 import { Picker } from "./Picker";
@@ -108,6 +116,10 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
   const randomize = () => {
     const next = randomDraft(settings, draft.seed, freshSeed());
     onChange(next);
+    const filledNext = fullLineup(next.lineup);
+    announce(
+      filledNext === null ? "Randomized." : `Randomized. Team Score ${rateTeam(filledNext).score}.`,
+    );
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     setElapsed(0);
     setCascade({
@@ -178,7 +190,12 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
           label={`${lineup.formation} lineup`}
           onSlotTap={animating ? () => {} : openPicker}
           onSwap={
-            animating ? undefined : (a, b) => onChange(applyAction(draft, { type: "swap", a, b }))
+            animating
+              ? undefined
+              : (a, b) => {
+                  onChange(applyAction(draft, { type: "swap", a, b }));
+                  announce(swapMessage(lineup, a, b));
+                }
           }
           tokenNote={showRatings && !animating ? tokenNote : undefined}
         />
@@ -191,12 +208,23 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
         <button
           type="button"
           className="btn"
-          onClick={() => onChange(createDraft(settings, draft.seed))}
+          onClick={() => {
+            onChange(createDraft(settings, draft.seed));
+            announce("Cleared all slots.");
+          }}
           disabled={animating || filled === 0}
         >
           Clear all
         </button>
-        <button type="button" className="btn" onClick={onReset} disabled={animating}>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            onReset();
+            announce("Reset the builder settings and cleared all slots.");
+          }}
+          disabled={animating}
+        >
           Reset
         </button>
         <button

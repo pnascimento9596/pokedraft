@@ -82,6 +82,7 @@ describe("draft announcements", () => {
   it("says the pick, the new round and its roll as one message", async () => {
     open(SQUAD_FIRST);
     fireEvent.click(screen.getByTestId("run-start"));
+    await flush();
     fireEvent.click(screen.getByTestId("candidate-316"));
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
     await flush();
@@ -91,6 +92,7 @@ describe("draft announcements", () => {
   it("says a reroll, how many are left, and the new roll", async () => {
     open(SQUAD_FIRST);
     fireEvent.click(screen.getByTestId("run-start"));
+    await flush();
     fireEvent.click(screen.getByRole("button", { name: /^Reroll type/ }));
     await flush();
     expect(said()).toBe("Rerolled the type, 2 left. Type: Fighting.");
@@ -99,6 +101,7 @@ describe("draft announcements", () => {
   it("says when the draft is complete, and then each tap swap", async () => {
     open(SQUAD_FIRST);
     fireEvent.click(screen.getByTestId("run-start"));
+    await flush();
     await draftAll();
     expect(said()).toBe(
       "Signed Binacle at SUB 5. Draft complete, 16 of 16 signed. Tap two players to swap them.",
@@ -112,6 +115,7 @@ describe("draft announcements", () => {
     await flush();
     expect(said()).toBe("Moved Dustox to ST and Yamper to GK.");
     fireEvent.click(screen.getByTestId("slot-s1"));
+    await flush();
     fireEvent.click(screen.getByTestId("slot-s1"));
     await flush();
     expect(said()).toBe("Swap cancelled.");

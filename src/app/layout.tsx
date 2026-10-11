@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Barlow_Semi_Condensed, Big_Shoulders } from "next/font/google";
+import { Announcer } from "@/components/Announcer";
 import { ImageSettings } from "@/components/ImageSettings";
 import { PackCredit } from "@/components/PackCredit";
 import { SiteNav } from "@/components/SiteNav";
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <p>Soccer remix of the All-22 Pokémon Builder idea.</p>
           <PackCredit />
         </footer>
+        <Announcer />
       </body>
     </html>
   );

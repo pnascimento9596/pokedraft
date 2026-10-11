@@ -478,11 +478,11 @@
 }
 
 /* Phones upright and phones on their side: compact offered players, and the wheels give their room
-   back once the players are offered (their result stays in the header and in the live region). */
+   back once the players are offered (their result stays in the header and in the result line). */
 @media (max-width: 480px), (orientation: landscape) and (max-height: 500px) and (max-width: 959px) {
   /* Once the players are offered the reels give the tray back; their result stays in the header
-     row and in the live region (already visually hidden) for screen readers. */
-  .board[data-revealed] .wheels > * > :not([aria-live]) {
+     row and in the result line (already visually hidden) for screen readers. */
+  .board[data-revealed] .wheels > * > :not(p) {
     display: none;
   }
 

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createDraft, type DraftState } from "@/engine";
 import { Builder, type Friendly } from "@/components/builder/Builder";
 import { rebuildDraft } from "@/components/builder/model";
 import { ResultsView } from "@/components/results/ResultsView";
+import { focusHeading } from "@/ui/focus";
 import { BUILDER_URL_SEED, builderToken, draftFromBuilderToken, filledCount } from "@/ui/lineup";
 import { loadStats, type BucketStats, type StatBucket } from "@/ui/runs";
 import {
@@ -36,6 +37,15 @@ export function HomeScreen() {
   const [stats, setStats] = useState<Readonly<Record<StatBucket, BucketStats>> | null>(null);
   const [friendly, setFriendly] = useState<Friendly | null>(null);
   const [ready, setReady] = useState(false);
+  const showingResults = friendly !== null;
+  const shownBefore = useRef(showingResults);
+
+  // Play a friendly cup and New run swap the whole screen; the new one's heading takes focus.
+  useEffect(() => {
+    if (shownBefore.current === showingResults) return;
+    shownBefore.current = showingResults;
+    focusHeading();
+  }, [showingResults]);
 
   useEffect(() => {
     const saved = loadPanel();
