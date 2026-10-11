@@ -30,8 +30,8 @@ for (const width of [390, 1440])
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       await page.goto("/");
       await page.getByRole("button", { name: "Randomize", exact: true }).click();
-      await type(page.locator(".type-chip"), 13, 18);
       await page.locator('[data-testid^="slot-"]').first().click();
+      await type(page.getByRole("dialog").locator(".type-chip"), 13, 18);
       await type(page.getByRole("dialog").locator("button.chip"), 15, 20, "600");
       await page.goto(PLAY_8_0);
       await expect(page.getByTestId("run-start")).toBeVisible();
