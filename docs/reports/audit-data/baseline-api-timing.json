@@ -1,0 +1,1100 @@
+{
+  "meta": {
+    "name": "baseline",
+    "builtAt": "2026-10-10T22:05:00.073Z",
+    "percentileMethod": "linear interpolation between the closest ranks (type 7, the NumPy and Excel default)",
+    "unit": "milliseconds",
+    "headersMs": "time until the response headers arrive (time to first byte)",
+    "totalMs": "time until the whole body has been read",
+    "client": "Node fetch (undici) from a MacBook Pro on Wi-Fi, HTTP/1.1. Each sample records newConnection, and a table does not mix samples that opened a connection with samples that reused one. The edge answers a HEAD with connection: close, so a series of HEADs opens a new connection every time.",
+    "coldDefinition": "the first request to /api/leaderboard after at least the recorded idle minutes with no request from these tools to the function; the Neon compute may also have been suspended, so a cold sample is function start plus possible database resume"
+  },
+  "gates": [
+    {
+      "name": "cold E2",
+      "at": "2026-10-10T19:15:55.356Z",
+      "load1": 36.14,
+      "quietAtStart": false,
+      "waitedMs": 300087
+    },
+    {
+      "name": "cold E3",
+      "at": "2026-10-10T19:59:09.131Z",
+      "load1": 21.78,
+      "quietAtStart": false,
+      "waitedMs": 300028
+    },
+    {
+      "name": "warm baseline",
+      "at": "2026-10-10T20:10:56.575Z",
+      "load1": 39.26,
+      "quietAtStart": false,
+      "waitedMs": 10002
+    },
+    {
+      "name": "card baseline",
+      "at": "2026-10-10T20:12:04.929Z",
+      "load1": 37.44,
+      "quietAtStart": false,
+      "waitedMs": 30014
+    },
+    {
+      "name": "cold E4",
+      "at": "2026-10-10T20:44:16.806Z",
+      "load1": 23.37,
+      "quietAtStart": false,
+      "waitedMs": 300087
+    },
+    {
+      "name": "cold E5",
+      "at": "2026-10-10T21:09:40.629Z",
+      "load1": 16.07,
+      "quietAtStart": false,
+      "waitedMs": 300065
+    },
+    {
+      "name": "cold E6",
+      "at": "2026-10-10T21:31:00.294Z",
+      "load1": 17.81,
+      "quietAtStart": false,
+      "waitedMs": 300043
+    },
+    {
+      "name": "post baseline",
+      "at": "2026-10-10T21:35:54.166Z",
+      "load1": 41.24,
+      "quietAtStart": false,
+      "waitedMs": 1500490
+    },
+    {
+      "name": "warm baseline-b",
+      "at": "2026-10-10T21:54:28.945Z",
+      "load1": 54.65,
+      "quietAtStart": false,
+      "waitedMs": 480090
+    },
+    {
+      "name": "card baseline-b",
+      "at": "2026-10-10T22:03:24.523Z",
+      "load1": 59.05,
+      "quietAtStart": false,
+      "waitedMs": 480131
+    }
+  ],
+  "floor": [
+    {
+      "tag": "baseline-pre-warm",
+      "at": "2026-10-10T20:11:01.094Z",
+      "load1": 39.96,
+      "medianMs": 122.8,
+      "minMs": 100,
+      "maxMs": 365.9,
+      "n": 10,
+      "newConnections": null,
+      "get": null
+    },
+    {
+      "tag": "baseline-post-warm",
+      "at": "2026-10-10T20:11:31.289Z",
+      "load1": 38.09,
+      "medianMs": 107.2,
+      "minMs": 34.2,
+      "maxMs": 125.2,
+      "n": 10,
+      "newConnections": null,
+      "get": null
+    },
+    {
+      "tag": "baseline-b-pre-warm",
+      "at": "2026-10-10T21:54:36.949Z",
+      "load1": 60.72,
+      "medianMs": 110.1,
+      "minMs": 99.1,
+      "maxMs": 212.9,
+      "n": 10,
+      "newConnections": 10,
+      "get": {
+        "firstMs": 108.8,
+        "firstNewConnection": true,
+        "medianMs": 30.5,
+        "minMs": 25.4,
+        "maxMs": 48.5,
+        "n": 10,
+        "newConnections": 0
+      }
+    },
+    {
+      "tag": "baseline-b-post-warm",
+      "at": "2026-10-10T21:55:23.598Z",
+      "load1": 57.45,
+      "medianMs": 105.5,
+      "minMs": 35.2,
+      "maxMs": 154.7,
+      "n": 10,
+      "newConnections": 9,
+      "get": {
+        "firstMs": 91.6,
+        "firstNewConnection": true,
+        "medianMs": 33.5,
+        "minMs": 24.3,
+        "maxMs": 40.2,
+        "n": 10,
+        "newConnections": 0
+      }
+    }
+  ],
+  "warmControl": {
+    "series": "baseline-b",
+    "what": "GET /robots.txt once per round, before that round's two API requests, on the same connection",
+    "n": 30,
+    "headersMs": {
+      "n": 30,
+      "min": 27.5,
+      "p50": 34.2,
+      "p95": 107.2,
+      "max": 345.6,
+      "mean": 50.1
+    },
+    "totalMs": {
+      "n": 30,
+      "min": 27.7,
+      "p50": 34.4,
+      "p95": 107.4,
+      "max": 345.7,
+      "mean": 50.4
+    },
+    "statuses": {
+      "200": 30
+    },
+    "clientLoad1": {
+      "median": 63.7,
+      "max": 66.4,
+      "samplesAbove6": 30
+    },
+    "newConnectionSamples": 0,
+    "connectionNotRecorded": 0
+  },
+  "leaderboard": {
+    "daily": {
+      "warm": {
+        "series": "baseline-b",
+        "n": 30,
+        "headersMs": {
+          "n": 30,
+          "min": 69.5,
+          "p50": 84,
+          "p95": 122.2,
+          "max": 1215.5,
+          "mean": 123.4
+        },
+        "totalMs": {
+          "n": 30,
+          "min": 72.3,
+          "p50": 85.4,
+          "p95": 123.8,
+          "max": 1216.1,
+          "mean": 124.9
+        },
+        "statuses": {
+          "200": 30
+        },
+        "clientLoad1": {
+          "median": 63.7,
+          "max": 66.4,
+          "samplesAbove6": 30
+        },
+        "failures": 0,
+        "newConnectionSamples": 0,
+        "connectionNotRecorded": 0
+      },
+      "warmOtherSeries": [
+        {
+          "series": "legacy",
+          "n": 30,
+          "headersMs": {
+            "n": 30,
+            "min": 67.8,
+            "p50": 84.9,
+            "p95": 113.9,
+            "max": 202.7,
+            "mean": 90.5
+          },
+          "totalMs": {
+            "n": 30,
+            "min": 69,
+            "p50": 96.2,
+            "p95": 124.4,
+            "max": 206.8,
+            "mean": 99.8
+          },
+          "statuses": {
+            "200": 30
+          },
+          "clientLoad1": {
+            "median": 39,
+            "max": 39.4,
+            "samplesAbove6": 30
+          },
+          "failures": 0,
+          "newConnectionSamples": 0,
+          "connectionNotRecorded": 30
+        }
+      ],
+      "cold": [
+        {
+          "event": "E1",
+          "at": "2026-10-10T18:55:34.279Z",
+          "idleMinutes": null,
+          "platformCheck": {
+            "ok": true,
+            "windowMinutes": 25,
+            "requestsInWindow": 0,
+            "lastRequestMinutesAgo": null
+          },
+          "status": 200,
+          "headersMs": 2045.7,
+          "totalMs": 2051.5,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 29.53,
+          "newConnection": null,
+          "preconnect": null
+        },
+        {
+          "event": "E3",
+          "at": "2026-10-10T19:59:19.785Z",
+          "idleMinutes": 21.8,
+          "platformCheck": {
+            "ok": true,
+            "windowMinutes": 26,
+            "requestsInWindow": 0,
+            "lastRequestMinutesAgo": null
+          },
+          "status": 200,
+          "headersMs": 2969.2,
+          "totalMs": 2987.1,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 23.63,
+          "newConnection": null,
+          "preconnect": null
+        },
+        {
+          "event": "E5",
+          "at": "2026-10-10T21:09:46.519Z",
+          "idleMinutes": 21.4,
+          "platformCheck": {
+            "ok": true,
+            "windowMinutes": 26,
+            "requestsInWindow": 8,
+            "lastRequestMinutesAgo": 23.9
+          },
+          "status": 200,
+          "headersMs": 2215,
+          "totalMs": 2216,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 19.02,
+          "newConnection": true,
+          "preconnect": {
+            "headersMs": 116.9,
+            "newConnection": true
+          }
+        }
+      ],
+      "afterColdOfOtherScope": [
+        {
+          "event": "E2",
+          "at": "2026-10-10T19:16:00.730Z",
+          "idleMinutes": null,
+          "platformCheck": null,
+          "status": 200,
+          "headersMs": 286.6,
+          "totalMs": 287.5,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 35.28,
+          "newConnection": null,
+          "preconnect": null
+        },
+        {
+          "event": "E4",
+          "at": "2026-10-10T20:44:23.148Z",
+          "idleMinutes": null,
+          "platformCheck": null,
+          "status": 200,
+          "headersMs": 143.7,
+          "totalMs": 149.2,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 23.47,
+          "newConnection": false,
+          "preconnect": null
+        },
+        {
+          "event": "E6",
+          "at": "2026-10-10T21:31:08.070Z",
+          "idleMinutes": null,
+          "platformCheck": null,
+          "status": 200,
+          "headersMs": 140.4,
+          "totalMs": 145.1,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 16.86,
+          "newConnection": false,
+          "preconnect": null
+        }
+      ]
+    },
+    "all": {
+      "warm": {
+        "series": "baseline-b",
+        "n": 30,
+        "headersMs": {
+          "n": 30,
+          "min": 71.3,
+          "p50": 83.9,
+          "p95": 118.5,
+          "max": 216.4,
+          "mean": 92.4
+        },
+        "totalMs": {
+          "n": 30,
+          "min": 71.9,
+          "p50": 85.4,
+          "p95": 121.5,
+          "max": 217.1,
+          "mean": 94.1
+        },
+        "statuses": {
+          "200": 30
+        },
+        "clientLoad1": {
+          "median": 63.7,
+          "max": 66.4,
+          "samplesAbove6": 30
+        },
+        "failures": 0,
+        "newConnectionSamples": 0,
+        "connectionNotRecorded": 0
+      },
+      "warmOtherSeries": [
+        {
+          "series": "legacy",
+          "n": 30,
+          "headersMs": {
+            "n": 30,
+            "min": 67.2,
+            "p50": 85.9,
+            "p95": 134.6,
+            "max": 177.5,
+            "mean": 91.3
+          },
+          "totalMs": {
+            "n": 30,
+            "min": 68.2,
+            "p50": 93.7,
+            "p95": 170.5,
+            "max": 189.7,
+            "mean": 101.4
+          },
+          "statuses": {
+            "200": 30
+          },
+          "clientLoad1": {
+            "median": 39,
+            "max": 39.4,
+            "samplesAbove6": 30
+          },
+          "failures": 0,
+          "newConnectionSamples": 0,
+          "connectionNotRecorded": 30
+        }
+      ],
+      "cold": [
+        {
+          "event": "E2",
+          "at": "2026-10-10T19:16:00.409Z",
+          "idleMinutes": 20.3,
+          "platformCheck": {
+            "ok": true,
+            "windowMinutes": 25,
+            "requestsInWindow": 2,
+            "lastRequestMinutesAgo": 20.4
+          },
+          "status": 200,
+          "headersMs": 2170.4,
+          "totalMs": 2173.9,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 35.56,
+          "newConnection": null,
+          "preconnect": null
+        },
+        {
+          "event": "E4",
+          "at": "2026-10-10T20:44:22.988Z",
+          "idleMinutes": 32.8,
+          "platformCheck": {
+            "ok": true,
+            "windowMinutes": 26,
+            "requestsInWindow": 0,
+            "lastRequestMinutesAgo": null
+          },
+          "status": 200,
+          "headersMs": 2871.3,
+          "totalMs": 2872.4,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 24.3,
+          "newConnection": true,
+          "preconnect": {
+            "headersMs": 128.3,
+            "newConnection": true
+          }
+        },
+        {
+          "event": "E6",
+          "at": "2026-10-10T21:31:07.903Z",
+          "idleMinutes": 21.2,
+          "platformCheck": {
+            "ok": true,
+            "windowMinutes": 26,
+            "requestsInWindow": 2,
+            "lastRequestMinutesAgo": 21.3
+          },
+          "status": 200,
+          "headersMs": 3070.2,
+          "totalMs": 3073.6,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 16.86,
+          "newConnection": true,
+          "preconnect": {
+            "headersMs": 184.7,
+            "newConnection": true
+          }
+        }
+      ],
+      "afterColdOfOtherScope": [
+        {
+          "event": "E1",
+          "at": "2026-10-10T18:55:34.501Z",
+          "idleMinutes": null,
+          "platformCheck": null,
+          "status": 200,
+          "headersMs": 218.1,
+          "totalMs": 220.9,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 29.53,
+          "newConnection": null,
+          "preconnect": null
+        },
+        {
+          "event": "E3",
+          "at": "2026-10-10T19:59:20.228Z",
+          "idleMinutes": null,
+          "platformCheck": null,
+          "status": 200,
+          "headersMs": 439.3,
+          "totalMs": 442.1,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 23.63,
+          "newConnection": null,
+          "preconnect": null
+        },
+        {
+          "event": "E5",
+          "at": "2026-10-10T21:09:46.672Z",
+          "idleMinutes": null,
+          "platformCheck": null,
+          "status": 200,
+          "headersMs": 151.1,
+          "totalMs": 151.9,
+          "regions": [
+            "iad1",
+            "iad1"
+          ],
+          "cache": "MISS",
+          "entries": 0,
+          "load1": 19.02,
+          "newConnection": false,
+          "preconnect": null
+        }
+      ]
+    }
+  },
+  "coldControls": [
+    {
+      "event": "E4",
+      "samplesMs": [
+        37.9,
+        53.1,
+        28.6
+      ],
+      "medianMs": 37.9,
+      "newConnections": 0
+    },
+    {
+      "event": "E5",
+      "samplesMs": [
+        40.6,
+        49.6,
+        72.3
+      ],
+      "medianMs": 49.6,
+      "newConnections": 0
+    },
+    {
+      "event": "E6",
+      "samplesMs": [
+        40.8,
+        36.5,
+        49.5
+      ],
+      "medianMs": 40.8,
+      "newConnections": 0
+    }
+  ],
+  "coldNotes": [
+    {
+      "kind": "note",
+      "event": "E1",
+      "at": "2026-10-10T18:55:43.002Z",
+      "text": "Neon production compute ep-falling-resonance-b7y5z6oi was idle (suspended_at 2026-10-10T18:04:17Z, last_active 17:56:41Z) when read with list_branch_computes about 14:53 EDT, a few minutes before the event. The platform log showed no API request in the previous 25 minutes. So this cold sample is function start plus database resume."
+    },
+    {
+      "kind": "note",
+      "event": "E2",
+      "at": "2026-10-10T19:16:24.587Z",
+      "text": "Neon production compute ep-falling-resonance-b7y5z6oi, read with list_branch_computes right after the event (about 15:16 EDT), shows started_at 2026-10-10T19:16:00Z, the same second as the E2 request, and last_active 2026-10-10T18:55:44Z (the E1 follower, 20 minutes earlier). Autosuspend is 300 s, so the compute was suspended and the E2 request resumed it. The platform log showed 2 API requests in the previous 25 minutes, both from E1. So this cold sample is function start plus database resume. The client machine load average was 35 to 36, so it is flagged busy."
+    },
+    {
+      "kind": "note",
+      "event": "E4",
+      "at": "2026-10-10T20:50:10.190Z",
+      "text": "Neon production compute ep-falling-resonance-b7y5z6oi, read with list_branch_computes about 16:51 EDT, shows started_at 2026-10-10T20:44:22Z, the same second as the E4 request, and last_active 20:44:23Z. Autosuspend is 300 s, so the compute was suspended and the E4 request resumed it. The platform log check counted 0 API requests in the idle window. So this cold sample is function start plus database resume. The cold request opened a new connection although a GET of /robots.txt had opened one a moment before. A scratch check at about 16:47 EDT, outside this series and not stored in it, saw the same pattern: GET /robots.txt opened a connection, the first API GET after it opened another one (1431 ms to headers, MISS), and the next five API GETs reused it (81 to 100 ms)."
+    },
+    {
+      "kind": "note",
+      "event": "E5",
+      "at": "2026-10-10T21:26:28.614Z",
+      "text": "Neon production compute ep-falling-resonance-b7y5z6oi, read with list_branch_computes at about 17:27 EDT: last_active 2026-10-10T21:09:56Z (the E5 request second) and suspended_at 21:15:01Z (300 s autosuspend after it). The compute was suspended before E5 (E4 was 20:44Z, more than 300 s earlier), so E5 is function start plus database resume. The client load average was above 6, so E5 is flagged busy."
+    },
+    {
+      "kind": "note",
+      "event": "E6",
+      "at": "2026-10-10T21:33:20.612Z",
+      "text": "Neon production compute ep-falling-resonance-b7y5z6oi, read with list_branch_computes at about 17:34 EDT: started_at 2026-10-10T21:31:07Z, the second of the E6 request, after being suspended since 21:15:01Z. So E6 is function start plus database resume. The client load average was above 6, so E6 is flagged busy."
+    }
+  ],
+  "card": {
+    "series": "baseline-b",
+    "otherSeries": [
+      "legacy"
+    ],
+    "controls": {
+      "before": {
+        "n": 3,
+        "headersMs": {
+          "n": 3,
+          "min": 37.7,
+          "p50": 45,
+          "p95": 283.3,
+          "max": 309.8,
+          "mean": 130.8
+        },
+        "totalMs": {
+          "n": 3,
+          "min": 38.2,
+          "p50": 46.6,
+          "p95": 284.5,
+          "max": 310.9,
+          "mean": 131.9
+        },
+        "statuses": {
+          "200": 3
+        },
+        "clientLoad1": {
+          "median": 57.6,
+          "max": 57.6,
+          "samplesAbove6": 3
+        },
+        "newConnectionSamples": 1,
+        "connectionNotRecorded": 0
+      },
+      "after": {
+        "n": 3,
+        "headersMs": {
+          "n": 3,
+          "min": 40.8,
+          "p50": 43.9,
+          "p95": 50.1,
+          "max": 50.8,
+          "mean": 45.2
+        },
+        "totalMs": {
+          "n": 3,
+          "min": 42.4,
+          "p50": 44.2,
+          "p95": 50.5,
+          "max": 51.2,
+          "mean": 45.9
+        },
+        "statuses": {
+          "200": 3
+        },
+        "clientLoad1": {
+          "median": 59.1,
+          "max": 59.1,
+          "samplesAbove6": 3
+        },
+        "newConnectionSamples": 0,
+        "connectionNotRecorded": 0
+      }
+    },
+    "firstRequest": {
+      "index": 1,
+      "distinct": true,
+      "status": 200,
+      "pngOk": true,
+      "headersMs": 3333.2,
+      "totalMs": 3357.5,
+      "bytes": 109502,
+      "cache": "MISS",
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "regions": [
+        "iad1",
+        "iad1"
+      ],
+      "newConnection": false
+    },
+    "distinctTokens": {
+      "n": 10,
+      "headersMs": {
+        "n": 10,
+        "min": 328.2,
+        "p50": 355.4,
+        "p95": 2014.6,
+        "max": 3333.2,
+        "mean": 655.8
+      },
+      "totalMs": {
+        "n": 10,
+        "min": 356,
+        "p50": 386.5,
+        "p95": 2042.8,
+        "max": 3357.5,
+        "mean": 687.3
+      },
+      "statuses": {
+        "200": 10
+      },
+      "clientLoad1": {
+        "median": 57.8,
+        "max": 59.1,
+        "samplesAbove6": 10
+      },
+      "failures": 0,
+      "newConnectionSamples": 0,
+      "connectionNotRecorded": 0
+    },
+    "distinctAfterFirst": {
+      "n": 9,
+      "headersMs": {
+        "n": 9,
+        "min": 328.2,
+        "p50": 349.7,
+        "p95": 400.6,
+        "max": 403,
+        "mean": 358.3
+      },
+      "totalMs": {
+        "n": 9,
+        "min": 356,
+        "p50": 386.2,
+        "p95": 429.3,
+        "max": 436,
+        "mean": 390.6
+      },
+      "statuses": {
+        "200": 9
+      },
+      "clientLoad1": {
+        "median": 57.8,
+        "max": 59.1,
+        "samplesAbove6": 9
+      },
+      "newConnectionSamples": 0,
+      "connectionNotRecorded": 0
+    },
+    "repeats": {
+      "n": 3,
+      "headersMs": {
+        "n": 3,
+        "min": 326.5,
+        "p50": 327.3,
+        "p95": 356.6,
+        "max": 359.8,
+        "mean": 337.9
+      },
+      "totalMs": {
+        "n": 3,
+        "min": 348.5,
+        "p50": 356.5,
+        "p95": 388.5,
+        "max": 392.1,
+        "mean": 365.7
+      },
+      "statuses": {
+        "200": 3
+      },
+      "clientLoad1": {
+        "median": 59.1,
+        "max": 59.1,
+        "samplesAbove6": 3
+      },
+      "failures": 0,
+      "newConnectionSamples": 0,
+      "connectionNotRecorded": 0
+    },
+    "cacheStates": {
+      "distinct": {
+        "MISS": 10
+      },
+      "repeats": {
+        "MISS": 3
+      }
+    },
+    "rows": [
+      {
+        "index": 1,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 3333.2,
+        "totalMs": 3357.5,
+        "bytes": 109502,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 2,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 403,
+        "totalMs": 436,
+        "bytes": 113606,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 3,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 396.9,
+        "totalMs": 419,
+        "bytes": 108723,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 4,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 361,
+        "totalMs": 382.1,
+        "bytes": 103594,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 5,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 349.7,
+        "totalMs": 386.2,
+        "bytes": 98057,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 6,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 328.2,
+        "totalMs": 386.9,
+        "bytes": 102407,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 7,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 333,
+        "totalMs": 369.9,
+        "bytes": 100186,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 8,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 329.8,
+        "totalMs": 360.5,
+        "bytes": 102403,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 9,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 334.2,
+        "totalMs": 356,
+        "bytes": 103268,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 10,
+        "distinct": true,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 388.7,
+        "totalMs": 419.2,
+        "bytes": 102520,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 11,
+        "distinct": false,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 326.5,
+        "totalMs": 348.5,
+        "bytes": 109502,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 12,
+        "distinct": false,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 327.3,
+        "totalMs": 356.5,
+        "bytes": 109502,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      },
+      {
+        "index": 13,
+        "distinct": false,
+        "status": 200,
+        "pngOk": true,
+        "headersMs": 359.8,
+        "totalMs": 392.1,
+        "bytes": 109502,
+        "cache": "MISS",
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "regions": [
+          "iad1",
+          "iad1"
+        ],
+        "newConnection": false
+      }
+    ]
+  },
+  "post": {
+    "what": "local Next server on a laptop plus the Neon preview branch over the internet; not Vercel-to-Neon latency; production POST not measured because it writes rows and burns the rate limit",
+    "all": {
+      "n": 30,
+      "headersMs": {
+        "n": 30,
+        "min": 160.2,
+        "p50": 185.2,
+        "p95": 221.1,
+        "max": 1143,
+        "mean": 221.1
+      },
+      "totalMs": {
+        "n": 30,
+        "min": 160.3,
+        "p50": 185.4,
+        "p95": 221.4,
+        "max": 1143.9,
+        "mean": 221.4
+      },
+      "statuses": {
+        "201": 30
+      },
+      "clientLoad1": {
+        "median": 39.8,
+        "max": 41.2,
+        "samplesAbove6": 30
+      },
+      "failures": 0
+    },
+    "firstRequest": {
+      "headersMs": 1143,
+      "totalMs": 1143.9,
+      "status": 201
+    },
+    "afterFirst": {
+      "n": 29,
+      "headersMs": {
+        "n": 29,
+        "min": 160.2,
+        "p50": 184.3,
+        "p95": 214.5,
+        "max": 226.3,
+        "mean": 189.3
+      },
+      "totalMs": {
+        "n": 29,
+        "min": 160.3,
+        "p50": 184.5,
+        "p95": 214.8,
+        "max": 226.6,
+        "mean": 189.6
+      },
+      "statuses": {
+        "201": 29
+      },
+      "clientLoad1": {
+        "median": 39.5,
+        "max": 41.2,
+        "samplesAbove6": 29
+      }
+    },
+    "errorCodes": {},
+    "ranksReturned": 30,
+    "cleanup": {
+      "kind": "post-cleanup",
+      "label": "baseline",
+      "databaseHost": "ep-small-breeze-b7nhwrer-pooler.c-13.us-east-1.aws.neon.tech",
+      "rowsWrittenAndFound": 30,
+      "leaderboardEntriesDeleted": 30,
+      "rateLimitEventsDeleted": 30
+    }
+  }
+}
