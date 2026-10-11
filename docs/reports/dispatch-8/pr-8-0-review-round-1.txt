@@ -1,0 +1,47 @@
+
+VERDICT: APPROVE
+CANARY-b92f3587ff42d6775f9276ec
+WARNING STATE.md — Playwright row still reads "494 total (443 pass, 51 skip
+skip)" after this PR added e2e/health.spec.ts; the same head's CI e2e recei
+receipt shows 444 passed, 51 skipped (495 total). The doc's header claims i
+it is "Updated in the same PR as every merge", so the row now conflicts wit
+with the gate output on this head. Update to 495/444 and record the new hea
+health spec in the next commit.
+NIT .github/workflows/theme-measurement.yml — actions/checkout, setup-node,
+setup-node, pnpm/action-setup and upload-artifact are pinned by tag, not co
+commit SHA; production measurement receipts will cite an unpinned graph. Pi
+Pin to SHAs before the baseline run.
+NIT scripts/audit/theme-metrics.test.ts — imports "./theme-metrics.mjs" whi
+while the file on disk is theme-metrics.mts; vitest resolves it today (9/9 
+pass locally and in CI) but the extension mismatch is brittle across toolin
+tooling changes.
+NIT src/app/api/health/route.ts — `tokenVersions: [...RETAINED_TOKEN_VERSIO
+[...RETAINED_TOKEN_VERSIONS, RUN_TOKEN_VERSION]` will duplicate once the cu
+current token version is also retained at the next bump; add dedupe or a co
+comment at that point.
+NIT docs/decisions/dispatch-8.md — receipts referenced in committed text (o
+(output/dispatch-8/prereq-mobile.log, recon.json, before/*) are under the n
+newly gitignored /output/ and exist only on the lane owner's machine; attac
+attach them to the PR or archive before merge so the log's baseline claims 
+stay verifiable.
+
+Compliance verified, not repeated as findings: health endpoint meets SE-06 
+exactly (build SHA, env, region, engine and token versions asserted as lite
+literals; `connection()` + `ƒ /api/health` proves dynamic; no-store; no rat
+rate limiter; DB import and `select 1` only on exactly `?db=1`, with the SQ
+SQL proven via PgDialect and neutral 503 on failure); gate exemption is exa
+exact (`/^\/api\/health$/` with `/api/health/x` still gated) and the exempt
+exemption test was updated in lockstep; the measurement workflow is committ
+committed with dispatch inputs, GitHub-hosted and linux guards, exactly-3-r
+exactly-3-run medians enforced by tested helpers, SHA-checked cache-busted 
+health probes before and after the batch, and raw reports retained via 90-d
+90-day artifacts with `if-no-files-found: error`; local rejection receipt h
+honestly proves the script refuses to run off-runner; baselines have not ru
+run and are recorded as pending in STATE.md and the decision log rather tha
+than faked; the SX-05 expected-fail marker is retained and its local unexpe
+unexpected pass is recorded honestly in both docs/decisions/dispatch-8.md a
+and the gate packet, with Linux CI green on the exact head; counts reconcil
+reconcile (688+8+9=705, 74+2=76, 17 RED→GREEN receipt 10 failed/7 passed an
+and narrow 26 = 8+9+9); no frozen, image, engine, scouting or coefficient f
+files appear in the diff; no em dashes or Pokédex flavor text in the new us
+user-facing or shipped copy.

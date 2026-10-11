@@ -1,0 +1,340 @@
+Reviewed candidate head 269ea75a3465e5c7defc3f15ca251b0fc52ca9bb
+CI run https://github.com/pnascimento9596/pokedraft/actions/runs/38128867885: check SUCCESS and e2e SUCCESS on that exact head.
+
+Command receipt health-red
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft
+
+ ❯ src/app/api/health/__tests__/route.test.ts (8 tests | 8 failed) 12ms
+   ❯ health endpoint deployment proof (8)
+     × reports literal deployment and version metadata without a database read 6ms
+     × never reads the database for ?db=0 2ms
+     × never reads the database for ?db=true 1ms
+     × never reads the database for ?db=01 1ms
+     × reports missing deployment metadata as null without inventing a SHA or region 1ms
+     × performs exactly one read-only connectivity query only when db=1 1ms
+     × returns 503 and a neutral unavailable status without exposing a database failure 1ms
+     × reports an unconfigured database as unavailable only for the requested probe 1ms
+ ❯ src/__tests__/proxy.test.ts (9 tests | 2 failed) 16ms
+   ❯ passcode gate (catches a gate that breaks link previews or leaks the API) (9)
+     × exempts exactly the preview and gate paths 3ms
+     × lets public paths and the right cookie through, and rejects a stale cookie 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/proxy.test.ts > passcode gate (catches a gate that breaks link previews or leaks the API) > exempts exactly the preview and gate paths
+AssertionError: expected [ '/api/health' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "/api/health",
++ ]
+
+ ❯ src/__tests__/proxy.test.ts:54:102
+     53|   it("runs the proxy on every path except static assets (catches a mat…
+     54|     const runs = (url: string) => unstable_doesMiddlewareMatch({ confi…
+     55|     const matched = [
+       |                     ^
+     56|       "/",
+     57|       "/play",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  src/__tests__/proxy.test.ts > passcode gate (catches a gate that breaks link previews or leaks the API) > lets public paths and the right cookie through, and rejects a stale cookie
+AssertionError: expected null to be '1' // Object.is equality
+
+- Expected:
+"1"
+
++ Received:
+null
+
+ ❯ src/__tests__/proxy.test.ts:101:127
+    101|     vi.stubEnv("FRIENDS_PASSCODE", "");
+    102|     const cur = `pd${RUN_TOKEN_VERSION}`;
+    103|     for (const bad of ["garbage", `${cur}.%%%`, "pd99.abc", "pd0.abc",…
+       |                                             ^
+    104|       const res = proxy(req(`/r/${bad}`));
+    105|       expect(res.headers.get("x-middleware-rewrite")).toBe("https://po…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  src/app/api/health/__tests__/route.test.ts > health endpoint deployment proof > reports literal deployment and version metadata without a database read
+Error: Cannot find module '/src/app/api/health/route' imported from /Users/paulo/Projects/pokedraft/src/app/api/health/__tests__/route.test.ts
+ ❯ health src/app/api/health/__tests__/route.test.ts:22:19
+     20|
+     21| async function health(query = "") {
+     22|   const { GET } = await import("../route");
+       |                   ^
+     23|   return GET(new Request(`https://pokedraft.test/api/health${query}`));
+     24| }
+ ❯ src/app/api/health/__tests__/route.test.ts:28:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  src/app/api/health/__tests__/route.test.ts > health endpoint deployment proof > never reads the database for ?db=0
+ FAIL  src/app/api/health/__tests__/route.test.ts > health endpoint deployment proof > never reads the database for ?db=true
+ FAIL  src/app/api/health/__tests__/route.test.ts > health endpoint deployment proof > never reads the database for ?db=01
+Error: Cannot find module '/src/app/api/health/route' imported from /Users/paulo/Projects/pokedraft/src/app/api/health/__tests__/route.test.ts
+ ❯ health src/app/api/health/__tests__/route.test.ts:22:19
+     20|
+     21| async function health(query = "") {
+     22|   const { GET } = await import("../route");
+       |                   ^
+     23|   return GET(new Request(`https://pokedraft.test/api/health${query}`));
+     24| }
+ ❯ src/app/api/health/__tests__/route.test.ts:44:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  src/app/api/health/__tests__/route.test.ts > health endpoint deployment proof > reports missing deployment metadata as null without inventing a SHA or region
+Error: Cannot find module '/src/app/api/health/route' imported from /Users/paulo/Projects/pokedraft/src/app/api/health/__tests__/route.test.ts
+ ❯ health src/app/api/health/__tests__/route.test.ts:22:19
+     20|
+     21| async function health(query = "") {
+     22|   const { GET } = await import("../route");
+       |                   ^
+     23|   return GET(new Request(`https://pokedraft.test/api/health${query}`));
+     24| }
+ ❯ src/app/api/health/__tests__/route.test.ts:52:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  src/app/api/health/__tests__/route.test.ts > health endpoint deployment proof > performs exactly one read-only connectivity query only when db=1
+Error: Cannot find module '/src/app/api/health/route' imported from /Users/paulo/Projects/pokedraft/src/app/api/health/__tests__/route.test.ts
+ ❯ health src/app/api/health/__tests__/route.test.ts:22:19
+     20|
+     21| async function health(query = "") {
+     22|   const { GET } = await import("../route");
+       |                   ^
+     23|   return GET(new Request(`https://pokedraft.test/api/health${query}`));
+     24| }
+ ❯ src/app/api/health/__tests__/route.test.ts:62:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  src/app/api/health/__tests__/route.test.ts > health endpoint deployment proof > returns 503 and a neutral unavailable status without exposing a database failure
+Error: Cannot find module '/src/app/api/health/route' imported from /Users/paulo/Projects/pokedraft/src/app/api/health/__tests__/route.test.ts
+ ❯ health src/app/api/health/__tests__/route.test.ts:22:19
+     20|
+     21| async function health(query = "") {
+     22|   const { GET } = await import("../route");
+       |                   ^
+     23|   return GET(new Request(`https://pokedraft.test/api/health${query}`));
+     24| }
+ ❯ src/app/api/health/__tests__/route.test.ts:76:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  src/app/api/health/__tests__/route.test.ts > health endpoint deployment proof > reports an unconfigured database as unavailable only for the requested probe
+Error: Cannot find module '/src/app/api/health/route' imported from /Users/paulo/Projects/pokedraft/src/app/api/health/__tests__/route.test.ts
+ ❯ health src/app/api/health/__tests__/route.test.ts:22:19
+     20|
+     21| async function health(query = "") {
+     22|   const { GET } = await import("../route");
+       |                   ^
+     23|   return GET(new Request(`https://pokedraft.test/api/health${query}`));
+     24| }
+ ❯ src/app/api/health/__tests__/route.test.ts:84:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  10 failed | 7 passed (17)
+   Start at  05:24:26
+   Duration  2.11s (import 79%, transform 19%, tests 1%)
+
+
+
+Command receipt unit-narrow
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft
+
+
+ Test Files  3 passed (3)
+      Tests  26 passed (26)
+   Start at  05:28:33
+   Duration  2.12s (transform 40%, import 40%, tests 19%, worker 1%)
+
+
+
+Command receipt lint
+$ eslint
+
+
+Command receipt typecheck
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+
+
+Command receipt test
+$ vitest run
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft
+
+
+ Test Files  76 passed (76)
+      Tests  705 passed (705)
+   Start at  05:29:05
+   Duration  24.72s (tests 63%, import 15%, environment 12%, transform 10%)
+
+    Isolate  76 workers spawned · ~282ms startup each (spawn + environment, per file)
+             at least ~1.66s faster with isolate: false — reuses workers across files instead of one per file
+
+
+
+Command receipt build
+$ next build
+▲ Next.js 16.4.0 (Turbopack)
+✓ Running next.config.ts took 87ms
+- Cache Components enabled
+- Partial Prefetching enabled
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.8s
+  Running TypeScript ...
+  Finished TypeScript in 5.8s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/18) ...
+  Generating static pages using 11 workers (4/18) 
+  Generating static pages using 11 workers (8/18) 
+  Generating static pages using 11 workers (13/18) 
+✓ Generating static pages using 11 workers (18/18) in 573ms
+Turbopack build encountered 1 warning:
+./
+Warning: Failed to find font override values for font `Big Shoulders`
+Skipping generating a fallback font.
+
+
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/csp-report
+├ ƒ /api/health
+├ ƒ /api/leaderboard
+├ ƒ /card
+├ ○ /daily
+├ ◐ /gate
+├ ƒ /gate/unlock
+├ ○ /history
+├ ○ /how-to-play
+├ ◐ /leaderboard
+├ ◐ /play
+├   /r/[token]
+│ └ ◐ /r/[token]
+├ ƒ /r/[token]/opengraph-image
+├ ○ /robots.txt
+└ ○ /run-not-found
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)             prerendered as static content
+◐  (Partial Prerender)  prerendered as static HTML with dynamic server-streamed content
+ƒ  (Dynamic)            server-rendered on demand
+
+
+
+Command receipt client-bundle
+$ bash scripts/check-client-bundle.sh
+client bundle holds no retained engine bundle; server build holds 6 files with it
+
+
+Command receipt mirrors
+$ bash scripts/check-mirrors.sh
+mirrors identical
+
+
+Command receipt image-seam
+$ bash scripts/check-image-seam.sh
+image seam clean
+
+
+Command receipt image-packs
+$ node scripts/images/check-packs.mjs
+image packs clean
+
+
+Command receipt measurement-local-rejection
+file:///Users/paulo/Projects/pokedraft/scripts/audit/theme-lighthouse.mjs:24
+  throw new Error("Measurements require the GitHub-hosted ubuntu-latest workflow");
+        ^
+
+Error: Measurements require the GitHub-hosted ubuntu-latest workflow
+    at file:///Users/paulo/Projects/pokedraft/scripts/audit/theme-lighthouse.mjs:24:9
+    at ModuleJob.run (node:internal/modules/esm/module_job:377:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:691:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.11.0
+
+
+GitHub-hosted gate receipt ci-check
+2026-10-11T09:35:07.3357022Z Lockfile is up to date, resolution step is skipped
+2026-10-11T09:35:14.8069024Z image packs clean
+2026-10-11T09:35:14.8270889Z ##[group]Run pnpm lint
+2026-10-11T09:35:14.8271384Z pnpm lint
+2026-10-11T09:35:25.7226195Z ##[group]Run pnpm typecheck
+2026-10-11T09:35:25.7226500Z pnpm typecheck
+2026-10-11T09:35:41.6113785Z ##[group]Run pnpm test
+2026-10-11T09:35:41.6114267Z pnpm test
+2026-10-11T09:36:21.8775214Z      ✓ logs a failed rank lookup after a saved run instead of dropping it 2184ms
+2026-10-11T09:36:21.8776872Z      ✓ logs a failed board read with the request id 2283ms
+2026-10-11T09:36:56.3203798Z  ✓ src/app/api/health/__tests__/route.test.ts (8 tests) 658ms
+2026-10-11T09:37:11.4643820Z  Test Files  76 passed (76)
+2026-10-11T09:37:11.4647399Z       Tests  705 passed (705)
+2026-10-11T09:37:11.5498732Z ##[group]Run pnpm build
+2026-10-11T09:37:11.5499016Z pnpm build
+2026-10-11T09:37:37.8413355Z ├ ƒ /api/health
+2026-10-11T09:37:38.4661463Z client bundle holds no retained engine bundle; server build holds 6 files with it
+
+GitHub-hosted gate receipt ci-e2e
+2026-10-11T09:34:59.7597488Z Lockfile is up to date, resolution step is skipped
+2026-10-11T09:35:41.3459626Z ##[group]Run pnpm build
+2026-10-11T09:35:41.3459926Z pnpm build
+2026-10-11T09:36:07.5017841Z ├ ƒ /api/health
+2026-10-11T09:36:07.6114950Z ##[group]Run pnpm test:e2e
+2026-10-11T09:36:07.6115248Z pnpm test:e2e
+2026-10-11T09:37:26.5029067Z   ✓   75 [chromium] › e2e/health.spec.ts:3:5 › health serves dynamic deployment metadata without requiring a database (60ms)
+2026-10-11T09:38:00.6719438Z   ✓   95 [chromium] › e2e/run-persist.spec.ts:114:7 › builder Download image feedback (SA-20, SB-05) › says Download failed in an alert when the card cannot render, with no page error (2.1s)
+2026-10-11T09:45:22.6586230Z   51 skipped
+2026-10-11T09:45:22.6587248Z   444 passed (9.2m)
+
+Local e2e expected-fail marker mismatch, honestly retained
+  ✓  489 [pixel-7] › e2e/mobile-targets.spec.ts:130:3 › phone targets: shared run (697ms)
+  ✓  494 [pixel-7] › e2e/mobile-targets.spec.ts:160:1 › phone targets: gate (306ms)
+  ✓  493 [pixel-7] › e2e/mobile-targets.spec.ts:150:1 › phone targets: image settings open (394ms)
+  ✓  495 [pixel-7] › e2e/mobile-targets.spec.ts:170:3 › motion on › phone targets: spinning wheel Tap to skip (535ms)
+
+
+  1) [pixel-7] › e2e/mobile-draft.spec.ts:180:1 › at draft complete in 4-4-2, no centre-back's name touches the keeper's picture 
+
+    Expected to fail, but passed.
+
+    attachment #1: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/mobile-draft-at-draft-comp-e73f2-ouches-the-keeper-s-picture-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/mobile-draft-at-draft-comp-e73f2-ouches-the-keeper-s-picture-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [pixel-7] › e2e/mobile-draft.spec.ts:180:1 › at draft complete in 4-4-2, no centre-back's name touches the keeper's picture 
+  51 skipped
+  443 passed (1.7m)
+
+Production prerequisite acceptance
+  -  288 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: 404
+
+  46 skipped
+  242 passed (1.6m)
+
+Additional baseline evidence: 52 raw axe scans, zero reported violations. Both explicit-rule positive controls detected one node each. Runtime theme files, engine, scouting and image seams are unchanged. Source guide is untracked for PR 8A. Production Lighthouse/live verification pending merge, explicitly not claimed passed.

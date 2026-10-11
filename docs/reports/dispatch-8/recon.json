@@ -1,0 +1,1736 @@
+{
+  "cssFiles": [
+    "src/app/globals.css",
+    "src/components/pitch/Pitch.module.css",
+    "src/components/home/SidePanel.module.css",
+    "src/components/home/HomeScreen.module.css",
+    "src/components/wheel/Wheel.module.css",
+    "src/components/wheel/RollReveal.module.css",
+    "src/components/leaderboard/SubmitPanel.module.css",
+    "src/components/leaderboard/LeaderboardScreen.module.css",
+    "src/components/leaderboard/Board.module.css",
+    "src/components/results/MatchList.module.css",
+    "src/components/results/ResultsView.module.css",
+    "src/components/results/FitReveal.module.css",
+    "src/components/history/HistoryList.module.css",
+    "src/components/run/DraftBoard.module.css",
+    "src/components/run/PlayScreen.module.css",
+    "src/components/run/RoadStrip.module.css",
+    "src/components/builder/Picker.module.css",
+    "src/components/builder/Builder.module.css",
+    "src/app/leaderboard/page.module.css",
+    "src/app/history/page.module.css",
+    "src/app/gate/page.module.css",
+    "src/app/how-to-play/page.module.css"
+  ],
+  "routes": [
+    "src/app/page.tsx",
+    "src/app/leaderboard/page.tsx",
+    "src/app/daily/page.tsx",
+    "src/app/history/page.tsx",
+    "src/app/gate/page.tsx",
+    "src/app/play/page.tsx",
+    "src/app/how-to-play/page.tsx",
+    "src/app/run-not-found/page.tsx",
+    "src/app/r/[token]/page.tsx"
+  ],
+  "components": [
+    "src/components/PackCredit.tsx",
+    "src/components/PlayerImage.tsx",
+    "src/components/ImageSettings.tsx",
+    "src/components/PlayerPicture.tsx",
+    "src/components/TypeChip.tsx",
+    "src/components/ThemeToggle.tsx",
+    "src/components/Announcer.tsx",
+    "src/components/SiteNav.tsx",
+    "src/components/pitch/Pitch.tsx",
+    "src/components/home/SidePanel.tsx",
+    "src/components/home/HomeScreen.tsx",
+    "src/components/wheel/SoundToggle.tsx",
+    "src/components/wheel/Wheel.tsx",
+    "src/components/wheel/RollReveal.tsx",
+    "src/components/leaderboard/SubmitPanel.tsx",
+    "src/components/leaderboard/Board.tsx",
+    "src/components/leaderboard/LeaderboardScreen.tsx",
+    "src/components/daily/DailyScreen.tsx",
+    "src/components/results/BrokenRun.tsx",
+    "src/components/results/MatchList.tsx",
+    "src/components/results/SharedRun.tsx",
+    "src/components/results/ShareActions.tsx",
+    "src/components/results/ResultsView.tsx",
+    "src/components/results/FitReveal.tsx",
+    "src/components/history/HistoryList.tsx",
+    "src/components/run/LiveRun.tsx",
+    "src/components/run/RoadStrip.tsx",
+    "src/components/run/DraftBoard.tsx",
+    "src/components/run/PlayScreen.tsx",
+    "src/components/builder/Builder.tsx",
+    "src/components/builder/Picker.tsx",
+    "src/components/share/card.tsx"
+  ],
+  "figureSites": [
+    {
+      "file": "src/components/PlayerPicture.tsx",
+      "line": 34,
+      "source": "borderRadius: Math.max(2, Math.round(size / 8)),"
+    },
+    {
+      "file": "src/components/home/SidePanel.tsx",
+      "line": 220,
+      "source": ": record(st.bestRecord.wins, st.bestRecord.draws, st.bestRecord.losses)}"
+    },
+    {
+      "file": "src/components/leaderboard/SubmitPanel.tsx",
+      "line": 73,
+      "source": "{entry.rank === null ? null : <span className={s.rank}>#{entry.rank}</span>}"
+    },
+    {
+      "file": "src/components/leaderboard/SubmitPanel.tsx",
+      "line": 76,
+      "source": "{entry.rank === null ? \" Your rank could not be loaded right now.\" : \"\"}"
+    },
+    {
+      "file": "src/components/leaderboard/Board.tsx",
+      "line": 98,
+      "source": "data-top={e.rank <= 3 || undefined}"
+    },
+    {
+      "file": "src/components/leaderboard/Board.tsx",
+      "line": 101,
+      "source": "<span className={s.rank}>{e.rank}</span>"
+    },
+    {
+      "file": "src/components/leaderboard/Board.tsx",
+      "line": 108,
+      "source": "<span className={s.record}>{record(e.wins, e.draws, e.losses)}</span>"
+    },
+    {
+      "file": "src/components/leaderboard/Board.tsx",
+      "line": 111,
+      "source": "<span className={s.label}>Team Score</span>"
+    },
+    {
+      "file": "src/components/leaderboard/Board.tsx",
+      "line": 112,
+      "source": "<span className={s.score}>{e.teamScore}</span>"
+    },
+    {
+      "file": "src/components/leaderboard/LeaderboardScreen.tsx",
+      "line": 78,
+      "source": "Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top{\" \"}"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 27,
+      "source": "<li key={m.round} data-testid={`match-${m.round}`} className={s.row} data-status={m.status}>"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 31,
+      "source": "headline={cup.rating.score}"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 32,
+      "source": "outNote={outIn === m.round ? FINISH_LABEL[cup.finish] : null}"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 54,
+      "source": "const user = m.goals.filter((g) => g.side === \"user\");"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 55,
+      "source": "const opp = m.goals.filter((g) => g.side === \"opp\");"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 59,
+      "source": "<span className={s.round} title={ROUND_LABEL[m.round]}>"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 60,
+      "source": "{ROUND_SHORT[m.round]}"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 62,
+      "source": "<span className={s.roundLong}>{ROUND_LABEL[m.round]}</span>"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 69,
+      "source": "<span className={s.goals}>"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 85,
+      "source": "<span className={s.fillUser} style={bar(m.rating)} />"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 87,
+      "source": "<span className={s.meterValue}>{m.rating}</span>"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 92,
+      "source": "<span className={s.fillOpp} style={bar(m.opponent.score)} />"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 94,
+      "source": "<span className={s.meterValue}>{m.opponent.score}</span>"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 96,
+      "source": "{m.rating < headline ? ("
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 98,
+      "source": "Fielded side rated {m.rating}, below your full Team Score of {headline}."
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 137,
+      "source": "<span className={s.round}>{ROUND_SHORT[m.round]}</span>"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 138,
+      "source": "<span className={s.roundLong}>{ROUND_LABEL[m.round]}</span>"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 145,
+      "source": "<span className={s.fillGhost} style={bar(m.opponent.score)} />"
+    },
+    {
+      "file": "src/components/results/MatchList.tsx",
+      "line": 147,
+      "source": "<span className={s.meterValue}>{m.opponent.score}</span>"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 66,
+      "source": "{record(cup.wins, cup.draws, cup.losses)}"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 73,
+      "source": "<span className=\"scorebug__label\">Team Score</span>"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 75,
+      "source": "{cup.rating.score}"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 174,
+      "source": "edges={cup.rating.edges}"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 175,
+      "source": "weakest={cup.rating.weakest}"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 189,
+      "source": "<FitReveal formation={formation} rating={cup.rating} />"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 197,
+      "source": "Team Score blends a few things. The biggest is how well each player fits the slot they"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 210,
+      "source": "Matches are simulated from your Team Score against a ladder of opponents. {LADDER_SHAPE}{\" \"}"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 211,
+      "source": "If a player misses a match, the bench steps in and that match uses the Team Score of the"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 242,
+      "source": "? `${line.goals} ${line.goals === 1 ? \"goal\" : \"goals\"}`"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 244,
+      "source": "? `${line.assists} ${line.assists === 1 ? \"assist\" : \"assists\"}`"
+    },
+    {
+      "file": "src/components/results/ResultsView.tsx",
+      "line": 245,
+      "source": ": `${line.goals} G, ${line.assists} A, ${line.appearances} apps`;"
+    },
+    {
+      "file": "src/components/results/FitReveal.tsx",
+      "line": 4,
+      "source": "import { ROLE_PLURAL, qualityScore, tagLabel, versusLabel } from \"@/ui/labels\";"
+    },
+    {
+      "file": "src/components/results/FitReveal.tsx",
+      "line": 21,
+      "source": "const score = qualityScore(r.quality);"
+    },
+    {
+      "file": "src/components/history/HistoryList.tsx",
+      "line": 52,
+      "source": "<span className={s.record}>{record(r.wins, r.draws, r.losses)}</span>"
+    },
+    {
+      "file": "src/components/history/HistoryList.tsx",
+      "line": 60,
+      "source": "<span className={s.score}>"
+    },
+    {
+      "file": "src/components/history/HistoryList.tsx",
+      "line": 61,
+      "source": "<span className={s.scoreLabel}>Team Score</span>"
+    },
+    {
+      "file": "src/components/history/HistoryList.tsx",
+      "line": 62,
+      "source": "<span className={s.scoreValue}>{r.score}</span>"
+    },
+    {
+      "file": "src/components/run/RoadStrip.tsx",
+      "line": 11,
+      "source": "const SHAPE = ENGINE_COEFFICIENTS.ladder.score;"
+    },
+    {
+      "file": "src/components/run/RoadStrip.tsx",
+      "line": 27,
+      "source": "const heights = CUP_ROUNDS.map((round) => ladder?.[round].score ?? SHAPE[round]);"
+    },
+    {
+      "file": "src/components/run/RoadStrip.tsx",
+      "line": 48,
+      "source": "{opponent === null ? NO_RATING : opponent.score}"
+    },
+    {
+      "file": "src/components/run/RoadStrip.tsx",
+      "line": 51,
+      "source": "<span className={s.round} aria-hidden=\"true\">"
+    },
+    {
+      "file": "src/components/run/RoadStrip.tsx",
+      "line": 57,
+      "source": ": `${ROUND_LABEL[round]}, ${opponent.name}, rating ${opponent.score}`}"
+    },
+    {
+      "file": "src/components/run/DraftBoard.tsx",
+      "line": 80,
+      "source": "} else if (after.round !== before.round) {"
+    },
+    {
+      "file": "src/components/run/DraftBoard.tsx",
+      "line": 81,
+      "source": "parts.push(`Round ${after.round + 1} of ${DRAFT_ROUNDS}.`);"
+    },
+    {
+      "file": "src/components/run/DraftBoard.tsx",
+      "line": 169,
+      "source": "const round = Math.min(state.round + 1, DRAFT_ROUNDS);"
+    },
+    {
+      "file": "src/components/run/DraftBoard.tsx",
+      "line": 237,
+      "source": "<h1 ref={headingRef} className={s.round} data-testid=\"round-header\" tabIndex={-1}>"
+    },
+    {
+      "file": "src/components/builder/Builder.tsx",
+      "line": 22,
+      "source": "import { FRIENDLY_LABEL, qualityScore, versusLabel } from \"@/ui/labels\";"
+    },
+    {
+      "file": "src/components/builder/Builder.tsx",
+      "line": 126,
+      "source": "desk.kind === \"live\" && full !== null && !animating ? desk.engine.rateTeam(full).score : null;"
+    },
+    {
+      "file": "src/components/builder/Builder.tsx",
+      "line": 166,
+      "source": ": `Randomized. Team Score ${engine.rateTeam(filledNext).score}.`,"
+    },
+    {
+      "file": "src/components/builder/Builder.tsx",
+      "line": 203,
+      "source": "<span className={s.noteScore}>{qualityScore(sp.quality[role])}</span>{\" \"}"
+    },
+    {
+      "file": "src/components/builder/Builder.tsx",
+      "line": 223,
+      "source": "<div className={s.score} data-testid=\"team-score\">"
+    },
+    {
+      "file": "src/components/builder/Builder.tsx",
+      "line": 226,
+      "source": "<span className=\"scorebug__label\">Team Score</span>"
+    },
+    {
+      "file": "src/components/builder/Builder.tsx",
+      "line": 234,
+      "source": "<span>Fill all 16 to see your Team Score</span>"
+    },
+    {
+      "file": "src/components/builder/Picker.tsx",
+      "line": 20,
+      "source": "import { genLabel, qualityScore, typeLabel, versusLabel } from \"@/ui/labels\";"
+    },
+    {
+      "file": "src/components/builder/Picker.tsx",
+      "line": 59,
+      "source": "const rawFitId = useId();"
+    },
+    {
+      "file": "src/components/builder/Picker.tsx",
+      "line": 147,
+      "source": "score: qualityScore(sp.quality[rated]),"
+    },
+    {
+      "file": "src/components/builder/Picker.tsx",
+      "line": 291,
+      "source": "aria-describedby={rating !== null ? `${rawFitId}-${sp.id}` : undefined}"
+    },
+    {
+      "file": "src/components/builder/Picker.tsx",
+      "line": 314,
+      "source": "<span className=\"num\">{rating.score}</span>{\" \"}"
+    },
+    {
+      "file": "src/components/builder/Picker.tsx",
+      "line": 321,
+      "source": "<span id={`${rawFitId}-${sp.id}`} className=\"visually-hidden\">"
+    },
+    {
+      "file": "src/components/share/card.tsx",
+      "line": 57,
+      "source": "score: cup.rating.score,"
+    },
+    {
+      "file": "src/components/share/card.tsx",
+      "line": 58,
+      "source": "record: record(cup.wins, cup.draws, cup.losses),"
+    },
+    {
+      "file": "src/components/share/card.tsx",
+      "line": 80,
+      "source": "headline: { kind: \"lineup\", score: isFull(draft.lineup) ? rateTeam(draft.lineup).score : null },"
+    },
+    {
+      "file": "src/components/share/card.tsx",
+      "line": 103,
+      "source": "left: Math.round("
+    },
+    {
+      "file": "src/components/share/card.tsx",
+      "line": 106,
+      "source": "top: Math.round(CARD_PAD_Y + 16 + (slot.x / 100) * (PITCH_H - 32) - 40),"
+    },
+    {
+      "file": "src/components/share/card.tsx",
+      "line": 240,
+      "source": "const score = h.score === null ? null : String(h.score);"
+    },
+    {
+      "file": "src/app/how-to-play/page.tsx",
+      "line": 14,
+      "source": "\"Once all 16 spots are filled you get a Team Score and can play a friendly cup with that squad.\","
+    },
+    {
+      "file": "src/app/how-to-play/page.tsx",
+      "line": 46,
+      "source": "title: \"Team Score\","
+    },
+    {
+      "file": "src/app/how-to-play/page.tsx",
+      "line": 48,
+      "source": "\"Team Score sums up how good your squad is. It mostly comes from how well each player suits the spot they play, so a natural striker up front beats a goalkeeper played out of position.\","
+    },
+    {
+      "file": "src/app/how-to-play/page.tsx",
+      "line": 76,
+      "source": "Draft Pok\u00e9mon into a soccer formation, get a Team Score, and take your squad through an"
+    }
+  ],
+  "stylingSites": {
+    "src/app/globals.css": [
+      {
+        "line": 8,
+        "source": "font-family: \"Big Shoulders Fallback\";"
+      },
+      {
+        "line": 21,
+        "source": "--night: #060d0a;"
+      },
+      {
+        "line": 22,
+        "source": "--bg: #08130e;"
+      },
+      {
+        "line": 23,
+        "source": "--bg-raised: #0e1d16;"
+      },
+      {
+        "line": 24,
+        "source": "--bg-sunk: #050b08;"
+      },
+      {
+        "line": 25,
+        "source": "--panel: rgba(14, 29, 22, 0.86);"
+      },
+      {
+        "line": 26,
+        "source": "--line: rgba(232, 244, 236, 0.14);"
+      },
+      {
+        "line": 27,
+        "source": "--line-strong: rgba(232, 244, 236, 0.32);"
+      },
+      {
+        "line": 28,
+        "source": "--ink: #eef6f0;"
+      },
+      {
+        "line": 29,
+        "source": "--ink-soft: #a9bcb0;"
+      },
+      {
+        "line": 30,
+        "source": "--ink-faint: #788d7f;"
+      },
+      {
+        "line": 32,
+        "source": "--grass-1: #0f5a32;"
+      },
+      {
+        "line": 33,
+        "source": "--grass-2: #0c4f2b;"
+      },
+      {
+        "line": 34,
+        "source": "--grass-edge: #093d21;"
+      },
+      {
+        "line": 35,
+        "source": "--chalk: rgba(255, 255, 255, 0.88);"
+      },
+      {
+        "line": 36,
+        "source": "--chalk-soft: rgba(255, 255, 255, 0.22);"
+      },
+      {
+        "line": 38,
+        "source": "--flood: #ffd23f;"
+      },
+      {
+        "line": 39,
+        "source": "--flood-ink: #1d1600;"
+      },
+      {
+        "line": 42,
+        "source": "--flood-text: #ffd23f;"
+      },
+      {
+        "line": 43,
+        "source": "--flood-line: #ffd23f;"
+      },
+      {
+        "line": 44,
+        "source": "--line-field: #627369;"
+      },
+      {
+        "line": 45,
+        "source": "--live: #ff4d3d;"
+      },
+      {
+        "line": 46,
+        "source": "--win: #3ddc84;"
+      },
+      {
+        "line": 47,
+        "source": "--draw: #c8d1cb;"
+      },
+      {
+        "line": 48,
+        "source": "--loss: #ff6b5b;"
+      },
+      {
+        "line": 49,
+        "source": "--focus: #7cc4ff;"
+      },
+      {
+        "line": 51,
+        "source": "--token-bg: #0b1711;"
+      },
+      {
+        "line": 52,
+        "source": "--token-ring: rgba(255, 255, 255, 0.85);"
+      },
+      {
+        "line": 53,
+        "source": "--token-weak: #ff6b5b;"
+      },
+      {
+        "line": 54,
+        "source": "--synergy: #ffd23f;"
+      },
+      {
+        "line": 59,
+        "source": "--pitch-flood: #ffd23f;"
+      },
+      {
+        "line": 60,
+        "source": "--pitch-focus: #7cc4ff;"
+      },
+      {
+        "line": 61,
+        "source": "--pitch-halo: #ffffff;"
+      },
+      {
+        "line": 62,
+        "source": "--hero-1: #0f5a32;"
+      },
+      {
+        "line": 63,
+        "source": "--hero-2: #0c4f2b;"
+      },
+      {
+        "line": 64,
+        "source": "--hero-3: #050b08;"
+      },
+      {
+        "line": 69,
+        "source": "--shadow: 0 10px 30px rgba(0, 0, 0, 0.45);"
+      },
+      {
+        "line": 71,
+        "source": "--type-normal: #a8a77a;"
+      },
+      {
+        "line": 72,
+        "source": "--type-normal-ink: #0b1f14;"
+      },
+      {
+        "line": 73,
+        "source": "--type-fighting: #c22e28;"
+      },
+      {
+        "line": 74,
+        "source": "--type-fighting-ink: #ffffff;"
+      },
+      {
+        "line": 75,
+        "source": "--type-flying: #a98ff3;"
+      },
+      {
+        "line": 76,
+        "source": "--type-flying-ink: #0b1f14;"
+      },
+      {
+        "line": 77,
+        "source": "--type-poison: #a33ea1;"
+      },
+      {
+        "line": 78,
+        "source": "--type-poison-ink: #ffffff;"
+      },
+      {
+        "line": 79,
+        "source": "--type-ground: #e2bf65;"
+      },
+      {
+        "line": 80,
+        "source": "--type-ground-ink: #0b1f14;"
+      },
+      {
+        "line": 81,
+        "source": "--type-rock: #b6a136;"
+      },
+      {
+        "line": 82,
+        "source": "--type-rock-ink: #0b1f14;"
+      },
+      {
+        "line": 83,
+        "source": "--type-bug: #a6b91a;"
+      },
+      {
+        "line": 84,
+        "source": "--type-bug-ink: #0b1f14;"
+      },
+      {
+        "line": 85,
+        "source": "--type-ghost: #735797;"
+      },
+      {
+        "line": 86,
+        "source": "--type-ghost-ink: #ffffff;"
+      },
+      {
+        "line": 87,
+        "source": "--type-steel: #b7b7ce;"
+      },
+      {
+        "line": 88,
+        "source": "--type-steel-ink: #0b1f14;"
+      },
+      {
+        "line": 89,
+        "source": "--type-fire: #ee8130;"
+      },
+      {
+        "line": 90,
+        "source": "--type-fire-ink: #0b1f14;"
+      },
+      {
+        "line": 91,
+        "source": "--type-water: #6390f0;"
+      },
+      {
+        "line": 92,
+        "source": "--type-water-ink: #0b1f14;"
+      },
+      {
+        "line": 93,
+        "source": "--type-grass: #7ac74c;"
+      },
+      {
+        "line": 94,
+        "source": "--type-grass-ink: #0b1f14;"
+      },
+      {
+        "line": 95,
+        "source": "--type-electric: #f7d02c;"
+      },
+      {
+        "line": 96,
+        "source": "--type-electric-ink: #0b1f14;"
+      },
+      {
+        "line": 97,
+        "source": "--type-psychic: #f95587;"
+      },
+      {
+        "line": 98,
+        "source": "--type-psychic-ink: #0b1f14;"
+      },
+      {
+        "line": 99,
+        "source": "--type-ice: #96d9d6;"
+      },
+      {
+        "line": 100,
+        "source": "--type-ice-ink: #0b1f14;"
+      },
+      {
+        "line": 101,
+        "source": "--type-dragon: #6f35fc;"
+      },
+      {
+        "line": 102,
+        "source": "--type-dragon-ink: #ffffff;"
+      },
+      {
+        "line": 103,
+        "source": "--type-dark: #705746;"
+      },
+      {
+        "line": 104,
+        "source": "--type-dark-ink: #ffffff;"
+      },
+      {
+        "line": 105,
+        "source": "--type-fairy: #d685ad;"
+      },
+      {
+        "line": 106,
+        "source": "--type-fairy-ink: #0b1f14;"
+      },
+      {
+        "line": 112,
+        "source": "--night: #dfe9e2;"
+      },
+      {
+        "line": 113,
+        "source": "--bg: #eef4ef;"
+      },
+      {
+        "line": 114,
+        "source": "--bg-raised: #ffffff;"
+      },
+      {
+        "line": 115,
+        "source": "--bg-sunk: #e2ebe4;"
+      },
+      {
+        "line": 116,
+        "source": "--panel: rgba(255, 255, 255, 0.92);"
+      },
+      {
+        "line": 117,
+        "source": "--line: rgba(10, 40, 24, 0.14);"
+      },
+      {
+        "line": 118,
+        "source": "--line-strong: rgba(10, 40, 24, 0.3);"
+      },
+      {
+        "line": 119,
+        "source": "--ink: #0b1f14;"
+      },
+      {
+        "line": 120,
+        "source": "--ink-soft: #3e5547;"
+      },
+      {
+        "line": 121,
+        "source": "--ink-faint: #55695c;"
+      },
+      {
+        "line": 122,
+        "source": "--grass-1: #25763f;"
+      },
+      {
+        "line": 123,
+        "source": "--grass-2: #216b39;"
+      },
+      {
+        "line": 124,
+        "source": "--grass-edge: #1c592f;"
+      },
+      {
+        "line": 125,
+        "source": "--flood: #f2b600;"
+      },
+      {
+        "line": 126,
+        "source": "--flood-ink: #1d1600;"
+      },
+      {
+        "line": 127,
+        "source": "--flood-text: #7a5600;"
+      },
+      {
+        "line": 128,
+        "source": "--flood-line: #a67600;"
+      },
+      {
+        "line": 129,
+        "source": "--line-field: #788a7e;"
+      },
+      {
+        "line": 130,
+        "source": "--win: #0f7a41;"
+      },
+      {
+        "line": 131,
+        "source": "--draw: #5b6b61;"
+      },
+      {
+        "line": 132,
+        "source": "--loss: #c8372a;"
+      },
+      {
+        "line": 133,
+        "source": "--focus: #0b6bcb;"
+      },
+      {
+        "line": 134,
+        "source": "--token-bg: #ffffff;"
+      },
+      {
+        "line": 135,
+        "source": "--token-ring: #0b1f14;"
+      },
+      {
+        "line": 136,
+        "source": "--token-weak: #c8372a;"
+      },
+      {
+        "line": 137,
+        "source": "--pitch-focus: #bfe3ff;"
+      },
+      {
+        "line": 138,
+        "source": "--synergy: #f2b600;"
+      },
+      {
+        "line": 139,
+        "source": "--shadow: 0 10px 30px rgba(10, 40, 24, 0.18);"
+      },
+      {
+        "line": 145,
+        "source": "--night: #dfe9e2;"
+      },
+      {
+        "line": 146,
+        "source": "--bg: #eef4ef;"
+      },
+      {
+        "line": 147,
+        "source": "--bg-raised: #ffffff;"
+      },
+      {
+        "line": 148,
+        "source": "--bg-sunk: #e2ebe4;"
+      },
+      {
+        "line": 149,
+        "source": "--panel: rgba(255, 255, 255, 0.92);"
+      },
+      {
+        "line": 150,
+        "source": "--line: rgba(10, 40, 24, 0.14);"
+      },
+      {
+        "line": 151,
+        "source": "--line-strong: rgba(10, 40, 24, 0.3);"
+      },
+      {
+        "line": 152,
+        "source": "--ink: #0b1f14;"
+      },
+      {
+        "line": 153,
+        "source": "--ink-soft: #3e5547;"
+      },
+      {
+        "line": 154,
+        "source": "--ink-faint: #55695c;"
+      },
+      {
+        "line": 155,
+        "source": "--grass-1: #25763f;"
+      },
+      {
+        "line": 156,
+        "source": "--grass-2: #216b39;"
+      },
+      {
+        "line": 157,
+        "source": "--grass-edge: #1c592f;"
+      },
+      {
+        "line": 158,
+        "source": "--flood: #f2b600;"
+      },
+      {
+        "line": 159,
+        "source": "--flood-ink: #1d1600;"
+      },
+      {
+        "line": 160,
+        "source": "--flood-text: #7a5600;"
+      },
+      {
+        "line": 161,
+        "source": "--flood-line: #a67600;"
+      },
+      {
+        "line": 162,
+        "source": "--line-field: #788a7e;"
+      },
+      {
+        "line": 163,
+        "source": "--win: #0f7a41;"
+      },
+      {
+        "line": 164,
+        "source": "--draw: #5b6b61;"
+      },
+      {
+        "line": 165,
+        "source": "--loss: #c8372a;"
+      },
+      {
+        "line": 166,
+        "source": "--focus: #0b6bcb;"
+      },
+      {
+        "line": 167,
+        "source": "--token-bg: #ffffff;"
+      },
+      {
+        "line": 168,
+        "source": "--token-ring: #0b1f14;"
+      },
+      {
+        "line": 169,
+        "source": "--token-weak: #c8372a;"
+      },
+      {
+        "line": 170,
+        "source": "--pitch-focus: #bfe3ff;"
+      },
+      {
+        "line": 171,
+        "source": "--synergy: #f2b600;"
+      },
+      {
+        "line": 172,
+        "source": "--shadow: 0 10px 30px rgba(10, 40, 24, 0.18);"
+      },
+      {
+        "line": 200,
+        "source": "radial-gradient(ellipse 80% 50% at 15% -10%, rgba(255, 236, 170, 0.1), transparent 60%),"
+      },
+      {
+        "line": 201,
+        "source": "radial-gradient(ellipse 80% 50% at 85% -10%, rgba(255, 236, 170, 0.08), transparent 60%),"
+      },
+      {
+        "line": 203,
+        "source": "font-family: var(--font-body);"
+      },
+      {
+        "line": 213,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 250,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 256,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 272,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 274,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 328,
+        "source": "border-radius: 999px;"
+      },
+      {
+        "line": 330,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 349,
+        "source": "border-radius: 4px;"
+      },
+      {
+        "line": 351,
+        "source": "color: var(--type-ink, #fff);"
+      },
+      {
+        "line": 352,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 362,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 369,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 371,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 427,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 466,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 504,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 536,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 557,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 671,
+        "source": "border-radius: 4px;"
+      }
+    ],
+    "src/components/pitch/Pitch.module.css": [
+      {
+        "line": 17,
+        "source": "border-radius: 12px;"
+      },
+      {
+        "line": 19,
+        "source": "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 245, 210, 0.16), transparent 70%),"
+      },
+      {
+        "line": 20,
+        "source": "radial-gradient(ellipse 70% 40% at 50% 100%, rgba(255, 245, 210, 0.1), transparent 70%),"
+      },
+      {
+        "line": 30,
+        "source": "inset 0 0 60px rgba(0, 0, 0, 0.35),"
+      },
+      {
+        "line": 84,
+        "source": "color: #fff;"
+      },
+      {
+        "line": 109,
+        "source": "border-radius: 50%;"
+      },
+      {
+        "line": 113,
+        "source": "0 4px 10px rgba(0, 0, 0, 0.45);"
+      },
+      {
+        "line": 120,
+        "source": "background: rgba(0, 0, 0, 0.25);"
+      },
+      {
+        "line": 169,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 177,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 182,
+        "source": "border-radius: 3px;"
+      },
+      {
+        "line": 183,
+        "source": "background: rgba(0, 0, 0, 0.55);"
+      },
+      {
+        "line": 184,
+        "source": "color: #fff;"
+      },
+      {
+        "line": 195,
+        "source": "text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);"
+      },
+      {
+        "line": 200,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 206,
+        "source": "border-radius: 3px;"
+      },
+      {
+        "line": 216,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 257,
+        "source": "radial-gradient(ellipse 40% 70% at 0% 50%, rgba(255, 245, 210, 0.14), transparent 70%),"
+      },
+      {
+        "line": 258,
+        "source": "radial-gradient(ellipse 40% 70% at 100% 50%, rgba(255, 245, 210, 0.1), transparent 70%),"
+      },
+      {
+        "line": 397,
+        "source": "radial-gradient(ellipse 40% 70% at 0% 50%, rgba(255, 245, 210, 0.14), transparent 70%),"
+      },
+      {
+        "line": 398,
+        "source": "radial-gradient(ellipse 40% 70% at 100% 50%, rgba(255, 245, 210, 0.1), transparent 70%),"
+      }
+    ],
+    "src/components/home/SidePanel.module.css": [
+      {
+        "line": 42,
+        "source": "border-radius: 50%;"
+      },
+      {
+        "line": 79,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 91,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 93,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 116,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 124,
+        "source": "border-radius: 4px;"
+      },
+      {
+        "line": 126,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 168,
+        "source": "border-radius: 999px;"
+      },
+      {
+        "line": 180,
+        "source": "border-radius: 50%;"
+      },
+      {
+        "line": 209,
+        "source": "font-family: var(--font-display);"
+      }
+    ],
+    "src/components/wheel/Wheel.module.css": [
+      {
+        "line": 29,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 42,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 47,
+        "source": "rgba(0, 0, 0, 0.35),"
+      },
+      {
+        "line": 50,
+        "source": "rgba(0, 0, 0, 0.35)"
+      },
+      {
+        "line": 55,
+        "source": "inset 0 2px 10px rgba(0, 0, 0, 0.5),"
+      },
+      {
+        "line": 73,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 103,
+        "source": "border-radius: 3px;"
+      },
+      {
+        "line": 116,
+        "source": "rgba(255, 210, 63, 0.14),"
+      },
+      {
+        "line": 117,
+        "source": "rgba(255, 210, 63, 0.04),"
+      },
+      {
+        "line": 118,
+        "source": "rgba(255, 210, 63, 0.14)"
+      },
+      {
+        "line": 159,
+        "source": "background: rgba(255, 210, 63, 0.2);"
+      },
+      {
+        "line": 165,
+        "source": "box-shadow: 0 0 0 0 rgba(255, 210, 63, 0.6);"
+      },
+      {
+        "line": 168,
+        "source": "box-shadow: 0 0 0 10px rgba(255, 210, 63, 0);"
+      }
+    ],
+    "src/components/wheel/RollReveal.module.css": [
+      {
+        "line": 30,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 33,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 42,
+        "source": "font-family: var(--font-display);"
+      }
+    ],
+    "src/components/leaderboard/SubmitPanel.module.css": [
+      {
+        "line": 9,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 37,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 73,
+        "source": "font-family: var(--font-display);"
+      }
+    ],
+    "src/components/leaderboard/LeaderboardScreen.module.css": [
+      {
+        "line": 17,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 26,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 56,
+        "source": "border-radius: var(--radius-sm);"
+      }
+    ],
+    "src/components/leaderboard/Board.module.css": [
+      {
+        "line": 18,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 40,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 59,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 80,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 91,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 121,
+        "source": "border-radius: var(--radius);"
+      }
+    ],
+    "src/components/results/MatchList.module.css": [
+      {
+        "line": 18,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 45,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 50,
+        "source": "border-radius: 3px;"
+      },
+      {
+        "line": 57,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 67,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 83,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 96,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 102,
+        "source": "border-radius: 4px;"
+      },
+      {
+        "line": 110,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 133,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 141,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 151,
+        "source": "border-radius: 3px;"
+      },
+      {
+        "line": 162,
+        "source": "border-radius: 3px;"
+      },
+      {
+        "line": 215,
+        "source": "border-radius: 4px;"
+      },
+      {
+        "line": 232,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 241,
+        "source": "font-family: var(--font-display);"
+      }
+    ],
+    "src/components/results/ResultsView.module.css": [
+      {
+        "line": 12,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 15,
+        "source": "radial-gradient(ellipse 60% 90% at 100% 0%, rgba(255, 210, 63, 0.16), transparent 60%),"
+      },
+      {
+        "line": 17,
+        "source": "color: #fff;"
+      },
+      {
+        "line": 27,
+        "source": "border: 2px solid rgba(255, 255, 255, 0.12);"
+      },
+      {
+        "line": 28,
+        "source": "border-radius: 50%;"
+      },
+      {
+        "line": 47,
+        "source": "color: rgba(255, 255, 255, 0.82);"
+      },
+      {
+        "line": 51,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 55,
+        "source": "border: 1px solid rgba(255, 255, 255, 0.5);"
+      },
+      {
+        "line": 56,
+        "source": "border-radius: 4px;"
+      },
+      {
+        "line": 61,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 67,
+        "source": "border-radius: 4px;"
+      },
+      {
+        "line": 68,
+        "source": "background: #fff;"
+      },
+      {
+        "line": 69,
+        "source": "color: #0b1f14;"
+      },
+      {
+        "line": 90,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 95,
+        "source": "color: rgba(255, 255, 255, 0.7);"
+      },
+      {
+        "line": 99,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 105,
+        "source": "text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);"
+      },
+      {
+        "line": 109,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 132,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 135,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 167,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 207,
+        "source": "border-radius: 2px;"
+      },
+      {
+        "line": 213,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 232,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 263,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 267,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 295,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 306,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 375,
+        "source": "border-radius: 50%;"
+      },
+      {
+        "line": 382,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 389,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 414,
+        "source": "border-radius: var(--radius);"
+      }
+    ],
+    "src/components/results/FitReveal.module.css": [
+      {
+        "line": 17,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 35,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 54,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 60,
+        "source": "border-radius: 3px;"
+      },
+      {
+        "line": 73,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 87,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 106,
+        "source": "border-radius: 999px;"
+      },
+      {
+        "line": 125,
+        "source": "font-family: var(--font-display);"
+      }
+    ],
+    "src/components/history/HistoryList.module.css": [
+      {
+        "line": 13,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 35,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 50,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 70,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 79,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 93,
+        "source": "border-radius: var(--radius);"
+      }
+    ],
+    "src/components/run/DraftBoard.module.css": [
+      {
+        "line": 50,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 52,
+        "source": "background: linear-gradient(90deg, rgba(255, 210, 63, 0.1), transparent 55%), var(--bg-raised);"
+      },
+      {
+        "line": 77,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 85,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 94,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 114,
+        "source": "border-radius: 999px;"
+      },
+      {
+        "line": 124,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 180,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 228,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 231,
+        "source": "radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255, 210, 63, 0.1), transparent 70%),"
+      },
+      {
+        "line": 250,
+        "source": "0 0 18px rgba(255, 210, 63, 0.25);"
+      },
+      {
+        "line": 263,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 296,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 312,
+        "source": "border-radius: 12px;"
+      }
+    ],
+    "src/components/run/PlayScreen.module.css": [
+      {
+        "line": 72,
+        "source": "font-family: var(--font-display);"
+      }
+    ],
+    "src/components/run/RoadStrip.module.css": [
+      {
+        "line": 5,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 6,
+        "source": "background: linear-gradient(180deg, rgba(255, 210, 63, 0.05), transparent 60%), var(--bg-raised);"
+      },
+      {
+        "line": 61,
+        "source": "border-radius: 3px 3px 0 0;"
+      },
+      {
+        "line": 81,
+        "source": "font-family: var(--font-display);"
+      }
+    ],
+    "src/components/builder/Picker.module.css": [
+      {
+        "line": 10,
+        "source": "border-radius: 16px 16px 0 0;"
+      },
+      {
+        "line": 18,
+        "source": "background: rgba(2, 8, 5, 0.72);"
+      },
+      {
+        "line": 81,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 180,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 187,
+        "source": "border-radius: 3px;"
+      },
+      {
+        "line": 209,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 220,
+        "source": "font-family: var(--font-display);"
+      },
+      {
+        "line": 243,
+        "source": "border-radius: 2px;"
+      },
+      {
+        "line": 272,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 290,
+        "source": "border-radius: 0;"
+      }
+    ],
+    "src/components/builder/Builder.module.css": [
+      {
+        "line": 42,
+        "source": "border-radius: var(--radius-sm);"
+      },
+      {
+        "line": 49,
+        "source": "border-radius: 4px;"
+      },
+      {
+        "line": 93,
+        "source": "font-family: var(--font-display);"
+      }
+    ],
+    "src/app/gate/page.module.css": [
+      {
+        "line": 21,
+        "source": "border-radius: var(--radius-sm);"
+      }
+    ],
+    "src/app/how-to-play/page.module.css": [
+      {
+        "line": 40,
+        "source": "border-radius: var(--radius);"
+      },
+      {
+        "line": 46,
+        "source": "font-family: var(--font-display);"
+      }
+    ]
+  }
+}

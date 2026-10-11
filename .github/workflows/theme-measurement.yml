@@ -1,0 +1,48 @@
+name: theme-measurement
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Full production merge SHA
+        required: true
+        type: string
+      phase:
+        description: Dispatch 8 measurement stage
+        required: true
+        type: choice
+        options: [baseline, final]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: theme-measurement-production
+  cancel-in-progress: false
+
+jobs:
+  mobile-lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Three mobile runs per production route
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+          MEASUREMENT_PHASE: ${{ inputs.phase }}
+        run: pnpm exec tsx scripts/audit/theme-lighthouse.mjs
+      - name: Retain raw reports, environment and medians
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: theme-${{ inputs.phase }}-${{ github.run_id }}
+          path: output/dispatch-8/lighthouse
+          if-no-files-found: error
+          retention-days: 90
