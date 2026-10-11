@@ -81,3 +81,10 @@
   color: var(--ink-soft);
   font-size: 0.9rem;
 }
+
+/* A 44 px high hit box around the link; the negative margin keeps the line where it was. */
+.dailyNext a {
+  display: inline-block;
+  padding-block: 12px;
+  margin-block: -12px;
+}

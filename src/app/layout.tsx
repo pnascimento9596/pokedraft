@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Barlow_Semi_Condensed, Big_Shoulders } from "next/font/google";
 import { ImageSettings } from "@/components/ImageSettings";
 import { PackCredit } from "@/components/PackCredit";
+import { SiteNav } from "@/components/SiteNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import "./globals.css";
 
@@ -36,14 +37,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Link href="/" className="site-header__brand">
             poke<span>draft</span>
           </Link>
-          <nav aria-label="Main">
+          <SiteNav>
             <Link href="/daily">Daily</Link>
             <Link href="/leaderboard">Leaderboard</Link>
             <Link href="/how-to-play">How to play</Link>
             <Link href="/history">History</Link>
             <ImageSettings />
             <ThemeToggle />
-          </nav>
+          </SiteNav>
         </header>
         {children}
         <footer className="site-footer">

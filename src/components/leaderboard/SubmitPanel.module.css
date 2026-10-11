@@ -70,3 +70,9 @@
   font-variant-numeric: tabular-nums;
   color: var(--flood-text);
 }
+
+@media (max-width: 480px) {
+  .input {
+    min-height: 44px;
+  }
+}

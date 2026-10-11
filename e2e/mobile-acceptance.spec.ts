@@ -155,61 +155,7 @@ function conclude(head: string, problems: readonly string[]): void {
 // on macOS, so a number in it can differ a little on another operating system. A fix PR deletes the
 // entries it turned green. docs/reports/mobile-acceptance-red.md lists every line in full.
 
-// 3 targets. Every scene has interactive elements under 44x44. Scene id, then its first failure line.
-const UNDER_44: Readonly<Record<string, string>> = {
-  home: '14 of 32 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "home settings open":
-    '29 of 49 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "builder full":
-    '14 of 32 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "picker open":
-    '21 of 141 interactive elements are under 44x44 at dark 390px. First: button[type=button] "Close picker" 53.8x32',
-  "play start":
-    '8 of 8 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "draft round 1":
-    '11 of 30 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "draft round 9":
-    '11 of 30 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "draft 151 round 1":
-    '10 of 27 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  results:
-    '23 of 40 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "daily results":
-    '23 of 40 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "daily results submitted":
-    '22 of 39 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "daily start":
-    '8 of 8 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "leaderboard 50 rows":
-    '11 of 61 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "leaderboard 1 row":
-    '10 of 11 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "leaderboard empty":
-    '11 of 11 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "leaderboard 503":
-    '11 of 11 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "history empty":
-    '8 of 8 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "history seeded":
-    '7 of 19 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "how to play":
-    '15 of 15 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "shared run":
-    '21 of 38 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "broken run link":
-    '8 of 8 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-  "404":
-    '8 of 8 interactive elements are under 44x44 at dark 390px. First: a[href=/] "pokedraft" 103.1x31.3',
-};
-
 const KNOWN_RED: Readonly<Record<string, Red>> = {
-  ...Object.fromEntries(
-    Object.entries(UNDER_44).map(([scene, reason]): [string, Red] => [
-      `3 targets: ${scene}`,
-      { fixedBy: "targets", reason },
-    ]),
-  ),
-
   "1 flow: 8-0 Challenge Classic, start to results with taps only": {
     fixedBy: "draft-layout",
     reason: {

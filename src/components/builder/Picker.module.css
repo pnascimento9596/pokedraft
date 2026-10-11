@@ -235,3 +235,26 @@
     max-width: none;
   }
 }
+
+/* Phones: 44 px fields and type chips (dispatch 7 GATE 4). The 18 type chips scroll sideways in
+   one row instead of wrapping to four rows above the list. */
+@media (max-width: 480px) {
+  .search input {
+    min-height: 44px;
+  }
+  /* WebKit ignores min-height on a styled select, so it gets a fixed height. */
+  .genSelect select {
+    height: 44px;
+  }
+  .types {
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .typeChip {
+    flex: none;
+    min-height: 44px;
+  }
+}

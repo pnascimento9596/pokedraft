@@ -18,9 +18,13 @@
   min-height: 24px;
 }
 
+/* A 44 px high hit box; the negative margin keeps the 24 px top row, so the row does not shrink
+   when the button goes away after the spin. */
 .skip {
+  min-width: 44px;
   border: 0;
-  padding: 2px 0;
+  padding: 14px 0;
+  margin-block: -12px;
   background: none;
   font-family: var(--font-display);
   font-size: 0.72rem;
