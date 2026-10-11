@@ -185,3 +185,15 @@ The first broadbrowser run recorded331 passes,50skips and16 failures:15 overflow
 Visual inspection showed that the frozen picture seam sets a nonshrinking36px wrapper. A20px circle alone did not constrain that picture. The earlier guard measured circle frames; the strengthened guard measures actual data-player-image rectangles. Against the same build, actual other-picture checks fail8 cases and pass16; adding own-picture separation failsall24 cases. The stronger guard is committed before the wrapper constraint/layout fix. No image component, pack or engine position is changed.
 
 The broader pre-correction suite recorded510 passes,51skips and10 failures: four axe/contrast cases on transparent chart labels over bars, and six home tap-target cases because shrinking empty compact pictures left40px buttons. These are fixes to presentation; no acceptance assertion is relaxed. This run predates the actual-picture guard and is not a final-head pass.
+
+### PR 8C measured layout corrections
+
+The actual-picture guard exposed a remaining own-picture clearance failure in 4-2-3-1 on Pixel 7 while the other 70 focused cases passed. Browser geometry showed the legacy hover transform enlarged the last-tapped 34px picture to 36.04px, leaving only 0.98px before its name. The draft reserves a 2px gap and removes hover scaling; focus, selection and drag indicators remain. The image wrapper constrains the frozen picture seam without changing PlayerImage or the packs. Slot pills move to the upper corner so they do not obscure the artwork; bench labels cannot wrap. The final full browser rerun is pending.
+
+A source inspection also corrected a misplaced chart selector: the eight round columns share the 44px floor and scroll internally in both compact and normal modules. Round labels use surface/control tokens rather than transparent text over chart bars. Loaded-image screenshots are refreshed against the actual unchanged 8B build for before, and the current 8C build for after. All 16 captures in each set have zero horizontal overflow. Results/leaderboard readback preserves 186/10 figures in each theme.
+
+PR 8B clean-runner measurement 38151791031 completed against 6e7d34e: every individual sample Accessibility 100, CLS exactly 0; three-run median LCP home 2134.5ms, play 2278.4ms, daily 2231.8ms, leaderboard 1978.0ms, history 1977.7ms, help 1976.4ms, results 3556.6ms, Kanto start 2259.6ms. This is an intermediate measurement, not the whole-lane final report.
+
+### PR 8C chart control guard before final layout fix
+
+The final full local run passed519 cases and skipped51; one unchanged daily390px right-edge guard found a413px element inside the horizontal chart. The24 strengthened actual-picture formation/device cases and original4-4-2 cases all pass. Visual inspection also found vertically clipped chart triggers. Four new literal44px/visible-bounds/keyboard-tooltip guards fail in both themes at390/1440 on this build and are committed before the chart layout correction. The phone chart will use two rows of four rounds to preserve readable44px controls within the viewport, with unchanged rating values and proportional heights.
