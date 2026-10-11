@@ -1,0 +1,126 @@
+
+Running 4 tests using 4 workers
+
+(node:3342) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3347) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3346) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 390 dark (1.2s)
+  ✘  2 [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 390 light (1.2s)
+  ✘  4 [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 1440 dark (1.5s)
+  ✘  1 [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 1440 light (1.5s)
+
+
+  1) [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 390 light
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 5
+    Received:    0
+
+      15 |       await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+      16 |       const modules = page.locator('[data-testid="results"] .module-card');
+    > 17 |       expect(await modules.count()).toBeGreaterThanOrEqual(5);
+         |                                     ^
+      18 |       const header = modules.first().locator(":scope > header");
+      19 |       await expect(header.getByTestId("results-score")).toBeVisible();
+      20 |       await expect(header.getByTestId("results-record")).toBeVisible();
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/results-share/e2e/theme-results.spec.ts:17:37
+
+    Error Context: output/dispatch-8/results-module-red/theme-results-warm-results-d581c-rained-figures-at-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/results-module-red/theme-results-warm-results-d581c-rained-figures-at-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/results-module-red/theme-results-warm-results-d581c-rained-figures-at-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 390 dark
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 5
+    Received:    0
+
+      15 |       await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+      16 |       const modules = page.locator('[data-testid="results"] .module-card');
+    > 17 |       expect(await modules.count()).toBeGreaterThanOrEqual(5);
+         |                                     ^
+      18 |       const header = modules.first().locator(":scope > header");
+      19 |       await expect(header.getByTestId("results-score")).toBeVisible();
+      20 |       await expect(header.getByTestId("results-record")).toBeVisible();
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/results-share/e2e/theme-results.spec.ts:17:37
+
+    Error Context: output/dispatch-8/results-module-red/theme-results-warm-results-4c9b7-trained-figures-at-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/results-module-red/theme-results-warm-results-4c9b7-trained-figures-at-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/results-module-red/theme-results-warm-results-4c9b7-trained-figures-at-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 1440 light
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 5
+    Received:    0
+
+      15 |       await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+      16 |       const modules = page.locator('[data-testid="results"] .module-card');
+    > 17 |       expect(await modules.count()).toBeGreaterThanOrEqual(5);
+         |                                     ^
+      18 |       const header = modules.first().locator(":scope > header");
+      19 |       await expect(header.getByTestId("results-score")).toBeVisible();
+      20 |       await expect(header.getByTestId("results-record")).toBeVisible();
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/results-share/e2e/theme-results.spec.ts:17:37
+
+    Error Context: output/dispatch-8/results-module-red/theme-results-warm-results-365df-ained-figures-at-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/results-module-red/theme-results-warm-results-365df-ained-figures-at-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/results-module-red/theme-results-warm-results-365df-ained-figures-at-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 1440 dark
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 5
+    Received:    0
+
+      15 |       await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+      16 |       const modules = page.locator('[data-testid="results"] .module-card');
+    > 17 |       expect(await modules.count()).toBeGreaterThanOrEqual(5);
+         |                                     ^
+      18 |       const header = modules.first().locator(":scope > header");
+      19 |       await expect(header.getByTestId("results-score")).toBeVisible();
+      20 |       await expect(header.getByTestId("results-record")).toBeVisible();
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/results-share/e2e/theme-results.spec.ts:17:37
+
+    Error Context: output/dispatch-8/results-module-red/theme-results-warm-results-e4399-rained-figures-at-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/results-module-red/theme-results-warm-results-e4399-rained-figures-at-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/results-module-red/theme-results-warm-results-e4399-rained-figures-at-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 390 light
+    [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 390 dark
+    [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 1440 light
+    [chromium] › e2e/theme-results.spec.ts:7:9 › warm results use titled modules and restrained figures at 1440 dark

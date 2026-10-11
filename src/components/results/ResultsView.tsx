@@ -19,6 +19,8 @@ import { FitReveal } from "./FitReveal";
 import { MatchList } from "./MatchList";
 import { ShareActions } from "./ShareActions";
 import s from "./ResultsView.module.css";
+import { ModuleCard, Pill, Table } from "@/components/ui/primitives";
+import { NavIcon } from "@/components/ui/nav-icons";
 
 export interface ResultsViewProps {
   /** The run token: `encodeToken` output that `replay` accepts. */
@@ -53,118 +55,143 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
 
   return (
     <section className={s.results} data-testid="results" aria-label="Run results">
-      <header className={s.hero} data-flawless={cup.flawless || undefined}>
+      <ModuleCard
+        className={s.hero}
+        eyebrow="Run results"
+        title={modeLine(draft)}
+        headingLevel={1}
+        description="Your record, Team Score and cup finish."
+        icon={<NavIcon family="play" />}
+        meta={
+          <div className={s.heroMain}>
+            <div className={s.recordBlock}>
+              <span className={s.recordLabel}>Record W-D-L</span>
+              <span className={s.record} data-testid="results-record">
+                {record(cup.wins, cup.draws, cup.losses)}
+              </span>
+            </div>
+            <div className={s.recordBlock}>
+              <span className={s.recordLabel}>Team Score</span>
+              <span className={s.record} data-testid="results-score">
+                {cup.rating.score}
+              </span>
+            </div>
+          </div>
+        }
+      >
         <div className={s.heroTop}>
-          <h1 className="kicker">{modeLine(draft)}</h1>
-          <span className={s.formation}>{formation}</span>
-          {friendly ? <span className={s.friendly}>{FRIENDLY_LABEL}</span> : null}
-        </div>
-        <div className={s.heroMain}>
-          <div className={s.recordBlock}>
-            <span className={s.recordLabel}>Record W-D-L</span>
-            <span className={s.record} data-testid="results-record">
-              {record(cup.wins, cup.draws, cup.losses)}
-            </span>
-            <span className={s.finish} data-finish={cup.finish}>
-              {FINISH_LABEL[cup.finish]}
-            </span>
-          </div>
-          <div className={`scorebug ${s.scorebug}`}>
-            <span className="scorebug__label">Team Score</span>
-            <span className="scorebug__value" data-testid="results-score">
-              {cup.rating.score}
-            </span>
-          </div>
+          <Pill className={s.formation}>{formation}</Pill>
+          {friendly ? <Pill tone="info">{FRIENDLY_LABEL}</Pill> : null}
+          <span className={s.finish} data-finish={cup.finish}>
+            {FINISH_LABEL[cup.finish]}
+          </span>
         </div>
         {cup.flawless ? (
           <p className={s.flawless}>
             <span className={s.flawlessMark}>8-0</span> Flawless. Every match won, cup lifted.
           </p>
         ) : null}
-      </header>
+      </ModuleCard>
 
       <ShareActions token={token} variant={variant} onNewRun={onNewRun} />
       {variant === "live" ? submit : null}
 
       <div className={s.columns}>
-        <section className={s.block} aria-labelledby="matches-h">
-          <h2 id="matches-h" className={s.h2}>
-            The cup
-          </h2>
+        <ModuleCard
+          className={s.block}
+          eyebrow="Matches"
+          title="The cup"
+          description="Every match, with the opponents from this run."
+        >
           <MatchList cup={cup} />
-        </section>
+        </ModuleCard>
 
-        <section className={s.block} aria-labelledby="group-h">
-          <h2 id="group-h" className={s.h2}>
-            Group table
-          </h2>
-          {/* It scrolls sideways on a narrow phone, so a keyboard user can focus it to scroll. */}
-          <div
-            className={s.tableWrap}
-            role="region"
-            aria-label="Group table, scrollable"
-            tabIndex={0}
+        <div className={s.block}>
+          <ModuleCard
+            eyebrow="Standings"
+            title="Group table"
+            description="The group stage, ranked by points."
           >
-            <table className={s.table}>
-              <thead>
-                <tr>
-                  <th scope="col" className={s.teamCol}>
-                    Team
-                  </th>
-                  <th scope="col">P</th>
-                  <th scope="col">W</th>
-                  <th scope="col">D</th>
-                  <th scope="col">L</th>
-                  <th scope="col">GF</th>
-                  <th scope="col">GA</th>
-                  <th scope="col">Pts</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cup.group.map((row, i) => (
-                  <tr key={row.team} data-user={row.team === "user" || undefined}>
-                    <th scope="row" className={s.teamCol}>
-                      <span className={s.pos}>{i + 1}</span>
-                      {row.team === "user" ? "Your team" : row.name}
+            {/* It scrolls sideways on a narrow phone, so a keyboard user can focus it to scroll. */}
+            <div
+              className={s.tableWrap}
+              role="region"
+              aria-label="Group table, scrollable"
+              tabIndex={0}
+            >
+              <Table className={s.table}>
+                <thead>
+                  <tr>
+                    <th scope="col" className={s.teamCol}>
+                      Team
                     </th>
-                    <td>{row.played}</td>
-                    <td>{row.won}</td>
-                    <td>{row.drawn}</td>
-                    <td>{row.lost}</td>
-                    <td>{row.goalsFor}</td>
-                    <td>{row.goalsAgainst}</td>
-                    <td className={s.pts}>{row.points}</td>
+                    <th scope="col">P</th>
+                    <th scope="col">W</th>
+                    <th scope="col">D</th>
+                    <th scope="col">L</th>
+                    <th scope="col">GF</th>
+                    <th scope="col">GA</th>
+                    <th scope="col">Pts</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className={s.note}>Top two go through to the Round of 32.</p>
-
-          <h2 className={s.h2}>Awards</h2>
-          <div className={s.awards}>
-            <Award title="Golden Boot" line={cup.awards.goldenBoot} stat="goals" empty="No goals" />
-            <Award
-              title="Top assister"
-              line={cup.awards.topAssister}
-              stat="assists"
-              empty="No assists"
-            />
-            <Award
-              title="Player of the tournament"
-              line={cup.awards.playerOfTournament}
-              stat="apps"
-              empty=""
-              contribution={cup.awards.potContribution}
-            />
-          </div>
-        </section>
+                </thead>
+                <tbody>
+                  {cup.group.map((row, i) => (
+                    <tr key={row.team} data-user={row.team === "user" || undefined}>
+                      <th scope="row" className={s.teamCol}>
+                        <span className={s.pos}>{i + 1}</span>
+                        {row.team === "user" ? "Your team" : row.name}
+                      </th>
+                      <td>{row.played}</td>
+                      <td>{row.won}</td>
+                      <td>{row.drawn}</td>
+                      <td>{row.lost}</td>
+                      <td>{row.goalsFor}</td>
+                      <td>{row.goalsAgainst}</td>
+                      <td className={s.pts}>{row.points}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+            <p className={s.note}>Top two go through to the Round of 32.</p>
+          </ModuleCard>
+          <ModuleCard
+            eyebrow="Standout players"
+            title="Awards"
+            description="The performances recorded in this cup."
+          >
+            <div className={s.awards}>
+              <Award
+                title="Golden Boot"
+                line={cup.awards.goldenBoot}
+                stat="goals"
+                empty="No goals"
+              />
+              <Award
+                title="Top assister"
+                line={cup.awards.topAssister}
+                stat="assists"
+                empty="No assists"
+              />
+              <Award
+                title="Player of the tournament"
+                line={cup.awards.playerOfTournament}
+                stat="apps"
+                empty="No appearances recorded"
+                contribution={cup.awards.potContribution}
+              />
+            </div>
+          </ModuleCard>
+        </div>
       </div>
 
-      <section className={s.block} aria-labelledby="fits-h">
-        <h2 id="fits-h" className={s.h2}>
-          How the eleven fit
-        </h2>
+      <ModuleCard
+        className={s.block}
+        variant="emphasis"
+        eyebrow="Your squad"
+        title="How the eleven fit"
+        description="Your lineup, Synergy links and ratings for each role."
+      >
         <div className={s.fitGrid}>
           <div className={s.pitchCol}>
             <Pitch
@@ -188,7 +215,7 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
           </div>
           <FitReveal formation={formation} rating={cup.rating} />
         </div>
-      </section>
+      </ModuleCard>
 
       <details className={s.details}>
         <summary>Season details: how grading works</summary>

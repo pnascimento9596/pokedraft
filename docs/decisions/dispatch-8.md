@@ -203,3 +203,27 @@ The final full local run passed519 cases and skipped51; one unchanged daily390px
 The final chart layout passes99 focused checks: four new chart visibility/keyboard cases, unchanged390/1440 daily/board bounds, route axe, all mobile overflow cases and layout-shift cases. The last full local run519/51 with one chart overflow failure remains archived honestly; that exact failure now passes in the focused run. Full final Linux575-case suite remains required before merge. All24 actual-picture formation/device guards passed in the full local run, including the Pixel own-picture hover regression; the chart-only correction does not alter pitch geometry.
 
 Unit734/80, lint/typecheck/build and mirror/image/bundle/contrast/color/CVD gates pass. Before/after16 loaded-image captures per set and numeric186/10 per-theme readback are retained. No frozen path changes. Independent exact pushed-head review and production8C verification are pending.
+
+### PR 8D results guards before implementation
+
+Four results module/header figure guards at390/1440 in light/dark fail against the unchanged8C local build before this area's implementation. They retain literal Team Score593 and record3-0-2, one h1, header figures at32px mobile/28px desktop and zero axe violations. PR8C review and CI remain pending; this isolated next-area worktree must rebase onto its shipped squash before its own review.
+
+The first8D guard mistakenly opened the older mobile share fixture (845/8-0-0) while asserting the audit fixture's593/3-0-2. That run is not a valid module RED proof. The guard now opens scripts/audit/fixtures.json's independently captured share run; it still asserts literal593/3-0-2. Corrected module RED precedes implementation.
+
+### PR 8C shipped and production verified
+
+PR28 reviewed6568b065043fe42d0739676c09c35ed6036b9067, GLM5.3Flash APPROVE with canary. LinuxCI38154478604 passed734 unit/80files,524 browser/51skips, all requiredgates. Squashbac8beafd762397a638903ae3bcd3e469ae47478. Vercelproductiondpl_7BXDmQ2JnXUxjBKZP9Qz5TT2Zi6f READY. Firstcachebustedhealth provesmergeSHA/no-store/engine3/tokens1/2/3. Live4passes; combined unchangedmobileacceptance plusdraftsuite286passes/50skips, includingall24 formation/devicecases. Exactverifybot27c986a9-807a-471f-8923-cf6cc75e0423 deletedwithid/name/mode/date predicates; readback0. Eight390pxproductiondraft/wheelcaptureshavezerooverflow. Clean-runner Lighthouse38170883438 is running; no mediansclaimed yet.
+
+Reviewer warnings aboutpendingCI areclosedbyexactheadLinuxgreen. The331/50/16 and510/51/10 interimlogs are carriedhere so those historicalclaims areauditable. STATE'shistoricbrowsercountis corrected. CSS cascadeconsolidation remainsoptional anddeferred; no additional8CcommitvoidedthePASS. A larger gapassertionwasnotaddedbecause theguarddetects touchingpictures, whilethe reserved2pxgap allowsdevicefractionalrounding. Thefiguresgatecorrectlydiffsnumbers plusnamedfields asuserrequired; verbatimtextisretained, andauthorizedmoduleprosechanges arenot requiredtoremainbyte-identical.
+
+### PR 8D candidate validation corrections
+
+Local results16 andcard/OG10 unitcasespass; full734/80also passes. Real1200x630sharePNG useslightpalette andInter400/600/700subsets(104780bytestotal)withoutnetworkfontfetching. APIstatus/cacheheadersandallcardcontentremainunchanged. Firstfocusedbrowserrun53passes/8failures: sixdarkroute/namecasesreproducegroup-tablepositioncontrast4.25onselected; twocontrastchecks stilllookforoldheaderselectorsandtimeout. Selectedrowpositionnowuses text-soft. Thecontrastchecks useactualeyebrow andformationpillselectors, preservingallratioassertions; theunchangedmobileacceptancesuite isuntouched. Numbers-onlyreadbackpreserves186results/10boardvaluespertheme. Finalbrowserverificationpending.
+
+PR8C Lighthouse38170883438 completed: all individual samples Accessibility100 and exactCLS0; three-run median LCP home2120.1ms, play2286.5, daily2218.3, leaderboard1979.7, history1963.3, help2114.1, results3690.3, Kanto2261.8. Raw sample metrics/environment/medians are retained in lighthouse-8c/. No production numbers are claimed for8D yet.
+
+The full8Dcandidatebrowserrun522pass/51skip/6fail reproducedthe same selectedrowcontrast: changingonlythepositionspanlefttheparentth'sinheritedfainttextunchanged. The scopedbodyheadernowuses text-soft andsentencecase; headercellsretainuppercase. The shortsummarymoduleiscapped760pxdesktoptoavoidstretchingbeyonditscontent. Finalfocusedrouteaxe/contrast/strictCLS/resultsguardsandexactLinuxfullsuitearepending; no failedrunisclaimedgreen.
+
+### PR 8D local gates ready for review
+
+Current61focusedbrowserchecks pass:4resultsmodules/figures,20fullrouteaxe,30renderedcontrast and7layoutshift includingstrictSX02/SX06. This resolvesallsixdarkselectedrowfailuresfromthe522/51/6fullrun; Linux579-casefullsuiteonexactheadisstillmandatorybeforemerge. Unit734/80 andalllint/type/build/image/mirror/bundle/contrast/color/CVD gatespass. RealcardandOGunit10cases passincluding1200x630, imagepixels/cache/errorcontracts. Buildtracecontainsall3InterTTFfiles. Before/aftereach16viewportand16fullpagecapturesplus1200x630PNG; alloverflow0. Figures186/10pertheme unchanged. Sourcefrozenpathsunchanged. Independentreviewandproduction8Dpending.

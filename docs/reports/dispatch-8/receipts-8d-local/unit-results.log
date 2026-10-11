@@ -1,0 +1,10 @@
+$ vitest run src/components/results/__tests__/ResultsView.test.tsx src/components/results/__tests__/FitReveal.test.tsx --maxWorkers=4
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/results-share
+
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  16:08:18
+   Duration  2.57s (environment 32%, transform 23%, tests 23%, import 22%)
+

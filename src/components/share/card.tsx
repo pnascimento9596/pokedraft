@@ -1,4 +1,4 @@
-import { LEGACY_CARD } from "@/design/card-tokens";
+import { CARD_THEME } from "@/design/card-tokens";
 import {
   FORMATIONS,
   rateTeam,
@@ -82,10 +82,10 @@ export function cardModel(
   };
 }
 
-const INK = LEGACY_CARD.ink;
-const SOFT = LEGACY_CARD.soft;
-const FLOOD = LEGACY_CARD.accent;
-const CHALK = "rgba(255,255,255,0.8)";
+const INK = CARD_THEME.ink;
+const SOFT = CARD_THEME.soft;
+const FLOOD = CARD_THEME.accent;
+const CHALK = CARD_THEME.line;
 const PITCH_W = 760;
 const PITCH_H = 492;
 const CARD_PAD_X = 40;
@@ -156,7 +156,6 @@ function Markings() {
   );
 }
 
-// Satori fetches glyphs it lacks from the network, so names are kept to the default font.
 function cardName(name: string): string {
   return name.replace("♀", " F").replace("♂", " M").replace("’", "'");
 }
@@ -213,11 +212,11 @@ function Token({
           display: "flex",
           marginTop: 4,
           padding: "1px 6px",
-          borderRadius: 4,
-          background: "rgba(5,11,8,0.82)",
-          color: INK,
+          borderRadius: CARD_THEME.radiusSm,
+          background: CARD_THEME.accent,
+          color: CARD_THEME.accentFg,
           fontSize: 15,
-          fontWeight: 700,
+          fontWeight: 600,
           maxWidth: 120,
         }}
       >
@@ -247,9 +246,9 @@ export function Card({
         display: "flex",
         alignItems: "center",
         padding: "0 40px",
-        background: `linear-gradient(135deg, ${LEGACY_CARD.surface} 0%, ${LEGACY_CARD.deep} 100%)`,
+        background: CARD_THEME.canvas,
         color: INK,
-        fontFamily: "sans-serif",
+        fontFamily: "Inter",
       }}
     >
       <div
@@ -259,8 +258,8 @@ export function Card({
           width: PITCH_W,
           height: PITCH_H,
           borderRadius: 14,
-          background: `repeating-linear-gradient(90deg, ${LEGACY_CARD.pitch} 0px, ${LEGACY_CARD.pitch} 69px, ${LEGACY_CARD.stripe} 69px, ${LEGACY_CARD.stripe} 138px)`,
-          boxShadow: `0 0 0 8px ${LEGACY_CARD.edge}`,
+          background: `repeating-linear-gradient(90deg, ${CARD_THEME.pitch} 0px, ${CARD_THEME.pitch} 69px, ${CARD_THEME.stripe} 69px, ${CARD_THEME.stripe} 138px)`,
+          boxShadow: `0 0 0 8px ${CARD_THEME.emphasis}`,
         }}
       >
         <Markings />
@@ -285,7 +284,7 @@ export function Card({
           minWidth: 0,
         }}
       >
-        <div style={{ display: "flex", fontSize: 40, fontWeight: 800, letterSpacing: 2 }}>
+        <div style={{ display: "flex", fontSize: 40, fontWeight: 600, letterSpacing: 2 }}>
           <span>POKE</span>
           <span style={{ color: FLOOD }}>DRAFT</span>
         </div>
@@ -301,11 +300,11 @@ export function Card({
               alignSelf: "flex-start",
               marginTop: 10,
               padding: "4px 12px",
-              borderRadius: 4,
-              background: LEGACY_CARD.white,
-              color: LEGACY_CARD.text,
+              borderRadius: CARD_THEME.radiusSm,
+              background: CARD_THEME.okBg,
+              color: CARD_THEME.ok,
               fontSize: 22,
-              fontWeight: 800,
+              fontWeight: 600,
             }}
           >
             {FRIENDLY_LABEL}
@@ -315,7 +314,7 @@ export function Card({
           {`Formation ${model.formation}`}
         </div>
         {score === null ? (
-          <div style={{ display: "flex", marginTop: 24, fontSize: 34, fontWeight: 800 }}>
+          <div style={{ display: "flex", marginTop: 24, fontSize: 34, fontWeight: 600 }}>
             Lineup in progress
           </div>
         ) : (
@@ -325,10 +324,10 @@ export function Card({
                 display: "flex",
                 alignItems: "center",
                 padding: "6px 12px",
-                background: INK,
-                color: LEGACY_CARD.canvas,
+                background: CARD_THEME.sunken,
+                color: INK,
                 fontSize: 22,
-                fontWeight: 800,
+                fontWeight: 600,
               }}
             >
               TEAM SCORE
@@ -338,10 +337,10 @@ export function Card({
                 display: "flex",
                 alignItems: "center",
                 padding: "0 14px",
-                background: FLOOD,
-                color: LEGACY_CARD.actionText,
+                background: CARD_THEME.accent,
+                color: CARD_THEME.accentFg,
                 fontSize: 52,
-                fontWeight: 800,
+                fontWeight: 600,
               }}
             >
               {score}
@@ -355,7 +354,7 @@ export function Card({
                 display: "flex",
                 marginTop: 18,
                 fontSize: 96,
-                fontWeight: 800,
+                fontWeight: 600,
                 lineHeight: 1.1,
               }}
             >
@@ -366,7 +365,7 @@ export function Card({
                 display: "flex",
                 marginTop: 6,
                 fontSize: 28,
-                fontWeight: 700,
+                fontWeight: 600,
                 color: h.finish === "champion" ? FLOOD : INK,
               }}
             >

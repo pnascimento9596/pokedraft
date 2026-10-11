@@ -1,0 +1,130 @@
+[
+  {
+    "phase": "before",
+    "state": "shared",
+    "width": 390,
+    "theme": "light",
+    "file": "shared__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "live",
+    "width": 390,
+    "theme": "light",
+    "file": "live__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "friendly",
+    "width": 390,
+    "theme": "light",
+    "file": "friendly__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "missing",
+    "width": 390,
+    "theme": "light",
+    "file": "missing__390__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "shared",
+    "width": 390,
+    "theme": "dark",
+    "file": "shared__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "live",
+    "width": 390,
+    "theme": "dark",
+    "file": "live__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "friendly",
+    "width": 390,
+    "theme": "dark",
+    "file": "friendly__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "missing",
+    "width": 390,
+    "theme": "dark",
+    "file": "missing__390__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "shared",
+    "width": 1440,
+    "theme": "light",
+    "file": "shared__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "live",
+    "width": 1440,
+    "theme": "light",
+    "file": "live__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "friendly",
+    "width": 1440,
+    "theme": "light",
+    "file": "friendly__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "missing",
+    "width": 1440,
+    "theme": "light",
+    "file": "missing__1440__light.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "shared",
+    "width": 1440,
+    "theme": "dark",
+    "file": "shared__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "live",
+    "width": 1440,
+    "theme": "dark",
+    "file": "live__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "friendly",
+    "width": 1440,
+    "theme": "dark",
+    "file": "friendly__1440__dark.webp",
+    "overflow": 0
+  },
+  {
+    "phase": "before",
+    "state": "missing",
+    "width": 1440,
+    "theme": "dark",
+    "file": "missing__1440__dark.webp",
+    "overflow": 0
+  }
+]

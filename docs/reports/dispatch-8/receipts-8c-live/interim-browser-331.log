@@ -1,0 +1,959 @@
+
+Running 397 tests using 4 workers
+
+(node:91767) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91769) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91768) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91766) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    2 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /history (1.1s)
+  ✓    4 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /how-to-play (1.2s)
+  ✓    3 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on / (1.4s)
+  ✓    5 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /r/garbage-not-a-token (493ms)
+  ✓    6 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /nope-404 (497ms)
+  ✓    1 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /r/<results token> (2.2s)
+  ✓    7 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on a live 8-0 draft (1.1s)
+  ✓    9 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /leaderboard with rows (841ms)
+  ✓   12 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /how-to-play (542ms)
+  ✓    8 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on the builder picker (1.5s)
+  ✓   11 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on / (927ms)
+  ✓   13 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /history (518ms)
+  ✓   15 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /r/garbage-not-a-token (518ms)
+  ✓   16 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /nope-404 (502ms)
+  ✓   14 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /r/<results token> (1.8s)
+  ✓   17 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on a live 8-0 draft (1.3s)
+  ✓   10 [chromium] › e2e/a11y.spec.ts:124:11 › dark theme › no axe violations on /daily results with the submit panel (3.4s)
+  ✓   19 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /leaderboard with rows (642ms)
+  ✓   18 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on the builder picker (1.7s)
+  ✓   22 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on how to play (513ms)
+  ✓   21 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on home (634ms)
+  ✓   23 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on shared results (824ms)
+  ✓   24 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on leaderboard (811ms)
+  ✓   25 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on live draft with a selected candidate (753ms)
+  ✓   26 [chromium] › e2e/contrast.spec.ts:243:11 › dark theme contrast › axe color-contrast finds nothing on builder picker with a type filter on (872ms)
+  ✓   20 [chromium] › e2e/a11y.spec.ts:124:11 › light theme › no axe violations on /daily results with the submit panel (3.0s)
+  ✓   29 [chromium] › e2e/contrast.spec.ts:298:9 › dark theme contrast › results hero text reaches its ratio on the rendered gradient (1.1s)
+  ✓   28 [chromium] › e2e/contrast.spec.ts:279:9 › dark theme contrast › token names on the pitch reach 4.5:1 on their rendered surface (1.9s)
+  ✓   30 [chromium] › e2e/contrast.spec.ts:332:9 › dark theme contrast › weak-spot rings on the results pitch reach 3:1 against the grass (720ms)
+  ✓   31 [chromium] › e2e/contrast.spec.ts:346:9 › dark theme contrast › a focused pitch token shows a focus ring that reaches 3:1 on the grass (442ms)
+  ✓   33 [chromium] › e2e/contrast.spec.ts:391:9 › dark theme contrast › the selected candidate ring and the wheel payline reach 3:1 (533ms)
+  ✓   32 [chromium] › e2e/contrast.spec.ts:363:9 › dark theme contrast › armed slots and the focused armed slot are both visible on the grass and tell apart (751ms)
+  ✓   34 [chromium] › e2e/contrast.spec.ts:414:9 › dark theme contrast › picker fields keep a 3:1 focus ring and a 3:1 border (591ms)
+  ✓   35 [chromium] › e2e/contrast.spec.ts:438:9 › dark theme contrast › settings switches show a 3:1 track edge off and on (576ms)
+  ✓   37 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on how to play (516ms)
+  ✓   36 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on home (624ms)
+  ✓   27 [chromium] › e2e/contrast.spec.ts:253:9 › dark theme contrast › axe color-contrast finds nothing on daily results, the submitted rank and history (4.0s)
+  ✓   39 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on leaderboard (739ms)
+  ✓   38 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on shared results (1.2s)
+  ✓   40 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on live draft with a selected candidate (995ms)
+  ✓   41 [chromium] › e2e/contrast.spec.ts:243:11 › light theme contrast › axe color-contrast finds nothing on builder picker with a type filter on (826ms)
+  ✓   44 [chromium] › e2e/contrast.spec.ts:298:9 › light theme contrast › results hero text reaches its ratio on the rendered gradient (1.1s)
+  ✓   45 [chromium] › e2e/contrast.spec.ts:332:9 › light theme contrast › weak-spot rings on the results pitch reach 3:1 against the grass (844ms)
+  ✓   46 [chromium] › e2e/contrast.spec.ts:346:9 › light theme contrast › a focused pitch token shows a focus ring that reaches 3:1 on the grass (384ms)
+  ✓   43 [chromium] › e2e/contrast.spec.ts:279:9 › light theme contrast › token names on the pitch reach 4.5:1 on their rendered surface (1.7s)
+  ✓   49 [chromium] › e2e/contrast.spec.ts:414:9 › light theme contrast › picker fields keep a 3:1 focus ring and a 3:1 border (475ms)
+  ✓   47 [chromium] › e2e/contrast.spec.ts:363:9 › light theme contrast › armed slots and the focused armed slot are both visible on the grass and tell apart (922ms)
+  ✓   48 [chromium] › e2e/contrast.spec.ts:391:9 › light theme contrast › the selected candidate ring and the wheel payline reach 3:1 (731ms)
+  ✓   50 [chromium] › e2e/contrast.spec.ts:438:9 › light theme contrast › settings switches show a 3:1 track edge off and on (408ms)
+  ✓   42 [chromium] › e2e/contrast.spec.ts:253:9 › light theme contrast › axe color-contrast finds nothing on daily results, the submitted rank and history (3.2s)
+  ✓   51 [chromium] › e2e/layout-shift.spec.ts:25:7 › no layout shift while /r/pd3.W1siYyIsIjQtMi0zL loads on a phone (3.8s)
+  ✓   52 [chromium] › e2e/layout-shift.spec.ts:25:7 › no layout shift while /daily loads on a phone (3.8s)
+  ✓   53 [chromium] › e2e/layout-shift.spec.ts:25:7 › no layout shift while /play?mode=kanto151&f=4- loads on a phone (3.6s)
+  ✓   54 [chromium] › e2e/layout-shift.spec.ts:66:7 › ratings-on builder cold load has exactly zero CLS at 360px (SX-02) (3.4s)
+  ✓   58 [chromium] › e2e/theme-builder.spec.ts:15:11 › 390 light ratings on › filled builder names include their visible ratings (SX-03) (663ms)
+  ✓   59 [chromium] › e2e/theme-builder.spec.ts:15:11 › 390 dark ratings on › filled builder names include their visible ratings (SX-03) (662ms)
+  ✓   60 [chromium] › e2e/theme-builder.spec.ts:15:11 › 1440 light ratings on › filled builder names include their visible ratings (SX-03) (769ms)
+  ✓   61 [chromium] › e2e/theme-builder.spec.ts:15:11 › 1440 dark ratings on › filled builder names include their visible ratings (SX-03) (742ms)
+  ✘   56 [chromium] › e2e/layout-shift.spec.ts:100:7 › saved-run reload restore has exactly zero CLS at 360px (SX-06) (3.2s)
+  ✓   55 [chromium] › e2e/layout-shift.spec.ts:66:7 › ratings-on builder cold load has exactly zero CLS at 390px (SX-02) (3.5s)
+(node:92580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92581) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92582) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   57 [chromium] › e2e/layout-shift.spec.ts:100:7 › saved-run reload restore has exactly zero CLS at 390px (SX-06) (3.5s)
+(node:92608) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   64 [iphone-se] › e2e/mobile-acceptance.spec.ts:282:1 › 0 self-check: scrollThenTap scrolls an off-screen control to the middle of the screen and taps it with a real touch (437ms)
+  ✓   62 [iphone-se] › e2e/mobile-acceptance.spec.ts:178:1 › 0 self-check: inViewport passes a visible control and fails below the fold, half visible, past the edge, hidden and under a fixed bar (693ms)
+  ✓   63 [iphone-se] › e2e/mobile-acceptance.spec.ts:226:1 › 0 self-check: tapInView taps with a real touch, never scrolls, and fails when the page scrolled since the previous step (660ms)
+  ✓   66 [iphone-se] › e2e/mobile-acceptance.spec.ts:345:1 › 0 self-check: a wide child in a box the player can scroll sideways does not widen the page, and is reported as an inner scroller (428ms)
+  ✓   68 [iphone-se] › e2e/mobile-acceptance.spec.ts:417:1 › 0 self-check: interactiveTargets reports 30x30 below 44x44, passes 44x44, skips hidden and inert controls, and never counts a pseudo-element hit area (270ms)
+  ✓   65 [iphone-se] › e2e/mobile-acceptance.spec.ts:306:1 › 0 self-check: widestRight and documentScrollWidth pass a clean page and catch an overflowing child, even when html and body clip it (414ms)
+  ✓   69 [iphone-se] › e2e/mobile-acceptance.spec.ts:472:1 › 0 self-check: interactiveTargets keeps only the open modal dialog in scope (229ms)
+  ✓   67 [iphone-se] › e2e/mobile-acceptance.spec.ts:396:1 › 0 self-check: resizeTo lays the page out at every width and size the suite measures (593ms)
+  ✓   70 [iphone-se] › e2e/mobile-acceptance.spec.ts:489:1 › 0 self-check: pageScrollReach passes a page that scrolls to its end and flags an overflow:hidden trap (257ms)
+  ✓   71 [iphone-se] › e2e/mobile-acceptance.spec.ts:532:1 › 0 self-check: clippedText flags text with no box or wholly outside a clipping ancestor and leaves scrollable content alone (196ms)
+  ✓   72 [iphone-se] › e2e/mobile-acceptance.spec.ts:555:1 › 0 self-check: panYAllowed reads touch-action up the tree (221ms)
+  ✓   74 [iphone-se] › e2e/mobile-acceptance.spec.ts:635:1 › 0 self-check: settle brings a finite entrance animation to its end state at once and leaves an infinite one running (208ms)
+  ✓   75 [iphone-se] › e2e/mobile-acceptance.spec.ts:668:1 › 0 self-check: settle returns the end value of a colour transition that lasts 0.01 ms (324ms)
+  ✓   76 [iphone-se] › e2e/mobile-acceptance.spec.ts:692:1 › 0 self-check: setColorScheme switches the page between dark and light (205ms)
+  ✓   77 [iphone-se] › e2e/mobile-acceptance.spec.ts:707:1 › 0 self-check: a tap leaves no button focused, as on iOS, and a text field keeps its focus (224ms)
+  ✓   73 [iphone-se] › e2e/mobile-acceptance.spec.ts:572:1 › 0 self-check: touch gestures are real touch in Chromium, and the WebKit drag is a mouse drag that says so (1.0s)
+  ✓   81 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home (885ms)
+  ✓   79 [iphone-se] › e2e/mobile-acceptance.spec.ts:828:1 › 1 flow: 151 Challenge, start to results with taps only (2.1s)
+  ✓   80 [iphone-se] › e2e/mobile-acceptance.spec.ts:833:1 › 1 flow: Daily, start to results with taps only (2.3s)
+  ✓   78 [iphone-se] › e2e/mobile-acceptance.spec.ts:823:1 › 1 flow: 8-0 Challenge Classic, start to results with taps only (2.4s)
+  ✓   82 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home settings open (956ms)
+  ✓   83 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: builder full (974ms)
+  ✘   85 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start (900ms)
+  ✘   86 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 (1.0s)
+  ✓   84 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: picker open (1.3s)
+(node:92729) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92730) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   87 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 (1.1s)
+(node:92757) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   88 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results (1.3s)
+  ✓   90 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: results (1.8s)
+  ✘   89 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 (1.3s)
+  ✘   92 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start (971ms)
+(node:92786) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92787) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   93 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 50 rows (912ms)
+  ✓   91 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results submitted (2.0s)
+  ✓   94 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 1 row (1.0s)
+  ✓   96 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 503 (800ms)
+  ✓   97 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history empty (667ms)
+  ✓   95 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard empty (906ms)
+  ✓   98 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history seeded (742ms)
+  ✓   99 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: how to play (681ms)
+  ✓  101 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: broken run link (648ms)
+  ✓  100 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: shared run (1.1s)
+  ✓  102 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: 404 (716ms)
+  ✓  103 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home (695ms)
+  ✓  104 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home settings open (814ms)
+  ✓  105 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: builder full (928ms)
+  ✓  107 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: play start (690ms)
+  ✓  108 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 1 (836ms)
+  ✓  106 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: picker open (1.2s)
+  ✓  109 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 9 (868ms)
+  ✓  110 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft 151 round 1 (835ms)
+  ✓  111 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: results (1.0s)
+  ✓  112 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results (1.1s)
+  ✓  114 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily start (780ms)
+  ✓  115 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 50 rows (733ms)
+  ✓  113 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results submitted (1.2s)
+  ✓  116 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard empty (639ms)
+  ✓  117 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 1 row (637ms)
+  ✓  119 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history empty (593ms)
+  ✓  118 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 503 (715ms)
+  ✓  121 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: how to play (522ms)
+  ✓  120 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history seeded (574ms)
+  ✓  123 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: broken run link (500ms)
+  ✓  124 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: 404 (537ms)
+  ✓  122 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: shared run (840ms)
+  ✓  125 [iphone-se] › e2e/mobile-acceptance.spec.ts:983:1 › 4 picker: a slot tap opens a sheet whose list scrolls on its own and not the page behind it (real touch on pixel-7, scrollTop write on WebKit) (739ms)
+  ✓  127 [iphone-se] › e2e/mobile-acceptance.spec.ts:1070:1 › 4 picker: closes on the browser Back button and the page stays on the builder (701ms)
+  ✓  128 [iphone-se] › e2e/mobile-acceptance.spec.ts:1083:1 › 4 picker: closes on its close button (804ms)
+  ✓  129 [iphone-se] › e2e/mobile-acceptance.spec.ts:1098:1 › 4 picker: focus returns to the tapped slot when it closes (859ms)
+  ✓  126 [iphone-se] › e2e/mobile-acceptance.spec.ts:1050:1 › 4 picker: closes on a swipe down on its header (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.2s)
+  -  133 [iphone-se] › e2e/mobile-acceptance.spec.ts:1257:1 › 5 drag and scroll: after a touch drag, the next tap on a slot still opens the Picker (real touch on pixel-7)
+  ✓  131 [iphone-se] › e2e/mobile-acceptance.spec.ts:1183:1 › 5 drag and scroll: a vertical swipe that starts outside the pitch scrolls the page (real touch on pixel-7, CSS and scrollBy on WebKit) (562ms)
+  ✓  132 [iphone-se] › e2e/mobile-acceptance.spec.ts:1230:1 › 5 drag and scroll: a vertical swipe that starts on the pitch's grass scrolls the page (real touch on pixel-7, CSS read on WebKit) (601ms)
+  ✓  130 [iphone-se] › e2e/mobile-acceptance.spec.ts:1138:1 › 5 drag and scroll: a drag swaps two tokens (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.0s)
+  ✓  134 [iphone-se] › e2e/mobile-acceptance.spec.ts:1283:1 › 5 drag and scroll: on the finished draft, a tap on one player and then another swaps them (real taps) (632ms)
+  -  137 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home settings open
+  -  136 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home
+  -  138 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: builder full
+  -  139 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: play start
+  -  140 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: picker open
+  ✓  135 [iphone-se] › e2e/mobile-acceptance.spec.ts:1325:1 › 6 keyboard: the focused nickname input stays fully visible when the viewport shrinks to 55% (733ms)
+  -  143 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 1
+  -  142 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft 151 round 1
+  -  141 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 9
+  -  144 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: results
+  -  145 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results
+  -  146 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily start
+  -  147 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results submitted
+  -  148 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 50 rows
+  -  149 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 1 row
+  -  150 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard empty
+  -  151 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 503
+  -  152 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history empty
+  -  154 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: how to play
+  -  153 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history seeded
+  -  155 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: shared run
+  -  156 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: broken run link
+  -  157 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: 404
+  -  161 [iphone-se] › e2e/mobile-draft.spec.ts:142:5 › landscape › the draft pitch lies on its side and fits the screen height at 844x390
+  -  162 [iphone-se] › e2e/mobile-draft.spec.ts:142:5 › landscape › the draft pitch lies on its side and fits the screen height at 750x340
+  ✓  160 [iphone-se] › e2e/mobile-draft.spec.ts:115:1 › the Picker is a bottom sheet with a handle, and its species list gets at least half of it (579ms)
+  ✓  159 [iphone-se] › e2e/mobile-draft.spec.ts:93:1 › a tap on a taken slot shows the swap hint on screen without a scroll, and a second tap clears it (770ms)
+  ✓  158 [iphone-se] › e2e/mobile-draft.spec.ts:71:3 › draft layout while the wheel spins › the pitch does not move from the slot tap to the wheel to the offered players (Position First) (1.1s)
+  ✓  165 [iphone-se] › e2e/mobile-draft.spec.ts:173:1 › at draft complete in 4-4-2, no centre-back's name touches the keeper's picture (586ms)
+  ✓  163 [iphone-se] › e2e/mobile-draft.spec.ts:159:5 › scrollable regions at 320 px › a region that scrolls sideways can take keyboard focus (dark) (821ms)
+  ✓  164 [iphone-se] › e2e/mobile-draft.spec.ts:159:5 › scrollable regions at 320 px › a region that scrolls sideways can take keyboard focus (light) (932ms)
+  ✓  166 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture (647ms)
+  ✓  167 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture (611ms)
+  ✓  168 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture (607ms)
+  ✓  169 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture (616ms)
+  ✓  170 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture (618ms)
+  ✓  172 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture (602ms)
+  ✓  171 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture (617ms)
+(node:93060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  173 [iphone-se] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture (603ms)
+(node:93073) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93074) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93087) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  174 [iphone-14] › e2e/mobile-acceptance.spec.ts:178:1 › 0 self-check: inViewport passes a visible control and fails below the fold, half visible, past the edge, hidden and under a fixed bar (448ms)
+  ✓  176 [iphone-14] › e2e/mobile-acceptance.spec.ts:282:1 › 0 self-check: scrollThenTap scrolls an off-screen control to the middle of the screen and taps it with a real touch (356ms)
+  ✓  175 [iphone-14] › e2e/mobile-acceptance.spec.ts:226:1 › 0 self-check: tapInView taps with a real touch, never scrolls, and fails when the page scrolled since the previous step (523ms)
+  ✓  178 [iphone-14] › e2e/mobile-acceptance.spec.ts:345:1 › 0 self-check: a wide child in a box the player can scroll sideways does not widen the page, and is reported as an inner scroller (290ms)
+  ✓  180 [iphone-14] › e2e/mobile-acceptance.spec.ts:417:1 › 0 self-check: interactiveTargets reports 30x30 below 44x44, passes 44x44, skips hidden and inert controls, and never counts a pseudo-element hit area (190ms)
+  ✓  177 [iphone-14] › e2e/mobile-acceptance.spec.ts:306:1 › 0 self-check: widestRight and documentScrollWidth pass a clean page and catch an overflowing child, even when html and body clip it (381ms)
+  ✓  179 [iphone-14] › e2e/mobile-acceptance.spec.ts:396:1 › 0 self-check: resizeTo lays the page out at every width and size the suite measures (394ms)
+  ✓  181 [iphone-14] › e2e/mobile-acceptance.spec.ts:472:1 › 0 self-check: interactiveTargets keeps only the open modal dialog in scope (195ms)
+  ✓  182 [iphone-14] › e2e/mobile-acceptance.spec.ts:489:1 › 0 self-check: pageScrollReach passes a page that scrolls to its end and flags an overflow:hidden trap (213ms)
+  ✓  183 [iphone-14] › e2e/mobile-acceptance.spec.ts:532:1 › 0 self-check: clippedText flags text with no box or wholly outside a clipping ancestor and leaves scrollable content alone (179ms)
+  ✓  184 [iphone-14] › e2e/mobile-acceptance.spec.ts:555:1 › 0 self-check: panYAllowed reads touch-action up the tree (221ms)
+  ✓  186 [iphone-14] › e2e/mobile-acceptance.spec.ts:635:1 › 0 self-check: settle brings a finite entrance animation to its end state at once and leaves an infinite one running (188ms)
+  ✓  188 [iphone-14] › e2e/mobile-acceptance.spec.ts:692:1 › 0 self-check: setColorScheme switches the page between dark and light (208ms)
+  ✓  187 [iphone-14] › e2e/mobile-acceptance.spec.ts:668:1 › 0 self-check: settle returns the end value of a colour transition that lasts 0.01 ms (304ms)
+  ✓  189 [iphone-14] › e2e/mobile-acceptance.spec.ts:707:1 › 0 self-check: a tap leaves no button focused, as on iOS, and a text field keeps its focus (247ms)
+  ✓  185 [iphone-14] › e2e/mobile-acceptance.spec.ts:572:1 › 0 self-check: touch gestures are real touch in Chromium, and the WebKit drag is a mouse drag that says so (940ms)
+  ✓  193 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home (794ms)
+  ✓  191 [iphone-14] › e2e/mobile-acceptance.spec.ts:828:1 › 1 flow: 151 Challenge, start to results with taps only (1.8s)
+  ✓  190 [iphone-14] › e2e/mobile-acceptance.spec.ts:823:1 › 1 flow: 8-0 Challenge Classic, start to results with taps only (2.4s)
+  ✓  194 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home settings open (1.0s)
+  ✓  192 [iphone-14] › e2e/mobile-acceptance.spec.ts:833:1 › 1 flow: Daily, start to results with taps only (2.2s)
+  ✓  195 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: builder full (720ms)
+  ✘  197 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start (806ms)
+  ✘  198 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 (1.0s)
+(node:93220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  196 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: picker open (1.3s)
+  ✘  199 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 (1.1s)
+(node:93222) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93234) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  201 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results (1.3s)
+  ✘  200 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 (1.4s)
+  ✓  202 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: results (1.4s)
+(node:93283) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  204 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start (759ms)
+  ✓  203 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results submitted (1.5s)
+(node:93296) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  205 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 1 row (725ms)
+  ✓  207 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 503 (769ms)
+  ✓  209 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history empty (640ms)
+  ✓  206 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 50 rows (1.0s)
+  ✓  208 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard empty (831ms)
+  ✓  210 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history seeded (675ms)
+  ✓  211 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: how to play (655ms)
+  ✓  213 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: broken run link (626ms)
+  ✓  214 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: 404 (611ms)
+  ✓  212 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: shared run (1.1s)
+  ✓  215 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home (771ms)
+  ✓  216 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home settings open (873ms)
+  ✓  217 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: builder full (831ms)
+  ✓  219 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: play start (664ms)
+  ✓  218 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: picker open (1.2s)
+  ✓  220 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 1 (925ms)
+  ✓  222 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft 151 round 1 (816ms)
+  ✓  221 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 9 (991ms)
+  ✓  223 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: results (1.1s)
+  ✓  226 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily start (726ms)
+  ✓  224 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results (1.1s)
+  ✓  225 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results submitted (1.3s)
+  ✓  227 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 50 rows (800ms)
+  ✓  228 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 1 row (662ms)
+  ✓  229 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard empty (639ms)
+  ✓  231 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history empty (508ms)
+  ✓  230 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 503 (607ms)
+  ✓  232 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history seeded (687ms)
+  ✓  233 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: how to play (511ms)
+  ✓  235 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: broken run link (570ms)
+  ✓  236 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: 404 (552ms)
+  ✓  234 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: shared run (832ms)
+  ✓  237 [iphone-14] › e2e/mobile-acceptance.spec.ts:983:1 › 4 picker: a slot tap opens a sheet whose list scrolls on its own and not the page behind it (real touch on pixel-7, scrollTop write on WebKit) (936ms)
+  ✓  239 [iphone-14] › e2e/mobile-acceptance.spec.ts:1070:1 › 4 picker: closes on the browser Back button and the page stays on the builder (783ms)
+  ✓  240 [iphone-14] › e2e/mobile-acceptance.spec.ts:1083:1 › 4 picker: closes on its close button (837ms)
+  ✓  238 [iphone-14] › e2e/mobile-acceptance.spec.ts:1050:1 › 4 picker: closes on a swipe down on its header (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.2s)
+  ✓  241 [iphone-14] › e2e/mobile-acceptance.spec.ts:1098:1 › 4 picker: focus returns to the tapped slot when it closes (875ms)
+  -  245 [iphone-14] › e2e/mobile-acceptance.spec.ts:1257:1 › 5 drag and scroll: after a touch drag, the next tap on a slot still opens the Picker (real touch on pixel-7)
+  ✓  243 [iphone-14] › e2e/mobile-acceptance.spec.ts:1183:1 › 5 drag and scroll: a vertical swipe that starts outside the pitch scrolls the page (real touch on pixel-7, CSS and scrollBy on WebKit) (712ms)
+  ✓  244 [iphone-14] › e2e/mobile-acceptance.spec.ts:1230:1 › 5 drag and scroll: a vertical swipe that starts on the pitch's grass scrolls the page (real touch on pixel-7, CSS read on WebKit) (605ms)
+  ✓  242 [iphone-14] › e2e/mobile-acceptance.spec.ts:1138:1 › 5 drag and scroll: a drag swaps two tokens (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.0s)
+  ✓  246 [iphone-14] › e2e/mobile-acceptance.spec.ts:1283:1 › 5 drag and scroll: on the finished draft, a tap on one player and then another swaps them (real taps) (688ms)
+  ✓  248 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home (711ms)
+  ✓  247 [iphone-14] › e2e/mobile-acceptance.spec.ts:1325:1 › 6 keyboard: the focused nickname input stays fully visible when the viewport shrinks to 55% (745ms)
+  ✓  249 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home settings open (898ms)
+  ✓  252 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: play start (808ms)
+  ✓  250 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: builder full (1.1s)
+  ✓  251 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: picker open (1.4s)
+  ✓  253 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 1 (1.1s)
+  ✓  254 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 9 (990ms)
+  ✓  255 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft 151 round 1 (910ms)
+  ✓  257 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results (1.1s)
+  ✓  256 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: results (1.3s)
+  ✓  259 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily start (837ms)
+  ✓  258 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results submitted (1.5s)
+  ✓  261 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 1 row (719ms)
+  ✓  260 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 50 rows (959ms)
+  ✓  262 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard empty (837ms)
+  ✓  263 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 503 (695ms)
+  ✓  264 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history empty (680ms)
+  ✓  265 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history seeded (647ms)
+  ✓  266 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: how to play (637ms)
+  ✓  268 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: broken run link (649ms)
+  ✓  269 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: 404 (642ms)
+  ✓  267 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: shared run (1.0s)
+  ✓  270 [iphone-14] › e2e/mobile-draft.spec.ts:71:3 › draft layout while the wheel spins › the pitch does not move from the slot tap to the wheel to the offered players (Position First) (1.1s)
+  ✓  272 [iphone-14] › e2e/mobile-draft.spec.ts:115:1 › the Picker is a bottom sheet with a handle, and its species list gets at least half of it (625ms)
+  ✓  271 [iphone-14] › e2e/mobile-draft.spec.ts:93:1 › a tap on a taken slot shows the swap hint on screen without a scroll, and a second tap clears it (918ms)
+  ✓  273 [iphone-14] › e2e/mobile-draft.spec.ts:142:5 › landscape › the draft pitch lies on its side and fits the screen height at 844x390 (687ms)
+  ✓  274 [iphone-14] › e2e/mobile-draft.spec.ts:142:5 › landscape › the draft pitch lies on its side and fits the screen height at 750x340 (687ms)
+  ✓  277 [iphone-14] › e2e/mobile-draft.spec.ts:173:1 › at draft complete in 4-4-2, no centre-back's name touches the keeper's picture (599ms)
+  ✓  275 [iphone-14] › e2e/mobile-draft.spec.ts:159:5 › scrollable regions at 320 px › a region that scrolls sideways can take keyboard focus (dark) (953ms)
+  ✓  276 [iphone-14] › e2e/mobile-draft.spec.ts:159:5 › scrollable regions at 320 px › a region that scrolls sideways can take keyboard focus (light) (998ms)
+  ✓  278 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture (654ms)
+  ✓  279 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture (665ms)
+  ✓  280 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture (654ms)
+  ✓  281 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture (617ms)
+  ✓  282 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture (622ms)
+  ✓  283 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture (572ms)
+  ✓  284 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture (627ms)
+(node:93668) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  285 [iphone-14] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture (599ms)
+(node:93672) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93675) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93688) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  286 [pixel-7] › e2e/mobile-acceptance.spec.ts:178:1 › 0 self-check: inViewport passes a visible control and fails below the fold, half visible, past the edge, hidden and under a fixed bar (329ms)
+  ✓  289 [pixel-7] › e2e/mobile-acceptance.spec.ts:306:1 › 0 self-check: widestRight and documentScrollWidth pass a clean page and catch an overflowing child, even when html and body clip it (213ms)
+  ✓  288 [pixel-7] › e2e/mobile-acceptance.spec.ts:282:1 › 0 self-check: scrollThenTap scrolls an off-screen control to the middle of the screen and taps it with a real touch (309ms)
+  ✓  290 [pixel-7] › e2e/mobile-acceptance.spec.ts:345:1 › 0 self-check: a wide child in a box the player can scroll sideways does not widen the page, and is reported as an inner scroller (113ms)
+  ✓  292 [pixel-7] › e2e/mobile-acceptance.spec.ts:417:1 › 0 self-check: interactiveTargets reports 30x30 below 44x44, passes 44x44, skips hidden and inert controls, and never counts a pseudo-element hit area (72ms)
+  ✓  287 [pixel-7] › e2e/mobile-acceptance.spec.ts:226:1 › 0 self-check: tapInView taps with a real touch, never scrolls, and fails when the page scrolled since the previous step (480ms)
+  ✓  293 [pixel-7] › e2e/mobile-acceptance.spec.ts:472:1 › 0 self-check: interactiveTargets keeps only the open modal dialog in scope (85ms)
+  ✓  291 [pixel-7] › e2e/mobile-acceptance.spec.ts:396:1 › 0 self-check: resizeTo lays the page out at every width and size the suite measures (184ms)
+  ✓  295 [pixel-7] › e2e/mobile-acceptance.spec.ts:532:1 › 0 self-check: clippedText flags text with no box or wholly outside a clipping ancestor and leaves scrollable content alone (65ms)
+  ✓  294 [pixel-7] › e2e/mobile-acceptance.spec.ts:489:1 › 0 self-check: pageScrollReach passes a page that scrolls to its end and flags an overflow:hidden trap (90ms)
+  ✓  298 [pixel-7] › e2e/mobile-acceptance.spec.ts:635:1 › 0 self-check: settle brings a finite entrance animation to its end state at once and leaves an infinite one running (73ms)
+  ✓  296 [pixel-7] › e2e/mobile-acceptance.spec.ts:555:1 › 0 self-check: panYAllowed reads touch-action up the tree (91ms)
+  ✓  301 [pixel-7] › e2e/mobile-acceptance.spec.ts:692:1 › 0 self-check: setColorScheme switches the page between dark and light (78ms)
+  ✓  299 [pixel-7] › e2e/mobile-acceptance.spec.ts:668:1 › 0 self-check: settle returns the end value of a colour transition that lasts 0.01 ms (195ms)
+  ✓  300 [pixel-7] › e2e/mobile-acceptance.spec.ts:707:1 › 0 self-check: a tap leaves no button focused, as on iOS, and a text field keeps its focus (151ms)
+  ✓  303 [pixel-7] › e2e/mobile-acceptance.spec.ts:828:1 › 1 flow: 151 Challenge, start to results with taps only (1.2s)
+  ✓  302 [pixel-7] › e2e/mobile-acceptance.spec.ts:823:1 › 1 flow: 8-0 Challenge Classic, start to results with taps only (1.5s)
+  ✓  304 [pixel-7] › e2e/mobile-acceptance.spec.ts:833:1 › 1 flow: Daily, start to results with taps only (1.5s)
+  ✓  297 [pixel-7] › e2e/mobile-acceptance.spec.ts:572:1 › 0 self-check: touch gestures are real touch in Chromium, and the WebKit drag is a mouse drag that says so (1.8s)
+  ✓  305 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home (429ms)
+  ✓  306 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home settings open (558ms)
+  ✓  307 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: builder full (549ms)
+  ✘  309 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start (565ms)
+  ✓  308 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: picker open (881ms)
+(node:93788) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  310 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 (585ms)
+  ✘  311 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 (656ms)
+(node:93802) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93805) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  313 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 (631ms)
+(node:93822) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  312 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: results (1.1s)
+  ✓  314 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results (917ms)
+  ✓  315 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results submitted (993ms)
+  ✓  316 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 50 rows (712ms)
+  ✘  317 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start (533ms)
+  ✓  319 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard empty (389ms)
+(node:93845) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  318 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 1 row (628ms)
+  ✓  320 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 503 (408ms)
+  ✓  321 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history seeded (395ms)
+  ✓  323 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: how to play (362ms)
+  ✓  322 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history empty (347ms)
+  ✓  325 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: broken run link (301ms)
+  ✓  326 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: 404 (290ms)
+  ✓  324 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: shared run (1.3s)
+  ✓  327 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home (903ms)
+  ✓  328 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home settings open (734ms)
+  ✓  329 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: builder full (750ms)
+  ✓  331 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: play start (447ms)
+  ✓  332 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 1 (605ms)
+  ✓  333 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 9 (689ms)
+  ✓  330 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: picker open (758ms)
+  ✓  334 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft 151 round 1 (594ms)
+  ✓  336 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results (748ms)
+  ✓  338 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily start (440ms)
+  ✓  337 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results submitted (810ms)
+  ✓  335 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: results (981ms)
+  ✓  339 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 50 rows (407ms)
+  ✓  341 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard empty (394ms)
+  ✓  343 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history empty (221ms)
+  ✓  340 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 1 row (718ms)
+  ✓  342 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 503 (665ms)
+  ✓  344 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history seeded (293ms)
+  ✓  345 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: how to play (341ms)
+  ✓  347 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: broken run link (284ms)
+  ✓  348 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: 404 (284ms)
+  ✓  346 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: shared run (1.6s)
+  ✓  351 [pixel-7] › e2e/mobile-acceptance.spec.ts:1070:1 › 4 picker: closes on the browser Back button and the page stays on the builder (1.3s)
+  ✓  350 [pixel-7] › e2e/mobile-acceptance.spec.ts:1050:1 › 4 picker: closes on a swipe down on its header (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.3s)
+  ✓  352 [pixel-7] › e2e/mobile-acceptance.spec.ts:1083:1 › 4 picker: closes on its close button (449ms)
+  ✓  353 [pixel-7] › e2e/mobile-acceptance.spec.ts:1098:1 › 4 picker: focus returns to the tapped slot when it closes (452ms)
+  ✓  349 [pixel-7] › e2e/mobile-acceptance.spec.ts:983:1 › 4 picker: a slot tap opens a sheet whose list scrolls on its own and not the page behind it (real touch on pixel-7, scrollTop write on WebKit) (1.9s)
+  ✓  354 [pixel-7] › e2e/mobile-acceptance.spec.ts:1138:1 › 5 drag and scroll: a drag swaps two tokens (real touch on pixel-7, mouse Pointer Events only on WebKit) (907ms)
+  ✓  357 [pixel-7] › e2e/mobile-acceptance.spec.ts:1257:1 › 5 drag and scroll: after a touch drag, the next tap on a slot still opens the Picker (real touch on pixel-7) (912ms)
+  ✓  356 [pixel-7] › e2e/mobile-acceptance.spec.ts:1230:1 › 5 drag and scroll: a vertical swipe that starts on the pitch's grass scrolls the page (real touch on pixel-7, CSS read on WebKit) (1.1s)
+  ✓  355 [pixel-7] › e2e/mobile-acceptance.spec.ts:1183:1 › 5 drag and scroll: a vertical swipe that starts outside the pitch scrolls the page (real touch on pixel-7, CSS and scrollBy on WebKit) (1.1s)
+  ✓  358 [pixel-7] › e2e/mobile-acceptance.spec.ts:1283:1 › 5 drag and scroll: on the finished draft, a tap on one player and then another swaps them (real taps) (661ms)
+  -  360 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home
+  -  361 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home settings open
+  -  362 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: builder full
+  -  363 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: picker open
+  -  364 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: play start
+  -  365 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 1
+  -  367 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft 151 round 1
+  -  366 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 9
+  -  368 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: results
+  -  370 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results submitted
+  -  369 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results
+  -  371 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily start
+  -  372 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 1 row
+  -  373 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 50 rows
+  -  374 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard empty
+  -  376 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history empty
+  -  375 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 503
+  -  377 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history seeded
+  ✓  359 [pixel-7] › e2e/mobile-acceptance.spec.ts:1325:1 › 6 keyboard: the focused nickname input stays fully visible when the viewport shrinks to 55% (535ms)
+  -  379 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: shared run
+  -  378 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: how to play
+  -  380 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: broken run link
+  -  381 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: 404
+  -  385 [pixel-7] › e2e/mobile-draft.spec.ts:142:5 › landscape › the draft pitch lies on its side and fits the screen height at 844x390
+  -  386 [pixel-7] › e2e/mobile-draft.spec.ts:142:5 › landscape › the draft pitch lies on its side and fits the screen height at 750x340
+  ✓  384 [pixel-7] › e2e/mobile-draft.spec.ts:115:1 › the Picker is a bottom sheet with a handle, and its species list gets at least half of it (419ms)
+  ✓  387 [pixel-7] › e2e/mobile-draft.spec.ts:159:5 › scrollable regions at 320 px › a region that scrolls sideways can take keyboard focus (dark) (556ms)
+  ✓  382 [pixel-7] › e2e/mobile-draft.spec.ts:93:1 › a tap on a taken slot shows the swap hint on screen without a scroll, and a second tap clears it (863ms)
+  ✓  388 [pixel-7] › e2e/mobile-draft.spec.ts:159:5 › scrollable regions at 320 px › a region that scrolls sideways can take keyboard focus (light) (640ms)
+  ✓  383 [pixel-7] › e2e/mobile-draft.spec.ts:71:3 › draft layout while the wheel spins › the pitch does not move from the slot tap to the wheel to the offered players (Position First) (1.1s)
+  ✓  389 [pixel-7] › e2e/mobile-draft.spec.ts:173:1 › at draft complete in 4-4-2, no centre-back's name touches the keeper's picture (589ms)
+  ✓  390 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-4-2 names clear every other player picture (621ms)
+  ✓  392 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-2-3-1 names clear every other player picture (606ms)
+  ✓  391 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-3-3 names clear every other player picture (622ms)
+  ✓  393 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 4-1-4-1 names clear every other player picture (603ms)
+  ✓  394 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 5-3-2 names clear every other player picture (643ms)
+  ✓  397 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-2-1 names clear every other player picture (336ms)
+  ✓  396 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-4-3 names clear every other player picture (638ms)
+  ✓  395 [pixel-7] › e2e/mobile-draft.spec.ts:211:3 › warm short field: 3-5-2 names clear every other player picture (645ms)
+
+
+  1) [chromium] › e2e/layout-shift.spec.ts:100:7 › saved-run reload restore has exactly zero CLS at 360px (SX-06)
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 0.08412322274881516
+
+      130 |         ),
+      131 |       ),
+    > 132 |     ).toBe(0);
+          |       ^
+      133 |   });
+      134 | }
+      135 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/layout-shift.spec.ts:132:7
+
+    Error Context: output/dispatch-8/browser-3/layout-shift-saved-run-rel-1a825-ly-zero-CLS-at-360px-SX-06--chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/layout-shift-saved-run-rel-1a825-ly-zero-CLS-at-360px-SX-06--chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/layout-shift-saved-run-rel-1a825-ly-zero-CLS-at-360px-SX-06--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start ────────────────────
+
+    Error: 2 overflow: play start. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play dark 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play dark 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play light 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play light 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play light 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-play-start-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-play-start-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-play-start-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 ─────────────────
+
+    Error: 2 overflow: draft round 1. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-1-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-1-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-1-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 ─────────────────
+
+    Error: 2 overflow: draft round 9. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-9-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-9-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-9-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 ─────────────
+
+    Error: 2 overflow: draft 151 round 1. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play dark 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play dark 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play light 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play light 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play light 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-151-round-1-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-151-round-1-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-151-round-1-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start ───────────────────
+
+    Error: 2 overflow: daily start. 6 of 8 measurements overflow. First: /daily dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily dark 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily dark 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily light 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily light 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily light 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-daily-start-iphone-se/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-daily-start-iphone-se/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-daily-start-iphone-se/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start ────────────────────
+
+    Error: 2 overflow: play start. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play dark 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play dark 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play light 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play light 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play light 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-play-start-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-play-start-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-play-start-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 ─────────────────
+
+    Error: 2 overflow: draft round 1. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-1-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-1-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-1-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 ─────────────────
+
+    Error: 2 overflow: draft round 9. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-9-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-9-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-9-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 ────────────
+
+    Error: 2 overflow: draft 151 round 1. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play dark 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play dark 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play light 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play light 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play light 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-151-round-1-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-151-round-1-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-151-round-1-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11) [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start ──────────────────
+
+    Error: 2 overflow: daily start. 6 of 8 measurements overflow. First: /daily dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily dark 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily dark 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily light 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily light 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily light 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-daily-start-iphone-14/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-daily-start-iphone-14/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-daily-start-iphone-14/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  12) [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start ─────────────────────
+
+    Error: 2 overflow: play start. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play dark 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play dark 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play light 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play light 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+    /play light 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=413
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-play-start-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-play-start-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-play-start-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  13) [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 ──────────────────
+
+    Error: 2 overflow: draft round 1. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-1-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-1-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-1-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  14) [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 ──────────────────
+
+    Error: 2 overflow: draft round 9. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play dark 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+    /play light 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentMoto" reaches x=430
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-9-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-9-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-round-9-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  15) [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 ──────────────
+
+    Error: 2 overflow: draft 151 round 1. 6 of 8 measurements overflow. First: /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play dark 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play dark 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play dark 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play light 320px: widest right edge 430, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play light 360px: widest right edge 430, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+    /play light 390px: widest right edge 430, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentCeru" reaches x=430
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-151-round-1-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-151-round-1-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-draft-151-round-1-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  16) [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start ────────────────────
+
+    Error: 2 overflow: daily start. 6 of 8 measurements overflow. First: /daily dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily dark 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily dark 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily dark 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily light 320px: widest right edge 413, documentElement.scrollWidth 320; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily light 360px: widest right edge 413, documentElement.scrollWidth 360; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+    /daily light 390px: widest right edge 413, documentElement.scrollWidth 390; li.RFYg2G_step > span.theme-tooltip "Final detailsFinalOpponentOpel" reaches x=413
+
+      147 |   if (problems.length === 0) return;
+      148 |   const [summary, ...detail] = problems;
+    > 149 |   throw new Error([`${head}. ${summary}`, ...detail].join("\n"));
+          |         ^
+      150 | }
+      151 |
+      152 | // ---------------------------------------------------------------------------------------------
+        at conclude (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:149:9)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/mobile-acceptance.spec.ts:889:5
+
+    Error Context: output/dispatch-8/browser-3/mobile-acceptance-2-overflow-daily-start-pixel-7/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/browser-3/mobile-acceptance-2-overflow-daily-start-pixel-7/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/browser-3/mobile-acceptance-2-overflow-daily-start-pixel-7/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  16 failed
+    [chromium] › e2e/layout-shift.spec.ts:100:7 › saved-run reload restore has exactly zero CLS at 360px (SX-06)
+    [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start ─────────────────────
+    [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 ──────────────────
+    [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 ──────────────────
+    [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 ──────────────
+    [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start ────────────────────
+    [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start ─────────────────────
+    [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 ──────────────────
+    [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 ──────────────────
+    [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 ──────────────
+    [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start ────────────────────
+    [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start ───────────────────────
+    [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 ────────────────────
+    [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 ────────────────────
+    [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 ────────────────
+    [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start ──────────────────────
+  50 skipped
+  331 passed (1.4m)

@@ -1,0 +1,77 @@
+
+VERDICT: APPROVE
+CANARY-d07565194cebfac761afc84f
+
+WARNING .github/workflows/ci.yml - this APPROVE does not authorize merge: t
+the exact-head Linux CI for 6568b065043fe42d0739676c09c35ed6036b9067 (734 u
+unit/80 files, 575 browser cases with 51 skips and zero failures, plus mirr
+mirror, seam, packs, contrast, colors, CVD, bundle and data gates) is not y
+yet recorded. Merge only after it is green on this exact SHA, then record t
+the post-merge 8C production receipts.
+WARNING docs/decisions/dispatch-8.md - the current head has no full-suite b
+browser rerun: the 519 pass/51 skip/1 fail run (e2e-current.log) predates t
+the RoadStrip chart fix, so the fixed tree's evidence is the focused 99 (ch
+(chart-final.log), which covers the failing 390px bounds case, the four cha
+chart guards, axe and layout-shift but not the 24 formation/device guards o
+or the 3-target guards; those last passed on the immediately prior tree, wh
+which is honestly recorded, and the gap is closed only by the required Linu
+Linux run, so do not merge on the focused rerun alone.
+WARNING docs/decisions/dispatch-8.md - the 331 pass/50 skip/16 fail and 510
+510 pass/51 skip/10 fail interim browser runs are claimed only in prose wit
+with no committed receipts, and the dispatch cites the 510/51/10 run in the
+the committed RED sequence; attach those logs or qualify them as unaudited
+history. The mandated RED receipts that do exist (short-field 24, actual-pi
+actual-picture 24, chart 4) all match the logs.
+NIT src/components/run/DraftBoard.module.css - the added `.pitch` block fir
+first applies the emphasis trio (surface-emphasis, border-emphasis, shadow-
+shadow-raised, padding 6px) and then a later `.pitch` block cancels every o
+one of those properties, leaving the emphasis entirely on `.board`; delete
+the dead emphasized block so the single emphasized module is explicit.
+NIT src/components/pitch/Pitch.module.css - three separate `@container fiel
+field (max-height: 350px)` blocks size `.tokenSlot` (11px with max-width 26
+26px, then 13px with max-width none, then left/transform), and the later bl
+blocks win only by order; consolidate so the computed cascade is reviewable
+reviewable.
+NIT STATE.md - the Playwright row still says "the last shipped head had 444
+444 pass and 51 skip" although PR 8B shipped 496 pass/51 skip (CI 381506794
+38150679435); the row's new 575 total is correct, so fix the stale historic
+historical count.
+NIT src/components/pitch/Pitch.module.css - the strengthened guards assert
+a 1px clearance while the fix reserves a 2px gap (`.field > .token { gap: 2
+2px }`); a future 1.2px regression would stay green, so consider asserting
+the reserved gap directly with rounding tolerance.
+NIT scripts/audit/theme-figures.mjs - carryover from the 8B review: the gat
+gate still asserts only `numbers` and `fields`; the figures-8c `text` readb
+readback is committed but not gated on a deep comparison, so add the text d
+deep-compare before reusing this script for 8D through 8F.
+NIT docs/reports/dispatch-8/lighthouse-8b/environment.json - file lacks a t
+trailing newline.
+
+Compliance notes for the record: all 8C deliverables are present or honestl
+honestly pending. Draft board gets one emphasized module (`.board` with sur
+surface-emphasis, border-emphasis, shadow-raised); Challenge start and Road
+Road to Final are warm ModuleCards with eyebrow/title/description/body; the
+the pitch keeps only stripe gradients with tokenized border/shadow and AA t
+token name surfaces; names 12px, controls 44px, labels 13/18, buttons 15/20
+15/20; short fields are image-beside-name via the 350px container row layou
+layout. The wheel rim is a 2px accent border, faces alternate surface/surfa
+surface/surface-sunken with 14 percent type/region tints, glow and gradient
+gradients removed, and Wheel.tsx plus all timing and reduced-motion paths a
+are untouched. Chart rounds are keyboard-focusable with opponent/rating/sou
+opponent/rating/source tooltips, honest pre-start explanation, 44px floors,
+floors, in-module scrolling above 599px and the documented two-rows-of-four
+two-rows-of-four phone layout. The original 4-4-2 expected-fail marker is r
+removed with its assertion body unchanged, as the dispatch requires; no oth
+other mobile assertion was weakened. The RED receipts match the numbers cla
+claimed (24, 24, 4, and the 70 pass/1 fail geometry run), the e2e-current f
+full run archives its one remaining chart failure honestly, STATE and figur
+figures counts (575 total, 519/51/1, 99 focused, 734/80, 186/10 per theme,
+593 and 3-0-2 fields, named board rows) reconcile line for line with the re
+receipts, and the 8B lighthouse medians and medians in summary.json reconci
+reconcile with runs.jsonl sample by sample. No engine, data, scouting, imag
+image pack, PlayerImage or import seam file appears in the diff. New styles
+styles use only existing tokens; theme-color-lint, theme-contrast and CVD g
+gates pass; no em dashes or Pokédex flavor text in new copy; Inter remains
+the only font. Results/share (8D), daily/board (8E) and history/help/404/ga
+history/help/404/gate (8F) remain honestly unclaimed, and production 8C ver
+verification is correctly recorded as pending.

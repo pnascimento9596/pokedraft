@@ -1,4 +1,5 @@
-import { LEGACY_CARD } from "@/design/card-tokens";
+import { CARD_THEME } from "@/design/card-tokens";
+import { cardFonts } from "@/components/share/card-fonts";
 import { ImageResponse } from "next/og";
 import { CARD_SIZE, Card, runCardModel } from "@/components/share/card";
 import { CARD_CACHE_CONTROL, cardImages } from "@/components/share/card-images";
@@ -20,19 +21,21 @@ export default async function Image({ params }: { params: Promise<{ token: strin
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: LEGACY_CARD.canvas,
-          color: LEGACY_CARD.ink,
+          background: CARD_THEME.canvas,
+          color: CARD_THEME.ink,
           fontSize: 48,
+          fontFamily: "Inter",
         }}
       >
         pokedraft: broken run link
       </div>,
-      { ...size, headers: { "cache-control": "public, max-age=3600" } },
+      { ...size, fonts: await cardFonts(), headers: { "cache-control": "public, max-age=3600" } },
     );
   }
   const model = runCardModel(run);
   return new ImageResponse(<Card model={model} images={await cardImages(model)} />, {
     ...size,
+    fonts: await cardFonts(),
     headers: { "cache-control": CARD_CACHE_CONTROL },
   });
 }

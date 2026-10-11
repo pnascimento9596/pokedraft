@@ -1,0 +1,10 @@
+$ vitest run src/app/card/__tests__/route.test.ts 'src/app/r/[token]/__tests__/opengraph-image.test.ts' --maxWorkers=4
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/results-share
+
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  16:08:59
+   Duration  1.12s (import 44%, transform 36%, tests 20%)
+
