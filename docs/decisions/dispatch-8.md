@@ -76,3 +76,9 @@ The theme PRs, Appendix A commit, component and visual snapshots, before screens
 - MCP access: Neon verified the pokedraft project and its main/preview branches without connection strings. Render OAuth succeeded and tools loaded. Per the user's reply, Render stays unselected. Computer Use's skill loaded, but this session exposes no node_repl runtime; Computer Use operations are NOT RUN. Playwright remains available.
 
 The later checkpoint supersedes the initial screenshot and source-document availability entries only. It does not establish a Lighthouse measurement, independent approval, merge or production health proof.
+
+### PR 8.0 independent review and durable evidence
+
+GLM 5.3 Flash approved pushed head `269ea75a3465e5c7defc3f15ca251b0fc52ca9bb`, with a valid echoed canary. Linux CI run `38128867885` passed: 705 unit/component tests in 76 files, 444 Playwright tests passed and 51 skipped. The reviewer identified stale STATE counts, mutable measurement action tags and local-only evidence references. Before shipment, this lane corrected STATE, pinned the measurement actions to their verified upstream commit SHAs, and archived the receipts and before captures in `docs/reports/dispatch-8/`. The changed head requires a new review.
+
+The `.mjs` import specifier for the `.mts` measurement helper follows TypeScript's output-extension resolution and is verified by typecheck, Vitest and tsx. Retained token versions currently exclude the live version by contract; the health test asserts the literal supported set `[1, 2, 3]`. No speculative version semantics change was added.

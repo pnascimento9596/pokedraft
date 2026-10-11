@@ -1,0 +1,279 @@
+{
+  "source": "https://pokedraft-woad.vercel.app",
+  "sha": "87c7633f6b367f989df29203770ee0f6d8f84a07",
+  "capturedAt": "2026-10-11",
+  "images": [
+    {
+      "file": "extra/gate__1440__dark.webp",
+      "originalSha256": "b8f8bf3e18fcaaeeb8773ae26ac82b16536f226c7c68b724bea4f9bbda0904fc"
+    },
+    {
+      "file": "extra/gate__1440__light.webp",
+      "originalSha256": "1e617fdd9e851978dc8e317ce95b18c2137a6aa675c9eee257c3f21b45308dd9"
+    },
+    {
+      "file": "extra/gate__390__dark.webp",
+      "originalSha256": "30ce25617f3121cb83db886d7be63756e7899fe8e0a3d6a123449d1b5d42ee2a"
+    },
+    {
+      "file": "extra/gate__390__light.webp",
+      "originalSha256": "b759a7196561f12f5cd6a8656d537a34f2bb80e489f2ae3e2c6b4d27557a093d"
+    },
+    {
+      "file": "extra/missing-replay__1440__dark.webp",
+      "originalSha256": "847f295a238694fa1a890aae61cf6c33d0113110fad3f839b5f25a1dd567f7df"
+    },
+    {
+      "file": "extra/missing-replay__1440__light.webp",
+      "originalSha256": "643e172ab09439acff3db0f2d387ff4ff93f3d35057b4d04d7670715d9236643"
+    },
+    {
+      "file": "extra/missing-replay__390__dark.webp",
+      "originalSha256": "939e96adc0148f4b63e1e735523a4c0ba0280588005d15d581f651ac84df50f6"
+    },
+    {
+      "file": "extra/missing-replay__390__light.webp",
+      "originalSha256": "c3e97e414decb678a3ebcec82aed7f9afbf6a225347e15d88d56abe613990f64"
+    },
+    {
+      "file": "interaction/builder-full__1440__dark.webp",
+      "originalSha256": "64f898a252ac1d2fc052548f9a94a115cb7737554f39dd5a8cc6fb1b794019df"
+    },
+    {
+      "file": "interaction/builder-full__1440__light.webp",
+      "originalSha256": "ed32121c1ad8b331bbbec27764514de383a15f9e2b48fafb9a711b821e1cdd77"
+    },
+    {
+      "file": "interaction/builder-full__390__dark.webp",
+      "originalSha256": "e7910f8da7d58c3c01b5712dc5b4a6a14e412560270754a7ec0b69a8c8d24113"
+    },
+    {
+      "file": "interaction/builder-full__390__light.webp",
+      "originalSha256": "fedfa2d578ddb7b857ef74c1da85ced00fffb161268e99264d0dfdc6d80d9dd1"
+    },
+    {
+      "file": "interaction/draft__1440__dark.webp",
+      "originalSha256": "edda1c8a889e779e5837d8ae9418bbb2ee8c62d7d572083fc3dcdcc971683337"
+    },
+    {
+      "file": "interaction/draft__1440__light.webp",
+      "originalSha256": "50bb8a40adcd1f49e25244ee4893d7e4e5e8d438b2889947a464c3dcb4de892c"
+    },
+    {
+      "file": "interaction/draft__390__dark.webp",
+      "originalSha256": "beb1c84b6ec64c694d127c2dc182cdf2d79b7ca8e213dbf9e9c33e51524d64b6"
+    },
+    {
+      "file": "interaction/draft__390__light.webp",
+      "originalSha256": "c0949a1fadb496a829db40b692f070aa701a227c01528540bd9a04476ca177d5"
+    },
+    {
+      "file": "interaction/picker__1440__dark.webp",
+      "originalSha256": "77a25aaf095dc9b08d72a546b649ff9b6893a37ee09ed2e47b0be3cf4ea37106"
+    },
+    {
+      "file": "interaction/picker__1440__light.webp",
+      "originalSha256": "61e1961b6e19d4977c1f1125a8c03a285b73f50025365fc46f5cda2e35f4026e"
+    },
+    {
+      "file": "interaction/picker__390__dark.webp",
+      "originalSha256": "134dacfbf7b0494ade1e93393e0d7cc2bd9eaa405b9f76919ceb092e890a1f33"
+    },
+    {
+      "file": "interaction/picker__390__light.webp",
+      "originalSha256": "95d6b086ce9132e519b3b3468c82bc307750d24b53b79d2b36eb2ceaadd772f5"
+    },
+    {
+      "file": "shots/prod/daily__1440x900__dark.webp",
+      "originalSha256": "3cb0a5aed593ab274171034ff488b89aa7472f44b435f93ef899339f41a19ae4"
+    },
+    {
+      "file": "shots/prod/daily__1440x900__light.webp",
+      "originalSha256": "583ad61cc28674807914e64233883a2dfb4e1ed11124e124ccc37e02a9f866b2"
+    },
+    {
+      "file": "shots/prod/daily__390x844__dark.webp",
+      "originalSha256": "a9d33f4565406bd31dd5edaba1face2101df3fc041b3bf9eaa9b27effe48f180"
+    },
+    {
+      "file": "shots/prod/daily__390x844__dark__full.webp",
+      "originalSha256": "55e9e9e50feecf96ae760d4451e887dc7d9ec0511e9bcb8a343a3a5e9fbf412e"
+    },
+    {
+      "file": "shots/prod/daily__390x844__light.webp",
+      "originalSha256": "e2ccb7e72636ed9088b047b1089582361387b73ce4d63b6fe2a345147667a825"
+    },
+    {
+      "file": "shots/prod/daily__390x844__light__full.webp",
+      "originalSha256": "94140e64c3b3e78dd351c7eaac28aaa4bb17df618827849d74fbf74e3dd6ce46"
+    },
+    {
+      "file": "shots/prod/history__1440x900__dark.webp",
+      "originalSha256": "6a7c6b6224ada7d7f3eacc6eddb6f9c9a0c9e7b3bb66ed115bd9313618f37990"
+    },
+    {
+      "file": "shots/prod/history__1440x900__light.webp",
+      "originalSha256": "de1c2b5e84b02a0935b58b970618e5188b494f8f471eba20f88840b613527bdc"
+    },
+    {
+      "file": "shots/prod/history__390x844__dark.webp",
+      "originalSha256": "ab91b72380fc5c10ced029a3f41c8d7d567ca0db2387a10284763c9af1bc1cd7"
+    },
+    {
+      "file": "shots/prod/history__390x844__dark__full.webp",
+      "originalSha256": "ab91b72380fc5c10ced029a3f41c8d7d567ca0db2387a10284763c9af1bc1cd7"
+    },
+    {
+      "file": "shots/prod/history__390x844__light.webp",
+      "originalSha256": "d97b9a93f15936aa2c6ede3bd8f3ceaecf91a926d01bcf4eec21a26f6186dc9f"
+    },
+    {
+      "file": "shots/prod/history__390x844__light__full.webp",
+      "originalSha256": "d97b9a93f15936aa2c6ede3bd8f3ceaecf91a926d01bcf4eec21a26f6186dc9f"
+    },
+    {
+      "file": "shots/prod/home__1440x900__dark.webp",
+      "originalSha256": "3eb0d1c490f76d791f906c138d68693dca29a4b88f0a49c4a55d5dbd926ef5c2"
+    },
+    {
+      "file": "shots/prod/home__1440x900__light.webp",
+      "originalSha256": "bf05cf32c01118c14edd45b1143a743042c688dc1694292ec97c1a8736c413c1"
+    },
+    {
+      "file": "shots/prod/home__390x844__dark.webp",
+      "originalSha256": "f04901d5c96abda8eb95a3dabd96b7d8ec10767f21af30894a5c1b4bdbb72aeb"
+    },
+    {
+      "file": "shots/prod/home__390x844__dark__full.webp",
+      "originalSha256": "4139f2a4050e004038ca6ded9f4c66cd367431101a8da14d2b20908005955638"
+    },
+    {
+      "file": "shots/prod/home__390x844__light.webp",
+      "originalSha256": "bd21c427e82561c9529c42c684b5150c739f9014526178d0137a9bc1677c1431"
+    },
+    {
+      "file": "shots/prod/home__390x844__light__full.webp",
+      "originalSha256": "e1212f9067d55ab73e79c0e4f1df4545005de590b7f6dc9d9904efb596dfd05e"
+    },
+    {
+      "file": "shots/prod/how-to-play__1440x900__dark.webp",
+      "originalSha256": "47e380b219a3bf8d0e7510a1d13194aa5fa56e4f1cc7e1c791197dfeb8eae5a7"
+    },
+    {
+      "file": "shots/prod/how-to-play__1440x900__light.webp",
+      "originalSha256": "af238cddede9763fcd9616143d85123ca716674fbb9cdbe9239d45b0e2f1a319"
+    },
+    {
+      "file": "shots/prod/how-to-play__390x844__dark.webp",
+      "originalSha256": "449cad989d6d956a70d855334dc1aa56a1776c9964be8e6473c02cb7cb413ad0"
+    },
+    {
+      "file": "shots/prod/how-to-play__390x844__dark__full.webp",
+      "originalSha256": "e0a5fec046162a077500e0d772c51a585c3ce304547f68dde573b2cdb2eec4b0"
+    },
+    {
+      "file": "shots/prod/how-to-play__390x844__light.webp",
+      "originalSha256": "597361c44dfd301c3bead158bfc6c4454116211732f9087704851ebbd629df98"
+    },
+    {
+      "file": "shots/prod/how-to-play__390x844__light__full.webp",
+      "originalSha256": "901ee801a92e169bd636ed4339ea83671899f381117cf5f4f25c6aaa3a599b44"
+    },
+    {
+      "file": "shots/prod/leaderboard__1440x900__dark.webp",
+      "originalSha256": "8968dafe9fd7cea576824214b4a4eeb0461df6daddc5a6987a95b5d086a0fb07"
+    },
+    {
+      "file": "shots/prod/leaderboard__1440x900__light.webp",
+      "originalSha256": "9ef10e2a4f07a726cf5885f7fd0d33884dd32387fa8420fa05b67f6997243c7c"
+    },
+    {
+      "file": "shots/prod/leaderboard__390x844__dark.webp",
+      "originalSha256": "194adae3202b0dede0629728e2aa3a163625c42536524536d35a82810e2852a8"
+    },
+    {
+      "file": "shots/prod/leaderboard__390x844__dark__full.webp",
+      "originalSha256": "194adae3202b0dede0629728e2aa3a163625c42536524536d35a82810e2852a8"
+    },
+    {
+      "file": "shots/prod/leaderboard__390x844__light.webp",
+      "originalSha256": "65b3c88c2120b5d62f3d346de43cec4d22d4ae3ae6f6b2dee3e03d8d903fae6d"
+    },
+    {
+      "file": "shots/prod/leaderboard__390x844__light__full.webp",
+      "originalSha256": "65b3c88c2120b5d62f3d346de43cec4d22d4ae3ae6f6b2dee3e03d8d903fae6d"
+    },
+    {
+      "file": "shots/prod/not-found__1440x900__dark.webp",
+      "originalSha256": "6117073e6540ca17182be85dd96697af731c9bbc391ab8b9c4ba32a27b5119bc"
+    },
+    {
+      "file": "shots/prod/not-found__1440x900__light.webp",
+      "originalSha256": "1b51550fb80525590fa55c66b764476f6a52d08024e8b599360b140f233d5a9d"
+    },
+    {
+      "file": "shots/prod/not-found__390x844__dark.webp",
+      "originalSha256": "d22196537881e9f8ad416b94fbd34d82c0a7b03e1e59b3d9389b62bebacd154e"
+    },
+    {
+      "file": "shots/prod/not-found__390x844__dark__full.webp",
+      "originalSha256": "d22196537881e9f8ad416b94fbd34d82c0a7b03e1e59b3d9389b62bebacd154e"
+    },
+    {
+      "file": "shots/prod/not-found__390x844__light.webp",
+      "originalSha256": "618e36ffeb5f0b91627e4aa4e15f331cc59a4033825f132f3e71b741d9aac719"
+    },
+    {
+      "file": "shots/prod/not-found__390x844__light__full.webp",
+      "originalSha256": "618e36ffeb5f0b91627e4aa4e15f331cc59a4033825f132f3e71b741d9aac719"
+    },
+    {
+      "file": "shots/prod/play__1440x900__dark.webp",
+      "originalSha256": "f296efde9f633b7d480cb6a6019ada92bf765a2269e7c419492018162ec4f3dd"
+    },
+    {
+      "file": "shots/prod/play__1440x900__light.webp",
+      "originalSha256": "43f9c2f5166dc4bf8a195d8e74226fa88670537d403089d2bd2ae14dd1213255"
+    },
+    {
+      "file": "shots/prod/play__390x844__dark.webp",
+      "originalSha256": "72197bb6cb1164996588ffde4d015db2365a3e9ba6ba6ca25abe0cca96f3a090"
+    },
+    {
+      "file": "shots/prod/play__390x844__dark__full.webp",
+      "originalSha256": "72197bb6cb1164996588ffde4d015db2365a3e9ba6ba6ca25abe0cca96f3a090"
+    },
+    {
+      "file": "shots/prod/play__390x844__light.webp",
+      "originalSha256": "12ffaf6d94ed7bd9a309fae3c03205ce80bf409f57bb520261e8d5af3f2d5b24"
+    },
+    {
+      "file": "shots/prod/play__390x844__light__full.webp",
+      "originalSha256": "12ffaf6d94ed7bd9a309fae3c03205ce80bf409f57bb520261e8d5af3f2d5b24"
+    },
+    {
+      "file": "shots/prod/run__1440x900__dark.webp",
+      "originalSha256": "f57596f80ca5c51ef5e5efc75ab6edbd05fc008675e70c043d98ac6db995be23"
+    },
+    {
+      "file": "shots/prod/run__1440x900__light.webp",
+      "originalSha256": "eb9db187074961ee0eeb4460fdd1acfc2c03ccb1b8f60fc015fe4cb92f3f3114"
+    },
+    {
+      "file": "shots/prod/run__390x844__dark.webp",
+      "originalSha256": "d706bacd542900ccf48769da0adf44385934061d909239f7e82e725c67409ed3"
+    },
+    {
+      "file": "shots/prod/run__390x844__dark__full.webp",
+      "originalSha256": "a74e11486a7b05dd26f28b0f3904c054418bfe386abde519046f581db2fbffd8"
+    },
+    {
+      "file": "shots/prod/run__390x844__light.webp",
+      "originalSha256": "dd2064ce7de47f0db433f8b58d0b701a8f878d8275f616e890f09c26c68cd371"
+    },
+    {
+      "file": "shots/prod/run__390x844__light__full.webp",
+      "originalSha256": "2cb5f2ad0ec6673c1756466cfa8a560f5bf9f641bf8722dc88bc8f12daa779da"
+    }
+  ]
+}
