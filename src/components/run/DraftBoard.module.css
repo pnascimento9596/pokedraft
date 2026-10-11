@@ -49,8 +49,8 @@
   padding: 12px 14px;
   border-radius: var(--radius);
   border: 1px solid var(--line);
-  background: linear-gradient(90deg, rgba(255, 210, 63, 0.1), transparent 55%), var(--bg-raised);
-  border-left: 4px solid var(--flood);
+  background: var(--surface);
+  box-shadow: var(--shadow-rest);
 }
 
 .titleRow {
@@ -227,9 +227,7 @@
   padding: 14px 8px 12px;
   border-radius: var(--radius);
   border: 1px solid var(--line-strong);
-  background:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255, 210, 63, 0.1), transparent 70%),
-    var(--bg-raised);
+  background: var(--surface-sunken);
   cursor: pointer;
   text-align: center;
 }
@@ -245,9 +243,7 @@
 .row[aria-pressed="true"],
 .card[aria-pressed="true"] {
   border-color: var(--flood-line);
-  box-shadow:
-    0 0 0 2px var(--flood-line),
-    0 0 18px rgba(255, 210, 63, 0.25);
+  box-shadow: 0 0 0 2px var(--link);
 }
 
 .row:hover,
@@ -307,7 +303,7 @@
   justify-content: flex-end;
 }
 
-/* Open slots glow while a player is selected or a slot must be chosen. */
+/* Selected players show which empty slots accept the pick. */
 .pitch[data-armed] :global([data-testid^="slot-"][data-filled="false"]) {
   border-radius: 12px;
   outline: 2px dashed var(--flood-line);
@@ -565,5 +561,77 @@
 
   .round {
     font-size: 1.5rem;
+  }
+}
+
+.pitch {
+  background: var(--surface-emphasis);
+  border: 1px solid var(--border-emphasis);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised);
+  padding: 6px;
+}
+.header {
+  border-radius: var(--radius-lg);
+}
+.regionTag,
+.prompt,
+.candName {
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.regionTag,
+.prompt {
+  font-size: 13px;
+  line-height: 18px;
+}
+.count,
+.candDex {
+  font-size: 13px;
+  line-height: 18px;
+}
+.row {
+  padding-block: 10px;
+  border-color: var(--border-soft);
+  background: var(--surface);
+}
+.candName,
+.card .candName {
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.board {
+  background: var(--surface-emphasis);
+  border: 1px solid var(--border-emphasis);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised);
+  padding: 16px;
+}
+.header {
+  border: 0;
+  box-shadow: none;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--border-soft);
+  background: transparent;
+}
+.titleRow > :global(.kicker) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pitch {
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+@media (max-width: 480px) {
+  .board {
+    --pitch-h: max(
+      208px,
+      calc(100svh - var(--site-header-h) - 254px - env(safe-area-inset-bottom, 0px))
+    );
   }
 }

@@ -169,21 +169,10 @@ test.describe("scrollable regions at 320 px", () => {
   }
 });
 
-// Theme 7F. In 4-4-2 the centre-backs stand 15 rows above the keeper and 13 columns to each side,
-// so on a short phone pitch their names ran into the keeper's picture once the squad was full.
-// Still red on iPhone SE: its 227 px field puts the centre-backs' pictures 30 px above the keeper's,
-// and a token is 58 px tall, so only the side gap keeps them apart, and a 40 px name closes it. In
-// 3-5-2 the middle centre-back covers the keeper outright. That needs a short-field token layout
-// (the 7C fit tier), not a swap fix, so it is marked here and turns green with that layout.
-// Pixel 7 (412x839) fails the same way: LCB Excadrill name 139-184 x 502-515 and RCB Bergmite name
-// 226-274 x 502-515 against keeper picture 184-228 x 506-550, measured on CI 2026-10-11.
+// Dispatch8 short-field layout resolves the retained4-4-2 regression on all three devices.
 test("at draft complete in 4-4-2, no centre-back's name touches the keeper's picture", async ({
   page,
 }) => {
-  test.fail(
-    test.info().project.name !== "iphone-14",
-    "carryover to the short-field layout: LCB Excadrill and RCB Bergmite names touch the keeper's picture on a short field",
-  );
   await start(page, PLAY_8_0);
   await draftRounds(page, 16);
   await expect(page.getByTestId("see-results")).toBeVisible();

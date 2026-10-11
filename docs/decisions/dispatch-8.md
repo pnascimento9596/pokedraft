@@ -161,3 +161,20 @@ The rebased full local browser run recorded490 passes,51 skips and6 failures. Th
 ### PR 8C short-field guards before implementation
 
 A literal eight-formation matrix on iPhone SE, iPhone14 and Pixel7 fails24 cases against the unchanged8B build. It checks every starter name against every other picture and requires12px names at390px and wider. RED includes keeper and other line collisions, beyond the original4-4-2 carryover. The existing expected-fail remains unchanged until the layout is corrected.
+
+
+### PR 8B shipped and production verified
+
+PR #27 squash6e7d34e6071f21c976f875a0cbb1b7303407054e, reviewed249a6dd5151bbe52899600ade150f0ca50a2a970, GLM5.3Flash APPROVE with verified canary. LinuxCI38150679435 passed734 tests/80files and496 browser cases/51skips. Vercel initialpreview failed pre-build with git_info_fail, no build events; retry pinned to the same immutable GitSHA succeeded asdpl_2pKSfi6qjGtfR6KSbbTQbMCuqYB8. No paid tier, source change or production promotion was used for the retry. Official MCP documentation specifies that omitting target creates a preview; explicit target preview was rejected400 before any deployment, then corrected.
+
+Productiondpl_Aiwm5aTj3vb9uwk3imYYJvtaXQTH is READY. First cache-busted health proves mergeSHA andno-store. Live4 passed; unchangedmobile242 passed/46skipped. Exact dailyverify-bot8b2e004b-fce6-40ef-aa73-cbe73e5019d7 deleted with id/name/mode/date predicate; readbackcount0. Eight production390px captures coverhome, filled ratedbuilder,picker,emptysearchinbothschemes, overflow0. GitHubUbuntuLighthouse38151791031 is running againstthe8Bmerge; no numbers claimed untilcomplete.
+
+Reviewer16pxinput concern was verified in a real390pxbrowser: Formationselect16px andpickersearch16px, supplied by theglobalinput/select/textarea floor. The full post-fixLinuxsuite resolves the earlier6 local failures. The checkpoint STATE count is corrected inthis nextPR; no commits were made after8BAPPROVE. The numbers-only gate deliberately allowsprose/layout changes, as the dispatch requests; verbatimtext remains retained. REDbuilder receipt is now archived. The picker count and reason-bearingempty state remain two shortmessages; no accessibility violation is claimed from that duplication.
+
+### PR 8C draft and wheel implementation checkpoint
+
+The draft becomes the single emphasizedmodule with a warm pitch, quiet token depth and palette name surfaces. The short-field layout puts picture and name beside eachother, keeps44px token targets and12px names, and removes the originalexpected-fail onlyafter the24 formation/device guards pass. No formation positions, engine actions, seed/timing functions or PlayerImage implementation changed. Pitch stripes are the onlyremaining gradients inthis area. Wheel segments alternate palette surfaces with14% tint, accentrim and the existingtiming/reduced-motion path.
+
+Challenge starts and RoadtoFinal use titledModuleCard headers. Chart marks gain keyboard-accessible detailtriggers with opponent/rating/source, neutral missing-opponent reason and internallyscrolling44px columns. The same source figures and ladderheight calculations remain. A narrow unit check22/2 and full734/80 pass; palette/color/CVD/type/build/image/bundle checks pass.
+
+The first broadbrowser run recorded331 passes,50skips and16 failures:15 overflow failures from absolute tooltipwrappers inside the internal chart scroller, plus360px restored-resultCLS0.08412322274881516. Tooltip triggers now remain in flow and panels stay within the viewport. The play page reserves at least oneviewport of content height so a compactstart footer does not move visibly while a saved result restores. No guard was relaxed. The corrected focusedrun44/44 passes:24 allformation/device pairs,3 original4-4-2 cases,15 affectedoverflow cases and2 strictzero restoredCLS cases. Full finalbrowserverification after rebasingonto shipped8B is pending. Beforematrix16 captures includesstart,draft,completed squad andspinningwheel at390/1440both themes; aftermatrix andnumericdiff stilldue.

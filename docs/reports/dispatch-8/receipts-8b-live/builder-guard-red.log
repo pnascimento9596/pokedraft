@@ -1,0 +1,214 @@
+
+Running 9 tests using 4 workers
+
+(node:47809) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47807) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47810) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47808) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › e2e/layout-shift.spec.ts:24:7 › no layout shift while /daily loads on a phone (3.9s)
+  ✓  3 [chromium] › e2e/layout-shift.spec.ts:65:7 › ratings-on builder cold load has exactly zero CLS at 360px (SX-02) (3.9s)
+  ✓  2 [chromium] › e2e/layout-shift.spec.ts:24:7 › no layout shift while /r/pd3.W1siYyIsIjQtMi0zL loads on a phone (4.0s)
+  ✓  4 [chromium] › e2e/layout-shift.spec.ts:24:7 › no layout shift while /play?mode=kanto151&f=4- loads on a phone (4.0s)
+  ✘  6 [chromium] › e2e/theme-builder.spec.ts:9:9 › 390 light ratings on › filled builder names include their visible ratings (SX-03) (744ms)
+  ✘  7 [chromium] › e2e/theme-builder.spec.ts:9:9 › 390 dark ratings on › filled builder names include their visible ratings (SX-03) (756ms)
+(node:47871) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  8 [chromium] › e2e/theme-builder.spec.ts:9:9 › 1440 light ratings on › filled builder names include their visible ratings (SX-03) (840ms)
+  ✘  9 [chromium] › e2e/theme-builder.spec.ts:9:9 › 1440 dark ratings on › filled builder names include their visible ratings (SX-03) (830ms)
+  ✓  5 [chromium] › e2e/layout-shift.spec.ts:65:7 › ratings-on builder cold load has exactly zero CLS at 390px (SX-02) (3.3s)
+
+
+  1) [chromium] › e2e/theme-builder.spec.ts:9:9 › 390 light ratings on › filled builder names include their visible ratings (SX-03)
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 18
+
+    - Array []
+    + Array [
+    +   "label-content-name-mismatch: button[data-slot-key=\"s0\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s1\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s2\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s3\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s4\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s5\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s6\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s7\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s8\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s9\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s10\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b0\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b1\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b2\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b3\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b4\"]",
+    + ]
+
+      16 |         rules: { "label-content-name-mismatch": { enabled: true }, "image-redundant-alt": { enabled: true } },
+      17 |       }).analyze();
+    > 18 |       expect(result.violations.flatMap(v => v.nodes.map(n => `${v.id}: ${n.target.join(" ")}`))).toEqual([]);
+         |                                                                                                  ^
+      19 |     });
+      20 |   });
+      21 | }
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/home-builder/e2e/theme-builder.spec.ts:18:98
+
+    Error Context: test-results/theme-builder-390-light-ra-3ef58-heir-visible-ratings-SX-03--chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/theme-builder-390-light-ra-3ef58-heir-visible-ratings-SX-03--chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/theme-builder-390-light-ra-3ef58-heir-visible-ratings-SX-03--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/theme-builder.spec.ts:9:9 › 390 dark ratings on › filled builder names include their visible ratings (SX-03)
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 18
+
+    - Array []
+    + Array [
+    +   "label-content-name-mismatch: button[data-slot-key=\"s0\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s1\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s2\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s3\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s4\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s5\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s6\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s7\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s8\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s9\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s10\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b0\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b1\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b2\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b3\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b4\"]",
+    + ]
+
+      16 |         rules: { "label-content-name-mismatch": { enabled: true }, "image-redundant-alt": { enabled: true } },
+      17 |       }).analyze();
+    > 18 |       expect(result.violations.flatMap(v => v.nodes.map(n => `${v.id}: ${n.target.join(" ")}`))).toEqual([]);
+         |                                                                                                  ^
+      19 |     });
+      20 |   });
+      21 | }
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/home-builder/e2e/theme-builder.spec.ts:18:98
+
+    Error Context: test-results/theme-builder-390-dark-rat-1b715-heir-visible-ratings-SX-03--chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/theme-builder-390-dark-rat-1b715-heir-visible-ratings-SX-03--chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/theme-builder-390-dark-rat-1b715-heir-visible-ratings-SX-03--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/theme-builder.spec.ts:9:9 › 1440 light ratings on › filled builder names include their visible ratings (SX-03)
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 18
+
+    - Array []
+    + Array [
+    +   "label-content-name-mismatch: button[data-slot-key=\"s0\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s1\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s2\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s3\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s4\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s5\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s6\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s7\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s8\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s9\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s10\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b0\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b1\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b2\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b3\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b4\"]",
+    + ]
+
+      16 |         rules: { "label-content-name-mismatch": { enabled: true }, "image-redundant-alt": { enabled: true } },
+      17 |       }).analyze();
+    > 18 |       expect(result.violations.flatMap(v => v.nodes.map(n => `${v.id}: ${n.target.join(" ")}`))).toEqual([]);
+         |                                                                                                  ^
+      19 |     });
+      20 |   });
+      21 | }
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/home-builder/e2e/theme-builder.spec.ts:18:98
+
+    Error Context: test-results/theme-builder-1440-light-r-bd22c-heir-visible-ratings-SX-03--chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/theme-builder-1440-light-r-bd22c-heir-visible-ratings-SX-03--chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/theme-builder-1440-light-r-bd22c-heir-visible-ratings-SX-03--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/theme-builder.spec.ts:9:9 › 1440 dark ratings on › filled builder names include their visible ratings (SX-03)
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 18
+
+    - Array []
+    + Array [
+    +   "label-content-name-mismatch: button[data-slot-key=\"s0\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s1\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s2\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s3\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s4\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s5\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s6\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s7\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s8\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s9\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"s10\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b0\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b1\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b2\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b3\"]",
+    +   "label-content-name-mismatch: button[data-slot-key=\"b4\"]",
+    + ]
+
+      16 |         rules: { "label-content-name-mismatch": { enabled: true }, "image-redundant-alt": { enabled: true } },
+      17 |       }).analyze();
+    > 18 |       expect(result.violations.flatMap(v => v.nodes.map(n => `${v.id}: ${n.target.join(" ")}`))).toEqual([]);
+         |                                                                                                  ^
+      19 |     });
+      20 |   });
+      21 | }
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/home-builder/e2e/theme-builder.spec.ts:18:98
+
+    Error Context: test-results/theme-builder-1440-dark-ra-68fb0-heir-visible-ratings-SX-03--chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/theme-builder-1440-dark-ra-68fb0-heir-visible-ratings-SX-03--chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/theme-builder-1440-dark-ra-68fb0-heir-visible-ratings-SX-03--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › e2e/theme-builder.spec.ts:9:9 › 390 light ratings on › filled builder names include their visible ratings (SX-03)
+    [chromium] › e2e/theme-builder.spec.ts:9:9 › 390 dark ratings on › filled builder names include their visible ratings (SX-03)
+    [chromium] › e2e/theme-builder.spec.ts:9:9 › 1440 light ratings on › filled builder names include their visible ratings (SX-03)
+    [chromium] › e2e/theme-builder.spec.ts:9:9 › 1440 dark ratings on › filled builder names include their visible ratings (SX-03)
+  5 passed (9.0s)

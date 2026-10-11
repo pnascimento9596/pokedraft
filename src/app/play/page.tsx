@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PlayScreen } from "@/components/run/PlayScreen";
+import s from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "Challenge run · pokedraft",
@@ -17,7 +18,7 @@ async function PlayContent() {
 
 export default function PlayPage() {
   return (
-    <main className="page">
+    <main className={`page ${s.page}`}>
       <Suspense fallback={<p className="kicker page-loading">Loading the challenge</p>}>
         <PlayContent />
       </Suspense>

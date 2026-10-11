@@ -1,10 +1,11 @@
-import { useId, useMemo, type CSSProperties } from "react";
+import { useMemo, type CSSProperties } from "react";
 import { ENGINE_COEFFICIENTS } from "@/engine/coefficients";
 import { buildLadder } from "@/engine/opponents";
 import { CUP_ROUNDS, type Mode } from "@/engine/types";
 
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import s from "./RoadStrip.module.css";
+import { ModuleCard, Tooltip } from "@/components/ui/primitives";
 
 const BIG_JUMP = new Set(["R32", "R16", "QF", "SF", "F"]);
 // Before a seed exists the bars follow the shape of the coefficient table. No number is printed.
@@ -22,19 +23,24 @@ export function RoadStrip({
   readonly mode: Mode;
   readonly compact?: boolean;
 }) {
-  const titleId = useId();
   const ladder = useMemo(() => (seed === null ? null : buildLadder(seed, mode)), [seed, mode]);
   const heights = CUP_ROUNDS.map((round) => ladder?.[round].score ?? SHAPE[round]);
   const top = Math.max(...heights);
   return (
-    <section className={s.road} data-compact={compact || undefined} aria-labelledby={titleId}>
-      <div className={s.head}>
-        <h2 id={titleId} className={s.title}>
-          Road to the Final
-        </h2>
-        <span className="kicker">Your opponents</span>
-      </div>
-      <ol className={s.steps}>
+    <ModuleCard
+      className={s.road}
+      data-compact={compact || undefined}
+      eyebrow="Your opponents"
+      title="Road to the Final"
+      description={
+        compact && ladder !== null
+          ? "The exact opponents for this run."
+          : ladder === null
+            ? "Your opponents are set the moment you start the run."
+            : "Opponent ratings climb. The group stage is the gentle start; every knockout round is a step up, and the Final is the hardest test."
+      }
+    >
+      <ol className={s.steps} tabIndex={0} aria-label="Cup rounds">
         {CUP_ROUNDS.map((round, i) => {
           const opponent = ladder?.[round] ?? null;
           return (
@@ -48,6 +54,19 @@ export function RoadStrip({
                 {opponent === null ? NO_RATING : opponent.score}
               </span>
               <span className={s.bar} aria-hidden="true" />
+              <Tooltip
+                label={`${ROUND_LABEL[round]} details`}
+                title={ROUND_LABEL[round]}
+                rows={
+                  opponent === null
+                    ? [{ key: "Opponent", value: "Set when the run starts" }]
+                    : [
+                        { key: "Opponent", value: opponent.name },
+                        { key: "Rating", value: `Rating ${opponent.score}` },
+                      ]
+                }
+                source="This run's seeded cup"
+              />
               <span className={s.round} aria-hidden="true">
                 {ROUND_SHORT[round]}
               </span>
@@ -60,13 +79,6 @@ export function RoadStrip({
           );
         })}
       </ol>
-      {compact ? null : (
-        <p className={s.caption}>
-          {ladder === null
-            ? "Your opponents are set the moment you start the run."
-            : "Opponent ratings climb. The group stage is the gentle start; every knockout round is a step up, and the Final is the hardest test."}
-        </p>
-      )}
-    </section>
+    </ModuleCard>
   );
 }
