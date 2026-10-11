@@ -92,7 +92,7 @@ function showRatings() {
 // The first tap on an idle builder loads the engine with import(), so the sheet opens a tick later.
 async function openPicker(slotName: string) {
   fireEvent.click(screen.getByRole("button", { name: slotName }));
-  return screen.findByRole("dialog");
+  return screen.findByRole("dialog", undefined, { timeout: 10_000 });
 }
 
 describe("builder drag and swap", () => {

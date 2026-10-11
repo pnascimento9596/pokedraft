@@ -37,9 +37,10 @@ afterEach(() => {
 });
 
 // Start loads the draft (and the species data) with import(), so the board appears a tick later.
+// The first import in a file transforms the data modules, which can pass 1 s on a busy machine.
 async function start(): Promise<void> {
   fireEvent.click(screen.getByTestId("run-start"));
-  await screen.findByTestId("round-header");
+  await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
 }
 
 describe("challenge run screen", () => {
