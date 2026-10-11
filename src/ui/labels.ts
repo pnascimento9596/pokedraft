@@ -7,6 +7,7 @@ import type {
   Mode,
   PokemonType,
   Region,
+  Role,
 } from "@/engine";
 
 export const REGION_LABEL: Readonly<Record<Region, string>> = {
@@ -70,6 +71,12 @@ export const ROUND_LABEL: Readonly<Record<CupRound, string>> = {
   F: "Final",
 };
 
+// How to Play and the results rules share this so they cannot drift apart again. It holds for
+// every retained engine, because from the Round of 16 to the Final each round's nominal rating
+// clears the round before by more than twice the ladder jitter.
+export const LADDER_SHAPE =
+  "The group games are the gentle start. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test.";
+
 export const ROUND_SHORT: Readonly<Record<CupRound, string>> = {
   G1: "G1",
   G2: "G2",
@@ -90,6 +97,34 @@ export const FINISH_LABEL: Readonly<Record<CupFinish, string>> = {
   F: "Runner-up",
   champion: "Champions",
 };
+
+// Who a card's number is compared with: "vs other CBs". One short word where football has one,
+// the role code otherwise, so the label also fits under a 60 px pitch token.
+export const ROLE_PLURAL: Readonly<Record<Role, string>> = {
+  GK: "keepers",
+  CB: "CBs",
+  FB: "FBs",
+  WB: "WBs",
+  DM: "DMs",
+  CM: "CMs",
+  AM: "AMs",
+  WM: "WMs",
+  W: "wingers",
+  ST: "strikers",
+};
+
+export function versusLabel(role: Role): string {
+  return `vs other ${ROLE_PLURAL[role]}`;
+}
+
+// The number on a card: where the player ranks for the role among all Pokémon, 0 to 100. It is
+// the engine's quality (the quantity that picks the weak spots), rounded, never the raw fit.
+export function qualityScore(quality: number): number {
+  if (!Number.isFinite(quality) || quality < 0 || quality > 1) {
+    throw new RangeError(`quality must be a number in 0..1, got ${quality}`);
+  }
+  return Math.round(100 * quality);
+}
 
 export function tagLabel(tag: string): string {
   return tag.replace(/-/g, " ");

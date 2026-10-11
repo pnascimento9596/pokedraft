@@ -4,18 +4,20 @@ import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 
 import { TYPES } from "@/data/pokedex";
 import {
   FORMATIONS,
+  SPECIES,
   eligibleSpecies,
   speciesById,
   type DraftState,
   type Gen,
   type PokemonType,
+  type Role,
   type SlotRef,
   type Species,
   type SpeciesId,
 } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeChip } from "@/components/TypeChip";
-import { genLabel, typeLabel } from "@/ui/labels";
+import { genLabel, qualityScore, typeLabel, versusLabel } from "@/ui/labels";
 import { ALL_REFS, valueAt } from "@/ui/lineup";
 import s from "./Picker.module.css";
 
@@ -38,6 +40,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
   const ref = useRef<HTMLDialogElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const titleId = useId();
+  const rawFitId = useId();
   const [query, setQuery] = useState("");
   const [type, setType] = useState<PokemonType | null>(null);
   const [gen, setGen] = useState<Gen | null>(null);
@@ -71,22 +74,30 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
     return [...ids].sort((a, b) => a - b).map(speciesById);
   }, [state, onField]);
 
-  const matches = useMemo(() => {
+  const filter = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return candidates.filter(
-      (sp) =>
-        (q === "" || sp.name.toLowerCase().includes(q) || dex(sp.id).includes(q)) &&
-        (type === null || (sp.types as readonly PokemonType[]).includes(type)) &&
-        (gen === null || sp.gen === gen),
-    );
-  }, [candidates, query, type, gen]);
+    return (sp: Species) =>
+      (q === "" || sp.name.toLowerCase().includes(q) || dex(sp.id).includes(q)) &&
+      (type === null || (sp.types as readonly PokemonType[]).includes(type)) &&
+      (gen === null || sp.gen === gen);
+  }, [query, type, gen]);
+  const matches = useMemo(() => candidates.filter(filter), [candidates, filter]);
+  // The builder pool only drops species by generation or by the Legendaries switch.
+  const hiddenBySettings = matches.length === 0 && SPECIES.some(filter);
 
   const shown = matches.slice(0, PICKER_LIMIT);
 
-  const fitOf = (sp: Species) => {
-    if (role !== null) return { label: `${role} fit`, value: sp.fits[role] };
-    const best = sp.bestRoles[0]!;
-    return { label: `Best: ${best}`, value: sp.fits[best] };
+  // What a row shows with Show ratings on: where the player ranks for the slot's role among all
+  // Pokémon (0 to 100, the engine's quality), and the raw fit as the row's description. A bench
+  // slot has no role, so it rates the player at their best one.
+  const ratingOf = (sp: Species) => {
+    const rated: Role = role ?? sp.bestRoles[0]!;
+    return {
+      best: role === null ? rated : null,
+      score: qualityScore(sp.quality[rated]),
+      versus: versusLabel(rated),
+      raw: `Raw fit ${sp.fits[rated]} of 100 for ${role === null ? rated : slotLabel}`,
+    };
   };
 
   return (
@@ -174,7 +185,9 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
 
         <p className={s.count} aria-live="polite">
           {matches.length === 0
-            ? "No matches"
+            ? hiddenBySettings
+              ? "No matches. Your Generations or Legendaries setting hides some Pokémon."
+              : "No matches"
             : matches.length > PICKER_LIMIT
               ? `Showing ${PICKER_LIMIT} of ${matches.length}. Refine your search to see more.`
               : `${matches.length} ${matches.length === 1 ? "match" : "matches"}`}
@@ -184,7 +197,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           {shown.map((sp) => {
             const at = onField.get(sp.id);
             const here = current === sp.id;
-            const fit = showRatings ? fitOf(sp) : null;
+            const rating = showRatings ? ratingOf(sp) : null;
             return (
               <li key={sp.id}>
                 <button
@@ -192,6 +205,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   className={s.row}
                   disabled={here}
                   data-testid={`pick-${sp.id}`}
+                  aria-describedby={rating !== null ? `${rawFitId}-${sp.id}` : undefined}
                   onClick={() => onPick(sp.id)}
                 >
                   <PlayerImage dexId={sp.id} size={32} alt={sp.name} />
@@ -207,13 +221,24 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   {at !== undefined ? (
                     <span className={s.rowTag}>{here ? "In this slot" : `Swap with ${at}`}</span>
                   ) : null}
-                  {fit !== null ? (
+                  {rating !== null ? (
                     <span className={s.rowFit} data-testid={`fit-${sp.id}`}>
-                      <span className={s.rowFitLabel}>{fit.label}</span>
-                      <span className="num">{fit.value}</span>
+                      {rating.best !== null ? (
+                        <>
+                          <span className={s.rowFitLabel}>Best: {rating.best}</span>{" "}
+                        </>
+                      ) : null}
+                      <span className="num">{rating.score}</span>{" "}
+                      <span className={s.rowFitVs}>{rating.versus}</span>
                     </span>
                   ) : null}
                 </button>
+                {/* Outside the button, so the raw fit is a description and not part of its name. */}
+                {rating !== null ? (
+                  <span id={`${rawFitId}-${sp.id}`} className="visually-hidden">
+                    {rating.raw}
+                  </span>
+                ) : null}
               </li>
             );
           })}

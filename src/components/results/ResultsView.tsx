@@ -5,7 +5,14 @@ import type { Contribution, CupResult, DraftState, PlayerLine } from "@/engine";
 import { speciesById } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { Pitch } from "@/components/pitch/Pitch";
-import { FINISH_LABEL, FRIENDLY_LABEL, MODE_LABEL, STYLE_LABEL, record } from "@/ui/labels";
+import {
+  FINISH_LABEL,
+  FRIENDLY_LABEL,
+  LADDER_SHAPE,
+  MODE_LABEL,
+  STYLE_LABEL,
+  record,
+} from "@/ui/labels";
 import { recordRun, toRecord } from "@/ui/runs";
 import { contributionLine } from "./format";
 import { FitReveal } from "./FitReveal";
@@ -167,7 +174,8 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
                 neighbours
               </li>
               <li>
-                <span className={s.legendWeak} aria-hidden="true" /> One of the 3 weakest spots
+                <span className={s.legendWeak} aria-hidden="true" /> Weak spot: one of the 3 lowest
+                ratings
               </li>
             </ul>
           </div>
@@ -180,9 +188,11 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
         <div className={s.detailsBody}>
           <p>
             Team Score blends a few things. The biggest is how well each player fits the slot they
-            play, and a player away from their usual position fits worse. Each line, from goalkeeper
-            to attack, is weighed on its own, and the weakest spots drag the score down, so one bad
-            hole costs more than you might expect.
+            play, and a player away from their usual position fits worse. Each player&apos;s rating
+            is a score from 0 to 100 against every other Pokémon for that job, and the three lowest
+            are flagged as weak spots. Each line, from goalkeeper to attack, is weighed on its own,
+            and the weak spots drag the score down, so one bad hole costs more than you might
+            expect.
           </p>
           <p>
             Neighbours on the pitch can link up. A link forms when they share a type, come from the
@@ -190,10 +200,9 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
             weaknesses. The bench adds a little depth on top.
           </p>
           <p>
-            Matches are simulated from your Team Score against a ladder of opponents that climbs
-            every round. The group games are gentle, and the ladder gets hard from the
-            quarter-final. If a player misses a match, the bench steps in and that match uses the
-            Team Score of the side that actually played.
+            Matches are simulated from your Team Score against a ladder of opponents. {LADDER_SHAPE}{" "}
+            If a player misses a match, the bench steps in and that match uses the Team Score of the
+            side that actually played.
           </p>
           <p>
             Every roll in the draft comes from the run&apos;s seed, so a run link replays exactly

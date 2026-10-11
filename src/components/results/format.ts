@@ -34,6 +34,10 @@ export function shootoutLine(m: PlayedMatch): string | null {
       const rounds = m.shootout.kicks.length / 2 - ENGINE_COEFFICIENTS.shootout.kicks;
       return `${m.outcome === "W" ? "Won" : "Lost"} on a coin toss after ${rounds} sudden-death rounds`;
     }
+    default: {
+      const unhandled: never = m.shootout.decider;
+      throw new Error(`Unknown shootout decider "${String(unhandled)}"`);
+    }
   }
 }
 

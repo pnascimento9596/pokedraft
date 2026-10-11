@@ -9,6 +9,9 @@ import { loadHistory } from "@/ui/runs";
 afterEach(cleanup);
 beforeEach(() => localStorage.clear());
 
+// U+2013 and U+2014, spelled as code points so this file holds no dash itself.
+const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
+
 // Engine-1 tokens, replayed on the retained v1 bundle. Cut with scratch scripts: cup8 Open 4-3-3 seed "seed-9" (observed 8-0-0, Team Score 845),
 // cup8 Classic 4-2-3-1 seed "c-4" (observed 5-0-1, out in the quarter-final), and the same
 // 16 as a builder friendly with seed "friendly-1" (observed 7-0-1, Team Score 845).
@@ -88,6 +91,56 @@ describe("ResultsView", () => {
     const final = screen.getByTestId("match-F");
     expect(within(final).getByText(/Won on penalties \(decided after 20 rounds\)/)).toBeTruthy();
     expect(within(final).queryByText(/26-25 on pens/)).toBeNull();
+  });
+
+  it("rates an old-engine run's eleven by quality, and a tie in the shown number keeps the engine's order (Swoobat at LCB and Swalot at CAM both show 39, only the LCB is flagged)", () => {
+    view(ELIMINATED);
+    const slots = ["GK", "LB", "LCB", "RCB", "RB", "LDM", "RDM", "LAM", "CAM", "RAM", "ST"];
+    const rows = slots.map((slot) => screen.getByTestId(`fit-4-2-3-1.${slot}`));
+    expect(rows.map((row) => within(row).getByText(/^\d+$/).textContent)).toEqual([
+      "6",
+      "62",
+      "39",
+      "16",
+      "56",
+      "73",
+      "88",
+      "43",
+      "39",
+      "77",
+      "71",
+    ]);
+    expect(slots.filter((_, i) => within(rows[i]!).queryByText("Weak spot") !== null)).toEqual([
+      "GK",
+      "LCB",
+      "RCB",
+    ]);
+  });
+
+  it("describes the number on the cards: the pitch legend and the season details talk about ratings, 0 to 100 and the three lowest", () => {
+    view(FLAWLESS);
+    const legend = screen.getByRole("list", { name: "Pitch legend" });
+    expect(within(legend).getByText("Weak spot: one of the 3 lowest ratings")).toBeTruthy();
+    expect(within(legend).queryByText(/weakest spots/)).toBeNull();
+    expect(legend.textContent).not.toMatch(DASHES);
+    const details = screen.getByText("Season details: how grading works").closest("details")!;
+    expect(details.textContent).not.toMatch(DASHES);
+    expect(
+      within(details).getByText(
+        /Each player's rating is a score from 0 to 100 against every other Pokémon for that job, and the three lowest are flagged as weak spots\. Each line, from goalkeeper to attack, is weighed on its own, and the weak spots drag the score down/,
+      ),
+    ).toBeTruthy();
+  });
+
+  it("the season details describe the engine 3 ladder, not the old cliff from the quarter-final", () => {
+    view(FLAWLESS);
+    const details = screen.getByText("Season details: how grading works").closest("details")!;
+    expect(
+      within(details).getByText(
+        /Matches are simulated from your Team Score against a ladder of opponents\. The group games are the gentle start\. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test\./,
+      ),
+    ).toBeTruthy();
+    expect(details.textContent).not.toMatch(/hard from the quarter-final/);
   });
 
   it("shows the player of the tournament's point breakdown, and none for an old-engine run", () => {

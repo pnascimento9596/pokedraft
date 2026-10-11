@@ -1,0 +1,3289 @@
+{
+  "meta": {
+    "name": "ci-baseline",
+    "builtAt": "2026-10-10T22:35:38.546Z",
+    "lighthouse": "13.5.0",
+    "chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "config": {
+      "formFactor": "mobile",
+      "throttlingMethod": "simulate",
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "emulatedUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36"
+    },
+    "runsPerRoute": 3,
+    "quietLoadLimit": 6,
+    "minBenchmarkIndex": 0,
+    "statistic": "median of the clean runs per route with min and max (the busy runs when a route has no clean run); linear interpolation between the closest ranks (type 7, the NumPy and Excel default)",
+    "inp": "null: Lighthouse navigation mode does not compute INP. Lab INP comes from the perf agent's traces.",
+    "lcpPhases": "observedPhasesMs come from lcp-breakdown-insight and describe the unthrottled observed load, so they do not sum to the simulated LCP in metrics.lcpMs. metrics.observedLcpMs is the matching observed value.",
+    "runSelection": "one record per run number: the latest clean run (load 6 or less at the start and after, and benchmarkIndex at least minBenchmarkIndex), else the busy run with the lowest load (the latest of equals), which is then counted in runsOnBusyMachine. The medians, minima and maxima use the clean runs only, and the busy runs only for a route that has none (statsBasis, statsRuns); allRunsSpread has the numbers over every run. Other attempts are listed in supersededRuns."
+  },
+  "targets": {
+    "prod": {
+      "baseUrl": "https://pokedraft-woad.vercel.app",
+      "routes": {
+        "home": {
+          "label": "/",
+          "path": "/",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 78,
+              "median": 97,
+              "max": 97,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 1673,
+              "median": 1820.6,
+              "max": 2549.2,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 190,
+              "median": 190.5,
+              "max": 729,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 78,
+              "median": 97,
+              "max": 97,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 1673,
+              "median": 1820.6,
+              "max": 2549.2,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 920.6,
+              "median": 923,
+              "max": 1156.2,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 190,
+              "median": 190.5,
+              "max": 729,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 920.6,
+              "median": 923,
+              "max": 3349.2,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 3041.8,
+              "median": 3044.9,
+              "max": 3969.2,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 216,
+              "median": 245,
+              "max": 2001,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 216,
+              "median": 245,
+              "max": 2001,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 621,
+              "median": 623,
+              "max": 722,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 24,
+            "median": 27,
+            "max": 27,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 451059,
+            "median": 451089,
+            "max": 451119,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 12,
+            "median": 12,
+            "max": 12,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 578976,
+            "median": 579647,
+            "max": 579666,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 36,
+            "median": 36,
+            "max": 36,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 48599,
+            "median": 48655,
+            "max": 48664,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 3178.5,
+            "median": 3848.5,
+            "max": 4007,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.65,
+            "median": 0.66,
+            "max": 0.74,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.55,
+            "median": 0.71,
+            "max": 1.28,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 3,
+            "lcpElement": {
+              "selector": "section.puRpEa_builder > div.puRpEa_bar > div > h1.puRpEa_title",
+              "snippet": "<h1 class=\"puRpEa_title\">",
+              "label": "BUILD YOUR XI"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 83.4,
+              "elementRenderDelay": 161.9
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalMs": 355.9,
+                "scriptingMs": 335.3,
+                "parseMs": 12
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "totalMs": 174.1,
+                "scriptingMs": 155.4,
+                "parseMs": 7.4
+              },
+              {
+                "url": "/",
+                "totalMs": 162.6,
+                "scriptingMs": 10.8,
+                "parseMs": 3.1
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 158.2,
+                "scriptingMs": 6.8,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "totalMs": 74,
+                "scriptingMs": 0.6,
+                "parseMs": 73.2
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/immutable/chunks/1_r7bbfkw10qb.css",
+                "transferBytes": 3631,
+                "wastedMs": null
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3vzsbzp_7_x2l.css",
+                "transferBytes": 8344,
+                "wastedMs": 150
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalBytes": 73512,
+                "wastedBytes": 27641
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "totalBytes": 32864,
+                "wastedBytes": 21023
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/immutable/chunks/006333j8coy7b.js",
+                "transferBytes": 2273,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3fe29na_lg1bz.js",
+                "transferBytes": 8326,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "transferBytes": 73741,
+                "resourceBytes": 230299
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "transferBytes": 47551,
+                "resourceBytes": 168650
+              },
+              {
+                "url": "/_next/static/immutable/chunks/turbopack-1byz1flvc-bu1.js",
+                "transferBytes": 4852,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/immutable/chunks/06bn-5ffxs9d0.js",
+                "transferBytes": 8756,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "transferBytes": 33055,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2npq8hif5qsgm.js",
+                "transferBytes": 6441,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "transferBytes": 243528,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0v2-i-q3a7bg7.js",
+                "transferBytes": 9416,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/immutable/chunks/245x9u-2ac6r-.js",
+                "transferBytes": 11180,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/immutable/chunks/34hiike67-_gx.js",
+                "transferBytes": 2000,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "section.puRpEa_builder > div.puRpEa_bar > div > h1.puRpEa_title",
+            "section.puRpEa_builder > div.puRpEa_bar > div > h1.puRpEa_title",
+            "section.puRpEa_builder > div.puRpEa_bar > div > h1.puRpEa_title"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 78,
+              "lcpMs": 2549.2,
+              "cls": 0,
+              "tbtMs": 729,
+              "load1": 0.74,
+              "loadAfter": 1.28,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3178.5,
+              "observedFcpMs": 2001,
+              "observedLcpMs": 2001,
+              "milestones": {
+                "documentEndMs": 1622.8,
+                "initialResourcesEndMs": 2248.1,
+                "firstPrefetchStartMs": 2194.5,
+                "domContentLoadedMs": 1975,
+                "loadEventMs": 2095,
+                "mainThread": {
+                  "tasks": 839,
+                  "totalTaskMs": 647.3,
+                  "over10Ms": 13,
+                  "over50Ms": 3,
+                  "longestTaskMs": 131.7
+                }
+              },
+              "startedAt": "2026-10-10T22:30:42.473Z"
+            },
+            {
+              "run": 2,
+              "performance": 97,
+              "lcpMs": 1673,
+              "cls": 0,
+              "tbtMs": 190,
+              "load1": 0.65,
+              "loadAfter": 0.55,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4007,
+              "observedFcpMs": 216,
+              "observedLcpMs": 216,
+              "milestones": {
+                "documentEndMs": 113.9,
+                "initialResourcesEndMs": 280.5,
+                "firstPrefetchStartMs": 316.6,
+                "domContentLoadedMs": 197,
+                "loadEventMs": 314,
+                "mainThread": {
+                  "tasks": 801,
+                  "totalTaskMs": 230.5,
+                  "over10Ms": 5,
+                  "over50Ms": 1,
+                  "longestTaskMs": 53.1
+                }
+              },
+              "startedAt": "2026-10-10T22:32:33.723Z"
+            },
+            {
+              "run": 3,
+              "performance": 97,
+              "lcpMs": 1820.6,
+              "cls": 0,
+              "tbtMs": 190.5,
+              "load1": 0.66,
+              "loadAfter": 0.71,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3848.5,
+              "observedFcpMs": 245,
+              "observedLcpMs": 245,
+              "milestones": {
+                "documentEndMs": 120.8,
+                "initialResourcesEndMs": 349.1,
+                "firstPrefetchStartMs": 382.3,
+                "domContentLoadedMs": 223,
+                "loadEventMs": 303,
+                "mainThread": {
+                  "tasks": 856,
+                  "totalTaskMs": 242.1,
+                  "over10Ms": 5,
+                  "over50Ms": 1,
+                  "longestTaskMs": 54.4
+                }
+              },
+              "startedAt": "2026-10-10T22:34:05.569Z"
+            }
+          ]
+        },
+        "play": {
+          "label": "/play",
+          "path": "/play",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 85,
+              "median": 86,
+              "max": 87,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 3696.2,
+              "median": 3775.4,
+              "max": 3775.8,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 182,
+              "median": 204.5,
+              "max": 215.5,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 85,
+              "median": 86,
+              "max": 87,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 3696.2,
+              "median": 3775.4,
+              "max": 3775.8,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 925.2,
+              "median": 925.4,
+              "max": 925.8,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 182,
+              "median": 204.5,
+              "max": 215.5,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 925.4,
+              "median": 925.8,
+              "max": 2216,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 3696.2,
+              "median": 3814.4,
+              "max": 3818.1,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 505,
+              "median": 550,
+              "max": 2508,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 210,
+              "median": 258,
+              "max": 1159,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 625,
+              "median": 625,
+              "max": 626,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 24,
+            "median": 24,
+            "max": 27,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 461837,
+            "median": 461871,
+            "max": 461955,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 13,
+            "median": 13,
+            "max": 13,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 586251,
+            "median": 586256,
+            "max": 586311,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 34,
+            "median": 34,
+            "max": 34,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 50138,
+            "median": 50138,
+            "max": 50341,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 3760.5,
+            "median": 3946.5,
+            "max": 4011.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.55,
+            "median": 0.71,
+            "max": 1.28,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.54,
+            "median": 1.07,
+            "max": 1.1,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 2,
+            "lcpElement": {
+              "selector": "body > main.page > section.M2ks9W_invalid > h1",
+              "snippet": "<h1>",
+              "label": "THAT CHALLENGE LINK DOES NOT WORK"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 93.5,
+              "elementRenderDelay": 456.3
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalMs": 320.5,
+                "scriptingMs": 296.2,
+                "parseMs": 12.5
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "totalMs": 142.8,
+                "scriptingMs": 125,
+                "parseMs": 7.2
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 126,
+                "scriptingMs": 4.8,
+                "parseMs": 0
+              },
+              {
+                "url": "/play",
+                "totalMs": 93.1,
+                "scriptingMs": 14.6,
+                "parseMs": 3.8
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "totalMs": 70.9,
+                "scriptingMs": 0.7,
+                "parseMs": 70
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/immutable/chunks/1_r7bbfkw10qb.css",
+                "transferBytes": 3702,
+                "wastedMs": null
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3vzsbzp_7_x2l.css",
+                "transferBytes": 8353,
+                "wastedMs": 150
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalBytes": 73512,
+                "wastedBytes": 29651
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "totalBytes": 32864,
+                "wastedBytes": 20487
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/immutable/chunks/006333j8coy7b.js",
+                "transferBytes": 2238,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3fe29na_lg1bz.js",
+                "transferBytes": 8327,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "transferBytes": 73695,
+                "resourceBytes": 230299
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "transferBytes": 47602,
+                "resourceBytes": 168650
+              },
+              {
+                "url": "/_next/static/immutable/chunks/turbopack-1byz1flvc-bu1.js",
+                "transferBytes": 4800,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/immutable/chunks/06bn-5ffxs9d0.js",
+                "transferBytes": 8755,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "transferBytes": 33047,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2kag8dxlfetsv.js",
+                "transferBytes": 10846,
+                "resourceBytes": 27934
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "transferBytes": 243528,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0v2-i-q3a7bg7.js",
+                "transferBytes": 9423,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2npq8hif5qsgm.js",
+                "transferBytes": 6468,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/immutable/chunks/245x9u-2ac6r-.js",
+                "transferBytes": 11154,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/immutable/chunks/34hiike67-_gx.js",
+                "transferBytes": 1954,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "body > main.page > section.M2ks9W_invalid > h1",
+            "body > main.page > section.M2ks9W_invalid > h1",
+            "body > main.page > section.M2ks9W_invalid > h1"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 87,
+              "lcpMs": 3696.2,
+              "cls": 0,
+              "tbtMs": 182,
+              "load1": 1.28,
+              "loadAfter": 1.07,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3946.5,
+              "observedFcpMs": 1159,
+              "observedLcpMs": 2508,
+              "milestones": {
+                "documentEndMs": 2466.6,
+                "initialResourcesEndMs": 2466.6,
+                "firstPrefetchStartMs": 2504.4,
+                "domContentLoadedMs": 2492,
+                "loadEventMs": 2496,
+                "mainThread": {
+                  "tasks": 668,
+                  "totalTaskMs": 214.3,
+                  "over10Ms": 4,
+                  "over50Ms": 0,
+                  "longestTaskMs": 47.3
+                }
+              },
+              "startedAt": "2026-10-10T22:31:05.120Z"
+            },
+            {
+              "run": 2,
+              "performance": 86,
+              "lcpMs": 3775.4,
+              "cls": 0,
+              "tbtMs": 204.5,
+              "load1": 0.55,
+              "loadAfter": 0.54,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4011.5,
+              "observedFcpMs": 258,
+              "observedLcpMs": 550,
+              "milestones": {
+                "documentEndMs": 264.5,
+                "initialResourcesEndMs": 316.1,
+                "firstPrefetchStartMs": 346.9,
+                "domContentLoadedMs": 270,
+                "loadEventMs": 345,
+                "mainThread": {
+                  "tasks": 652,
+                  "totalTaskMs": 200.5,
+                  "over10Ms": 4,
+                  "over50Ms": 1,
+                  "longestTaskMs": 50.5
+                }
+              },
+              "startedAt": "2026-10-10T22:32:45.156Z"
+            },
+            {
+              "run": 3,
+              "performance": 85,
+              "lcpMs": 3775.8,
+              "cls": 0,
+              "tbtMs": 215.5,
+              "load1": 0.71,
+              "loadAfter": 1.1,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3760.5,
+              "observedFcpMs": 210,
+              "observedLcpMs": 505,
+              "milestones": {
+                "documentEndMs": 215.1,
+                "initialResourcesEndMs": 263.5,
+                "firstPrefetchStartMs": 312.6,
+                "domContentLoadedMs": 219,
+                "loadEventMs": 311,
+                "mainThread": {
+                  "tasks": 633,
+                  "totalTaskMs": 213.8,
+                  "over10Ms": 4,
+                  "over50Ms": 1,
+                  "longestTaskMs": 54.1
+                }
+              },
+              "startedAt": "2026-10-10T22:34:17.206Z"
+            }
+          ]
+        },
+        "daily": {
+          "label": "/daily",
+          "path": "/daily",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 68,
+              "median": 86,
+              "max": 87,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 3545.5,
+              "median": 3622,
+              "max": 4345,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 201,
+              "median": 206.5,
+              "max": 703,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 68,
+              "median": 86,
+              "max": 87,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 3545.5,
+              "median": 3622,
+              "max": 4345,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 922,
+              "median": 922.5,
+              "max": 927,
+              "n": 3
+            },
+            "cls": {
+              "min": 0.04597152011799288,
+              "median": 0.04597152011799288,
+              "max": 0.04597152011799288,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 201,
+              "median": 206.5,
+              "max": 703,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 922,
+              "median": 922.5,
+              "max": 968.7,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 3628,
+              "median": 3660.5,
+              "max": 4345,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 378,
+              "median": 410,
+              "max": 598,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 227,
+              "median": 236,
+              "max": 304,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 622,
+              "median": 623,
+              "max": 627,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 24,
+            "median": 24,
+            "max": 27,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 451063,
+            "median": 451092,
+            "max": 451124,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 12,
+            "median": 12,
+            "max": 12,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 572501,
+            "median": 572507,
+            "max": 572541,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 32,
+            "median": 32,
+            "max": 32,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 47194,
+            "median": 48726,
+            "max": 48726,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 4006.5,
+            "median": 4156.5,
+            "max": 4349.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.54,
+            "median": 1.07,
+            "max": 1.1,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.9,
+            "median": 0.93,
+            "max": 1.42,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 2,
+            "lcpElement": {
+              "selector": "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede",
+              "snippet": "<p class=\"M2ks9W_lede\">",
+              "label": "Everyone plays the same seed today, and your run can go on the daily board. 16 …"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 87.7,
+              "elementRenderDelay": 290.2
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalMs": 329.1,
+                "scriptingMs": 302.8,
+                "parseMs": 11
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 113.3,
+                "scriptingMs": 5.1,
+                "parseMs": 0
+              },
+              {
+                "url": "/daily",
+                "totalMs": 89.7,
+                "scriptingMs": 5.9,
+                "parseMs": 2.3
+              },
+              {
+                "url": "/_next/static/immutable/chunks/006333j8coy7b.js",
+                "totalMs": 84.9,
+                "scriptingMs": 84.5,
+                "parseMs": 0.4
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "totalMs": 69.7,
+                "scriptingMs": 0.6,
+                "parseMs": 68.9
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/immutable/chunks/3vzsbzp_7_x2l.css",
+                "transferBytes": 8327,
+                "wastedMs": 150
+              },
+              {
+                "url": "/_next/static/immutable/chunks/1_r7bbfkw10qb.css",
+                "transferBytes": 3649,
+                "wastedMs": null
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalBytes": 73512,
+                "wastedBytes": 28239
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "totalBytes": 32864,
+                "wastedBytes": 20487
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/immutable/chunks/006333j8coy7b.js",
+                "transferBytes": 2273,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3fe29na_lg1bz.js",
+                "transferBytes": 8326,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "transferBytes": 73741,
+                "resourceBytes": 230299
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "transferBytes": 47602,
+                "resourceBytes": 168650
+              },
+              {
+                "url": "/_next/static/immutable/chunks/turbopack-1byz1flvc-bu1.js",
+                "transferBytes": 4800,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/immutable/chunks/06bn-5ffxs9d0.js",
+                "transferBytes": 8755,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "transferBytes": 33020,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/immutable/chunks/245x9u-2ac6r-.js",
+                "transferBytes": 11177,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "transferBytes": 243562,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0v2-i-q3a7bg7.js",
+                "transferBytes": 9416,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2npq8hif5qsgm.js",
+                "transferBytes": 6470,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/immutable/chunks/34hiike67-_gx.js",
+                "transferBytes": 1982,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede",
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede",
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 68,
+              "lcpMs": 4345,
+              "cls": 0.04597152011799288,
+              "tbtMs": 703,
+              "load1": 1.07,
+              "loadAfter": 0.9,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4006.5,
+              "observedFcpMs": 304,
+              "observedLcpMs": 598,
+              "milestones": {
+                "documentEndMs": 188.6,
+                "initialResourcesEndMs": 380.4,
+                "firstPrefetchStartMs": 366.2,
+                "domContentLoadedMs": 287,
+                "loadEventMs": 566,
+                "mainThread": {
+                  "tasks": 638,
+                  "totalTaskMs": 318.4,
+                  "over10Ms": 3,
+                  "over50Ms": 1,
+                  "longestTaskMs": 179.6
+                }
+              },
+              "startedAt": "2026-10-10T22:31:18.737Z"
+            },
+            {
+              "run": 2,
+              "performance": 86,
+              "lcpMs": 3622,
+              "cls": 0.04597152011799288,
+              "tbtMs": 201,
+              "load1": 0.54,
+              "loadAfter": 1.42,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4349.5,
+              "observedFcpMs": 236,
+              "observedLcpMs": 378,
+              "milestones": {
+                "documentEndMs": 109.2,
+                "initialResourcesEndMs": 330.5,
+                "firstPrefetchStartMs": 302.9,
+                "domContentLoadedMs": 257,
+                "loadEventMs": 297,
+                "mainThread": {
+                  "tasks": 629,
+                  "totalTaskMs": 195.8,
+                  "over10Ms": 4,
+                  "over50Ms": 1,
+                  "longestTaskMs": 51.1
+                }
+              },
+              "startedAt": "2026-10-10T22:32:56.510Z"
+            },
+            {
+              "run": 3,
+              "performance": 87,
+              "lcpMs": 3545.5,
+              "cls": 0.04597152011799288,
+              "tbtMs": 206.5,
+              "load1": 1.1,
+              "loadAfter": 0.93,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4156.5,
+              "observedFcpMs": 227,
+              "observedLcpMs": 410,
+              "milestones": {
+                "documentEndMs": 128.5,
+                "initialResourcesEndMs": 362.7,
+                "firstPrefetchStartMs": 387.7,
+                "domContentLoadedMs": 221,
+                "loadEventMs": 326,
+                "mainThread": {
+                  "tasks": 583,
+                  "totalTaskMs": 210.6,
+                  "over10Ms": 3,
+                  "over50Ms": 1,
+                  "longestTaskMs": 52.6
+                }
+              },
+              "startedAt": "2026-10-10T22:34:28.638Z"
+            }
+          ]
+        },
+        "leaderboard": {
+          "label": "/leaderboard",
+          "path": "/leaderboard",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 85,
+              "median": 85,
+              "max": 85,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 3577.5,
+              "median": 3614.5,
+              "max": 3771.2,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 217,
+              "median": 222.5,
+              "max": 268.5,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 85,
+              "median": 85,
+              "max": 85,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 3577.5,
+              "median": 3614.5,
+              "max": 3771.2,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 793.2,
+              "median": 815.5,
+              "max": 1541.5,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 217,
+              "median": 222.5,
+              "max": 268.5,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 793.2,
+              "median": 815.5,
+              "max": 2981.9,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 3622,
+              "median": 3810,
+              "max": 3814.7,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 311,
+              "median": 526,
+              "max": 1386,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 229,
+              "median": 311,
+              "max": 1386,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 619,
+              "median": 621,
+              "max": 626,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 24,
+            "median": 24,
+            "max": 24,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 454896,
+            "median": 454901,
+            "max": 454921,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 13,
+            "median": 13,
+            "max": 13,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 576932,
+            "median": 576954,
+            "max": 576973,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 34,
+            "median": 34,
+            "max": 34,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 28393,
+            "median": 28474,
+            "max": 28572,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 3908,
+            "median": 3942.5,
+            "max": 4081,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.9,
+            "median": 0.93,
+            "max": 1.42,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.85,
+            "median": 0.94,
+            "max": 1.17,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 1,
+            "lcpElement": {
+              "selector": "body > main.page > div.rpEM1q_screen > p.rpEM1q_caption",
+              "snippet": "<p class=\"rpEM1q_caption\">",
+              "label": "Daily 8-0 Challenge for Saturday, October 10, 2026 (today). Ranked by wins, the…"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 86.1,
+              "elementRenderDelay": 1300
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalMs": 404.6,
+                "scriptingMs": 366.6,
+                "parseMs": 16.5
+              },
+              {
+                "url": "/leaderboard",
+                "totalMs": 154,
+                "scriptingMs": 38.1,
+                "parseMs": 3.3
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 100.8,
+                "scriptingMs": 5.5,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "totalMs": 70.2,
+                "scriptingMs": 0.8,
+                "parseMs": 69.1
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "totalMs": 66,
+                "scriptingMs": 51.2,
+                "parseMs": 7.7
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/immutable/chunks/2-n173kucuc31.css",
+                "transferBytes": 1187,
+                "wastedMs": null
+              },
+              {
+                "url": "/_next/static/immutable/chunks/1_r7bbfkw10qb.css",
+                "transferBytes": 3649,
+                "wastedMs": null
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalBytes": 73512,
+                "wastedBytes": 28474
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/immutable/chunks/006333j8coy7b.js",
+                "transferBytes": 2289,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3fe29na_lg1bz.js",
+                "transferBytes": 8327,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "transferBytes": 73741,
+                "resourceBytes": 230299
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "transferBytes": 47579,
+                "resourceBytes": 168650
+              },
+              {
+                "url": "/_next/static/immutable/chunks/turbopack-1byz1flvc-bu1.js",
+                "transferBytes": 4800,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/immutable/chunks/06bn-5ffxs9d0.js",
+                "transferBytes": 8756,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "transferBytes": 33048,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/immutable/chunks/34g9knd_w343m.js",
+                "transferBytes": 3776,
+                "resourceBytes": 8466
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "transferBytes": 243528,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2npq8hif5qsgm.js",
+                "transferBytes": 6492,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0v2-i-q3a7bg7.js",
+                "transferBytes": 9443,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/immutable/chunks/34hiike67-_gx.js",
+                "transferBytes": 1982,
+                "resourceBytes": 3932
+              },
+              {
+                "url": "/_next/static/immutable/chunks/245x9u-2ac6r-.js",
+                "transferBytes": 11160,
+                "resourceBytes": 28812
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "body > main.page > div.rpEM1q_screen > p.rpEM1q_caption",
+            "body > main.page > div.rpEM1q_screen > p.rpEM1q_caption",
+            "body > main.page > div.rpEM1q_screen > p.rpEM1q_caption"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 85,
+              "lcpMs": 3614.5,
+              "cls": 0,
+              "tbtMs": 217,
+              "load1": 0.9,
+              "loadAfter": 0.85,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4081,
+              "observedFcpMs": 1386,
+              "observedLcpMs": 1386,
+              "milestones": {
+                "documentEndMs": 618.2,
+                "initialResourcesEndMs": 1367.9,
+                "firstPrefetchStartMs": 1373.3,
+                "domContentLoadedMs": 655,
+                "loadEventMs": 664,
+                "mainThread": {
+                  "tasks": 583,
+                  "totalTaskMs": 208.2,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 50.2
+                }
+              },
+              "startedAt": "2026-10-10T22:31:30.475Z",
+              "apiIdleMinutesBefore": null
+            },
+            {
+              "run": 2,
+              "performance": 85,
+              "lcpMs": 3771.2,
+              "cls": 0,
+              "tbtMs": 222.5,
+              "load1": 1.42,
+              "loadAfter": 1.17,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3942.5,
+              "observedFcpMs": 229,
+              "observedLcpMs": 526,
+              "milestones": {
+                "documentEndMs": 230.6,
+                "initialResourcesEndMs": 278.7,
+                "firstPrefetchStartMs": 317.2,
+                "domContentLoadedMs": 232,
+                "loadEventMs": 316,
+                "mainThread": {
+                  "tasks": 670,
+                  "totalTaskMs": 214.1,
+                  "over10Ms": 4,
+                  "over50Ms": 1,
+                  "longestTaskMs": 52.6
+                }
+              },
+              "startedAt": "2026-10-10T22:33:07.746Z",
+              "apiIdleMinutesBefore": 1.4
+            },
+            {
+              "run": 3,
+              "performance": 85,
+              "lcpMs": 3577.5,
+              "cls": 0,
+              "tbtMs": 268.5,
+              "load1": 0.93,
+              "loadAfter": 0.94,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3908,
+              "observedFcpMs": 311,
+              "observedLcpMs": 311,
+              "milestones": {
+                "documentEndMs": 196.6,
+                "initialResourcesEndMs": 278.8,
+                "firstPrefetchStartMs": 355.4,
+                "domContentLoadedMs": 207,
+                "loadEventMs": 334,
+                "mainThread": {
+                  "tasks": 631,
+                  "totalTaskMs": 249.5,
+                  "over10Ms": 4,
+                  "over50Ms": 1,
+                  "longestTaskMs": 56.5
+                }
+              },
+              "startedAt": "2026-10-10T22:34:40.111Z",
+              "apiIdleMinutesBefore": 1.3
+            }
+          ]
+        },
+        "history": {
+          "label": "/history",
+          "path": "/history",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 84,
+              "median": 96,
+              "max": 97,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 1370.5,
+              "median": 1676.7,
+              "max": 3773.9,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 184,
+              "median": 205,
+              "max": 212,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 84,
+              "median": 96,
+              "max": 97,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 1370.5,
+              "median": 1676.7,
+              "max": 3773.9,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 793.5,
+              "median": 797.7,
+              "max": 1164.4,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 184,
+              "median": 205,
+              "max": 212,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 793.5,
+              "median": 797.7,
+              "max": 3909.4,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 3024.9,
+              "median": 3032.5,
+              "max": 3812.4,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 181,
+              "median": 232,
+              "max": 2356,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 181,
+              "median": 232,
+              "max": 2356,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 621,
+              "median": 624,
+              "max": 627,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 24,
+            "median": 25,
+            "max": 29,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 451059,
+            "median": 451082,
+            "max": 451103,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 12,
+            "median": 12,
+            "max": 12,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 572482,
+            "median": 572534,
+            "max": 572554,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 32,
+            "median": 32,
+            "max": 32,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 49492,
+            "median": 49492,
+            "max": 49557,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 3999,
+            "median": 4002,
+            "max": 4077,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.85,
+            "median": 0.94,
+            "max": 1.17,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.82,
+            "median": 0.99,
+            "max": 1.09,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 2,
+            "lcpElement": {
+              "selector": "body > footer.site-footer > p",
+              "snippet": "<p data-testid=\"pack-credit\">",
+              "label": "Creature art, Pixel pack: PokeAPI sprites contributors; Smogon community custom…"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 92.2,
+              "elementRenderDelay": 139.4
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalMs": 406.5,
+                "scriptingMs": 379.8,
+                "parseMs": 14.9
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 124.9,
+                "scriptingMs": 5.6,
+                "parseMs": 0
+              },
+              {
+                "url": "/history",
+                "totalMs": 77.8,
+                "scriptingMs": 10.8,
+                "parseMs": 2.4
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "totalMs": 73.1,
+                "scriptingMs": 0.9,
+                "parseMs": 71.9
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "totalMs": 72.7,
+                "scriptingMs": 54.9,
+                "parseMs": 8.9
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/immutable/chunks/3eo2jc_4u89xz.css",
+                "transferBytes": 867,
+                "wastedMs": null
+              },
+              {
+                "url": "/_next/static/immutable/chunks/1_r7bbfkw10qb.css",
+                "transferBytes": 3648,
+                "wastedMs": null
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalBytes": 73512,
+                "wastedBytes": 28469
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "totalBytes": 32864,
+                "wastedBytes": 21023
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/immutable/chunks/006333j8coy7b.js",
+                "transferBytes": 2264,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3fe29na_lg1bz.js",
+                "transferBytes": 8334,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "transferBytes": 73691,
+                "resourceBytes": 230299
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "transferBytes": 47551,
+                "resourceBytes": 168650
+              },
+              {
+                "url": "/_next/static/immutable/chunks/turbopack-1byz1flvc-bu1.js",
+                "transferBytes": 4872,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/immutable/chunks/06bn-5ffxs9d0.js",
+                "transferBytes": 8755,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "transferBytes": 33020,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/immutable/chunks/34hiike67-_gx.js",
+                "transferBytes": 1955,
+                "resourceBytes": 3932
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "transferBytes": 243528,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2npq8hif5qsgm.js",
+                "transferBytes": 6516,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0v2-i-q3a7bg7.js",
+                "transferBytes": 9419,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/immutable/chunks/245x9u-2ac6r-.js",
+                "transferBytes": 11154,
+                "resourceBytes": 28812
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "body > footer.site-footer > p",
+            "body > footer.site-footer > p",
+            "body > footer.site-footer > p"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 84,
+              "lcpMs": 3773.9,
+              "cls": 0,
+              "tbtMs": 184,
+              "load1": 0.85,
+              "loadAfter": 0.82,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3999,
+              "observedFcpMs": 2356,
+              "observedLcpMs": 2356,
+              "milestones": {
+                "documentEndMs": 173.3,
+                "initialResourcesEndMs": 396.9,
+                "firstPrefetchStartMs": 1347.2,
+                "domContentLoadedMs": 236,
+                "loadEventMs": 364,
+                "mainThread": {
+                  "tasks": 520,
+                  "totalTaskMs": 208.2,
+                  "over10Ms": 5,
+                  "over50Ms": 0,
+                  "longestTaskMs": 44.8
+                }
+              },
+              "startedAt": "2026-10-10T22:31:44.883Z"
+            },
+            {
+              "run": 2,
+              "performance": 96,
+              "lcpMs": 1676.7,
+              "cls": 0,
+              "tbtMs": 212,
+              "load1": 1.17,
+              "loadAfter": 0.99,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4077,
+              "observedFcpMs": 232,
+              "observedLcpMs": 232,
+              "milestones": {
+                "documentEndMs": 114.8,
+                "initialResourcesEndMs": 280.9,
+                "firstPrefetchStartMs": 289.3,
+                "domContentLoadedMs": 221,
+                "loadEventMs": 311,
+                "mainThread": {
+                  "tasks": 600,
+                  "totalTaskMs": 200.2,
+                  "over10Ms": 4,
+                  "over50Ms": 1,
+                  "longestTaskMs": 51.5
+                }
+              },
+              "startedAt": "2026-10-10T22:33:19.388Z"
+            },
+            {
+              "run": 3,
+              "performance": 97,
+              "lcpMs": 1370.5,
+              "cls": 0,
+              "tbtMs": 205,
+              "load1": 0.94,
+              "loadAfter": 1.09,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4002,
+              "observedFcpMs": 181,
+              "observedLcpMs": 181,
+              "milestones": {
+                "documentEndMs": 104.7,
+                "initialResourcesEndMs": 251.3,
+                "firstPrefetchStartMs": 286,
+                "domContentLoadedMs": 173,
+                "loadEventMs": 284,
+                "mainThread": {
+                  "tasks": 590,
+                  "totalTaskMs": 199.3,
+                  "over10Ms": 4,
+                  "over50Ms": 0,
+                  "longestTaskMs": 48.6
+                }
+              },
+              "startedAt": "2026-10-10T22:34:51.564Z"
+            }
+          ]
+        },
+        "how-to-play": {
+          "label": "/how-to-play",
+          "path": "/how-to-play",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 99,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 1371.3,
+              "median": 1670.9,
+              "max": 2127.9,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 27.5,
+              "median": 27.5,
+              "max": 35,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 99,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 1371.3,
+              "median": 1670.9,
+              "max": 2127.9,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 797.3,
+              "median": 804.9,
+              "max": 810.9,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 27.5,
+              "median": 27.5,
+              "max": 35,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 797.3,
+              "median": 804.9,
+              "max": 810.9,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 2650.1,
+              "median": 3038.6,
+              "max": 3076.7,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 203,
+              "median": 215,
+              "max": 335,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 203,
+              "median": 215,
+              "max": 335,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 621,
+              "median": 621,
+              "max": 628,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 25,
+            "median": 27,
+            "max": 27,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 451057,
+            "median": 451081,
+            "max": 451138,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 12,
+            "median": 12,
+            "max": 12,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 572922,
+            "median": 572948,
+            "max": 573662,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 32,
+            "median": 32,
+            "max": 32,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 296102,
+            "median": 296102,
+            "max": 296102,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 3923.5,
+            "median": 3971.5,
+            "max": 4121.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.82,
+            "median": 0.99,
+            "max": 1.09,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.77,
+            "median": 0.91,
+            "max": 0.92,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 3,
+            "lcpElement": {
+              "selector": "main.page > section#cup8 > div.cx1U_q_body > p",
+              "snippet": "<p>",
+              "label": "In Open you can take any Pokémon that matches the roll. In Classic you choose f…"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 88.2,
+              "elementRenderDelay": 126.5
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalMs": 180.2,
+                "scriptingMs": 167.4,
+                "parseMs": 11.1
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 111,
+                "scriptingMs": 6.4,
+                "parseMs": 0
+              },
+              {
+                "url": "/how-to-play",
+                "totalMs": 82.1,
+                "scriptingMs": 8.1,
+                "parseMs": 10
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "totalMs": 81.1,
+                "scriptingMs": 61,
+                "parseMs": 9.9
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "totalMs": 74.8,
+                "scriptingMs": 0.7,
+                "parseMs": 74
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/immutable/chunks/1_r7bbfkw10qb.css",
+                "transferBytes": 3635,
+                "wastedMs": null
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3y5ibtg9f0hca.css",
+                "transferBytes": 1009,
+                "wastedMs": null
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "totalBytes": 243179,
+                "wastedBytes": 243134
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalBytes": 73512,
+                "wastedBytes": 29898
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "totalBytes": 32864,
+                "wastedBytes": 23070
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/immutable/chunks/006333j8coy7b.js",
+                "transferBytes": 2271,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3fe29na_lg1bz.js",
+                "transferBytes": 8300,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "transferBytes": 73669,
+                "resourceBytes": 230299
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "transferBytes": 47623,
+                "resourceBytes": 168650
+              },
+              {
+                "url": "/_next/static/immutable/chunks/turbopack-1byz1flvc-bu1.js",
+                "transferBytes": 4823,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/immutable/chunks/06bn-5ffxs9d0.js",
+                "transferBytes": 8756,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "transferBytes": 33021,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/immutable/chunks/245x9u-2ac6r-.js",
+                "transferBytes": 11182,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "transferBytes": 243528,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0v2-i-q3a7bg7.js",
+                "transferBytes": 9470,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2npq8hif5qsgm.js",
+                "transferBytes": 6447,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/immutable/chunks/34hiike67-_gx.js",
+                "transferBytes": 2048,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "main.page > section#cup8 > div.cx1U_q_body > p",
+            "main.page > section#cup8 > div.cx1U_q_body > p",
+            "main.page > section#cup8 > div.cx1U_q_body > p"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 99,
+              "lcpMs": 2127.9,
+              "cls": 0,
+              "tbtMs": 27.5,
+              "load1": 0.82,
+              "loadAfter": 0.77,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4121.5,
+              "observedFcpMs": 335,
+              "observedLcpMs": 335,
+              "milestones": {
+                "documentEndMs": 216.3,
+                "initialResourcesEndMs": 417.1,
+                "firstPrefetchStartMs": 386.4,
+                "domContentLoadedMs": 310,
+                "loadEventMs": 377,
+                "mainThread": {
+                  "tasks": 593,
+                  "totalTaskMs": 148.3,
+                  "over10Ms": 4,
+                  "over50Ms": 0,
+                  "longestTaskMs": 18.6
+                }
+              },
+              "startedAt": "2026-10-10T22:31:58.044Z"
+            },
+            {
+              "run": 2,
+              "performance": 100,
+              "lcpMs": 1371.3,
+              "cls": 0,
+              "tbtMs": 27.5,
+              "load1": 0.99,
+              "loadAfter": 0.91,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3971.5,
+              "observedFcpMs": 203,
+              "observedLcpMs": 203,
+              "milestones": {
+                "documentEndMs": 111.5,
+                "initialResourcesEndMs": 310.1,
+                "firstPrefetchStartMs": 281,
+                "domContentLoadedMs": 193,
+                "loadEventMs": 263,
+                "mainThread": {
+                  "tasks": 581,
+                  "totalTaskMs": 150,
+                  "over10Ms": 3,
+                  "over50Ms": 0,
+                  "longestTaskMs": 19.9
+                }
+              },
+              "startedAt": "2026-10-10T22:33:30.727Z"
+            },
+            {
+              "run": 3,
+              "performance": 100,
+              "lcpMs": 1670.9,
+              "cls": 0,
+              "tbtMs": 35,
+              "load1": 1.09,
+              "loadAfter": 0.92,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3923.5,
+              "observedFcpMs": 215,
+              "observedLcpMs": 215,
+              "milestones": {
+                "documentEndMs": 118.6,
+                "initialResourcesEndMs": 227.6,
+                "firstPrefetchStartMs": 280.2,
+                "domContentLoadedMs": 188,
+                "loadEventMs": 273,
+                "mainThread": {
+                  "tasks": 568,
+                  "totalTaskMs": 144.5,
+                  "over10Ms": 4,
+                  "over50Ms": 0,
+                  "longestTaskMs": 20.4
+                }
+              },
+              "startedAt": "2026-10-10T22:35:02.828Z"
+            }
+          ]
+        },
+        "run": {
+          "label": "/r/<token>",
+          "path": "/r/pd3.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 74,
+              "median": 74,
+              "max": 76,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 3775.9,
+              "median": 3843.1,
+              "max": 3855.1,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 200,
+              "median": 220,
+              "max": 221.5,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 74,
+              "median": 74,
+              "max": 76,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 58,
+              "median": 58,
+              "max": 58,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 80,
+              "median": 80,
+              "max": 80,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 3775.9,
+              "median": 3843.1,
+              "max": 3855.1,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 918.1,
+              "median": 925.9,
+              "max": 930.1,
+              "n": 3
+            },
+            "cls": {
+              "min": 0.2114216281895504,
+              "median": 0.2114216281895504,
+              "max": 0.2114216281895504,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 200,
+              "median": 220,
+              "max": 221.5,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 1213.8,
+              "median": 1225.6,
+              "max": 1803.3,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 3790.9,
+              "median": 3850.6,
+              "max": 3862.6,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 558,
+              "median": 576,
+              "max": 1168,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 223,
+              "median": 233,
+              "max": 355,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 618,
+              "median": 626,
+              "max": 630,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 24,
+            "median": 24,
+            "max": 26,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 452110,
+            "median": 452217,
+            "max": 452274,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 13,
+            "median": 13,
+            "max": 13,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 593636,
+            "median": 593646,
+            "max": 593686,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 40,
+            "median": 40,
+            "max": 40,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 50574,
+            "median": 50574,
+            "max": 50622,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 3927,
+            "median": 3934.5,
+            "max": 3947.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.77,
+            "median": 0.91,
+            "max": 0.92,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.65,
+            "median": 0.78,
+            "max": 0.78,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 3,
+            "lcpElement": {
+              "selector": "header.nM2n4W_hero > div.nM2n4W_heroMain > div.nM2n4W_recordBlock > span.nM2n4W_record",
+              "snippet": "<span class=\"nM2n4W_record\" data-testid=\"results-record\">",
+              "label": "3-0-2"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 85.8,
+              "elementRenderDelay": 472.7
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalMs": 388.2,
+                "scriptingMs": 364,
+                "parseMs": 9.8
+              },
+              {
+                "url": "/r/pd3.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
+                "totalMs": 207.7,
+                "scriptingMs": 47.3,
+                "parseMs": 7
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 161.2,
+                "scriptingMs": 6.3,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "totalMs": 79.8,
+                "scriptingMs": 60.9,
+                "parseMs": 8.6
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "totalMs": 70.7,
+                "scriptingMs": 1.4,
+                "parseMs": 68.9
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/immutable/chunks/3vzsbzp_7_x2l.css",
+                "transferBytes": 8399,
+                "wastedMs": null
+              },
+              {
+                "url": "/_next/static/immutable/chunks/1_r7bbfkw10qb.css",
+                "transferBytes": 3675,
+                "wastedMs": 150
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalBytes": 73512,
+                "wastedBytes": 29551
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "totalBytes": 32864,
+                "wastedBytes": 21023
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/immutable/chunks/006333j8coy7b.js",
+                "transferBytes": 2265,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3fe29na_lg1bz.js",
+                "transferBytes": 8308,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "transferBytes": 73669,
+                "resourceBytes": 230299
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "transferBytes": 47602,
+                "resourceBytes": 168650
+              },
+              {
+                "url": "/_next/static/immutable/chunks/turbopack-1byz1flvc-bu1.js",
+                "transferBytes": 4808,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/immutable/chunks/06bn-5ffxs9d0.js",
+                "transferBytes": 8783,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "transferBytes": 33043,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2e69rooeqion6.js",
+                "transferBytes": 1043,
+                "resourceBytes": 836
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "transferBytes": 243519,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0v2-i-q3a7bg7.js",
+                "transferBytes": 9418,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2npq8hif5qsgm.js",
+                "transferBytes": 6468,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/immutable/chunks/245x9u-2ac6r-.js",
+                "transferBytes": 11161,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/immutable/chunks/34hiike67-_gx.js",
+                "transferBytes": 2023,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "header.nM2n4W_hero > div.nM2n4W_heroMain > div.nM2n4W_recordBlock > span.nM2n4W_record",
+            "header.nM2n4W_hero > div.nM2n4W_heroMain > div.nM2n4W_recordBlock > span.nM2n4W_record",
+            "header.nM2n4W_hero > div.nM2n4W_heroMain > div.nM2n4W_recordBlock > span.nM2n4W_record"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 74,
+              "lcpMs": 3855.1,
+              "cls": 0.2114216281895504,
+              "tbtMs": 221.5,
+              "load1": 0.77,
+              "loadAfter": 0.65,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3927,
+              "observedFcpMs": 355,
+              "observedLcpMs": 1168,
+              "milestones": {
+                "documentEndMs": 793.8,
+                "initialResourcesEndMs": 793.8,
+                "firstPrefetchStartMs": 849.8,
+                "domContentLoadedMs": 838,
+                "loadEventMs": 844,
+                "mainThread": {
+                  "tasks": 808,
+                  "totalTaskMs": 253.6,
+                  "over10Ms": 6,
+                  "over50Ms": 0,
+                  "longestTaskMs": 48.8
+                }
+              },
+              "startedAt": "2026-10-10T22:32:09.540Z"
+            },
+            {
+              "run": 2,
+              "performance": 76,
+              "lcpMs": 3775.9,
+              "cls": 0.2114216281895504,
+              "tbtMs": 200,
+              "load1": 0.91,
+              "loadAfter": 0.78,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3934.5,
+              "observedFcpMs": 223,
+              "observedLcpMs": 576,
+              "milestones": {
+                "documentEndMs": 269.3,
+                "initialResourcesEndMs": 366.7,
+                "firstPrefetchStartMs": 339.3,
+                "domContentLoadedMs": 292,
+                "loadEventMs": 323,
+                "mainThread": {
+                  "tasks": 798,
+                  "totalTaskMs": 256.1,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 55.6
+                }
+              },
+              "startedAt": "2026-10-10T22:33:42.086Z"
+            },
+            {
+              "run": 3,
+              "performance": 74,
+              "lcpMs": 3843.1,
+              "cls": 0.2114216281895504,
+              "tbtMs": 220,
+              "load1": 0.92,
+              "loadAfter": 0.78,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3947.5,
+              "observedFcpMs": 233,
+              "observedLcpMs": 558,
+              "milestones": {
+                "documentEndMs": 307.7,
+                "initialResourcesEndMs": 308.5,
+                "firstPrefetchStartMs": 370.9,
+                "domContentLoadedMs": 341,
+                "loadEventMs": 367,
+                "mainThread": {
+                  "tasks": 804,
+                  "totalTaskMs": 252.3,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 57.5
+                }
+              },
+              "startedAt": "2026-10-10T22:35:14.108Z"
+            }
+          ]
+        },
+        "play-kanto151": {
+          "label": "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151",
+          "path": "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 84,
+              "median": 96,
+              "max": 99,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 1374.3,
+              "median": 2274.6,
+              "max": 3771.7,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 105.5,
+              "median": 194.5,
+              "max": 238,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 84,
+              "median": 96,
+              "max": 99,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 1374.3,
+              "median": 2274.6,
+              "max": 3771.7,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 924.3,
+              "median": 924.6,
+              "max": 1241.7,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0.02795299625440517,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 105.5,
+              "median": 194.5,
+              "max": 238,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 924.3,
+              "median": 924.6,
+              "max": 2523.7,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 2799.5,
+              "median": 3140.9,
+              "max": 3813.5,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 251,
+              "median": 261,
+              "max": 1335,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 251,
+              "median": 261,
+              "max": 1335,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 622,
+              "median": 624,
+              "max": 625,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 24,
+            "median": 24,
+            "max": 27,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 461894,
+            "median": 461904,
+            "max": 461978,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 13,
+            "median": 13,
+            "max": 13,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 586906,
+            "median": 586918,
+            "max": 586946,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 34,
+            "median": 34,
+            "max": 34,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 50129,
+            "median": 50236,
+            "max": 50251,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 3930.5,
+            "median": 4036,
+            "max": 4104.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.65,
+            "median": 0.78,
+            "max": 0.78,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.65,
+            "median": 0.66,
+            "max": 0.75,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 2,
+            "lcpElement": {
+              "selector": "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede",
+              "snippet": "<p class=\"M2ks9W_lede\">",
+              "label": "16 rounds. Each round the wheel rolls, you sign one player and place them. Then…"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 86.7,
+              "elementRenderDelay": 173.9
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalMs": 387.8,
+                "scriptingMs": 369.9,
+                "parseMs": 15.7
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 173.2,
+                "scriptingMs": 5.5,
+                "parseMs": 0
+              },
+              {
+                "url": "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151",
+                "totalMs": 88.9,
+                "scriptingMs": 12.2,
+                "parseMs": 3.9
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "totalMs": 74.5,
+                "scriptingMs": 0.9,
+                "parseMs": 73.4
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "totalMs": 73.8,
+                "scriptingMs": 56.7,
+                "parseMs": 7.7
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/immutable/chunks/1_r7bbfkw10qb.css",
+                "transferBytes": 3664,
+                "wastedMs": null
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3vzsbzp_7_x2l.css",
+                "transferBytes": 8373,
+                "wastedMs": 150
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "totalBytes": 73512,
+                "wastedBytes": 29749
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "totalBytes": 32864,
+                "wastedBytes": 20487
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/immutable/chunks/006333j8coy7b.js",
+                "transferBytes": 2238,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/immutable/chunks/3fe29na_lg1bz.js",
+                "transferBytes": 8327,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0lyrnis0iz_eq.js",
+                "transferBytes": 73708,
+                "resourceBytes": 230299
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39-gbenx5zwll.js",
+                "transferBytes": 47557,
+                "resourceBytes": 168650
+              },
+              {
+                "url": "/_next/static/immutable/chunks/turbopack-1byz1flvc-bu1.js",
+                "transferBytes": 4800,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/immutable/chunks/06bn-5ffxs9d0.js",
+                "transferBytes": 8784,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2djt_v4ccth_j.js",
+                "transferBytes": 33021,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2kag8dxlfetsv.js",
+                "transferBytes": 10824,
+                "resourceBytes": 27934
+              },
+              {
+                "url": "/_next/static/immutable/chunks/39hn4ynhlg-o0.js",
+                "transferBytes": 243516,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/immutable/chunks/0v2-i-q3a7bg7.js",
+                "transferBytes": 9443,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/immutable/chunks/2npq8hif5qsgm.js",
+                "transferBytes": 6468,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/immutable/chunks/245x9u-2ac6r-.js",
+                "transferBytes": 11208,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/immutable/chunks/34hiike67-_gx.js",
+                "transferBytes": 2010,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "body > footer.site-footer > p",
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede",
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 99,
+              "lcpMs": 1374.3,
+              "cls": 0.02795299625440517,
+              "tbtMs": 105.5,
+              "load1": 0.65,
+              "loadAfter": 0.65,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4036,
+              "observedFcpMs": 251,
+              "observedLcpMs": 251,
+              "milestones": {
+                "documentEndMs": 333.7,
+                "initialResourcesEndMs": 426.3,
+                "firstPrefetchStartMs": 393.2,
+                "domContentLoadedMs": 352,
+                "loadEventMs": 383,
+                "mainThread": {
+                  "tasks": 680,
+                  "totalTaskMs": 208.8,
+                  "over10Ms": 3,
+                  "over50Ms": 1,
+                  "longestTaskMs": 52.5
+                }
+              },
+              "startedAt": "2026-10-10T22:32:22.250Z"
+            },
+            {
+              "run": 2,
+              "performance": 96,
+              "lcpMs": 2274.6,
+              "cls": 0,
+              "tbtMs": 194.5,
+              "load1": 0.78,
+              "loadAfter": 0.66,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 3930.5,
+              "observedFcpMs": 261,
+              "observedLcpMs": 261,
+              "milestones": {
+                "documentEndMs": 182,
+                "initialResourcesEndMs": 280.2,
+                "firstPrefetchStartMs": 329,
+                "domContentLoadedMs": 210,
+                "loadEventMs": 325,
+                "mainThread": {
+                  "tasks": 659,
+                  "totalTaskMs": 215.6,
+                  "over10Ms": 4,
+                  "over50Ms": 0,
+                  "longestTaskMs": 46.7
+                }
+              },
+              "startedAt": "2026-10-10T22:33:54.106Z"
+            },
+            {
+              "run": 3,
+              "performance": 84,
+              "lcpMs": 3771.7,
+              "cls": 0,
+              "tbtMs": 238,
+              "load1": 0.78,
+              "loadAfter": 0.75,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 4104.5,
+              "observedFcpMs": 1335,
+              "observedLcpMs": 1335,
+              "milestones": {
+                "documentEndMs": 265.8,
+                "initialResourcesEndMs": 373.3,
+                "firstPrefetchStartMs": 1334,
+                "domContentLoadedMs": 287,
+                "loadEventMs": 338,
+                "mainThread": {
+                  "tasks": 608,
+                  "totalTaskMs": 234.6,
+                  "over10Ms": 5,
+                  "over50Ms": 1,
+                  "longestTaskMs": 58.1
+                }
+              },
+              "startedAt": "2026-10-10T22:35:26.101Z"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,12 +1,10 @@
 import {
   DraftError,
-  ENGINE_COEFFICIENTS,
   RUN_TOKEN_VERSION,
   RunTokenError,
   decodeToken,
   encodeToken,
   runDraft,
-  type CupRound,
   type DraftAction,
   type DraftSettings,
   type DraftState,
@@ -80,7 +78,3 @@ export function draftFromBuilderToken(token: string): DraftState | null {
     throw e;
   }
 }
-
-// The nominal ladder from the engine's coefficient table. A run's actual opponents carry a
-// small seeded jitter around these numbers; the cup result reports the exact values.
-export const NOMINAL_LADDER: Readonly<Record<CupRound, number>> = ENGINE_COEFFICIENTS.ladder.score;
