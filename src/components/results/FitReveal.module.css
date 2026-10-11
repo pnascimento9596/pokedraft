@@ -13,9 +13,10 @@
   flex-direction: column;
   gap: 6px;
   padding: 8px 10px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--panel);
+  border: 0;
+  border-bottom: 1px solid var(--border-soft);
+  border-radius: 0;
+  background: transparent;
 }
 
 .row[data-weak] {
@@ -57,7 +58,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 0 5px;
-  border-radius: 3px;
+  border-radius: 999px;
   border: 1px solid currentColor;
 }
 
@@ -138,4 +139,35 @@
   color: var(--ink);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+}
+
+.slot,
+.fitLabel,
+.tags,
+.why summary,
+.why p {
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0;
+}
+.row[data-weak] {
+  border-color: var(--border-soft);
+  box-shadow: inset 3px 0 0 var(--risk-mark);
+}
+.oop,
+.weakTag {
+  font-size: 11px;
+  line-height: 16px;
+  padding: 1px 6px;
+}
+.weakTag {
+  background: color-mix(in srgb, var(--risk-mark) 14%, var(--surface));
+}
+.plus {
+  color: var(--ok-text);
+  background: var(--ok-bg);
+}
+.minus {
+  color: var(--risk-text);
+  background: color-mix(in srgb, var(--risk-mark) 14%, var(--surface));
 }

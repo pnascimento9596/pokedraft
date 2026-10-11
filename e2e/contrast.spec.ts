@@ -295,12 +295,12 @@ for (const colorScheme of ["dark", "light"] as const) {
       expect(Math.min(...scores)).toBeGreaterThanOrEqual(4.5);
     });
 
-    test("results hero text reaches its ratio on the rendered gradient", async ({ page }) => {
+    test("results header text reaches its ratio on the rendered module", async ({ page }) => {
       await visit(page, `/r/${TOKEN}`);
       await page.getByTestId("results-record").waitFor();
       const hero = page.locator('[class*="_hero"]').first();
       const parts: { selector: string; need: number }[] = [
-        { selector: ".kicker", need: 4.5 },
+        { selector: ".eyebrow", need: 4.5 },
         { selector: '[class*="_formation"]', need: 4.5 },
         { selector: '[class*="_recordLabel"]', need: 4.5 },
         { selector: '[data-testid="results-record"]', need: 3 },
@@ -321,7 +321,7 @@ for (const colorScheme of ["dark", "light"] as const) {
         scores[selector] = Math.min(round2(worst(parseColor(colours[i]!), bg)) / need, 1);
       }
       expect(scores).toEqual({
-        ".kicker": 1,
+        ".eyebrow": 1,
         '[class*="_formation"]': 1,
         '[class*="_recordLabel"]': 1,
         '[data-testid="results-record"]': 1,

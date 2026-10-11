@@ -115,3 +115,7 @@ Ratios below are unrounded during validation. Displayed rounding never turns a f
 | --type-dark | 8.4076 | dark / type pill 0.18 | 4.5 |
 | --type-fairy | 5.9768 | dark / type pill 0.18 | 4.5 |
 | --pitch-line | 5.7764 | light / --pitch-stripe | 3 |
+
+## Static share renderer
+
+`src/design/card-tokens.ts` mirrors the light palette for Satori, which cannot resolve CSS variables. Its canvas, surface, emphasis, sunken, border, action/foreground, ok, pitch/stripe and warm line values are identical to the checked CSS roles. Card names use accent-fg on accent; body/figures use text or muted on canvas; the Team Score action uses accent-fg on accent. The same contrast roles apply. The 1200x630 renderer uses only Inter400/600/700 with local licensed subsets; next/font remains the sole browser family. No calculations, content or image pack pixels changed.

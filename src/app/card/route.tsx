@@ -1,3 +1,4 @@
+import { cardFonts } from "@/components/share/card-fonts";
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { CARD_SIZE, Card, cardModel } from "@/components/share/card";
@@ -19,6 +20,6 @@ export async function GET(request: NextRequest): Promise<Response> {
   const images = await cardImages(model, q.get("pack"));
   return new ImageResponse(
     <Card model={model} images={images} mirror={q.get("mirror") !== "0"} />,
-    { ...CARD_SIZE, headers: { "cache-control": CARD_CACHE_CONTROL } },
+    { ...CARD_SIZE, fonts: await cardFonts(), headers: { "cache-control": CARD_CACHE_CONTROL } },
   );
 }

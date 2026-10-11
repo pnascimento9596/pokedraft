@@ -1,0 +1,33 @@
+{
+  "url": "https://pokedraft-woad.vercel.app/api/health?verify=1791749241897899000",
+  "headers": {
+    "Age": "0",
+    "Cache-Control": "no-store",
+    "Content-Security-Policy-Report-Only": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; report-uri /api/csp-report",
+    "Content-Type": "application/json",
+    "Date": "Sun, 11 Oct 2026 20:07:22 GMT",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Server": "Vercel",
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-Matched-Path": "/api/health",
+    "X-Robots-Tag": "noindex, nofollow",
+    "X-Vercel-Cache": "MISS",
+    "X-Vercel-Id": "iad1::iad1::g4h65-1791749242059-a26b955ec536",
+    "Connection": "close",
+    "Transfer-Encoding": "chunked"
+  },
+  "body": {
+    "sha": "bac8beafd762397a638903ae3bcd3e469ae47478",
+    "env": "production",
+    "region": "iad1",
+    "engine": "pokedraft-engine-3",
+    "tokenVersions": [
+      1,
+      2,
+      3
+    ]
+  }
+}

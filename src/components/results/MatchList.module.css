@@ -8,26 +8,26 @@
 }
 
 .card {
-  --accent: var(--line-strong);
+  --result-mark: var(--line-strong);
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 12px 14px;
   border: 1px solid var(--line);
-  border-left: 4px solid var(--accent);
-  border-radius: var(--radius);
-  background: var(--panel);
+  border-left: 4px solid var(--result-mark);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
   min-width: 0;
 }
 
 .card[data-outcome="W"] {
-  --accent: var(--win);
+  --result-mark: var(--win);
 }
 .card[data-outcome="D"] {
-  --accent: var(--draw);
+  --result-mark: var(--draw);
 }
 .card[data-outcome="L"] {
-  --accent: var(--loss);
+  --result-mark: var(--loss);
 }
 .card[data-outcome="none"] {
   background: var(--surface-sunken);
@@ -51,7 +51,7 @@
   font-size: 0.85rem;
   letter-spacing: 0.06em;
   padding: 1px 6px;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
   background: var(--ink);
   color: var(--bg);
   text-transform: uppercase;
@@ -73,7 +73,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.85rem;
-  color: var(--accent);
+  color: var(--result-mark);
 }
 
 .scoreline {
@@ -103,7 +103,7 @@
   font-size: 2rem;
   line-height: 1;
   padding: 2px 10px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   background: var(--bg-sunk);
   border: 1px solid var(--line);
 }
@@ -152,7 +152,7 @@
 .track {
   position: relative;
   height: 6px;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
   background: var(--bg-sunk);
   overflow: hidden;
 }
@@ -163,7 +163,7 @@
   position: absolute;
   inset: 0 auto 0 0;
   width: var(--w);
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
 }
 
 .fillUser {
@@ -175,7 +175,7 @@
 }
 
 .fillGhost {
-  background: repeating-linear-gradient(90deg, var(--ink-faint) 0 4px, transparent 4px 7px);
+  background: var(--border-strong);
 }
 
 .below {
@@ -216,7 +216,7 @@
   margin: 0;
   font-size: 0.85rem;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--live) 14%, transparent);
 }
 
@@ -248,4 +248,53 @@
   letter-spacing: 0.03em;
   overflow-wrap: anywhere;
   color: var(--ink-soft);
+}
+
+.round {
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 18px;
+}
+.roundLong,
+.outcome,
+.meter,
+.below,
+.goalList,
+.absence,
+.recap,
+.notPlayedOpp,
+.out {
+  font-size: 13px;
+  line-height: 18px;
+}
+.card[data-outcome="W"] {
+  --result-mark: var(--ok-text);
+}
+.card[data-outcome="D"] {
+  --result-mark: var(--text-muted);
+}
+.card[data-outcome="L"] {
+  --result-mark: var(--risk-text);
+}
+.card[data-outcome="none"] {
+  --result-mark: var(--text-muted);
+}
+.track {
+  height: 8px;
+  border-radius: 999px;
+}
+.absence {
+  background: var(--warn-bg);
+}
+.out {
+  color: var(--risk-text);
+}
+
+.side {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 15px;
+  line-height: 22px;
 }
