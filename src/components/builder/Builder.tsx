@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   FORMATIONS,
   applyAction,
@@ -18,7 +18,7 @@ import {
 } from "@/engine";
 import { Pitch } from "@/components/pitch/Pitch";
 import { downloadCard } from "@/components/share/download";
-import { FRIENDLY_LABEL } from "@/ui/labels";
+import { FRIENDLY_LABEL, qualityScore, versusLabel } from "@/ui/labels";
 import { BUILDER_URL_SEED, builderToken, filledCount, valueAt } from "@/ui/lineup";
 import { freshSeed } from "@/ui/settings";
 import { CASCADE_TOTAL_MS, cascadeFrame, fullLineup, randomDraft } from "./model";
@@ -114,16 +114,19 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
     onFriendly({ token: t, draft: played, cup });
   };
 
-  const tokenNote = (ref: SlotRef) => {
+  // The same number and label as the picker row: where the player ranks for the slot's role (a
+  // bench slot has none, so their best one) among all Pokémon, 0 to 100.
+  const tokenNote = (ref: SlotRef): ReactNode => {
     const id = valueAt(lineup, ref);
     if (id === null) return null;
     const sp = speciesById(id);
-    if (ref.kind === "starter") {
-      const role = slots[ref.index].role;
-      return `${role} ${sp.fits[role]}`;
-    }
-    const best = sp.bestRoles[0]!;
-    return `${best} ${sp.fits[best]}`;
+    const role = ref.kind === "starter" ? slots[ref.index].role : sp.bestRoles[0]!;
+    return (
+      <>
+        <span className={s.noteScore}>{qualityScore(sp.quality[role])}</span>{" "}
+        <span className={s.noteLabel}>{versusLabel(role)}</span>
+      </>
+    );
   };
 
   return (
@@ -161,6 +164,18 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
           }
           tokenNote={showRatings && !animating ? tokenNote : undefined}
         />
+        {/* Below an 800 px pitch each pill is the number alone, so this line says what it compares
+            against. The CSS hides it where every pill carries its own "vs other <role>s" label. Its
+            line is reserved even with ratings off: the saved setting loads after hydration, and
+            the line appearing then pushed the tools down (layout shift). It stays up while
+            Randomize animates. */}
+        <div className={s.legendSlot}>
+          {showRatings ? (
+            <p className={s.legend} data-testid="ratings-legend">
+              Ratings are 0 to 100, vs other players in the same role.
+            </p>
+          ) : null}
+        </div>
       </div>
 
       <div className={s.tools} role="toolbar" aria-label="Builder actions">

@@ -228,7 +228,7 @@ export function DraftBoard({
       </section>
 
       <div className={s.road}>
-        <RoadStrip compact />
+        <RoadStrip seed={run.seed} mode={mode} compact />
       </div>
 
       <section className={s.pitch} data-armed={armed || undefined} aria-label="Your squad">

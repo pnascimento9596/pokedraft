@@ -9,13 +9,14 @@ import {
   type DraftState,
   type Gen,
   type PokemonType,
+  type Role,
   type SlotRef,
   type Species,
   type SpeciesId,
 } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeChip } from "@/components/TypeChip";
-import { genLabel, typeLabel } from "@/ui/labels";
+import { genLabel, qualityScore, typeLabel, versusLabel } from "@/ui/labels";
 import { ALL_REFS, valueAt } from "@/ui/lineup";
 import s from "./Picker.module.css";
 
@@ -38,6 +39,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
   const ref = useRef<HTMLDialogElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const titleId = useId();
+  const rawFitId = useId();
   const [query, setQuery] = useState("");
   const [type, setType] = useState<PokemonType | null>(null);
   const [gen, setGen] = useState<Gen | null>(null);
@@ -83,10 +85,17 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
 
   const shown = matches.slice(0, PICKER_LIMIT);
 
-  const fitOf = (sp: Species) => {
-    if (role !== null) return { label: `${role} fit`, value: sp.fits[role] };
-    const best = sp.bestRoles[0]!;
-    return { label: `Best: ${best}`, value: sp.fits[best] };
+  // What a row shows with Show ratings on: where the player ranks for the slot's role among all
+  // Pokémon (0 to 100, the engine's quality), and the raw fit as the row's description. A bench
+  // slot has no role, so it rates the player at their best one.
+  const ratingOf = (sp: Species) => {
+    const rated: Role = role ?? sp.bestRoles[0]!;
+    return {
+      best: role === null ? rated : null,
+      score: qualityScore(sp.quality[rated]),
+      versus: versusLabel(rated),
+      raw: `Raw fit ${sp.fits[rated]} of 100 for ${role === null ? rated : slotLabel}`,
+    };
   };
 
   return (
@@ -184,7 +193,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           {shown.map((sp) => {
             const at = onField.get(sp.id);
             const here = current === sp.id;
-            const fit = showRatings ? fitOf(sp) : null;
+            const rating = showRatings ? ratingOf(sp) : null;
             return (
               <li key={sp.id}>
                 <button
@@ -192,6 +201,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   className={s.row}
                   disabled={here}
                   data-testid={`pick-${sp.id}`}
+                  aria-describedby={rating !== null ? `${rawFitId}-${sp.id}` : undefined}
                   onClick={() => onPick(sp.id)}
                 >
                   <PlayerImage dexId={sp.id} size={32} alt={sp.name} />
@@ -207,13 +217,24 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   {at !== undefined ? (
                     <span className={s.rowTag}>{here ? "In this slot" : `Swap with ${at}`}</span>
                   ) : null}
-                  {fit !== null ? (
+                  {rating !== null ? (
                     <span className={s.rowFit} data-testid={`fit-${sp.id}`}>
-                      <span className={s.rowFitLabel}>{fit.label}</span>
-                      <span className="num">{fit.value}</span>
+                      {rating.best !== null ? (
+                        <>
+                          <span className={s.rowFitLabel}>Best: {rating.best}</span>{" "}
+                        </>
+                      ) : null}
+                      <span className="num">{rating.score}</span>{" "}
+                      <span className={s.rowFitVs}>{rating.versus}</span>
                     </span>
                   ) : null}
                 </button>
+                {/* Outside the button, so the raw fit is a description and not part of its name. */}
+                {rating !== null ? (
+                  <span id={`${rawFitId}-${sp.id}`} className="visually-hidden">
+                    {rating.raw}
+                  </span>
+                ) : null}
               </li>
             );
           })}

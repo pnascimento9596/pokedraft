@@ -97,6 +97,8 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     assistProb: 0.62,
     // Tuned from the dispatch 6 starting table so ST, W and AM score 70 to 80% of user goals
     // in 4-3-3, 4-2-3-1 and 3-4-3 (docs/decisions/dispatch-6.md).
+    // docs/calibration.md has the measured shares per formation under "Goals by role (dispatch 6)"
+    // and the start and tuned values in the `match.roleFactor` row of "The coefficients and why".
     roleFactor: {
       ST: 1,
       W: 0.85,

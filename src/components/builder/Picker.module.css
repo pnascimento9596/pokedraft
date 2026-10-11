@@ -184,8 +184,11 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  gap: 2px;
   min-width: 48px;
+  max-width: 4.75rem;
   line-height: 1;
+  text-align: right;
 }
 
 .rowFit .num {
@@ -200,6 +203,23 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
+}
+
+/* "vs other CBs": lower case on purpose (an upper-case plural reads as "CBS"), and it wraps rather
+   than widening the cell, so a row that also has a Swap tag keeps room for the name. */
+.rowFitVs {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  color: var(--ink-soft);
+}
+
+/* Beside a Swap tag the cell keeps its old 48 px, so "vs other strikers" wraps to two lines and the
+   name keeps its room (at 320 px "Meowth" was cut to "Meo..."). */
+.rowTag + .rowFit {
+  max-width: 3rem;
 }
 
 @media (min-width: 720px) {
