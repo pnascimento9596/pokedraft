@@ -89,3 +89,9 @@
     min-height: 44px;
   }
 }
+
+@media (max-width: 480px) {
+  .input {
+    min-height: 44px;
+  }
+}

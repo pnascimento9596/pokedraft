@@ -1,10 +1,12 @@
 import {
   DraftError,
+  FORMATIONS,
   RUN_TOKEN_VERSION,
   RunTokenError,
   decodeToken,
   encodeToken,
   runDraft,
+  speciesById,
   type DraftAction,
   type DraftSettings,
   type DraftState,
@@ -41,6 +43,24 @@ export function sameRef(a: SlotRef | null, b: SlotRef | null): boolean {
 
 export function valueAt(lineup: Lineup, ref: SlotRef): SpeciesId | null {
   return ref.kind === "starter" ? lineup.starters[ref.index] : lineup.bench[ref.index];
+}
+
+/** The label a slot shows on the pitch: the formation's position, or SUB 1 to SUB 5. */
+export function slotLabel(lineup: Lineup, ref: SlotRef): string {
+  return ref.kind === "starter"
+    ? FORMATIONS[lineup.formation].slots[ref.index].label
+    : `SUB ${ref.index + 1}`;
+}
+
+/** What swapping slots `a` and `b` of `lineup` (the lineup before the swap) does, in words. */
+export function swapMessage(lineup: Lineup, a: SlotRef, b: SlotRef): string {
+  const first = valueAt(lineup, a);
+  const second = valueAt(lineup, b);
+  if (first === null) return second === null ? "" : swapMessage(lineup, b, a);
+  const moved = `Moved ${speciesById(first).name} to ${slotLabel(lineup, b)}`;
+  return second === null
+    ? `${moved}.`
+    : `${moved} and ${speciesById(second).name} to ${slotLabel(lineup, a)}.`;
 }
 
 export function filledCount(lineup: Lineup): number {

@@ -16,7 +16,7 @@
 //   2 overflow     no sideways overflow at 320, 360, 390 and 430 px, dark and light
 //   3 targets      every interactive element is at least 44 by 44 px, at 390 and 320 px
 //   4 picker       the builder sheet scrolls its own list and closes on swipe, Back and Close
-//   5 drag/scroll  a touch drag swaps two tokens and the page still scrolls outside the pitch
+//   5 drag/scroll  a touch drag or two taps swap two tokens, and a swipe on the grass scrolls the page
 //   6 keyboard     the focused nickname input stays visible when the viewport shrinks
 //   7 landscape    iPhone 14 on its side (the other projects skip these)
 //
@@ -1210,38 +1210,113 @@ test("5 drag and scroll: a vertical swipe that starts outside the pitch scrolls 
   conclude("5 drag and scroll: swipe outside the pitch", problems);
 });
 
-test("5 drag and scroll: a swipe that starts on the pitch (reported, never asserted; real touch on pixel-7, CSS read on WebKit)", async ({
+/** A point on the field's grass that no token covers, low on the field and still on screen. */
+async function grassPoint(page: Page, field: Locator): Promise<{ x: number; y: number }> {
+  const at = await field.evaluate((el, height) => {
+    const box = el.getBoundingClientRect();
+    for (let fy = 0.75; fy >= 0.3; fy -= 0.05) {
+      for (const fx of [0.5, 0.25, 0.75, 0.15, 0.85]) {
+        const x = box.left + box.width * fx;
+        const y = Math.min(box.top + box.height * fy, height - 80);
+        if (document.elementFromPoint(x, y) === el) return { x, y };
+      }
+    }
+    return null;
+  }, page.viewportSize()!.height);
+  if (at === null) throw new Error("harness: no bare grass on the field to swipe from");
+  return at;
+}
+
+test("5 drag and scroll: a vertical swipe that starts on the pitch's grass scrolls the page (real touch on pixel-7, CSS read on WebKit)", async ({
   page,
 }) => {
   await filledBuilder(page);
   const field = page.getByRole("group", { name: /lineup$/ }).first();
-  await field.scrollIntoViewIfNeeded();
+  await field.evaluate((el) => el.scrollIntoView({ block: "start" }));
   await settle(page);
+  const problems: string[] = [];
   if (isChromium(page)) {
-    const box = (await field.boundingBox())!;
+    const at = await grassPoint(page, field);
     const start = await page.evaluate(() => window.scrollY);
-    const at = {
-      x: box.x + box.width / 2,
-      y: Math.min(box.y + box.height * 0.75, page.viewportSize()!.height - 80),
-    };
     await touchScroll(page, at, 160);
     const moved = (await settledScrollY(page)) - start;
-    note(
-      "pitch swipe",
-      moved > 20
-        ? `a vertical swipe that starts on the pitch scrolled the page by ${Math.round(moved)}px`
-        : `a vertical swipe that starts on the pitch did not scroll the page (moved ${Math.round(moved)}px)`,
-    );
+    if (moved < 100)
+      problems.push(
+        `a 160px swipe that starts on the grass at ${Math.round(at.x)},${Math.round(at.y)} scrolled the page ${Math.round(moved)}px`,
+      );
   } else {
-    notRun("real touch swipe on the pitch on WebKit: no API");
-    const allowed = await panYAllowed(field);
-    note(
-      "pitch swipe",
-      allowed
-        ? "WebKit, read from CSS and not measured: touch-action on the pitch allows panning"
-        : "WebKit, read from CSS and not measured: touch-action on the pitch is none, so a swipe that starts on it does not pan the page",
-    );
+    notRun("real touch swipe on the pitch on WebKit: no API (touch-action was read)");
+    if (!(await panYAllowed(field)))
+      problems.push(
+        "touch-action on the pitch forbids vertical panning, so a swipe on it cannot scroll",
+      );
   }
+  conclude("5 drag and scroll: swipe on the pitch", problems);
+});
+
+test("5 drag and scroll: after a touch drag, the next tap on a slot still opens the Picker (real touch on pixel-7)", async ({
+  page,
+}) => {
+  test.skip(
+    !isChromium(page),
+    "WebKit has no touch drag API; the jsdom test in Pitch.test.tsx covers the click rule",
+  );
+  await filledBuilder(page);
+  await page.getByTestId("pitch").evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await settle(page);
+  const a = page.getByTestId("slot-s6");
+  const b = page.getByTestId("slot-s7");
+  await touchDrag(page, centre((await a.boundingBox())!), centre((await b.boundingBox())!));
+  await settle(page);
+  await tapNow(page, page.getByTestId("slot-s9"), "slot-s9 after the drag");
+  const opened = await page
+    .locator("dialog[open]")
+    .waitFor({ state: "visible", timeout: 3_000 })
+    .then(() => true)
+    .catch(() => false);
+  conclude(
+    "5 drag and scroll: tap after a touch drag",
+    opened ? [] : ["the first tap on a slot after a touch drag did not open the Picker"],
+  );
+});
+
+test("5 drag and scroll: on the finished draft, a tap on one player and then another swaps them (real taps)", async ({
+  page,
+}) => {
+  await page.goto(PLAY_8_0);
+  const go = page.getByTestId("run-start");
+  await ready(page, go);
+  await go.click();
+  await draftRounds(page, 16);
+  await expect(page.getByTestId("see-results")).toBeVisible();
+  await settle(page);
+  const gk = page.getByTestId("slot-s0");
+  const lf = page.getByTestId("slot-s9");
+  const before = [
+    speciesOf((await gk.getAttribute("aria-label"))!),
+    speciesOf((await lf.getAttribute("aria-label"))!),
+  ];
+  await tapNow(page, gk, "slot-s0");
+  await tapNow(page, lf, "slot-s9");
+  const read = async () => [
+    speciesOf((await gk.getAttribute("aria-label"))!),
+    speciesOf((await lf.getAttribute("aria-label"))!),
+  ];
+  let after = await read();
+  try {
+    await expect.poll(read, { timeout: 3_000 }).toEqual([before[1], before[0]]);
+    after = [before[1], before[0]];
+  } catch {
+    after = await read();
+  }
+  conclude(
+    "5 drag and scroll: tap swap",
+    after[0] === before[1] && after[1] === before[0]
+      ? []
+      : [
+          `two taps did not swap the players. s0 held ${before[0]} and now holds ${after[0]}, s9 held ${before[1]} and now holds ${after[1]}`,
+        ],
+  );
 });
 
 // ---------------------------------------------------------------------------------------------

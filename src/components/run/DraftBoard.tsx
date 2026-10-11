@@ -1,25 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   DRAFT_ROUNDS,
   REROLLS,
   speciesById,
   type DraftAction,
+  type DraftState,
   type RerollTarget,
   type SlotRef,
   type SpeciesId,
 } from "@/engine";
+import { announce } from "@/components/Announcer";
 import { Pitch } from "@/components/pitch/Pitch";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeChip } from "@/components/TypeChip";
 import { RollReveal } from "@/components/wheel/RollReveal";
 import { SoundToggle } from "@/components/wheel/SoundToggle";
-import { dexLabel, stagesFor } from "@/components/wheel/reel";
+import { announce as stageLine, dexLabel, stagesFor } from "@/components/wheel/reel";
 import { unlockAudio } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { REGION_LABEL } from "@/ui/labels";
-import { valueAt } from "@/ui/lineup";
+import { sameRef, slotLabel, swapMessage, valueAt } from "@/ui/lineup";
 import { RoadStrip } from "./RoadStrip";
 import { candidatesFor, withHint, type Run } from "./runState";
 import s from "./DraftBoard.module.css";
@@ -45,6 +47,41 @@ const REROLL_BUTTONS: Readonly<Record<"cup8" | "kanto151", readonly [RerollTarge
 // How long a hint for a tap that did nothing stays up.
 const HINT_MS = 4000;
 
+const REROLLED: Readonly<Record<RerollTarget, string>> = {
+  type: "type",
+  region: "region",
+  species: "player",
+};
+
+const swapPrompt = (name: string) => `Tap another slot to swap ${name}, or tap it again to cancel.`;
+
+// What an action did, for the page's live region. `before` is the state the action applied to.
+function outcome(before: DraftState, after: DraftState, action: DraftAction): string {
+  const parts: string[] = [];
+  if (action.type === "pick") {
+    const slot = action.slot ?? (before.phase.kind === "choosing" ? before.phase.slot : null);
+    const name = speciesById(action.species).name;
+    parts.push(
+      slot === null ? `Signed ${name}.` : `Signed ${name} at ${slotLabel(after.lineup, slot)}.`,
+    );
+  } else if (action.type === "swap") {
+    parts.push(swapMessage(before.lineup, action.a, action.b));
+  } else if (action.type === "chooseSlot") {
+    parts.push(`Rolling for ${slotLabel(after.lineup, action.slot)}.`);
+  } else if (action.type === "reroll" && after.settings.mode !== "builder") {
+    const left = REROLLS[after.settings.mode] - after.rerollsUsed;
+    parts.push(`Rerolled the ${REROLLED[action.target]}, ${left} left.`);
+  }
+  if (after.phase.kind === "complete" && before.phase.kind !== "complete") {
+    parts.push(
+      `Draft complete, ${DRAFT_ROUNDS} of ${DRAFT_ROUNDS} signed. Tap two players to swap them.`,
+    );
+  } else if (after.round !== before.round) {
+    parts.push(`Round ${after.round + 1} of ${DRAFT_ROUNDS}.`);
+  }
+  return parts.join(" ");
+}
+
 interface Selection {
   readonly rollId: number;
   readonly species: SpeciesId;
@@ -64,13 +101,55 @@ export function DraftBoard({
   const reduced = useReducedMotion();
   const [revealedId, setRevealedId] = useState(-1);
   const [selection, setSelection] = useState<Selection | null>(null);
+  // The player picked for a tap swap: a tap on a placed player, then a tap on another slot.
+  const [swapFrom, setSwapFrom] = useState<SlotRef | null>(null);
   const onRevealDone = useCallback(() => setRevealedId(rollId), [rollId]);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  // Where focus was when an action was sent, to move it to the heading if that control is gone.
+  const focusBefore = useRef<Element | null>(null);
+  const runBefore = useRef(run);
+  const spokenRoll = useRef(-1);
 
   useEffect(() => {
     if (run.error === null) return;
     const id = window.setTimeout(() => onRun(withHint(run, null)), HINT_MS);
     return () => window.clearTimeout(id);
   }, [run, onRun]);
+
+  useEffect(() => {
+    const before = runBefore.current;
+    runBefore.current = run;
+    if (before === run) return;
+    const was = focusBefore.current;
+    focusBefore.current = null;
+    if (was !== null && !was.isConnected) headingRef.current?.focus({ preventScroll: true });
+    if (run.error !== null) announce(run.error);
+    else if (run.actions.length > before.actions.length)
+      announce(outcome(before.state, run.state, run.actions[run.actions.length - 1]!));
+  }, [run]);
+
+  const roll = state.phase.kind === "choosing" ? state.phase.roll : null;
+  const revealedNow = roll !== null && (reduced || revealedId === rollId);
+  useEffect(() => {
+    if (roll === null || !revealedNow || spokenRoll.current === rollId) return;
+    spokenRoll.current = rollId;
+    announce(stagesFor(roll, settings, run.cause).map(stageLine).join(" "));
+  }, [roll, revealedNow, rollId, settings, run.cause]);
+
+  useEffect(() => {
+    if (failure !== null) announce(failure);
+  }, [failure]);
+
+  useEffect(() => {
+    if (swapFrom === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setSwapFrom(null);
+      announce("Swap cancelled.");
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [swapFrom]);
 
   if (settings.mode === "builder") return null;
   const mode = settings.mode;
@@ -88,41 +167,63 @@ export function DraftBoard({
   const remaining = REROLLS[mode] - state.rerollsUsed;
   const round = Math.min(state.round + 1, DRAFT_ROUNDS);
   const hint = (message: string) => onRun(withHint(run, message));
+  const committed = choosing?.slot ?? null;
+  const picked =
+    swapFrom !== null && valueAt(state.lineup, swapFrom) !== null && !sameRef(swapFrom, committed)
+      ? swapFrom
+      : null;
+  const pickedName = picked === null ? null : speciesById(valueAt(state.lineup, picked)!).name;
+
+  const act = (action: DraftAction) => {
+    focusBefore.current = document.activeElement;
+    setSwapFrom(null);
+    onAction(action);
+  };
 
   const tapCandidate = (id: SpeciesId) => {
     if (choosing === null) return;
     if (choosing.slot !== null) {
-      onAction({ type: "pick", species: id, slot: choosing.slot });
+      act({ type: "pick", species: id, slot: choosing.slot });
       return;
     }
     setSelection(selected === id ? null : { rollId, species: id });
   };
 
   const tapSlot = (ref: SlotRef) => {
-    const filled = valueAt(state.lineup, ref) !== null;
+    const id = valueAt(state.lineup, ref);
+    if (picked !== null) {
+      if (!sameRef(picked, ref)) {
+        act({ type: "swap", a: picked, b: ref });
+        return;
+      }
+      setSwapFrom(null);
+      announce("Swap cancelled.");
+      return;
+    }
+    if (id !== null) {
+      const name = speciesById(id).name;
+      setSwapFrom(ref);
+      announce(`${slotLabel(state.lineup, ref)} ${name} selected. ${swapPrompt(name)}`);
+      return;
+    }
     if (phase.kind === "awaitingSlot") {
-      if (filled) hint("That slot is taken. Pick an empty one.");
-      else onAction({ type: "chooseSlot", slot: ref });
+      act({ type: "chooseSlot", slot: ref });
       return;
     }
     if (choosing === null) return;
-    if (choosing.slot !== null) {
+    if (committed !== null) {
       hint("Pick a player for the highlighted slot.");
-      return;
-    }
-    if (filled) {
-      hint("That slot is taken. Drag one player onto another to swap them.");
       return;
     }
     if (selected === null) {
       hint(revealed ? "Choose a player first, then tap a slot." : "Wait for the wheel to stop.");
       return;
     }
-    onAction({ type: "pick", species: selected, slot: ref });
+    act({ type: "pick", species: selected, slot: ref });
   };
 
-  const armed = phase.kind === "awaitingSlot" || (choosing?.slot === null && selected !== null);
-  const roll = choosing?.roll ?? null;
+  const armed = phase.kind === "awaitingSlot" || (committed === null && selected !== null);
+  const message = failure ?? run.error ?? (pickedName === null ? null : swapPrompt(pickedName));
 
   return (
     <div className={s.board} data-revealed={revealed || undefined}>
@@ -132,7 +233,7 @@ export function DraftBoard({
             <span className="kicker">{title}</span>
             <SoundToggle />
           </div>
-          <h1 className={s.round} data-testid="round-header">
+          <h1 ref={headingRef} className={s.round} data-testid="round-header" tabIndex={-1}>
             {phase.kind === "complete" ? "Draft complete" : `Round ${round} of ${DRAFT_ROUNDS}`}
           </h1>
           <div className={s.rolled} aria-live="off">
@@ -158,31 +259,37 @@ export function DraftBoard({
           </div>
           {phase.kind !== "complete" ? (
             <div className={s.rerolls}>
-              {REROLL_BUTTONS[mode].map(([target, label]) => (
-                <button
-                  key={target}
-                  type="button"
-                  className="btn btn--sm"
-                  aria-label={`${label}, ${remaining} left`}
-                  disabled={remaining <= 0 || !revealed}
-                  onClick={() => {
-                    unlockAudio();
-                    onAction({ type: "reroll", target });
-                  }}
-                >
-                  {label}
-                  <span className={s.count} aria-hidden="true">
-                    {remaining}
-                  </span>
-                </button>
-              ))}
+              {REROLL_BUTTONS[mode].map(([target, label]) => {
+                // aria-disabled, not disabled, so a pressed button keeps focus while it is off.
+                const off = remaining <= 0 || !revealed;
+                return (
+                  <button
+                    key={target}
+                    type="button"
+                    className="btn btn--sm"
+                    aria-disabled={off || undefined}
+                    onClick={() => {
+                      if (off) return;
+                      unlockAudio();
+                      act({ type: "reroll", target });
+                    }}
+                  >
+                    {label}{" "}
+                    <span className={s.count}>
+                      {remaining}
+                      <span className="visually-hidden"> left</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           ) : null}
         </header>
 
-        {failure !== null || run.error !== null ? (
-          <p className={s.error} role="status">
-            {failure ?? run.error}
+        {/* The page's live region reads this out; the line itself is for the eyes. */}
+        {message !== null ? (
+          <p className={s.error} data-testid="draft-hint">
+            {message}
           </p>
         ) : null}
 
@@ -214,7 +321,7 @@ export function DraftBoard({
 
         {phase.kind === "complete" ? (
           <div className={s.done}>
-            <p>Your squad of {DRAFT_ROUNDS} is set. Drag players to swap them before kick-off.</p>
+            <p>Tap or drag two players to swap them before kick-off.</p>
             <button
               type="button"
               className="btn btn--primary"
@@ -247,8 +354,9 @@ export function DraftBoard({
           formation={settings.formation}
           lineup={state.lineup}
           onSlotTap={tapSlot}
-          onSwap={(a, b) => onAction({ type: "swap", a, b })}
-          highlight={choosing?.slot ?? null}
+          onSwap={(a, b) => act({ type: "swap", a, b })}
+          highlight={committed}
+          selected={picked}
           label="Your formation"
           fit
         />

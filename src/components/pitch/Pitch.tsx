@@ -24,6 +24,8 @@ export interface PitchProps {
   /** Extra line under a filled token, e.g. a fit number in sighted mode. */
   readonly tokenNote?: (ref: SlotRef) => ReactNode;
   readonly highlight?: SlotRef | null;
+  /** The player picked for a tap swap. Passing it (even null) makes filled tokens toggle buttons. */
+  readonly selected?: SlotRef | null;
   readonly isSlotDisabled?: (ref: SlotRef) => boolean;
   readonly edges?: readonly SynergyEdge[];
   readonly weakest?: readonly SlotId[];
@@ -110,6 +112,7 @@ export function Pitch({
   onSwap,
   tokenNote,
   highlight = null,
+  selected,
   isSlotDisabled,
   edges = [],
   weakest = [],
@@ -155,6 +158,9 @@ export function Pitch({
         data-testid={`slot-${key}`}
         data-filled={species !== null}
         data-highlight={sameRef(highlight, ref) || undefined}
+        aria-pressed={
+          selected === undefined || species === null ? undefined : sameRef(selected, ref)
+        }
         data-weak={weak || undefined}
         data-drop={dropKey === key || undefined}
         data-dragging={dragging || undefined}
@@ -164,14 +170,16 @@ export function Pitch({
           ...style,
           ...(dragging ? { translate: `${drag.dx}px ${drag.dy}px` } : null),
         }}
-        onClick={() => {
-          if (suppressClick.current) {
-            suppressClick.current = false;
-            return;
-          }
-          onSlotTap?.(ref);
+        onClick={(e) => {
+          // A mouse drag ends with a click on the dragged token, which must not also open it. A
+          // touch drag ends with none, so the flag also clears on the next press, and a keyboard
+          // click (detail 0) is never a drag's.
+          const dragEnd = suppressClick.current && e.detail !== 0;
+          suppressClick.current = false;
+          if (!dragEnd) onSlotTap?.(ref);
         }}
         onPointerDown={(e) => {
+          suppressClick.current = false;
           if (!draggable || e.button !== 0) return;
           e.currentTarget.setPointerCapture(e.pointerId);
           setDrag({

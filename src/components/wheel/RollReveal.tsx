@@ -39,8 +39,8 @@ export function RollReveal({ stages, instant, onDone }: RollRevealProps) {
     return () => window.clearTimeout(id);
   }, [instant, progress, last, onDone]);
 
-  // One announcement, after the last wheel stops. A growing line would make a screen reader
-  // read the region again when the type lands.
+  // The result, once the last wheel stops. The draft board reads it out through the page's live
+  // region, which is on the page before the roll, so this line is not a live region itself.
   const line =
     shown.state === "settled" && shown.index === last ? stages.map(announce).join(" ") : "";
 
@@ -71,7 +71,7 @@ export function RollReveal({ stages, instant, onDone }: RollRevealProps) {
           );
         })}
       </div>
-      <p className={s.live} aria-live="polite" data-testid="wheel-announce">
+      <p className={s.live} data-testid="wheel-announce">
         {line}
       </p>
     </div>

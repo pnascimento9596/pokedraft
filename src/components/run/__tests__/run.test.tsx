@@ -60,13 +60,14 @@ describe("challenge run screen", () => {
       query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
       render(<PlayScreen />);
       fireEvent.click(screen.getByTestId("run-start"));
-      fireEvent.click(screen.getByTestId("candidate-316"));
       fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
-      fireEvent.click(screen.getByRole("button", { name: "ST Gulpin" }));
       act(() => vi.advanceTimersByTime(3999));
-      expect(screen.queryAllByRole("status").length).toBe(1);
+      expect(screen.queryByTestId("draft-hint")?.textContent).toBe(
+        "Choose a player first, then tap a slot.",
+      );
       act(() => vi.advanceTimersByTime(1));
-      expect(screen.queryAllByRole("status").length).toBe(0);
+      expect(screen.queryByTestId("draft-hint")).toBeNull();
+
     } finally {
       vi.useRealTimers();
     }
@@ -87,17 +88,23 @@ describe("challenge run screen", () => {
     expect(screen.getByTestId("candidate-269").textContent).toBe("Dustox#269BugPoison");
   });
 
-  it("refuses a pick into a filled slot with a message instead of crashing", () => {
+  it("never picks into a filled slot: with a player chosen, a tap on a placed one picks it for a swap", () => {
     query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
     render(<PlayScreen />);
     fireEvent.click(screen.getByTestId("run-start"));
     fireEvent.click(screen.getByTestId("candidate-316"));
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    fireEvent.click(document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!);
     fireEvent.click(screen.getByRole("button", { name: "ST Gulpin" }));
-    expect(screen.getByRole("status").textContent).toBe(
-      "That slot is taken. Drag one player onto another to swap them.",
-    );
-    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+    expect({
+      hint: screen.getByTestId("draft-hint").textContent,
+      st: screen.getByTestId("slot-s9").getAttribute("aria-label"),
+      round: screen.getByTestId("round-header").textContent,
+    }).toEqual({
+      hint: "Tap another slot to swap Gulpin, or tap it again to cancel.",
+      st: "ST Gulpin",
+      round: "Round 2 of 16",
+    });
   });
 
   it("shows a friendly message for a broken challenge link instead of a blank page", () => {

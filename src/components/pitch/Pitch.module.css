@@ -29,7 +29,6 @@
     inset 0 0 0 6px var(--grass-edge),
     inset 0 0 60px rgba(0, 0, 0, 0.35),
     var(--shadow);
-  touch-action: none;
 }
 
 .lines {
@@ -84,6 +83,7 @@
   background: none;
   color: #fff;
   cursor: pointer;
+  /* Only a token holds the finger for a drag; a swipe on the grass scrolls the page. */
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -138,6 +138,13 @@
     0 0 0 3px var(--token-weak),
     0 0 0 5px var(--pitch-halo),
     0 0 14px var(--token-weak);
+}
+
+/* The player picked for a tap swap. */
+.token[aria-pressed="true"] .tokenImage {
+  box-shadow:
+    0 0 0 3px var(--focus),
+    0 0 16px var(--focus);
 }
 
 .token[data-drop] .tokenImage {

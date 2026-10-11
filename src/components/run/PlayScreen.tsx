@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   DRAFT_ROUNDS,
   GENS,
@@ -17,6 +17,7 @@ import { longDate } from "@/components/leaderboard/format";
 import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
 import { ResultsView } from "@/components/results/ResultsView";
 import { unlockAudio } from "@/components/wheel/sound";
+import { focusHeading } from "@/ui/focus";
 import { GEN_REGION, MODE_LABEL, ORDER_LABEL, REGION_LABEL, STYLE_LABEL } from "@/ui/labels";
 import { freshSeed, loadPanel, parsePlayQuery, playHref } from "@/ui/settings";
 import { DraftBoard } from "./DraftBoard";
@@ -98,6 +99,14 @@ export function Challenge({
   const [screen, setScreen] = useState<Screen>({ kind: "start" });
   const [useQuerySeed, setUseQuerySeed] = useState(true);
   const [failure, setFailure] = useState<string | null>(null);
+  // Set by the buttons that swap the screen, so the new screen's heading takes focus.
+  const swapped = useRef(false);
+
+  useEffect(() => {
+    if (!swapped.current) return;
+    swapped.current = false;
+    focusHeading();
+  }, [screen.kind]);
 
   // The seed this run will use, when it is known before Start: today's Daily seed or a shared
   // link's. A fresh run draws its seed at Start (random, so never during render), and until then
@@ -127,12 +136,14 @@ export function Challenge({
 
   const start = () => {
     unlockAudio();
+    swapped.current = true;
     show({ kind: "draft", run: startRun(settings, fixedSeed ?? freshSeed()) });
   };
 
   const newRun = () => {
     setUseQuerySeed(false);
     setFailure(null);
+    swapped.current = true;
     show({ kind: "start" });
     if (params.has("seed")) {
       const q = new URLSearchParams(params.toString());
@@ -146,6 +157,7 @@ export function Challenge({
     const token = runToken(run);
     try {
       const { draft, cup } = replay(token);
+      swapped.current = true;
       show({ kind: "results", token, draft, cup });
       window.scrollTo({ top: 0 });
     } catch {

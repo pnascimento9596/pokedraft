@@ -31,38 +31,39 @@ test.describe("challenge drafts", () => {
   test("8-0 rerolls share one count of 3 across type and region", async ({ page }) => {
     await page.goto("/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=e2e-rr");
     await page.getByTestId("run-start").click();
-    const type = page.getByRole("button", { name: /^Reroll type, / });
-    const region = page.getByRole("button", { name: /^Reroll region, / });
-    await expect(type).toHaveAccessibleName("Reroll type, 3 left");
-    await expect(region).toHaveAccessibleName("Reroll region, 3 left");
+    const type = page.getByRole("button", { name: /^Reroll type / });
+    const region = page.getByRole("button", { name: /^Reroll region / });
+    await expect(type).toHaveAccessibleName("Reroll type 3 left");
+    await expect(region).toHaveAccessibleName("Reroll region 3 left");
     // The rolled region and type, as the line under the round header reads them.
     const rolled = page.locator('[data-testid="round-header"] + div');
     await expect(rolled).toHaveText("JohtoFire");
 
     // A type reroll keeps the region and draws another type.
     await type.click();
-    await expect(type).toHaveAccessibleName("Reroll type, 2 left");
-    await expect(region).toHaveAccessibleName("Reroll region, 2 left");
+    await expect(type).toHaveAccessibleName("Reroll type 2 left");
+    await expect(region).toHaveAccessibleName("Reroll region 2 left");
     await expect(rolled).toHaveText("JohtoBug");
 
     await region.click();
     await region.click();
-    await expect(type).toHaveAccessibleName("Reroll type, 0 left");
-    await expect(type).toBeDisabled();
-    await expect(region).toBeDisabled();
+    await expect(type).toHaveAccessibleName("Reroll type 0 left");
+    // Spent reroll buttons stay focusable with aria-disabled, so a press keeps focus and does nothing.
+    await expect(type).toHaveAttribute("aria-disabled", "true");
+    await expect(region).toHaveAttribute("aria-disabled", "true");
   });
 
   test("151 has five rerolls and the button stops at 0", async ({ page }) => {
     await page.goto("/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-rr");
     await page.getByTestId("run-start").click();
-    const reroll = page.getByRole("button", { name: /^Reroll, / });
+    const reroll = page.getByRole("button", { name: /^Reroll / });
     for (const left of [5, 4, 3, 2, 1]) {
-      await expect(reroll).toHaveAccessibleName(`Reroll, ${left} left`);
-      await expect(reroll).toBeEnabled();
+      await expect(reroll).toHaveAccessibleName(`Reroll ${left} left`);
+      await expect(reroll).not.toHaveAttribute("aria-disabled", "true");
       await reroll.click();
     }
-    await expect(reroll).toHaveAccessibleName("Reroll, 0 left");
-    await expect(reroll).toBeDisabled();
+    await expect(reroll).toHaveAccessibleName("Reroll 0 left");
+    await expect(reroll).toHaveAttribute("aria-disabled", "true");
   });
 });
 

@@ -284,15 +284,16 @@ select {
     transform 120ms ease;
 }
 
-.btn:hover:not(:disabled) {
+.btn:hover:not(:disabled, [aria-disabled="true"]) {
   border-color: var(--ink-soft);
 }
 
-.btn:active:not(:disabled) {
+.btn:active:not(:disabled, [aria-disabled="true"]) {
   transform: translateY(1px);
 }
 
-.btn:disabled {
+.btn:disabled,
+.btn[aria-disabled="true"] {
   opacity: 0.45;
   cursor: not-allowed;
 }
@@ -303,7 +304,7 @@ select {
   color: var(--flood-ink);
 }
 
-.btn--primary:hover:not(:disabled) {
+.btn--primary:hover:not(:disabled, [aria-disabled="true"]) {
   border-color: var(--ink);
 }
 
