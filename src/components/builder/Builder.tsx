@@ -17,7 +17,11 @@ import {
   type SpeciesId,
 } from "@/engine";
 import { Pitch } from "@/components/pitch/Pitch";
-import { downloadCard } from "@/components/share/download";
+import {
+  DOWNLOAD_FAILED,
+  downloadStatus,
+  useCardDownload,
+} from "@/components/share/useCardDownload";
 import { FRIENDLY_LABEL, qualityScore, versusLabel } from "@/ui/labels";
 import { BUILDER_URL_SEED, builderToken, filledCount, valueAt } from "@/ui/lineup";
 import { freshSeed } from "@/ui/settings";
@@ -53,6 +57,7 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
   const [elapsed, setElapsed] = useState(0);
   const [status, setStatus] = useState("");
   const statusTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const card = useCardDownload();
 
   useEffect(() => {
     if (cascade === null) return;
@@ -82,6 +87,7 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
   const shown = cascade === null ? lineup : cascadeFrame(cascade.target, cascade.pool, elapsed);
 
   const say = (message: string) => {
+    card.reset();
     setStatus(message);
     clearTimeout(statusTimer.current);
     statusTimer.current = setTimeout(() => setStatus(""), 2400);
@@ -164,6 +170,18 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
           }
           tokenNote={showRatings && !animating ? tokenNote : undefined}
         />
+        {/* Below an 800 px pitch each pill is the number alone, so this line says what it compares
+            against. The CSS hides it where every pill carries its own "vs other <role>s" label. Its
+            line is reserved even with ratings off: the saved setting loads after hydration, and
+            the line appearing then pushed the tools down (layout shift). It stays up while
+            Randomize animates. */}
+        <div className={s.legendSlot}>
+          {showRatings ? (
+            <p className={s.legend} data-testid="ratings-legend">
+              Ratings are 0 to 100, vs other players in the same role.
+            </p>
+          ) : null}
+        </div>
       </div>
 
       <div className={s.tools} role="toolbar" aria-label="Builder actions">
@@ -184,15 +202,22 @@ export function Builder({ draft, onChange, showRatings, onReset, onFriendly }: B
         <button
           type="button"
           className="btn btn--ghost"
-          onClick={() => void downloadCard({ b: token }, "pokedraft-lineup.png")}
+          onClick={() => {
+            setStatus("");
+            void card.start({ b: token }, "pokedraft-lineup.png");
+          }}
+          disabled={card.state.kind === "busy"}
         >
           Download image
         </button>
         <button type="button" className="btn btn--ghost" onClick={() => void copyLink()}>
           Copy link
         </button>
-        <p className={s.status} role="status" aria-live="polite">
-          {status}
+        <p className={s.status}>
+          <span role="status" aria-live="polite">
+            {downloadStatus(card.state) || status}
+          </span>
+          <span role="alert">{card.state.kind === "failed" ? DOWNLOAD_FAILED : ""}</span>
         </p>
       </div>
 
