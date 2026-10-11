@@ -54,6 +54,9 @@ for (const { path, ready } of ROUTES) {
         ...(await page.evaluate(() => (window as unknown as { __shifts: Shift[] }).__shifts)),
       );
     }
-    expect(shifts).toEqual([]);
+    // Shifts under 0.001 are below Lighthouse reporting precision and are load-timing noise
+    // (observed once: 0.00003 from DETAILS.image-settings on /daily, passed on retry). The footer
+    // shift this guards against measured 0.21, four orders of magnitude above the filter.
+    expect(shifts.filter((s) => s.value >= 0.001)).toEqual([]);
   });
 }
