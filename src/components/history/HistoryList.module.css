@@ -1,99 +1,74 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-
 .row {
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--flood);
-  border-radius: var(--radius);
-  background: var(--panel);
+  border-bottom: 1px solid var(--border-soft);
 }
-
-.row[data-friendly] {
-  border-left-color: var(--ink-faint);
+.row:last-child {
+  border: 0;
 }
-
 .link {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 10px 4px;
+  min-height: 44px;
   text-decoration: none;
 }
-
+.link:hover {
+  background: var(--surface-sunken);
+}
 .link:hover .bucket {
   text-decoration: underline;
 }
-
 .record {
-  font-family: var(--font-display);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  font-size: 2rem;
-  line-height: 1;
+  font-size: 18px;
+  line-height: 22px;
   min-width: 3.4ch;
+  color: var(--text);
 }
-
 .main {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
-
 .bucket {
-  font-family: var(--font-display);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 1.02rem;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text);
 }
-
 .meta {
-  color: var(--ink-soft);
-  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 18px;
   overflow-wrap: anywhere;
 }
-
 .score {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
-
 .scoreLabel {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.scoreValue {
-  font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-faint);
+}
+.scoreValue {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
   font-variant-numeric: tabular-nums;
-  color: var(--flood-text);
+  color: var(--link);
 }
-
-.empty {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 20px 16px;
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius);
-}
-
-.empty p {
-  margin: 0;
-  color: var(--ink-soft);
+.empty :global(.btn) {
+  margin-top: 12px;
 }

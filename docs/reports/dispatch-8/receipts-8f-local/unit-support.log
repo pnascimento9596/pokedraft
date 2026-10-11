@@ -1,0 +1,8 @@
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate
+
+
+ Test Files  4 passed (4)
+      Tests  22 passed (22)
+   Start at  16:35:38
+   Duration  925ms (environment 38%, transform 26%, import 26%, tests 10%)

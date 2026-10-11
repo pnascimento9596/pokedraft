@@ -13,7 +13,7 @@ import { freshSeed, parsePlayQuery } from "@/ui/settings";
 import { readSession, runSlotKey, writeSession } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
 import { RoadStrip } from "./RoadStrip";
-import { ModuleCard } from "@/components/ui/primitives";
+import { ModuleCard, StatusNote } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./PlayScreen.module.css";
 
@@ -39,13 +39,21 @@ export function PlayScreen() {
   const parsed = useMemo(() => parsePlayQuery(new URLSearchParams(params.toString())), [params]);
   if (parsed === null) {
     return (
-      <section className={s.invalid}>
-        <h1>That challenge link does not work</h1>
-        <p>Some of its settings are missing or unknown. Pick a challenge from the home page.</p>
+      <ModuleCard
+        className={s.invalid}
+        eyebrow="Challenge unavailable"
+        title="That challenge link does not work"
+        headingLevel={1}
+        description="Pick a challenge from the home page."
+        icon={<NavIcon family="play" />}
+      >
+        <StatusNote title="Missing settings">
+          Some of its settings are missing or unknown.
+        </StatusNote>
         <Link href="/" className="btn btn--primary">
           Back home
         </Link>
-      </section>
+      </ModuleCard>
     );
   }
   return (

@@ -226,6 +226,26 @@ function Token({
   );
 }
 
+function TabularFigure({ value }: { readonly value: string }) {
+  return (
+    <span style={{ display: "flex" }}>
+      {[...value].map((char, index) => (
+        <span
+          key={index}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            width: /[0-9]/.test(char) ? "0.67em" : "0.4em",
+            flexShrink: 0,
+          }}
+        >
+          {char}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function Card({
   model,
   images = new Map(),
@@ -310,8 +330,8 @@ export function Card({
             {FRIENDLY_LABEL}
           </div>
         ) : null}
-        <div style={{ display: "flex", marginTop: 18, fontSize: 22, color: SOFT }}>
-          {`Formation ${model.formation}`}
+        <div style={{ display: "flex", gap: 6, marginTop: 18, fontSize: 22, color: SOFT }}>
+          Formation <TabularFigure value={model.formation} />
         </div>
         {score === null ? (
           <div style={{ display: "flex", marginTop: 24, fontSize: 34, fontWeight: 600 }}>
@@ -343,7 +363,7 @@ export function Card({
                 fontWeight: 600,
               }}
             >
-              {score}
+              <TabularFigure value={score} />
             </div>
           </div>
         )}
@@ -358,7 +378,7 @@ export function Card({
                 lineHeight: 1.1,
               }}
             >
-              {h.record}
+              <TabularFigure value={h.record} />
             </div>
             <div
               style={{

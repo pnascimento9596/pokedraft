@@ -119,3 +119,7 @@ Ratios below are unrounded during validation. Displayed rounding never turns a f
 ## Static share renderer
 
 `src/design/card-tokens.ts` mirrors the light palette for Satori, which cannot resolve CSS variables. Its canvas, surface, emphasis, sunken, border, action/foreground, ok, pitch/stripe and warm line values are identical to the checked CSS roles. Card names use accent-fg on accent; body/figures use text or muted on canvas; the Team Score action uses accent-fg on accent. The same contrast roles apply. The 1200x630 renderer uses only Inter400/600/700 with local licensed subsets; next/font remains the sole browser family. No calculations, content or image pack pixels changed.
+
+### Final type application
+
+Module h1 uses source `clamp(1.3rem, 2vw, 1.9rem)`; h2 uses the mobile17/23 anddesktop15/21 overrides. Browserfigures inherit tabular numerals. The static PNG renderer uses Inter with equal0.67em digit cells for score, record andformation, because its text doesnot inherit browserCSS. Sharecontent/size/models stay unchanged.

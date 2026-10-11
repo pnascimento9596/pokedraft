@@ -93,3 +93,6 @@ Daily/leaderboard presentation restyle; local unit734/80 and browser536/51skip, 
 ## Dispatch 8E production correction
 
 PR30 shippedf5e2256, reviewedb47a8e3 GLMAPPROVE, CI38173336275 unit734/browser536+51skip. Productionlive4/mobile242+46skipgreen, exactbotcleanup0. Lighthouse38174354317 exposedboardfooterCLS0.011626827583050482 all3samples; gateRED. SixnewcoldloadguardscommittedRED, candidate viewportreservation yields21focusedpass. ExactLinuxCI/review/productionpending. Support8F workcontinuesisolated.
+## Dispatch 8F candidate
+
+Support pages and final type/table/static-figure presentation implemented. Currentbase8D; 8E will be integrated before finalgates/review. Correctedfocused73pass; priorfull540/51skip/4testselectorfail preserved. Finalexact-headLinuxCI andproductionpending.

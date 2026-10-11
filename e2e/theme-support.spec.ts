@@ -23,9 +23,10 @@ for (const width of [390, 1440])
           await expect(page.getByTestId("history-empty")).toHaveClass(/status-note/);
         if (route.startsWith("/gate")) {
           const input = page.getByTestId("gate-passcode");
+          await expect(input).toBeVisible();
           expect(await input.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBe(16);
           expect((await input.boundingBox())!.height).toBeGreaterThanOrEqual(44);
-          await expect(page.getByRole("alert")).toHaveClass(/unavailable/);
+          await expect(page.locator("main").getByRole("alert")).toHaveClass(/unavailable/);
         }
         const { violations } = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa", "wcag21aa", "best-practice"])

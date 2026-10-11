@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LADDER_SHAPE } from "@/ui/labels";
+import { ModuleCard, Pill } from "@/components/ui/primitives";
+import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./page.module.css";
 
 export const metadata: Metadata = { title: "How to play pokedraft" };
@@ -69,14 +71,15 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
 export default function HowToPlayPage() {
   return (
     <main className={`page ${s.page}`}>
-      <header className={s.header}>
-        <span className="kicker">Rules of the game</span>
-        <h1>How to play</h1>
-        <p className={s.lede}>
-          Draft Pokémon into a soccer formation, get a Team Score, and take your squad through an
-          8-game cup.
-        </p>
-      </header>
+      <ModuleCard
+        className={s.header}
+        variant="quiet"
+        eyebrow="Rules of the game"
+        title="How to play"
+        headingLevel={1}
+        description="Draft Pokémon into a soccer formation, get a Team Score, and take your squad through an 8-game cup."
+        icon={<NavIcon family="help" />}
+      />
       <nav className={s.toc} aria-label="Sections">
         {SECTIONS.map((sec) => (
           <a key={sec.id} href={`#${sec.id}`} className="chip">
@@ -85,17 +88,21 @@ export default function HowToPlayPage() {
         ))}
       </nav>
       {SECTIONS.map((sec, i) => (
-        <section key={sec.id} id={sec.id} className={s.section} aria-labelledby={`${sec.id}-h`}>
-          <span className={s.num} aria-hidden="true">
-            {String(i + 1).padStart(2, "0")}
-          </span>
+        <ModuleCard
+          key={sec.id}
+          id={sec.id}
+          className={s.section}
+          eyebrow="Game guide"
+          title={sec.title}
+          description={sec.body[0]!}
+          meta={<Pill>{String(i + 1).padStart(2, "0")}</Pill>}
+        >
           <div className={s.body}>
-            <h2 id={`${sec.id}-h`}>{sec.title}</h2>
-            {sec.body.map((p) => (
+            {sec.body.slice(1).map((p) => (
               <p key={p}>{p}</p>
             ))}
           </div>
-        </section>
+        </ModuleCard>
       ))}
       <Link href="/" className={`btn btn--primary ${s.cta}`}>
         Start drafting
