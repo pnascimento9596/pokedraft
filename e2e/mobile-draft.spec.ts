@@ -154,7 +154,7 @@ test.describe("scrollable regions at 320 px", () => {
       await setColorScheme(page, scheme);
       await resizeTo(page, { width: 320, height: 640 });
       const { violations } = await new AxeBuilder({ page })
-        .withRules(["scrollable-region-focusable"])
+        .withRules(["scrollable-region-focusable", "landmark-unique"])
         .analyze();
       expect(violations.map((v) => `${v.id} x${v.nodes.length}`)).toEqual([]);
     });

@@ -92,7 +92,12 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
             Group table
           </h2>
           {/* It scrolls sideways on a narrow phone, so a keyboard user can focus it to scroll. */}
-          <div className={s.tableWrap} role="region" aria-labelledby="group-h" tabIndex={0}>
+          <div
+            className={s.tableWrap}
+            role="region"
+            aria-label="Group table, scrollable"
+            tabIndex={0}
+          >
             <table className={s.table}>
               <thead>
                 <tr>
