@@ -139,3 +139,17 @@ S3 findings from `docs/reports/platform-audit.md` that no dispatch 7 fix PR took
 | SF-28 | F-tests | S3 | no | The History list and the theme toggle have no behavior test, and axe sees History only when it is empty | Yellow |
 | SF-30 | F-tests | S3 | no | The accessibility scan of an 8-0-0 result page runs while a 600 ms banner animation may still be playing | Yellow |
 | SF-31 | F-tests | S3 | no | role="alert" on the gate, submit and board errors is asserted by no test | Yellow |
+
+## Found during fix verification (2026-10-11, lane owner)
+
+New findings from proving the fix PRs, not from the audit. Each carries what is known; none was re-measured after the queue merged unless stated.
+
+| ID | Area | Sev | Mobile | Finding | Tier |
+|---|---|---|---|---|---|
+| SX-02 | D-perf | S2 | yes | Builder cold-load CLS 0.30 at 390 px (0.26 at 360) when Show ratings was saved ON: the pitch, score bar and toolbar shift on hydration; identical load with ratings OFF is clean. Found while proving 7A's legend. Possibly addressed by 7C's reserved legend line, but `e2e/layout-shift.spec.ts` runs with ratings off, so the ratings-ON case is unverified. | Yellow |
+| SX-03 | C-a11y | S3 | no | axe `label-name-mismatch` on 16 nodes (pages beyond the reroll buttons, which 7F fixed and pins in `e2e/swap-a11y.spec.ts`). Full node list was in the 7E/7F browser proof, not preserved; re-run axe to enumerate. | Yellow |
+| SX-04 | C-a11y | S3 | no | axe `image-redundant-alt` on 3 images. Node list not preserved; re-run axe to enumerate. | Yellow |
+| SX-05 | A-mobile | S2 | yes | At draft complete in 4-4-2 the centre-backs' names touch the keeper's picture on short phone fields (iPhone SE and Pixel 7; iPhone 14 is clear). Pinned as an expected-fail carryover in `e2e/mobile-draft.spec.ts` ("at draft complete in 4-4-2") awaiting a short-field token layout. | Yellow |
+| SX-06 | D-perf | S3 | yes | 7G reload-restore (auto-enter the saved run) was never measured for layout shift; the start panel swaps to the draft once the lazy chunk arrives. | Yellow |
+| SX-07 | A-mobile | S3 | yes | The phone nav (7D one-row header) needs JS; with scripting off there is no nav fallback. Not measured with scripting disabled. | Yellow |
+| SX-08 | C-a11y | S3 | no | The swap prompt's error styling (draft-hint/error line states from 7F) has no steady-state proof beyond the unit tests; no browser before/after pair was kept. | Yellow |
