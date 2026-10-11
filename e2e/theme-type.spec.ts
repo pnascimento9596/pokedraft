@@ -37,6 +37,19 @@ for (const width of [390, 1440])
       await expect(page.getByTestId("run-start")).toBeVisible();
       await type(page.getByRole("list", { name: "Cup rounds" }).getByRole("button"), 15, 20, "600");
       await page.getByTestId("run-start").click();
+      await type(
+        page.locator("main header").getByText("8-0 Challenge", { exact: true }),
+        11,
+        16,
+        "700",
+      );
+      const headline = await page
+        .getByTestId("round-header")
+        .evaluate((el) => ({
+          size: parseFloat(getComputedStyle(el).fontSize),
+          weight: getComputedStyle(el).fontWeight,
+        }));
+      expect(headline).toEqual({ size: width === 390 ? 20.8 : 28.8, weight: "600" });
       await type(page.locator("main .btn--sm"), 15, 20, "600");
       await page.goto(`/r/${fixture.shareRun.token}`);
       await expect(page.getByTestId("results-score")).toHaveText("593");
