@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 
 import { TYPES } from "@/data/pokedex";
 import {
   FORMATIONS,
+  SPECIES,
   eligibleSpecies,
   speciesById,
   type DraftState,
@@ -73,15 +74,16 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
     return [...ids].sort((a, b) => a - b).map(speciesById);
   }, [state, onField]);
 
-  const matches = useMemo(() => {
+  const filter = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return candidates.filter(
-      (sp) =>
-        (q === "" || sp.name.toLowerCase().includes(q) || dex(sp.id).includes(q)) &&
-        (type === null || (sp.types as readonly PokemonType[]).includes(type)) &&
-        (gen === null || sp.gen === gen),
-    );
-  }, [candidates, query, type, gen]);
+    return (sp: Species) =>
+      (q === "" || sp.name.toLowerCase().includes(q) || dex(sp.id).includes(q)) &&
+      (type === null || (sp.types as readonly PokemonType[]).includes(type)) &&
+      (gen === null || sp.gen === gen);
+  }, [query, type, gen]);
+  const matches = useMemo(() => candidates.filter(filter), [candidates, filter]);
+  // The builder pool only drops species by generation or by the Legendaries switch.
+  const hiddenBySettings = matches.length === 0 && SPECIES.some(filter);
 
   const shown = matches.slice(0, PICKER_LIMIT);
 
@@ -183,7 +185,9 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
 
         <p className={s.count} aria-live="polite">
           {matches.length === 0
-            ? "No matches"
+            ? hiddenBySettings
+              ? "No matches. Your Generations or Legendaries setting hides some Pokémon."
+              : "No matches"
             : matches.length > PICKER_LIMIT
               ? `Showing ${PICKER_LIMIT} of ${matches.length}. Refine your search to see more.`
               : `${matches.length} ${matches.length === 1 ? "match" : "matches"}`}

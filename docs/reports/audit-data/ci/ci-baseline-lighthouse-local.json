@@ -1,0 +1,3256 @@
+{
+  "meta": {
+    "name": "ci-baseline",
+    "builtAt": "2026-10-10T22:36:24.968Z",
+    "lighthouse": "13.5.0",
+    "chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "config": {
+      "formFactor": "mobile",
+      "throttlingMethod": "simulate",
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "emulatedUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36"
+    },
+    "runsPerRoute": 3,
+    "quietLoadLimit": 6,
+    "minBenchmarkIndex": 0,
+    "statistic": "median of the clean runs per route with min and max (the busy runs when a route has no clean run); linear interpolation between the closest ranks (type 7, the NumPy and Excel default)",
+    "inp": "null: Lighthouse navigation mode does not compute INP. Lab INP comes from the perf agent's traces.",
+    "lcpPhases": "observedPhasesMs come from lcp-breakdown-insight and describe the unthrottled observed load, so they do not sum to the simulated LCP in metrics.lcpMs. metrics.observedLcpMs is the matching observed value.",
+    "runSelection": "one record per run number: the latest clean run (load 6 or less at the start and after, and benchmarkIndex at least minBenchmarkIndex), else the busy run with the lowest load (the latest of equals), which is then counted in runsOnBusyMachine. The medians, minima and maxima use the clean runs only, and the busy runs only for a route that has none (statsBasis, statsRuns); allRunsSpread has the numbers over every run. Other attempts are listed in supersededRuns."
+  },
+  "targets": {
+    "local": {
+      "baseUrl": "http://localhost:3401",
+      "routes": {
+        "home": {
+          "label": "/",
+          "path": "/",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 66,
+              "median": 83,
+              "max": 84,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 2854.5,
+              "median": 2875.5,
+              "max": 4080.8,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 464,
+              "median": 482,
+              "max": 933.9,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 66,
+              "median": 83,
+              "max": 84,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 2854.5,
+              "median": 2875.5,
+              "max": 4080.8,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 915.7,
+              "median": 920.3,
+              "max": 928.4,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 464,
+              "median": 482,
+              "max": 933.9,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 915.7,
+              "median": 920.3,
+              "max": 2247.8,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 4614.7,
+              "median": 4628.3,
+              "max": 4630.3,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 126,
+              "median": 128,
+              "max": 1259,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 126,
+              "median": 128,
+              "max": 1259,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 458,
+              "median": 460,
+              "max": 462,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 4,
+            "median": 4,
+            "max": 9,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 443050,
+            "median": 443050,
+            "max": 443050,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 12,
+            "median": 12,
+            "max": 12,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 582540,
+            "median": 582540,
+            "max": 582540,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 36,
+            "median": 36,
+            "max": 36,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 27140,
+            "median": 27149,
+            "max": 27149,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 1907.5,
+            "median": 2489,
+            "max": 2498,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.98,
+            "median": 1.18,
+            "max": 1.36,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.91,
+            "median": 1.2,
+            "max": 1.41,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 2,
+            "lcpElement": {
+              "selector": "section.puRpEa_builder > div.puRpEa_bar > div > h1.puRpEa_title",
+              "snippet": "<h1 class=\"puRpEa_title\">",
+              "label": "BUILD YOUR XI"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 5.6,
+              "elementRenderDelay": 122.4
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalMs": 607.9,
+                "scriptingMs": 547.5,
+                "parseMs": 31.2
+              },
+              {
+                "url": "/",
+                "totalMs": 255.6,
+                "scriptingMs": 24.6,
+                "parseMs": 15.8
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 178.7,
+                "scriptingMs": 7.7,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "totalMs": 157.1,
+                "scriptingMs": 104,
+                "parseMs": 27.5
+              },
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "totalMs": 141.1,
+                "scriptingMs": 139.5,
+                "parseMs": 1.4
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/chunks/1-4l67b7v68cl.css",
+                "transferBytes": 7676,
+                "wastedMs": 310
+              },
+              {
+                "url": "/_next/static/chunks/0q8wj5hiqqx3w.css",
+                "transferBytes": 3720,
+                "wastedMs": 160
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalBytes": 72059,
+                "wastedBytes": 27149
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "transferBytes": 2401,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/chunks/32_bxz15yg1nj.js",
+                "transferBytes": 8214,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "transferBytes": 72472,
+                "resourceBytes": 229843
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "transferBytes": 46927,
+                "resourceBytes": 168622
+              },
+              {
+                "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+                "transferBytes": 4820,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/chunks/3c6mzhumg9kp9.js",
+                "transferBytes": 8674,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/chunks/1x0jeksh_m3lu.js",
+                "transferBytes": 32107,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/chunks/06uktflp0kf7s.js",
+                "transferBytes": 6406,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "transferBytes": 238783,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/chunks/2gqcnxdg8cj64.js",
+                "transferBytes": 9243,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/chunks/3cotz7qugnofp.js",
+                "transferBytes": 10862,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/chunks/41mgexz7i-ku4.js",
+                "transferBytes": 2141,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "section.puRpEa_builder > div.puRpEa_bar > div > h1.puRpEa_title",
+            "section.puRpEa_builder > div.puRpEa_bar > div > h1.puRpEa_title",
+            "section.puRpEa_builder > div.puRpEa_bar > div > h1.puRpEa_title"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 66,
+              "lcpMs": 4080.8,
+              "cls": 0,
+              "tbtMs": 933.9,
+              "load1": 1.18,
+              "loadAfter": 1.41,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 1907.5,
+              "observedFcpMs": 1259,
+              "observedLcpMs": 1259,
+              "milestones": {
+                "documentEndMs": 34,
+                "initialResourcesEndMs": 503.9,
+                "firstPrefetchStartMs": 1270.2,
+                "domContentLoadedMs": 294,
+                "loadEventMs": 436,
+                "mainThread": {
+                  "tasks": 721,
+                  "totalTaskMs": 690.4,
+                  "over10Ms": 12,
+                  "over50Ms": 3,
+                  "longestTaskMs": 138.3
+                }
+              },
+              "startedAt": "2026-10-10T22:31:15.872Z"
+            },
+            {
+              "run": 2,
+              "performance": 83,
+              "lcpMs": 2875.5,
+              "cls": 0,
+              "tbtMs": 482,
+              "load1": 1.36,
+              "loadAfter": 1.2,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2498,
+              "observedFcpMs": 128,
+              "observedLcpMs": 128,
+              "milestones": {
+                "documentEndMs": 4.8,
+                "initialResourcesEndMs": 238.2,
+                "firstPrefetchStartMs": 337.8,
+                "domContentLoadedMs": 160,
+                "loadEventMs": 226,
+                "mainThread": {
+                  "tasks": 785,
+                  "totalTaskMs": 382.9,
+                  "over10Ms": 5,
+                  "over50Ms": 1,
+                  "longestTaskMs": 92.9
+                }
+              },
+              "startedAt": "2026-10-10T22:33:09.441Z"
+            },
+            {
+              "run": 3,
+              "performance": 84,
+              "lcpMs": 2854.5,
+              "cls": 0,
+              "tbtMs": 464,
+              "load1": 0.98,
+              "loadAfter": 0.91,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2489,
+              "observedFcpMs": 126,
+              "observedLcpMs": 126,
+              "milestones": {
+                "documentEndMs": 4.8,
+                "initialResourcesEndMs": 231.5,
+                "firstPrefetchStartMs": 331,
+                "domContentLoadedMs": 154,
+                "loadEventMs": 200,
+                "mainThread": {
+                  "tasks": 797,
+                  "totalTaskMs": 380.4,
+                  "over10Ms": 5,
+                  "over50Ms": 1,
+                  "longestTaskMs": 91.8
+                }
+              },
+              "startedAt": "2026-10-10T22:34:47.228Z"
+            }
+          ]
+        },
+        "play": {
+          "label": "/play",
+          "path": "/play",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 73,
+              "median": 78,
+              "max": 86,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 2720.8,
+              "median": 3909,
+              "max": 4650.5,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 394.5,
+              "median": 416.5,
+              "max": 433,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 73,
+              "median": 78,
+              "max": 86,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 2720.8,
+              "median": 3909,
+              "max": 4650.5,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 915.3,
+              "median": 919,
+              "max": 922.5,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 394.5,
+              "median": 416.5,
+              "max": 433,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 915.3,
+              "median": 922.5,
+              "max": 2212.3,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 4524,
+              "median": 4529,
+              "max": 4650.5,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 115,
+              "median": 361,
+              "max": 1331,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 101,
+              "median": 115,
+              "max": 1315,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 458,
+              "median": 459,
+              "max": 461,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 4,
+            "median": 4,
+            "max": 17,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 453620,
+            "median": 453620,
+            "max": 453620,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 13,
+            "median": 13,
+            "max": 13,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 591742,
+            "median": 591745,
+            "max": 591745,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 34,
+            "median": 34,
+            "max": 34,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 29187,
+            "median": 29187,
+            "max": 29307,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 2491,
+            "median": 2504.5,
+            "max": 2511,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.91,
+            "median": 1.2,
+            "max": 1.41,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 1.02,
+            "median": 1.17,
+            "max": 1.22,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 1,
+            "lcpElement": {
+              "selector": "body > main.page > section.M2ks9W_invalid > h1",
+              "snippet": "<h1>",
+              "label": "THAT CHALLENGE LINK DOES NOT WORK"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 18.9,
+              "elementRenderDelay": 1312.1
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalMs": 501,
+                "scriptingMs": 461,
+                "parseMs": 24.4
+              },
+              {
+                "url": "/play",
+                "totalMs": 219.4,
+                "scriptingMs": 27,
+                "parseMs": 11.3
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "totalMs": 209.7,
+                "scriptingMs": 179.5,
+                "parseMs": 17.7
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 197.1,
+                "scriptingMs": 6.2,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "totalMs": 120.2,
+                "scriptingMs": 0.9,
+                "parseMs": 119.1
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/chunks/1-4l67b7v68cl.css",
+                "transferBytes": 7676,
+                "wastedMs": 309
+              },
+              {
+                "url": "/_next/static/chunks/0q8wj5hiqqx3w.css",
+                "transferBytes": 3720,
+                "wastedMs": 159
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalBytes": 72059,
+                "wastedBytes": 29187
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "transferBytes": 2401,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/chunks/32_bxz15yg1nj.js",
+                "transferBytes": 8214,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "transferBytes": 72472,
+                "resourceBytes": 229843
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "transferBytes": 46927,
+                "resourceBytes": 168622
+              },
+              {
+                "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+                "transferBytes": 4820,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/chunks/3c6mzhumg9kp9.js",
+                "transferBytes": 8674,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/chunks/1x0jeksh_m3lu.js",
+                "transferBytes": 32107,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/chunks/1oltc8okiu-f3.js",
+                "transferBytes": 10570,
+                "resourceBytes": 27934
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "transferBytes": 238783,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/chunks/2gqcnxdg8cj64.js",
+                "transferBytes": 9243,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/chunks/06uktflp0kf7s.js",
+                "transferBytes": 6406,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/chunks/3cotz7qugnofp.js",
+                "transferBytes": 10862,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/chunks/41mgexz7i-ku4.js",
+                "transferBytes": 2141,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "body > main.page > section.M2ks9W_invalid > h1",
+            "body > main.page > section.M2ks9W_invalid > h1",
+            "body > main.page > section.M2ks9W_invalid > h1"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 78,
+              "lcpMs": 3909,
+              "cls": 0,
+              "tbtMs": 394.5,
+              "load1": 1.41,
+              "loadAfter": 1.17,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2491,
+              "observedFcpMs": 1315,
+              "observedLcpMs": 1331,
+              "milestones": {
+                "documentEndMs": 285.5,
+                "initialResourcesEndMs": 463.1,
+                "firstPrefetchStartMs": 1396.3,
+                "domContentLoadedMs": 333,
+                "loadEventMs": 449,
+                "mainThread": {
+                  "tasks": 611,
+                  "totalTaskMs": 332.9,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 78.5
+                }
+              },
+              "startedAt": "2026-10-10T22:31:40.222Z"
+            },
+            {
+              "run": 2,
+              "performance": 86,
+              "lcpMs": 2720.8,
+              "cls": 0,
+              "tbtMs": 416.5,
+              "load1": 1.2,
+              "loadAfter": 1.02,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2504.5,
+              "observedFcpMs": 115,
+              "observedLcpMs": 115,
+              "milestones": {
+                "documentEndMs": 41.5,
+                "initialResourcesEndMs": 118.2,
+                "firstPrefetchStartMs": 227,
+                "domContentLoadedMs": 89,
+                "loadEventMs": 215,
+                "mainThread": {
+                  "tasks": 628,
+                  "totalTaskMs": 330.7,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 81.8
+                }
+              },
+              "startedAt": "2026-10-10T22:33:21.849Z"
+            },
+            {
+              "run": 3,
+              "performance": 73,
+              "lcpMs": 4650.5,
+              "cls": 0,
+              "tbtMs": 433,
+              "load1": 0.91,
+              "loadAfter": 1.22,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2511,
+              "observedFcpMs": 101,
+              "observedLcpMs": 361,
+              "milestones": {
+                "documentEndMs": 25.8,
+                "initialResourcesEndMs": 92.1,
+                "firstPrefetchStartMs": 216.5,
+                "domContentLoadedMs": 93,
+                "loadEventMs": 206,
+                "mainThread": {
+                  "tasks": 561,
+                  "totalTaskMs": 336.7,
+                  "over10Ms": 7,
+                  "over50Ms": 1,
+                  "longestTaskMs": 81.2
+                }
+              },
+              "startedAt": "2026-10-10T22:34:59.668Z"
+            }
+          ]
+        },
+        "daily": {
+          "label": "/daily",
+          "path": "/daily",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 61,
+              "median": 71,
+              "max": 71,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 4679.7,
+              "median": 4687.6,
+              "max": 4822.1,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 469,
+              "median": 488,
+              "max": 1003,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 61,
+              "median": 71,
+              "max": 71,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 4679.7,
+              "median": 4687.6,
+              "max": 4822.1,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 919.6,
+              "median": 920.3,
+              "max": 926.2,
+              "n": 3
+            },
+            "cls": {
+              "min": 0.04597152011799288,
+              "median": 0.04597152011799288,
+              "max": 0.04597152011799288,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 469,
+              "median": 488,
+              "max": 1003,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 919.6,
+              "median": 920.3,
+              "max": 926.2,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 4679.7,
+              "median": 4687.6,
+              "max": 4822.1,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 356,
+              "median": 395,
+              "max": 506,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 89,
+              "median": 112,
+              "max": 134,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 460,
+              "median": 460,
+              "max": 463,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 4,
+            "median": 4,
+            "max": 6,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 443050,
+            "median": 443050,
+            "max": 443050,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 12,
+            "median": 12,
+            "max": 12,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 576173,
+            "median": 576173,
+            "max": 576173,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 32,
+            "median": 32,
+            "max": 32,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 27736,
+            "median": 27736,
+            "max": 27736,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 2431.5,
+            "median": 2489,
+            "max": 2494,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 1.02,
+            "median": 1.17,
+            "max": 1.22,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.93,
+            "median": 1.03,
+            "max": 1.06,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 1,
+            "lcpElement": {
+              "selector": "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede",
+              "snippet": "<p class=\"M2ks9W_lede\">",
+              "label": "Everyone plays the same seed today, and your run can go on the daily board. 16 …"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 8.2,
+              "elementRenderDelay": 497.7
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalMs": 1203.5,
+                "scriptingMs": 1174.4,
+                "parseMs": 17.8
+              },
+              {
+                "url": "/daily",
+                "totalMs": 266,
+                "scriptingMs": 25.2,
+                "parseMs": 8.8
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 224.9,
+                "scriptingMs": 7,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "totalMs": 121.4,
+                "scriptingMs": 1.1,
+                "parseMs": 120
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "totalMs": 106.2,
+                "scriptingMs": 75.5,
+                "parseMs": 18.4
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/chunks/1-4l67b7v68cl.css",
+                "transferBytes": 7676,
+                "wastedMs": 313
+              },
+              {
+                "url": "/_next/static/chunks/0q8wj5hiqqx3w.css",
+                "transferBytes": 3720,
+                "wastedMs": 163
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalBytes": 72059,
+                "wastedBytes": 27736
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "transferBytes": 2401,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/chunks/32_bxz15yg1nj.js",
+                "transferBytes": 8214,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "transferBytes": 72472,
+                "resourceBytes": 229843
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "transferBytes": 46927,
+                "resourceBytes": 168622
+              },
+              {
+                "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+                "transferBytes": 4820,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/chunks/3c6mzhumg9kp9.js",
+                "transferBytes": 8674,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/chunks/1x0jeksh_m3lu.js",
+                "transferBytes": 32107,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/chunks/3cotz7qugnofp.js",
+                "transferBytes": 10862,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "transferBytes": 238783,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/chunks/2gqcnxdg8cj64.js",
+                "transferBytes": 9243,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/chunks/06uktflp0kf7s.js",
+                "transferBytes": 6406,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/chunks/41mgexz7i-ku4.js",
+                "transferBytes": 2141,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede",
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede",
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 61,
+              "lcpMs": 4687.6,
+              "cls": 0.04597152011799288,
+              "tbtMs": 1003,
+              "load1": 1.17,
+              "loadAfter": 1.06,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2494,
+              "observedFcpMs": 112,
+              "observedLcpMs": 506,
+              "milestones": {
+                "documentEndMs": 7.4,
+                "initialResourcesEndMs": 115.1,
+                "firstPrefetchStartMs": 224.1,
+                "domContentLoadedMs": 103,
+                "loadEventMs": 213,
+                "mainThread": {
+                  "tasks": 629,
+                  "totalTaskMs": 493.4,
+                  "over10Ms": 7,
+                  "over50Ms": 1,
+                  "longestTaskMs": 218.2
+                }
+              },
+              "startedAt": "2026-10-10T22:31:53.470Z"
+            },
+            {
+              "run": 2,
+              "performance": 71,
+              "lcpMs": 4822.1,
+              "cls": 0.04597152011799288,
+              "tbtMs": 469,
+              "load1": 1.02,
+              "loadAfter": 0.93,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2489,
+              "observedFcpMs": 89,
+              "observedLcpMs": 356,
+              "milestones": {
+                "documentEndMs": 4.7,
+                "initialResourcesEndMs": 103.8,
+                "firstPrefetchStartMs": 208.5,
+                "domContentLoadedMs": 75,
+                "loadEventMs": 197,
+                "mainThread": {
+                  "tasks": 602,
+                  "totalTaskMs": 347.6,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 85.8
+                }
+              },
+              "startedAt": "2026-10-10T22:33:33.935Z"
+            },
+            {
+              "run": 3,
+              "performance": 71,
+              "lcpMs": 4679.7,
+              "cls": 0.04597152011799288,
+              "tbtMs": 488,
+              "load1": 1.22,
+              "loadAfter": 1.03,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2431.5,
+              "observedFcpMs": 134,
+              "observedLcpMs": 395,
+              "milestones": {
+                "documentEndMs": 8,
+                "initialResourcesEndMs": 138.6,
+                "firstPrefetchStartMs": 241.3,
+                "domContentLoadedMs": 106,
+                "loadEventMs": 231,
+                "mainThread": {
+                  "tasks": 629,
+                  "totalTaskMs": 373.4,
+                  "over10Ms": 5,
+                  "over50Ms": 2,
+                  "longestTaskMs": 91.3
+                }
+              },
+              "startedAt": "2026-10-10T22:35:11.674Z"
+            }
+          ]
+        },
+        "leaderboard": {
+          "label": "/leaderboard",
+          "path": "/leaderboard",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 74,
+              "median": 74,
+              "max": 88,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 2054,
+              "median": 4434.6,
+              "max": 4438.5,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 418,
+              "median": 427,
+              "max": 443,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 74,
+              "median": 74,
+              "max": 88,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 96,
+              "median": 96,
+              "max": 96,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 2054,
+              "median": 4434.6,
+              "max": 4438.5,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 916.6,
+              "median": 917.8,
+              "max": 920.7,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 418,
+              "median": 427,
+              "max": 443,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 916.6,
+              "median": 917.8,
+              "max": 920.7,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 4446,
+              "median": 4522.2,
+              "max": 4524.6,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 118,
+              "median": 359,
+              "max": 589,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 93,
+              "median": 118,
+              "max": 266,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 458,
+              "median": 459,
+              "max": 460,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 4,
+            "median": 4,
+            "max": 5,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 446895,
+            "median": 446895,
+            "max": 446895,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 13,
+            "median": 13,
+            "max": 13,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 582858,
+            "median": 582860,
+            "max": 582862,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 34,
+            "median": 34,
+            "max": 34,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 27951,
+            "median": 27951,
+            "max": 28071,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 2494.5,
+            "median": 2495,
+            "max": 2495.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.93,
+            "median": 1.03,
+            "max": 1.06,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.79,
+            "median": 0.89,
+            "max": 0.95,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 2,
+            "lcpElement": {
+              "selector": "body > main.page > div.rpEM1q_screen > p.rpEM1q_caption",
+              "snippet": "<p class=\"rpEM1q_caption\">",
+              "label": "Daily 8-0 Challenge for Saturday, October 10, 2026 (today). Ranked by wins, the…"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 6.1,
+              "elementRenderDelay": 353.3
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalMs": 644.6,
+                "scriptingMs": 606.8,
+                "parseMs": 22.4
+              },
+              {
+                "url": "/leaderboard",
+                "totalMs": 211.3,
+                "scriptingMs": 21.4,
+                "parseMs": 4.3
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 184.3,
+                "scriptingMs": 7.5,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "totalMs": 123.2,
+                "scriptingMs": 0.8,
+                "parseMs": 122.2
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "totalMs": 95,
+                "scriptingMs": 64.2,
+                "parseMs": 19.4
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/chunks/3d4ssum2slxll.css",
+                "transferBytes": 1351,
+                "wastedMs": 309
+              },
+              {
+                "url": "/_next/static/chunks/0q8wj5hiqqx3w.css",
+                "transferBytes": 3720,
+                "wastedMs": 159
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalBytes": 72059,
+                "wastedBytes": 27951
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "transferBytes": 2401,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/chunks/32_bxz15yg1nj.js",
+                "transferBytes": 8214,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "transferBytes": 72472,
+                "resourceBytes": 229843
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "transferBytes": 46927,
+                "resourceBytes": 168622
+              },
+              {
+                "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+                "transferBytes": 4820,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/chunks/3c6mzhumg9kp9.js",
+                "transferBytes": 8674,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/chunks/1x0jeksh_m3lu.js",
+                "transferBytes": 32107,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/chunks/0jwol442hzgg1.js",
+                "transferBytes": 3845,
+                "resourceBytes": 8466
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "transferBytes": 238783,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/chunks/06uktflp0kf7s.js",
+                "transferBytes": 6406,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/chunks/2gqcnxdg8cj64.js",
+                "transferBytes": 9243,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/chunks/3cotz7qugnofp.js",
+                "transferBytes": 10862,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/chunks/41mgexz7i-ku4.js",
+                "transferBytes": 2141,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "body > main.page > div.rpEM1q_screen > p.rpEM1q_caption",
+            "body > main.page > div.rpEM1q_screen > p.rpEM1q_caption",
+            "body > main.page > div.rpEM1q_screen > p.rpEM1q_caption"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 74,
+              "lcpMs": 4438.5,
+              "cls": 0,
+              "tbtMs": 427,
+              "load1": 1.06,
+              "loadAfter": 0.89,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2495.5,
+              "observedFcpMs": 266,
+              "observedLcpMs": 589,
+              "milestones": {
+                "documentEndMs": 207.3,
+                "initialResourcesEndMs": 267.8,
+                "firstPrefetchStartMs": 391,
+                "domContentLoadedMs": 266,
+                "loadEventMs": 380,
+                "mainThread": {
+                  "tasks": 655,
+                  "totalTaskMs": 379.2,
+                  "over10Ms": 8,
+                  "over50Ms": 1,
+                  "longestTaskMs": 86.3
+                }
+              },
+              "startedAt": "2026-10-10T22:32:05.745Z"
+            },
+            {
+              "run": 2,
+              "performance": 74,
+              "lcpMs": 4434.6,
+              "cls": 0,
+              "tbtMs": 418,
+              "load1": 0.93,
+              "loadAfter": 0.79,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2495,
+              "observedFcpMs": 93,
+              "observedLcpMs": 359,
+              "milestones": {
+                "documentEndMs": 30.5,
+                "initialResourcesEndMs": 114.9,
+                "firstPrefetchStartMs": 211.3,
+                "domContentLoadedMs": 80,
+                "loadEventMs": 200,
+                "mainThread": {
+                  "tasks": 634,
+                  "totalTaskMs": 334.3,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 81.1
+                }
+              },
+              "startedAt": "2026-10-10T22:33:46.048Z"
+            },
+            {
+              "run": 3,
+              "performance": 88,
+              "lcpMs": 2054,
+              "cls": 0,
+              "tbtMs": 443,
+              "load1": 1.03,
+              "loadAfter": 0.95,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2494.5,
+              "observedFcpMs": 118,
+              "observedLcpMs": 118,
+              "milestones": {
+                "documentEndMs": 37.4,
+                "initialResourcesEndMs": 109.7,
+                "firstPrefetchStartMs": 226,
+                "domContentLoadedMs": 47,
+                "loadEventMs": 215,
+                "mainThread": {
+                  "tasks": 636,
+                  "totalTaskMs": 343.5,
+                  "over10Ms": 5,
+                  "over50Ms": 1,
+                  "longestTaskMs": 83.6
+                }
+              },
+              "startedAt": "2026-10-10T22:35:23.822Z"
+            }
+          ]
+        },
+        "history": {
+          "label": "/history",
+          "path": "/history",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 85,
+              "median": 87,
+              "max": 88,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 2140.2,
+              "median": 2571.8,
+              "max": 2729.6,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 425.5,
+              "median": 436,
+              "max": 458,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 85,
+              "median": 87,
+              "max": 88,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 2140.2,
+              "median": 2571.8,
+              "max": 2729.6,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 914.5,
+              "median": 914.8,
+              "max": 920.1,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 425.5,
+              "median": 436,
+              "max": 458,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 914.5,
+              "median": 914.8,
+              "max": 920.1,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 4520.3,
+              "median": 4530,
+              "max": 4537.3,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 96,
+              "median": 96,
+              "max": 102,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 96,
+              "median": 96,
+              "max": 102,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 457,
+              "median": 457,
+              "max": 460,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 3,
+            "median": 3,
+            "max": 4,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 443050,
+            "median": 443050,
+            "max": 443050,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 12,
+            "median": 12,
+            "max": 12,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 576195,
+            "median": 576195,
+            "max": 576195,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 32,
+            "median": 32,
+            "max": 32,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 28026,
+            "median": 28026,
+            "max": 28026,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 2491,
+            "median": 2499.5,
+            "max": 2510.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.79,
+            "median": 0.89,
+            "max": 0.95,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.75,
+            "median": 0.8,
+            "max": 0.83,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 3,
+            "lcpElement": {
+              "selector": "body > footer.site-footer > p",
+              "snippet": "<p data-testid=\"pack-credit\">",
+              "label": "Creature art, Pixel pack: PokeAPI sprites contributors; Smogon community custom…"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 5.8,
+              "elementRenderDelay": 90.6
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalMs": 526.1,
+                "scriptingMs": 491.8,
+                "parseMs": 20.8
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 180.8,
+                "scriptingMs": 8.7,
+                "parseMs": 0
+              },
+              {
+                "url": "/history",
+                "totalMs": 177.7,
+                "scriptingMs": 13,
+                "parseMs": 3.8
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "totalMs": 128,
+                "scriptingMs": 81.3,
+                "parseMs": 35.2
+              },
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "totalMs": 126.1,
+                "scriptingMs": 125.1,
+                "parseMs": 0.9
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/chunks/2-s6vfn54h3py.css",
+                "transferBytes": 1038,
+                "wastedMs": 307
+              },
+              {
+                "url": "/_next/static/chunks/0q8wj5hiqqx3w.css",
+                "transferBytes": 3720,
+                "wastedMs": 157
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalBytes": 72059,
+                "wastedBytes": 28026
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "transferBytes": 2401,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/chunks/32_bxz15yg1nj.js",
+                "transferBytes": 8214,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "transferBytes": 72472,
+                "resourceBytes": 229843
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "transferBytes": 46927,
+                "resourceBytes": 168622
+              },
+              {
+                "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+                "transferBytes": 4820,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/chunks/3c6mzhumg9kp9.js",
+                "transferBytes": 8674,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/chunks/1x0jeksh_m3lu.js",
+                "transferBytes": 32107,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/chunks/41mgexz7i-ku4.js",
+                "transferBytes": 2141,
+                "resourceBytes": 3932
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "transferBytes": 238783,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/chunks/06uktflp0kf7s.js",
+                "transferBytes": 6406,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/chunks/2gqcnxdg8cj64.js",
+                "transferBytes": 9243,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/chunks/3cotz7qugnofp.js",
+                "transferBytes": 10862,
+                "resourceBytes": 28812
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "body > footer.site-footer > p",
+            "body > footer.site-footer > p",
+            "body > footer.site-footer > p"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 88,
+              "lcpMs": 2140.2,
+              "cls": 0,
+              "tbtMs": 436,
+              "load1": 0.89,
+              "loadAfter": 0.83,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2491,
+              "observedFcpMs": 96,
+              "observedLcpMs": 96,
+              "milestones": {
+                "documentEndMs": 4.1,
+                "initialResourcesEndMs": 101.3,
+                "firstPrefetchStartMs": 206.5,
+                "domContentLoadedMs": 78,
+                "loadEventMs": 196,
+                "mainThread": {
+                  "tasks": 590,
+                  "totalTaskMs": 326.1,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 87.6
+                }
+              },
+              "startedAt": "2026-10-10T22:32:18.357Z"
+            },
+            {
+              "run": 2,
+              "performance": 85,
+              "lcpMs": 2729.6,
+              "cls": 0,
+              "tbtMs": 458,
+              "load1": 0.79,
+              "loadAfter": 0.75,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2510.5,
+              "observedFcpMs": 102,
+              "observedLcpMs": 102,
+              "milestones": {
+                "documentEndMs": 4.3,
+                "initialResourcesEndMs": 104.2,
+                "firstPrefetchStartMs": 204,
+                "domContentLoadedMs": 43,
+                "loadEventMs": 193,
+                "mainThread": {
+                  "tasks": 583,
+                  "totalTaskMs": 327.8,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 87.7
+                }
+              },
+              "startedAt": "2026-10-10T22:33:58.244Z"
+            },
+            {
+              "run": 3,
+              "performance": 87,
+              "lcpMs": 2571.8,
+              "cls": 0,
+              "tbtMs": 425.5,
+              "load1": 0.95,
+              "loadAfter": 0.8,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2499.5,
+              "observedFcpMs": 96,
+              "observedLcpMs": 96,
+              "milestones": {
+                "documentEndMs": 5,
+                "initialResourcesEndMs": 93.4,
+                "firstPrefetchStartMs": 203.4,
+                "domContentLoadedMs": 134,
+                "loadEventMs": 193,
+                "mainThread": {
+                  "tasks": 584,
+                  "totalTaskMs": 328,
+                  "over10Ms": 6,
+                  "over50Ms": 1,
+                  "longestTaskMs": 84.7
+                }
+              },
+              "startedAt": "2026-10-10T22:35:35.948Z"
+            }
+          ]
+        },
+        "how-to-play": {
+          "label": "/how-to-play",
+          "path": "/how-to-play",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 95,
+              "median": 98,
+              "max": 98,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 2128.4,
+              "median": 2133.3,
+              "max": 2712.6,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 126,
+              "median": 128,
+              "max": 129.5,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 95,
+              "median": 98,
+              "max": 98,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 2128.4,
+              "median": 2133.3,
+              "max": 2712.6,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 914.2,
+              "median": 916.6,
+              "max": 919.3,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 126,
+              "median": 128,
+              "max": 129.5,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 914.2,
+              "median": 916.6,
+              "max": 919.3,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 4448.5,
+              "median": 4456.8,
+              "max": 4465.3,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 86,
+              "median": 97,
+              "max": 117,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 86,
+              "median": 97,
+              "max": 117,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 457,
+              "median": 458,
+              "max": 460,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 3,
+            "median": 4,
+            "max": 7,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 443050,
+            "median": 443050,
+            "max": 443050,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 12,
+            "median": 12,
+            "max": 12,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 576587,
+            "median": 576587,
+            "max": 576587,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 32,
+            "median": 32,
+            "max": 32,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 289751,
+            "median": 289751,
+            "max": 289751,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 2492.5,
+            "median": 2503,
+            "max": 2503.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.75,
+            "median": 0.8,
+            "max": 0.83,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.84,
+            "median": 0.87,
+            "max": 1.13,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 2,
+            "lcpElement": {
+              "selector": "main.page > section#cup8 > div.cx1U_q_body > p",
+              "snippet": "<p>",
+              "label": "In Open you can take any Pokémon that matches the roll. In Classic you choose f…"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 5.8,
+              "elementRenderDelay": 111.1
+            },
+            "bootupTop": [
+              {
+                "url": "/how-to-play",
+                "totalMs": 314.1,
+                "scriptingMs": 24.1,
+                "parseMs": 5.3
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalMs": 280.6,
+                "scriptingMs": 260.3,
+                "parseMs": 18.2
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "totalMs": 121,
+                "scriptingMs": 0.8,
+                "parseMs": 120
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 109.7,
+                "scriptingMs": 6.7,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "totalMs": 100.7,
+                "scriptingMs": 74.7,
+                "parseMs": 12.3
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/chunks/0q8wj5hiqqx3w.css",
+                "transferBytes": 3720,
+                "wastedMs": 158
+              },
+              {
+                "url": "/_next/static/chunks/35nbplzd6iwi5.css",
+                "transferBytes": 1174,
+                "wastedMs": 308
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "totalBytes": 238181,
+                "wastedBytes": 238137
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalBytes": 72059,
+                "wastedBytes": 29365
+              },
+              {
+                "url": "/_next/static/chunks/1x0jeksh_m3lu.js",
+                "totalBytes": 31694,
+                "wastedBytes": 22249
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "transferBytes": 2401,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/chunks/32_bxz15yg1nj.js",
+                "transferBytes": 8214,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "transferBytes": 72472,
+                "resourceBytes": 229843
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "transferBytes": 46927,
+                "resourceBytes": 168622
+              },
+              {
+                "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+                "transferBytes": 4820,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/chunks/3c6mzhumg9kp9.js",
+                "transferBytes": 8674,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/chunks/1x0jeksh_m3lu.js",
+                "transferBytes": 32107,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/chunks/06uktflp0kf7s.js",
+                "transferBytes": 6406,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "transferBytes": 238783,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/chunks/2gqcnxdg8cj64.js",
+                "transferBytes": 9243,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/chunks/3cotz7qugnofp.js",
+                "transferBytes": 10862,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/chunks/41mgexz7i-ku4.js",
+                "transferBytes": 2141,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "main.page > section#cup8 > div.cx1U_q_body > p",
+            "main.page > section#cup8 > div.cx1U_q_body > p",
+            "main.page > section#cup8 > div.cx1U_q_body > p"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 95,
+              "lcpMs": 2712.6,
+              "cls": 0,
+              "tbtMs": 126,
+              "load1": 0.83,
+              "loadAfter": 1.13,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2503.5,
+              "observedFcpMs": 97,
+              "observedLcpMs": 97,
+              "milestones": {
+                "documentEndMs": 7.7,
+                "initialResourcesEndMs": 173.1,
+                "firstPrefetchStartMs": 169.5,
+                "domContentLoadedMs": 76,
+                "loadEventMs": 141,
+                "mainThread": {
+                  "tasks": 527,
+                  "totalTaskMs": 227.8,
+                  "over10Ms": 4,
+                  "over50Ms": 0,
+                  "longestTaskMs": 32
+                }
+              },
+              "startedAt": "2026-10-10T22:32:30.447Z"
+            },
+            {
+              "run": 2,
+              "performance": 98,
+              "lcpMs": 2133.3,
+              "cls": 0,
+              "tbtMs": 129.5,
+              "load1": 0.75,
+              "loadAfter": 0.87,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2492.5,
+              "observedFcpMs": 117,
+              "observedLcpMs": 117,
+              "milestones": {
+                "documentEndMs": 5.1,
+                "initialResourcesEndMs": 197.7,
+                "firstPrefetchStartMs": 194.2,
+                "domContentLoadedMs": 102,
+                "loadEventMs": 164,
+                "mainThread": {
+                  "tasks": 527,
+                  "totalTaskMs": 249.9,
+                  "over10Ms": 4,
+                  "over50Ms": 1,
+                  "longestTaskMs": 59
+                }
+              },
+              "startedAt": "2026-10-10T22:34:10.343Z"
+            },
+            {
+              "run": 3,
+              "performance": 98,
+              "lcpMs": 2128.4,
+              "cls": 0,
+              "tbtMs": 128,
+              "load1": 0.8,
+              "loadAfter": 0.84,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2503,
+              "observedFcpMs": 86,
+              "observedLcpMs": 86,
+              "milestones": {
+                "documentEndMs": 4.2,
+                "initialResourcesEndMs": 161.6,
+                "firstPrefetchStartMs": 168.9,
+                "domContentLoadedMs": 71,
+                "loadEventMs": 133,
+                "mainThread": {
+                  "tasks": 511,
+                  "totalTaskMs": 223.2,
+                  "over10Ms": 4,
+                  "over50Ms": 0,
+                  "longestTaskMs": 31.5
+                }
+              },
+              "startedAt": "2026-10-10T22:35:47.993Z"
+            }
+          ]
+        },
+        "run": {
+          "label": "/r/<token>",
+          "path": "/r/pd3.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 68,
+              "median": 73,
+              "max": 77,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 2730.8,
+              "median": 2983.9,
+              "max": 4814.1,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 383.5,
+              "median": 441.5,
+              "max": 483,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 68,
+              "median": 73,
+              "max": 77,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 58,
+              "median": 58,
+              "max": 58,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 80,
+              "median": 80,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 2730.8,
+              "median": 2983.9,
+              "max": 4814.1,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 1071.3,
+              "median": 1072.4,
+              "max": 1602.6,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0.2114216281895504,
+              "max": 0.2114216281895504,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 383.5,
+              "median": 441.5,
+              "max": 483,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 1071.3,
+              "median": 1072.4,
+              "max": 4105.8,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 4680.6,
+              "median": 4680.9,
+              "max": 4814.1,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 190,
+              "median": 190,
+              "max": 2320,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 118,
+              "median": 130,
+              "max": 2320,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 461,
+              "median": 461,
+              "max": 461,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 6,
+            "median": 7,
+            "max": 16,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 444266,
+            "median": 444266,
+            "max": 444266,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 13,
+            "median": 13,
+            "max": 13,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 603736,
+            "median": 603737,
+            "max": 603740,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 40,
+            "median": 40,
+            "max": 40,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 29010,
+            "median": 29177,
+            "max": 29177,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 2493.5,
+            "median": 2499.5,
+            "max": 2502.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.84,
+            "median": 0.87,
+            "max": 1.13,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.74,
+            "median": 0.79,
+            "max": 0.95,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 2,
+            "lcpElement": {
+              "selector": "header.nM2n4W_hero > div.nM2n4W_heroMain > div.nM2n4W_recordBlock > span.nM2n4W_record",
+              "snippet": "<span class=\"nM2n4W_record\" data-testid=\"results-record\">",
+              "label": "3-0-2"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 7.7,
+              "elementRenderDelay": 181.9
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalMs": 527.1,
+                "scriptingMs": 494.9,
+                "parseMs": 20.1
+              },
+              {
+                "url": "/r/pd3.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
+                "totalMs": 444.4,
+                "scriptingMs": 25.6,
+                "parseMs": 15.3
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "totalMs": 277.6,
+                "scriptingMs": 241.5,
+                "parseMs": 22.3
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 251.1,
+                "scriptingMs": 6.9,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "totalMs": 123.1,
+                "scriptingMs": 0.8,
+                "parseMs": 122.1
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/chunks/1-4l67b7v68cl.css",
+                "transferBytes": 7676,
+                "wastedMs": 311
+              },
+              {
+                "url": "/_next/static/chunks/0q8wj5hiqqx3w.css",
+                "transferBytes": 3720,
+                "wastedMs": 161
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalBytes": 72059,
+                "wastedBytes": 29177
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "transferBytes": 2401,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/chunks/32_bxz15yg1nj.js",
+                "transferBytes": 8214,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "transferBytes": 72472,
+                "resourceBytes": 229843
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "transferBytes": 46927,
+                "resourceBytes": 168622
+              },
+              {
+                "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+                "transferBytes": 4820,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/chunks/3c6mzhumg9kp9.js",
+                "transferBytes": 8674,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/chunks/1x0jeksh_m3lu.js",
+                "transferBytes": 32107,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/chunks/22qehocqkef8j.js",
+                "transferBytes": 1216,
+                "resourceBytes": 836
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "transferBytes": 238783,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/chunks/2gqcnxdg8cj64.js",
+                "transferBytes": 9243,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/chunks/06uktflp0kf7s.js",
+                "transferBytes": 6406,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/chunks/3cotz7qugnofp.js",
+                "transferBytes": 10862,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/chunks/41mgexz7i-ku4.js",
+                "transferBytes": 2141,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "header.nM2n4W_hero > div.nM2n4W_heroMain > div.nM2n4W_recordBlock > span.nM2n4W_record",
+            "header.nM2n4W_hero > div.nM2n4W_heroMain > div.nM2n4W_recordBlock > span.nM2n4W_record",
+            "header.nM2n4W_hero > div.nM2n4W_heroMain > div.nM2n4W_recordBlock > span.nM2n4W_record"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 68,
+              "lcpMs": 4814.1,
+              "cls": 0,
+              "tbtMs": 483,
+              "load1": 1.13,
+              "loadAfter": 0.95,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2493.5,
+              "observedFcpMs": 2320,
+              "observedLcpMs": 2320,
+              "milestones": {
+                "documentEndMs": 303.1,
+                "initialResourcesEndMs": 1355.5,
+                "firstPrefetchStartMs": 1355.7,
+                "domContentLoadedMs": 335,
+                "loadEventMs": 461,
+                "mainThread": {
+                  "tasks": 711,
+                  "totalTaskMs": 377.4,
+                  "over10Ms": 8,
+                  "over50Ms": 1,
+                  "longestTaskMs": 87
+                }
+              },
+              "startedAt": "2026-10-10T22:32:42.415Z"
+            },
+            {
+              "run": 2,
+              "performance": 73,
+              "lcpMs": 2983.9,
+              "cls": 0.2114216281895504,
+              "tbtMs": 441.5,
+              "load1": 0.87,
+              "loadAfter": 0.74,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2502.5,
+              "observedFcpMs": 130,
+              "observedLcpMs": 190,
+              "milestones": {
+                "documentEndMs": 64.1,
+                "initialResourcesEndMs": 185.5,
+                "firstPrefetchStartMs": 298.1,
+                "domContentLoadedMs": 115,
+                "loadEventMs": 287,
+                "mainThread": {
+                  "tasks": 748,
+                  "totalTaskMs": 418.6,
+                  "over10Ms": 8,
+                  "over50Ms": 1,
+                  "longestTaskMs": 78
+                }
+              },
+              "startedAt": "2026-10-10T22:34:22.310Z"
+            },
+            {
+              "run": 3,
+              "performance": 77,
+              "lcpMs": 2730.8,
+              "cls": 0.2114216281895504,
+              "tbtMs": 383.5,
+              "load1": 0.84,
+              "loadAfter": 0.79,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2499.5,
+              "observedFcpMs": 118,
+              "observedLcpMs": 190,
+              "milestones": {
+                "documentEndMs": 69.4,
+                "initialResourcesEndMs": 178.2,
+                "firstPrefetchStartMs": 297.9,
+                "domContentLoadedMs": 165,
+                "loadEventMs": 287,
+                "mainThread": {
+                  "tasks": 796,
+                  "totalTaskMs": 402.3,
+                  "over10Ms": 9,
+                  "over50Ms": 1,
+                  "longestTaskMs": 78.3
+                }
+              },
+              "startedAt": "2026-10-10T22:35:59.928Z"
+            }
+          ]
+        },
+        "play-kanto151": {
+          "label": "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151",
+          "path": "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151",
+          "runsUsed": 3,
+          "runsClean": 3,
+          "runsOnBusyMachine": 0,
+          "statsBasis": "clean runs only",
+          "statsRuns": [
+            1,
+            2,
+            3
+          ],
+          "allRunsSpread": {
+            "performance": {
+              "min": 86,
+              "median": 86,
+              "max": 88,
+              "n": 3
+            },
+            "lcpMs": {
+              "min": 2024.6,
+              "median": 2572.4,
+              "max": 2751.9,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 400,
+              "median": 435.5,
+              "max": 441.5,
+              "n": 3
+            }
+          },
+          "failedAttempts": 0,
+          "supersededRuns": [],
+          "scores": {
+            "performance": {
+              "min": 86,
+              "median": 86,
+              "max": 88,
+              "n": 3
+            },
+            "accessibility": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "best-practices": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            },
+            "seo": {
+              "min": 63,
+              "median": 63,
+              "max": 63,
+              "n": 3
+            },
+            "agentic-browsing": {
+              "min": 100,
+              "median": 100,
+              "max": 100,
+              "n": 3
+            }
+          },
+          "metrics": {
+            "lcpMs": {
+              "min": 2024.6,
+              "median": 2572.4,
+              "max": 2751.9,
+              "n": 3
+            },
+            "fcpMs": {
+              "min": 914.6,
+              "median": 914.9,
+              "max": 919.7,
+              "n": 3
+            },
+            "cls": {
+              "min": 0,
+              "median": 0,
+              "max": 0.02795299625440517,
+              "n": 3
+            },
+            "tbtMs": {
+              "min": 400,
+              "median": 435.5,
+              "max": 441.5,
+              "n": 3
+            },
+            "speedIndexMs": {
+              "min": 914.6,
+              "median": 914.9,
+              "max": 919.7,
+              "n": 3
+            },
+            "ttiMs": {
+              "min": 4512.2,
+              "median": 4519.8,
+              "max": 4523.4,
+              "n": 3
+            },
+            "inpMs": null,
+            "observedLcpMs": {
+              "min": 94,
+              "median": 122,
+              "max": 132,
+              "n": 3
+            },
+            "observedFcpMs": {
+              "min": 94,
+              "median": 122,
+              "max": 132,
+              "n": 3
+            },
+            "simulatedTtfbMs": {
+              "min": 457,
+              "median": 457,
+              "max": 460,
+              "n": 3
+            }
+          },
+          "serverResponseTimeMs": {
+            "min": 4,
+            "median": 4,
+            "max": 4,
+            "n": 3
+          },
+          "jsTransferBytes": {
+            "min": 453620,
+            "median": 453620,
+            "max": 453620,
+            "n": 3
+          },
+          "jsRequests": {
+            "min": 13,
+            "median": 13,
+            "max": 13,
+            "n": 3
+          },
+          "totalTransferBytes": {
+            "min": 592467,
+            "median": 592467,
+            "max": 592467,
+            "n": 3
+          },
+          "totalRequests": {
+            "min": 34,
+            "median": 34,
+            "max": 34,
+            "n": 3
+          },
+          "unusedJavascriptSavingsBytes": {
+            "min": 29099,
+            "median": 29219,
+            "max": 29219,
+            "n": 3
+          },
+          "benchmarkIndex": {
+            "min": 2471,
+            "median": 2490.5,
+            "max": 2504.5,
+            "n": 3
+          },
+          "loadAtStart": {
+            "min": 0.74,
+            "median": 0.79,
+            "max": 0.95,
+            "n": 3
+          },
+          "loadAfter": {
+            "min": 0.82,
+            "median": 0.98,
+            "max": 1.36,
+            "n": 3
+          },
+          "medianLcpRun": {
+            "run": 2,
+            "lcpElement": {
+              "selector": "body > footer.site-footer > p",
+              "snippet": "<p data-testid=\"pack-credit\">",
+              "label": "Creature art, Pixel pack: PokeAPI sprites contributors; Smogon community custom…"
+            },
+            "observedPhasesMs": {
+              "timeToFirstByte": 5.8,
+              "elementRenderDelay": 88.5
+            },
+            "bootupTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalMs": 534.9,
+                "scriptingMs": 499.6,
+                "parseMs": 17.4
+              },
+              {
+                "url": "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151",
+                "totalMs": 230.4,
+                "scriptingMs": 21.3,
+                "parseMs": 11.9
+              },
+              {
+                "url": "Unattributable",
+                "totalMs": 191.4,
+                "scriptingMs": 7,
+                "parseMs": 0
+              },
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "totalMs": 132.1,
+                "scriptingMs": 131.2,
+                "parseMs": 0.7
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "totalMs": 124.3,
+                "scriptingMs": 0.9,
+                "parseMs": 123.1
+              }
+            ],
+            "renderBlocking": [
+              {
+                "url": "/_next/static/chunks/1-4l67b7v68cl.css",
+                "transferBytes": 7676,
+                "wastedMs": 307
+              },
+              {
+                "url": "/_next/static/chunks/0q8wj5hiqqx3w.css",
+                "transferBytes": 3720,
+                "wastedMs": 157
+              }
+            ],
+            "unusedJavascriptTop": [
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "totalBytes": 72059,
+                "wastedBytes": 29099
+              }
+            ],
+            "scriptRequests": [
+              {
+                "url": "/_next/static/chunks/07s9r6zfbnebs.js",
+                "transferBytes": 2401,
+                "resourceBytes": 5357
+              },
+              {
+                "url": "/_next/static/chunks/32_bxz15yg1nj.js",
+                "transferBytes": 8214,
+                "resourceBytes": 29652
+              },
+              {
+                "url": "/_next/static/chunks/2vtzm7r4xte7_.js",
+                "transferBytes": 72472,
+                "resourceBytes": 229843
+              },
+              {
+                "url": "/_next/static/chunks/2zobz-rx-ckbp.js",
+                "transferBytes": 46927,
+                "resourceBytes": 168622
+              },
+              {
+                "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+                "transferBytes": 4820,
+                "resourceBytes": 11255
+              },
+              {
+                "url": "/_next/static/chunks/3c6mzhumg9kp9.js",
+                "transferBytes": 8674,
+                "resourceBytes": 26455
+              },
+              {
+                "url": "/_next/static/chunks/1x0jeksh_m3lu.js",
+                "transferBytes": 32107,
+                "resourceBytes": 111559
+              },
+              {
+                "url": "/_next/static/chunks/1oltc8okiu-f3.js",
+                "transferBytes": 10570,
+                "resourceBytes": 27934
+              },
+              {
+                "url": "/_next/static/chunks/3-hlrqeouyj9k.js",
+                "transferBytes": 238783,
+                "resourceBytes": 1329334
+              },
+              {
+                "url": "/_next/static/chunks/2gqcnxdg8cj64.js",
+                "transferBytes": 9243,
+                "resourceBytes": 26409
+              },
+              {
+                "url": "/_next/static/chunks/06uktflp0kf7s.js",
+                "transferBytes": 6406,
+                "resourceBytes": 18058
+              },
+              {
+                "url": "/_next/static/chunks/3cotz7qugnofp.js",
+                "transferBytes": 10862,
+                "resourceBytes": 28812
+              },
+              {
+                "url": "/_next/static/chunks/41mgexz7i-ku4.js",
+                "transferBytes": 2141,
+                "resourceBytes": 3932
+              }
+            ]
+          },
+          "lcpElementsAcrossRuns": [
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede",
+            "body > footer.site-footer > p",
+            "main.page > section.M2ks9W_start > div.M2ks9W_hero > p.M2ks9W_lede"
+          ],
+          "warnings": [],
+          "runs": [
+            {
+              "run": 1,
+              "performance": 86,
+              "lcpMs": 2751.9,
+              "cls": 0,
+              "tbtMs": 400,
+              "load1": 0.95,
+              "loadAfter": 1.36,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2471,
+              "observedFcpMs": 132,
+              "observedLcpMs": 132,
+              "milestones": {
+                "documentEndMs": 32.8,
+                "initialResourcesEndMs": 106,
+                "firstPrefetchStartMs": 229.6,
+                "domContentLoadedMs": 48,
+                "loadEventMs": 219,
+                "mainThread": {
+                  "tasks": 611,
+                  "totalTaskMs": 342.7,
+                  "over10Ms": 7,
+                  "over50Ms": 1,
+                  "longestTaskMs": 80.5
+                }
+              },
+              "startedAt": "2026-10-10T22:32:57.287Z"
+            },
+            {
+              "run": 2,
+              "performance": 86,
+              "lcpMs": 2572.4,
+              "cls": 0.02795299625440517,
+              "tbtMs": 441.5,
+              "load1": 0.74,
+              "loadAfter": 0.98,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2504.5,
+              "observedFcpMs": 94,
+              "observedLcpMs": 94,
+              "milestones": {
+                "documentEndMs": 28.9,
+                "initialResourcesEndMs": 99.8,
+                "firstPrefetchStartMs": 216.8,
+                "domContentLoadedMs": 146,
+                "loadEventMs": 206,
+                "mainThread": {
+                  "tasks": 744,
+                  "totalTaskMs": 345.5,
+                  "over10Ms": 5,
+                  "over50Ms": 1,
+                  "longestTaskMs": 87.1
+                }
+              },
+              "startedAt": "2026-10-10T22:34:35.150Z"
+            },
+            {
+              "run": 3,
+              "performance": 88,
+              "lcpMs": 2024.6,
+              "cls": 0,
+              "tbtMs": 435.5,
+              "load1": 0.79,
+              "loadAfter": 0.82,
+              "clean": true,
+              "busyReasons": [],
+              "benchmarkIndex": 2490.5,
+              "observedFcpMs": 122,
+              "observedLcpMs": 122,
+              "milestones": {
+                "documentEndMs": 43.3,
+                "initialResourcesEndMs": 104.7,
+                "firstPrefetchStartMs": 232.5,
+                "domContentLoadedMs": 99,
+                "loadEventMs": 221,
+                "mainThread": {
+                  "tasks": 651,
+                  "totalTaskMs": 358.8,
+                  "over10Ms": 7,
+                  "over50Ms": 1,
+                  "longestTaskMs": 89.4
+                }
+              },
+              "startedAt": "2026-10-10T22:36:12.761Z"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

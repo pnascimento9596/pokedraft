@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PGlite } from "@electric-sql/pglite";
 import { PASSCODE_COOKIE, passcodeDigest } from "@/passcode";
 import { drizzleLimiter } from "@/ratelimit/store";
@@ -71,6 +71,20 @@ describe("passcode gate attempt limit (catches unlimited passcode guessing)", ()
     expect([later.status, location(later)]).toEqual([303, "/daily"]);
   });
 
+  it("sets an HttpOnly, SameSite=Lax, Path=/ cookie that lasts 90 days (catches a script-readable or short-lived cookie)", async () => {
+    vi.useFakeTimers({ toFake: ["Date"], now: NOW });
+    vi.stubEnv("NODE_ENV", "test");
+    expect((await unlock(PASSCODE)).headers.get("set-cookie")).toBe(
+      "pokedraft_pass=dc6e586e6ea1b89d5818e4467281bedef5967f38e81090af7932aa29d8d94490; Path=/; Expires=Thu, 07 Jan 2027 16:00:00 GMT; Max-Age=7776000; HttpOnly; SameSite=lax",
+    );
+    vi.stubEnv("NODE_ENV", "production");
+    expect((await unlock(PASSCODE, "198.51.100.9")).headers.get("set-cookie")).toBe(
+      "pokedraft_pass=dc6e586e6ea1b89d5818e4467281bedef5967f38e81090af7932aa29d8d94490; Path=/; Expires=Thu, 07 Jan 2027 16:00:00 GMT; Max-Age=7776000; Secure; HttpOnly; SameSite=lax",
+    );
+    vi.unstubAllEnvs();
+    vi.useRealTimers();
+  });
+
   it("sets the passcode cookie on the right passcode", async () => {
     const res = await unlock(PASSCODE);
     expect(res.headers.get("set-cookie")).toContain(
@@ -99,5 +113,33 @@ describe("passcode gate attempt limit (catches unlimited passcode guessing)", ()
       deps({ passcode: undefined, ipHashSecret: undefined }),
     );
     expect([res.status, location(res)]).toEqual([303, "/daily"]);
+  });
+
+  it("logs a limiter failure with the request id and no IP or passcode", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const form = new FormData();
+    form.set("passcode", PASSCODE);
+    form.set("next", "/daily");
+    const req = new Request("https://pokedraft.test/gate/unlock", {
+      method: "POST",
+      headers: { "x-real-ip": "198.51.100.5", "x-vercel-id": "iad1::gate-1" },
+      body: form,
+    });
+    const broken = deps({
+      limiter: drizzleLimiter(() => {
+        throw Object.assign(new Error("198.51.100.5 correct horse"), { code: "57P01" });
+      }),
+    });
+    expect(location(await handleUnlock(req, broken))).toBe("/gate?next=%2Fdaily&error=unavailable");
+    expect(spy.mock.calls.map((a) => JSON.parse(String(a[0])))).toEqual([
+      {
+        level: "error",
+        where: "gate.limiter",
+        requestId: "iad1::gate-1",
+        name: "Error",
+        sqlstate: "57P01",
+      },
+    ]);
+    spy.mockRestore();
   });
 });

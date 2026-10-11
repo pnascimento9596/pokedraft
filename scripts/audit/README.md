@@ -1,0 +1,15 @@
+# Audit measuring tools
+
+These tools took the GATE 0 baseline in `docs/reports/audit-baseline.md`. The final readback runs them again with `--name final` and compares.
+Run everything with `pnpm exec tsx scripts/audit/<tool>`. Raw data goes to a scratch directory outside the repo, passed as `--raw-dir DIR` (or `AUDIT_RAW_DIR`). Summaries go to `--out` (default `docs/reports/audit-data`).
+
+1. `env.mjs --raw-dir DIR --served-checkout CHECKOUT [--load-log FILE]` writes `<name>-env.json`: machine, tool versions, production deployment, two latency floors, pinned share link check. Run it again with `--phase end` while the local server is still up to add what changed while measuring.
+2. `lighthouse.mjs --label prod|local --raw-dir DIR --runs 3 [--routes a,b] [--accept-busy] [--summarize-only]` runs mobile Lighthouse (version pinned in `lib.mjs`) on the `routes.mjs` routes, resumable, then writes `<name>-lighthouse.json`. A run counts as clean only when the load was 6 or less at its start and its end and Lighthouse's CPU benchmark index was at least 3900 (`--min-benchmark`; the load average lags). A rerun without `--accept-busy` redoes the runs that are not clean, and `--clean-only` makes it stop instead of running on a busy machine. A route's numbers use its clean runs only.
+3. `first-load-js.mjs --method a --next-dir CHECKOUT/.next` rebuilds first-load JS from the build output. `--method b --label prod|local --raw-dir DIR [--no-prefetch]` measures it in Chromium; `--no-prefetch` turns off the router prefetch that adds scripts to every route. `--method compare` recomputes the (a) against (b) comparison from stored data.
+4. `api-timing.mjs --mode cold|warm|card|floor|post|note|summarize` times the leaderboard API and `/card`. Production gets GET and HEAD only. `--label` names a warm, card or floor series and `summarize --series` picks the one to report. `post` needs a local server on a Neon preview branch (see its header).
+5. `screenshots.mjs --mode shoot|compress|summarize --label local|prod` takes the route, viewport and theme matrix with overflow, theme and console checks.
+6. `report.mjs --data DIR --report FILE [--check]` fills the tables of the report. `report.mjs --baseline DIR --final DIR` prints the baseline-versus-final tables.
+
+Rules the tools enforce. One measurement at a time through a lock file in the raw directory. Timed runs wait for a 1-minute load average of 6 or less (the Mac has 12 cores) and flag any run that went ahead on a busy machine. A cold sample needs `--idle-min` minutes (default 15, the baseline used 16) since the last request from these tools and from anyone else (read from `vercel logs`).
+Every API sample records whether it opened a connection. The edge closes the connection after a HEAD, so a HEAD series pays for TCP and TLS on every request, and a series of GETs does not. Compare only samples taken the same way.
+Tests for the pure helpers live in `stats.test.ts`, `lib.test.ts` and `tokens.test.ts`. `fixtures.json` holds the pinned `/r/<token>` and is rebuilt with `tokens.mts --write-fixtures`.
