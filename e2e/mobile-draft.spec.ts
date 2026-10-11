@@ -224,9 +224,17 @@ for (const formation of [
         const parts = token.querySelectorAll(":scope > span");
         const name = parts[parts.length - 1]!;
         const n = name.getBoundingClientRect();
+        const ownPicture = token.querySelector("[data-player-image]")!.getBoundingClientRect();
+        if (
+          Math.max(ownPicture.left - n.right, n.left - ownPicture.right) < 1 &&
+          Math.max(ownPicture.top - n.bottom, n.top - ownPicture.bottom) < 1
+        )
+          out.push(`${token.getAttribute("data-testid")} name touches its own picture`);
         for (const other of tokens) {
           if (token === other) continue;
-          const image = other.querySelector(":scope > span")!.getBoundingClientRect();
+          const image = (
+            other.querySelector("[data-player-image]") ?? other.querySelector(":scope > span")!
+          ).getBoundingClientRect();
           const gapX = Math.max(image.left - n.right, n.left - image.right);
           const gapY = Math.max(image.top - n.bottom, n.top - image.bottom);
           if (gapX < 1 && gapY < 1)
