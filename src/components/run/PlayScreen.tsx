@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { dailySeed } from "@/engine/rng";
 import { DRAFT_ROUNDS, GENS, type DraftSettings, type IsoDate } from "@/engine/types";
 import { longDate } from "@/components/leaderboard/format";
@@ -16,6 +16,19 @@ import s from "./PlayScreen.module.css";
 // The draft, the results and the species data they need load on demand. Pointing at or focusing
 // Start fetches them early, so the draft is usually ready by the time the tap lands.
 const loadLiveRun = () => import("./LiveRun");
+
+function whenIdleAfterLoad(task: () => void): () => void {
+  let id = 0;
+  const idle = () => {
+    id = window.requestIdleCallback ? window.requestIdleCallback(task) : window.setTimeout(task, 1);
+  };
+  if (document.readyState === "complete") idle();
+  else window.addEventListener("load", idle, { once: true });
+  return () => {
+    window.removeEventListener("load", idle);
+    if (window.cancelIdleCallback) window.cancelIdleCallback(id);
+  };
+}
 
 export function PlayScreen() {
   const params = useSearchParams();
@@ -89,6 +102,8 @@ export function Challenge({
   // link's. A fresh run draws its seed at Start (random, so never during render), and until then
   // the road strip shows no rating.
   const fixedSeed = daily !== undefined ? dailySeed(daily) : useQuerySeed ? querySeed : null;
+
+  useEffect(() => whenIdleAfterLoad(() => void loadLiveRun().catch(() => {})), []);
 
   const preload = () => {
     loadLiveRun().catch(() => {});

@@ -24,6 +24,19 @@ import s from "./HomeScreen.module.css";
 // focus, or a ?b= link), not with the page.
 const loadEngine = () => import("@/components/builder/live");
 
+function whenIdleAfterLoad(task: () => void): () => void {
+  let id = 0;
+  const idle = () => {
+    id = window.requestIdleCallback ? window.requestIdleCallback(task) : window.setTimeout(task, 1);
+  };
+  if (document.readyState === "complete") idle();
+  else window.addEventListener("load", idle, { once: true });
+  return () => {
+    window.removeEventListener("load", idle);
+    if (window.cancelIdleCallback) window.cancelIdleCallback(id);
+  };
+}
+
 function freshDraft(engine: BuilderEngine, panel: PanelSettings) {
   return engine.createDraft(builderSettings(panel), BUILDER_URL_SEED);
 }
@@ -90,6 +103,8 @@ export function HomeScreen() {
     // Runs once after hydration; startLive only reads refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => whenIdleAfterLoad(() => void loadEngine().catch(() => {})), []);
 
   useEffect(() => {
     if (live === null) return;
