@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { draftSixteen } from "./helpers";
 
 // The engine 3 golden cup8 run (scripts/audit/fixtures.json on the audit branch): 3-0-2, R16, Team Score 593.
 const GOLDEN_RUN =
@@ -92,5 +93,42 @@ for (const width of [360, 390]) {
         ),
       ).toBe(0);
     }
+  });
+}
+
+for (const width of [360, 390]) {
+  test(`saved-run reload restore has exactly zero CLS at ${width}px (SX-06)`, async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== "chromium", "layout-shift entries are Chromium only");
+    await page.setViewportSize({ width, height: 844 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151");
+    await page.getByTestId("run-start").click();
+    await draftSixteen(page);
+    await page.getByTestId("see-results").click();
+    await expect(page.getByTestId("results-record")).toHaveText("3-0-2");
+    await page.addInitScript(() => {
+      const w = window as unknown as { __restoreShifts: number[] };
+      w.__restoreShifts = [];
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries() as unknown as { value: number }[])
+          w.__restoreShifts.push(entry.value);
+      }).observe({ type: "layout-shift", buffered: true });
+    });
+    await page.reload();
+    await expect(page.getByTestId("results-record")).toHaveText("3-0-2");
+    await page.waitForLoadState("networkidle");
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(500);
+    expect(
+      await page.evaluate(() =>
+        (window as unknown as { __restoreShifts: number[] }).__restoreShifts.reduce(
+          (sum, value) => sum + value,
+          0,
+        ),
+      ),
+    ).toBe(0);
   });
 }
