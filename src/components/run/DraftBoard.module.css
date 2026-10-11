@@ -362,7 +362,7 @@
   }
 
   /* The mode title is on the start screen; here it stays for screen readers only. */
-  .titleRow > :global(.kicker) {
+  .titleRow > :global(.eyebrow) {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -616,7 +616,7 @@
   border-bottom: 1px solid var(--border-soft);
   background: transparent;
 }
-.titleRow > :global(.kicker) {
+.titleRow > :global(.eyebrow) {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -634,4 +634,11 @@
       calc(100svh - var(--site-header-h) - 254px - env(safe-area-inset-bottom, 0px))
     );
   }
+}
+
+.round {
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
