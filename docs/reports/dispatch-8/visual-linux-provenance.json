@@ -1,0 +1,65 @@
+{
+  "linuxCaptured": [
+    {
+      "snapshot": "pill-390-light.png",
+      "source": "data/70bd36a7e6672ef9e10c946b4852f044aee2fb32.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    },
+    {
+      "snapshot": "status-390-light.png",
+      "source": "data/7b506deb5d1a09412f84d5331582a908292625b8.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    },
+    {
+      "snapshot": "button-390-light.png",
+      "source": "data/2407209c13d061173b32157a8aafc2b98183bc35.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    },
+    {
+      "snapshot": "pill-390-dark.png",
+      "source": "data/fa79127d6717954ad47c181199ec1a923733051b.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    },
+    {
+      "snapshot": "status-390-dark.png",
+      "source": "data/45d1958f6fa47ee5cb216d84e9ff9365902e98f7.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    },
+    {
+      "snapshot": "button-390-dark.png",
+      "source": "data/cdff4fb8981a6dd865e1902f42cba749bc5a87eb.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    },
+    {
+      "snapshot": "pill-1440-light.png",
+      "source": "data/185bef53358f855a02e6c6da9aee04cfab6ec11c.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    },
+    {
+      "snapshot": "sheet-1440-light.png",
+      "source": "data/7ef1a0bb0c9b1620788cd9732355c33e2c58992c.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    },
+    {
+      "snapshot": "pill-1440-dark.png",
+      "source": "data/c04b47df39bb022b51c263f9b564dfeb3844c8bc.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    },
+    {
+      "snapshot": "sheet-1440-dark.png",
+      "source": "data/e4053b8c1683473bfc4a18207554e30b99f416a2.png",
+      "run": "38132610243",
+      "head": "28399647d82f52c9fc88bda8b7a9e6fb50acdd8c"
+    }
+  ],
+  "remaining": "34 macOS reference images independently matched by Linux CI within unchanged 2.5% allowance; no Linux capture is claimed for these reference bytes."
+}

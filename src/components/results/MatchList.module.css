@@ -30,9 +30,13 @@
   --accent: var(--loss);
 }
 .card[data-outcome="none"] {
-  opacity: 0.7;
+  background: var(--surface-sunken);
   border-style: dashed;
   border-left-style: solid;
+}
+
+.card[data-outcome="none"] .outcome {
+  color: var(--text-muted);
 }
 
 .head {
@@ -43,7 +47,7 @@
 
 .round {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 600;
   font-size: 0.85rem;
   letter-spacing: 0.06em;
   padding: 1px 6px;
@@ -65,7 +69,7 @@
 .outcome {
   margin-left: auto;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.85rem;
@@ -81,7 +85,7 @@
 
 .side {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
   font-size: 1.05rem;
   letter-spacing: 0.03em;
@@ -94,7 +98,7 @@
 
 .goals {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   font-size: 2rem;
   line-height: 1;
@@ -139,7 +143,7 @@
 
 .meterValue {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   min-width: 3ch;
   text-align: right;
@@ -230,7 +234,7 @@
 .out {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--loss);

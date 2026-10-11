@@ -29,11 +29,15 @@
     "db:rollback": "tsx scripts/db/rollback.mts",
     "db:smoke": "tsx scripts/db/smoke.mts",
     "db:delete-entry": "tsx scripts/db/delete-entry.mts",
-    "test:live": "playwright test -c playwright.live.config.ts"
+    "test:live": "playwright test -c playwright.live.config.ts",
+    "check:theme-contrast": "tsx scripts/audit/theme-contrast.mts",
+    "check:theme-colors": "node scripts/audit/theme-color-lint.mjs",
+    "check:theme-cvd": "tsx scripts/audit/theme-cvd.mts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
     "drizzle-orm": "^0.45.4",
+    "lucide-react": "^1.55.0",
     "next": "16.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",

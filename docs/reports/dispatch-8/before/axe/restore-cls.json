@@ -1,0 +1,22 @@
+[
+  {
+    "width": 360,
+    "state": "builder-ratings-cold",
+    "shifts": []
+  },
+  {
+    "width": 360,
+    "state": "saved-result-reload",
+    "shifts": []
+  },
+  {
+    "width": 390,
+    "state": "builder-ratings-cold",
+    "shifts": []
+  },
+  {
+    "width": 390,
+    "state": "saved-result-reload",
+    "shifts": []
+  }
+]

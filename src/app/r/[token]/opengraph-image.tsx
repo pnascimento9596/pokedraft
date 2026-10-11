@@ -1,3 +1,4 @@
+import { LEGACY_CARD } from "@/design/card-tokens";
 import { ImageResponse } from "next/og";
 import { CARD_SIZE, Card, runCardModel } from "@/components/share/card";
 import { CARD_CACHE_CONTROL, cardImages } from "@/components/share/card-images";
@@ -19,8 +20,8 @@ export default async function Image({ params }: { params: Promise<{ token: strin
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#08130e",
-          color: "#eef6f0",
+          background: LEGACY_CARD.canvas,
+          color: LEGACY_CARD.ink,
           fontSize: 48,
         }}
       >

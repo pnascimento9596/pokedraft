@@ -38,7 +38,7 @@
 
 .rank {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 600;
   font-size: 1.6rem;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -57,7 +57,7 @@
 
 .nick {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   font-size: 1.1rem;
   letter-spacing: 0.03em;
   overflow-wrap: anywhere;
@@ -89,7 +89,7 @@
 .record,
 .score {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 600;
   font-size: 1.35rem;
   line-height: 1.05;
   font-variant-numeric: tabular-nums;

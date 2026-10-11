@@ -1,3 +1,4 @@
+import { LEGACY_CARD } from "@/design/card-tokens";
 import {
   FORMATIONS,
   rateTeam,
@@ -81,9 +82,9 @@ export function cardModel(
   };
 }
 
-const INK = "#eef6f0";
-const SOFT = "#a9bcb0";
-const FLOOD = "#ffd23f";
+const INK = LEGACY_CARD.ink;
+const SOFT = LEGACY_CARD.soft;
+const FLOOD = LEGACY_CARD.accent;
 const CHALK = "rgba(255,255,255,0.8)";
 const PITCH_W = 760;
 const PITCH_H = 492;
@@ -246,7 +247,7 @@ export function Card({
         display: "flex",
         alignItems: "center",
         padding: "0 40px",
-        background: "linear-gradient(135deg, #0e1d16 0%, #060d0a 100%)",
+        background: `linear-gradient(135deg, ${LEGACY_CARD.surface} 0%, ${LEGACY_CARD.deep} 100%)`,
         color: INK,
         fontFamily: "sans-serif",
       }}
@@ -258,9 +259,8 @@ export function Card({
           width: PITCH_W,
           height: PITCH_H,
           borderRadius: 14,
-          background:
-            "repeating-linear-gradient(90deg, #0f5a32 0px, #0f5a32 69px, #0c4f2b 69px, #0c4f2b 138px)",
-          boxShadow: "0 0 0 8px #093d21",
+          background: `repeating-linear-gradient(90deg, ${LEGACY_CARD.pitch} 0px, ${LEGACY_CARD.pitch} 69px, ${LEGACY_CARD.stripe} 69px, ${LEGACY_CARD.stripe} 138px)`,
+          boxShadow: `0 0 0 8px ${LEGACY_CARD.edge}`,
         }}
       >
         <Markings />
@@ -302,8 +302,8 @@ export function Card({
               marginTop: 10,
               padding: "4px 12px",
               borderRadius: 4,
-              background: "#ffffff",
-              color: "#0b1f14",
+              background: LEGACY_CARD.white,
+              color: LEGACY_CARD.text,
               fontSize: 22,
               fontWeight: 800,
             }}
@@ -326,7 +326,7 @@ export function Card({
                 alignItems: "center",
                 padding: "6px 12px",
                 background: INK,
-                color: "#08130e",
+                color: LEGACY_CARD.canvas,
                 fontSize: 22,
                 fontWeight: 800,
               }}
@@ -339,7 +339,7 @@ export function Card({
                 alignItems: "center",
                 padding: "0 14px",
                 background: FLOOD,
-                color: "#1d1600",
+                color: LEGACY_CARD.actionText,
                 fontSize: 52,
                 fontWeight: 800,
               }}

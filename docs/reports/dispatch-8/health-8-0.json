@@ -1,0 +1,15 @@
+{
+  "status": 200,
+  "cacheControl": "no-store",
+  "body": {
+    "sha": "56b9f754d88388223725ad2f3512f239b18fd229",
+    "env": "production",
+    "region": "iad1",
+    "engine": "pokedraft-engine-3",
+    "tokenVersions": [
+      1,
+      2,
+      3
+    ]
+  }
+}

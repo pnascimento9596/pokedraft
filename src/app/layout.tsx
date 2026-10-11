@@ -1,24 +1,20 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { Barlow_Semi_Condensed, Big_Shoulders } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Announcer } from "@/components/Announcer";
 import { ImageSettings } from "@/components/ImageSettings";
 import { PackCredit } from "@/components/PackCredit";
 import { SiteNav } from "@/components/SiteNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NAV_ICONS, NavIcon, type NavFamily } from "@/components/ui/nav-icons";
 import "./globals.css";
 
-// next/font has no fallback metrics for Big Shoulders, so the fallback face lives in globals.css.
-const shoulders = Big_Shoulders({
-  subsets: ["latin"],
-  weight: ["700", "800", "900"],
-  variable: "--font-shoulders",
-  adjustFontFallback: false,
-});
-const barlow = Barlow_Semi_Condensed({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
-  variable: "--font-barlow",
+  variable: "--font-inter",
+  display: "swap",
+  adjustFontFallback: true,
 });
 
 const SITE_HOST = process.env.VERCEL_PROJECT_PRODUCTION_URL;
@@ -36,17 +32,19 @@ export const viewport: Viewport = { viewportFit: "cover" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${shoulders.variable} ${barlow.variable}`}>
+    <html lang="en" className={inter.variable}>
       <body>
         <header className="site-header">
           <Link href="/" className="site-header__brand">
             poke<span>draft</span>
           </Link>
           <SiteNav>
-            <Link href="/daily">Daily</Link>
-            <Link href="/leaderboard">Leaderboard</Link>
-            <Link href="/how-to-play">How to play</Link>
-            <Link href="/history">History</Link>
+            {(Object.keys(NAV_ICONS) as NavFamily[]).map((family) => (
+              <Link key={family} href={NAV_ICONS[family].href}>
+                <NavIcon family={family} />
+                {NAV_ICONS[family].label}
+              </Link>
+            ))}
             <ImageSettings />
             <ThemeToggle />
           </SiteNav>

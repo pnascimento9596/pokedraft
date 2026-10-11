@@ -1,0 +1,263 @@
+:root {
+  /* Surfaces */
+  --canvas: #E7EAE2;
+  --surface: #F8F4EB;            /* module card */
+  --surface-emphasis: #FBF8F1;   /* one dominant module per page, at most */
+  --surface-sunken: #F2ECE0;     /* bar tracks, zero heat cell, table header (use at 70%) */
+
+  /* Borders */
+  --border: #DCDFD2;             /* card border */
+  --border-soft: #E6E8DC;        /* inner dividers, list rules, icon tile outline */
+  --border-strong: #CCD2C0;      /* tooltip, neutral pill */
+  --border-emphasis: rgba(13,148,136,.30);
+  --border-control: #8E9684;     /* inputs: must hold 3:1 against --surface; verify, adjust darker if not */
+
+  /* Text */
+  --text: #1E2419;               /* titles, labels, figures */
+  --text-soft: #353B30;          /* row values, body copy */
+  --text-muted: #565D52;         /* descriptions */
+  --text-faint: #5C6256;         /* meta, column headers, axis ticks */
+  --link: #096B62;               /* links, eyebrows, provenance lines */
+
+  /* Action */
+  --accent: #2E5240;             /* primary button fill, focus ring */
+  --accent-hover: #243F2F;
+  --accent-fg: #F3F7F2;
+  --selected: #D6E5DB;           /* active nav item */
+
+  /* Status */
+  --ok-text: #1F5A41; --ok-bg: #E3EFE6; --ok-border: #BBD7C4;
+  --info-bg: #E4EDF3;
+  --warn-bg: #F4ECDA;
+  --risk-mark: #BD4A40;
+
+  /* Data / icon palette */
+  --viz-1: #0D9488;  /* primary bars */
+  --viz-2: #CD7928;  /* amber line / high risk (AA: replaces #D98A3D in light) */
+  --viz-3: #3E9488;  /* teal */
+  --viz-4: #8A7396;  /* plum */
+  --viz-5: #B08454;  /* clay */
+  --viz-6: #6B7C8C;  /* slate */
+  --viz-7: #6E8C5A;  /* moss, low risk */
+  --viz-8: #C8C19E;  /* sand, moderate risk (heat fill only, never a line) */
+
+  /* Shape */
+  --radius-lg: 14px;   /* module card */
+  --radius-md: 10px;   /* tile */
+  --radius-sm: 8px;    /* tooltip, button, stat well */
+  --radius-icon: 7px;  /* icon tile */
+  --radius-xs: 5px;    /* heat cell, bar end */
+
+  /* Elevation */
+  --shadow-rest: 0 1px 2px rgba(31,40,28,.04), 0 1px 3px rgba(31,40,28,.05);
+  --shadow-raised: 0 6px 24px rgba(31,40,28,.08), 0 2px 6px rgba(31,40,28,.05);
+}
+
+:root[data-theme="dark"] {
+  --canvas: #14180F;
+  --surface: #1E241A;
+  --surface-emphasis: #222820;
+  --surface-sunken: #262D20;
+  --border: #313A2A;
+  --border-soft: #28311F;
+  --border-strong: #404B36;
+  --border-emphasis: rgba(45,183,167,.32);
+  --text: #EDF0E4;
+  --text-soft: #D2D8C5;
+  --text-muted: #97A086;
+  --text-faint: #8F9981;
+  --link: #5FD6C7;
+  --accent: #3F6E54;
+  --accent-hover: #365F49;       /* AA: the original #4C8364 failed 4.5:1 */
+  --accent-fg: #F3F7F2;
+  --selected: #1C382F;
+  --ok-text: #79C8A0; --ok-bg: #15271D; --ok-border: #2C4636;
+  --info-bg: #13222D;
+  --warn-bg: #28220F;
+  --risk-mark: #D5675C;
+  --viz-1: #2DB7A7; --viz-2: #E0A05A; --viz-3: #4FB3A5; --viz-4: #A78CB3;
+  --viz-5: #C79A66; --viz-6: #8696A6; --viz-7: #85A86A; --viz-8: #BFBA94;
+  --shadow-rest: 0 1px 2px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.24);
+  --shadow-raised: 0 8px 28px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.30);
+}
+
+body { background: var(--canvas); color: var(--text-soft); font-family: Inter, system-ui, sans-serif; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  --canvas: #14180F;
+  --surface: #1E241A;
+  --surface-emphasis: #222820;
+  --surface-sunken: #262D20;
+  --border: #313A2A;
+  --border-soft: #28311F;
+  --border-strong: #404B36;
+  --border-emphasis: rgba(45,183,167,.32);
+  --text: #EDF0E4;
+  --text-soft: #D2D8C5;
+  --text-muted: #97A086;
+  --text-faint: #8F9981;
+  --link: #5FD6C7;
+  --accent: #3F6E54;
+  --accent-hover: #365F49;       /* AA: the original #4C8364 failed 4.5:1 */
+  --accent-fg: #F3F7F2;
+  --selected: #1C382F;
+  --ok-text: #79C8A0; --ok-bg: #15271D; --ok-border: #2C4636;
+  --info-bg: #13222D;
+  --warn-bg: #28220F;
+  --risk-mark: #D5675C;
+  --viz-1: #2DB7A7; --viz-2: #E0A05A; --viz-3: #4FB3A5; --viz-4: #A78CB3;
+  --viz-5: #C79A66; --viz-6: #8696A6; --viz-7: #85A86A; --viz-8: #BFBA94;
+  --shadow-rest: 0 1px 2px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.24);
+  --shadow-raised: 0 8px 28px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.30);
+  }
+}
+
+:root {
+  --border-control: #7C856F;
+  --pitch: #476147;
+  --pitch-stripe: #496349;
+  --pitch-line: #F3EFE4;
+  --pitch-line-soft: rgba(243,239,228,.34);
+  --risk-text: #913D35;
+  --action-border: var(--accent);
+  --overlay: rgba(30,36,25,.46);
+  --shadow-ink: #1F281C;
+  --font-display: var(--font-inter), Arial, sans-serif;
+  --font-body: var(--font-inter), Arial, sans-serif;
+  --night: var(--canvas);
+  --bg: var(--canvas);
+  --bg-raised: var(--surface);
+  --bg-sunk: var(--surface-sunken);
+  --panel: var(--surface);
+  --line: var(--border);
+  --line-strong: var(--border-strong);
+  --line-field: var(--border-control);
+  --ink: var(--text);
+  --ink-soft: var(--text-muted);
+  --ink-faint: var(--text-faint);
+  --grass-1: var(--pitch);
+  --grass-2: var(--pitch-stripe);
+  --grass-edge: var(--accent);
+  --chalk: var(--pitch-line);
+  --chalk-soft: var(--pitch-line-soft);
+  --flood: var(--accent);
+  --flood-ink: var(--accent-fg);
+  --flood-text: var(--link);
+  --flood-line: var(--link);
+  --focus: var(--link);
+  --live: var(--risk-mark);
+  --win: var(--ok-text);
+  --draw: var(--text-muted);
+  --loss: var(--risk-text);
+  --token-bg: var(--surface);
+  --token-ring: var(--pitch-line);
+  --token-weak: var(--risk-mark);
+  --synergy: var(--pitch-line);
+  --pitch-flood: var(--pitch-line);
+  --pitch-focus: var(--pitch-line);
+  --pitch-halo: var(--pitch-line);
+  --hero-1: var(--pitch);
+  --hero-2: var(--pitch-stripe);
+  --hero-3: var(--accent);
+  --radius: var(--radius-lg);
+  --gutter: 16px;
+  --shadow: var(--shadow-rest);
+  --type-normal: #363126;
+  --type-normal-ink: var(--type-normal);
+  --type-fighting: #764257;
+  --type-fighting-ink: var(--type-fighting);
+  --type-flying: #10102D;
+  --type-flying-ink: var(--type-flying);
+  --type-poison: #3D3248;
+  --type-poison-ink: var(--type-poison);
+  --type-ground: #2A2713;
+  --type-ground-ink: var(--type-ground);
+  --type-rock: #474E2C;
+  --type-rock-ink: var(--type-rock);
+  --type-bug: #2D4418;
+  --type-bug-ink: var(--type-bug);
+  --type-ghost: #3C3088;
+  --type-ghost-ink: var(--type-ghost);
+  --type-steel: #384D9F;
+  --type-steel-ink: var(--type-steel);
+  --type-fire: #6C584B;
+  --type-fire-ink: var(--type-fire);
+  --type-water: #202A5B;
+  --type-water-ink: var(--type-water);
+  --type-grass: #32483D;
+  --type-grass-ink: var(--type-grass);
+  --type-electric: #5A5B20;
+  --type-electric-ink: var(--type-electric);
+  --type-psychic: #7F3974;
+  --type-psychic-ink: var(--type-psychic);
+  --type-ice: #10212D;
+  --type-ice-ink: var(--type-ice);
+  --type-dragon: #1D1844;
+  --type-dragon-ink: var(--type-dragon);
+  --type-dark: #2D1310;
+  --type-dark-ink: var(--type-dark);
+  --type-fairy: #71286E;
+  --type-fairy-ink: var(--type-fairy);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+
+  --pitch: #2D4431;
+  --pitch-stripe: #2E4632;
+  --risk-text: #E3A197;
+  --action-border: var(--link);
+  --overlay: rgba(0,0,0,.52);
+  --shadow-ink: #000000;
+  color-scheme: dark;
+  --type-normal: #BBA986;
+  --type-fighting: #D1BF99;
+  --type-flying: #BAB0E3;
+  --type-poison: #D3BAD8;
+  --type-ground: #CEB173;
+  --type-rock: #DDE3B0;
+  --type-bug: #C7CE73;
+  --type-ghost: #99A4D1;
+  --type-steel: #CEEBEE;
+  --type-fire: #D9D792;
+  --type-water: #CED7EE;
+  --type-grass: #5BC355;
+  --type-electric: #ECEECE;
+  --type-psychic: #EECECF;
+  --type-ice: #61B8A6;
+  --type-dragon: #A8B0C2;
+  --type-dark: #F6F6EF;
+  --type-fairy: #D8BDBA;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+
+  --pitch: #2D4431;
+  --pitch-stripe: #2E4632;
+  --risk-text: #E3A197;
+  --action-border: var(--link);
+  --overlay: rgba(0,0,0,.52);
+  --shadow-ink: #000000;
+  color-scheme: dark;
+  --type-normal: #BBA986;
+  --type-fighting: #D1BF99;
+  --type-flying: #BAB0E3;
+  --type-poison: #D3BAD8;
+  --type-ground: #CEB173;
+  --type-rock: #DDE3B0;
+  --type-bug: #C7CE73;
+  --type-ghost: #99A4D1;
+  --type-steel: #CEEBEE;
+  --type-fire: #D9D792;
+  --type-water: #CED7EE;
+  --type-grass: #5BC355;
+  --type-electric: #ECEECE;
+  --type-psychic: #EECECF;
+  --type-ice: #61B8A6;
+  --type-dragon: #A8B0C2;
+  --type-dark: #F6F6EF;
+  --type-fairy: #D8BDBA;
+  }
+}

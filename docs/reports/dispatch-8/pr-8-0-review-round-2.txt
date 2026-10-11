@@ -1,0 +1,61 @@
+
+VERDICT: APPROVE
+CANARY-4d7070c18278c7947da7a506
+WARNING docs/reports/dispatch-8/pr-8-0-gates.log — every quoted receipt (CI
+(CI 38128867885, 705/76 vitest, 444/51 e2e, all gate commands) pins candida
+candidate head 269ea75a3465e5c7defc3f15ca251b0fc52ca9bb, not the pushed hea
+head 2eda683327f9ff7cd08cdf05b7f7e1211497b2b0 under review; the decision lo
+log itself says the changed head requires a new review. Since 269ea75a the 
+delta is docs/STATE/workflow-pinning/receipt-archival only, so the runtime 
+gates morally carry over, but the contract's exact-head and "Linux CI must 
+pass before merge" clauses need a green check and e2e run recorded with run
+run IDs on 2eda6833 itself before squash-merge.
+WARNING docs/decisions/dispatch-8.md — the "changed head" fix commits are o
+otherwise exactly what round 1 demanded (STATE 705/76 and 495/444/51 counts
+counts, actions pinned to commit SHAs, receipts and before captures archive
+archived under docs/reports/dispatch-8/), and gate receipts still honestly 
+record the pending, not-falsely-passed, production Lighthouse/live status, 
+so no blocker on the implementation itself.
+NIT .github/workflows/theme-measurement.yml — the 45-minute job timeout is 
+theorelable only in the happy path: 24 Lighthouse runs at a 180 s per-run c
+cap scale to 72 minutes worst case plus install time, so a straggler can tr
+truncate a baseline or final batch (it fails honestly, with artifacts, but 
+consider raising timeout-minutes).
+NIT scripts/audit/theme-lighthouse.mjs — the final-phase gate compares `run
+`run.cls !== 0` as an exact float while the repo's established layout-shift
+layout-shift tolerance is 0.001; a sub-threshold nonzero shift will hard-fa
+hard-fail the final batch. If exact zero is intended, say so in the docs; o
+otherwise align the epsilon.
+NIT scripts/audit/theme-metrics.test.ts — still imports `./theme-metrics.mj
+`./theme-metrics.mjs` while the file on disk is `theme-metrics.mts`; verifi
+verified working under typecheck, Vitest and tsx (the local rejection recei
+receipt proves the import chain loads), but the extension-mapped specifier 
+remains brittle.
+NIT src/app/api/health/route.ts — `tokenVersions: [...RETAINED_TOKEN_VERSIO
+[...RETAINED_TOKEN_VERSIONS, RUN_TOKEN_VERSION]` will duplicate once the cu
+current token version becomes retained at the next bump; the round-1 note s
+stands and should be actioned at that point.
+NIT docs/decisions/dispatch-8.md — several evidence references still point 
+at gitignored local paths (output/dispatch-8/prereq-mobile.log, output/disp
+output/dispatch-8/before, output/dispatch-8/recon.json); link the archived 
+copies in docs/reports/dispatch-8/ in place so every claim is verifiable fr
+from the repo alone.
+NIT docs/reports/dispatch-8/pr-8-0-gates.log — the "52 raw axe scans, zero 
+reported violations" line has no committed receipt; either commit the raw s
+scans or mark it explicitly as local-only evidence like the rest.
+Compliance note, folded into this finding line: SE-06 is met on the diff it
+itself (build SHA/env/region as null-or-literal, engine "pokedraft-engine-3
+"pokedraft-engine-3", literal token set [1, 2, 3], `connection()` plus `ƒ /
+/api/health` for dynamic, no-store, no rate limiter, DB import and `select 
+1` only on exactly `?db=1` with neutral 503 and no detail leakage, gate exe
+exemption exact at `/^\/api\/health$/` with `/api/health/x` still gated and
+and the exemption tests updated in lockstep with RED→GREEN receipts); the c
+committed workflow_dispatch enforces GitHub-hosted linux, expected-SHA cach
+cache-busted probes before and after, exactly-3-run medians via tested help
+helpers, no rounding of small CLS, and 90-day retention with `if-no-files-f
+`if-no-files-found: error`; the SX-05 expected-fail marker is retained and 
+its local unexpected pass is recorded honestly; counts, screenshots manifes
+manifest and census all reconcile against the receipts; no frozen engine, s
+scouting, coefficient, figure, image or existing-API files appear in the di
+diff beyond the authorized health addition; no em dashes in shipped copy an
+and no Pokédex flavor text added.

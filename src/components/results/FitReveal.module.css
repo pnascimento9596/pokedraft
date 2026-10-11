@@ -33,7 +33,7 @@
 
 .slot {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.06em;
   font-size: 0.85rem;
   color: var(--ink-soft);
@@ -66,12 +66,12 @@
 }
 
 .weakTag {
-  color: var(--token-weak);
+  color: var(--risk-text);
 }
 
 .fit {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 600;
   font-size: 1.5rem;
   line-height: 1.05;
   font-variant-numeric: tabular-nums;
