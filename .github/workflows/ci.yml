@@ -32,6 +32,9 @@ jobs:
       - run: pnpm check:mirrors
       - run: pnpm check:image-seam
       - run: pnpm check:image-packs
+      - run: pnpm check:theme-contrast
+      - run: pnpm check:theme-colors
+      - run: pnpm check:theme-cvd
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test

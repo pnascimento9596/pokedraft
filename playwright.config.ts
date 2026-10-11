@@ -16,6 +16,9 @@ export default defineConfig({
   // The phone projects paint in software on Linux CI, so they are CPU bound. Use all four vCPUs.
   workers: process.env.CI ? 4 : undefined,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
+  expect: {
+    toHaveScreenshot: { pathTemplate: "{testDir}/{testFilePath}-snapshots/{arg}{ext}" },
+  },
   use: {
     baseURL: BASE_URL ?? `http://localhost:${PORT}`,
     trace: "retain-on-failure",

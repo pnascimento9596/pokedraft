@@ -161,10 +161,6 @@ async function visit(page: Page, url: string): Promise<void> {
   await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; }" });
 }
 
-// SA-34 is deferred (docs/queue/dispatch-7-deferred.md): an unplayed match card is drawn at 70
-// percent opacity, text included. Its nodes are matched by selector; the rule stays on for the rest.
-const DEFERRED: readonly RegExp[] = [];
-
 // The body paints two radial washes (at most 10 percent) over --bg, and axe gives up on any text
 // above a background image, so every node on the page body would land in "incomplete". The scan
 // runs on the flat --bg instead; the pitch and the hero keep their images and are measured from
@@ -176,9 +172,7 @@ async function axeContrast(page: Page): Promise<string[]> {
     .analyze();
   await flat.evaluate((el) => (el as Element).remove());
   return results.violations.flatMap((v) =>
-    v.nodes
-      .map((n) => `${n.target.join(" ")} :: ${n.any[0]?.message ?? v.id}`)
-      .filter((line) => !DEFERRED.some((d) => d.test(line.split(" :: ")[0]!))),
+    v.nodes.map((n) => `${n.target.join(" ")} :: ${n.any[0]?.message ?? v.id}`),
   );
 }
 

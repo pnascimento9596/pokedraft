@@ -1,0 +1,858 @@
+[
+  {
+    "route": "builder-full",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PLAY\nPLAY 8-0 CHALLENGE\nPLAY 151 CHALLENGE\n\nChallenge runs keep ratings hidden.\n\nHIDE SETTINGS AND RECORDS\nSETUP\nFORMATION\n4-3-3\n4-4-2\n4-2-3-1\n4-1-4-1\n3-5-2\n3-4-3\n3-4-2-1\n5-3-2\nGENERATIONS\nALL\nGEN 1 KANTO\nGEN 2 JOHTO\nGEN 3 HOENN\nGEN 4 SINNOH\nGEN 5 UNOVA\nGEN 6 KALOS\nGEN 7 ALOLA\nGEN 8 GALAR\nGEN 9 PALDEA\nRULES\nDRAFT STYLE\nOPEN\nCLASSIC\nORDER\nSQUAD FIRST\nPOSITION FIRST\nLegendaries\nBuilder pool\nShow ratings (builder)\nCasual sighted mode\nYOUR RECORDS\nMODE\tBEST SCORE\tBEST RECORD\tRUNS\n8-0 Challenge, Open\tNone yet\n8-0 Challenge, Classic\tNone yet\n151 Challenge\tNone yet\nFriendly (not ranked)\tNone yet\n\nFRIENDLY BUILDER\n\nBUILD YOUR XI\nTEAM SCORE\n360\nGK\nLillipup\n6\nLB\nGardevoir\n67\nLCB\nVulpix\n10\nRCB\nCroagunk\n16\nRB\nGallade\n65\nCDM\nOmastar\n79\nLCM\nJangmo-o\n14\nRCM\nShroodle\n17\nLW\nCherrim\n80\nST\nWobbuffet\n3\nRW\nVaporeon\n54\nBENCH\nSUB 1\nSimisage\n97\nSUB 2\nScream Tail\n100\nSUB 3\nGrumpig\n78\nSUB 4\nCeruledge\n91\nSUB 5\nRoaring Moon\n94\n\nRatings are 0 to 100, vs other players in the same role.\n\nRANDOMIZE\nCLEAR ALL\nRESET\nDOWNLOAD IMAGE\nCOPY LINK\n\nPLAY A FRIENDLY CUP\nFriendly (not ranked)",
+    "numbers": [
+      "8",
+      "0",
+      "151",
+      "4",
+      "3",
+      "3",
+      "4",
+      "4",
+      "2",
+      "4",
+      "2",
+      "3",
+      "1",
+      "4",
+      "1",
+      "4",
+      "1",
+      "3",
+      "5",
+      "2",
+      "3",
+      "4",
+      "3",
+      "3",
+      "4",
+      "2",
+      "1",
+      "5",
+      "3",
+      "2",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "8",
+      "0",
+      "8",
+      "0",
+      "151",
+      "360",
+      "6",
+      "67",
+      "10",
+      "16",
+      "65",
+      "79",
+      "14",
+      "17",
+      "80",
+      "3",
+      "54",
+      "1",
+      "97",
+      "2",
+      "100",
+      "3",
+      "78",
+      "4",
+      "91",
+      "5",
+      "94",
+      "0",
+      "100"
+    ],
+    "violations": [
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "nodes": [
+          {
+            "target": [
+              "button[data-slot-key=\"s0\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s0\" data-testid=\"slot-s0\" data-filled=\"true\" aria-label=\"GK Lillipup\" style=\"--x:50;--y:5\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s1\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s1\" data-testid=\"slot-s1\" data-filled=\"true\" aria-label=\"LB Gardevoir\" style=\"--x:12;--y:24\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s2\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s2\" data-testid=\"slot-s2\" data-filled=\"true\" aria-label=\"LCB Vulpix\" style=\"--x:37;--y:20\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s3\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s3\" data-half-portrait=\"right\" data-testid=\"slot-s3\" data-filled=\"true\" aria-label=\"RCB Croagunk\" style=\"--x:63;--y:20\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s4\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s4\" data-half-portrait=\"right\" data-testid=\"slot-s4\" data-filled=\"true\" aria-label=\"RB Gallade\" style=\"--x:88;--y:24\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s5\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s5\" data-testid=\"slot-s5\" data-filled=\"true\" aria-label=\"CDM Omastar\" style=\"--x:50;--y:38\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s6\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s6\" data-half-landscape=\"right\" data-testid=\"slot-s6\" data-filled=\"true\" aria-label=\"LCM Jangmo-o\" style=\"--x:32;--y:52\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s7\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s7\" data-half-portrait=\"right\" data-half-landscape=\"right\" data-testid=\"slot-s7\" data-filled=\"true\" aria-label=\"RCM Shroodle\" style=\"--x:68;--y:52\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s8\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s8\" data-half-landscape=\"right\" data-testid=\"slot-s8\" data-filled=\"true\" aria-label=\"LW Cherrim\" style=\"--x:15;--y:78\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s9\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s9\" data-half-landscape=\"right\" data-testid=\"slot-s9\" data-filled=\"true\" aria-label=\"ST Wobbuffet\" style=\"--x:50;--y:88\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s10\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s10\" data-half-portrait=\"right\" data-half-landscape=\"right\" data-testid=\"slot-s10\" data-filled=\"true\" aria-label=\"RW Vaporeon\" style=\"--x:85;--y:78\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b0\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b0\" data-testid=\"slot-b0\" data-filled=\"true\" aria-label=\"SUB 1 Simisage\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b1\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b1\" data-testid=\"slot-b1\" data-filled=\"true\" aria-label=\"SUB 2 Scream Tail\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b2\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b2\" data-testid=\"slot-b2\" data-filled=\"true\" aria-label=\"SUB 3 Grumpig\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b3\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b3\" data-testid=\"slot-b3\" data-filled=\"true\" aria-label=\"SUB 4 Ceruledge\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b4\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b4\" data-testid=\"slot-b4\" data-filled=\"true\" aria-label=\"SUB 5 Roaring Moon\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "route": "builder-full",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PLAY\nPLAY 8-0 CHALLENGE\nPLAY 151 CHALLENGE\n\nChallenge runs keep ratings hidden.\n\nHIDE SETTINGS AND RECORDS\nSETUP\nFORMATION\n4-3-3\n4-4-2\n4-2-3-1\n4-1-4-1\n3-5-2\n3-4-3\n3-4-2-1\n5-3-2\nGENERATIONS\nALL\nGEN 1 KANTO\nGEN 2 JOHTO\nGEN 3 HOENN\nGEN 4 SINNOH\nGEN 5 UNOVA\nGEN 6 KALOS\nGEN 7 ALOLA\nGEN 8 GALAR\nGEN 9 PALDEA\nRULES\nDRAFT STYLE\nOPEN\nCLASSIC\nORDER\nSQUAD FIRST\nPOSITION FIRST\nLegendaries\nBuilder pool\nShow ratings (builder)\nCasual sighted mode\nYOUR RECORDS\nMODE\tBEST SCORE\tBEST RECORD\tRUNS\n8-0 Challenge, Open\tNone yet\n8-0 Challenge, Classic\tNone yet\n151 Challenge\tNone yet\nFriendly (not ranked)\tNone yet\n\nFRIENDLY BUILDER\n\nBUILD YOUR XI\nTEAM SCORE\n396\nGK\nMagikarp\n14\nLB\nCaterpie\n7\nLCB\nGirafarig\n48\nRCB\nGarchomp\n97\nRB\nOrthworm\n62\nCDM\nThroh\n81\nLCM\nFraxure\n33\nRCM\nMarowak\n42\nLW\nSnorlax\n22\nST\nMetagross\n68\nRW\nJellicent\n29\nBENCH\nSUB 1\nRolycoly\n12\nSUB 2\nHelioptile\n62\nSUB 3\nBreloom\n87\nSUB 4\nCrustle\n91\nSUB 5\nMunna\n34\n\nRatings are 0 to 100, vs other players in the same role.\n\nRANDOMIZE\nCLEAR ALL\nRESET\nDOWNLOAD IMAGE\nCOPY LINK\n\nPLAY A FRIENDLY CUP\nFriendly (not ranked)",
+    "numbers": [
+      "8",
+      "0",
+      "151",
+      "4",
+      "3",
+      "3",
+      "4",
+      "4",
+      "2",
+      "4",
+      "2",
+      "3",
+      "1",
+      "4",
+      "1",
+      "4",
+      "1",
+      "3",
+      "5",
+      "2",
+      "3",
+      "4",
+      "3",
+      "3",
+      "4",
+      "2",
+      "1",
+      "5",
+      "3",
+      "2",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "8",
+      "0",
+      "8",
+      "0",
+      "151",
+      "396",
+      "14",
+      "7",
+      "48",
+      "97",
+      "62",
+      "81",
+      "33",
+      "42",
+      "22",
+      "68",
+      "29",
+      "1",
+      "12",
+      "2",
+      "62",
+      "3",
+      "87",
+      "4",
+      "91",
+      "5",
+      "34",
+      "0",
+      "100"
+    ],
+    "violations": [
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "nodes": [
+          {
+            "target": [
+              "button[data-slot-key=\"s0\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s0\" data-testid=\"slot-s0\" data-filled=\"true\" aria-label=\"GK Magikarp\" style=\"--x:50;--y:5\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s1\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s1\" data-testid=\"slot-s1\" data-filled=\"true\" aria-label=\"LB Caterpie\" style=\"--x:12;--y:24\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s2\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s2\" data-testid=\"slot-s2\" data-filled=\"true\" aria-label=\"LCB Girafarig\" style=\"--x:37;--y:20\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s3\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s3\" data-half-portrait=\"right\" data-testid=\"slot-s3\" data-filled=\"true\" aria-label=\"RCB Garchomp\" style=\"--x:63;--y:20\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s4\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s4\" data-half-portrait=\"right\" data-testid=\"slot-s4\" data-filled=\"true\" aria-label=\"RB Orthworm\" style=\"--x:88;--y:24\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s5\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s5\" data-testid=\"slot-s5\" data-filled=\"true\" aria-label=\"CDM Throh\" style=\"--x:50;--y:38\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s6\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s6\" data-half-landscape=\"right\" data-testid=\"slot-s6\" data-filled=\"true\" aria-label=\"LCM Fraxure\" style=\"--x:32;--y:52\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s7\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s7\" data-half-portrait=\"right\" data-half-landscape=\"right\" data-testid=\"slot-s7\" data-filled=\"true\" aria-label=\"RCM Marowak\" style=\"--x:68;--y:52\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s8\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s8\" data-half-landscape=\"right\" data-testid=\"slot-s8\" data-filled=\"true\" aria-label=\"LW Snorlax\" style=\"--x:15;--y:78\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s9\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s9\" data-half-landscape=\"right\" data-testid=\"slot-s9\" data-filled=\"true\" aria-label=\"ST Metagross\" style=\"--x:50;--y:88\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s10\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s10\" data-half-portrait=\"right\" data-half-landscape=\"right\" data-testid=\"slot-s10\" data-filled=\"true\" aria-label=\"RW Jellicent\" style=\"--x:85;--y:78\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b0\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b0\" data-testid=\"slot-b0\" data-filled=\"true\" aria-label=\"SUB 1 Rolycoly\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b1\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b1\" data-testid=\"slot-b1\" data-filled=\"true\" aria-label=\"SUB 2 Helioptile\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b2\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b2\" data-testid=\"slot-b2\" data-filled=\"true\" aria-label=\"SUB 3 Breloom\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b3\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b3\" data-testid=\"slot-b3\" data-filled=\"true\" aria-label=\"SUB 4 Crustle\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b4\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b4\" data-testid=\"slot-b4\" data-filled=\"true\" aria-label=\"SUB 5 Munna\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "route": "builder-full",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PLAY\nPLAY 8-0 CHALLENGE\nPLAY 151 CHALLENGE\n\nChallenge runs keep ratings hidden.\n\nSETUP\nFORMATION\n4-3-3\n4-4-2\n4-2-3-1\n4-1-4-1\n3-5-2\n3-4-3\n3-4-2-1\n5-3-2\nGENERATIONS\nALL\nGEN 1 KANTO\nGEN 2 JOHTO\nGEN 3 HOENN\nGEN 4 SINNOH\nGEN 5 UNOVA\nGEN 6 KALOS\nGEN 7 ALOLA\nGEN 8 GALAR\nGEN 9 PALDEA\nRULES\nDRAFT STYLE\nOPEN\nCLASSIC\nORDER\nSQUAD FIRST\nPOSITION FIRST\nLegendaries\nBuilder pool\nShow ratings (builder)\nCasual sighted mode\nYOUR RECORDS\nMODE\tBEST SCORE\tBEST RECORD\tRUNS\n8-0 Challenge, Open\tNone yet\n8-0 Challenge, Classic\tNone yet\n151 Challenge\tNone yet\nFriendly (not ranked)\tNone yet\n\nFRIENDLY BUILDER\n\nBUILD YOUR XI\nTEAM SCORE\n379\nGK\nMagmar\n63\nvs other keepers\nLB\nGogoat\n81\nvs other FBs\nLCB\nKakuna\n10\nvs other CBs\nRCB\nWalrein\n89\nvs other CBs\nRB\nChatot\n46\nvs other FBs\nCDM\nSkiddo\n35\nvs other DMs\nLCM\nPhanpy\n21\nvs other CMs\nRCM\nMetapod\n1\nvs other CMs\nLW\nArbok\n48\nvs other wingers\nST\nNincada\n7\nvs other strikers\nRW\nTorracat\n85\nvs other wingers\nBENCH\nSUB 1\nWailord\n87\nvs other keepers\nSUB 2\nCrabominable\n88\nvs other CBs\nSUB 3\nExeggcute\n29\nvs other DMs\nSUB 4\nDracovish\n93\nvs other CBs\nSUB 5\nPanpour\n52\nvs other wingers\nRANDOMIZE\nCLEAR ALL\nRESET\nDOWNLOAD IMAGE\nCOPY LINK\n\nPLAY A FRIENDLY CUP\nFriendly (not ranked)",
+    "numbers": [
+      "8",
+      "0",
+      "151",
+      "4",
+      "3",
+      "3",
+      "4",
+      "4",
+      "2",
+      "4",
+      "2",
+      "3",
+      "1",
+      "4",
+      "1",
+      "4",
+      "1",
+      "3",
+      "5",
+      "2",
+      "3",
+      "4",
+      "3",
+      "3",
+      "4",
+      "2",
+      "1",
+      "5",
+      "3",
+      "2",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "8",
+      "0",
+      "8",
+      "0",
+      "151",
+      "379",
+      "63",
+      "81",
+      "10",
+      "89",
+      "46",
+      "35",
+      "21",
+      "1",
+      "48",
+      "7",
+      "85",
+      "1",
+      "87",
+      "2",
+      "88",
+      "3",
+      "29",
+      "4",
+      "93",
+      "5",
+      "52"
+    ],
+    "violations": [
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "nodes": [
+          {
+            "target": [
+              "button[data-slot-key=\"s0\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s0\" data-testid=\"slot-s0\" data-filled=\"true\" aria-label=\"GK Magmar\" style=\"--x:50;--y:5\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s1\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s1\" data-testid=\"slot-s1\" data-filled=\"true\" aria-label=\"LB Gogoat\" style=\"--x:12;--y:24\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s2\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s2\" data-testid=\"slot-s2\" data-filled=\"true\" aria-label=\"LCB Kakuna\" style=\"--x:37;--y:20\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s3\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s3\" data-half-portrait=\"right\" data-testid=\"slot-s3\" data-filled=\"true\" aria-label=\"RCB Walrein\" style=\"--x:63;--y:20\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s4\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s4\" data-half-portrait=\"right\" data-testid=\"slot-s4\" data-filled=\"true\" aria-label=\"RB Chatot\" style=\"--x:88;--y:24\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s5\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s5\" data-testid=\"slot-s5\" data-filled=\"true\" aria-label=\"CDM Skiddo\" style=\"--x:50;--y:38\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s6\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s6\" data-half-landscape=\"right\" data-testid=\"slot-s6\" data-filled=\"true\" aria-label=\"LCM Phanpy\" style=\"--x:32;--y:52\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s7\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s7\" data-half-portrait=\"right\" data-half-landscape=\"right\" data-testid=\"slot-s7\" data-filled=\"true\" aria-label=\"RCM Metapod\" style=\"--x:68;--y:52\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s8\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s8\" data-half-landscape=\"right\" data-testid=\"slot-s8\" data-filled=\"true\" aria-label=\"LW Arbok\" style=\"--x:15;--y:78\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s9\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s9\" data-half-landscape=\"right\" data-testid=\"slot-s9\" data-filled=\"true\" aria-label=\"ST Nincada\" style=\"--x:50;--y:88\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s10\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s10\" data-half-portrait=\"right\" data-half-landscape=\"right\" data-testid=\"slot-s10\" data-filled=\"true\" aria-label=\"RW Torracat\" style=\"--x:85;--y:78\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b0\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b0\" data-testid=\"slot-b0\" data-filled=\"true\" aria-label=\"SUB 1 Wailord\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b1\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b1\" data-testid=\"slot-b1\" data-filled=\"true\" aria-label=\"SUB 2 Crabominable\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b2\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b2\" data-testid=\"slot-b2\" data-filled=\"true\" aria-label=\"SUB 3 Exeggcute\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b3\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b3\" data-testid=\"slot-b3\" data-filled=\"true\" aria-label=\"SUB 4 Dracovish\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b4\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b4\" data-testid=\"slot-b4\" data-filled=\"true\" aria-label=\"SUB 5 Panpour\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "route": "builder-full",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PLAY\nPLAY 8-0 CHALLENGE\nPLAY 151 CHALLENGE\n\nChallenge runs keep ratings hidden.\n\nSETUP\nFORMATION\n4-3-3\n4-4-2\n4-2-3-1\n4-1-4-1\n3-5-2\n3-4-3\n3-4-2-1\n5-3-2\nGENERATIONS\nALL\nGEN 1 KANTO\nGEN 2 JOHTO\nGEN 3 HOENN\nGEN 4 SINNOH\nGEN 5 UNOVA\nGEN 6 KALOS\nGEN 7 ALOLA\nGEN 8 GALAR\nGEN 9 PALDEA\nRULES\nDRAFT STYLE\nOPEN\nCLASSIC\nORDER\nSQUAD FIRST\nPOSITION FIRST\nLegendaries\nBuilder pool\nShow ratings (builder)\nCasual sighted mode\nYOUR RECORDS\nMODE\tBEST SCORE\tBEST RECORD\tRUNS\n8-0 Challenge, Open\tNone yet\n8-0 Challenge, Classic\tNone yet\n151 Challenge\tNone yet\nFriendly (not ranked)\tNone yet\n\nFRIENDLY BUILDER\n\nBUILD YOUR XI\nTEAM SCORE\n409\nGK\nSizzlipede\n14\nvs other keepers\nLB\nKarrablast\n15\nvs other FBs\nLCB\nShelgon\n74\nvs other CBs\nRCB\nPineco\n32\nvs other CBs\nRB\nSeismitoad\n67\nvs other FBs\nCDM\nNuzleaf\n28\nvs other DMs\nLCM\nPiplup\n35\nvs other CMs\nRCM\nSinistcha\n64\nvs other CMs\nLW\nTyrunt\n40\nvs other wingers\nST\nCrocalor\n33\nvs other strikers\nRW\nHeatmor\n68\nvs other wingers\nBENCH\nSUB 1\nDugtrio\n76\nvs other strikers\nSUB 2\nTyrantrum\n93\nvs other CBs\nSUB 3\nParas\n21\nvs other DMs\nSUB 4\nLitleo\n62\nvs other wingers\nSUB 5\nMilcery\n8\nvs other WMs\nRANDOMIZE\nCLEAR ALL\nRESET\nDOWNLOAD IMAGE\nCOPY LINK\n\nPLAY A FRIENDLY CUP\nFriendly (not ranked)",
+    "numbers": [
+      "8",
+      "0",
+      "151",
+      "4",
+      "3",
+      "3",
+      "4",
+      "4",
+      "2",
+      "4",
+      "2",
+      "3",
+      "1",
+      "4",
+      "1",
+      "4",
+      "1",
+      "3",
+      "5",
+      "2",
+      "3",
+      "4",
+      "3",
+      "3",
+      "4",
+      "2",
+      "1",
+      "5",
+      "3",
+      "2",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "8",
+      "0",
+      "8",
+      "0",
+      "151",
+      "409",
+      "14",
+      "15",
+      "74",
+      "32",
+      "67",
+      "28",
+      "35",
+      "64",
+      "40",
+      "33",
+      "68",
+      "1",
+      "76",
+      "2",
+      "93",
+      "3",
+      "21",
+      "4",
+      "62",
+      "5",
+      "8"
+    ],
+    "violations": [
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "nodes": [
+          {
+            "target": [
+              "button[data-slot-key=\"s0\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s0\" data-testid=\"slot-s0\" data-filled=\"true\" aria-label=\"GK Sizzlipede\" style=\"--x:50;--y:5\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s1\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s1\" data-testid=\"slot-s1\" data-filled=\"true\" aria-label=\"LB Karrablast\" style=\"--x:12;--y:24\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s2\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s2\" data-testid=\"slot-s2\" data-filled=\"true\" aria-label=\"LCB Shelgon\" style=\"--x:37;--y:20\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s3\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s3\" data-half-portrait=\"right\" data-testid=\"slot-s3\" data-filled=\"true\" aria-label=\"RCB Pineco\" style=\"--x:63;--y:20\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s4\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s4\" data-half-portrait=\"right\" data-testid=\"slot-s4\" data-filled=\"true\" aria-label=\"RB Seismitoad\" style=\"--x:88;--y:24\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s5\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s5\" data-testid=\"slot-s5\" data-filled=\"true\" aria-label=\"CDM Nuzleaf\" style=\"--x:50;--y:38\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s6\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s6\" data-half-landscape=\"right\" data-testid=\"slot-s6\" data-filled=\"true\" aria-label=\"LCM Piplup\" style=\"--x:32;--y:52\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s7\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s7\" data-half-portrait=\"right\" data-half-landscape=\"right\" data-testid=\"slot-s7\" data-filled=\"true\" aria-label=\"RCM Sinistcha\" style=\"--x:68;--y:52\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s8\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s8\" data-half-landscape=\"right\" data-testid=\"slot-s8\" data-filled=\"true\" aria-label=\"LW Tyrunt\" style=\"--x:15;--y:78\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s9\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s9\" data-half-landscape=\"right\" data-testid=\"slot-s9\" data-filled=\"true\" aria-label=\"ST Crocalor\" style=\"--x:50;--y:88\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"s10\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"s10\" data-half-portrait=\"right\" data-half-landscape=\"right\" data-testid=\"slot-s10\" data-filled=\"true\" aria-label=\"RW Heatmor\" style=\"--x:85;--y:78\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b0\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b0\" data-testid=\"slot-b0\" data-filled=\"true\" aria-label=\"SUB 1 Dugtrio\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b1\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b1\" data-testid=\"slot-b1\" data-filled=\"true\" aria-label=\"SUB 2 Tyrantrum\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b2\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b2\" data-testid=\"slot-b2\" data-filled=\"true\" aria-label=\"SUB 3 Paras\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b3\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b3\" data-testid=\"slot-b3\" data-filled=\"true\" aria-label=\"SUB 4 Litleo\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "target": [
+              "button[data-slot-key=\"b4\"]"
+            ],
+            "html": "<button type=\"button\" class=\"yzX6Rq_token\" data-slot-key=\"b4\" data-testid=\"slot-b4\" data-filled=\"true\" aria-label=\"SUB 5 Milcery\">",
+            "failureSummary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  }
+]

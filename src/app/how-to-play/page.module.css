@@ -44,7 +44,7 @@
 
 .num {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 600;
   font-size: 2rem;
   line-height: 1;
   color: var(--flood-text);

@@ -75,7 +75,7 @@
 
 .regionTag {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   font-size: 1.15rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -92,7 +92,7 @@
 .prompt {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   font-size: 1.15rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -261,7 +261,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   font-size: 1.05rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;

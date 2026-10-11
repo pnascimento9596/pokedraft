@@ -1,0 +1,1629 @@
+{
+  "rows": [
+    {
+      "theme": "light",
+      "role": "--text",
+      "surface": "--canvas",
+      "ratio": 13.063874600943516,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text",
+      "surface": "--surface",
+      "ratio": 14.475874273247838,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text",
+      "surface": "--surface-emphasis",
+      "ratio": 14.981162263721696,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text",
+      "surface": "--surface-sunken",
+      "ratio": 13.506434987887578,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-soft",
+      "surface": "--canvas",
+      "ratio": 9.488186600774757,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-soft",
+      "surface": "--surface",
+      "ratio": 10.513710557510272,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-soft",
+      "surface": "--surface-emphasis",
+      "ratio": 10.880697143587899,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-soft",
+      "surface": "--surface-sunken",
+      "ratio": 9.809614635083435,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-muted",
+      "surface": "--canvas",
+      "ratio": 5.5996168164417774,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-muted",
+      "surface": "--surface",
+      "ratio": 6.204847450642332,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-muted",
+      "surface": "--surface-emphasis",
+      "ratio": 6.421430908079924,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-muted",
+      "surface": "--surface-sunken",
+      "ratio": 5.7893131095188695,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-faint",
+      "surface": "--canvas",
+      "ratio": 5.174597819941459,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-faint",
+      "surface": "--surface",
+      "ratio": 5.733890575670781,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-faint",
+      "surface": "--surface-emphasis",
+      "ratio": 5.934035036163366,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-faint",
+      "surface": "--surface-sunken",
+      "ratio": 5.349895890646133,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--link",
+      "surface": "--canvas",
+      "ratio": 5.246060640588725,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--link",
+      "surface": "--surface",
+      "ratio": 5.813077404885046,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--link",
+      "surface": "--surface-emphasis",
+      "ratio": 6.015985923219693,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--link",
+      "surface": "--surface-sunken",
+      "ratio": 5.423779632691059,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--accent-fg",
+      "surface": "--accent",
+      "ratio": 8.091965868770007,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--accent-fg",
+      "surface": "--accent-hover",
+      "ratio": 10.616710295127682,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--ok-text",
+      "surface": "--ok-bg",
+      "ratio": 6.836741874435922,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-soft",
+      "surface": "--info-bg",
+      "ratio": 9.730857351449636,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text-soft",
+      "surface": "--warn-bg",
+      "ratio": 9.81357017513516,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--risk-text",
+      "surface": "--surface",
+      "ratio": 5.291626164296436,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--viz-1",
+      "surface": "--surface",
+      "ratio": 3.411053061939352,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-2",
+      "surface": "--surface",
+      "ratio": 3.0073801166099483,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-3",
+      "surface": "--surface",
+      "ratio": 3.3005859774546367,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-4",
+      "surface": "--surface",
+      "ratio": 3.846742593091505,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-5",
+      "surface": "--surface",
+      "ratio": 3.049017113484908,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-6",
+      "surface": "--surface",
+      "ratio": 3.914783521789215,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--viz-7",
+      "surface": "--surface",
+      "ratio": 3.4397059936488232,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--risk-mark",
+      "surface": "--surface",
+      "ratio": 4.536352545230503,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--border-control",
+      "surface": "--surface",
+      "ratio": 3.5157506587615797,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--focus",
+      "surface": "--surface",
+      "ratio": 5.813077404885046,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--action-border",
+      "surface": "--surface",
+      "ratio": 7.9809129136746355,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-normal",
+      "surface": "--surface",
+      "ratio": 11.779081115446997,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-normal",
+      "surface": "tinted type pill",
+      "ratio": 8.812916644656935,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-normal",
+      "surface": "type pill 0.14",
+      "ratio": 9.15469836778,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-normal",
+      "surface": "type pill 0.18",
+      "ratio": 8.479253412130294,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fighting",
+      "surface": "--surface",
+      "ratio": 7.11932602213711,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-fighting",
+      "surface": "tinted type pill",
+      "ratio": 5.57816472080771,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fighting",
+      "surface": "type pill 0.14",
+      "ratio": 5.757925669547153,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fighting",
+      "surface": "type pill 0.18",
+      "ratio": 5.402022021452123,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-flying",
+      "surface": "--surface",
+      "ratio": 16.86994074936777,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-flying",
+      "surface": "tinted type pill",
+      "ratio": 12.009744551287852,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-flying",
+      "surface": "type pill 0.14",
+      "ratio": 12.561575664420683,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-flying",
+      "surface": "type pill 0.18",
+      "ratio": 11.473453708909917,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-poison",
+      "surface": "--surface",
+      "ratio": 10.943138663676525,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-poison",
+      "surface": "tinted type pill",
+      "ratio": 8.246666897886188,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-poison",
+      "surface": "type pill 0.14",
+      "ratio": 8.557994996826915,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-poison",
+      "surface": "type pill 0.18",
+      "ratio": 7.942548265163797,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-ground",
+      "surface": "--surface",
+      "ratio": 13.684110914786801,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-ground",
+      "surface": "tinted type pill",
+      "ratio": 10.061353222601362,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-ground",
+      "surface": "type pill 0.14",
+      "ratio": 10.476652465213798,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-ground",
+      "surface": "type pill 0.18",
+      "ratio": 9.656555385295203,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-rock",
+      "surface": "--surface",
+      "ratio": 7.991163037277783,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-rock",
+      "surface": "tinted type pill",
+      "ratio": 6.215372858451639,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-rock",
+      "surface": "type pill 0.14",
+      "ratio": 6.422277321145013,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-rock",
+      "surface": "type pill 0.18",
+      "ratio": 6.012700009298428,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-bug",
+      "surface": "--surface",
+      "ratio": 9.802745820071271,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-bug",
+      "surface": "tinted type pill",
+      "ratio": 7.458850163813489,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-bug",
+      "surface": "type pill 0.14",
+      "ratio": 7.730137196107341,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-bug",
+      "surface": "type pill 0.18",
+      "ratio": 7.1936462435935855,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-ghost",
+      "surface": "--surface",
+      "ratio": 9.709160914359924,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-ghost",
+      "surface": "tinted type pill",
+      "ratio": 7.351053927481104,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-ghost",
+      "surface": "type pill 0.14",
+      "ratio": 7.623342060889833,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-ghost",
+      "surface": "type pill 0.18",
+      "ratio": 7.085062179118525,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-steel",
+      "surface": "--surface",
+      "ratio": 7.0068862925843804,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-steel",
+      "surface": "tinted type pill",
+      "ratio": 5.485314491277508,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-steel",
+      "surface": "type pill 0.14",
+      "ratio": 5.662647949944368,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-steel",
+      "surface": "type pill 0.18",
+      "ratio": 5.311592639194664,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fire",
+      "surface": "--surface",
+      "ratio": 6.102224639507081,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-fire",
+      "surface": "tinted type pill",
+      "ratio": 4.874543647506418,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fire",
+      "surface": "type pill 0.14",
+      "ratio": 5.0186860256923875,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fire",
+      "surface": "type pill 0.18",
+      "ratio": 4.7330227383598835,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-water",
+      "surface": "--surface",
+      "ratio": 12.393343045543498,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-water",
+      "surface": "tinted type pill",
+      "ratio": 9.184700300826227,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-water",
+      "surface": "type pill 0.14",
+      "ratio": 9.553212723250647,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-water",
+      "surface": "type pill 0.18",
+      "ratio": 8.825300485778332,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-grass",
+      "surface": "--surface",
+      "ratio": 8.98198394410003,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-grass",
+      "surface": "tinted type pill",
+      "ratio": 6.903309363559887,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-grass",
+      "surface": "type pill 0.14",
+      "ratio": 7.1446575951577085,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-grass",
+      "surface": "type pill 0.18",
+      "ratio": 6.667147677803024,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-electric",
+      "surface": "--surface",
+      "ratio": 6.480707364749811,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-electric",
+      "surface": "tinted type pill",
+      "ratio": 5.140019139013177,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-electric",
+      "surface": "type pill 0.14",
+      "ratio": 5.297047268721707,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-electric",
+      "surface": "type pill 0.18",
+      "ratio": 4.9859591703981785,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-psychic",
+      "surface": "--surface",
+      "ratio": 6.982578517115449,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-psychic",
+      "surface": "tinted type pill",
+      "ratio": 5.45200449974546,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-psychic",
+      "surface": "type pill 0.14",
+      "ratio": 5.630108895149885,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-psychic",
+      "surface": "type pill 0.18",
+      "ratio": 5.277608842279719,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-ice",
+      "surface": "--surface",
+      "ratio": 14.975886653195147,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-ice",
+      "surface": "tinted type pill",
+      "ratio": 10.87017541506194,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-ice",
+      "surface": "type pill 0.14",
+      "ratio": 11.339006158580853,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-ice",
+      "surface": "type pill 0.18",
+      "ratio": 10.413746280234433,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-dragon",
+      "surface": "--surface",
+      "ratio": 15.107153299641606,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-dragon",
+      "surface": "tinted type pill",
+      "ratio": 10.930618796385003,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-dragon",
+      "surface": "type pill 0.14",
+      "ratio": 11.407020552101802,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-dragon",
+      "surface": "type pill 0.18",
+      "ratio": 10.466973172100598,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-dark",
+      "surface": "--surface",
+      "ratio": 15.782097874730546,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-dark",
+      "surface": "tinted type pill",
+      "ratio": 11.352159401166599,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-dark",
+      "surface": "type pill 0.14",
+      "ratio": 11.856621828356795,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-dark",
+      "surface": "type pill 0.18",
+      "ratio": 10.861457252547206,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fairy",
+      "surface": "--surface",
+      "ratio": 8.575871548099723,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--type-fairy",
+      "surface": "tinted type pill",
+      "ratio": 6.536386900896083,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fairy",
+      "surface": "type pill 0.14",
+      "ratio": 6.7720092762421205,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--type-fairy",
+      "surface": "type pill 0.18",
+      "ratio": 6.3061739013882825,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--pitch-line",
+      "surface": "--pitch",
+      "ratio": 5.956050635183437,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--pitch-line",
+      "surface": "--pitch-stripe",
+      "ratio": 5.776376074429299,
+      "minimum": 3
+    },
+    {
+      "theme": "light",
+      "role": "--text",
+      "surface": "--surface",
+      "ratio": 14.475874273247838,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text",
+      "surface": "--surface-emphasis",
+      "ratio": 14.981162263721696,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text",
+      "surface": "--surface-sunken",
+      "ratio": 13.506434987887578,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text",
+      "surface": "viz-8 heat fill 0.16",
+      "ratio": 13.436917245595312,
+      "minimum": 4.5
+    },
+    {
+      "theme": "light",
+      "role": "--text",
+      "surface": "viz-8 heat fill 0.78",
+      "ratio": 9.861919539370572,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "--canvas",
+      "ratio": 15.578934425018272,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "--surface",
+      "ratio": 13.750949968719816,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "--surface-emphasis",
+      "ratio": 13.060442248774814,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "--surface-sunken",
+      "ratio": 12.29874087726788,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-soft",
+      "surface": "--canvas",
+      "ratio": 12.309575358793431,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-soft",
+      "surface": "--surface",
+      "ratio": 10.865207483197697,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-soft",
+      "surface": "--surface-emphasis",
+      "ratio": 10.319608112752844,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-soft",
+      "surface": "--surface-sunken",
+      "ratio": 9.717755625434867,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-muted",
+      "surface": "--canvas",
+      "ratio": 6.5865302265348165,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-muted",
+      "surface": "--surface",
+      "ratio": 5.813686940429806,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-muted",
+      "surface": "--surface-emphasis",
+      "ratio": 5.521751057974992,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-muted",
+      "surface": "--surface-sunken",
+      "ratio": 5.199715611252354,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-faint",
+      "surface": "--canvas",
+      "ratio": 6.032246314989908,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-faint",
+      "surface": "--surface",
+      "ratio": 5.324441005619254,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-faint",
+      "surface": "--surface-emphasis",
+      "ratio": 5.057072741816741,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-faint",
+      "surface": "--surface-sunken",
+      "ratio": 4.762137917261816,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--link",
+      "surface": "--canvas",
+      "ratio": 10.220124611460312,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--link",
+      "surface": "--surface",
+      "ratio": 9.020926487795263,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--link",
+      "surface": "--surface-emphasis",
+      "ratio": 8.567938192801206,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--link",
+      "surface": "--surface-sunken",
+      "ratio": 8.06824529204545,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--accent-fg",
+      "surface": "--accent",
+      "ratio": 5.433837485734052,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--accent-fg",
+      "surface": "--accent-hover",
+      "ratio": 6.712031336911875,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--ok-text",
+      "surface": "--ok-bg",
+      "ratio": 7.8982201776165954,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-soft",
+      "surface": "--info-bg",
+      "ratio": 11.100895173098458,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text-soft",
+      "surface": "--warn-bg",
+      "ratio": 10.836842609944496,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--risk-text",
+      "surface": "--surface",
+      "ratio": 6.071219616000253,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--viz-1",
+      "surface": "--surface",
+      "ratio": 6.384244818368042,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--viz-2",
+      "surface": "--surface",
+      "ratio": 7.066635596768492,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--viz-3",
+      "surface": "--surface",
+      "ratio": 6.294139953426172,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--viz-4",
+      "surface": "--surface",
+      "ratio": 5.327351581092741,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--viz-5",
+      "surface": "--surface",
+      "ratio": 6.232671543979053,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--viz-6",
+      "surface": "--surface",
+      "ratio": 5.2378023387582315,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--viz-7",
+      "surface": "--surface",
+      "ratio": 5.902953988194994,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--risk-mark",
+      "surface": "--surface",
+      "ratio": 4.479394206355619,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--border-control",
+      "surface": "--surface",
+      "ratio": 4.1146986710168605,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--focus",
+      "surface": "--surface",
+      "ratio": 9.020926487795263,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--action-border",
+      "surface": "--surface",
+      "ratio": 9.020926487795263,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-normal",
+      "surface": "--surface",
+      "ratio": 6.905553719196168,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-normal",
+      "surface": "tinted type pill",
+      "ratio": 5.104109690426283,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-normal",
+      "surface": "type pill 0.14",
+      "ratio": 5.317641384270383,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-normal",
+      "surface": "type pill 0.18",
+      "ratio": 4.896380056676874,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fighting",
+      "surface": "--surface",
+      "ratio": 8.789128338691064,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fighting",
+      "surface": "tinted type pill",
+      "ratio": 6.159830972438344,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fighting",
+      "surface": "type pill 0.14",
+      "ratio": 6.46455792034951,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fighting",
+      "surface": "type pill 0.18",
+      "ratio": 5.866028626926856,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-flying",
+      "surface": "--surface",
+      "ratio": 7.869486283311267,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-flying",
+      "surface": "tinted type pill",
+      "ratio": 5.665416511362791,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-flying",
+      "surface": "type pill 0.14",
+      "ratio": 5.924464254512646,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-flying",
+      "surface": "type pill 0.18",
+      "ratio": 5.41441965459524,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-poison",
+      "surface": "--surface",
+      "ratio": 8.911284898138428,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-poison",
+      "surface": "tinted type pill",
+      "ratio": 6.235564475899397,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-poison",
+      "surface": "type pill 0.14",
+      "ratio": 6.546089801202409,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-poison",
+      "surface": "type pill 0.18",
+      "ratio": 5.936168867267756,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ground",
+      "surface": "--surface",
+      "ratio": 7.6831796478225245,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ground",
+      "surface": "tinted type pill",
+      "ratio": 5.5571539685383495,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ground",
+      "surface": "type pill 0.14",
+      "ratio": 5.807332813345806,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ground",
+      "surface": "type pill 0.18",
+      "ratio": 5.314587939886777,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-rock",
+      "surface": "--surface",
+      "ratio": 11.863388005837264,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-rock",
+      "surface": "tinted type pill",
+      "ratio": 7.7128542666057935,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-rock",
+      "surface": "type pill 0.14",
+      "ratio": 8.176666643696299,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-rock",
+      "surface": "type pill 0.18",
+      "ratio": 7.271614425145178,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-bug",
+      "surface": "--surface",
+      "ratio": 9.455413271558003,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-bug",
+      "surface": "tinted type pill",
+      "ratio": 6.510674349555536,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-bug",
+      "surface": "type pill 0.14",
+      "ratio": 6.849063432335218,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-bug",
+      "surface": "type pill 0.18",
+      "ratio": 6.185441698668277,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ghost",
+      "surface": "--surface",
+      "ratio": 6.491890512409184,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ghost",
+      "surface": "tinted type pill",
+      "ratio": 4.864965980833651,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ghost",
+      "surface": "type pill 0.14",
+      "ratio": 5.059127596986269,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ghost",
+      "surface": "type pill 0.18",
+      "ratio": 4.675612784816652,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-steel",
+      "surface": "--surface",
+      "ratio": 12.659868207382905,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-steel",
+      "surface": "tinted type pill",
+      "ratio": 8.092245366113968,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-steel",
+      "surface": "type pill 0.14",
+      "ratio": 8.598567989769496,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-steel",
+      "surface": "type pill 0.18",
+      "ratio": 7.612008884413628,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fire",
+      "surface": "--surface",
+      "ratio": 10.650960718370456,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fire",
+      "surface": "tinted type pill",
+      "ratio": 7.122156463164267,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fire",
+      "surface": "type pill 0.14",
+      "ratio": 7.522100330555165,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fire",
+      "surface": "type pill 0.18",
+      "ratio": 6.739743426851529,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-water",
+      "surface": "--surface",
+      "ratio": 11.024174548451203,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-water",
+      "surface": "tinted type pill",
+      "ratio": 7.31214335218212,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-water",
+      "surface": "type pill 0.14",
+      "ratio": 7.731511394397069,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-water",
+      "surface": "type pill 0.18",
+      "ratio": 6.911700962191898,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-grass",
+      "surface": "--surface",
+      "ratio": 7.094333264282154,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-grass",
+      "surface": "tinted type pill",
+      "ratio": 5.238465849825879,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-grass",
+      "surface": "type pill 0.14",
+      "ratio": 5.459882187898677,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-grass",
+      "surface": "type pill 0.18",
+      "ratio": 5.022879310710919,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-electric",
+      "surface": "--surface",
+      "ratio": 13.374689367671062,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-electric",
+      "surface": "tinted type pill",
+      "ratio": 8.420737777396678,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-electric",
+      "surface": "type pill 0.14",
+      "ratio": 8.965604699007743,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-electric",
+      "surface": "type pill 0.18",
+      "ratio": 7.905361457792916,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-psychic",
+      "surface": "--surface",
+      "ratio": 10.86220719331084,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-psychic",
+      "surface": "tinted type pill",
+      "ratio": 7.241373008139844,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-psychic",
+      "surface": "type pill 0.14",
+      "ratio": 7.652078218506666,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-psychic",
+      "surface": "type pill 0.18",
+      "ratio": 6.848775068095901,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ice",
+      "surface": "--surface",
+      "ratio": 6.741252183307714,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ice",
+      "surface": "tinted type pill",
+      "ratio": 5.0193789775597235,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ice",
+      "surface": "type pill 0.14",
+      "ratio": 5.224786693670147,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-ice",
+      "surface": "type pill 0.18",
+      "ratio": 4.819207504347384,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dragon",
+      "surface": "--surface",
+      "ratio": 7.300054847378463,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dragon",
+      "surface": "tinted type pill",
+      "ratio": 5.330974781757627,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dragon",
+      "surface": "type pill 0.14",
+      "ratio": 5.563142893093514,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dragon",
+      "surface": "type pill 0.18",
+      "ratio": 5.105577963498147,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dark",
+      "surface": "--surface",
+      "ratio": 14.629641997054206,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dark",
+      "surface": "tinted type pill",
+      "ratio": 8.985033570335483,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dark",
+      "surface": "type pill 0.14",
+      "ratio": 9.59819473101102,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-dark",
+      "surface": "type pill 0.18",
+      "ratio": 8.407640439172205,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fairy",
+      "surface": "--surface",
+      "ratio": 9.00425170452604,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fairy",
+      "surface": "tinted type pill",
+      "ratio": 6.280659722081941,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fairy",
+      "surface": "type pill 0.14",
+      "ratio": 6.595995929434387,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--type-fairy",
+      "surface": "type pill 0.18",
+      "ratio": 5.976832433864851,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--pitch-line",
+      "surface": "--pitch",
+      "ratio": 9.218297141716903,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--pitch-line",
+      "surface": "--pitch-stripe",
+      "ratio": 8.96723556801306,
+      "minimum": 3
+    },
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "--surface",
+      "ratio": 13.750949968719816,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "--surface-emphasis",
+      "ratio": 13.060442248774814,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "--surface-sunken",
+      "ratio": 12.29874087726788,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "viz-8 heat fill 0.16",
+      "ratio": 9.820230584031382,
+      "minimum": 4.5
+    },
+    {
+      "theme": "dark",
+      "role": "--text",
+      "surface": "viz-8 heat fill 0.48",
+      "ratio": 4.658766517738325,
+      "minimum": 4.5
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,2284 @@
+[
+  {
+    "route": "home",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PLAY\nPLAY 8-0 CHALLENGE\nPLAY 151 CHALLENGE\n\nChallenge runs keep ratings hidden.\n\nSETTINGS AND RECORDS\n\nFRIENDLY BUILDER\n\nBUILD YOUR XI\n0/16\nFill all 16 to see your Team Score\n+\nGK\n+\nLB\n+\nLCB\n+\nRCB\n+\nRB\n+\nCDM\n+\nLCM\n+\nRCM\n+\nLW\n+\nST\n+\nRW\nBENCH\n+\nSUB 1\n+\nSUB 2\n+\nSUB 3\n+\nSUB 4\n+\nSUB 5\nRANDOMIZE\nCLEAR ALL\nRESET\nDOWNLOAD IMAGE\nCOPY LINK\n\nPLAY A FRIENDLY CUP\nFriendly (not ranked)",
+    "numbers": [
+      "8",
+      "0",
+      "151",
+      "0",
+      "16",
+      "16",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "violations": []
+  },
+  {
+    "route": "play",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "THAT CHALLENGE LINK DOES NOT WORK\n\nSome of its settings are missing or unknown. Pick a challenge from the home page.\n\nBACK HOME",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "daily",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      }
+    ],
+    "text": "DAILY CHALLENGE, SUNDAY, OCTOBER 11, 2026\nDAILY 8-0 CHALLENGE\n\nEveryone plays the same seed today, and your run can go on the daily board. 16 rounds. Each round the wheel rolls, you sign one player and place them. Then your squad plays the cup.\n\nFORMATION\n4-3-3\nREGIONS\nALL REGIONS\nSTYLE\nOPEN\nORDER\nSQUAD FIRST\nSTART RUN\nROAD TO THE FINAL\nYOUR OPPONENTS\n292\nG1\nGroup match 1, Hammerlocke Rovers, rating 292\n312\nG2\nGroup match 2, Wyndon FC, rating 312\n365\nG3\nGroup match 3, Mauville City, rating 365\n471\nR32\nRound of 32, Canalave Athletic, rating 471\n614\nR16\nRound of 16, Jubilife FC, rating 614\n732\nQF\nQuarter-final, Lilycove Athletic, rating 732\n846\nSF\nSemi-final, Hau'oli City, rating 846\n984\nFINAL\nFinal, Opelucid Rovers, rating 984\n\nOpponent ratings climb. The group stage is the gentle start; every knockout round is a step up, and the Final is the hardest test.",
+    "numbers": [
+      "11",
+      "2026",
+      "8",
+      "0",
+      "16",
+      "4",
+      "3",
+      "3",
+      "292",
+      "1",
+      "1",
+      "292",
+      "312",
+      "2",
+      "2",
+      "312",
+      "365",
+      "3",
+      "3",
+      "365",
+      "471",
+      "32",
+      "32",
+      "471",
+      "614",
+      "16",
+      "16",
+      "614",
+      "732",
+      "732",
+      "846",
+      "846",
+      "984",
+      "984"
+    ],
+    "violations": []
+  },
+  {
+    "route": "leaderboard",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RANKED RUNS\nLEADERBOARD\nDAILY\nALL-TIME\nDATE\n\nDaily 8-0 Challenge for Sunday, October 11, 2026 (today). Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top 50.\n\nNo entries yet. Finish a run and submit it to claim the top spot.\n\nPLAY THE DAILY",
+    "numbers": [
+      "8",
+      "0",
+      "11",
+      "2026",
+      "50"
+    ],
+    "violations": []
+  },
+  {
+    "route": "history",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "THIS DEVICE\nYOUR LAST 50 RUNS\n\nNo runs yet. Finished runs on this device show up here.\n\nSTART A RUN",
+    "numbers": [
+      "50"
+    ],
+    "violations": []
+  },
+  {
+    "route": "how-to-play",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RULES OF THE GAME\nHOW TO PLAY\n\nDraft Pokémon into a soccer formation, get a Team Score, and take your squad through an 8-game cup.\n\nTHE BUILDER\nTHE 8-0 CHALLENGE\nTHE 151 CHALLENGE\nTHE CUP\nTEAM SCORE\nFAIR ROLLS\nFRIENDLIES\n01\nTHE BUILDER\n\nPick a formation and fill all 11 starting spots and 5 bench spots with Pokémon from the generations you switch on. Legendary and Mythical Pokémon stay out until you switch on Legendaries in the settings. You can swap players around, clear a spot, or start over.\n\nOnce all 16 spots are filled you get a Team Score and can play a friendly cup with that squad.\n\n02\nTHE 8-0 CHALLENGE\n\nEvery round the game rolls a region and then a type, for example Johto and Water. You draft one Pokémon that matches both, then the next round rolls again, until all 16 spots are filled.\n\nIn Open you can take any Pokémon that matches the roll. In Classic you choose from just 3 offered. Open is easier than Classic. Your records keep them apart, but the all-time leaderboard ranks every draft setting together and names each run's settings on its row.\n\nA squad can hold at most 3 Legendary or Mythical Pokémon. After the third, they stop appearing in rolls.\n\nYou get 3 rerolls for the whole run. Reroll the type to get a different type in the same region. Reroll the region to get a different region, and the type is rolled again, so it can come up the same.\n\nSquad First shows you the roll and lets you choose which spot to fill. Position First makes you commit to a spot before you see the roll.\n\n03\nTHE 151 CHALLENGE\n\nOnly the original 151. Each round rolls a single Pokémon and you place it in your squad. You get 5 rerolls for the whole run. The same cap of 3 Legendary or Mythical Pokémon applies.\n\n04\nTHE CUP\n\nYour squad plays 3 group games. The top 2 in the group go through to the Round of 32, then the Round of 16, the quarter-final, the semi-final and the Final.\n\nThe group games are the gentle start. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test. Win all 8 games for a flawless 8-0.\n\nPlayers can miss a match. When that happens someone from the bench comes in for that game.\n\n05\nTEAM SCORE\n\nTeam Score sums up how good your squad is. It mostly comes from how well each player suits the spot they play, so a natural striker up front beats a goalkeeper played out of position.\n\nOn the results screen each player gets a rating from 0 to 100 for their spot. It ranks them against every other Pokémon for that job, so 78 vs other CBs means better than about 78 of every 100 other CBs. The three lowest ratings in your eleven are flagged as weak spots.\n\nEach line counts, your weak spots pull the score down, and neighbours who link up (shared type, same evolution line, same generation, or covering each other's weaknesses) add a bonus. A strong bench helps a little too.\n\n06\nFAIR ROLLS\n\nEvery roll comes from the run's seed, decided before anything spins. The wheel only shows a result the game already decided, and a shared run link replays exactly the same draft and cup for anyone who opens it.\n\n07\nFRIENDLIES\n\nCups played from the builder are friendlies. They are marked Friendly (not ranked) and are kept apart from your challenge stats.\n\nSTART DRAFTING",
+    "numbers": [
+      "8",
+      "8",
+      "0",
+      "151",
+      "01",
+      "11",
+      "5",
+      "16",
+      "02",
+      "8",
+      "0",
+      "16",
+      "3",
+      "3",
+      "3",
+      "03",
+      "151",
+      "151",
+      "5",
+      "3",
+      "04",
+      "3",
+      "2",
+      "32",
+      "16",
+      "32",
+      "8",
+      "8",
+      "0",
+      "05",
+      "0",
+      "100",
+      "78",
+      "78",
+      "100",
+      "06",
+      "07"
+    ],
+    "violations": []
+  },
+  {
+    "route": "run",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      }
+    ],
+    "text": "8-0 CHALLENGE, CLASSIC\n4-2-3-1\nRECORD W-D-L\n3-0-2\nOUT IN THE ROUND OF 16\nTEAM SCORE\n593\nSHARE\nDOWNLOAD IMAGE\nPLAY YOUR OWN\nTHE CUP\nG1\nGROUP MATCH 1\nWIN\nYOU\n6-0\nGOLDENROD UNITED\nYOU\n593\nOPP\n266\n12' Skiploom, assist Lurantis\n30' Zeraora (pen)\n52' Zeraora, assist Skiploom\n55' Tapu Koko, assist Skiploom\n64' Lurantis\n79' Talonflame, assist Zeraora\n\nBeat Goldenrod United 6-0.\n\nSkiploom scores in the 12th minute, set up by Lurantis.\n\nZeraora scores from the spot in the 30th minute.\n\nZeraora finishes in the 52nd minute after a pass from Skiploom.\n\nTapu Koko scores in the 55th minute, set up by Skiploom.\n\nLurantis scores in the 64th minute.\n\nTalonflame finishes in the 79th minute after a pass from Zeraora.\n\nG2\nGROUP MATCH 2\nWIN\nYOU\n4-0\nVEILSTONE UNITED\nYOU\n593\nOPP\n291\n25' Talonflame, assist Zeraora\n26' Zeraora\n40' Lurantis\n56' Zeraora\n\nA 4-0 win over Veilstone United.\n\nZeraora sets up Talonflame in the 25th minute.\n\nZeraora scores in the 26th minute.\n\nLurantis finds the net in the 40th minute.\n\nZeraora scores in the 56th minute.\n\nG3\nGROUP MATCH 3\nLOSS\nYOU\n0-1\nSANTALUNE TOWN\nYOU\n593\nOPP\n366\n7' No. 5\n\nLost 1-0 to Santalune Town.\n\nR32\nROUND OF 32\nWIN\nYOU\n6-0\nSHALOUR CITY\nYOU\n593\nOPP\n478\n4' Zeraora\n22' Zeraora, assist Tapu Koko\n41' Zeraora, assist Togepi\n46' Talonflame, assist Ludicolo\n50' Zeraora\n83' Zeraora, assist Talonflame\n\nA 6-0 win over Shalour City.\n\nZeraora finds the net in the 4th minute.\n\nTapu Koko sets up Zeraora in the 22nd minute.\n\nZeraora finishes in the 41st minute after a pass from Togepi.\n\nTalonflame scores in the 46th minute, set up by Ludicolo.\n\nZeraora finds the net in the 50th minute.\n\nZeraora finishes in the 83rd minute after a pass from Talonflame.\n\nR16\nROUND OF 16\nLOSS\nYOU\n0-2\nCOUMARINE UNITED\nYOU\n593\nOPP\n613\n54' No. 9\n57' No. 9\n\nLost 2-0 to Coumarine United.\n\nOUT IN THE ROUND OF 16\n\nQF\nQUARTER-FINAL\nNOT PLAYED\n\nLUMIOSE FC\n\nOPP\n749\nSF\nSEMI-FINAL\nNOT PLAYED\n\nSLATEPORT UNITED\n\nOPP\n850\nFINAL\nFINAL\nNOT PLAYED\n\nLEVINCIA CITY\n\nOPP\n976\nGROUP TABLE\nTeam\tP\tW\tD\tL\tGF\tGA\tPts\n1Your team\t3\t2\t0\t1\t10\t1\t6\n2Santalune Town\t3\t2\t0\t1\t5\t2\t6\n3Goldenrod United\t3\t1\t0\t2\t4\t10\t3\n4Veilstone United\t3\t1\t0\t2\t3\t9\t3\n\nTop two go through to the Round of 32.\n\nAWARDS\nGOLDEN BOOT\nZERAORA\n9 goals\nTOP ASSISTER\nZERAORA\n2 assists\nPLAYER OF THE TOURNAMENT\nZERAORA\n9 G, 2 A, 5 apps\n33.5 pts: goals 27, assists 4, clean sheets 0, minutes 2.5\nHOW THE ELEVEN FIT\nGK\nToxtricity\nLB\nRoselia\nLCB\nLudicolo\nRCB\nDragalge\nRB\nCroagunk\nLDM\nLurantis\nRDM\nTapu Koko\nLAM\nTogepi\nCAM\nTalonflame\nRAM\nSkiploom\nST\nZeraora\nBENCH\nSUB 1\nKommo-o\nSUB 2\nCarbink\nSUB 3\nMaschiff\nSUB 4\nZapdos\nSUB 5\nDuraludon\nSynergy link between neighbours\nWeak spot: one of the 3 lowest ratings\nGK\nToxtricity\nOUT OF POSITION\n63\nvs other keepers\nQuality 63, better than about 63 of every 100 other keepers\n+ finishing\n+ kicking technique\n+ aggression\n+ passing\n- discipline\n- acceleration\nSCOUTING NOTES\nLB\nRoselia\nOUT OF POSITION\nWEAK SPOT\n34\nvs other FBs\nQuality 34, better than about 34 of every 100 other FBs\n+ passing\n+ vision\n+ agility\n- strength\n- size\nSCOUTING NOTES\nLCB\nLudicolo\nOUT OF POSITION\n64\nvs other CBs\nQuality 64, better than about 64 of every 100 other CBs\n+ stamina\n+ passing\n+ balance\n+ vision\n- pace\n- acceleration\nSCOUTING NOTES\nRCB\nDragalge\n74\nvs other CBs\nQuality 74, better than about 74 of every 100 other CBs\n+ vision\n+ positioning\n+ durability\n- pace\n- acceleration\nSCOUTING NOTES\nRB\nCroagunk\nOUT OF POSITION\nWEAK SPOT\n10\nvs other FBs\nQuality 10, better than about 10 of every 100 other FBs\n+ footwork\n+ unpredictability\n- strength\n- stamina\nSCOUTING NOTES\nLDM\nLurantis\n75\nvs other DMs\nQuality 75, better than about 75 of every 100 other DMs\n+ limb reach\n+ tackling\n+ kicking technique\n- pace\n- acceleration\nSCOUTING NOTES\nRDM\nTapu Koko\nOUT OF POSITION\n69\nvs other DMs\nQuality 69, better than about 69 of every 100 other DMs\n+ pace\n+ acceleration\n+ aggression\n- stamina\n- durability\n- footwork\nSCOUTING NOTES\nLAM\nTogepi\nWEAK SPOT\n9\nvs other AMs\nQuality 9, better than about 9 of every 100 other AMs\n+ durability\n+ teamwork\n- pace\n- size\n- strength\nSCOUTING NOTES\nCAM\nTalonflame\nOUT OF POSITION\n74\nvs other AMs\nQuality 74, better than about 74 of every 100 other AMs\n+ pace\n+ acceleration\n+ flight\n- handling\n- close control\nSCOUTING NOTES\nRAM\nSkiploom\nOUT OF POSITION\n38\nvs other AMs\nQuality 38, better than about 38 of every 100 other AMs\n+ acceleration\n+ agility\n- strength\n- size\n- close control\nSCOUTING NOTES\nST\nZeraora\n100\nvs other strikers\nQuality 100, better than about 100 of every 100 other strikers\n+ pace\n+ acceleration\n+ dribbling\n+ finishing\n- marking\n- durability\nSCOUTING NOTES\nSEASON DETAILS: HOW GRADING WORKS",
+    "numbers": [
+      "8",
+      "0",
+      "4",
+      "2",
+      "3",
+      "1",
+      "3",
+      "0",
+      "2",
+      "16",
+      "593",
+      "1",
+      "1",
+      "6",
+      "0",
+      "593",
+      "266",
+      "12",
+      "30",
+      "52",
+      "55",
+      "64",
+      "79",
+      "6",
+      "0",
+      "12",
+      "30",
+      "52",
+      "55",
+      "64",
+      "79",
+      "2",
+      "2",
+      "4",
+      "0",
+      "593",
+      "291",
+      "25",
+      "26",
+      "40",
+      "56",
+      "4",
+      "0",
+      "25",
+      "26",
+      "40",
+      "56",
+      "3",
+      "3",
+      "0",
+      "1",
+      "593",
+      "366",
+      "7",
+      "5",
+      "1",
+      "0",
+      "32",
+      "32",
+      "6",
+      "0",
+      "593",
+      "478",
+      "4",
+      "22",
+      "41",
+      "46",
+      "50",
+      "83",
+      "6",
+      "0",
+      "4",
+      "22",
+      "41",
+      "46",
+      "50",
+      "83",
+      "16",
+      "16",
+      "0",
+      "2",
+      "593",
+      "613",
+      "54",
+      "9",
+      "57",
+      "9",
+      "2",
+      "0",
+      "16",
+      "749",
+      "850",
+      "976",
+      "1",
+      "3",
+      "2",
+      "0",
+      "1",
+      "10",
+      "1",
+      "6",
+      "2",
+      "3",
+      "2",
+      "0",
+      "1",
+      "5",
+      "2",
+      "6",
+      "3",
+      "3",
+      "1",
+      "0",
+      "2",
+      "4",
+      "10",
+      "3",
+      "4",
+      "3",
+      "1",
+      "0",
+      "2",
+      "3",
+      "9",
+      "3",
+      "32",
+      "9",
+      "2",
+      "9",
+      "2",
+      "5",
+      "33.5",
+      "27",
+      "4",
+      "0",
+      "2.5",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "3",
+      "63",
+      "63",
+      "63",
+      "100",
+      "34",
+      "34",
+      "34",
+      "100",
+      "64",
+      "64",
+      "64",
+      "100",
+      "74",
+      "74",
+      "74",
+      "100",
+      "10",
+      "10",
+      "10",
+      "100",
+      "75",
+      "75",
+      "75",
+      "100",
+      "69",
+      "69",
+      "69",
+      "100",
+      "9",
+      "9",
+      "9",
+      "100",
+      "74",
+      "74",
+      "74",
+      "100",
+      "38",
+      "38",
+      "38",
+      "100",
+      "100",
+      "100",
+      "100",
+      "100"
+    ],
+    "violations": []
+  },
+  {
+    "route": "not-found",
+    "width": 390,
+    "theme": "light",
+    "status": 404,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PAGE NOT FOUND\n\nThere is nothing at this address.\n\nBACK TO THE START",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "gate",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "POKEDRAFT IS FRIENDS ONLY\n\nAsk the group for the passcode. You only need it once on this device.\n\nFRIENDS PASSCODE\nENTER",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "missing-replay",
+    "width": 390,
+    "theme": "light",
+    "status": 404,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RUN NOT FOUND\n\nThis run link is broken or from an older version.\n\nPLAY A NEW RUN",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "home",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PLAY\nPLAY 8-0 CHALLENGE\nPLAY 151 CHALLENGE\n\nChallenge runs keep ratings hidden.\n\nSETTINGS AND RECORDS\n\nFRIENDLY BUILDER\n\nBUILD YOUR XI\n0/16\nFill all 16 to see your Team Score\n+\nGK\n+\nLB\n+\nLCB\n+\nRCB\n+\nRB\n+\nCDM\n+\nLCM\n+\nRCM\n+\nLW\n+\nST\n+\nRW\nBENCH\n+\nSUB 1\n+\nSUB 2\n+\nSUB 3\n+\nSUB 4\n+\nSUB 5\nRANDOMIZE\nCLEAR ALL\nRESET\nDOWNLOAD IMAGE\nCOPY LINK\n\nPLAY A FRIENDLY CUP\nFriendly (not ranked)",
+    "numbers": [
+      "8",
+      "0",
+      "151",
+      "0",
+      "16",
+      "16",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "violations": []
+  },
+  {
+    "route": "play",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "THAT CHALLENGE LINK DOES NOT WORK\n\nSome of its settings are missing or unknown. Pick a challenge from the home page.\n\nBACK HOME",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "daily",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "DAILY CHALLENGE, SUNDAY, OCTOBER 11, 2026\nDAILY 8-0 CHALLENGE\n\nEveryone plays the same seed today, and your run can go on the daily board. 16 rounds. Each round the wheel rolls, you sign one player and place them. Then your squad plays the cup.\n\nFORMATION\n4-3-3\nREGIONS\nALL REGIONS\nSTYLE\nOPEN\nORDER\nSQUAD FIRST\nSTART RUN\nROAD TO THE FINAL\nYOUR OPPONENTS\n292\nG1\nGroup match 1, Hammerlocke Rovers, rating 292\n312\nG2\nGroup match 2, Wyndon FC, rating 312\n365\nG3\nGroup match 3, Mauville City, rating 365\n471\nR32\nRound of 32, Canalave Athletic, rating 471\n614\nR16\nRound of 16, Jubilife FC, rating 614\n732\nQF\nQuarter-final, Lilycove Athletic, rating 732\n846\nSF\nSemi-final, Hau'oli City, rating 846\n984\nFINAL\nFinal, Opelucid Rovers, rating 984\n\nOpponent ratings climb. The group stage is the gentle start; every knockout round is a step up, and the Final is the hardest test.",
+    "numbers": [
+      "11",
+      "2026",
+      "8",
+      "0",
+      "16",
+      "4",
+      "3",
+      "3",
+      "292",
+      "1",
+      "1",
+      "292",
+      "312",
+      "2",
+      "2",
+      "312",
+      "365",
+      "3",
+      "3",
+      "365",
+      "471",
+      "32",
+      "32",
+      "471",
+      "614",
+      "16",
+      "16",
+      "614",
+      "732",
+      "732",
+      "846",
+      "846",
+      "984",
+      "984"
+    ],
+    "violations": []
+  },
+  {
+    "route": "leaderboard",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RANKED RUNS\nLEADERBOARD\nDAILY\nALL-TIME\nDATE\n\nDaily 8-0 Challenge for Sunday, October 11, 2026 (today). Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top 50.\n\nNo entries yet. Finish a run and submit it to claim the top spot.\n\nPLAY THE DAILY",
+    "numbers": [
+      "8",
+      "0",
+      "11",
+      "2026",
+      "50"
+    ],
+    "violations": []
+  },
+  {
+    "route": "history",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "THIS DEVICE\nYOUR LAST 50 RUNS\n\nNo runs yet. Finished runs on this device show up here.\n\nSTART A RUN",
+    "numbers": [
+      "50"
+    ],
+    "violations": []
+  },
+  {
+    "route": "how-to-play",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RULES OF THE GAME\nHOW TO PLAY\n\nDraft Pokémon into a soccer formation, get a Team Score, and take your squad through an 8-game cup.\n\nTHE BUILDER\nTHE 8-0 CHALLENGE\nTHE 151 CHALLENGE\nTHE CUP\nTEAM SCORE\nFAIR ROLLS\nFRIENDLIES\n01\nTHE BUILDER\n\nPick a formation and fill all 11 starting spots and 5 bench spots with Pokémon from the generations you switch on. Legendary and Mythical Pokémon stay out until you switch on Legendaries in the settings. You can swap players around, clear a spot, or start over.\n\nOnce all 16 spots are filled you get a Team Score and can play a friendly cup with that squad.\n\n02\nTHE 8-0 CHALLENGE\n\nEvery round the game rolls a region and then a type, for example Johto and Water. You draft one Pokémon that matches both, then the next round rolls again, until all 16 spots are filled.\n\nIn Open you can take any Pokémon that matches the roll. In Classic you choose from just 3 offered. Open is easier than Classic. Your records keep them apart, but the all-time leaderboard ranks every draft setting together and names each run's settings on its row.\n\nA squad can hold at most 3 Legendary or Mythical Pokémon. After the third, they stop appearing in rolls.\n\nYou get 3 rerolls for the whole run. Reroll the type to get a different type in the same region. Reroll the region to get a different region, and the type is rolled again, so it can come up the same.\n\nSquad First shows you the roll and lets you choose which spot to fill. Position First makes you commit to a spot before you see the roll.\n\n03\nTHE 151 CHALLENGE\n\nOnly the original 151. Each round rolls a single Pokémon and you place it in your squad. You get 5 rerolls for the whole run. The same cap of 3 Legendary or Mythical Pokémon applies.\n\n04\nTHE CUP\n\nYour squad plays 3 group games. The top 2 in the group go through to the Round of 32, then the Round of 16, the quarter-final, the semi-final and the Final.\n\nThe group games are the gentle start. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test. Win all 8 games for a flawless 8-0.\n\nPlayers can miss a match. When that happens someone from the bench comes in for that game.\n\n05\nTEAM SCORE\n\nTeam Score sums up how good your squad is. It mostly comes from how well each player suits the spot they play, so a natural striker up front beats a goalkeeper played out of position.\n\nOn the results screen each player gets a rating from 0 to 100 for their spot. It ranks them against every other Pokémon for that job, so 78 vs other CBs means better than about 78 of every 100 other CBs. The three lowest ratings in your eleven are flagged as weak spots.\n\nEach line counts, your weak spots pull the score down, and neighbours who link up (shared type, same evolution line, same generation, or covering each other's weaknesses) add a bonus. A strong bench helps a little too.\n\n06\nFAIR ROLLS\n\nEvery roll comes from the run's seed, decided before anything spins. The wheel only shows a result the game already decided, and a shared run link replays exactly the same draft and cup for anyone who opens it.\n\n07\nFRIENDLIES\n\nCups played from the builder are friendlies. They are marked Friendly (not ranked) and are kept apart from your challenge stats.\n\nSTART DRAFTING",
+    "numbers": [
+      "8",
+      "8",
+      "0",
+      "151",
+      "01",
+      "11",
+      "5",
+      "16",
+      "02",
+      "8",
+      "0",
+      "16",
+      "3",
+      "3",
+      "3",
+      "03",
+      "151",
+      "151",
+      "5",
+      "3",
+      "04",
+      "3",
+      "2",
+      "32",
+      "16",
+      "32",
+      "8",
+      "8",
+      "0",
+      "05",
+      "0",
+      "100",
+      "78",
+      "78",
+      "100",
+      "06",
+      "07"
+    ],
+    "violations": []
+  },
+  {
+    "route": "run",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "8-0 CHALLENGE, CLASSIC\n4-2-3-1\nRECORD W-D-L\n3-0-2\nOUT IN THE ROUND OF 16\nTEAM SCORE\n593\nSHARE\nDOWNLOAD IMAGE\nPLAY YOUR OWN\nTHE CUP\nG1\nGROUP MATCH 1\nWIN\nYOU\n6-0\nGOLDENROD UNITED\nYOU\n593\nOPP\n266\n12' Skiploom, assist Lurantis\n30' Zeraora (pen)\n52' Zeraora, assist Skiploom\n55' Tapu Koko, assist Skiploom\n64' Lurantis\n79' Talonflame, assist Zeraora\n\nBeat Goldenrod United 6-0.\n\nSkiploom scores in the 12th minute, set up by Lurantis.\n\nZeraora scores from the spot in the 30th minute.\n\nZeraora finishes in the 52nd minute after a pass from Skiploom.\n\nTapu Koko scores in the 55th minute, set up by Skiploom.\n\nLurantis scores in the 64th minute.\n\nTalonflame finishes in the 79th minute after a pass from Zeraora.\n\nG2\nGROUP MATCH 2\nWIN\nYOU\n4-0\nVEILSTONE UNITED\nYOU\n593\nOPP\n291\n25' Talonflame, assist Zeraora\n26' Zeraora\n40' Lurantis\n56' Zeraora\n\nA 4-0 win over Veilstone United.\n\nZeraora sets up Talonflame in the 25th minute.\n\nZeraora scores in the 26th minute.\n\nLurantis finds the net in the 40th minute.\n\nZeraora scores in the 56th minute.\n\nG3\nGROUP MATCH 3\nLOSS\nYOU\n0-1\nSANTALUNE TOWN\nYOU\n593\nOPP\n366\n7' No. 5\n\nLost 1-0 to Santalune Town.\n\nR32\nROUND OF 32\nWIN\nYOU\n6-0\nSHALOUR CITY\nYOU\n593\nOPP\n478\n4' Zeraora\n22' Zeraora, assist Tapu Koko\n41' Zeraora, assist Togepi\n46' Talonflame, assist Ludicolo\n50' Zeraora\n83' Zeraora, assist Talonflame\n\nA 6-0 win over Shalour City.\n\nZeraora finds the net in the 4th minute.\n\nTapu Koko sets up Zeraora in the 22nd minute.\n\nZeraora finishes in the 41st minute after a pass from Togepi.\n\nTalonflame scores in the 46th minute, set up by Ludicolo.\n\nZeraora finds the net in the 50th minute.\n\nZeraora finishes in the 83rd minute after a pass from Talonflame.\n\nR16\nROUND OF 16\nLOSS\nYOU\n0-2\nCOUMARINE UNITED\nYOU\n593\nOPP\n613\n54' No. 9\n57' No. 9\n\nLost 2-0 to Coumarine United.\n\nOUT IN THE ROUND OF 16\n\nQF\nQUARTER-FINAL\nNOT PLAYED\n\nLUMIOSE FC\n\nOPP\n749\nSF\nSEMI-FINAL\nNOT PLAYED\n\nSLATEPORT UNITED\n\nOPP\n850\nFINAL\nFINAL\nNOT PLAYED\n\nLEVINCIA CITY\n\nOPP\n976\nGROUP TABLE\nTeam\tP\tW\tD\tL\tGF\tGA\tPts\n1Your team\t3\t2\t0\t1\t10\t1\t6\n2Santalune Town\t3\t2\t0\t1\t5\t2\t6\n3Goldenrod United\t3\t1\t0\t2\t4\t10\t3\n4Veilstone United\t3\t1\t0\t2\t3\t9\t3\n\nTop two go through to the Round of 32.\n\nAWARDS\nGOLDEN BOOT\nZERAORA\n9 goals\nTOP ASSISTER\nZERAORA\n2 assists\nPLAYER OF THE TOURNAMENT\nZERAORA\n9 G, 2 A, 5 apps\n33.5 pts: goals 27, assists 4, clean sheets 0, minutes 2.5\nHOW THE ELEVEN FIT\nGK\nToxtricity\nLB\nRoselia\nLCB\nLudicolo\nRCB\nDragalge\nRB\nCroagunk\nLDM\nLurantis\nRDM\nTapu Koko\nLAM\nTogepi\nCAM\nTalonflame\nRAM\nSkiploom\nST\nZeraora\nBENCH\nSUB 1\nKommo-o\nSUB 2\nCarbink\nSUB 3\nMaschiff\nSUB 4\nZapdos\nSUB 5\nDuraludon\nSynergy link between neighbours\nWeak spot: one of the 3 lowest ratings\nGK\nToxtricity\nOUT OF POSITION\n63\nvs other keepers\nQuality 63, better than about 63 of every 100 other keepers\n+ finishing\n+ kicking technique\n+ aggression\n+ passing\n- discipline\n- acceleration\nSCOUTING NOTES\nLB\nRoselia\nOUT OF POSITION\nWEAK SPOT\n34\nvs other FBs\nQuality 34, better than about 34 of every 100 other FBs\n+ passing\n+ vision\n+ agility\n- strength\n- size\nSCOUTING NOTES\nLCB\nLudicolo\nOUT OF POSITION\n64\nvs other CBs\nQuality 64, better than about 64 of every 100 other CBs\n+ stamina\n+ passing\n+ balance\n+ vision\n- pace\n- acceleration\nSCOUTING NOTES\nRCB\nDragalge\n74\nvs other CBs\nQuality 74, better than about 74 of every 100 other CBs\n+ vision\n+ positioning\n+ durability\n- pace\n- acceleration\nSCOUTING NOTES\nRB\nCroagunk\nOUT OF POSITION\nWEAK SPOT\n10\nvs other FBs\nQuality 10, better than about 10 of every 100 other FBs\n+ footwork\n+ unpredictability\n- strength\n- stamina\nSCOUTING NOTES\nLDM\nLurantis\n75\nvs other DMs\nQuality 75, better than about 75 of every 100 other DMs\n+ limb reach\n+ tackling\n+ kicking technique\n- pace\n- acceleration\nSCOUTING NOTES\nRDM\nTapu Koko\nOUT OF POSITION\n69\nvs other DMs\nQuality 69, better than about 69 of every 100 other DMs\n+ pace\n+ acceleration\n+ aggression\n- stamina\n- durability\n- footwork\nSCOUTING NOTES\nLAM\nTogepi\nWEAK SPOT\n9\nvs other AMs\nQuality 9, better than about 9 of every 100 other AMs\n+ durability\n+ teamwork\n- pace\n- size\n- strength\nSCOUTING NOTES\nCAM\nTalonflame\nOUT OF POSITION\n74\nvs other AMs\nQuality 74, better than about 74 of every 100 other AMs\n+ pace\n+ acceleration\n+ flight\n- handling\n- close control\nSCOUTING NOTES\nRAM\nSkiploom\nOUT OF POSITION\n38\nvs other AMs\nQuality 38, better than about 38 of every 100 other AMs\n+ acceleration\n+ agility\n- strength\n- size\n- close control\nSCOUTING NOTES\nST\nZeraora\n100\nvs other strikers\nQuality 100, better than about 100 of every 100 other strikers\n+ pace\n+ acceleration\n+ dribbling\n+ finishing\n- marking\n- durability\nSCOUTING NOTES\nSEASON DETAILS: HOW GRADING WORKS",
+    "numbers": [
+      "8",
+      "0",
+      "4",
+      "2",
+      "3",
+      "1",
+      "3",
+      "0",
+      "2",
+      "16",
+      "593",
+      "1",
+      "1",
+      "6",
+      "0",
+      "593",
+      "266",
+      "12",
+      "30",
+      "52",
+      "55",
+      "64",
+      "79",
+      "6",
+      "0",
+      "12",
+      "30",
+      "52",
+      "55",
+      "64",
+      "79",
+      "2",
+      "2",
+      "4",
+      "0",
+      "593",
+      "291",
+      "25",
+      "26",
+      "40",
+      "56",
+      "4",
+      "0",
+      "25",
+      "26",
+      "40",
+      "56",
+      "3",
+      "3",
+      "0",
+      "1",
+      "593",
+      "366",
+      "7",
+      "5",
+      "1",
+      "0",
+      "32",
+      "32",
+      "6",
+      "0",
+      "593",
+      "478",
+      "4",
+      "22",
+      "41",
+      "46",
+      "50",
+      "83",
+      "6",
+      "0",
+      "4",
+      "22",
+      "41",
+      "46",
+      "50",
+      "83",
+      "16",
+      "16",
+      "0",
+      "2",
+      "593",
+      "613",
+      "54",
+      "9",
+      "57",
+      "9",
+      "2",
+      "0",
+      "16",
+      "749",
+      "850",
+      "976",
+      "1",
+      "3",
+      "2",
+      "0",
+      "1",
+      "10",
+      "1",
+      "6",
+      "2",
+      "3",
+      "2",
+      "0",
+      "1",
+      "5",
+      "2",
+      "6",
+      "3",
+      "3",
+      "1",
+      "0",
+      "2",
+      "4",
+      "10",
+      "3",
+      "4",
+      "3",
+      "1",
+      "0",
+      "2",
+      "3",
+      "9",
+      "3",
+      "32",
+      "9",
+      "2",
+      "9",
+      "2",
+      "5",
+      "33.5",
+      "27",
+      "4",
+      "0",
+      "2.5",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "3",
+      "63",
+      "63",
+      "63",
+      "100",
+      "34",
+      "34",
+      "34",
+      "100",
+      "64",
+      "64",
+      "64",
+      "100",
+      "74",
+      "74",
+      "74",
+      "100",
+      "10",
+      "10",
+      "10",
+      "100",
+      "75",
+      "75",
+      "75",
+      "100",
+      "69",
+      "69",
+      "69",
+      "100",
+      "9",
+      "9",
+      "9",
+      "100",
+      "74",
+      "74",
+      "74",
+      "100",
+      "38",
+      "38",
+      "38",
+      "100",
+      "100",
+      "100",
+      "100",
+      "100"
+    ],
+    "violations": []
+  },
+  {
+    "route": "not-found",
+    "width": 390,
+    "theme": "dark",
+    "status": 404,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PAGE NOT FOUND\n\nThere is nothing at this address.\n\nBACK TO THE START",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "gate",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      }
+    ],
+    "text": "POKEDRAFT IS FRIENDS ONLY\n\nAsk the group for the passcode. You only need it once on this device.\n\nFRIENDS PASSCODE\nENTER",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "missing-replay",
+    "width": 390,
+    "theme": "dark",
+    "status": 404,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RUN NOT FOUND\n\nThis run link is broken or from an older version.\n\nPLAY A NEW RUN",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "home",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PLAY\nPLAY 8-0 CHALLENGE\nPLAY 151 CHALLENGE\n\nChallenge runs keep ratings hidden.\n\nSETUP\nFORMATION\n4-3-3\n4-4-2\n4-2-3-1\n4-1-4-1\n3-5-2\n3-4-3\n3-4-2-1\n5-3-2\nGENERATIONS\nALL\nGEN 1 KANTO\nGEN 2 JOHTO\nGEN 3 HOENN\nGEN 4 SINNOH\nGEN 5 UNOVA\nGEN 6 KALOS\nGEN 7 ALOLA\nGEN 8 GALAR\nGEN 9 PALDEA\nRULES\nDRAFT STYLE\nOPEN\nCLASSIC\nORDER\nSQUAD FIRST\nPOSITION FIRST\nLegendaries\nBuilder pool\nShow ratings (builder)\nCasual sighted mode\nYOUR RECORDS\nMODE\tBEST SCORE\tBEST RECORD\tRUNS\n8-0 Challenge, Open\tNone yet\n8-0 Challenge, Classic\tNone yet\n151 Challenge\tNone yet\nFriendly (not ranked)\tNone yet\n\nFRIENDLY BUILDER\n\nBUILD YOUR XI\n0/16\nFill all 16 to see your Team Score\n+\nGK\n+\nLB\n+\nLCB\n+\nRCB\n+\nRB\n+\nCDM\n+\nLCM\n+\nRCM\n+\nLW\n+\nST\n+\nRW\nBENCH\n+\nSUB 1\n+\nSUB 2\n+\nSUB 3\n+\nSUB 4\n+\nSUB 5\nRANDOMIZE\nCLEAR ALL\nRESET\nDOWNLOAD IMAGE\nCOPY LINK\n\nPLAY A FRIENDLY CUP\nFriendly (not ranked)",
+    "numbers": [
+      "8",
+      "0",
+      "151",
+      "4",
+      "3",
+      "3",
+      "4",
+      "4",
+      "2",
+      "4",
+      "2",
+      "3",
+      "1",
+      "4",
+      "1",
+      "4",
+      "1",
+      "3",
+      "5",
+      "2",
+      "3",
+      "4",
+      "3",
+      "3",
+      "4",
+      "2",
+      "1",
+      "5",
+      "3",
+      "2",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "8",
+      "0",
+      "8",
+      "0",
+      "151",
+      "0",
+      "16",
+      "16",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "violations": []
+  },
+  {
+    "route": "play",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      }
+    ],
+    "text": "THAT CHALLENGE LINK DOES NOT WORK\n\nSome of its settings are missing or unknown. Pick a challenge from the home page.\n\nBACK HOME",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "daily",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "DAILY CHALLENGE, SUNDAY, OCTOBER 11, 2026\nDAILY 8-0 CHALLENGE\n\nEveryone plays the same seed today, and your run can go on the daily board. 16 rounds. Each round the wheel rolls, you sign one player and place them. Then your squad plays the cup.\n\nFORMATION\n4-3-3\nREGIONS\nALL REGIONS\nSTYLE\nOPEN\nORDER\nSQUAD FIRST\nSTART RUN\nROAD TO THE FINAL\nYOUR OPPONENTS\n292\nG1\nGroup match 1, Hammerlocke Rovers, rating 292\n312\nG2\nGroup match 2, Wyndon FC, rating 312\n365\nG3\nGroup match 3, Mauville City, rating 365\n471\nR32\nRound of 32, Canalave Athletic, rating 471\n614\nR16\nRound of 16, Jubilife FC, rating 614\n732\nQF\nQuarter-final, Lilycove Athletic, rating 732\n846\nSF\nSemi-final, Hau'oli City, rating 846\n984\nFINAL\nFinal, Opelucid Rovers, rating 984\n\nOpponent ratings climb. The group stage is the gentle start; every knockout round is a step up, and the Final is the hardest test.",
+    "numbers": [
+      "11",
+      "2026",
+      "8",
+      "0",
+      "16",
+      "4",
+      "3",
+      "3",
+      "292",
+      "1",
+      "1",
+      "292",
+      "312",
+      "2",
+      "2",
+      "312",
+      "365",
+      "3",
+      "3",
+      "365",
+      "471",
+      "32",
+      "32",
+      "471",
+      "614",
+      "16",
+      "16",
+      "614",
+      "732",
+      "732",
+      "846",
+      "846",
+      "984",
+      "984"
+    ],
+    "violations": []
+  },
+  {
+    "route": "leaderboard",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RANKED RUNS\nLEADERBOARD\nDAILY\nALL-TIME\nDATE\n\nDaily 8-0 Challenge for Sunday, October 11, 2026 (today). Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top 50.\n\nNo entries yet. Finish a run and submit it to claim the top spot.\n\nPLAY THE DAILY",
+    "numbers": [
+      "8",
+      "0",
+      "11",
+      "2026",
+      "50"
+    ],
+    "violations": []
+  },
+  {
+    "route": "history",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "THIS DEVICE\nYOUR LAST 50 RUNS\n\nNo runs yet. Finished runs on this device show up here.\n\nSTART A RUN",
+    "numbers": [
+      "50"
+    ],
+    "violations": []
+  },
+  {
+    "route": "how-to-play",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RULES OF THE GAME\nHOW TO PLAY\n\nDraft Pokémon into a soccer formation, get a Team Score, and take your squad through an 8-game cup.\n\nTHE BUILDER\nTHE 8-0 CHALLENGE\nTHE 151 CHALLENGE\nTHE CUP\nTEAM SCORE\nFAIR ROLLS\nFRIENDLIES\n01\nTHE BUILDER\n\nPick a formation and fill all 11 starting spots and 5 bench spots with Pokémon from the generations you switch on. Legendary and Mythical Pokémon stay out until you switch on Legendaries in the settings. You can swap players around, clear a spot, or start over.\n\nOnce all 16 spots are filled you get a Team Score and can play a friendly cup with that squad.\n\n02\nTHE 8-0 CHALLENGE\n\nEvery round the game rolls a region and then a type, for example Johto and Water. You draft one Pokémon that matches both, then the next round rolls again, until all 16 spots are filled.\n\nIn Open you can take any Pokémon that matches the roll. In Classic you choose from just 3 offered. Open is easier than Classic. Your records keep them apart, but the all-time leaderboard ranks every draft setting together and names each run's settings on its row.\n\nA squad can hold at most 3 Legendary or Mythical Pokémon. After the third, they stop appearing in rolls.\n\nYou get 3 rerolls for the whole run. Reroll the type to get a different type in the same region. Reroll the region to get a different region, and the type is rolled again, so it can come up the same.\n\nSquad First shows you the roll and lets you choose which spot to fill. Position First makes you commit to a spot before you see the roll.\n\n03\nTHE 151 CHALLENGE\n\nOnly the original 151. Each round rolls a single Pokémon and you place it in your squad. You get 5 rerolls for the whole run. The same cap of 3 Legendary or Mythical Pokémon applies.\n\n04\nTHE CUP\n\nYour squad plays 3 group games. The top 2 in the group go through to the Round of 32, then the Round of 16, the quarter-final, the semi-final and the Final.\n\nThe group games are the gentle start. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test. Win all 8 games for a flawless 8-0.\n\nPlayers can miss a match. When that happens someone from the bench comes in for that game.\n\n05\nTEAM SCORE\n\nTeam Score sums up how good your squad is. It mostly comes from how well each player suits the spot they play, so a natural striker up front beats a goalkeeper played out of position.\n\nOn the results screen each player gets a rating from 0 to 100 for their spot. It ranks them against every other Pokémon for that job, so 78 vs other CBs means better than about 78 of every 100 other CBs. The three lowest ratings in your eleven are flagged as weak spots.\n\nEach line counts, your weak spots pull the score down, and neighbours who link up (shared type, same evolution line, same generation, or covering each other's weaknesses) add a bonus. A strong bench helps a little too.\n\n06\nFAIR ROLLS\n\nEvery roll comes from the run's seed, decided before anything spins. The wheel only shows a result the game already decided, and a shared run link replays exactly the same draft and cup for anyone who opens it.\n\n07\nFRIENDLIES\n\nCups played from the builder are friendlies. They are marked Friendly (not ranked) and are kept apart from your challenge stats.\n\nSTART DRAFTING",
+    "numbers": [
+      "8",
+      "8",
+      "0",
+      "151",
+      "01",
+      "11",
+      "5",
+      "16",
+      "02",
+      "8",
+      "0",
+      "16",
+      "3",
+      "3",
+      "3",
+      "03",
+      "151",
+      "151",
+      "5",
+      "3",
+      "04",
+      "3",
+      "2",
+      "32",
+      "16",
+      "32",
+      "8",
+      "8",
+      "0",
+      "05",
+      "0",
+      "100",
+      "78",
+      "78",
+      "100",
+      "06",
+      "07"
+    ],
+    "violations": []
+  },
+  {
+    "route": "run",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      }
+    ],
+    "text": "8-0 CHALLENGE, CLASSIC\n4-2-3-1\nRECORD W-D-L\n3-0-2\nOUT IN THE ROUND OF 16\nTEAM SCORE\n593\nSHARE\nDOWNLOAD IMAGE\nPLAY YOUR OWN\nTHE CUP\nG1\nGROUP MATCH 1\nWIN\nYOU\n6-0\nGOLDENROD UNITED\nYOU\n593\nOPP\n266\n12' Skiploom, assist Lurantis\n30' Zeraora (pen)\n52' Zeraora, assist Skiploom\n55' Tapu Koko, assist Skiploom\n64' Lurantis\n79' Talonflame, assist Zeraora\n\nBeat Goldenrod United 6-0.\n\nSkiploom scores in the 12th minute, set up by Lurantis.\n\nZeraora scores from the spot in the 30th minute.\n\nZeraora finishes in the 52nd minute after a pass from Skiploom.\n\nTapu Koko scores in the 55th minute, set up by Skiploom.\n\nLurantis scores in the 64th minute.\n\nTalonflame finishes in the 79th minute after a pass from Zeraora.\n\nG2\nGROUP MATCH 2\nWIN\nYOU\n4-0\nVEILSTONE UNITED\nYOU\n593\nOPP\n291\n25' Talonflame, assist Zeraora\n26' Zeraora\n40' Lurantis\n56' Zeraora\n\nA 4-0 win over Veilstone United.\n\nZeraora sets up Talonflame in the 25th minute.\n\nZeraora scores in the 26th minute.\n\nLurantis finds the net in the 40th minute.\n\nZeraora scores in the 56th minute.\n\nG3\nGROUP MATCH 3\nLOSS\nYOU\n0-1\nSANTALUNE TOWN\nYOU\n593\nOPP\n366\n7' No. 5\n\nLost 1-0 to Santalune Town.\n\nR32\nROUND OF 32\nWIN\nYOU\n6-0\nSHALOUR CITY\nYOU\n593\nOPP\n478\n4' Zeraora\n22' Zeraora, assist Tapu Koko\n41' Zeraora, assist Togepi\n46' Talonflame, assist Ludicolo\n50' Zeraora\n83' Zeraora, assist Talonflame\n\nA 6-0 win over Shalour City.\n\nZeraora finds the net in the 4th minute.\n\nTapu Koko sets up Zeraora in the 22nd minute.\n\nZeraora finishes in the 41st minute after a pass from Togepi.\n\nTalonflame scores in the 46th minute, set up by Ludicolo.\n\nZeraora finds the net in the 50th minute.\n\nZeraora finishes in the 83rd minute after a pass from Talonflame.\n\nR16\nROUND OF 16\nLOSS\nYOU\n0-2\nCOUMARINE UNITED\nYOU\n593\nOPP\n613\n54' No. 9\n57' No. 9\n\nLost 2-0 to Coumarine United.\n\nOUT IN THE ROUND OF 16\n\nQF\nQUARTER-FINAL\nNOT PLAYED\n\nLUMIOSE FC\n\nOPP\n749\nSF\nSEMI-FINAL\nNOT PLAYED\n\nSLATEPORT UNITED\n\nOPP\n850\nFINAL\nFINAL\nNOT PLAYED\n\nLEVINCIA CITY\n\nOPP\n976\nGROUP TABLE\nTeam\tP\tW\tD\tL\tGF\tGA\tPts\n1Your team\t3\t2\t0\t1\t10\t1\t6\n2Santalune Town\t3\t2\t0\t1\t5\t2\t6\n3Goldenrod United\t3\t1\t0\t2\t4\t10\t3\n4Veilstone United\t3\t1\t0\t2\t3\t9\t3\n\nTop two go through to the Round of 32.\n\nAWARDS\nGOLDEN BOOT\nZERAORA\n9 goals\nTOP ASSISTER\nZERAORA\n2 assists\nPLAYER OF THE TOURNAMENT\nZERAORA\n9 G, 2 A, 5 apps\n33.5 pts: goals 27, assists 4, clean sheets 0, minutes 2.5\nHOW THE ELEVEN FIT\nGK\nToxtricity\nLB\nRoselia\nLCB\nLudicolo\nRCB\nDragalge\nRB\nCroagunk\nLDM\nLurantis\nRDM\nTapu Koko\nLAM\nTogepi\nCAM\nTalonflame\nRAM\nSkiploom\nST\nZeraora\nBENCH\nSUB 1\nKommo-o\nSUB 2\nCarbink\nSUB 3\nMaschiff\nSUB 4\nZapdos\nSUB 5\nDuraludon\nSynergy link between neighbours\nWeak spot: one of the 3 lowest ratings\nGK\nToxtricity\nOUT OF POSITION\n63\nvs other keepers\nQuality 63, better than about 63 of every 100 other keepers\n+ finishing\n+ kicking technique\n+ aggression\n+ passing\n- discipline\n- acceleration\nSCOUTING NOTES\nLB\nRoselia\nOUT OF POSITION\nWEAK SPOT\n34\nvs other FBs\nQuality 34, better than about 34 of every 100 other FBs\n+ passing\n+ vision\n+ agility\n- strength\n- size\nSCOUTING NOTES\nLCB\nLudicolo\nOUT OF POSITION\n64\nvs other CBs\nQuality 64, better than about 64 of every 100 other CBs\n+ stamina\n+ passing\n+ balance\n+ vision\n- pace\n- acceleration\nSCOUTING NOTES\nRCB\nDragalge\n74\nvs other CBs\nQuality 74, better than about 74 of every 100 other CBs\n+ vision\n+ positioning\n+ durability\n- pace\n- acceleration\nSCOUTING NOTES\nRB\nCroagunk\nOUT OF POSITION\nWEAK SPOT\n10\nvs other FBs\nQuality 10, better than about 10 of every 100 other FBs\n+ footwork\n+ unpredictability\n- strength\n- stamina\nSCOUTING NOTES\nLDM\nLurantis\n75\nvs other DMs\nQuality 75, better than about 75 of every 100 other DMs\n+ limb reach\n+ tackling\n+ kicking technique\n- pace\n- acceleration\nSCOUTING NOTES\nRDM\nTapu Koko\nOUT OF POSITION\n69\nvs other DMs\nQuality 69, better than about 69 of every 100 other DMs\n+ pace\n+ acceleration\n+ aggression\n- stamina\n- durability\n- footwork\nSCOUTING NOTES\nLAM\nTogepi\nWEAK SPOT\n9\nvs other AMs\nQuality 9, better than about 9 of every 100 other AMs\n+ durability\n+ teamwork\n- pace\n- size\n- strength\nSCOUTING NOTES\nCAM\nTalonflame\nOUT OF POSITION\n74\nvs other AMs\nQuality 74, better than about 74 of every 100 other AMs\n+ pace\n+ acceleration\n+ flight\n- handling\n- close control\nSCOUTING NOTES\nRAM\nSkiploom\nOUT OF POSITION\n38\nvs other AMs\nQuality 38, better than about 38 of every 100 other AMs\n+ acceleration\n+ agility\n- strength\n- size\n- close control\nSCOUTING NOTES\nST\nZeraora\n100\nvs other strikers\nQuality 100, better than about 100 of every 100 other strikers\n+ pace\n+ acceleration\n+ dribbling\n+ finishing\n- marking\n- durability\nSCOUTING NOTES\nSEASON DETAILS: HOW GRADING WORKS",
+    "numbers": [
+      "8",
+      "0",
+      "4",
+      "2",
+      "3",
+      "1",
+      "3",
+      "0",
+      "2",
+      "16",
+      "593",
+      "1",
+      "1",
+      "6",
+      "0",
+      "593",
+      "266",
+      "12",
+      "30",
+      "52",
+      "55",
+      "64",
+      "79",
+      "6",
+      "0",
+      "12",
+      "30",
+      "52",
+      "55",
+      "64",
+      "79",
+      "2",
+      "2",
+      "4",
+      "0",
+      "593",
+      "291",
+      "25",
+      "26",
+      "40",
+      "56",
+      "4",
+      "0",
+      "25",
+      "26",
+      "40",
+      "56",
+      "3",
+      "3",
+      "0",
+      "1",
+      "593",
+      "366",
+      "7",
+      "5",
+      "1",
+      "0",
+      "32",
+      "32",
+      "6",
+      "0",
+      "593",
+      "478",
+      "4",
+      "22",
+      "41",
+      "46",
+      "50",
+      "83",
+      "6",
+      "0",
+      "4",
+      "22",
+      "41",
+      "46",
+      "50",
+      "83",
+      "16",
+      "16",
+      "0",
+      "2",
+      "593",
+      "613",
+      "54",
+      "9",
+      "57",
+      "9",
+      "2",
+      "0",
+      "16",
+      "749",
+      "850",
+      "976",
+      "1",
+      "3",
+      "2",
+      "0",
+      "1",
+      "10",
+      "1",
+      "6",
+      "2",
+      "3",
+      "2",
+      "0",
+      "1",
+      "5",
+      "2",
+      "6",
+      "3",
+      "3",
+      "1",
+      "0",
+      "2",
+      "4",
+      "10",
+      "3",
+      "4",
+      "3",
+      "1",
+      "0",
+      "2",
+      "3",
+      "9",
+      "3",
+      "32",
+      "9",
+      "2",
+      "9",
+      "2",
+      "5",
+      "33.5",
+      "27",
+      "4",
+      "0",
+      "2.5",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "3",
+      "63",
+      "63",
+      "63",
+      "100",
+      "34",
+      "34",
+      "34",
+      "100",
+      "64",
+      "64",
+      "64",
+      "100",
+      "74",
+      "74",
+      "74",
+      "100",
+      "10",
+      "10",
+      "10",
+      "100",
+      "75",
+      "75",
+      "75",
+      "100",
+      "69",
+      "69",
+      "69",
+      "100",
+      "9",
+      "9",
+      "9",
+      "100",
+      "74",
+      "74",
+      "74",
+      "100",
+      "38",
+      "38",
+      "38",
+      "100",
+      "100",
+      "100",
+      "100",
+      "100"
+    ],
+    "violations": []
+  },
+  {
+    "route": "not-found",
+    "width": 1440,
+    "theme": "light",
+    "status": 404,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PAGE NOT FOUND\n\nThere is nothing at this address.\n\nBACK TO THE START",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "gate",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "POKEDRAFT IS FRIENDS ONLY\n\nAsk the group for the passcode. You only need it once on this device.\n\nFRIENDS PASSCODE\nENTER",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "missing-replay",
+    "width": 1440,
+    "theme": "light",
+    "status": 404,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RUN NOT FOUND\n\nThis run link is broken or from an older version.\n\nPLAY A NEW RUN",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "home",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PLAY\nPLAY 8-0 CHALLENGE\nPLAY 151 CHALLENGE\n\nChallenge runs keep ratings hidden.\n\nSETUP\nFORMATION\n4-3-3\n4-4-2\n4-2-3-1\n4-1-4-1\n3-5-2\n3-4-3\n3-4-2-1\n5-3-2\nGENERATIONS\nALL\nGEN 1 KANTO\nGEN 2 JOHTO\nGEN 3 HOENN\nGEN 4 SINNOH\nGEN 5 UNOVA\nGEN 6 KALOS\nGEN 7 ALOLA\nGEN 8 GALAR\nGEN 9 PALDEA\nRULES\nDRAFT STYLE\nOPEN\nCLASSIC\nORDER\nSQUAD FIRST\nPOSITION FIRST\nLegendaries\nBuilder pool\nShow ratings (builder)\nCasual sighted mode\nYOUR RECORDS\nMODE\tBEST SCORE\tBEST RECORD\tRUNS\n8-0 Challenge, Open\tNone yet\n8-0 Challenge, Classic\tNone yet\n151 Challenge\tNone yet\nFriendly (not ranked)\tNone yet\n\nFRIENDLY BUILDER\n\nBUILD YOUR XI\n0/16\nFill all 16 to see your Team Score\n+\nGK\n+\nLB\n+\nLCB\n+\nRCB\n+\nRB\n+\nCDM\n+\nLCM\n+\nRCM\n+\nLW\n+\nST\n+\nRW\nBENCH\n+\nSUB 1\n+\nSUB 2\n+\nSUB 3\n+\nSUB 4\n+\nSUB 5\nRANDOMIZE\nCLEAR ALL\nRESET\nDOWNLOAD IMAGE\nCOPY LINK\n\nPLAY A FRIENDLY CUP\nFriendly (not ranked)",
+    "numbers": [
+      "8",
+      "0",
+      "151",
+      "4",
+      "3",
+      "3",
+      "4",
+      "4",
+      "2",
+      "4",
+      "2",
+      "3",
+      "1",
+      "4",
+      "1",
+      "4",
+      "1",
+      "3",
+      "5",
+      "2",
+      "3",
+      "4",
+      "3",
+      "3",
+      "4",
+      "2",
+      "1",
+      "5",
+      "3",
+      "2",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "8",
+      "0",
+      "8",
+      "0",
+      "151",
+      "0",
+      "16",
+      "16",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "violations": []
+  },
+  {
+    "route": "play",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "THAT CHALLENGE LINK DOES NOT WORK\n\nSome of its settings are missing or unknown. Pick a challenge from the home page.\n\nBACK HOME",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "daily",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "DAILY CHALLENGE, SUNDAY, OCTOBER 11, 2026\nDAILY 8-0 CHALLENGE\n\nEveryone plays the same seed today, and your run can go on the daily board. 16 rounds. Each round the wheel rolls, you sign one player and place them. Then your squad plays the cup.\n\nFORMATION\n4-3-3\nREGIONS\nALL REGIONS\nSTYLE\nOPEN\nORDER\nSQUAD FIRST\nSTART RUN\nROAD TO THE FINAL\nYOUR OPPONENTS\n292\nG1\nGroup match 1, Hammerlocke Rovers, rating 292\n312\nG2\nGroup match 2, Wyndon FC, rating 312\n365\nG3\nGroup match 3, Mauville City, rating 365\n471\nR32\nRound of 32, Canalave Athletic, rating 471\n614\nR16\nRound of 16, Jubilife FC, rating 614\n732\nQF\nQuarter-final, Lilycove Athletic, rating 732\n846\nSF\nSemi-final, Hau'oli City, rating 846\n984\nFINAL\nFinal, Opelucid Rovers, rating 984\n\nOpponent ratings climb. The group stage is the gentle start; every knockout round is a step up, and the Final is the hardest test.",
+    "numbers": [
+      "11",
+      "2026",
+      "8",
+      "0",
+      "16",
+      "4",
+      "3",
+      "3",
+      "292",
+      "1",
+      "1",
+      "292",
+      "312",
+      "2",
+      "2",
+      "312",
+      "365",
+      "3",
+      "3",
+      "365",
+      "471",
+      "32",
+      "32",
+      "471",
+      "614",
+      "16",
+      "16",
+      "614",
+      "732",
+      "732",
+      "846",
+      "846",
+      "984",
+      "984"
+    ],
+    "violations": []
+  },
+  {
+    "route": "leaderboard",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RANKED RUNS\nLEADERBOARD\nDAILY\nALL-TIME\nDATE\n\nDaily 8-0 Challenge for Sunday, October 11, 2026 (today). Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top 50.\n\nNo entries yet. Finish a run and submit it to claim the top spot.\n\nPLAY THE DAILY",
+    "numbers": [
+      "8",
+      "0",
+      "11",
+      "2026",
+      "50"
+    ],
+    "violations": []
+  },
+  {
+    "route": "history",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "THIS DEVICE\nYOUR LAST 50 RUNS\n\nNo runs yet. Finished runs on this device show up here.\n\nSTART A RUN",
+    "numbers": [
+      "50"
+    ],
+    "violations": []
+  },
+  {
+    "route": "how-to-play",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RULES OF THE GAME\nHOW TO PLAY\n\nDraft Pokémon into a soccer formation, get a Team Score, and take your squad through an 8-game cup.\n\nTHE BUILDER\nTHE 8-0 CHALLENGE\nTHE 151 CHALLENGE\nTHE CUP\nTEAM SCORE\nFAIR ROLLS\nFRIENDLIES\n01\nTHE BUILDER\n\nPick a formation and fill all 11 starting spots and 5 bench spots with Pokémon from the generations you switch on. Legendary and Mythical Pokémon stay out until you switch on Legendaries in the settings. You can swap players around, clear a spot, or start over.\n\nOnce all 16 spots are filled you get a Team Score and can play a friendly cup with that squad.\n\n02\nTHE 8-0 CHALLENGE\n\nEvery round the game rolls a region and then a type, for example Johto and Water. You draft one Pokémon that matches both, then the next round rolls again, until all 16 spots are filled.\n\nIn Open you can take any Pokémon that matches the roll. In Classic you choose from just 3 offered. Open is easier than Classic. Your records keep them apart, but the all-time leaderboard ranks every draft setting together and names each run's settings on its row.\n\nA squad can hold at most 3 Legendary or Mythical Pokémon. After the third, they stop appearing in rolls.\n\nYou get 3 rerolls for the whole run. Reroll the type to get a different type in the same region. Reroll the region to get a different region, and the type is rolled again, so it can come up the same.\n\nSquad First shows you the roll and lets you choose which spot to fill. Position First makes you commit to a spot before you see the roll.\n\n03\nTHE 151 CHALLENGE\n\nOnly the original 151. Each round rolls a single Pokémon and you place it in your squad. You get 5 rerolls for the whole run. The same cap of 3 Legendary or Mythical Pokémon applies.\n\n04\nTHE CUP\n\nYour squad plays 3 group games. The top 2 in the group go through to the Round of 32, then the Round of 16, the quarter-final, the semi-final and the Final.\n\nThe group games are the gentle start. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test. Win all 8 games for a flawless 8-0.\n\nPlayers can miss a match. When that happens someone from the bench comes in for that game.\n\n05\nTEAM SCORE\n\nTeam Score sums up how good your squad is. It mostly comes from how well each player suits the spot they play, so a natural striker up front beats a goalkeeper played out of position.\n\nOn the results screen each player gets a rating from 0 to 100 for their spot. It ranks them against every other Pokémon for that job, so 78 vs other CBs means better than about 78 of every 100 other CBs. The three lowest ratings in your eleven are flagged as weak spots.\n\nEach line counts, your weak spots pull the score down, and neighbours who link up (shared type, same evolution line, same generation, or covering each other's weaknesses) add a bonus. A strong bench helps a little too.\n\n06\nFAIR ROLLS\n\nEvery roll comes from the run's seed, decided before anything spins. The wheel only shows a result the game already decided, and a shared run link replays exactly the same draft and cup for anyone who opens it.\n\n07\nFRIENDLIES\n\nCups played from the builder are friendlies. They are marked Friendly (not ranked) and are kept apart from your challenge stats.\n\nSTART DRAFTING",
+    "numbers": [
+      "8",
+      "8",
+      "0",
+      "151",
+      "01",
+      "11",
+      "5",
+      "16",
+      "02",
+      "8",
+      "0",
+      "16",
+      "3",
+      "3",
+      "3",
+      "03",
+      "151",
+      "151",
+      "5",
+      "3",
+      "04",
+      "3",
+      "2",
+      "32",
+      "16",
+      "32",
+      "8",
+      "8",
+      "0",
+      "05",
+      "0",
+      "100",
+      "78",
+      "78",
+      "100",
+      "06",
+      "07"
+    ],
+    "violations": []
+  },
+  {
+    "route": "run",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      }
+    ],
+    "text": "8-0 CHALLENGE, CLASSIC\n4-2-3-1\nRECORD W-D-L\n3-0-2\nOUT IN THE ROUND OF 16\nTEAM SCORE\n593\nSHARE\nDOWNLOAD IMAGE\nPLAY YOUR OWN\nTHE CUP\nG1\nGROUP MATCH 1\nWIN\nYOU\n6-0\nGOLDENROD UNITED\nYOU\n593\nOPP\n266\n12' Skiploom, assist Lurantis\n30' Zeraora (pen)\n52' Zeraora, assist Skiploom\n55' Tapu Koko, assist Skiploom\n64' Lurantis\n79' Talonflame, assist Zeraora\n\nBeat Goldenrod United 6-0.\n\nSkiploom scores in the 12th minute, set up by Lurantis.\n\nZeraora scores from the spot in the 30th minute.\n\nZeraora finishes in the 52nd minute after a pass from Skiploom.\n\nTapu Koko scores in the 55th minute, set up by Skiploom.\n\nLurantis scores in the 64th minute.\n\nTalonflame finishes in the 79th minute after a pass from Zeraora.\n\nG2\nGROUP MATCH 2\nWIN\nYOU\n4-0\nVEILSTONE UNITED\nYOU\n593\nOPP\n291\n25' Talonflame, assist Zeraora\n26' Zeraora\n40' Lurantis\n56' Zeraora\n\nA 4-0 win over Veilstone United.\n\nZeraora sets up Talonflame in the 25th minute.\n\nZeraora scores in the 26th minute.\n\nLurantis finds the net in the 40th minute.\n\nZeraora scores in the 56th minute.\n\nG3\nGROUP MATCH 3\nLOSS\nYOU\n0-1\nSANTALUNE TOWN\nYOU\n593\nOPP\n366\n7' No. 5\n\nLost 1-0 to Santalune Town.\n\nR32\nROUND OF 32\nWIN\nYOU\n6-0\nSHALOUR CITY\nYOU\n593\nOPP\n478\n4' Zeraora\n22' Zeraora, assist Tapu Koko\n41' Zeraora, assist Togepi\n46' Talonflame, assist Ludicolo\n50' Zeraora\n83' Zeraora, assist Talonflame\n\nA 6-0 win over Shalour City.\n\nZeraora finds the net in the 4th minute.\n\nTapu Koko sets up Zeraora in the 22nd minute.\n\nZeraora finishes in the 41st minute after a pass from Togepi.\n\nTalonflame scores in the 46th minute, set up by Ludicolo.\n\nZeraora finds the net in the 50th minute.\n\nZeraora finishes in the 83rd minute after a pass from Talonflame.\n\nR16\nROUND OF 16\nLOSS\nYOU\n0-2\nCOUMARINE UNITED\nYOU\n593\nOPP\n613\n54' No. 9\n57' No. 9\n\nLost 2-0 to Coumarine United.\n\nOUT IN THE ROUND OF 16\n\nQF\nQUARTER-FINAL\nNOT PLAYED\n\nLUMIOSE FC\n\nOPP\n749\nSF\nSEMI-FINAL\nNOT PLAYED\n\nSLATEPORT UNITED\n\nOPP\n850\nFINAL\nFINAL\nNOT PLAYED\n\nLEVINCIA CITY\n\nOPP\n976\nGROUP TABLE\nTeam\tP\tW\tD\tL\tGF\tGA\tPts\n1Your team\t3\t2\t0\t1\t10\t1\t6\n2Santalune Town\t3\t2\t0\t1\t5\t2\t6\n3Goldenrod United\t3\t1\t0\t2\t4\t10\t3\n4Veilstone United\t3\t1\t0\t2\t3\t9\t3\n\nTop two go through to the Round of 32.\n\nAWARDS\nGOLDEN BOOT\nZERAORA\n9 goals\nTOP ASSISTER\nZERAORA\n2 assists\nPLAYER OF THE TOURNAMENT\nZERAORA\n9 G, 2 A, 5 apps\n33.5 pts: goals 27, assists 4, clean sheets 0, minutes 2.5\nHOW THE ELEVEN FIT\nGK\nToxtricity\nLB\nRoselia\nLCB\nLudicolo\nRCB\nDragalge\nRB\nCroagunk\nLDM\nLurantis\nRDM\nTapu Koko\nLAM\nTogepi\nCAM\nTalonflame\nRAM\nSkiploom\nST\nZeraora\nBENCH\nSUB 1\nKommo-o\nSUB 2\nCarbink\nSUB 3\nMaschiff\nSUB 4\nZapdos\nSUB 5\nDuraludon\nSynergy link between neighbours\nWeak spot: one of the 3 lowest ratings\nGK\nToxtricity\nOUT OF POSITION\n63\nvs other keepers\nQuality 63, better than about 63 of every 100 other keepers\n+ finishing\n+ kicking technique\n+ aggression\n+ passing\n- discipline\n- acceleration\nSCOUTING NOTES\nLB\nRoselia\nOUT OF POSITION\nWEAK SPOT\n34\nvs other FBs\nQuality 34, better than about 34 of every 100 other FBs\n+ passing\n+ vision\n+ agility\n- strength\n- size\nSCOUTING NOTES\nLCB\nLudicolo\nOUT OF POSITION\n64\nvs other CBs\nQuality 64, better than about 64 of every 100 other CBs\n+ stamina\n+ passing\n+ balance\n+ vision\n- pace\n- acceleration\nSCOUTING NOTES\nRCB\nDragalge\n74\nvs other CBs\nQuality 74, better than about 74 of every 100 other CBs\n+ vision\n+ positioning\n+ durability\n- pace\n- acceleration\nSCOUTING NOTES\nRB\nCroagunk\nOUT OF POSITION\nWEAK SPOT\n10\nvs other FBs\nQuality 10, better than about 10 of every 100 other FBs\n+ footwork\n+ unpredictability\n- strength\n- stamina\nSCOUTING NOTES\nLDM\nLurantis\n75\nvs other DMs\nQuality 75, better than about 75 of every 100 other DMs\n+ limb reach\n+ tackling\n+ kicking technique\n- pace\n- acceleration\nSCOUTING NOTES\nRDM\nTapu Koko\nOUT OF POSITION\n69\nvs other DMs\nQuality 69, better than about 69 of every 100 other DMs\n+ pace\n+ acceleration\n+ aggression\n- stamina\n- durability\n- footwork\nSCOUTING NOTES\nLAM\nTogepi\nWEAK SPOT\n9\nvs other AMs\nQuality 9, better than about 9 of every 100 other AMs\n+ durability\n+ teamwork\n- pace\n- size\n- strength\nSCOUTING NOTES\nCAM\nTalonflame\nOUT OF POSITION\n74\nvs other AMs\nQuality 74, better than about 74 of every 100 other AMs\n+ pace\n+ acceleration\n+ flight\n- handling\n- close control\nSCOUTING NOTES\nRAM\nSkiploom\nOUT OF POSITION\n38\nvs other AMs\nQuality 38, better than about 38 of every 100 other AMs\n+ acceleration\n+ agility\n- strength\n- size\n- close control\nSCOUTING NOTES\nST\nZeraora\n100\nvs other strikers\nQuality 100, better than about 100 of every 100 other strikers\n+ pace\n+ acceleration\n+ dribbling\n+ finishing\n- marking\n- durability\nSCOUTING NOTES\nSEASON DETAILS: HOW GRADING WORKS",
+    "numbers": [
+      "8",
+      "0",
+      "4",
+      "2",
+      "3",
+      "1",
+      "3",
+      "0",
+      "2",
+      "16",
+      "593",
+      "1",
+      "1",
+      "6",
+      "0",
+      "593",
+      "266",
+      "12",
+      "30",
+      "52",
+      "55",
+      "64",
+      "79",
+      "6",
+      "0",
+      "12",
+      "30",
+      "52",
+      "55",
+      "64",
+      "79",
+      "2",
+      "2",
+      "4",
+      "0",
+      "593",
+      "291",
+      "25",
+      "26",
+      "40",
+      "56",
+      "4",
+      "0",
+      "25",
+      "26",
+      "40",
+      "56",
+      "3",
+      "3",
+      "0",
+      "1",
+      "593",
+      "366",
+      "7",
+      "5",
+      "1",
+      "0",
+      "32",
+      "32",
+      "6",
+      "0",
+      "593",
+      "478",
+      "4",
+      "22",
+      "41",
+      "46",
+      "50",
+      "83",
+      "6",
+      "0",
+      "4",
+      "22",
+      "41",
+      "46",
+      "50",
+      "83",
+      "16",
+      "16",
+      "0",
+      "2",
+      "593",
+      "613",
+      "54",
+      "9",
+      "57",
+      "9",
+      "2",
+      "0",
+      "16",
+      "749",
+      "850",
+      "976",
+      "1",
+      "3",
+      "2",
+      "0",
+      "1",
+      "10",
+      "1",
+      "6",
+      "2",
+      "3",
+      "2",
+      "0",
+      "1",
+      "5",
+      "2",
+      "6",
+      "3",
+      "3",
+      "1",
+      "0",
+      "2",
+      "4",
+      "10",
+      "3",
+      "4",
+      "3",
+      "1",
+      "0",
+      "2",
+      "3",
+      "9",
+      "3",
+      "32",
+      "9",
+      "2",
+      "9",
+      "2",
+      "5",
+      "33.5",
+      "27",
+      "4",
+      "0",
+      "2.5",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "3",
+      "63",
+      "63",
+      "63",
+      "100",
+      "34",
+      "34",
+      "34",
+      "100",
+      "64",
+      "64",
+      "64",
+      "100",
+      "74",
+      "74",
+      "74",
+      "100",
+      "10",
+      "10",
+      "10",
+      "100",
+      "75",
+      "75",
+      "75",
+      "100",
+      "69",
+      "69",
+      "69",
+      "100",
+      "9",
+      "9",
+      "9",
+      "100",
+      "74",
+      "74",
+      "74",
+      "100",
+      "38",
+      "38",
+      "38",
+      "100",
+      "100",
+      "100",
+      "100",
+      "100"
+    ],
+    "violations": []
+  },
+  {
+    "route": "not-found",
+    "width": 1440,
+    "theme": "dark",
+    "status": 404,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "PAGE NOT FOUND\n\nThere is nothing at this address.\n\nBACK TO THE START",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "gate",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      }
+    ],
+    "text": "POKEDRAFT IS FRIENDS ONLY\n\nAsk the group for the passcode. You only need it once on this device.\n\nFRIENDS PASSCODE\nENTER",
+    "numbers": [],
+    "violations": []
+  },
+  {
+    "route": "missing-replay",
+    "width": 1440,
+    "theme": "dark",
+    "status": 404,
+    "fonts": [
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/4b23c5ee480ee380-s.p.03770b9kexgeo.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/490cbca7f386131e-s.p.0f8t4j4kys524.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/520c929efec0b33f-s.p.16jy4dmn62u_j.woff2",
+        "status": 200
+      },
+      {
+        "url": "https://pokedraft-woad.vercel.app/_next/static/immutable/media/55cb69ad17a100ed.p.0kxvs4gr291h1.woff2",
+        "status": 200
+      }
+    ],
+    "text": "RUN NOT FOUND\n\nThis run link is broken or from an older version.\n\nPLAY A NEW RUN",
+    "numbers": [],
+    "violations": []
+  }
+]

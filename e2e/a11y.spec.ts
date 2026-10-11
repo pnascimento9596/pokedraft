@@ -42,12 +42,13 @@ const AXE_OPTIONS = {
 };
 
 // Rules that must be part of every scan, so an options edit cannot shrink the run unseen.
-const MUST_RUN = ["color-contrast", "target-size", "label-content-name-mismatch", "image-redundant-alt", "region"];
-
-// Violations a later dispatch 7 PR owns. This PR only adds tests, so each is matched by rule and
-// node markup, never by turning a rule off: the rule keeps guarding every other node. The PR that
-// fixes the finding deletes its entry.
-const KNOWN: readonly { finding: string; rule: string; html: RegExp }[] = [];
+const MUST_RUN = [
+  "color-contrast",
+  "target-size",
+  "label-content-name-mismatch",
+  "image-redundant-alt",
+  "region",
+];
 
 // axe cannot score text over the pitch grass, the results hero gradient or the creature images.
 // Those nodes land in "incomplete", and the manual contrast table in the audit covers them.
@@ -60,9 +61,7 @@ async function scan(page: Page): Promise<void> {
   );
   expect(MUST_RUN.filter((id) => !ran.has(id))).toEqual([]);
   const open = results.violations.flatMap((v) =>
-    v.nodes
-      .filter((n) => !KNOWN.some((k) => k.rule === v.id && k.html.test(n.html)))
-      .map((n) => `${v.id} (${v.impact}): ${n.target.join(" ")}`),
+    v.nodes.map((n) => `${v.id} (${v.impact}): ${n.target.join(" ")}`),
   );
   expect(open).toEqual([]);
 }
