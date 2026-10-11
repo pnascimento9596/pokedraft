@@ -23,6 +23,8 @@ import { FRIENDLY_LABEL, qualityScore, versusLabel } from "@/ui/labels";
 import { BUILDER_URL_SEED, emptyLineup, filledCount, refKey, valueAt } from "@/ui/lineup";
 import { freshSeed } from "@/ui/settings";
 import { CASCADE_TOTAL_MS, cascadeFrame, fullLineup } from "./model";
+import { ModuleCard } from "@/components/ui/primitives";
+import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./Builder.module.css";
 
 export type BuilderEngine = typeof import("./live");
@@ -215,124 +217,134 @@ export function Builder({
       onPointerDown={preload}
       onFocus={preload}
     >
-      <div className={s.bar}>
-        <div className={s.titleBlock}>
-          <p className="kicker">Friendly builder</p>
-          <h1 className={s.title}>Build your XI</h1>
-        </div>
-        <div className={s.score} data-testid="team-score">
-          {score !== null ? (
-            <span className="scorebug">
-              <span className="scorebug__label">Team Score</span>
-              <span className={`scorebug__value ${s.scoreValue}`}>{score}</span>
-            </span>
-          ) : (
-            <span className={s.pending}>
-              <span className={`num ${s.pendingCount}`}>
-                {filledCount(shown)}/{SQUAD}
+      <ModuleCard
+        eyebrow="Friendly builder"
+        title="Build your XI"
+        description="Choose your players, then play a Friendly cup."
+        headingLevel={1}
+        variant="emphasis"
+        icon={<NavIcon family="play" />}
+        meta={
+          <div className={s.score} data-testid="team-score">
+            {score !== null ? (
+              <span className="scorebug">
+                <span className="scorebug__label">Team Score</span>
+                <span className={`scorebug__value ${s.scoreValue}`}>{score}</span>
               </span>
-              <span>Fill all 16 to see your Team Score</span>
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className={s.pitch} data-animating={animating || undefined}>
-        <Pitch
-          formation={lineup.formation}
-          lineup={shown}
-          speciesOf={desk.kind === "live" ? desk.engine.speciesById : noSpecies}
-          label={`${lineup.formation} lineup`}
-          onSlotTap={animating ? () => {} : (ref) => withLive(() => openPicker(ref))}
-          onSwap={
-            animating || desk.kind !== "live"
-              ? undefined
-              : (a, b) => {
-                  onChange(desk.engine.applyAction(desk.draft, { type: "swap", a, b }));
-                  announce(desk.engine.swapMessage(lineup, a, b));
-                }
-          }
-          tokenNote={
-            showRatings && !animating && desk.kind === "live"
-              ? (ref) => tokenNote(desk.engine, ref)
-              : undefined
-          }
-        />
-        {/* Below an 800 px pitch each pill is the number alone, so this line says what it compares
+            ) : (
+              <span className={s.pending}>
+                <span className={`num ${s.pendingCount}`}>
+                  {filledCount(shown)}/{SQUAD}
+                </span>
+                <span>Fill all 16 to see your Team Score</span>
+              </span>
+            )}
+          </div>
+        }
+      >
+        <div className={s.pitch} data-animating={animating || undefined}>
+          <Pitch
+            compactTags
+            formation={lineup.formation}
+            lineup={shown}
+            speciesOf={desk.kind === "live" ? desk.engine.speciesById : noSpecies}
+            label={`${lineup.formation} lineup`}
+            onSlotTap={animating ? () => {} : (ref) => withLive(() => openPicker(ref))}
+            onSwap={
+              animating || desk.kind !== "live"
+                ? undefined
+                : (a, b) => {
+                    onChange(desk.engine.applyAction(desk.draft, { type: "swap", a, b }));
+                    announce(desk.engine.swapMessage(lineup, a, b));
+                  }
+            }
+            tokenNote={
+              showRatings && !animating && desk.kind === "live"
+                ? (ref) => tokenNote(desk.engine, ref)
+                : undefined
+            }
+          />
+          {/* Below an 800 px pitch each pill is the number alone, so this line says what it compares
             against. The CSS hides it where every pill carries its own "vs other <role>s" label. Its
             line is reserved even with ratings off: the saved setting loads after hydration, and
             the line appearing then pushed the tools down (layout shift). It stays up while
             Randomize animates. */}
-        <div className={s.legendSlot}>
-          {showRatings ? (
-            <p className={s.legend} data-testid="ratings-legend">
-              Ratings are 0 to 100, vs other players in the same role.
-            </p>
-          ) : null}
+          <div className={s.legendSlot}>
+            {showRatings ? (
+              <p className={s.legend} data-testid="ratings-legend">
+                Ratings are 0 to 100, vs other players in the same role.
+              </p>
+            ) : null}
+          </div>
         </div>
-      </div>
 
-      <div className={s.tools} role="toolbar" aria-label="Builder actions">
-        <button type="button" className="btn btn--primary" onClick={randomize} disabled={animating}>
-          Randomize
-        </button>
-        <button
-          type="button"
-          className="btn"
-          onClick={() =>
-            withLive(({ engine, draft }) => {
-              onChange(engine.createDraft(draft.settings, draft.seed));
-              announce("Cleared all slots.");
-            })
-          }
-          disabled={animating || filled === 0}
-        >
-          Clear all
-        </button>
-        <button
-          type="button"
-          className="btn"
-          onClick={() => {
-            onReset();
-            announce("Reset the builder settings and cleared all slots.");
-          }}
-          disabled={animating}
-        >
-          Reset
-        </button>
-        <button
-          type="button"
-          className="btn btn--ghost"
-          onClick={() => {
-            setStatus("");
-            withLive((live) => void card.start({ b: tokenOf(live) }, "pokedraft-lineup.png"));
-          }}
-          disabled={card.state.kind === "busy"}
-        >
-          Download image
-        </button>
-        <button type="button" className="btn btn--ghost" onClick={copyLink}>
-          Copy link
-        </button>
-        <p className={s.status}>
-          <span role="status" aria-live="polite">
-            {downloadStatus(card.state) || status}
-          </span>
-          <span role="alert">{card.state.kind === "failed" ? DOWNLOAD_FAILED : ""}</span>
-        </p>
-      </div>
+        <div className={s.tools} role="toolbar" aria-label="Builder actions">
+          <button
+            type="button"
+            className="btn btn--primary"
+            onClick={randomize}
+            disabled={animating}
+          >
+            Randomize
+          </button>
+          <button
+            type="button"
+            className="btn"
+            onClick={() =>
+              withLive(({ engine, draft }) => {
+                onChange(engine.createDraft(draft.settings, draft.seed));
+                announce("Cleared all slots.");
+              })
+            }
+            disabled={animating || filled === 0}
+          >
+            Clear all
+          </button>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              onReset();
+              announce("Reset the builder settings and cleared all slots.");
+            }}
+            disabled={animating}
+          >
+            Reset
+          </button>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={() => {
+              setStatus("");
+              withLive((live) => void card.start({ b: tokenOf(live) }, "pokedraft-lineup.png"));
+            }}
+            disabled={card.state.kind === "busy"}
+          >
+            Download image
+          </button>
+          <button type="button" className="btn btn--ghost" onClick={copyLink}>
+            Copy link
+          </button>
+          <p className={s.status}>
+            <span role="status" aria-live="polite">
+              {downloadStatus(card.state) || status}
+            </span>
+            <span role="alert">{card.state.kind === "failed" ? DOWNLOAD_FAILED : ""}</span>
+          </p>
+        </div>
 
-      <div className={s.friendly}>
-        <button
-          type="button"
-          className="btn btn--primary"
-          onClick={playFriendly}
-          disabled={full === null || animating}
-        >
-          Play a friendly cup
-        </button>
-        <span className={s.friendlyNote}>{FRIENDLY_LABEL}</span>
-      </div>
+        <div className={s.friendly}>
+          <button
+            type="button"
+            className="btn btn--primary"
+            onClick={playFriendly}
+            disabled={full === null || animating}
+          >
+            Play a friendly cup
+          </button>
+          <span className={s.friendlyNote}>{FRIENDLY_LABEL}</span>
+        </div>
+      </ModuleCard>
 
       {picking !== null && desk.kind === "live" ? (
         <desk.engine.Picker

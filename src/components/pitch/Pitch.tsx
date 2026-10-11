@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { FORMATIONS } from "@/engine/formations";
 import type {
   FormationId,
@@ -37,6 +37,7 @@ export interface PitchProps {
   readonly label?: string;
   /** The draft screen: on phones the field takes the height it is given instead of its own. */
   readonly fit?: boolean;
+  readonly compactTags?: boolean;
 }
 
 const W = 68;
@@ -124,7 +125,9 @@ export function Pitch({
   showBench = true,
   label = "Pitch",
   fit = false,
+  compactTags = false,
 }: PitchProps) {
+  const labelId = useId();
   const slots = FORMATIONS[formation].slots;
   const { mirror } = useImageSettings();
   const [drag, setDrag] = useState<DragState | null>(null);
@@ -171,6 +174,11 @@ export function Pitch({
         data-dragging={dragging || undefined}
         disabled={disabled || (onSlotTap === undefined && onSwap === undefined)}
         aria-label={name}
+        aria-labelledby={
+          species !== null && tokenNote
+            ? `${labelId}-${key}-slot ${labelId}-${key}-name ${labelId}-${key}-note`
+            : undefined
+        }
         style={{
           ...style,
           ...(dragging ? { translate: `${drag.dx}px ${drag.dy}px` } : null),
@@ -236,17 +244,23 @@ export function Pitch({
           )}
         </span>
         {/* The spaces keep the visible text "GK Name", which is also the button's accessible name. */}
-        <span className={s.tokenSlot}>{slotLabel}</span>
+        <span id={`${labelId}-${key}-slot`} className={s.tokenSlot}>
+          {slotLabel}
+        </span>
         {species !== null ? (
           <>
             {" "}
-            <span className={s.tokenName}>{species.name}</span>
+            <span id={`${labelId}-${key}-name`} className={s.tokenName}>
+              {species.name}
+            </span>
           </>
         ) : null}
         {species !== null && tokenNote ? (
           <>
             {" "}
-            <span className={s.tokenNote}>{tokenNote(ref)}</span>
+            <span id={`${labelId}-${key}-note`} className={s.tokenNote}>
+              {tokenNote(ref)}
+            </span>
           </>
         ) : null}
       </button>
@@ -259,6 +273,7 @@ export function Pitch({
       data-testid="pitch"
       data-mirror={mirror ? "on" : "off"}
       data-fit={fit || undefined}
+      data-compact-tags={compactTags || undefined}
     >
       <div className={s.field} role="group" aria-label={label}>
         <svg className={`${s.lines} ${s.vertical}`} viewBox={`0 0 ${W} ${L}`} aria-hidden="true">

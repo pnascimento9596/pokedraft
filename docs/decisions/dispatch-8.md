@@ -113,7 +113,7 @@ There are 44 component screenshots: nine primitives plus emphasis/quiet module v
 
 The React best-practices checklist found no added effects, fetch waterfalls or request-shared mutable component state. Next already optimizes lucide-react named imports in its installed default package list (`node_modules/next/dist/server/config.js`). The new primitives use native controls, tables and dialogs; keyboard tooltip focus is covered in the real browser.
 
-The exact source CSS block remains intact in tokens.css; permitted AA/game overrides follow it. All 18 type colors pass text contrast at 14%, 16% and 18% tint, and data-mark contrast on surface. The first CVD palette failed separation, so hue/lightness were adjusted within the muted saturation cap. The final report retains every closest pair and passes the 4.0 Oklab-scale guard in both themes and both simulations. These are measured simulation results, not claimed human-subject testing.
+The exact source CSS block remains intact in tokens.css; permitted AA/game overrides follow it. All 18 type colors pass text contrast at 14%, 16% and 18% tint, and data-mark contrast on surface. The first CVD palette failed separation, so hue/lightness were adjusted within the muted saturation cap. The final report retains the five closest pairs per theme and simulation and passes the 4.0 Oklab-scale guard in both themes and both simulations. These are measured simulation results, not claimed human-subject testing.
 
 Still pending: independent review and Linux full e2e for PR 8A, production Inter HTML/network proof and font-change Lighthouse receipts. SX-03 remains explicitly assigned to the ratings-on builder restyle in PR 8B. SX-05 remains an expected failure pending the short-field layout in PR 8C; its marker is unchanged here. SX-04 was not reproduced and remains guarded by the now-explicit image rule. Strict-zero ratings-on and restored-run CLS browser tests are added in the corresponding area PRs.
 
@@ -126,3 +126,35 @@ GLM 5.3 Flash independently approved 28399647d82f52c9fc88bda8b7a9e6fb50acdd8c wi
 Full Linux browser run38132610243 recorded474 passes,51skips and14 failures. Four existing ratings-layout guards reproduced font-driven collisions/truncation; ten new small-text snapshots exceeded the macOS reference rasterization tolerance. Slot pills now have an explicit relative line height instead of inheriting the body's22px absolute height; the320px picker puts its Swap tag below the name to reserve name width. These are font-compatibility corrections, with existing tests unchanged. Visual baselines are platform-specific: ten Linux images come directly from this CI artifact; the other34 macOS references already matched on Linux within the unchanged2.5% threshold. The provenance JSON names these sources without claiming34 Linux captures. Both reference sets stay reviewable.
 
 Current foundation browser checkpoint:102 passes, covering44 visual/axe cases,20 strict route/state axe scans,30 rendered contrast cases and8 unchanged ratings-layout cases. The font compatibility corrections resolve all four existing ratings failures locally. Current lint/typecheck/build receipts are archived alongside that current browser receipt. Full Linux rerun remains pending.
+### PR 8B builder guards before implementation
+
+An isolated worktree prepares the next area while PR 8A remains under review. New filled-builder axe cases at390/1440 in light/dark fail on the existing ratings-on accessible-name mismatch, four failures. Existing layout-shift cases and new strict-zero Show-ratings-ON cold-load checks at360/390 all pass, five cases. RED measured against the unchanged8A local production build. Guard files are committed before label or page-structure changes.
+
+
+### PR 8A shipped and verified
+
+PR #26 squash `e8ce2d332824def968132287e07b8cbbe89b34c2`, reviewed head `89b390f0c4e1f7538c8166652d31cc05f91e6dbe`. GLM 5.3 Flash APPROVE with validated canary. Exact-head Linux CI `38148882020`: 734 unit/component tests in80 files;488 browser passes,51 skips. Vercel production deployment `dpl_5ty1tdnWdWe7yyv5SCumxNadXMhT` READY. First cache-busted health probe returned this merge SHA with no-store, production/iad1, engine3 and token versions1/2/3.
+
+Production live suite:4 passes. Complete unchanged mobile acceptance rerun:242 passes,46 skips. The first parallel run passed241 cases but failed one browser-context close with ENOENT because two Playwright commands shared test-results; no layout assertion failed. The full rerun used an isolated output directory. Exact verify-bot row `cdd5b108-cf52-4536-83ae-d30cdfa644ec` was deleted with id/nickname/mode/date predicates; readback count0. The390px light/dark production screenshot matrix has zero horizontal overflow. Production HTML and linked CSS declare only Inter and its metric fallback; the network recorded one successful downloaded font and browser loaded family Inter. Big Shoulders and Barlow are absent. Font-change Lighthouse workflow `38150015655` is in progress; no final numbers claimed yet.
+
+The source neutral borders on Pill, Tooltip, StatusNote and Sheet are decorative; interactive input, focus and action boundaries use checked control tokens. Sheet uses the native dialog, with its parent responsible for showModal/close to activate focus and backdrop behavior. Picker preserves that native lifecycle. Computer Use runtime and physical phones remain NOT RUN.
+
+### PR 8B implementation checkpoint
+
+Home and builder now use titled modules on a16px grid. Settings and records use list rules and table primitives; absent records say No saved runs or Unavailable. Picker uses raised palette surfaces, tinted type pills and a reason-bearing empty state. Existing actions, figures, seed contracts, native focus/back/swipe behavior and frozen image files are preserved.
+
+SX-03: accessible names now reference the visible slot, species and rating note. The four committed ratings-on axe guards fail before the fix and pass after it. SX-02 and SX-06: exact-zero cold-load ratingsON and saved-run restore CLS at360/390 pass. Compact builder tags keep twelve-pixel name surfaces and reserve stable geometry; existing narrow-phone collision and overflow guards pass unchanged. Draft short-field SX-05 remains scheduled for8C.
+
+Local full suite734/80 passes; lint/typecheck/build and palette/color/CVD/image/mirror/bundle gates pass. Focused browser run311 passes/46 skips includes unchanged mobile acceptance, full axe and contrast, existing ratings layout, new names and strict CLS. After rebasing onto the shipped8A, the full browser suite is running. Before/after pairs contain16 captures each: home, filled rated builder, picker and empty search at390x844/1440x900 in both themes, every capture overflow0. Visual inspection included filled mobile light and desktop dark.
+
+Fixed-fixture results and leaderboard text is captured verbatim alongside its numeric values. PR8B numbers-only comparison preserves186 result numbers and10 board numbers in each theme, plus exact named score/record and board-row content. The baseline comes from the actual8A browser; expected values are not generated by the new implementation. Reuse scripts/audit/theme-figures.mjs for each subsequent area PR.
+
+
+### Font-change clean-runner measurement complete
+
+GitHub Ubuntu run38150015655 passed against productione8ce2d3, with the same pinned environment and three runs per route as baseline38130597740. All individual samples retain Accessibility100 and exact CLS0. Every route median LCP is below baseline: home2112.9ms, play2260.5, daily2382.3, leaderboard1812.3, history1659.0, help1808.4, results3688.0, Kanto start2262.0. These are measurements after the foundation, not causal estimates isolating the font. Raw reports remain in the run artifact and summaries/sample metrics/environment are committed in lighthouse-font-8a/. The final lane measurement remains due after all area PRs.
+
+
+### PR 8B full browser target corrections
+
+The rebased full local browser run recorded490 passes,51 skips and6 failures. The six failures reproduce two regressions on each device: the builder Team Score label inherited10.4px text, and the image-settings checkbox hit box was43px inside its new bordered row. The label now explicitly uses13/18 at600; the checkbox row reserves45px so its inner hit box is44px. No test or assertion changed. The six focused unchanged guards now all pass. Build and lint pass, and the after captures were regenerated. The required full Linux rerun and independent exact-head review are pending.

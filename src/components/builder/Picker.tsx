@@ -19,6 +19,7 @@ import { PlayerImage } from "@/components/PlayerImage";
 import { TypeChip } from "@/components/TypeChip";
 import { genLabel, qualityScore, typeLabel, versusLabel } from "@/ui/labels";
 import { ALL_REFS, valueAt } from "@/ui/lineup";
+import { StatusNote } from "@/components/ui/primitives";
 import s from "./Picker.module.css";
 
 export const PICKER_LIMIT = 120;
@@ -276,6 +277,13 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
               : `${matches.length} ${matches.length === 1 ? "match" : "matches"}`}
         </p>
 
+        {matches.length === 0 ? (
+          <StatusNote title="No players found">
+            {hiddenBySettings
+              ? "Your Generations or Legendaries setting hides the matching players."
+              : "No players match this search. Try another name or clear a filter."}
+          </StatusNote>
+        ) : null}
         <ul className={s.list} aria-label="Species">
           {shown.map((sp) => {
             const at = onField.get(sp.id);

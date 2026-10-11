@@ -1,0 +1,23 @@
+
+Running 6 tests using 2 workers
+
+(node:65757) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:65758) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [iphone-se] › e2e/mobile-targets.spec.ts:130:3 › phone targets: builder full (1.5s)
+  ✓  2 [iphone-se] › e2e/mobile-targets.spec.ts:150:1 › phone targets: image settings open (1.5s)
+(node:65894) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:65895) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [iphone-14] › e2e/mobile-targets.spec.ts:150:1 › phone targets: image settings open (881ms)
+  ✓  3 [iphone-14] › e2e/mobile-targets.spec.ts:130:3 › phone targets: builder full (928ms)
+(node:66072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:66079) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [pixel-7] › e2e/mobile-targets.spec.ts:130:3 › phone targets: builder full (533ms)
+  ✓  6 [pixel-7] › e2e/mobile-targets.spec.ts:150:1 › phone targets: image settings open (543ms)
+
+  6 passed (4.3s)

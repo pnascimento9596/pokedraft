@@ -7,16 +7,15 @@
   margin: auto 0 0;
   padding: 0 0 env(safe-area-inset-bottom, 0px);
   border: 0;
-  border-radius: 16px 16px 0 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   overflow: hidden;
   overscroll-behavior: contain;
-  background: var(--bg-raised);
-  color: var(--ink);
+  background: var(--surface);
+  color: var(--text);
 }
 
 .dialog::backdrop {
-  background: rgba(2, 8, 5, 0.72);
-  backdrop-filter: blur(3px);
+  background: var(--overlay);
 }
 
 .dialog[open] {
@@ -44,8 +43,8 @@
   justify-content: space-between;
   gap: 12px;
   padding: 14px var(--gutter) 10px;
-  border-bottom: 3px solid var(--flood);
-  background: var(--bg-sunk);
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--surface-sunken);
   /* The header is the sheet's drag area: a vertical drag moves the sheet, not the page. */
   touch-action: none;
 }
@@ -55,7 +54,8 @@
 }
 
 .title {
-  font-size: 1.6rem;
+  font-size: 17px;
+  line-height: 23px;
 }
 
 .headActions {
@@ -79,7 +79,7 @@
   padding: 0 12px;
   border: 1px solid var(--line-field);
   border-radius: var(--radius-sm);
-  background: var(--bg-sunk);
+  background: var(--surface-sunken);
 }
 
 .search input:focus,
@@ -99,23 +99,24 @@
 }
 
 .typeChip {
-  min-height: 28px;
-  font-size: 0.72rem;
+  min-height: 44px;
+  font-size: 13px;
   padding: 0.1em 0.6em;
-  border-color: color-mix(in srgb, var(--chip-type) 70%, transparent);
-  box-shadow: inset 3px 0 0 var(--chip-type);
+  border-radius: 999px;
+  border-color: var(--chip-type);
+  background: color-mix(in srgb, var(--chip-type) 16%, var(--surface));
+  color: var(--chip-type);
 }
 
 .typeChip[aria-pressed="true"] {
-  background: var(--chip-type);
-  border-color: var(--chip-type);
-  color: var(--chip-ink);
+  outline: 2px solid var(--chip-type);
+  outline-offset: -3px;
 }
 
 .count {
   margin: 0;
   padding: 4px var(--gutter) 8px;
-  font-size: 0.82rem;
+  font-size: 13px;
   color: var(--ink-soft);
 }
 
@@ -136,8 +137,8 @@
   width: 100%;
   padding: 7px 8px;
   border: 0;
-  border-bottom: 1px solid var(--line);
-  background: none;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--surface);
   text-align: left;
   cursor: pointer;
 }
@@ -149,7 +150,7 @@
 
 .row:disabled {
   cursor: default;
-  opacity: 0.6;
+  background: var(--surface-sunken);
 }
 
 .rowMain {
@@ -160,7 +161,7 @@
 }
 
 .rowName {
-  font-weight: 700;
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -171,20 +172,19 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 5px;
-  font-size: 0.82rem;
+  font-size: 13px;
   color: var(--ink-soft);
 }
 
 .rowTag {
   flex-shrink: 0;
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.7rem;
+  font-weight: 600;
+  font-size: 13px;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--ink-soft);
   border: 1px solid var(--line-strong);
-  border-radius: 3px;
+  border-radius: 999px;
   padding: 0 5px;
 }
 
@@ -195,22 +195,21 @@
   align-items: flex-end;
   gap: 2px;
   min-width: 48px;
-  max-width: 4.75rem;
+  max-width: 5rem;
   line-height: 1;
   text-align: right;
 }
 
 .rowFit .num {
-  font-size: 1.35rem;
+  font-size: 17px;
+  line-height: 23px;
   color: var(--flood-text);
 }
 
 .rowFitLabel {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 13px;
   color: var(--ink-faint);
 }
 
@@ -218,8 +217,8 @@
    than widening the cell, so a row that also has a Swap tag keeps room for the name. */
 .rowFitVs {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.7rem;
+  font-weight: 600;
+  font-size: 13px;
   letter-spacing: 0.04em;
   line-height: 1.1;
   color: var(--ink-soft);
@@ -258,7 +257,8 @@
   }
 
   .title {
-    font-size: 1.35rem;
+    font-size: 17px;
+    line-height: 23px;
   }
 }
 
@@ -270,7 +270,7 @@
     padding: 0;
     border: 1px solid var(--line-strong);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-raised);
     overflow: hidden;
   }
 
@@ -306,7 +306,8 @@
   }
 
   .title {
-    font-size: 1.35rem;
+    font-size: 17px;
+    line-height: 23px;
   }
 }
 
@@ -333,6 +334,31 @@
   }
 }
 
+.dialog {
+  box-shadow: var(--shadow-raised);
+}
+.row {
+  min-height: 44px;
+  padding-block: 10px;
+}
+.rowTag {
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0;
+  background: var(--surface-sunken);
+}
+.rowFitVs,
+.rowFitLabel {
+  line-height: 18px;
+  letter-spacing: 0;
+}
+@media (max-width: 480px) {
+  .rowTag {
+    max-width: 74px;
+    white-space: normal;
+  }
+}
+
 @media (max-width: 480px) {
   .row {
     display: grid;
@@ -352,4 +378,10 @@
   .rowTag + .rowFit {
     max-width: 3rem;
   }
+}
+
+.headActions :global(.btn--sm) {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
 }

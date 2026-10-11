@@ -1,142 +1,94 @@
 .panel {
   display: flex;
   flex-direction: column;
+  gap: 16px;
   min-width: 0;
-  overflow: hidden;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--flood) 6%, transparent), transparent 120px),
-    var(--panel);
 }
-
 .section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px 14px 16px;
-  border-top: 1px solid var(--line);
+  gap: 12px;
 }
-
-.section:first-child {
-  border-top: 0;
+.section + .section {
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid var(--border-soft);
 }
-
 .heading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
-  letter-spacing: 0.18em;
-  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--text);
 }
-
-.heading::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--line);
-}
-
-.live {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--live);
-  box-shadow: 0 0 8px var(--live);
-  animation: pulse 1.6s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  50% {
-    opacity: 0.35;
-  }
-}
-
 .ctas {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
-
 .cta {
   min-height: 48px;
   text-align: center;
-  line-height: 1.1;
 }
-
 .hint {
   margin: 0;
-  font-size: 0.78rem;
-  color: var(--ink-faint);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-muted);
 }
-
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-
 .fieldLabel {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.select {
-  min-height: 40px;
-  padding: 0 10px;
-  border: 1px solid var(--line-field);
-  border-radius: var(--radius-sm);
-  background: var(--bg-sunk);
-  font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.1rem;
-  letter-spacing: 0.06em;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text);
 }
-
+.select {
+  height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+}
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 8px;
 }
-
 .chips :global(.chip) {
-  min-height: 30px;
-  font-size: 0.74rem;
-  padding: 0.15em 0.6em;
+  min-height: 44px;
+  font-size: 13px;
+  line-height: 18px;
+  padding: 8px;
 }
-
 .segmented {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
   padding: 3px;
   border-radius: var(--radius-sm);
-  background: var(--bg-sunk);
-  border: 1px solid var(--line);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-control);
 }
-
 .segment {
-  min-height: 34px;
+  min-height: 44px;
+  padding: 6px;
   border: 0;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   background: none;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-soft);
   cursor: pointer;
 }
-
 .segment[aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--selected);
+  color: var(--text);
 }
-
 .switch {
   display: flex;
   align-items: center;
@@ -144,33 +96,33 @@
   gap: 12px;
   width: 100%;
   min-height: 44px;
-  padding: 6px 0;
+  padding: 10px 0;
   border: 0;
+  border-bottom: 1px solid var(--border-soft);
   background: none;
   text-align: left;
   cursor: pointer;
 }
-
 .switchText {
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
-
 .switchLabel {
+  font-size: 13px;
+  line-height: 18px;
   font-weight: 600;
 }
-
 .switchTrack {
   position: relative;
   flex-shrink: 0;
   width: 42px;
   height: 24px;
   border-radius: 999px;
-  background: var(--bg-sunk);
-  border: 1px solid var(--line-field);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-control);
   transition: background 120ms ease;
 }
-
 .switchThumb {
   position: absolute;
   top: 2px;
@@ -178,86 +130,42 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--ink-soft);
+  background: var(--text-soft);
   transition: transform 120ms ease;
 }
-
 .switch[aria-checked="true"] .switchTrack {
-  background: var(--flood-line);
-  border-color: var(--flood-line);
+  background: var(--accent);
+  border-color: var(--action-border);
 }
-
 .switch[aria-checked="true"] .switchThumb {
   transform: translateX(18px);
-  background: var(--flood-ink);
+  background: var(--accent-fg);
 }
-
-.stats {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.82rem;
-}
-
-.stats th,
-.stats td {
-  padding: 6px 4px;
-  border-bottom: 1px solid var(--line);
-  text-align: right;
-}
-
-.stats thead th {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.stats th[scope="row"],
-.stats thead th:first-child {
+.stats th[scope="row"] {
   text-align: left;
   font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
 }
-
-.stats td:global(.num) {
-  font-size: 1rem;
-}
-
-.stats .none {
+.stats td {
   text-align: right;
-  color: var(--ink-faint);
-  font-style: italic;
 }
-
+.stats .none {
+  color: var(--text-muted);
+}
 .moreToggle {
   width: 100%;
   margin-top: 4px;
+  font-size: 15px;
+  line-height: 20px;
 }
-
 @media (max-width: 1023px) {
   .more[data-open="false"] {
     display: none;
   }
 }
-
 @media (min-width: 1024px) {
   .moreToggle {
     display: none;
-  }
-}
-
-/* Phones: 44 px controls (dispatch 7 GATE 4). */
-@media (max-width: 480px) {
-  /* WebKit ignores min-height on a styled select, so it gets a fixed height. */
-  .select {
-    height: 44px;
-  }
-  .segment,
-  .chips :global(.chip) {
-    min-height: 44px;
-  }
-  .chips {
-    gap: 8px;
   }
 }

@@ -423,3 +423,48 @@
     transform: scaleX(-1);
   }
 }
+
+.wrap[data-compact-tags] .tokenSlot {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  white-space: nowrap;
+}
+.wrap[data-compact-tags] .tokenName {
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 600;
+  padding: 1px 3px;
+  border-radius: var(--radius-xs);
+  background: var(--accent);
+  color: var(--accent-fg);
+  text-shadow: none;
+}
+.wrap[data-compact-tags] .bench .tokenName {
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+@container (min-width:640px) {
+  .wrap[data-compact-tags] .tokenSlot {
+    top: 27px;
+  }
+}
+@container (min-width:900px) {
+  .wrap[data-compact-tags] .tokenSlot {
+    top: 38px;
+  }
+}
+
+.wrap[data-compact-tags] .benchRow {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.wrap[data-compact-tags] .bench .token {
+  min-width: 0;
+  width: 100%;
+}
+.wrap[data-compact-tags] .bench .tokenName {
+  max-width: 100%;
+}

@@ -1,0 +1,320 @@
+Already up to date
+Done in 157ms using pnpm v11.5.1
+
+Running 288 tests using 4 workers
+
+(node:47623) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47625) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47626) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    2 [iphone-se] › e2e/mobile-acceptance.spec.ts:282:1 › 0 self-check: scrollThenTap scrolls an off-screen control to the middle of the screen and taps it with a real touch (503ms)
+  ✓    3 [iphone-se] › e2e/mobile-acceptance.spec.ts:306:1 › 0 self-check: widestRight and documentScrollWidth pass a clean page and catch an overflowing child, even when html and body clip it (511ms)
+  ✓    4 [iphone-se] › e2e/mobile-acceptance.spec.ts:178:1 › 0 self-check: inViewport passes a visible control and fails below the fold, half visible, past the edge, hidden and under a fixed bar (549ms)
+  ✓    1 [iphone-se] › e2e/mobile-acceptance.spec.ts:226:1 › 0 self-check: tapInView taps with a real touch, never scrolls, and fails when the page scrolled since the previous step (624ms)
+  ✓    7 [iphone-se] › e2e/mobile-acceptance.spec.ts:417:1 › 0 self-check: interactiveTargets reports 30x30 below 44x44, passes 44x44, skips hidden and inert controls, and never counts a pseudo-element hit area (183ms)
+  ✓    5 [iphone-se] › e2e/mobile-acceptance.spec.ts:345:1 › 0 self-check: a wide child in a box the player can scroll sideways does not widen the page, and is reported as an inner scroller (248ms)
+  ✓    8 [iphone-se] › e2e/mobile-acceptance.spec.ts:472:1 › 0 self-check: interactiveTargets keeps only the open modal dialog in scope (176ms)
+  ✓    6 [iphone-se] › e2e/mobile-acceptance.spec.ts:396:1 › 0 self-check: resizeTo lays the page out at every width and size the suite measures (353ms)
+  ✓   10 [iphone-se] › e2e/mobile-acceptance.spec.ts:532:1 › 0 self-check: clippedText flags text with no box or wholly outside a clipping ancestor and leaves scrollable content alone (171ms)
+  ✓    9 [iphone-se] › e2e/mobile-acceptance.spec.ts:489:1 › 0 self-check: pageScrollReach passes a page that scrolls to its end and flags an overflow:hidden trap (202ms)
+  ✓   11 [iphone-se] › e2e/mobile-acceptance.spec.ts:555:1 › 0 self-check: panYAllowed reads touch-action up the tree (207ms)
+  ✓   13 [iphone-se] › e2e/mobile-acceptance.spec.ts:635:1 › 0 self-check: settle brings a finite entrance animation to its end state at once and leaves an infinite one running (185ms)
+  ✓   15 [iphone-se] › e2e/mobile-acceptance.spec.ts:692:1 › 0 self-check: setColorScheme switches the page between dark and light (192ms)
+  ✓   14 [iphone-se] › e2e/mobile-acceptance.spec.ts:668:1 › 0 self-check: settle returns the end value of a colour transition that lasts 0.01 ms (279ms)
+  ✓   16 [iphone-se] › e2e/mobile-acceptance.spec.ts:707:1 › 0 self-check: a tap leaves no button focused, as on iOS, and a text field keeps its focus (215ms)
+  ✓   12 [iphone-se] › e2e/mobile-acceptance.spec.ts:572:1 › 0 self-check: touch gestures are real touch in Chromium, and the WebKit drag is a mouse drag that says so (889ms)
+  ✓   20 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home (916ms)
+  ✓   18 [iphone-se] › e2e/mobile-acceptance.spec.ts:828:1 › 1 flow: 151 Challenge, start to results with taps only (2.0s)
+  ✓   17 [iphone-se] › e2e/mobile-acceptance.spec.ts:823:1 › 1 flow: 8-0 Challenge Classic, start to results with taps only (2.1s)
+  ✓   19 [iphone-se] › e2e/mobile-acceptance.spec.ts:833:1 › 1 flow: Daily, start to results with taps only (2.2s)
+  ✓   21 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home settings open (1.0s)
+  ✓   22 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: builder full (992ms)
+  ✓   24 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start (940ms)
+  ✓   23 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: picker open (1.4s)
+  ✓   25 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 (1.0s)
+  ✓   26 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 (1.1s)
+  ✓   27 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 (1.2s)
+  ✓   28 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: results (1.3s)
+  ✓   29 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results (1.4s)
+  ✓   31 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start (820ms)
+  ✓   30 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results submitted (1.4s)
+  ✓   33 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 1 row (827ms)
+  ✓   32 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 50 rows (982ms)
+  ✓   34 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard empty (862ms)
+  ✓   35 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 503 (797ms)
+  ✓   37 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history seeded (827ms)
+  ✓   36 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history empty (948ms)
+  ✓   38 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: how to play (975ms)
+  ✓   40 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: broken run link (1.1s)
+  ✓   39 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: shared run (1.5s)
+  ✓   41 [iphone-se] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: 404 (1.2s)
+  ✓   42 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home (1.2s)
+  ✓   43 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home settings open (1.4s)
+  ✓   44 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: builder full (1.4s)
+  ✓   45 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: picker open (1.7s)
+  ✓   46 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: play start (1.5s)
+  ✓   47 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 1 (1.4s)
+  ✓   48 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 9 (1.5s)
+  ✓   49 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft 151 round 1 (1.4s)
+  ✓   50 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: results (1.7s)
+  ✓   53 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily start (1.2s)
+  ✓   51 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results (1.7s)
+  ✓   52 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results submitted (1.9s)
+  ✓   54 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 50 rows (1.4s)
+  ✓   55 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 1 row (1.2s)
+  ✓   56 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard empty (1.2s)
+  ✓   57 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 503 (1.2s)
+  ✓   58 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history empty (1.6s)
+  ✓   59 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history seeded (1.3s)
+  ✓   60 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: how to play (1.1s)
+  ✓   61 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: shared run (1.4s)
+  ✓   62 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: broken run link (1.1s)
+  ✓   63 [iphone-se] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: 404 (933ms)
+  ✓   64 [iphone-se] › e2e/mobile-acceptance.spec.ts:983:1 › 4 picker: a slot tap opens a sheet whose list scrolls on its own and not the page behind it (real touch on pixel-7, scrollTop write on WebKit) (1.4s)
+  ✓   66 [iphone-se] › e2e/mobile-acceptance.spec.ts:1070:1 › 4 picker: closes on the browser Back button and the page stays on the builder (1.3s)
+  ✓   67 [iphone-se] › e2e/mobile-acceptance.spec.ts:1083:1 › 4 picker: closes on its close button (1.3s)
+  ✓   65 [iphone-se] › e2e/mobile-acceptance.spec.ts:1050:1 › 4 picker: closes on a swipe down on its header (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.9s)
+  ✓   68 [iphone-se] › e2e/mobile-acceptance.spec.ts:1098:1 › 4 picker: focus returns to the tapped slot when it closes (1.4s)
+  -   72 [iphone-se] › e2e/mobile-acceptance.spec.ts:1257:1 › 5 drag and scroll: after a touch drag, the next tap on a slot still opens the Picker (real touch on pixel-7)
+  ✓   70 [iphone-se] › e2e/mobile-acceptance.spec.ts:1183:1 › 5 drag and scroll: a vertical swipe that starts outside the pitch scrolls the page (real touch on pixel-7, CSS and scrollBy on WebKit) (1.2s)
+  ✓   71 [iphone-se] › e2e/mobile-acceptance.spec.ts:1230:1 › 5 drag and scroll: a vertical swipe that starts on the pitch's grass scrolls the page (real touch on pixel-7, CSS read on WebKit) (1.2s)
+  ✓   69 [iphone-se] › e2e/mobile-acceptance.spec.ts:1138:1 › 5 drag and scroll: a drag swaps two tokens (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.8s)
+  -   75 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home
+  -   76 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home settings open
+  -   77 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: builder full
+  -   79 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: play start
+  -   78 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: picker open
+  ✓   73 [iphone-se] › e2e/mobile-acceptance.spec.ts:1283:1 › 5 drag and scroll: on the finished draft, a tap on one player and then another swaps them (real taps) (1.3s)
+  -   80 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 1
+  -   82 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft 151 round 1
+  -   81 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 9
+  -   83 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: results
+  -   84 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results
+  -   85 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results submitted
+  ✓   74 [iphone-se] › e2e/mobile-acceptance.spec.ts:1325:1 › 6 keyboard: the focused nickname input stays fully visible when the viewport shrinks to 55% (1.6s)
+  -   86 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily start
+  -   87 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 50 rows
+  -   88 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 1 row
+  -   89 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard empty
+  -   90 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 503
+  -   91 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history empty
+  -   92 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history seeded
+  -   93 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: how to play
+  -   94 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: shared run
+  -   95 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: broken run link
+  -   96 [iphone-se] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: 404
+(node:48009) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48007) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48011) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48010) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  100 [iphone-14] › e2e/mobile-acceptance.spec.ts:282:1 › 0 self-check: scrollThenTap scrolls an off-screen control to the middle of the screen and taps it with a real touch (518ms)
+  ✓   99 [iphone-14] › e2e/mobile-acceptance.spec.ts:306:1 › 0 self-check: widestRight and documentScrollWidth pass a clean page and catch an overflowing child, even when html and body clip it (754ms)
+  ✓   98 [iphone-14] › e2e/mobile-acceptance.spec.ts:178:1 › 0 self-check: inViewport passes a visible control and fails below the fold, half visible, past the edge, hidden and under a fixed bar (981ms)
+  ✓   97 [iphone-14] › e2e/mobile-acceptance.spec.ts:226:1 › 0 self-check: tapInView taps with a real touch, never scrolls, and fails when the page scrolled since the previous step (1.2s)
+  ✓  103 [iphone-14] › e2e/mobile-acceptance.spec.ts:417:1 › 0 self-check: interactiveTargets reports 30x30 below 44x44, passes 44x44, skips hidden and inert controls, and never counts a pseudo-element hit area (295ms)
+  ✓  104 [iphone-14] › e2e/mobile-acceptance.spec.ts:472:1 › 0 self-check: interactiveTargets keeps only the open modal dialog in scope (260ms)
+  ✓  101 [iphone-14] › e2e/mobile-acceptance.spec.ts:345:1 › 0 self-check: a wide child in a box the player can scroll sideways does not widen the page, and is reported as an inner scroller (710ms)
+  ✓  105 [iphone-14] › e2e/mobile-acceptance.spec.ts:489:1 › 0 self-check: pageScrollReach passes a page that scrolls to its end and flags an overflow:hidden trap (341ms)
+  ✓  106 [iphone-14] › e2e/mobile-acceptance.spec.ts:532:1 › 0 self-check: clippedText flags text with no box or wholly outside a clipping ancestor and leaves scrollable content alone (254ms)
+  ✓  102 [iphone-14] › e2e/mobile-acceptance.spec.ts:396:1 › 0 self-check: resizeTo lays the page out at every width and size the suite measures (837ms)
+  ✓  107 [iphone-14] › e2e/mobile-acceptance.spec.ts:555:1 › 0 self-check: panYAllowed reads touch-action up the tree (359ms)
+  ✓  109 [iphone-14] › e2e/mobile-acceptance.spec.ts:635:1 › 0 self-check: settle brings a finite entrance animation to its end state at once and leaves an infinite one running (258ms)
+  ✓  111 [iphone-14] › e2e/mobile-acceptance.spec.ts:692:1 › 0 self-check: setColorScheme switches the page between dark and light (450ms)
+  ✓  110 [iphone-14] › e2e/mobile-acceptance.spec.ts:668:1 › 0 self-check: settle returns the end value of a colour transition that lasts 0.01 ms (703ms)
+  ✓  112 [iphone-14] › e2e/mobile-acceptance.spec.ts:707:1 › 0 self-check: a tap leaves no button focused, as on iOS, and a text field keeps its focus (550ms)
+  ✓  108 [iphone-14] › e2e/mobile-acceptance.spec.ts:572:1 › 0 self-check: touch gestures are real touch in Chromium, and the WebKit drag is a mouse drag that says so (1.9s)
+  ✓  116 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home (1.9s)
+  ✓  114 [iphone-14] › e2e/mobile-acceptance.spec.ts:828:1 › 1 flow: 151 Challenge, start to results with taps only (4.7s)
+  ✓  117 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home settings open (1.7s)
+  ✓  113 [iphone-14] › e2e/mobile-acceptance.spec.ts:823:1 › 1 flow: 8-0 Challenge Classic, start to results with taps only (5.2s)
+  ✓  115 [iphone-14] › e2e/mobile-acceptance.spec.ts:833:1 › 1 flow: Daily, start to results with taps only (5.1s)
+  ✓  120 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start (1.7s)
+  ✓  118 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: builder full (2.1s)
+  ✓  119 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: picker open (2.5s)
+  ✓  121 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 (2.3s)
+  ✓  123 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 (1.9s)
+  ✓  122 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 (2.0s)
+  ✓  124 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: results (2.5s)
+  ✓  125 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results (2.5s)
+  ✓  127 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start (1.6s)
+  ✓  126 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results submitted (3.1s)
+  ✓  128 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 50 rows (2.2s)
+  ✓  129 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 1 row (2.1s)
+  ✓  130 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard empty (2.1s)
+  ✓  131 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 503 (1.6s)
+  ✓  132 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history empty (1.6s)
+  ✓  133 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history seeded (1.5s)
+  ✓  134 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: how to play (1.6s)
+  ✓  136 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: broken run link (1.6s)
+  ✓  137 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: 404 (1.6s)
+  ✓  135 [iphone-14] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: shared run (2.0s)
+  ✓  138 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home (1.5s)
+  ✓  142 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: play start (1.7s)
+  ✓  139 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home settings open (2.3s)
+  ✓  140 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: builder full (2.2s)
+  ✓  141 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: picker open (2.4s)
+  ✓  143 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 1 (1.7s)
+  ✓  144 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 9 (1.8s)
+  ✓  145 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft 151 round 1 (1.8s)
+  ✓  146 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: results (1.8s)
+  ✓  149 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily start (1.5s)
+  ✓  147 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results (2.0s)
+  ✓  150 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 50 rows (1.5s)
+  ✓  148 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results submitted (2.3s)
+  ✓  151 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 1 row (1.4s)
+  ✓  152 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard empty (1.4s)
+  ✓  153 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 503 (1.3s)
+  ✓  154 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history empty (1.1s)
+  ✓  155 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history seeded (1.0s)
+  ✓  158 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: broken run link (857ms)
+  ✓  156 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: how to play (1.0s)
+  ✓  157 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: shared run (1.2s)
+  ✓  159 [iphone-14] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: 404 (784ms)
+  ✓  160 [iphone-14] › e2e/mobile-acceptance.spec.ts:983:1 › 4 picker: a slot tap opens a sheet whose list scrolls on its own and not the page behind it (real touch on pixel-7, scrollTop write on WebKit) (1.1s)
+  ✓  162 [iphone-14] › e2e/mobile-acceptance.spec.ts:1070:1 › 4 picker: closes on the browser Back button and the page stays on the builder (1.1s)
+  ✓  161 [iphone-14] › e2e/mobile-acceptance.spec.ts:1050:1 › 4 picker: closes on a swipe down on its header (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.4s)
+  ✓  163 [iphone-14] › e2e/mobile-acceptance.spec.ts:1083:1 › 4 picker: closes on its close button (1.2s)
+  ✓  164 [iphone-14] › e2e/mobile-acceptance.spec.ts:1098:1 › 4 picker: focus returns to the tapped slot when it closes (1.3s)
+  ✓  166 [iphone-14] › e2e/mobile-acceptance.spec.ts:1183:1 › 5 drag and scroll: a vertical swipe that starts outside the pitch scrolls the page (real touch on pixel-7, CSS and scrollBy on WebKit) (1.2s)
+  -  168 [iphone-14] › e2e/mobile-acceptance.spec.ts:1257:1 › 5 drag and scroll: after a touch drag, the next tap on a slot still opens the Picker (real touch on pixel-7)
+  ✓  167 [iphone-14] › e2e/mobile-acceptance.spec.ts:1230:1 › 5 drag and scroll: a vertical swipe that starts on the pitch's grass scrolls the page (real touch on pixel-7, CSS read on WebKit) (1.1s)
+  ✓  165 [iphone-14] › e2e/mobile-acceptance.spec.ts:1138:1 › 5 drag and scroll: a drag swaps two tokens (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.6s)
+  ✓  169 [iphone-14] › e2e/mobile-acceptance.spec.ts:1283:1 › 5 drag and scroll: on the finished draft, a tap on one player and then another swaps them (real taps) (1.3s)
+  ✓  171 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home (1.2s)
+  ✓  170 [iphone-14] › e2e/mobile-acceptance.spec.ts:1325:1 › 6 keyboard: the focused nickname input stays fully visible when the viewport shrinks to 55% (1.3s)
+  ✓  172 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home settings open (1.3s)
+  ✓  173 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: builder full (1.6s)
+  ✓  175 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: play start (1.4s)
+  ✓  176 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 1 (1.5s)
+  ✓  174 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: picker open (1.8s)
+  ✓  178 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft 151 round 1 (1.5s)
+  ✓  177 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 9 (1.7s)
+  ✓  179 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: results (1.8s)
+  ✓  180 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results (1.9s)
+  ✓  182 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily start (1.2s)
+  ✓  183 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 50 rows (1.3s)
+  ✓  184 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 1 row (1.2s)
+  ✓  181 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results submitted (1.9s)
+  ✓  185 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard empty (1.1s)
+  ✓  187 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history empty (948ms)
+  ✓  186 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 503 (1.0s)
+  ✓  188 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history seeded (980ms)
+  ✓  189 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: how to play (838ms)
+  ✓  191 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: broken run link (890ms)
+  ✓  192 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: 404 (948ms)
+(node:48961) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48966) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48967) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  190 [iphone-14] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: shared run (1.8s)
+(node:48984) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  193 [pixel-7] › e2e/mobile-acceptance.spec.ts:178:1 › 0 self-check: inViewport passes a visible control and fails below the fold, half visible, past the edge, hidden and under a fixed bar (502ms)
+  ✓  195 [pixel-7] › e2e/mobile-acceptance.spec.ts:282:1 › 0 self-check: scrollThenTap scrolls an off-screen control to the middle of the screen and taps it with a real touch (331ms)
+  ✓  194 [pixel-7] › e2e/mobile-acceptance.spec.ts:226:1 › 0 self-check: tapInView taps with a real touch, never scrolls, and fails when the page scrolled since the previous step (553ms)
+  ✓  196 [pixel-7] › e2e/mobile-acceptance.spec.ts:345:1 › 0 self-check: a wide child in a box the player can scroll sideways does not widen the page, and is reported as an inner scroller (260ms)
+  ✓  199 [pixel-7] › e2e/mobile-acceptance.spec.ts:417:1 › 0 self-check: interactiveTargets reports 30x30 below 44x44, passes 44x44, skips hidden and inert controls, and never counts a pseudo-element hit area (141ms)
+  ✓  197 [pixel-7] › e2e/mobile-acceptance.spec.ts:396:1 › 0 self-check: resizeTo lays the page out at every width and size the suite measures (452ms)
+  ✓  200 [pixel-7] › e2e/mobile-acceptance.spec.ts:472:1 › 0 self-check: interactiveTargets keeps only the open modal dialog in scope (265ms)
+  ✓  202 [pixel-7] › e2e/mobile-acceptance.spec.ts:532:1 › 0 self-check: clippedText flags text with no box or wholly outside a clipping ancestor and leaves scrollable content alone (130ms)
+  ✓  201 [pixel-7] › e2e/mobile-acceptance.spec.ts:489:1 › 0 self-check: pageScrollReach passes a page that scrolls to its end and flags an overflow:hidden trap (328ms)
+  ✓  203 [pixel-7] › e2e/mobile-acceptance.spec.ts:555:1 › 0 self-check: panYAllowed reads touch-action up the tree (212ms)
+  ✓  198 [pixel-7] › e2e/mobile-acceptance.spec.ts:306:1 › 0 self-check: widestRight and documentScrollWidth pass a clean page and catch an overflowing child, even when html and body clip it (415ms)
+  ✓  205 [pixel-7] › e2e/mobile-acceptance.spec.ts:635:1 › 0 self-check: settle brings a finite entrance animation to its end state at once and leaves an infinite one running (158ms)
+  ✓  207 [pixel-7] › e2e/mobile-acceptance.spec.ts:692:1 › 0 self-check: setColorScheme switches the page between dark and light (174ms)
+  ✓  208 [pixel-7] › e2e/mobile-acceptance.spec.ts:707:1 › 0 self-check: a tap leaves no button focused, as on iOS, and a text field keeps its focus (273ms)
+  ✓  206 [pixel-7] › e2e/mobile-acceptance.spec.ts:668:1 › 0 self-check: settle returns the end value of a colour transition that lasts 0.01 ms (344ms)
+  ✓  204 [pixel-7] › e2e/mobile-acceptance.spec.ts:572:1 › 0 self-check: touch gestures are real touch in Chromium, and the WebKit drag is a mouse drag that says so (1.9s)
+  ✓  212 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home (1.3s)
+  ✓  209 [pixel-7] › e2e/mobile-acceptance.spec.ts:823:1 › 1 flow: 8-0 Challenge Classic, start to results with taps only (3.1s)
+  ✓  210 [pixel-7] › e2e/mobile-acceptance.spec.ts:828:1 › 1 flow: 151 Challenge, start to results with taps only (2.9s)
+  ✓  211 [pixel-7] › e2e/mobile-acceptance.spec.ts:833:1 › 1 flow: Daily, start to results with taps only (3.2s)
+  ✓  213 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: home settings open (1.2s)
+  ✓  214 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: builder full (1.2s)
+  ✓  216 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: play start (1.4s)
+  ✓  217 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 1 (1.2s)
+  ✓  218 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft round 9 (1.4s)
+  ✓  219 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: draft 151 round 1 (1.3s)
+  ✓  220 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: results (1.2s)
+  ✓  221 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results (1.1s)
+  ✓  222 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily results submitted (1.2s)
+  ✓  223 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: daily start (837ms)
+  ✓  224 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 50 rows (771ms)
+  ✓  215 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: picker open (4.9s)
+  ✓  226 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard empty (680ms)
+  ✓  227 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 503 (570ms)
+  ✓  225 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: leaderboard 1 row (847ms)
+  ✓  229 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history seeded (607ms)
+  ✓  228 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: history empty (738ms)
+  ✓  230 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: how to play (665ms)
+  ✓  232 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: broken run link (635ms)
+  ✓  233 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: 404 (603ms)
+  ✓  231 [pixel-7] › e2e/mobile-acceptance.spec.ts:847:3 › 2 overflow: shared run (1.2s)
+  ✓  234 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home (639ms)
+  ✓  235 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: home settings open (771ms)
+  ✓  238 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: play start (628ms)
+  ✓  236 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: builder full (822ms)
+  ✓  237 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: picker open (1.0s)
+  ✓  239 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 1 (660ms)
+  ✓  241 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft 151 round 1 (698ms)
+  ✓  240 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: draft round 9 (942ms)
+  ✓  242 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: results (1.2s)
+  ✓  245 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily start (635ms)
+  ✓  243 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results (1.0s)
+  ✓  244 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: daily results submitted (1.1s)
+  ✓  248 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard empty (588ms)
+  ✓  247 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 1 row (791ms)
+  ✓  246 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 50 rows (906ms)
+  ✓  249 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: leaderboard 503 (756ms)
+  ✓  250 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history empty (456ms)
+  ✓  251 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: history seeded (605ms)
+  ✓  252 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: how to play (581ms)
+  ✓  254 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: broken run link (590ms)
+  ✓  253 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: shared run (799ms)
+  ✓  255 [pixel-7] › e2e/mobile-acceptance.spec.ts:914:3 › 3 targets: 404 (553ms)
+  ✓  258 [pixel-7] › e2e/mobile-acceptance.spec.ts:1070:1 › 4 picker: closes on the browser Back button and the page stays on the builder (780ms)
+  ✓  259 [pixel-7] › e2e/mobile-acceptance.spec.ts:1083:1 › 4 picker: closes on its close button (1.1s)
+  ✓  257 [pixel-7] › e2e/mobile-acceptance.spec.ts:1050:1 › 4 picker: closes on a swipe down on its header (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.5s)
+  ✓  256 [pixel-7] › e2e/mobile-acceptance.spec.ts:983:1 › 4 picker: a slot tap opens a sheet whose list scrolls on its own and not the page behind it (real touch on pixel-7, scrollTop write on WebKit) (2.4s)
+  ✓  260 [pixel-7] › e2e/mobile-acceptance.spec.ts:1098:1 › 4 picker: focus returns to the tapped slot when it closes (1.3s)
+  ✓  261 [pixel-7] › e2e/mobile-acceptance.spec.ts:1138:1 › 5 drag and scroll: a drag swaps two tokens (real touch on pixel-7, mouse Pointer Events only on WebKit) (1.2s)
+  ✓  262 [pixel-7] › e2e/mobile-acceptance.spec.ts:1183:1 › 5 drag and scroll: a vertical swipe that starts outside the pitch scrolls the page (real touch on pixel-7, CSS and scrollBy on WebKit) (1.4s)
+  ✓  265 [pixel-7] › e2e/mobile-acceptance.spec.ts:1283:1 › 5 drag and scroll: on the finished draft, a tap on one player and then another swaps them (real taps) (671ms)
+  -  267 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home
+  ✓  263 [pixel-7] › e2e/mobile-acceptance.spec.ts:1230:1 › 5 drag and scroll: a vertical swipe that starts on the pitch's grass scrolls the page (real touch on pixel-7, CSS read on WebKit) (1.4s)
+  -  268 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: home settings open
+  -  269 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: builder full
+  -  270 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: picker open
+  ✓  266 [pixel-7] › e2e/mobile-acceptance.spec.ts:1325:1 › 6 keyboard: the focused nickname input stays fully visible when the viewport shrinks to 55% (1.1s)
+  -  271 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: play start
+  -  272 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 1
+  ✓  264 [pixel-7] › e2e/mobile-acceptance.spec.ts:1257:1 › 5 drag and scroll: after a touch drag, the next tap on a slot still opens the Picker (real touch on pixel-7) (1.9s)
+  -  273 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft round 9
+  -  274 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: draft 151 round 1
+  -  276 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results
+  -  275 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: results
+  -  277 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily results submitted
+  -  278 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: daily start
+  -  280 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 1 row
+  -  279 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 50 rows
+  -  281 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard empty
+  -  282 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: leaderboard 503
+  -  283 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history empty
+  -  284 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: history seeded
+  -  285 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: how to play
+  -  286 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: shared run
+  -  287 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: broken run link
+  -  288 [pixel-7] › e2e/mobile-acceptance.spec.ts:1384:3 › 7 landscape: 404
+
+  46 skipped
+  242 passed (1.4m)

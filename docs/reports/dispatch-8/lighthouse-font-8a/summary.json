@@ -1,0 +1,111 @@
+{
+  "phase": "final",
+  "production": "https://pokedraft-woad.vercel.app",
+  "environment": {
+    "runId": "38150015655",
+    "runAttempt": "1",
+    "workflowSha": "e8ce2d332824def968132287e07b8cbbe89b34c2",
+    "runnerImage": "ubuntu24",
+    "runnerImageVersion": "20261004.327.1",
+    "node": "v22.23.3",
+    "cpus": 4,
+    "lighthouse": "13.5.0",
+    "chrome": "Google Chrome for Testing 156.0.8078.4"
+  },
+  "identityBefore": {
+    "sha": "e8ce2d332824def968132287e07b8cbbe89b34c2",
+    "env": "production",
+    "region": "iad1",
+    "engine": "pokedraft-engine-3",
+    "tokenVersions": [
+      1,
+      2,
+      3
+    ]
+  },
+  "identityAfter": {
+    "sha": "e8ce2d332824def968132287e07b8cbbe89b34c2",
+    "env": "production",
+    "region": "iad1",
+    "engine": "pokedraft-engine-3",
+    "tokenVersions": [
+      1,
+      2,
+      3
+    ]
+  },
+  "medians": [
+    {
+      "route": "home",
+      "path": "/",
+      "runs": 3,
+      "performance": 85,
+      "accessibility": 100,
+      "lcpMs": 2112.933,
+      "cls": 0
+    },
+    {
+      "route": "play",
+      "path": "/play",
+      "runs": 3,
+      "performance": 95,
+      "accessibility": 100,
+      "lcpMs": 2260.506,
+      "cls": 0
+    },
+    {
+      "route": "daily",
+      "path": "/daily",
+      "runs": 3,
+      "performance": 82,
+      "accessibility": 100,
+      "lcpMs": 2382.2925,
+      "cls": 0
+    },
+    {
+      "route": "leaderboard",
+      "path": "/leaderboard",
+      "runs": 3,
+      "performance": 85,
+      "accessibility": 100,
+      "lcpMs": 1812.316,
+      "cls": 0
+    },
+    {
+      "route": "history",
+      "path": "/history",
+      "runs": 3,
+      "performance": 98,
+      "accessibility": 100,
+      "lcpMs": 1659.025,
+      "cls": 0
+    },
+    {
+      "route": "how-to-play",
+      "path": "/how-to-play",
+      "runs": 3,
+      "performance": 98,
+      "accessibility": 100,
+      "lcpMs": 1808.423,
+      "cls": 0
+    },
+    {
+      "route": "run",
+      "path": "/r/{token}",
+      "runs": 3,
+      "performance": 74,
+      "accessibility": 100,
+      "lcpMs": 3687.959,
+      "cls": 0
+    },
+    {
+      "route": "play-kanto151",
+      "path": "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151",
+      "runs": 3,
+      "performance": 84,
+      "accessibility": 100,
+      "lcpMs": 2262.0175,
+      "cls": 0
+    }
+  ]
+}
