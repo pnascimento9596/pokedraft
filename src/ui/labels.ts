@@ -71,6 +71,12 @@ export const ROUND_LABEL: Readonly<Record<CupRound, string>> = {
   F: "Final",
 };
 
+// How to Play and the results rules share this so they cannot drift apart again. It holds for
+// every retained engine, because from the Round of 16 to the Final each round's nominal rating
+// clears the round before by more than twice the ladder jitter.
+export const LADDER_SHAPE =
+  "The group games are the gentle start. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test.";
+
 export const ROUND_SHORT: Readonly<Record<CupRound, string>> = {
   G1: "G1",
   G2: "G2",

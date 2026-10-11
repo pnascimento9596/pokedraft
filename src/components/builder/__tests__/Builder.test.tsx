@@ -143,6 +143,24 @@ describe("builder picker", () => {
     expect(within(dialog).queryByText("Squirtle")).toBeNull();
   });
 
+  it("a search for a species the settings hide says why instead of a bare No matches (Mewtwo is Legendary, Legendaries is off by default)", () => {
+    render(<HomeScreen />);
+    const dialog = openPicker("Empty LCB slot");
+    fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "mewtwo" } });
+    expect(
+      within(dialog).getByText(
+        "No matches. Your Generations or Legendaries setting hides some Pokémon.",
+      ),
+    ).toBeTruthy();
+  });
+
+  it("a search that matches no Pokémon at all still says just No matches", () => {
+    render(<HomeScreen />);
+    const dialog = openPicker("Empty LCB slot");
+    fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "zzzz" } });
+    expect(within(dialog).getByText("No matches")).toBeTruthy();
+  });
+
   it("the rating stays hidden with Show ratings off, so the blind default never leaks a number, a label or the raw fit", () => {
     render(<HomeScreen />);
     const dialog = openPicker("Empty LCB slot");

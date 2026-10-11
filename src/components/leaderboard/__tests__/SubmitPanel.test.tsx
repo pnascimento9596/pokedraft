@@ -115,7 +115,11 @@ describe("SubmitPanel", () => {
       "DAILY_ALREADY_SUBMITTED",
       "That nickname already has a run on this daily board. One run per nickname per day.",
     ],
-    [429, "RATE_LIMITED", "Too many submissions from here. Wait a minute and try again."],
+    [
+      429,
+      "RATE_LIMITED",
+      "Too many submissions from this network. The limit is 10 an hour, so you may need to wait up to an hour.",
+    ],
     [503, "DB_UNAVAILABLE", "The leaderboard is offline right now. Try again in a few minutes."],
     [409, "DUPLICATE_TOKEN", "This run is already on the leaderboard."],
     [
