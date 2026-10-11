@@ -18,6 +18,7 @@ import {
   type PanelSettings,
 } from "@/ui/settings";
 import { SidePanel } from "./SidePanel";
+import { focusHeading } from "@/ui/focus";
 import s from "./HomeScreen.module.css";
 
 // The builder engine and the species data load on first use (a pointer over the builder, a tap, a
@@ -55,6 +56,15 @@ export function HomeScreen() {
   const [live, setLive] = useState<LiveDesk | null>(null);
   const [stats, setStats] = useState<Readonly<Record<StatBucket, BucketStats>> | null>(null);
   const [friendly, setFriendly] = useState<Friendly | null>(null);
+  const showingResults = friendly !== null;
+  const shownBefore = useRef(showingResults);
+
+  // Play a friendly cup and New run swap the whole screen; the new one's heading takes focus.
+  useEffect(() => {
+    if (shownBefore.current === showingResults) return;
+    shownBefore.current = showingResults;
+    focusHeading();
+  }, [showingResults]);
   const panelRef = useRef(panel);
   const loading = useRef<Promise<LiveDesk> | null>(null);
 

@@ -1,4 +1,5 @@
 import type { FormationId, Lineup, Seed, SlotRef, SpeciesId } from "@/engine/types";
+import { FORMATIONS } from "@/engine/formations";
 
 export const STARTER_REFS: readonly SlotRef[] = Array.from({ length: 11 }, (_, i): SlotRef => ({
   kind: "starter",
@@ -28,6 +29,13 @@ export function valueAt(lineup: Lineup, ref: SlotRef): SpeciesId | null {
   return ref.kind === "starter" ? lineup.starters[ref.index] : lineup.bench[ref.index];
 }
 
+/** The label a slot shows on the pitch: the formation's position, or SUB 1 to SUB 5. */
+export function slotLabel(lineup: Lineup, ref: SlotRef): string {
+  return ref.kind === "starter"
+    ? FORMATIONS[lineup.formation].slots[ref.index].label
+    : `SUB ${ref.index + 1}`;
+}
+
 export function filledCount(lineup: Lineup): number {
   return [...lineup.starters, ...lineup.bench].filter((v) => v !== null).length;
 }
@@ -43,3 +51,4 @@ export function emptyLineup(formation: FormationId): Lineup {
     bench: BENCH_REFS.map(() => null) as unknown as Lineup["bench"],
   };
 }
+

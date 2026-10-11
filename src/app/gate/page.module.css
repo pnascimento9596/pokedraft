@@ -19,7 +19,7 @@
   font: inherit;
   padding: 0.6rem 0.75rem;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-field);
   background: var(--bg-sunk);
   color: inherit;
 }

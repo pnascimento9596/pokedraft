@@ -5,7 +5,14 @@ import type { Contribution, CupResult, DraftState, PlayerLine } from "@/engine";
 import { speciesById } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { Pitch } from "@/components/pitch/Pitch";
-import { FINISH_LABEL, FRIENDLY_LABEL, MODE_LABEL, STYLE_LABEL, record } from "@/ui/labels";
+import {
+  FINISH_LABEL,
+  FRIENDLY_LABEL,
+  LADDER_SHAPE,
+  MODE_LABEL,
+  STYLE_LABEL,
+  record,
+} from "@/ui/labels";
 import { recordRun, toRecord } from "@/ui/runs";
 import { contributionLine } from "./format";
 import { FitReveal } from "./FitReveal";
@@ -91,7 +98,13 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
           <h2 id="group-h" className={s.h2}>
             Group table
           </h2>
-          <div className={s.tableWrap}>
+          {/* It scrolls sideways on a narrow phone, so a keyboard user can focus it to scroll. */}
+          <div
+            className={s.tableWrap}
+            role="region"
+            aria-label="Group table, scrollable"
+            tabIndex={0}
+          >
             <table className={s.table}>
               <thead>
                 <tr>
@@ -194,10 +207,9 @@ export function ResultsView({ token, draft, cup, variant, onNewRun, submit }: Re
             weaknesses. The bench adds a little depth on top.
           </p>
           <p>
-            Matches are simulated from your Team Score against a ladder of opponents that climbs
-            every round. The group games are gentle, and the ladder gets hard from the
-            quarter-final. If a player misses a match, the bench steps in and that match uses the
-            Team Score of the side that actually played.
+            Matches are simulated from your Team Score against a ladder of opponents. {LADDER_SHAPE}{" "}
+            If a player misses a match, the bench steps in and that match uses the Team Score of the
+            side that actually played.
           </p>
           <p>
             Every roll in the draft comes from the run&apos;s seed, so a run link replays exactly

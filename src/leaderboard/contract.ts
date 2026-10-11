@@ -64,6 +64,8 @@ export interface SubmitEntry extends Omit<BoardEntry, "rank"> {
   readonly rank: number | null;
 }
 
+// 201 when the run is saved now. 200 when this run was already saved under this nickname (a retry
+// after a lost response); the entry is the saved row and the retry spends no rate-limit attempt.
 export interface SubmitOk {
   readonly entry: SubmitEntry;
 }

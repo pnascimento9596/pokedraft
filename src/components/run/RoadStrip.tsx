@@ -2,6 +2,7 @@ import { useId, useMemo, type CSSProperties } from "react";
 import { ENGINE_COEFFICIENTS } from "@/engine/coefficients";
 import { buildLadder } from "@/engine/opponents";
 import { CUP_ROUNDS, type Mode } from "@/engine/types";
+
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import s from "./RoadStrip.module.css";
 

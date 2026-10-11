@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { dailySeed } from "@/engine/rng";
 import { DRAFT_ROUNDS, GENS, type DraftSettings, type IsoDate } from "@/engine/types";
 import { longDate } from "@/components/leaderboard/format";
 import { unlockAudio } from "@/components/wheel/sound";
+import { focusHeading } from "@/ui/focus";
 import { GEN_REGION, MODE_LABEL, ORDER_LABEL, REGION_LABEL, STYLE_LABEL } from "@/ui/labels";
 import { freshSeed, parsePlayQuery } from "@/ui/settings";
+import { readSession, runSlotKey, writeSession } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
 import { RoadStrip } from "./RoadStrip";
 import s from "./PlayScreen.module.css";
@@ -93,10 +95,19 @@ export function Challenge({
   const [live, setLive] = useState<{
     readonly seed: string;
     readonly LiveRun: typeof LiveRun;
+    readonly restore: boolean;
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
   const [useQuerySeed, setUseQuerySeed] = useState(true);
+  const wasLive = useRef(live !== null);
+
+  // New run swaps the whole screen back to Start; its heading takes focus.
+  useEffect(() => {
+    if (wasLive.current === (live !== null)) return;
+    wasLive.current = live !== null;
+    if (live === null) focusHeading();
+  }, [live]);
 
   // The seed this run will use, when it is known before Start: today's Daily seed or a shared
   // link's. A fresh run draws its seed at Start (random, so never during render), and until then
@@ -109,7 +120,7 @@ export function Challenge({
     loadLiveRun().catch(() => {});
   };
 
-  const start = () => {
+  const start = (restore = false) => {
     if (loading) return;
     unlockAudio();
     const seed = fixedSeed ?? freshSeed();
@@ -118,7 +129,7 @@ export function Challenge({
     loadLiveRun().then(
       (mod) => {
         setLoading(false);
-        setLive({ seed, LiveRun: mod.LiveRun });
+        setLive({ seed, LiveRun: mod.LiveRun, restore });
       },
       () => {
         setLoading(false);
@@ -127,9 +138,34 @@ export function Challenge({
     );
   };
 
+  // A reload, a discarded tab or Back then Forward mounts this screen again with nothing in React
+  // state. When the tab holds a saved run for these settings, the draft loads straight into it.
+  // The peek reads only the settings key, never the species data.
+  useEffect(() => {
+    const slot = {
+      settings,
+      seed: daily !== undefined ? dailySeed(daily) : querySeed,
+      daily: daily ?? null,
+    };
+    if (readSession(runSlotKey(slot)) === null) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- auto-enter the saved run after hydration
+    start(true);
+    // Only on mount: later starts come from the Start button.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const newRun = () => {
     setUseQuerySeed(false);
     setLive(null);
+    // The run on screen is gone, so a later mount must not bring it back.
+    writeSession(
+      runSlotKey({
+        settings,
+        seed: daily !== undefined ? dailySeed(daily) : querySeed,
+        daily: daily ?? null,
+      }),
+      null,
+    );
     if (params.has("seed")) {
       const q = new URLSearchParams(params.toString());
       q.delete("seed");
@@ -147,6 +183,7 @@ export function Challenge({
         seed={live.seed}
         daily={daily}
         title={title}
+        restore={live.restore}
         onNewRun={newRun}
       />
     );
@@ -172,7 +209,7 @@ export function Challenge({
           className="btn btn--primary"
           data-testid="run-start"
           aria-busy={loading || undefined}
-          onClick={start}
+          onClick={() => start()}
           onPointerEnter={preload}
           onPointerDown={preload}
           onFocus={preload}

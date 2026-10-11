@@ -46,7 +46,7 @@
 }
 
 .row[data-top] .rank {
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 .main {
@@ -79,7 +79,7 @@
 .label {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -96,7 +96,7 @@
 }
 
 .score {
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 @media (max-width: 479px) {

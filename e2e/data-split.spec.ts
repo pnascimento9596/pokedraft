@@ -98,7 +98,11 @@ test("the daily start panel does not download the species data during load, and 
 
 // Holds every data chunk response for 3 s and reports when the first one is asked for. The idle
 // prefetch asks for it from a React effect, so by then the page has hydrated.
-async function slowData(page: Page): Promise<Promise<void>> {
+// Registers the chunk route and resolves with the prefetch signal once registration is done.
+// The signal resolves when the first data chunk is requested. (Returning the signal directly
+// would deadlock callers: awaiting the call would adopt the inner promise, which only resolves
+// once a chunk is requested, so awaiting before goto would hang forever with nothing navigating.)
+async function slowData(page: Page): Promise<{ readonly askedFor: Promise<void> }> {
   let asked: () => void = () => {};
   const askedFor = new Promise<void>((r) => (asked = r));
   await page.route("**/_next/static/chunks/**", async (route) => {
@@ -110,11 +114,11 @@ async function slowData(page: Page): Promise<Promise<void>> {
     }
     await route.fulfill({ response: res, body });
   });
-  return askedFor;
+  return { askedFor };
 }
 
 test("on a slow connection Start says it is loading, then opens the draft", async ({ page }) => {
-  const askedFor = await slowData(page);
+  const { askedFor } = await slowData(page);
   await page.goto(PLAY);
   await askedFor;
   const start = page.getByTestId("run-start");
@@ -127,11 +131,16 @@ test("on a slow connection Start says it is loading, then opens the draft", asyn
 test("on a slow connection the first slot tap says the players are loading, then opens the picker", async ({
   page,
 }) => {
-  const askedFor = await slowData(page);
+  const { askedFor } = await slowData(page);
   await page.goto("/");
   await askedFor;
   await page.getByTestId("slot-s0").click();
-  await expect(page.getByRole("status")).toHaveText("Loading the players");
+  // The builder toolbar has its own status line; the page's announcer region is a second
+  // role=status since theme 7F, so scope to the toolbar.
+  const builderStatus = page
+    .getByRole("toolbar", { name: "Builder actions" })
+    .getByRole("status");
+  await expect(builderStatus).toHaveText("Loading the players");
   await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(page.getByRole("status")).toHaveText("");
+  await expect(builderStatus).toHaveText("");
 });

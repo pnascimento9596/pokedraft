@@ -1,0 +1,246 @@
+{
+  "capturedAt": "2026-10-10T20:39:36.030Z",
+  "localTime": "Sat Oct 10 2026 16:39:36 GMT-0400 (Eastern Daylight Time)",
+  "timeZone": "America/New_York",
+  "machine": {
+    "modelIdentifier": "Mac16,8",
+    "modelName": "MacBook Pro",
+    "chip": "Apple M4 Pro",
+    "logicalCores": 12,
+    "memoryGB": 24,
+    "macOS": "27.0.1 (26A434)",
+    "arch": "arm64"
+  },
+  "loadAtCapture": {
+    "load1": 47.23,
+    "load5": 34.46,
+    "load15": 27.69
+  },
+  "loadDuringBaseline": {
+    "what": "1-minute load average of the measuring Mac (os.loadavg), sampled by a background process; the Mac has 12 cores and ran an unrelated CI runner",
+    "from": "2026-10-10T19:16:49.132Z",
+    "to": "2026-10-10T22:05:20.520Z",
+    "intervalSeconds": 15,
+    "samples": 675,
+    "min": 4.8,
+    "p50": 25.5,
+    "p95": 55.5,
+    "max": 100.2,
+    "shareAbove6Percent": 98.4
+  },
+  "tools": {
+    "node": "v22.22.3",
+    "pnpm": "11.5.1",
+    "systemChrome": "Google Chrome 154.0.8037.98",
+    "playwright": "1.64.0",
+    "playwrightChromium": "156.0.8078.4",
+    "playwrightWebkit": "27.2",
+    "lighthouse": "13.5.0",
+    "lighthouseCheck": "13.5.0",
+    "vercelCli": "52.2.1"
+  },
+  "git": {
+    "auditCloneHead": "928e4b137811d6ef22699c6d33870039aa693f8a",
+    "auditCloneBranch": "docs/dispatch-7-audit",
+    "servedCheckoutHead": "928e4b137811d6ef22699c6d33870039aa693f8a",
+    "servedBuildId": "7GUR2I93sdwtiww-I_GxH"
+  },
+  "vercel": {
+    "current": {
+      "id": "dpl_3S5vGX1gDAbMwyzdmEq2gVMiP1jo",
+      "state": "READY",
+      "createdAt": "2026-10-10T17:57:00.505Z",
+      "gitSha": "928e4b137811d6ef22699c6d33870039aa693f8a",
+      "gitMessage": "feat(engine): engine-3 shootout coin, role scorers, POTT score, smoothed ladder (dispatch 6 PR 6C) (#11)"
+    },
+    "previous": [
+      {
+        "id": "dpl_BxGNoP6mp64bJxXfsVN6BPbcy1RX",
+        "state": "READY",
+        "createdAt": "2026-10-10T17:07:18.996Z",
+        "gitSha": "d3502ef7610715e50ee2a9f3c9b676b1c3a7ab4b",
+        "gitMessage": "feat(scouting): keeper frame and serpent reach, engine-2 (dispatch 6 PR 6B) (#10)"
+      },
+      {
+        "id": "dpl_sKMRwyw7BUX2qWnichUoaEyT9m5V",
+        "state": "READY",
+        "createdAt": "2026-10-10T16:12:13.657Z",
+        "gitSha": "9af2a746ad8606dee8cc95170dfe80d439f5beca",
+        "gitMessage": "feat(engine): retain engine-1 and replay links by token version (#9)"
+      }
+    ]
+  },
+  "network": {
+    "kind": "a MacBook Pro on a Wi-Fi connection (en0); consumer or office ISP, not a datacenter. Home or office is not recorded by the tool.",
+    "latencyFloor": {
+      "what": "time to response headers for HEAD /robots.txt, 10 sequential requests 300 ms apart. The edge closes the connection after a HEAD, so newConnections of the 10 opened a new connection.",
+      "url": "https://pokedraft-woad.vercel.app/robots.txt",
+      "n": 10,
+      "medianMs": 121.3,
+      "minMs": 93.4,
+      "maxMs": 166.4,
+      "firstRequestMs": 166.4,
+      "samplesMs": [
+        166.4,
+        125,
+        123.2,
+        93.4,
+        129.7,
+        119.4,
+        103.5,
+        125.8,
+        108,
+        104.1
+      ],
+      "newConnections": 10,
+      "edge": {
+        "regions": [
+          "iad1"
+        ],
+        "cache": "HIT",
+        "cacheControl": "public, max-age=0, must-revalidate"
+      },
+      "getOnKeptAliveConnection": {
+        "what": "time to response headers for GET /robots.txt: one GET opens the connection (firstMs), then 10 sequential GETs 300 ms apart reuse it",
+        "firstMs": 108.5,
+        "firstOpenedConnection": true,
+        "n": 10,
+        "medianMs": 37,
+        "minMs": 28.2,
+        "maxMs": 54.6,
+        "samplesMs": [
+          36.2,
+          39.6,
+          39.9,
+          28.2,
+          43.9,
+          33.3,
+          37.9,
+          33.5,
+          31.7,
+          54.6
+        ],
+        "newConnections": 0
+      }
+    },
+    "curlBreakdownSeconds": {
+      "what": "one new connection: DNS lookup, TCP connect, TLS done, first byte, total",
+      "dns": 0.00455,
+      "connect": 0.029628,
+      "tls": 0.068713,
+      "firstByte": 0.107478,
+      "total": 0.10754,
+      "httpVersion": "2"
+    }
+  },
+  "fixtureCheck": {
+    "token": "fixtures.json shareRun.token",
+    "expected": {
+      "score": 593,
+      "record": "3-0-2",
+      "finish": "R16"
+    },
+    "checks": {
+      "prod": {
+        "status": 200,
+        "record": "3-0-2",
+        "score": "593"
+      },
+      "local": {
+        "status": 200,
+        "record": "3-0-2",
+        "score": "593"
+      }
+    },
+    "sameOnBothTargets": true
+  },
+  "atEnd": {
+    "capturedAt": "2026-10-10T22:05:13.361Z",
+    "localTime": "Sat Oct 10 2026 18:05:13 GMT-0400 (Eastern Daylight Time)",
+    "loadAtCapture": {
+      "load1": 58.37,
+      "load5": 45.42,
+      "load15": 39.84
+    },
+    "productionDeployment": {
+      "id": "dpl_3S5vGX1gDAbMwyzdmEq2gVMiP1jo",
+      "state": "READY",
+      "createdAt": "2026-10-10T17:57:00.505Z",
+      "gitSha": "928e4b137811d6ef22699c6d33870039aa693f8a",
+      "gitMessage": "feat(engine): engine-3 shootout coin, role scorers, POTT score, smoothed ladder (dispatch 6 PR 6C) (#11)"
+    },
+    "sameDeploymentAsStart": true,
+    "latencyFloor": {
+      "what": "time to response headers for HEAD /robots.txt, 10 sequential requests 300 ms apart. The edge closes the connection after a HEAD, so newConnections of the 10 opened a new connection.",
+      "url": "https://pokedraft-woad.vercel.app/robots.txt",
+      "n": 10,
+      "medianMs": 124.3,
+      "minMs": 97.6,
+      "maxMs": 172.5,
+      "firstRequestMs": 172.5,
+      "samplesMs": [
+        172.5,
+        122,
+        133,
+        136.2,
+        125.4,
+        134.3,
+        105.6,
+        97.6,
+        101.2,
+        123.2
+      ],
+      "newConnections": 10,
+      "edge": {
+        "regions": [
+          "iad1"
+        ],
+        "cache": "HIT",
+        "cacheControl": "public, max-age=0, must-revalidate"
+      },
+      "getOnKeptAliveConnection": {
+        "what": "time to response headers for GET /robots.txt: one GET opens the connection (firstMs), then 10 sequential GETs 300 ms apart reuse it",
+        "firstMs": 122.3,
+        "firstOpenedConnection": true,
+        "n": 10,
+        "medianMs": 40.4,
+        "minMs": 33.5,
+        "maxMs": 46.8,
+        "samplesMs": [
+          39.8,
+          34.3,
+          46.6,
+          40,
+          33.5,
+          41.8,
+          43.7,
+          46.8,
+          40.8,
+          34.7
+        ],
+        "newConnections": 0
+      }
+    },
+    "fixtureCheck": {
+      "token": "fixtures.json shareRun.token",
+      "expected": {
+        "score": 593,
+        "record": "3-0-2",
+        "finish": "R16"
+      },
+      "checks": {
+        "prod": {
+          "status": 200,
+          "record": "3-0-2",
+          "score": "593"
+        },
+        "local": {
+          "status": 200,
+          "record": "3-0-2",
+          "score": "593"
+        }
+      },
+      "sameOnBothTargets": true
+    }
+  }
+}

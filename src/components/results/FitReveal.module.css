@@ -62,7 +62,7 @@
 }
 
 .oop {
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 .weakTag {
@@ -115,7 +115,10 @@
   color: var(--loss);
 }
 
+/* A 44 px high hit box; the negative margin keeps the card's layout where it was. */
 .why summary {
+  padding-block: 13px;
+  margin-block: -13px;
   cursor: pointer;
   font-size: 0.82rem;
   color: var(--ink-soft);

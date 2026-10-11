@@ -31,6 +31,7 @@ export function ImageSettings() {
             checked={mirror}
             onChange={(e) => writeSettings({ mirror: e.target.checked })}
           />
+          <span className="image-settings__box" aria-hidden="true" />
           <span>Face the center</span>
         </label>
       </div>

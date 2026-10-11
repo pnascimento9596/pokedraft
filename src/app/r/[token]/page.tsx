@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageProps<"/r/[token]">): Pro
 export default function RunPage({ params }: PageProps<"/r/[token]">) {
   return (
     <main className="page">
-      <Suspense fallback={<p className="kicker">Loading run</p>}>
+      <Suspense fallback={<p className="kicker page-loading">Loading run</p>}>
         {params.then(({ token }) => (
           <SharedRun token={token} run={loadRun(token)} />
         ))}

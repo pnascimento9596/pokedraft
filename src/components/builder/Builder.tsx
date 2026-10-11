@@ -13,9 +13,14 @@ import type {
   SpeciesId,
 } from "@/engine/types";
 import { Pitch } from "@/components/pitch/Pitch";
-import { downloadCard } from "@/components/share/download";
+import { announce } from "@/components/Announcer";
+import {
+  DOWNLOAD_FAILED,
+  downloadStatus,
+  useCardDownload,
+} from "@/components/share/useCardDownload";
 import { FRIENDLY_LABEL, qualityScore, versusLabel } from "@/ui/labels";
-import { BUILDER_URL_SEED, emptyLineup, filledCount, valueAt } from "@/ui/lineup";
+import { BUILDER_URL_SEED, emptyLineup, filledCount, refKey, valueAt } from "@/ui/lineup";
 import { freshSeed } from "@/ui/settings";
 import { CASCADE_TOTAL_MS, cascadeFrame, fullLineup } from "./model";
 import s from "./Builder.module.css";
@@ -74,6 +79,25 @@ export function Builder({
   const [elapsed, setElapsed] = useState(0);
   const [status, setStatus] = useState("");
   const statusTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const card = useCardDownload();
+  const rootRef = useRef<HTMLElement>(null);
+  const pickedFrom = useRef<SlotRef | null>(null);
+
+  // When the picker closes, focus goes back to its slot. iOS never focuses a tapped button, so
+  // the dialog alone would leave focus on the page.
+  useEffect(() => {
+    if (picking !== null || pickedFrom.current === null) return;
+    const key = refKey(pickedFrom.current);
+    pickedFrom.current = null;
+    rootRef.current
+      ?.querySelector<HTMLElement>(`[data-slot-key="${key}"]`)
+      ?.focus({ preventScroll: true });
+  }, [picking]);
+
+  const openPicker = (ref: SlotRef) => {
+    pickedFrom.current = ref;
+    setPicking(ref);
+  };
 
   useEffect(() => {
     if (cascade === null) return;
@@ -107,6 +131,7 @@ export function Builder({
   };
 
   const say = (message: string) => {
+    card.reset();
     setStatus(message);
     clearTimeout(statusTimer.current);
     statusTimer.current = setTimeout(() => setStatus(""), 2400);
@@ -134,6 +159,12 @@ export function Builder({
     withLive(({ engine, draft }) => {
       const next = engine.randomDraft(draft.settings, draft.seed, freshSeed());
       onChange(next);
+      const filledNext = fullLineup(next.lineup);
+      announce(
+        filledNext === null
+          ? "Randomized."
+          : `Randomized. Team Score ${engine.rateTeam(filledNext).score}.`,
+      );
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       setElapsed(0);
       setCascade({
@@ -177,6 +208,7 @@ export function Builder({
 
   return (
     <section
+      ref={rootRef}
       className={s.builder}
       aria-label="Pitch builder"
       onPointerEnter={preload}
@@ -211,11 +243,14 @@ export function Builder({
           lineup={shown}
           speciesOf={desk.kind === "live" ? desk.engine.speciesById : noSpecies}
           label={`${lineup.formation} lineup`}
-          onSlotTap={animating ? () => {} : (ref) => withLive(() => setPicking(ref))}
+          onSlotTap={animating ? () => {} : (ref) => withLive(() => openPicker(ref))}
           onSwap={
             animating || desk.kind !== "live"
               ? undefined
-              : (a, b) => onChange(desk.engine.applyAction(desk.draft, { type: "swap", a, b }))
+              : (a, b) => {
+                  onChange(desk.engine.applyAction(desk.draft, { type: "swap", a, b }));
+                  announce(desk.engine.swapMessage(lineup, a, b));
+                }
           }
           tokenNote={
             showRatings && !animating && desk.kind === "live"
@@ -223,6 +258,18 @@ export function Builder({
               : undefined
           }
         />
+        {/* Below an 800 px pitch each pill is the number alone, so this line says what it compares
+            against. The CSS hides it where every pill carries its own "vs other <role>s" label. Its
+            line is reserved even with ratings off: the saved setting loads after hydration, and
+            the line appearing then pushed the tools down (layout shift). It stays up while
+            Randomize animates. */}
+        <div className={s.legendSlot}>
+          {showRatings ? (
+            <p className={s.legend} data-testid="ratings-legend">
+              Ratings are 0 to 100, vs other players in the same role.
+            </p>
+          ) : null}
+        </div>
       </div>
 
       <div className={s.tools} role="toolbar" aria-label="Builder actions">
@@ -233,31 +280,45 @@ export function Builder({
           type="button"
           className="btn"
           onClick={() =>
-            withLive(({ engine, draft }) =>
-              onChange(engine.createDraft(draft.settings, draft.seed)),
-            )
+            withLive(({ engine, draft }) => {
+              onChange(engine.createDraft(draft.settings, draft.seed));
+              announce("Cleared all slots.");
+            })
           }
           disabled={animating || filled === 0}
         >
           Clear all
         </button>
-        <button type="button" className="btn" onClick={onReset} disabled={animating}>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            onReset();
+            announce("Reset the builder settings and cleared all slots.");
+          }}
+          disabled={animating}
+        >
           Reset
         </button>
         <button
           type="button"
           className="btn btn--ghost"
-          onClick={() =>
-            withLive((live) => void downloadCard({ b: tokenOf(live) }, "pokedraft-lineup.png"))
-          }
+          onClick={() => {
+            setStatus("");
+            withLive((live) => void card.start({ b: tokenOf(live) }, "pokedraft-lineup.png"));
+          }}
+          disabled={card.state.kind === "busy"}
         >
           Download image
         </button>
         <button type="button" className="btn btn--ghost" onClick={copyLink}>
           Copy link
         </button>
-        <p className={s.status} role="status" aria-live="polite">
-          {status}
+        <p className={s.status}>
+          <span role="status" aria-live="polite">
+            {downloadStatus(card.state) || status}
+          </span>
+          <span role="alert">{card.state.kind === "failed" ? DOWNLOAD_FAILED : ""}</span>
         </p>
       </div>
 

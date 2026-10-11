@@ -15,6 +15,7 @@ import { ALL_REFS, valueAt } from "@/ui/lineup";
 // import() on first use, so its first load draws the empty pitch without the data.
 export { applyAction, createDraft, eligibleSpecies, rateTeam, replay, speciesById } from "@/engine";
 export { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
+export { swapMessage } from "@/ui/swap-message";
 export { ResultsView } from "@/components/results/ResultsView";
 export { Picker } from "./Picker";
 

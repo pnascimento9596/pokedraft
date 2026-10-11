@@ -13,7 +13,7 @@
   border: 1px solid var(--line);
   background:
     radial-gradient(ellipse 60% 90% at 100% 0%, rgba(255, 210, 63, 0.16), transparent 60%),
-    linear-gradient(160deg, var(--grass-1), var(--grass-2) 55%, var(--bg-sunk));
+    linear-gradient(160deg, var(--hero-1), var(--hero-2) 55%, var(--hero-3));
   color: #fff;
   box-shadow: var(--shadow);
 }
@@ -30,9 +30,9 @@
 }
 
 .hero[data-flawless] {
-  border-color: var(--flood);
+  border-color: var(--flood-line);
   box-shadow:
-    0 0 0 2px var(--flood),
+    0 0 0 2px var(--flood-line),
     var(--shadow);
 }
 
@@ -114,7 +114,7 @@
 }
 
 .finish[data-finish="champion"] {
-  color: var(--flood);
+  color: var(--pitch-flood);
 }
 
 .scorebug {

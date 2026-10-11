@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Barlow_Semi_Condensed, Big_Shoulders } from "next/font/google";
+import { Announcer } from "@/components/Announcer";
 import { ImageSettings } from "@/components/ImageSettings";
 import { PackCredit } from "@/components/PackCredit";
+import { SiteNav } from "@/components/SiteNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import "./globals.css";
 
@@ -28,6 +30,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// The page draws under the notch and the home indicator; globals.css pads the edges with the
+// safe-area insets.
+export const viewport: Viewport = { viewportFit: "cover" };
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${shoulders.variable} ${barlow.variable}`}>
@@ -36,14 +42,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Link href="/" className="site-header__brand">
             poke<span>draft</span>
           </Link>
-          <nav aria-label="Main">
+          <SiteNav>
             <Link href="/daily">Daily</Link>
             <Link href="/leaderboard">Leaderboard</Link>
             <Link href="/how-to-play">How to play</Link>
             <Link href="/history">History</Link>
             <ImageSettings />
             <ThemeToggle />
-          </nav>
+          </SiteNav>
         </header>
         {children}
         <footer className="site-footer">
@@ -54,6 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <p>Soccer remix of the All-22 Pokémon Builder idea.</p>
           <PackCredit />
         </footer>
+        <Announcer />
       </body>
     </html>
   );

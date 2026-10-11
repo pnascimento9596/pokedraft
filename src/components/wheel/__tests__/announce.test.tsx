@@ -21,7 +21,7 @@ afterEach(() => {
 });
 
 describe("wheel announcement", () => {
-  it("speaks the result once, after the last wheel stops, so a screen reader never hears the region twice", () => {
+  it("writes the result line once, after the last wheel stops, so it never shows the region alone (the draft board reads it out, see announce-draft.test.tsx)", () => {
     const onDone = vi.fn();
     render(
       <RollReveal stages={stagesFor(ROLL, SETTINGS, "new")} instant={false} onDone={onDone} />,

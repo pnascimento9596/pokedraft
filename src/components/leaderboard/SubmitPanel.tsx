@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NICKNAME_MAX, NICKNAME_MIN, type SubmitEntry } from "@/leaderboard/contract";
 import { readJson, writeJson } from "@/ui/storage";
 import { boardHref, submitRun, type SubmitFailure } from "./client";
@@ -23,7 +23,8 @@ export const SUBMIT_ERROR_COPY: Readonly<Record<SubmitFailure, string>> = {
   DAILY_ALREADY_SUBMITTED:
     "That nickname already has a run on this daily board. One run per nickname per day.",
   DUPLICATE_TOKEN: "This run is already on the leaderboard.",
-  RATE_LIMITED: "Too many submissions from here. Wait a minute and try again.",
+  RATE_LIMITED:
+    "Too many submissions from this network. The limit is 10 an hour, so you may need to wait up to an hour.",
   DB_UNAVAILABLE: "The leaderboard is offline right now. Try again in a few minutes.",
   NETWORK: "Could not reach the leaderboard. Check your connection and try again.",
   UNEXPECTED: "The leaderboard sent a reply we could not read. Try again later.",
@@ -43,7 +44,13 @@ function savedNickname(): string {
 export function SubmitPanel({ token, daily }: { readonly token: string; readonly daily: boolean }) {
   const [nickname, setNickname] = useState(savedNickname);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const successRef = useRef<HTMLParagraphElement>(null);
   const trimmed = nickname.trim();
+
+  // The form that held focus is gone. The success line takes it, and a screen reader reads it.
+  useEffect(() => {
+    if (status.kind === "done") successRef.current?.focus({ preventScroll: true });
+  }, [status.kind]);
   const valid = trimmed.length >= NICKNAME_MIN && trimmed.length <= NICKNAME_MAX;
 
   const submit = async (e: React.FormEvent) => {
@@ -62,7 +69,7 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
     const scope = entry.dailyDate === null ? "all" : "daily";
     return (
       <section className={s.panel} data-testid="submit-panel" aria-label="Leaderboard">
-        <p className={s.success} data-testid="submit-success" role="status">
+        <p ref={successRef} className={s.success} data-testid="submit-success" tabIndex={-1}>
           {entry.rank === null ? null : <span className={s.rank}>#{entry.rank}</span>}
           <span>
             {entry.nickname} is on {scope === "daily" ? "the daily board" : "the all-time board"}.

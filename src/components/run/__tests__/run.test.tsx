@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import type { ReactElement } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { IsoDate } from "@/engine";
 import { dailySettings } from "@/leaderboard/daily";
@@ -34,6 +35,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  sessionStorage.clear();
 });
 
 // Start loads the draft (and the species data) with import(), so the board appears a tick later.
@@ -59,6 +61,25 @@ describe("challenge run screen", () => {
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
   });
 
+  it("clears the hint for a tap that did nothing after 4 seconds, and not before", async () => {
+    query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
+    render(<PlayScreen />);
+    await start();
+    vi.useFakeTimers();
+    try {
+      fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+      act(() => vi.advanceTimersByTime(3999));
+      expect(screen.queryByTestId("draft-hint")?.textContent).toBe(
+        "Choose a player first, then tap a slot.",
+      );
+      act(() => vi.advanceTimersByTime(1));
+      expect(screen.queryByTestId("draft-hint")).toBeNull();
+
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("shows the rolled Hoenn poison list without any fit or rating, so ranked runs stay blind", async () => {
     query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
     render(<PlayScreen />);
@@ -74,17 +95,23 @@ describe("challenge run screen", () => {
     expect(screen.getByTestId("candidate-269").textContent).toBe("Dustox#269BugPoison");
   });
 
-  it("refuses a pick into a filled slot with a message instead of crashing", async () => {
+  it("never picks into a filled slot: with a player chosen, a tap on a placed one picks it for a swap", async () => {
     query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
     render(<PlayScreen />);
     await start();
     fireEvent.click(screen.getByTestId("candidate-316"));
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    fireEvent.click(document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!);
     fireEvent.click(screen.getByRole("button", { name: "ST Gulpin" }));
-    expect(screen.getByRole("status").textContent).toBe(
-      "That slot is taken. Drag one player onto another to swap them.",
-    );
-    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+    expect({
+      hint: screen.getByTestId("draft-hint").textContent,
+      st: screen.getByTestId("slot-s9").getAttribute("aria-label"),
+      round: screen.getByTestId("round-header").textContent,
+    }).toEqual({
+      hint: "Tap another slot to swap Gulpin, or tap it again to cancel.",
+      st: "ST Gulpin",
+      round: "Round 2 of 16",
+    });
   });
 
   it("shows a friendly message for a broken challenge link instead of a blank page", () => {
@@ -140,5 +167,125 @@ describe("road to the final on the run screens", () => {
     expect(ratings()).toEqual(DAILY_2026_10_10_CUP8);
     await start();
     expect(ratings()).toEqual(DAILY_2026_10_10_CUP8);
+  });
+});
+
+describe("a run survives a reload (SA-08, SB-06)", () => {
+  const RUN_TEST = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
+  const E2E_151 = "mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151";
+
+  // Unmounting and mounting again is what a reload, a discarded tab or Back then Forward does to
+  // the screen: React state is gone and only what the tab stored can bring the run back.
+  const reload = (ui: ReactElement) => {
+    cleanup();
+    render(ui);
+  };
+
+  const pickGulpinAtStriker = async () => {
+    await start();
+    fireEvent.click(screen.getByTestId("candidate-316"));
+    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+  };
+
+  const draftSixteen = () => {
+    for (let round = 1; round <= 16; round++) {
+      expect(screen.getByTestId("round-header").textContent).toBe(`Round ${round} of 16`);
+      fireEvent.click(document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!);
+      fireEvent.click(
+        document.querySelector<HTMLElement>(
+          '[data-testid^="slot-"][data-filled="false"]:not([disabled])',
+        )!,
+      );
+    }
+  };
+
+  it("brings a draft in progress back at the same round with the same squad after a reload (catches a run that lives only in React state)", async () => {
+    query.current = RUN_TEST;
+    render(<PlayScreen />);
+    await pickGulpinAtStriker();
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+
+    reload(<PlayScreen />);
+
+    // The restore loads the draft with import(), so the board appears a tick later.
+    await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
+    expect(screen.queryByTestId("run-start")).toBeNull();
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
+  });
+
+  it("brings a finished, unsubmitted run back to its results with the same record and the submit form (catches losing the only chance to submit)", async () => {
+    query.current = E2E_151;
+    render(<PlayScreen />);
+    await start();
+    draftSixteen();
+    fireEvent.click(screen.getByTestId("see-results"));
+    expect(screen.getByTestId("results-record").textContent).toBe("3-0-2");
+
+    reload(<PlayScreen />);
+
+    await screen.findByTestId("results-record", undefined, { timeout: 10_000 });
+    expect(screen.getByTestId("results-record").textContent).toBe("3-0-2");
+    expect(screen.getByTestId("submit-panel")).toBeTruthy();
+  });
+
+  it("forgets the run after New run, so the next load starts clean", async () => {
+    query.current = RUN_TEST;
+    render(<PlayScreen />);
+    await pickGulpinAtStriker();
+    fireEvent.click(screen.getByTestId("new-run"));
+
+    reload(<PlayScreen />);
+
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+  });
+
+  it("does not put a stored run on a different shared seed (catches a saved run hijacking another link)", async () => {
+    query.current = RUN_TEST;
+    render(<PlayScreen />);
+    await pickGulpinAtStriker();
+
+    query.current = RUN_TEST.replace("seed=run-test", "seed=other-seed");
+    reload(<PlayScreen />);
+
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+  });
+
+  it("restores a Daily run on the same New York date only", async () => {
+    const daily = (date: string) => (
+      <Challenge settings={dailySettings("4-3-3")} querySeed={null} daily={date as IsoDate} />
+    );
+    render(daily("2026-10-10"));
+    await start();
+    fireEvent.click(document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!);
+    fireEvent.click(
+      document.querySelector<HTMLElement>(
+        '[data-testid^="slot-"][data-filled="false"]:not([disabled])',
+      )!,
+    );
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+
+    reload(daily("2026-10-10"));
+    await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+
+    reload(daily("2026-10-11"));
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+  });
+
+  it("still plays when the browser refuses storage (private windows, blocked site data)", async () => {
+    const refuse = () => {
+      throw new DOMException("blocked", "SecurityError");
+    };
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(refuse);
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(refuse);
+    vi.spyOn(Storage.prototype, "removeItem").mockImplementation(refuse);
+    query.current = RUN_TEST;
+    render(<PlayScreen />);
+    await pickGulpinAtStriker();
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+    fireEvent.click(screen.getByTestId("new-run"));
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+    vi.restoreAllMocks();
   });
 });

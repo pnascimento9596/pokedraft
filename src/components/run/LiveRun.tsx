@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   replay,
   type CupResult,
@@ -11,9 +11,11 @@ import {
 } from "@/engine";
 import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
 import { ResultsView } from "@/components/results/ResultsView";
+import { focusHeading } from "@/ui/focus";
 import { loadPanel, playHref } from "@/ui/settings";
 import { DraftBoard } from "./DraftBoard";
 import { runToken, startRun, step, type Run } from "./runState";
+import { restoreRun, saveRun, type RunSlot } from "./savedRun";
 import s from "./PlayScreen.module.css";
 
 type Screen =
@@ -32,25 +34,52 @@ export function LiveRun({
   seed,
   daily,
   title,
+  restore,
   onNewRun,
 }: {
   readonly settings: DraftSettings;
   readonly seed: string;
   readonly daily?: IsoDate;
   readonly title: string;
+  /** When the tab holds a saved run, boot into it instead of a fresh draft. */
+  readonly restore: boolean;
   readonly onNewRun: () => void;
 }) {
-  const [screen, setScreen] = useState<Screen>(() => ({
-    kind: "draft",
-    run: startRun(settings, seed),
-  }));
+  const slot: RunSlot = { settings, seed, daily: daily ?? null };
+  const [screen, setScreen] = useState<Screen>(() => {
+    if (restore) {
+      const restored = restoreRun(slot);
+      if (restored !== null) {
+        if (restored.kind === "draft") return { kind: "draft", run: restored.run };
+        return {
+          kind: "results",
+          token: restored.token,
+          draft: restored.draft,
+          cup: restored.cup,
+        };
+      }
+    }
+    return { kind: "draft", run: startRun(settings, seed) };
+  });
   const [failure, setFailure] = useState<string | null>(null);
+
+  // Start run, See results and New run each swap the screen; the new screen's heading takes focus.
+  useEffect(() => {
+    focusHeading();
+  }, [screen.kind]);
+
+  // Every screen change goes through here, so the tab always holds the run that is showing.
+  const show = (next: Screen) => {
+    if (next.kind === "draft") saveRun(slot, "draft", runToken(next.run));
+    else saveRun(slot, "results", next.token);
+    setScreen(next);
+  };
 
   const seeResults = (run: Run) => {
     const token = runToken(run);
     try {
       const { draft, cup } = replay(token);
-      setScreen({ kind: "results", token, draft, cup });
+      show({ kind: "results", token, draft, cup });
       window.scrollTo({ top: 0 });
     } catch {
       setFailure("This run could not be scored. Start a new run.");
@@ -88,8 +117,8 @@ export function LiveRun({
       title={title}
       run={screen.run}
       failure={failure}
-      onRun={(run) => setScreen({ kind: "draft", run })}
-      onAction={(action) => setScreen({ kind: "draft", run: step(screen.run, action) })}
+      onRun={(run) => show({ kind: "draft", run })}
+      onAction={(action) => show({ kind: "draft", run: step(screen.run, action) })}
       onNewRun={onNewRun}
       onSeeResults={() => seeResults(screen.run)}
     />
