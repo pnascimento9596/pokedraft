@@ -23,7 +23,8 @@ export const SUBMIT_ERROR_COPY: Readonly<Record<SubmitFailure, string>> = {
   DAILY_ALREADY_SUBMITTED:
     "That nickname already has a run on this daily board. One run per nickname per day.",
   DUPLICATE_TOKEN: "This run is already on the leaderboard.",
-  RATE_LIMITED: "Too many submissions from here. Wait a minute and try again.",
+  RATE_LIMITED:
+    "Too many submissions from this network. The limit is 10 an hour, so you may need to wait up to an hour.",
   DB_UNAVAILABLE: "The leaderboard is offline right now. Try again in a few minutes.",
   NETWORK: "Could not reach the leaderboard. Check your connection and try again.",
   UNEXPECTED: "The leaderboard sent a reply we could not read. Try again later.",

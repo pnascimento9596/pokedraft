@@ -97,6 +97,30 @@ describe("SubmitPanel", () => {
     );
   });
 
+  it("sends one request for a double tap while submitting (catches a second POST from one panel)", async () => {
+    const fetchMock = vi.fn(() => new Promise<Response>(() => {}));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<SubmitPanel token="pd1.abc" daily />);
+    typeAndSubmit("Misty");
+    fireEvent.click(screen.getByTestId("submit-button"));
+    fireEvent.submit(screen.getByTestId("submit-button").closest("form")!);
+    const button = (await screen.findByText("Submitting")) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows success for a 200 retry reply the same way as a 201", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json(200, { entry: ENTRY })),
+    );
+    render(<SubmitPanel token="pd1.abc" daily />);
+    typeAndSubmit("Misty");
+    expect((await screen.findByTestId("submit-success")).textContent).toBe(
+      "#3Misty is on the daily board.",
+    );
+  });
+
   it("keeps Submit disabled until the trimmed nickname is 2 to 20 characters", () => {
     vi.stubGlobal("fetch", vi.fn());
     render(<SubmitPanel token="pd1.abc" daily />);
@@ -115,7 +139,11 @@ describe("SubmitPanel", () => {
       "DAILY_ALREADY_SUBMITTED",
       "That nickname already has a run on this daily board. One run per nickname per day.",
     ],
-    [429, "RATE_LIMITED", "Too many submissions from here. Wait a minute and try again."],
+    [
+      429,
+      "RATE_LIMITED",
+      "Too many submissions from this network. The limit is 10 an hour, so you may need to wait up to an hour.",
+    ],
     [503, "DB_UNAVAILABLE", "The leaderboard is offline right now. Try again in a few minutes."],
     [409, "DUPLICATE_TOKEN", "This run is already on the leaderboard."],
     [

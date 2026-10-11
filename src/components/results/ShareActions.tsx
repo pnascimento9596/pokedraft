@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { downloadCard } from "@/components/share/download";
+import {
+  DOWNLOAD_FAILED,
+  downloadStatus,
+  useCardDownload,
+} from "@/components/share/useCardDownload";
 import s from "./ResultsView.module.css";
-
-type Status = { kind: "idle" } | { kind: "busy" } | { kind: "message"; text: string };
 
 export function ShareActions({
   token,
@@ -16,26 +18,23 @@ export function ShareActions({
   variant: "live" | "shared";
   onNewRun?: () => void;
 }) {
-  const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const [copied, setCopied] = useState("");
+  const card = useCardDownload();
 
   const share = async () => {
     const url = `${location.origin}/r/${token}`;
+    card.reset();
     try {
       await navigator.clipboard.writeText(url);
-      setStatus({ kind: "message", text: "Link copied" });
+      setCopied("Link copied");
     } catch {
-      setStatus({ kind: "message", text: "Could not copy the link" });
+      setCopied("Could not copy the link");
     }
   };
 
-  const download = async () => {
-    setStatus({ kind: "busy" });
-    try {
-      await downloadCard({ t: token }, "pokedraft-run.png");
-      setStatus({ kind: "message", text: "Image saved" });
-    } catch {
-      setStatus({ kind: "message", text: "Download failed" });
-    }
+  const download = () => {
+    setCopied("");
+    void card.start({ t: token }, "pokedraft-run.png");
   };
 
   return (
@@ -43,7 +42,12 @@ export function ShareActions({
       <button type="button" className="btn btn--primary" onClick={share}>
         Share
       </button>
-      <button type="button" className="btn" onClick={download} disabled={status.kind === "busy"}>
+      <button
+        type="button"
+        className="btn"
+        onClick={download}
+        disabled={card.state.kind === "busy"}
+      >
         Download image
       </button>
       {variant === "live" && onNewRun ? (
@@ -56,8 +60,11 @@ export function ShareActions({
           Play your own
         </Link>
       ) : null}
-      <span className={s.status} role="status" aria-live="polite">
-        {status.kind === "message" ? status.text : status.kind === "busy" ? "Preparing image" : ""}
+      <span className={s.status}>
+        <span role="status" aria-live="polite">
+          {downloadStatus(card.state) || copied}
+        </span>
+        <span role="alert">{card.state.kind === "failed" ? DOWNLOAD_FAILED : ""}</span>
       </span>
     </div>
   );

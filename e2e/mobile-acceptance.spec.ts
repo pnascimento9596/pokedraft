@@ -155,7 +155,74 @@ function conclude(head: string, problems: readonly string[]): void {
 // on macOS, so a number in it can differ a little on another operating system. A fix PR deletes the
 // entries it turned green. docs/reports/mobile-acceptance-red.md lists every line in full.
 
-const KNOWN_RED: Readonly<Record<string, Red>> = {};
+const KNOWN_RED: Readonly<Record<string, Red>> = {
+  "1 flow: 8-0 Challenge Classic, start to results with taps only": {
+    fixedBy: "draft-layout",
+    reason: {
+      "iphone-se":
+        "28 of 34 steps needed a page scroll or were covered. First failing step: round 1 pick a candidate: the element is not fully inside the visual viewport (element spans y 598 to 805, viewport 320x568, scrollY 0)",
+      "iphone-14":
+        "28 of 34 steps needed a page scroll or were covered. First failing step: round 1 pick a candidate: the element is not fully inside the visual viewport (element spans y 598 to 805, viewport 390x664, scrollY 0)",
+      "pixel-7":
+        "25 of 34 steps needed a page scroll or were covered. First failing step: round 1 place in an empty slot: the element is not fully inside the visual viewport (element spans y 1365 to 1431, viewport 412x839, scrollY 0)",
+    },
+  },
+  "1 flow: 151 Challenge, start to results with taps only": {
+    fixedBy: "draft-layout",
+    reason: {
+      "iphone-se":
+        "29 of 34 steps needed a page scroll or were covered. First failing step: round 1 the offered player: the element is not fully inside the visual viewport (element spans y 598 to 696, viewport 320x568, scrollY 0)",
+      "iphone-14":
+        "29 of 34 steps needed a page scroll or were covered. First failing step: round 1 the offered player: the element is not fully inside the visual viewport (element spans y 598 to 696, viewport 390x664, scrollY 0)",
+      "pixel-7":
+        "21 of 34 steps needed a page scroll or were covered. First failing step: round 1 place in an empty slot: the element is not fully inside the visual viewport (element spans y 1256 to 1322, viewport 412x839, scrollY 0)",
+    },
+  },
+  "1 flow: Daily, start to results with taps only": {
+    fixedBy: "draft-layout",
+    reason: {
+      "iphone-se":
+        "33 of 34 steps needed a page scroll or were covered. First failing step: round 1 pick a candidate: the element is not fully inside the visual viewport (element spans y 616 to 676, viewport 320x568, scrollY 0)",
+      "iphone-14":
+        "32 of 34 steps needed a page scroll or were covered. First failing step: round 1 place in an empty slot: the element is not fully inside the visual viewport (element spans y 1447 to 1513, viewport 390x664, scrollY 0)",
+      "pixel-7":
+        "30 of 34 steps needed a page scroll or were covered. First failing step: round 1 place in an empty slot: the element is not fully inside the visual viewport (element spans y 1478 to 1544, viewport 412x839, scrollY 0)",
+    },
+  },
+  "2 overflow: daily results submitted": {
+    fixedBy: "mobile-foundations",
+    reason:
+      "2 of 8 measurements overflow, dark and light at 320px. The success line for a 20 character nickname of W is the widest element: widest right edge 334, documentElement.scrollWidth 320, because html clips it",
+  },
+  "4 picker: closes on a swipe down on its header (real touch on pixel-7, mouse Pointer Events only on WebKit)":
+    {
+      fixedBy: "sheets",
+      reason: {
+        "iphone-se":
+          "the sheet is still open after a pointer swipe down 240px from its header (x=16 y=57 w=138.4 h=26.9 (spans y 57 to 83.9))",
+        "iphone-14":
+          "the sheet is still open after a pointer swipe down 240px from its header (x=16 y=57 w=138.4 h=26.9 (spans y 57 to 83.9))",
+        "pixel-7":
+          "the sheet is still open after a touch swipe down 240px from its header (x=16 y=57 w=138.4 h=26.9 (spans y 57 to 83.9))",
+      },
+    },
+  "4 picker: closes on the browser Back button and the page stays on the builder": {
+    fixedBy: "sheets",
+    reason: "Back left the builder: the URL is now /how-to-play",
+  },
+  "4 picker: focus returns to the tapped slot when it closes": {
+    fixedBy: "sheets",
+    reason:
+      "after the sheet closed, focus is on <body> and not on the tapped slot slot-s6 (iOS Safari does not focus a tapped button, so the page has to restore focus itself)",
+    projects: ["iphone-se", "iphone-14"],
+  },
+  "7 landscape: picker open": {
+    fixedBy: "sheets",
+    reason:
+      "/ 750x340: the primary action is not reachable after scrolling it into view: the element is not fully inside the visual viewport (x=72 y=287.9 w=606 h=58 (spans y 287.9 to 345.8))",
+    projects: ["iphone-14"],
+  },
+};
 
 const round1 = (n: number) => String(Math.round(n * 10) / 10);
 

@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Daily challenge · pokedraft" };
 export default function DailyPage() {
   return (
     <main className="page">
-      <Suspense fallback={<p className="kicker">Loading the daily challenge</p>}>
+      <Suspense fallback={<p className="kicker page-loading">Loading the daily challenge</p>}>
         <DailyScreen />
       </Suspense>
     </main>

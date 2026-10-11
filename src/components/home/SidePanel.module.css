@@ -87,7 +87,7 @@
 .select {
   min-height: 40px;
   padding: 0 10px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-field);
   border-radius: var(--radius-sm);
   background: var(--bg-sunk);
   font-family: var(--font-display);
@@ -167,7 +167,7 @@
   height: 24px;
   border-radius: 999px;
   background: var(--bg-sunk);
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-field);
   transition: background 120ms ease;
 }
 
@@ -183,8 +183,8 @@
 }
 
 .switch[aria-checked="true"] .switchTrack {
-  background: var(--flood);
-  border-color: var(--flood);
+  background: var(--flood-line);
+  border-color: var(--flood-line);
 }
 
 .switch[aria-checked="true"] .switchThumb {

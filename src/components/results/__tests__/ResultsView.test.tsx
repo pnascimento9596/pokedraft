@@ -132,6 +132,17 @@ describe("ResultsView", () => {
     ).toBeTruthy();
   });
 
+  it("the season details describe the engine 3 ladder, not the old cliff from the quarter-final", () => {
+    view(FLAWLESS);
+    const details = screen.getByText("Season details: how grading works").closest("details")!;
+    expect(
+      within(details).getByText(
+        /Matches are simulated from your Team Score against a ladder of opponents\. The group games are the gentle start\. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test\./,
+      ),
+    ).toBeTruthy();
+    expect(details.textContent).not.toMatch(/hard from the quarter-final/);
+  });
+
   it("shows the player of the tournament's point breakdown, and none for an old-engine run", () => {
     const { cup } = replay(FLAWLESS);
     view(FLAWLESS);

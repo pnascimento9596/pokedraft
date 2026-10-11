@@ -12,7 +12,8 @@ export type InsertResult =
   | { readonly ok: false; readonly conflict: Conflict };
 
 export interface LeaderboardStore {
-  conflictFor(token: string, nickname: string, board: Board): Promise<Conflict | null>;
+  byToken(token: string): Promise<LeaderboardRow | null>;
+  dailyTaken(nickname: string, board: Board): Promise<boolean>;
   insert(row: NewLeaderboardRow): Promise<InsertResult>;
   rankOf(row: LeaderboardRow, board: Board): Promise<number>;
   top(board: Board): Promise<readonly LeaderboardRow[]>;
@@ -53,20 +54,22 @@ function uniqueViolation(e: unknown): string | null {
 
 export function drizzleStore(getDb: () => Db): LeaderboardStore {
   return {
-    async conflictFor(token, nickname, board) {
-      const tokenHit = await getDb()
-        .select({ id: t.id })
+    async byToken(token) {
+      const [row] = await getDb()
+        .select()
         .from(t)
         .where(sql`md5(${t.token}) = md5(${token})`)
         .limit(1);
-      if (tokenHit.length > 0) return "token";
-      if (board.dailyDate === null) return null;
-      const dailyHit = await getDb()
+      return row ?? null;
+    },
+    async dailyTaken(nickname, board) {
+      if (board.dailyDate === null) return false;
+      const hit = await getDb()
         .select({ id: t.id })
         .from(t)
         .where(and(eq(t.nickname, nickname), boardFilter(board)))
         .limit(1);
-      return dailyHit.length > 0 ? "daily" : null;
+      return hit.length > 0;
     },
     async insert(row) {
       try {
