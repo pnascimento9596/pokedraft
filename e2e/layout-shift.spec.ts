@@ -60,3 +60,37 @@ for (const { path, ready } of ROUTES) {
     expect(shifts.filter((s) => s.value >= 0.001)).toEqual([]);
   });
 }
+
+for (const width of [360, 390]) {
+  test(`ratings-on builder cold load has exactly zero CLS at ${width}px (SX-02)`, async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== "chromium", "layout-shift entries are Chromium only");
+    await page.setViewportSize({ width, height: 844 });
+    await page.addInitScript(() => {
+      localStorage.setItem("pokedraft:panel", JSON.stringify({ showRatings: true }));
+      const w = window as unknown as { __exactShifts: number[] };
+      w.__exactShifts = [];
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries() as unknown as { value: number }[])
+          w.__exactShifts.push(entry.value);
+      }).observe({ type: "layout-shift", buffered: true });
+    });
+    for (let load = 0; load < 3; load++) {
+      await page.goto("/");
+      await expect(page.getByTestId("ratings-legend")).toBeVisible();
+      await page.waitForLoadState("networkidle");
+      await page.evaluate(() => document.fonts.ready);
+      await page.waitForTimeout(500);
+      expect(
+        await page.evaluate(() =>
+          (window as unknown as { __exactShifts: number[] }).__exactShifts.reduce(
+            (sum, value) => sum + value,
+            0,
+          ),
+        ),
+      ).toBe(0);
+    }
+  });
+}
