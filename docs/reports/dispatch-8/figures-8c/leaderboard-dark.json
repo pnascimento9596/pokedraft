@@ -1,0 +1,23 @@
+{
+  "name": "leaderboard",
+  "theme": "dark",
+  "text": "1\nMisty\nOpen, Squad First, All regions\nW-D-L\n8-0-0\nTEAM SCORE\n845\n2\nBrock\nOpen, Squad First, All regions\nW-D-L\n6-1-1\nTEAM SCORE\n790",
+  "numbers": [
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "2",
+    "6",
+    "8",
+    "790",
+    "845"
+  ],
+  "fields": {
+    "rows": [
+      "1MistyOpen, Squad First, All regionsW-D-L8-0-0Team Score845",
+      "2BrockOpen, Squad First, All regionsW-D-L6-1-1Team Score790"
+    ]
+  }
+}

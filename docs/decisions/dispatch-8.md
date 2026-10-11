@@ -197,3 +197,9 @@ PR 8B clean-runner measurement 38151791031 completed against 6e7d34e: every indi
 ### PR 8C chart control guard before final layout fix
 
 The final full local run passed519 cases and skipped51; one unchanged daily390px right-edge guard found a413px element inside the horizontal chart. The24 strengthened actual-picture formation/device cases and original4-4-2 cases all pass. Visual inspection also found vertically clipped chart triggers. Four new literal44px/visible-bounds/keyboard-tooltip guards fail in both themes at390/1440 on this build and are committed before the chart layout correction. The phone chart will use two rows of four rounds to preserve readable44px controls within the viewport, with unchanged rating values and proportional heights.
+
+### PR 8C local gates ready for review
+
+The final chart layout passes99 focused checks: four new chart visibility/keyboard cases, unchanged390/1440 daily/board bounds, route axe, all mobile overflow cases and layout-shift cases. The last full local run519/51 with one chart overflow failure remains archived honestly; that exact failure now passes in the focused run. Full final Linux575-case suite remains required before merge. All24 actual-picture formation/device guards passed in the full local run, including the Pixel own-picture hover regression; the chart-only correction does not alter pitch geometry.
+
+Unit734/80, lint/typecheck/build and mirror/image/bundle/contrast/color/CVD gates pass. Before/after16 loaded-image captures per set and numeric186/10 per-theme readback are retained. No frozen path changes. Independent exact pushed-head review and production8C verification are pending.

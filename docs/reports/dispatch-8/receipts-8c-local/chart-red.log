@@ -1,0 +1,176 @@
+
+Running 4 tests using 4 workers
+
+(node:86566) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86564) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86563) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86565) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 1440 dark (591ms)
+  ✘  2 [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 390 dark (821ms)
+  ✘  1 [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 390 light (829ms)
+  ✘  4 [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 1440 light (836ms)
+
+
+  1) [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 390 light
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 11
+
+    - Array []
+    + Array [
+    +   "G1: clipped vertically",
+    +   "G2: clipped vertically",
+    +   "G3: clipped vertically",
+    +   "R32: clipped vertically",
+    +   "R16: clipped vertically",
+    +   "QF: clipped vertically",
+    +   "SF: clipped vertically",
+    +   "Final: clipped vertically",
+    +   "Final: beyond viewport",
+    + ]
+
+      27 |         });
+      28 |       });
+    > 29 |       expect(problems).toEqual([]);
+         |                        ^
+      30 |       await rounds.getByRole("button").first().focus();
+      31 |       await expect(rounds.getByRole("tooltip").first()).toBeVisible();
+      32 |       await expect(rounds.getByRole("tooltip").first()).toContainText("This run's seeded cup");
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/theme-draft.spec.ts:29:24
+
+    Error Context: output/dispatch-8/chart-red/theme-draft-cup-round-cont-fa0fb-in-their-marks-at-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/chart-red/theme-draft-cup-round-cont-fa0fb-in-their-marks-at-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/chart-red/theme-draft-cup-round-cont-fa0fb-in-their-marks-at-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 390 dark
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 11
+
+    - Array []
+    + Array [
+    +   "G1: clipped vertically",
+    +   "G2: clipped vertically",
+    +   "G3: clipped vertically",
+    +   "R32: clipped vertically",
+    +   "R16: clipped vertically",
+    +   "QF: clipped vertically",
+    +   "SF: clipped vertically",
+    +   "Final: clipped vertically",
+    +   "Final: beyond viewport",
+    + ]
+
+      27 |         });
+      28 |       });
+    > 29 |       expect(problems).toEqual([]);
+         |                        ^
+      30 |       await rounds.getByRole("button").first().focus();
+      31 |       await expect(rounds.getByRole("tooltip").first()).toBeVisible();
+      32 |       await expect(rounds.getByRole("tooltip").first()).toContainText("This run's seeded cup");
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/theme-draft.spec.ts:29:24
+
+    Error Context: output/dispatch-8/chart-red/theme-draft-cup-round-cont-823c9-ain-their-marks-at-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/chart-red/theme-draft-cup-round-cont-823c9-ain-their-marks-at-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/chart-red/theme-draft-cup-round-cont-823c9-ain-their-marks-at-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 1440 light
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   "G1: clipped vertically",
+    +   "G2: clipped vertically",
+    +   "G3: clipped vertically",
+    +   "R32: clipped vertically",
+    +   "R16: clipped vertically",
+    +   "QF: clipped vertically",
+    +   "SF: clipped vertically",
+    +   "Final: clipped vertically",
+    + ]
+
+      27 |         });
+      28 |       });
+    > 29 |       expect(problems).toEqual([]);
+         |                        ^
+      30 |       await rounds.getByRole("button").first().focus();
+      31 |       await expect(rounds.getByRole("tooltip").first()).toBeVisible();
+      32 |       await expect(rounds.getByRole("tooltip").first()).toContainText("This run's seeded cup");
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/theme-draft.spec.ts:29:24
+
+    Error Context: output/dispatch-8/chart-red/theme-draft-cup-round-cont-cf87b-n-their-marks-at-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/chart-red/theme-draft-cup-round-cont-cf87b-n-their-marks-at-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/chart-red/theme-draft-cup-round-cont-cf87b-n-their-marks-at-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 1440 dark
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   "G1: clipped vertically",
+    +   "G2: clipped vertically",
+    +   "G3: clipped vertically",
+    +   "R32: clipped vertically",
+    +   "R16: clipped vertically",
+    +   "QF: clipped vertically",
+    +   "SF: clipped vertically",
+    +   "Final: clipped vertically",
+    + ]
+
+      27 |         });
+      28 |       });
+    > 29 |       expect(problems).toEqual([]);
+         |                        ^
+      30 |       await rounds.getByRole("button").first().focus();
+      31 |       await expect(rounds.getByRole("tooltip").first()).toBeVisible();
+      32 |       await expect(rounds.getByRole("tooltip").first()).toContainText("This run's seeded cup");
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/draft-wheel/e2e/theme-draft.spec.ts:29:24
+
+    Error Context: output/dispatch-8/chart-red/theme-draft-cup-round-cont-24929-in-their-marks-at-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/chart-red/theme-draft-cup-round-cont-24929-in-their-marks-at-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/chart-red/theme-draft-cup-round-cont-24929-in-their-marks-at-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 390 light
+    [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 390 dark
+    [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 1440 light
+    [chromium] › e2e/theme-draft.spec.ts:6:9 › cup round controls stay fully visible and explain their marks at 1440 dark

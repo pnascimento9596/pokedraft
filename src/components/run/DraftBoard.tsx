@@ -30,6 +30,7 @@ import s from "./DraftBoard.module.css";
 
 export interface DraftBoardProps {
   readonly title: string;
+  readonly navFamily?: "play" | "daily";
   readonly run: Run;
   readonly failure: string | null;
   readonly onAction: (action: DraftAction) => void;
@@ -91,6 +92,7 @@ interface Selection {
 
 export function DraftBoard({
   title,
+  navFamily = "play",
   run,
   failure,
   onAction,
@@ -233,7 +235,7 @@ export function DraftBoard({
         <header className={s.header}>
           <div className={s.titleRow}>
             <span className="kicker">
-              <NavIcon family={"play"} />
+              <NavIcon family={navFamily} />
               {title}
             </span>
             <SoundToggle />

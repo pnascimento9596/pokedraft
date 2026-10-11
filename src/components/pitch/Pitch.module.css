@@ -99,8 +99,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: var(--token-bg);
   box-shadow:
@@ -115,10 +115,6 @@
   background: color-mix(in srgb, var(--accent) 16%, var(--surface));
   box-shadow: 0 0 0 2px var(--chalk-soft);
   border: 1px dashed var(--chalk);
-}
-
-.token:not(:disabled):hover .tokenImage {
-  transform: scale(1.06);
 }
 
 .token[data-highlight] .tokenImage {
@@ -168,9 +164,13 @@
   line-height: 1.2;
   letter-spacing: 0.1em;
   padding: 0 4px;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
   background: var(--accent);
   color: var(--accent-fg);
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .tokenName {
@@ -195,7 +195,7 @@
   line-height: 1.15;
   text-align: center;
   padding: 0 4px;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
   background: var(--flood);
   color: var(--flood-ink);
 }
@@ -462,9 +462,9 @@
   line-height: 14px;
 }
 
-@container field (max-height: 600px) {
+@container field (max-height: 350px) {
   .field > .token {
-    width: 44px;
+    width: 54px;
     min-height: 44px;
     flex-direction: row;
     gap: 2px;
@@ -477,8 +477,8 @@
     flex: none;
   }
   .field > .token .tokenName {
-    width: 22px;
-    max-width: 22px;
+    width: 32px;
+    max-width: 32px;
     flex: none;
     padding-inline: 2px;
     font-size: 12px;
@@ -509,4 +509,65 @@
 }
 .bench .tokenName {
   max-width: 100%;
+}
+
+.tokenSlot,
+.tokenNote {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.tokenSlot {
+  top: -4px;
+  right: 0;
+  left: auto;
+  transform: none;
+  white-space: nowrap;
+}
+.wrap[data-compact-tags] .tokenSlot {
+  right: auto;
+}
+.wrap[data-compact-tags] .tokenImage {
+  width: 36px;
+  height: 36px;
+}
+.wrap[data-compact-tags] .tokenSlot {
+  top: 18px;
+}
+@container field (max-height: 350px) {
+  .field > .token .tokenSlot {
+    top: -4px;
+    font-size: 13px;
+    line-height: 18px;
+    max-width: none;
+    white-space: nowrap;
+  }
+}
+
+.token {
+  min-height: 44px;
+  min-width: 44px;
+}
+.tokenImage :global([data-player-image]) {
+  max-width: 100%;
+  max-height: 100%;
+}
+.wrap[data-fit] .token {
+  gap: 2px;
+}
+@container field (max-height: 350px) {
+  .field > .token .tokenSlot {
+    left: 0;
+    transform: none;
+  }
+}
+@container field (max-width: 300px) and (max-height: 350px) {
+  .field > .token {
+    width: 44px;
+  }
+  .field > .token .tokenName {
+    width: 22px;
+    max-width: 22px;
+  }
 }

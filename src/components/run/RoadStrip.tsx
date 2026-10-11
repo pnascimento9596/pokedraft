@@ -29,6 +29,7 @@ export function RoadStrip({
   return (
     <ModuleCard
       className={s.road}
+      variant={compact ? "quiet" : "default"}
       data-compact={compact || undefined}
       eyebrow="Your opponents"
       title="Road to the Final"
@@ -55,7 +56,7 @@ export function RoadStrip({
               </span>
               <span className={s.bar} aria-hidden="true" />
               <Tooltip
-                label={`${ROUND_LABEL[round]} details`}
+                label={ROUND_SHORT[round]}
                 title={ROUND_LABEL[round]}
                 rows={
                   opponent === null
@@ -67,9 +68,6 @@ export function RoadStrip({
                 }
                 source="This run's seeded cup"
               />
-              <span className={s.round} aria-hidden="true">
-                {ROUND_SHORT[round]}
-              </span>
               <span className="visually-hidden">
                 {opponent === null
                   ? ROUND_LABEL[round]

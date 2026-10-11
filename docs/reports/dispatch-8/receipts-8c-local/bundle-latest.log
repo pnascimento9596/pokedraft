@@ -1,0 +1,2 @@
+$ bash scripts/check-client-bundle.sh
+client bundle holds no retained engine bundle; server build holds 6 files with it
