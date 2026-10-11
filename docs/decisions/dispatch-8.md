@@ -227,3 +227,7 @@ The full8Dcandidatebrowserrun522pass/51skip/6fail reproducedthe same selectedrow
 ### PR 8D local gates ready for review
 
 Current61focusedbrowserchecks pass:4resultsmodules/figures,20fullrouteaxe,30renderedcontrast and7layoutshift includingstrictSX02/SX06. This resolvesallsixdarkselectedrowfailuresfromthe522/51/6fullrun; Linux579-casefullsuiteonexactheadisstillmandatorybeforemerge. Unit734/80 andalllint/type/build/image/mirror/bundle/contrast/color/CVD gatespass. RealcardandOGunit10cases passincluding1200x630, imagepixels/cache/errorcontracts. Buildtracecontainsall3InterTTFfiles. Before/aftereach16viewportand16fullpagecapturesplus1200x630PNG; alloverflow0. Figures186/10pertheme unchanged. Sourcefrozenpathsunchanged. Independentreviewandproduction8Dpending.
+
+### PR 8E guards
+
+Eight leaderboard module/readability/neutral missing-state guards fail against unchanged 8D build at 390 and 1440 px in both themes. Literal score 983 comes from the existing mobile board fixture. Commit RED before presentation changes. Ranking, queries, submission and every displayed figure remain frozen.
