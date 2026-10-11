@@ -1,0 +1,126 @@
+
+Running 4 tests using 2 workers
+
+(node:80376) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:80375) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page light (425ms)
+  ✘  1 [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token light (796ms)
+(node:80400) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:80408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page dark (778ms)
+  ✘  4 [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token dark (510ms)
+
+
+  1) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page light 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 560
+    Received:    1248
+
+       8 |       const module = page.locator(".module-card").first();
+       9 |       await expect(module).toBeVisible();
+    > 10 |       expect((await module.boundingBox())!.width).toBeLessThanOrEqual(560);
+         |                                                   ^
+      11 |     });
+      12 |   }
+      13 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-missing-width.spec.ts:10:51
+
+    Error Context: output/dispatch-8/missing-red/theme-missing-width-short--5af20-px-missing-theme-page-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/missing-red/theme-missing-width-short--5af20-px-missing-theme-page-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/missing-red/theme-missing-width-short--5af20-px-missing-theme-page-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token light 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 560
+    Received:    1248
+
+       8 |       const module = page.locator(".module-card").first();
+       9 |       await expect(module).toBeVisible();
+    > 10 |       expect((await module.boundingBox())!.width).toBeLessThanOrEqual(560);
+         |                                                   ^
+      11 |     });
+      12 |   }
+      13 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-missing-width.spec.ts:10:51
+
+    Error Context: output/dispatch-8/missing-red/theme-missing-width-short--b3e5b-r-garbage-not-a-token-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/missing-red/theme-missing-width-short--b3e5b-r-garbage-not-a-token-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/missing-red/theme-missing-width-short--b3e5b-r-garbage-not-a-token-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page dark 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 560
+    Received:    1248
+
+       8 |       const module = page.locator(".module-card").first();
+       9 |       await expect(module).toBeVisible();
+    > 10 |       expect((await module.boundingBox())!.width).toBeLessThanOrEqual(560);
+         |                                                   ^
+      11 |     });
+      12 |   }
+      13 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-missing-width.spec.ts:10:51
+
+    Error Context: output/dispatch-8/missing-red/theme-missing-width-short--fcc14-0px-missing-theme-page-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/missing-red/theme-missing-width-short--fcc14-0px-missing-theme-page-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/missing-red/theme-missing-width-short--fcc14-0px-missing-theme-page-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token dark 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 560
+    Received:    1248
+
+       8 |       const module = page.locator(".module-card").first();
+       9 |       await expect(module).toBeVisible();
+    > 10 |       expect((await module.boundingBox())!.width).toBeLessThanOrEqual(560);
+         |                                                   ^
+      11 |     });
+      12 |   }
+      13 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-missing-width.spec.ts:10:51
+
+    Error Context: output/dispatch-8/missing-red/theme-missing-width-short--6d018--r-garbage-not-a-token-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/missing-red/theme-missing-width-short--6d018--r-garbage-not-a-token-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/missing-red/theme-missing-width-short--6d018--r-garbage-not-a-token-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page light 
+    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token light 
+    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page dark 
+    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token dark 
