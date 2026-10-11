@@ -94,3 +94,13 @@ Additional before scans with Show ratings ON reproduce SX-03 on all 16 filled sl
 ### PR 8A guard before implementation
 
 Added component contracts for all nine requested primitives and installed lucide-react. The guard run fails during collection because `../primitives` does not exist yet (one failed suite, no executed cases). This failing guard is committed before implementation. The font fallback is supported by Next's Inter metrics: Arial, size adjust 107.12%, ascent 90.44%, descent 22.52%, line gap 0%.
+
+### Clean mobile Lighthouse baseline complete
+
+GitHub-hosted Ubuntu run `38130597740` completed successfully against PR 8.0 merge `56b9f754d88388223725ad2f3512f239b18fd229`. Each route has exactly three valid mobile runs, with stable cache-busted health identities before and after. Runner image ubuntu24 `20261004.327.1`, Node 22.23.3, four CPUs, Lighthouse 13.5.0, Chrome for Testing 156.0.8078.4. The eight-route median report is committed at `docs/reports/dispatch-8/lighthouse-baseline/summary.md`, with raw sample metrics and environment. Full Lighthouse reports are retained by the workflow artifact. Every route's median Accessibility is 100 and CLS is 0. This report supersedes the pending baseline entries above; dispatch 7's incomparable single-run numbers are not used for a theme regression claim.
+
+PR 8A relocates the existing card renderer's colors into `src/design/card-tokens.ts` without changing their values. They remain explicitly named LEGACY_CARD until PR 8D applies the light warm share-card design. This allows the stray-hex gate to run immediately without silently combining the share restyle into the foundation PR.
+
+### Foundation browser contrast guard
+
+The complete axe tag set exposed 16 insufficient-contrast nodes in unplayed daily match rows in each theme. The existing `opacity: 0.7` faded text along with its row. Before changing that style, this lane removed the historical type/reroll axe exceptions and the unplayed-row contrast exception, enabled `image-redundant-alt` explicitly, and committed those stricter guards. The measured RED receipt is `foundation-browser-3.log`: the two daily-results axe cases fail, while 126 other cases pass. The unchanged mobile acceptance suite remained green in the preceding combined run; a font-driven 43.2 px passcode input regression was corrected with a global 44 px field floor.

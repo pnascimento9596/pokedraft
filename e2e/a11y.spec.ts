@@ -37,26 +37,17 @@ const AXE_OPTIONS = {
   },
   rules: {
     "label-content-name-mismatch": { enabled: true },
+    "image-redundant-alt": { enabled: true },
   },
 };
 
 // Rules that must be part of every scan, so an options edit cannot shrink the run unseen.
-const MUST_RUN = ["color-contrast", "target-size", "label-content-name-mismatch", "region"];
+const MUST_RUN = ["color-contrast", "target-size", "label-content-name-mismatch", "image-redundant-alt", "region"];
 
 // Violations a later dispatch 7 PR owns. This PR only adds tests, so each is matched by rule and
 // node markup, never by turning a rule off: the rule keeps guarding every other node. The PR that
 // fixes the finding deletes its entry.
-const KNOWN: readonly { finding: string; rule: string; html: RegExp }[] = [
-  // SA-27 and SC-06 (theme 7E): white text on 13 of 18 type colours, in both themes.
-  { finding: "SA-27/SC-06", rule: "color-contrast", html: /^<span class="type-chip"/ },
-  // No finding owns this yet (the SC-03 notes flag it as a lead). The name says "Reroll type, 3
-  // left" while the visible text is "Reroll type" then "3", so the text is not inside the name.
-  {
-    finding: "SC-03 lead",
-    rule: "label-content-name-mismatch",
-    html: /^<button[^>]*aria-label="Reroll[^"]*, \d+ left"/,
-  },
-];
+const KNOWN: readonly { finding: string; rule: string; html: RegExp }[] = [];
 
 // axe cannot score text over the pitch grass, the results hero gradient or the creature images.
 // Those nodes land in "incomplete", and the manual contrast table in the audit covers them.
@@ -124,7 +115,7 @@ const PAGES: { name: string; open: (page: Page) => Promise<void> }[] = [
 ];
 
 // The body background of each theme, so a scan cannot silently run the wrong theme.
-const BODY_BACKGROUND = { dark: "rgb(8, 19, 14)", light: "rgb(238, 244, 239)" };
+const BODY_BACKGROUND = { dark: "rgb(20, 24, 15)", light: "rgb(231, 234, 226)" };
 
 for (const colorScheme of ["dark", "light"] as const) {
   test.describe(`${colorScheme} theme`, () => {

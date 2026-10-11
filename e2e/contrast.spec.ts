@@ -26,7 +26,7 @@ const ENTRY = {
   createdAt: "2026-10-09T12:00:00.000Z",
 };
 
-const BODY_BACKGROUND = { dark: "rgb(8, 19, 14)", light: "rgb(238, 244, 239)" };
+const BODY_BACKGROUND = { dark: "rgb(20, 24, 15)", light: "rgb(231, 234, 226)" };
 
 type Rgb = readonly [number, number, number];
 type Rgba = readonly [number, number, number, number];
@@ -163,7 +163,7 @@ async function visit(page: Page, url: string): Promise<void> {
 
 // SA-34 is deferred (docs/queue/dispatch-7-deferred.md): an unplayed match card is drawn at 70
 // percent opacity, text included. Its nodes are matched by selector; the rule stays on for the rest.
-const DEFERRED = [/article\[data-outcome="none"\]/];
+const DEFERRED: readonly RegExp[] = [];
 
 // The body paints two radial washes (at most 10 percent) over --bg, and axe gives up on any text
 // above a background image, so every node on the page body would land in "incomplete". The scan
@@ -282,7 +282,7 @@ for (const colorScheme of ["dark", "light"] as const) {
       expect(await axeContrast(page)).toEqual([]);
     });
 
-    test("white token names on the pitch reach 4.5:1 on the rendered grass", async ({ page }) => {
+    test("token names on the pitch reach 4.5:1 on their rendered surface", async ({ page }) => {
       await visit(page, `/r/${TOKEN}`);
       await page.getByTestId("results-record").waitFor();
       const names = page.locator('[class*="_field"] [class*="_tokenName"]');
@@ -295,7 +295,8 @@ for (const colorScheme of ["dark", "light"] as const) {
           `[class*="_tokenName"] { color: transparent !important; text-shadow: none !important; }
            [class*="_lines"], [class*="_edges"], [class*="_tokenImage"] { visibility: hidden !important; }`,
         );
-        scores.push(round2(worst([255, 255, 255, 1], bg)));
+        const color = await name.evaluate((element) => getComputedStyle(element).color);
+        scores.push(round2(worst(parseColor(color), bg)));
       }
       expect(Math.min(...scores)).toBeGreaterThanOrEqual(4.5);
     });
