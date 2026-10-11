@@ -26,6 +26,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       "/gate",
       "/gate/unlock",
       "/api/csp-report",
+      "/api/health",
     ];
     const gated = [
       "/",
@@ -38,6 +39,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       "/api/leaderboard",
       "/api/anything",
       "/api/csp-report/x",
+      "/api/health/x",
       "/card/extra",
       "/r/pd1.abc/opengraph-image/x",
       "/_next/image",
@@ -90,6 +92,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   it("lets public paths and the right cookie through, and rejects a stale cookie", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
     expect(proxy(req("/r/pd1.abc/opengraph-image")).headers.get("x-middleware-next")).toBe("1");
+    expect(proxy(req("/api/health?db=1")).headers.get("x-middleware-next")).toBe("1");
     expect(proxy(req("/", passcodeDigest("pikachu"))).headers.get("x-middleware-next")).toBe("1");
     expect(proxy(req("/", passcodeDigest("old-passcode"))).status).toBe(307);
   });
