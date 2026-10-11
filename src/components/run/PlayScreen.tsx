@@ -22,6 +22,7 @@ import { GEN_REGION, MODE_LABEL, ORDER_LABEL, REGION_LABEL, STYLE_LABEL } from "
 import { freshSeed, loadPanel, parsePlayQuery, playHref } from "@/ui/settings";
 import { DraftBoard } from "./DraftBoard";
 import { RoadStrip } from "./RoadStrip";
+import { forgetRun, restoreRun, saveRun, type RunSlot } from "./savedRun";
 import { runToken, startRun, step, type Run } from "./runState";
 import s from "./PlayScreen.module.css";
 
@@ -111,18 +112,39 @@ export function Challenge({
   // link's. A fresh run draws its seed at Start (random, so never during render), and until then
   // the road strip shows no rating.
   const fixedSeed = daily !== undefined ? dailySeed(daily) : useQuerySeed ? querySeed : null;
+  const slot: RunSlot = { settings, seed: fixedSeed, daily: daily ?? null };
+
+  // A reload, a discarded tab or Back then Forward mounts this screen again with nothing in React
+  // state. The tab's stored run brings the draft or the unsubmitted results back. The server renders
+  // the start panel, so the restore waits for hydration.
+  useEffect(() => {
+    const restored = restoreRun(slot);
+    if (restored === null) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync from sessionStorage after hydration
+    setScreen(restored);
+    // Only on mount: later changes are this screen's own writes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Every screen change goes through here, so the tab always holds the run that is showing.
+  const show = (next: Screen) => {
+    if (next.kind === "draft") saveRun(slot, "draft", runToken(next.run));
+    else if (next.kind === "results") saveRun(slot, "results", next.token);
+    else forgetRun(slot);
+    setScreen(next);
+  };
 
   const start = () => {
     unlockAudio();
     swapped.current = true;
-    setScreen({ kind: "draft", run: startRun(settings, fixedSeed ?? freshSeed()) });
+    show({ kind: "draft", run: startRun(settings, fixedSeed ?? freshSeed()) });
   };
 
   const newRun = () => {
     setUseQuerySeed(false);
     setFailure(null);
     swapped.current = true;
-    setScreen({ kind: "start" });
+    show({ kind: "start" });
     if (params.has("seed")) {
       const q = new URLSearchParams(params.toString());
       q.delete("seed");
@@ -136,7 +158,7 @@ export function Challenge({
     try {
       const { draft, cup } = replay(token);
       swapped.current = true;
-      setScreen({ kind: "results", token, draft, cup });
+      show({ kind: "results", token, draft, cup });
       window.scrollTo({ top: 0 });
     } catch {
       setFailure("This run could not be scored. Start a new run.");
@@ -177,8 +199,8 @@ export function Challenge({
         title={title}
         run={screen.run}
         failure={failure}
-        onRun={(run) => setScreen({ kind: "draft", run })}
-        onAction={(action) => setScreen({ kind: "draft", run: step(screen.run, action) })}
+        onRun={(run) => show({ kind: "draft", run })}
+        onAction={(action) => show({ kind: "draft", run: step(screen.run, action) })}
         onNewRun={newRun}
         onSeeResults={() => seeResults(screen.run)}
       />

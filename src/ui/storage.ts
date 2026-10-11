@@ -19,3 +19,23 @@ export function writeJson(key: string, value: unknown): void {
     // storage unavailable; the app keeps working without persistence
   }
 }
+
+// Per-tab storage for state that should survive a reload or Back but not outlive the tab.
+export function readSession(key: string): string | null {
+  try {
+    if (typeof window === "undefined") return null;
+    return window.sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function writeSession(key: string, value: string | null): void {
+  try {
+    if (typeof window === "undefined") return;
+    if (value === null) window.sessionStorage.removeItem(key);
+    else window.sessionStorage.setItem(key, value);
+  } catch {
+    // storage unavailable; the run still plays, it just will not survive a reload
+  }
+}

@@ -86,7 +86,7 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 .prompt {
@@ -96,7 +96,7 @@
   font-size: 1.15rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 .rerolls {
@@ -244,9 +244,9 @@
 
 .row[aria-pressed="true"],
 .card[aria-pressed="true"] {
-  border-color: var(--flood);
+  border-color: var(--flood-line);
   box-shadow:
-    0 0 0 2px var(--flood),
+    0 0 0 2px var(--flood-line),
     0 0 18px rgba(255, 210, 63, 0.25);
 }
 
@@ -310,9 +310,15 @@
 /* Open slots glow while a player is selected or a slot must be chosen. */
 .pitch[data-armed] :global([data-testid^="slot-"][data-filled="false"]) {
   border-radius: 12px;
-  outline: 2px dashed var(--flood);
+  outline: 2px dashed var(--flood-line);
   outline-offset: 2px;
   animation: pulse 1.4s ease-in-out infinite;
+}
+
+/* Every armed slot pulses a dashed ring, so the one with keyboard focus gets a steady solid one. */
+.pitch[data-armed] :global([data-testid^="slot-"][data-filled="false"]:focus-visible) {
+  outline: 3px solid var(--focus);
+  animation: none;
 }
 
 @keyframes pulse {

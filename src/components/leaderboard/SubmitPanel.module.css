@@ -33,7 +33,7 @@
   max-width: 320px;
   min-height: 40px;
   padding: 0.4em 0.7em;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-field);
   border-radius: var(--radius-sm);
   background: var(--bg-sunk);
   color: var(--ink);
@@ -75,7 +75,19 @@
   font-size: 2rem;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: var(--flood);
+  color: var(--flood-text);
+}
+
+@media (max-width: 480px) {
+  .input {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .input {
+    min-height: 44px;
+  }
 }
 
 @media (max-width: 480px) {

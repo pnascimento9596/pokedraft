@@ -69,11 +69,11 @@
     var(--flood),
     color-mix(in srgb, var(--flood) 30%, transparent)
   );
-  border-top-color: var(--flood);
+  border-top-color: var(--flood-line);
 }
 
 .step[data-big] .value {
-  color: var(--flood);
+  color: var(--flood-text);
 }
 
 .round {
