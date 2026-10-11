@@ -208,3 +208,49 @@ test("at draft complete in 4-4-2, no centre-back's name touches the keeper's pic
   });
   expect(touching).toEqual([]);
 });
+
+for (const formation of [
+  "4-4-2",
+  "4-3-3",
+  "4-2-3-1",
+  "4-1-4-1",
+  "5-3-2",
+  "3-5-2",
+  "3-4-3",
+  "3-4-2-1",
+]) {
+  test(`warm short field: ${formation} names clear every other player picture`, async ({
+    page,
+  }) => {
+    await start(page, PLAY_8_0.replace("f=4-4-2", `f=${formation}`));
+    await draftRounds(page, 16);
+    await expect(page.getByTestId("see-results")).toBeVisible();
+    await settle(page);
+    const collisions = await page.evaluate(() => {
+      const tokens = [
+        ...document.querySelectorAll('[data-testid="pitch"] [data-testid^="slot-s"]'),
+      ];
+      const out: string[] = [];
+      for (const token of tokens) {
+        const parts = token.querySelectorAll(":scope > span");
+        const name = parts[parts.length - 1]!;
+        const n = name.getBoundingClientRect();
+        for (const other of tokens) {
+          if (token === other) continue;
+          const image = other.querySelector(":scope > span")!.getBoundingClientRect();
+          const gapX = Math.max(image.left - n.right, n.left - image.right);
+          const gapY = Math.max(image.top - n.bottom, n.top - image.bottom);
+          if (gapX < 1 && gapY < 1)
+            out.push(
+              `${token.getAttribute("data-testid")} name touches ${other.getAttribute("data-testid")} picture`,
+            );
+        }
+        const style = getComputedStyle(name);
+        if (innerWidth >= 390 && parseFloat(style.fontSize) < 12)
+          out.push(`${token.getAttribute("data-testid")} name is below12px`);
+      }
+      return out;
+    });
+    expect(collisions).toEqual([]);
+  });
+}

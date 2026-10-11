@@ -158,3 +158,6 @@ GitHub Ubuntu run38150015655 passed against productione8ce2d3, with the same pin
 ### PR 8B full browser target corrections
 
 The rebased full local browser run recorded490 passes,51 skips and6 failures. The six failures reproduce two regressions on each device: the builder Team Score label inherited10.4px text, and the image-settings checkbox hit box was43px inside its new bordered row. The label now explicitly uses13/18 at600; the checkbox row reserves45px so its inner hit box is44px. No test or assertion changed. The six focused unchanged guards now all pass. Build and lint pass, and the after captures were regenerated. The required full Linux rerun and independent exact-head review are pending.
+### PR 8C short-field guards before implementation
+
+A literal eight-formation matrix on iPhone SE, iPhone14 and Pixel7 fails24 cases against the unchanged8B build. It checks every starter name against every other picture and requires12px names at390px and wider. RED includes keeper and other line collisions, beyond the original4-4-2 carryover. The existing expected-fail remains unchanged until the layout is corrected.
