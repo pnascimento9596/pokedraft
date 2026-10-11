@@ -360,6 +360,13 @@ select {
   margin: 0.2em 0;
 }
 
+/* While a page shows its one-line Loading fallback, the footer would sit at the bottom of the first
+   viewport and be pushed down when the content lands (CLS 0.21 on a shared run on a phone). It
+   shows once the content is in place. */
+body:has(.page-loading) > .site-footer {
+  visibility: hidden;
+}
+
 .site-header {
   display: flex;
   flex-wrap: wrap;

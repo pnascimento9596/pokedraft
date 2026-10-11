@@ -7,6 +7,7 @@ import {
   passcodeMatches,
   safeNext,
 } from "@/passcode";
+import { logServerError, requestIdOf } from "@/observability/log";
 import type { RateLimiter } from "@/ratelimit/store";
 
 export const GATE_LIMIT = { max: 10, windowMs: 15 * 60 * 1000 } as const;
@@ -41,7 +42,8 @@ export async function handleUnlock(req: Request, deps: UnlockDeps): Promise<Next
     if (!(await deps.limiter.consume("gate", key, deps.now(), GATE_LIMIT))) {
       return back(req, next, "limited");
     }
-  } catch {
+  } catch (e) {
+    logServerError("gate.limiter", requestIdOf(req.headers), e);
     return back(req, next, "unavailable");
   }
 

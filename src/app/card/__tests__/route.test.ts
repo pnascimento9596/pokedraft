@@ -48,6 +48,20 @@ describe("GET /card", () => {
     expect(await res.text()).toBe("Bad or missing run token.");
   });
 
+  it("lets browsers and the CDN keep a valid card for a year (catches a fresh CPU render on every view)", async () => {
+    const run = await GET(new NextRequest(`http://localhost/card?t=${FLAWLESS}`));
+    const lineup = await GET(new NextRequest(`http://localhost/card?b=${PARTIAL_BUILDER}`));
+    expect([run.headers.get("cache-control"), lineup.headers.get("cache-control")]).toEqual([
+      "public, max-age=86400, s-maxage=31536000",
+      "public, max-age=86400, s-maxage=31536000",
+    ]);
+  }, 30_000);
+
+  it("never marks a rejected token immutable", async () => {
+    const res = await GET(new NextRequest("http://localhost/card?t=pd1.garbage"));
+    expect(res.headers.get("cache-control")).toBe("no-store");
+  });
+
   // Pixels in a slot's picture box that differ clearly from the pitch beside it.
   async function creaturePixels(url: string, slotIndex: number): Promise<number> {
     const res = await GET(new NextRequest(url));

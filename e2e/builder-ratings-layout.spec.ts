@@ -24,11 +24,11 @@ async function ratingsOn(page: Page): Promise<void> {
 const LINEUP_3421 =
   "pd3.W1siYiIsIjMtNC0yLTEiLCIxMjM0NTY3ODkiLDFdLCJwcm9vZi0zLTQtMi0xIixbWyJsIiwyNDksInMwIl0sWyJsIiwxMDA3LCJzMSJdLFsibCIsNDgzLCJzMiJdLFsibCIsNDkzLCJzMyJdLFsibCIsNjQ4LCJzNCJdLFsibCIsMTUwLCJzNSJdLFsibCIsNDg0LCJzNiJdLFsibCIsMTAxNSwiczciXSxbImwiLDQ5NCwiczgiXSxbImwiLDgwNiwiczkiXSxbImwiLDgwNywiczEwIl0sWyJsIiw1MiwiYjAiXSxbImwiLDU0LCJiMSJdLFsibCIsNTYsImIyIl0sWyJsIiw1OCwiYjMiXSxbImwiLDYwLCJiNCJdXV0";
 
-async function openLineup(page: Page, lineup: string = LINEUP): Promise<void> {
-  await ratingsOn(page);
+async function openLineup(page: Page, lineup: string = LINEUP, ratings = true): Promise<void> {
+  if (ratings) await ratingsOn(page);
   await page.goto(`/?b=${lineup}`);
   await expect(page.locator('[data-testid^="slot-"][data-filled="true"]')).toHaveCount(16);
-  await expect(page.getByTestId("slot-s0")).toContainText(/\w.*\d/);
+  if (ratings) await expect(page.getByTestId("slot-s0")).toContainText(/\w.*\d/);
   // fonts.ready can resolve before the first web font starts loading; the pill wraps differently
   // in the fallback font, so wait for the real one.
   await page.waitForFunction(() => document.fonts.status === "loaded");
@@ -83,6 +83,22 @@ test.describe("builder with Show ratings on, 390 px wide", () => {
   test("no two pitch tokens overlap", async ({ page }) => {
     await openLineup(page);
     expect(await overlappingTokens(page)).toEqual([]);
+  });
+
+  // Below an 800 px pitch the pill is the number alone, so a phone player saw "34" with nothing
+  // saying what it compares against. One legend line under the pitch says it.
+  test("a legend under the pitch says what the rating compares against", async ({ page }) => {
+    await openLineup(page);
+    const legend = page.getByTestId("ratings-legend");
+    await expect(legend).toBeVisible();
+    await expect(legend).toHaveText("Ratings are 0 to 100, vs other players in the same role.");
+    expect(await overlappingTokens(page)).toEqual([]);
+  });
+
+  test("no legend with Show ratings off", async ({ page }) => {
+    await openLineup(page, LINEUP, false);
+    await expect(page.getByTestId("slot-s0")).not.toContainText(/\d/);
+    await expect(page.getByTestId("ratings-legend")).toHaveCount(0);
   });
 });
 
@@ -142,6 +158,13 @@ test.describe("rating label size", () => {
     const sizes = await smallestLabelPx(page, '[data-testid="pitch"] [class*="noteLabel"]');
     expect(sizes.length).toBeGreaterThan(0);
     expect(Math.min(...sizes)).toBeGreaterThanOrEqual(11);
+  });
+
+  // The 1440 px pitch shows "vs other <role>s" on every pill, so the legend would repeat it.
+  test("no legend where every pill carries its own label", async ({ page }) => {
+    await openLineup(page);
+    await expect(page.locator('[data-testid="pitch"] [class*="noteLabel"]').first()).toBeVisible();
+    await expect(page.getByText("Ratings are 0 to 100", { exact: false })).toBeHidden();
   });
 
   test("the picker row label is at least 11 px", async ({ page }) => {

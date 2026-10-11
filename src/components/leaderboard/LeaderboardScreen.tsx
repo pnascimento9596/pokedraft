@@ -74,7 +74,7 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
       <p className={s.caption}>
         {view.scope === "daily"
           ? `Daily ${MODE_LABEL.cup8} for ${longDate(view.date)}${view.date === today ? " (today)" : ""}.`
-          : `${MODE_LABEL[view.mode]}, all-time.`}{" "}
+          : `${MODE_LABEL[view.mode]}, all-time. Every draft setting shares this board, and each row names its settings.`}{" "}
         Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top{" "}
         {BOARD_LIMIT}.
       </p>
