@@ -15,6 +15,14 @@ body {
   overflow-x: hidden;
 }
 
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(a, button, summary, label, select, [role="button"]) {
+  touch-action: manipulation;
+}
+
 /* viewport-fit=cover (layout.tsx) lets the page run under a landscape notch and the home
    indicator, so the sides keep clear of them. */
 body {
