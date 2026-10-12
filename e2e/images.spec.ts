@@ -63,8 +63,8 @@ test.describe("exported card", () => {
     };
     const slots = FORMATIONS["4-3-3"].slots;
     expect(slots.length).toBe(11);
-    for (const slot of slots) {
-      const r = tokenImageRect(slot);
+    for (const [index, slot] of slots.entries()) {
+      const r = tokenImageRect("4-3-3", index);
       // The pitch colour beside the token, then the blank square's fill laid over that colour.
       const bg = at(r.left - 3, r.top + Math.floor(r.size / 2));
       const blank = bg.map((c, k) => c * (1 - BLANK.a) + [BLANK.r, BLANK.g, BLANK.b][k]! * BLANK.a);

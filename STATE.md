@@ -67,11 +67,12 @@ From `docs/decisions/dispatch-5.md`:
 
 ### Dispatch 7 PR 7A
 
-| Not run                                                    | Why                                                                                              |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Real iPhone Safari and a real Android phone                | the browser proof used Playwright WebKit (iPhone 14 profile) and Chromium (Pixel 7 profile) only |
-| "Scouting notes" on a result row with no rationale         | unreachable: 1025 of 1025 species have a rationale                                               |
-| `knip` (unused exports after `NOMINAL_LADDER` was removed) | knip is not a repo dependency; `rg NOMINAL_LADDER` finds no use in `src/` instead                |
+| Not run                                                    | Why                                                                                                                                     |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Real iPhone Safari and a real Android phone                | the browser proof used Playwright WebKit (iPhone 14 profile) and Chromium (Pixel 7 profile) only                                        |
+| "Scouting notes" on a result row with no rationale         | unreachable: 1025 of 1025 species have a rationale                                                                                      |
+| `knip` (unused exports after `NOMINAL_LADDER` was removed) | knip is not a repo dependency; `rg NOMINAL_LADDER` finds no use in `src/` instead                                                       |
+| Share card redesign                                        | Card sprites trimmed and 2x+ larger, framed pitch, W/D/L and finish panel; PNG 97,283 to 292,593 B, warm render 49 to 147 ms (FLAWLESS) | `docs/decisions/share-card-redesign.md` |
 
 ### Dispatch 8 PR 8B checkpoint
 
