@@ -655,3 +655,128 @@
   font-weight: 600;
   letter-spacing: -0.015em;
 }
+
+/* Ratings on: where each offered player ranks for the slot's role, 0 to 100 (same pattern as the
+   builder picker's .rowFit). */
+.candFit {
+  max-width: 100%;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-soft);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.candFit :global(.num) {
+  font-size: 17px;
+  line-height: 20px;
+  color: var(--flood-text);
+}
+
+.candFitLabel {
+  color: var(--ink-faint);
+}
+
+.row[data-rated] {
+  grid-template-areas:
+    "img name dex"
+    "img types types"
+    "img fit fit";
+}
+
+.row .candFit {
+  grid-area: fit;
+  text-align: left;
+}
+
+.cards li:only-child .card[data-rated] {
+  flex-wrap: wrap;
+}
+
+.cards li:only-child .card .candFit {
+  text-align: left;
+}
+
+/* The visually hidden raw-fit sentence and the phone cards' hidden label are absolutely placed, so
+   their offered player is their containing block and the tray's overflow clips them. */
+.rows li,
+.cards li,
+.card {
+  position: relative;
+}
+
+.legend {
+  flex: 1;
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-soft);
+}
+
+.footer {
+  align-items: center;
+  gap: 12px;
+}
+
+.footer > button {
+  margin-left: auto;
+}
+
+@media (max-width: 480px) {
+  .rows:has(.row[data-rated]) {
+    grid-auto-columns: minmax(272px, 94%);
+  }
+
+  .row[data-rated] {
+    grid-template-areas:
+      "img name fit"
+      "img types fit";
+    grid-template-columns: 40px minmax(0, 1fr) minmax(0, 4.5rem);
+    padding-block: 6px;
+  }
+
+  .row[data-rated] .candDex {
+    display: none;
+  }
+
+  .row[data-rated] .candFit {
+    align-self: center;
+    text-align: right;
+  }
+
+  .card[data-rated] {
+    gap: 1px;
+    padding: 3px;
+  }
+
+  .card[data-rated] [data-player-image] {
+    zoom: 0.4;
+  }
+
+  .card[data-rated] .candFit {
+    line-height: 16px;
+  }
+
+  .card[data-rated] .candFitVs {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .cards li:only-child .card[data-rated] [data-player-image] {
+    zoom: 0.8;
+  }
+
+  .cards li:only-child .card[data-rated] .candFitVs {
+    position: static;
+    width: auto;
+    height: auto;
+    clip: auto;
+    white-space: normal;
+  }
+}

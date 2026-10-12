@@ -14,6 +14,19 @@ async function setPanel(page: Page, panel: Record<string, unknown>): Promise<voi
   }, panel);
 }
 
+async function openSettings(page: Page): Promise<void> {
+  const more = page.getByRole("button", { name: /Settings and records/ });
+  if (await more.isVisible()) await more.click();
+}
+
+async function startOrResume(page: Page): Promise<void> {
+  const start = page.getByTestId("run-start");
+  const offer = page.locator('[data-testid^="candidate-"]').first();
+  await start.or(offer).first().waitFor();
+  if (await start.isVisible()) await start.click();
+  await expect(offer).toBeVisible();
+}
+
 async function noHorizontalOverflow(page: Page): Promise<void> {
   const widths = await page.evaluate(() => ({
     scroll: document.documentElement.scrollWidth,
@@ -87,7 +100,7 @@ test("the home Settings switch turns ratings on for the next challenge, and off 
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: /Settings and records/ }).click();
+  await openSettings(page);
   const toggle = page.getByRole("switch", { name: /Show ratings \(challenges\)/ });
   await expect(toggle).toHaveAttribute("aria-checked", "false");
   await toggle.click();
@@ -97,15 +110,14 @@ test("the home Settings switch turns ratings on for the next challenge, and off 
   ).toBeVisible();
 
   await page.getByRole("link", { name: "Play 8-0 Challenge" }).click();
-  await page.getByTestId("run-start").click();
+  await startOrResume(page);
   await expect(page.locator('[data-testid^="fit-"]').first()).toBeVisible();
   await expect(page.getByTestId("ratings-legend")).toBeVisible();
 
   await page.goto("/");
-  await page.getByRole("button", { name: /Settings and records/ }).click();
+  await openSettings(page);
   await page.getByRole("switch", { name: /Show ratings \(challenges\)/ }).click();
   await page.getByRole("link", { name: "Play 8-0 Challenge" }).click();
-  await page.getByTestId("run-start").click();
-  await expect(page.locator('[data-testid^="candidate-"]').first()).toBeVisible();
+  await startOrResume(page);
   await expect(page.locator('[data-testid^="fit-"]')).toHaveCount(0);
 });

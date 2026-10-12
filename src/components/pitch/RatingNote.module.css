@@ -1,0 +1,21 @@
+/* The two lines inside a pitch token's rating pill (the pill is Pitch's .tokenNote). The pill is the
+   number alone until the pitch is 800 px wide: with the label it is two or three lines, 16 px taller
+   than before, and below that width neighbouring tokens collided (390 px phones, and 3-4-2-1 on a
+   668 px pitch). The label is 11.2 px, the same as the token's other small text. */
+.noteScore {
+  display: block;
+}
+
+.noteLabel {
+  display: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+@container (min-width: 800px) {
+  .noteLabel {
+    display: block;
+  }
+}
