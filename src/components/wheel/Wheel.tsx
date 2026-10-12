@@ -148,13 +148,13 @@ export function Wheel({ stage, state, onSettle, onTick }: WheelProps) {
       <div className={s.window} style={{ "--face-h": `${FACE_H}px` } as CSSProperties}>
         <div className={s.payline} aria-hidden="true" />
         {spinning ? (
-          <div className={s.reel} ref={reelRef} aria-hidden="true">
+          <div key="spinning" className={s.reel} ref={reelRef} aria-hidden="true">
             {[head, ...strip, tail].map((face, i) => (
               <FaceView key={i} face={face} />
             ))}
           </div>
         ) : (
-          <div className={s.reel} data-settled="">
+          <div key="settled" className={s.reel} data-settled="">
             <div aria-hidden="true">
               <FaceView face={neighbourFace(faces, landing, -1)} />
             </div>
