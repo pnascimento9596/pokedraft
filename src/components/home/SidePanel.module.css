@@ -121,7 +121,7 @@
   border-radius: 999px;
   background: var(--surface-sunken);
   border: 1px solid var(--border-control);
-  transition: background 120ms ease;
+  transition: background var(--dur-1) ease;
 }
 .switchThumb {
   position: absolute;
@@ -131,7 +131,7 @@
   height: 18px;
   border-radius: 50%;
   background: var(--text-soft);
-  transition: transform 120ms ease;
+  transition: transform var(--dur-1) ease;
 }
 .switch[aria-checked="true"] .switchTrack {
   background: var(--accent);

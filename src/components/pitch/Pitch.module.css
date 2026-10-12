@@ -107,8 +107,8 @@
     0 0 0 2px var(--token-ring),
     var(--shadow-rest);
   transition:
-    box-shadow 120ms ease,
-    transform 120ms ease;
+    box-shadow var(--dur-1) ease,
+    transform var(--dur-1) ease;
 }
 
 .token[data-filled="false"] .tokenImage {

@@ -110,9 +110,9 @@ select {
   text-decoration: none;
   cursor: pointer;
   transition:
-    background 120ms ease,
-    border-color 120ms ease,
-    transform 120ms ease;
+    background var(--dur-1) ease,
+    border-color var(--dur-1) ease,
+    transform var(--dur-1) ease;
 }
 
 .btn:hover:not(:disabled, [aria-disabled="true"]) {
