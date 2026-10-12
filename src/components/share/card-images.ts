@@ -3,13 +3,18 @@ import path from "node:path";
 import { hasImage, imageFile, resolvePack, type ImagePack } from "@/images/packs";
 import type { SpeciesId } from "@/engine";
 import type { CardModel } from "./card";
+import { TOKEN } from "./card-layout";
 
 // Satori cannot fetch the site's own /creatures files on a protected preview, so the card reads
 // them from disk and inlines each as a data URI. next.config.ts traces public/creatures into the
-// functions that render cards. Satori also draws nothing, and says nothing, for a WebP, so WebP
-// packs are re-encoded as small PNGs here. Server only.
+// functions that render cards. Satori also draws nothing, and says nothing, for a WebP, so every
+// picture is re-encoded as a PNG here. Server only.
+//
+// Sprites sit inside transparent padding that differs per species, so each picture is trimmed to
+// its visible pixels, scaled up, and stood on the bottom of a square CARD_PICTURE canvas. Pixel
+// art scales by a whole number with the nearest-neighbour kernel so its edges stay crisp.
 
-const CARD_PICTURE = 104; // twice the 52px token, so the card stays sharp
+const CARD_PICTURE = TOKEN.image;
 
 function readPicture(pack: ImagePack, dexId: number): Buffer | null {
   if (!hasImage(pack, dexId)) return null;
@@ -27,13 +32,39 @@ function readPicture(pack: ImagePack, dexId: number): Buffer | null {
   }
 }
 
+const TARGET = CARD_PICTURE - 4;
+
 async function toPng(pack: ImagePack, bytes: Buffer): Promise<Buffer | null> {
-  if (pack.format === "png") return bytes;
   try {
     const { default: sharp } = await import("sharp");
-    return await sharp(bytes)
-      .resize(CARD_PICTURE, CARD_PICTURE, { fit: "inside" })
+    const { data, info } = await sharp(bytes).trim().png().toBuffer({ resolveWithObject: true });
+    const pixel = pack.style === "pixel";
+    const whole = Math.floor(TARGET / Math.max(info.width, info.height));
+    const crisp = pixel && whole * Math.max(info.width, info.height) >= 0.8 * TARGET;
+    // A pixel sprite that no whole number brings near the target is enlarged one step past it and
+    // then fitted down, which stays clean where a fractional nearest-neighbour step would not.
+    const step = crisp ? whole : whole + 1;
+    const enlarged = pixel
+      ? await sharp(data)
+          .resize(info.width * step, info.height * step, { kernel: "nearest" })
+          .png()
+          .toBuffer()
+      : data;
+    const drawn = await (
+      crisp ? sharp(enlarged) : sharp(enlarged).resize(TARGET, TARGET, { fit: "inside" })
+    )
       .png()
+      .toBuffer({ resolveWithObject: true });
+    const left = Math.floor((CARD_PICTURE - drawn.info.width) / 2);
+    return await sharp(drawn.data)
+      .extend({
+        top: CARD_PICTURE - drawn.info.height,
+        left,
+        right: CARD_PICTURE - drawn.info.width - left,
+        bottom: 0,
+        background: { r: 0, g: 0, b: 0, alpha: 0 },
+      })
+      .png({ compressionLevel: 9 })
       .toBuffer();
   } catch {
     return null;
