@@ -143,6 +143,9 @@
   background: var(--surface);
   text-align: left;
   cursor: pointer;
+  transition:
+    background-color var(--dur-1) ease,
+    transform var(--dur-1) var(--ease-out);
 }
 
 .row:focus-visible {
@@ -153,6 +156,10 @@
   .row:hover:not(:disabled) {
     background: color-mix(in srgb, var(--flood) 10%, transparent);
   }
+}
+
+.row:active:not(:disabled, [aria-disabled="true"]) {
+  transform: scale(0.98);
 }
 
 .row:disabled {

@@ -242,6 +242,11 @@ h1.module-title {
   line-height: 18px;
   color: var(--text-soft);
   text-decoration: none;
+  transition: transform var(--dur-1) var(--ease-out);
+}
+a.list-row:active,
+button.list-row:active:not(:disabled, [aria-disabled="true"]) {
+  transform: scale(0.98);
 }
 .list-row__content {
   flex: 1;
@@ -271,11 +276,17 @@ h1.module-title {
   line-height: 20px;
   font-weight: 600;
   cursor: pointer;
+  transition:
+    background var(--dur-1) ease,
+    transform var(--dur-1) var(--ease-out);
 }
 @media (hover: hover) {
   .primary-button:hover:not(:disabled) {
     background: var(--accent-hover);
   }
+}
+.primary-button:active:not(:disabled, [aria-disabled="true"]) {
+  transform: translateY(1px) scale(0.98);
 }
 .primary-button:disabled {
   cursor: not-allowed;

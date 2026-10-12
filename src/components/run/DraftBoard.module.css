@@ -182,6 +182,9 @@
   background: var(--bg-raised);
   text-align: left;
   cursor: pointer;
+  transition:
+    border-color var(--dur-1) ease,
+    transform var(--dur-1) var(--ease-out);
 }
 
 .row > :first-child {
@@ -230,6 +233,9 @@
   background: var(--surface-sunken);
   cursor: pointer;
   text-align: center;
+  transition:
+    border-color var(--dur-1) ease,
+    transform var(--dur-1) var(--ease-out);
 }
 
 .cards li:only-child .card {
@@ -251,6 +257,11 @@
   .card:hover {
     border-color: var(--ink-soft);
   }
+}
+
+.row:active:not(:disabled, [aria-disabled="true"]),
+.card:active:not(:disabled, [aria-disabled="true"]) {
+  transform: scale(0.98);
 }
 
 .candName {

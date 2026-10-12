@@ -84,6 +84,13 @@
   line-height: 18px;
   color: var(--text-soft);
   cursor: pointer;
+  transition:
+    background-color var(--dur-1) ease,
+    color var(--dur-1) ease,
+    transform var(--dur-1) var(--ease-out);
+}
+.segment:active:not(:disabled, [aria-disabled="true"]) {
+  transform: scale(0.96);
 }
 .segment[aria-pressed="true"] {
   background: var(--selected);
@@ -102,6 +109,10 @@
   background: none;
   text-align: left;
   cursor: pointer;
+  transition: opacity var(--dur-1) var(--ease-out);
+}
+.switch:active:not(:disabled, [aria-disabled="true"]) {
+  opacity: 0.85;
 }
 .switchText {
   display: flex;
