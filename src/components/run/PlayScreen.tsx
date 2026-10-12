@@ -166,7 +166,11 @@ export function Challenge({
       daily: daily ?? null,
     };
     const session = readSession(runSlotKey(slot));
-    if (session === RUN_CLEARED || (session === null && readRunCheckpoint(slot) === null)) return;
+    if (session === RUN_CLEARED) {
+      focusHeading();
+      return;
+    }
+    if (session === null && readRunCheckpoint(slot) === null) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- auto-enter the saved run after hydration
     start(true);
     // Only on mount: later starts come from the Start button.
