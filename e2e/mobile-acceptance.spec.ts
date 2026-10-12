@@ -1186,7 +1186,7 @@ test("5 drag and scroll: a vertical swipe that starts outside the pitch scrolls 
   await filledBuilder(page);
   await page.evaluate(() => window.scrollTo(0, 0));
   await settle(page);
-  const heading = page.getByRole("heading", { name: "Build your XI" });
+  const heading = page.getByRole("heading", { name: "Play", exact: true });
   const check = await inViewport(page, heading);
   if (!check.ok)
     throw new Error(`harness: the heading to swipe from is not on screen: ${check.problem}`);

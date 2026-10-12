@@ -1,13 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useId, useState } from "react";
+import { flushSync } from "react-dom";
 import { FORMATION_IDS, GENS, type FormationId, type Gen } from "@/engine/types";
 import { ORDER_LABEL, STYLE_LABEL, genLabel, record } from "@/ui/labels";
 import { BUCKET_LABEL, STAT_BUCKETS, type BucketStats, type StatBucket } from "@/ui/runs";
-import { playHref, type PanelSettings } from "@/ui/settings";
+import type { ChallengeMode, PanelSettings } from "@/ui/settings";
 import { ModuleCard, Table } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
+import { ConfirmPlay } from "./ConfirmPlay";
 import s from "./SidePanel.module.css";
 
 export interface SidePanelProps {
@@ -81,8 +82,22 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
   const formationId = useId();
   const set = (patch: Partial<PanelSettings>) => onChange({ ...panel, ...patch });
   const allGens = panel.gens.length === GENS.length;
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
+  const [confirming, setConfirming] = useState<ChallengeMode | null>(null);
   const moreId = useId();
+
+  const editSettings = () => {
+    flushSync(() => {
+      setConfirming(null);
+      setOpen(true);
+    });
+    const select = document.getElementById(formationId);
+    if (select) {
+      const { top, bottom } = select.getBoundingClientRect();
+      if (top < 0 || bottom > window.innerHeight) select.scrollIntoView({ block: "center" });
+    }
+    select?.focus({ preventScroll: true });
+  };
 
   const toggleGen = (g: Gen) => {
     const on = panel.gens.includes(g);
@@ -100,12 +115,20 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
       >
         <div className={s.section}>
           <div className={s.ctas}>
-            <Link className={`btn btn--primary ${s.cta}`} href={playHref("cup8", panel)}>
+            <button
+              type="button"
+              className={`btn btn--primary ${s.cta}`}
+              onClick={() => setConfirming("cup8")}
+            >
               Play 8-0 Challenge
-            </Link>
-            <Link className={`btn btn--primary ${s.cta}`} href={playHref("kanto151", panel)}>
+            </button>
+            <button
+              type="button"
+              className={`btn btn--primary ${s.cta}`}
+              onClick={() => setConfirming("kanto151")}
+            >
               Play 151 Challenge
-            </Link>
+            </button>
           </div>
           <p className={s.hint}>
             {panel.showChallengeRatings
@@ -254,6 +277,14 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
           </section>
         </ModuleCard>
       </div>
+      {confirming !== null && (
+        <ConfirmPlay
+          mode={confirming}
+          panel={panel}
+          onEdit={editSettings}
+          onDone={() => setConfirming(null)}
+        />
+      )}
     </aside>
   );
 }
