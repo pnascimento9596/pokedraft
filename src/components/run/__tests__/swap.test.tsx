@@ -41,9 +41,10 @@ const header = () => screen.getByTestId("round-header").textContent;
 
 async function start(q: string) {
   query.current = q;
-  render(<PlayScreen />);
+  const view = render(<PlayScreen />);
   fireEvent.click(screen.getByTestId("run-start"));
   await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
+  return view;
 }
 
 // The first offered player into the first open slot, every round, as e2e/helpers.ts drafts.
@@ -184,8 +185,8 @@ describe("focus after the screen changes (SC-11)", () => {
     expect(focused()).toBe("H1: Round 2 of 16");
   });
 
-  it("See results moves focus to the results heading, and New run to the start heading", async () => {
-    await start(SQUAD_FIRST);
+  it("New run keeps the start heading focused when removing a shared seed remounts the route", async () => {
+    const view = await start(SQUAD_FIRST);
     draftAll();
     screen.getByTestId("see-results").focus();
     fireEvent.click(screen.getByTestId("see-results"));
@@ -193,6 +194,9 @@ describe("focus after the screen changes (SC-11)", () => {
     const newRun = screen.getByRole("button", { name: "New run" });
     newRun.focus();
     fireEvent.click(newRun);
+    expect(focused()).toBe("H1: 8-0 Challenge");
+    query.current = SQUAD_FIRST.replace("&seed=run-test", "");
+    view.rerender(<PlayScreen />);
     expect(focused()).toBe("H1: 8-0 Challenge");
   });
 
