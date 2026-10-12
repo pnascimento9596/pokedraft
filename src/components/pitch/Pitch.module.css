@@ -133,7 +133,8 @@
   box-shadow: 0 0 0 3px var(--focus);
 }
 
-.token:not(:disabled, [aria-disabled="true"]):not([data-dragging]):not([data-drop]):active .tokenImage {
+.token:not(:disabled, [aria-disabled="true"]):not([data-dragging]):not([data-drop]):active
+  .tokenImage {
   transform: scale(0.94);
 }
 
@@ -573,5 +574,40 @@
   .field > .token .tokenName {
     width: 22px;
     max-width: 22px;
+  }
+}
+
+/* On a field that takes the height the screen leaves it, a rating pill must not make its token
+   taller: the keeper sits right under the defenders. On a tall enough field the pill is a corner
+   badge opposite the slot tag; on a short field the token is a row (picture, name), and the pill
+   takes the place of the name, which is cut to a letter or two there anyway. */
+@media (max-width: 480px), (orientation: landscape) and (max-height: 500px) and (max-width: 959px) {
+  .wrap[data-fit] .tokenNote {
+    font-size: 12px;
+    line-height: 14px;
+    padding: 0 3px;
+  }
+
+  @container field (not (max-height: 350px)) {
+    .field > .token .tokenNote {
+      position: absolute;
+      top: -4px;
+      left: 0;
+      z-index: 1;
+    }
+  }
+
+  @container field (max-height: 350px) {
+    .field > .token:has(.tokenNote) {
+      justify-content: flex-start;
+    }
+
+    .field > .token:has(.tokenNote) .tokenName {
+      display: none;
+    }
+
+    .field > .token .tokenNote {
+      flex: none;
+    }
   }
 }

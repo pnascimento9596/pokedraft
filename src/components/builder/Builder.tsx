@@ -13,14 +13,23 @@ import type {
   SpeciesId,
 } from "@/engine/types";
 import { Pitch } from "@/components/pitch/Pitch";
+import { RatingNote } from "@/components/pitch/RatingNote";
 import { announce } from "@/components/Announcer";
 import {
   DOWNLOAD_FAILED,
   downloadStatus,
   useCardDownload,
 } from "@/components/share/useCardDownload";
-import { FRIENDLY_LABEL, qualityScore, versusLabel } from "@/ui/labels";
-import { BUILDER_URL_SEED, emptyLineup, filledCount, refKey, valueAt } from "@/ui/lineup";
+import { FRIENDLY_LABEL } from "@/ui/labels";
+import {
+  BUILDER_URL_SEED,
+  emptyLineup,
+  filledCount,
+  refKey,
+  slotLabel,
+  valueAt,
+} from "@/ui/lineup";
+import { ratingFor } from "@/ui/rating";
 import { freshSeed } from "@/ui/settings";
 import { CASCADE_TOTAL_MS, cascadeFrame, fullLineup } from "./model";
 import { ModuleCard } from "@/components/ui/primitives";
@@ -193,19 +202,12 @@ export function Builder({
       onFriendly({ token: t, draft: played, cup });
     });
 
-  // The same number and label as the picker row: where the player ranks for the slot's role (a
-  // bench slot has none, so their best one) among all Pokémon, 0 to 100.
+  // The same number and label as the picker row.
   const tokenNote = (engine: BuilderEngine, ref: SlotRef): ReactNode => {
     const id = valueAt(lineup, ref);
     if (id === null) return null;
-    const sp = engine.speciesById(id);
-    const role = ref.kind === "starter" ? slots[ref.index].role : sp.bestRoles[0]!;
-    return (
-      <>
-        <span className={s.noteScore}>{qualityScore(sp.quality[role])}</span>{" "}
-        <span className={s.noteLabel}>{versusLabel(role)}</span>
-      </>
-    );
+    const role = ref.kind === "starter" ? slots[ref.index].role : null;
+    return <RatingNote rating={ratingFor(engine.speciesById(id), role, slotLabel(lineup, ref))} />;
   };
 
   return (

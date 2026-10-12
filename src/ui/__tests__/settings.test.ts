@@ -1,5 +1,12 @@
-import { describe, expect, it } from "vitest";
-import { DEFAULT_PANEL, parsePlayQuery, playHref, type PanelSettings } from "../settings";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import {
+  DEFAULT_PANEL,
+  loadPanel,
+  parsePlayQuery,
+  playHref,
+  savePanel,
+  type PanelSettings,
+} from "../settings";
 
 const POSITION_CLASSIC: PanelSettings = {
   ...DEFAULT_PANEL,
@@ -69,5 +76,63 @@ describe("playHref and parsePlayQuery (catches a home Start link that loses the 
   it("refuses a link with no formation or a builder mode", () => {
     expect(parse("/play?mode=cup8&order=squadFirst")).toBeNull();
     expect(parse("/play?mode=builder&formation=4-3-3&gens=1")).toBeNull();
+  });
+});
+
+function storedPanel(json: string | null) {
+  const store = new Map<string, string>();
+  if (json !== null) store.set("pokedraft:panel", json);
+  vi.stubGlobal("window", {
+    localStorage: {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+    },
+  });
+  return store;
+}
+
+describe("showChallengeRatings (catches a saved panel that turns challenge ratings on by accident, or ties them to the builder setting)", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("is off by default, so challenges stay blind", () => {
+    expect(DEFAULT_PANEL.showChallengeRatings).toBe(false);
+    storedPanel(null);
+    expect(loadPanel().showChallengeRatings).toBe(false);
+  });
+
+  it("loads false from a panel saved before the setting existed", () => {
+    storedPanel('{"formation":"4-4-2","showRatings":true}');
+    const panel = loadPanel();
+    expect(panel.showChallengeRatings).toBe(false);
+    expect(panel.formation).toBe("4-4-2");
+  });
+
+  it("loads a stored true", () => {
+    storedPanel('{"showChallengeRatings":true}');
+    expect(loadPanel().showChallengeRatings).toBe(true);
+  });
+
+  it("loads false when the stored value is not a boolean", () => {
+    for (const bad of ['"true"', "1", "null", "{}"]) {
+      storedPanel(`{"showChallengeRatings":${bad}}`);
+      expect(loadPanel().showChallengeRatings).toBe(false);
+    }
+  });
+
+  it("keeps the builder setting independent of it, in both directions", () => {
+    storedPanel('{"showRatings":true}');
+    expect(loadPanel()).toMatchObject({ showRatings: true, showChallengeRatings: false });
+    storedPanel('{"showChallengeRatings":true}');
+    expect(loadPanel()).toMatchObject({ showRatings: false, showChallengeRatings: true });
+  });
+
+  it("round-trips through savePanel", () => {
+    const store = storedPanel(null);
+    savePanel({ ...DEFAULT_PANEL, showChallengeRatings: true });
+    expect(JSON.parse(store.get("pokedraft:panel")!)).toMatchObject({
+      showChallengeRatings: true,
+      showRatings: false,
+    });
+    expect(loadPanel().showChallengeRatings).toBe(true);
   });
 });

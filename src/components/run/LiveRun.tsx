@@ -37,6 +37,7 @@ export function LiveRun({
     () => initial ?? { kind: "draft", run: startRun(settings, seed) },
   );
   const [failure, setFailure] = useState<string | null>(null);
+  const [showRatings] = useState(() => loadPanel().showChallengeRatings);
   const unsavedStart = useRef(initial === null && screen.kind === "draft" ? screen.run : null);
 
   useEffect(() => {
@@ -110,6 +111,7 @@ export function LiveRun({
       navFamily={daily === undefined ? "play" : "daily"}
       run={screen.run}
       failure={failure}
+      showRatings={showRatings}
       onRun={(run) => show({ kind: "draft", run })}
       onAction={(action) => show({ kind: "draft", run: step(screen.run, action) })}
       onNewRun={newRun}
