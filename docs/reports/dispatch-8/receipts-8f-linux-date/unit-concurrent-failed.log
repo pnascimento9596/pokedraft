@@ -1,0 +1,81 @@
+$ vitest run --maxWorkers=4
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate
+
+ ❯ src/gate/__tests__/unlock.test.ts (7 tests | 1 failed) 47602ms
+   ❯ passcode gate attempt limit (catches unlimited passcode guessing) (7)
+     × allows 10 attempts per IP per 15 minutes, then locks that IP out even for the right passcode 10614ms
+ ❯ src/leaderboard/server/__tests__/hardening.test.ts (7 tests | 1 failed) 48813ms
+   ❯ client IP (catches a spoofable first x-forwarded-for hop beating Vercel's header) (1)
+     × prefers x-real-ip, then the first x-forwarded-for hop, then unknown 10082ms
+ ❯ src/app/r/[token]/__tests__/replay-count.test.ts (2 tests | 1 failed) 5952ms
+   ❯ /r/[token] replay count (catches the dispatch 3 page that replayed a token three times per view) (2)
+     × replays once for the page and its metadata in one request 5013ms
+ ❯ src/leaderboard/server/__tests__/handlers.test.ts (37 tests | 1 failed) 112253ms
+   ❯ POST /api/leaderboard (catches client-trusted scores and unranked runs on the board) (24)
+     × stores the server's replay numbers and ignores numbers the client sends 10359ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/gate/__tests__/unlock.test.ts > passcode gate attempt limit (catches unlimited passcode guessing) > allows 10 attempts per IP per 15 minutes, then locks that IP out even for the right passcode
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/gate/__tests__/unlock.test.ts:17:1
+     15| let now: Date;
+     16|
+     17| beforeEach(async () => {
+       | ^
+     18|   ({ db, client } = await migratedDb());
+     19|   now = NOW;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/leaderboard/server/__tests__/handlers.test.ts > POST /api/leaderboard (catches client-trusted scores and unranked runs on the board) > stores the server's replay numbers and ignores numbers the client sends
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/leaderboard/server/__tests__/handlers.test.ts:80:1
+     78| }
+     79|
+     80| beforeEach(async () => {
+       | ^
+     81|   ({ db, client } = await migratedDb());
+     82|   store = drizzleStore(() => db);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/leaderboard/server/__tests__/hardening.test.ts > client IP (catches a spoofable first x-forwarded-for hop beating Vercel's header) > prefers x-real-ip, then the first x-forwarded-for hop, then unknown
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/leaderboard/server/__tests__/hardening.test.ts:25:1
+     23| let store: LeaderboardStore;
+     24|
+     25| beforeEach(async () => {
+       | ^
+     26|   ({ db, client } = await migratedDb());
+     27|   store = drizzleStore(() => db);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/app/r/[token]/__tests__/replay-count.test.ts > /r/[token] replay count (catches the dispatch 3 page that replayed a token three times per view) > replays once for the page and its metadata in one request
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/app/r/[token]/__tests__/replay-count.test.ts:52:3
+     50|
+     51| describe("/r/[token] replay count (catches the dispatch 3 page that re…
+     52|   it("replays once for the page and its metadata in one request", asyn…
+       |   ^
+     53|     const page = await import("../page");
+     54|     const meta = await page.generateMetadata({ params } as never);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  4 failed | 76 passed (80)
+      Tests  4 failed | 731 passed (735)
+   Start at  22:15:54
+   Duration  117.99s (tests 78%, import 11%, environment 7%, transform 5%)
+
+    Isolate  80 workers spawned · ~570ms startup each (spawn + environment, per file)
+             at least ~10.82s faster with isolate: false — reuses workers across files instead of one per file
+
+[ELIFECYCLE] Test failed. See above for more details.

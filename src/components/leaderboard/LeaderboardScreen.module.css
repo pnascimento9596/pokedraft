@@ -43,6 +43,7 @@
 .date input {
   position: relative;
   width: 180px;
+  height: 44px;
   min-height: 44px;
   padding: 8px 48px 8px 10px;
   border: 1px solid var(--border-control);
@@ -54,14 +55,56 @@
 }
 .caption {
   margin: 0;
+  min-height: 90px;
   color: var(--text-muted);
   font-size: 13px;
   line-height: 18px;
 }
 
-.date > span {
+.date > span:first-child {
   width: 40px;
   flex: none;
+}
+.dateField {
+  position: relative;
+  display: block;
+  width: 180px;
+  height: 44px;
+  flex: none;
+}
+.dateLoading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding-inline: 10px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+.dateField[data-font-ready="false"] input {
+  visibility: hidden;
+}
+.dateField[data-font-ready="true"] .dateLoading {
+  display: none;
+}
+@media (max-width: 359px) {
+  .caption {
+    min-height: 126px;
+  }
+}
+@media (min-width: 480px) {
+  .caption {
+    min-height: 54px;
+  }
+}
+@media (min-width: 768px) {
+  .caption {
+    min-height: 36px;
+  }
 }
 .date input::-webkit-datetime-edit {
   padding: 0;
@@ -88,7 +131,9 @@
 }
 .date input::-webkit-calendar-picker-indicator {
   position: absolute;
+  top: 0;
   right: 0;
+  box-sizing: border-box;
   width: 44px;
   height: 44px;
   margin: 0;

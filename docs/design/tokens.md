@@ -122,4 +122,4 @@ Ratios below are unrounded during validation. Displayed rounding never turns a f
 
 ### Final type application
 
-Module h1 uses source `clamp(1.3rem, 2vw, 1.9rem)`; h2 uses the mobile17/23 anddesktop15/21 overrides. Browserfigures inherit tabular numerals. The static PNG renderer uses Inter with equal0.67em digit cells for score, record andformation, because its text doesnot inherit browserCSS. Sharecontent/size/models stay unchanged.
+Module h1 uses source `clamp(1.3rem, 2vw, 1.9rem)`; h2 uses the mobile17/23 anddesktop15/21 overrides. Browser figures inherit tabular numerals. Leaderboard figures additionally reserve 0.7em per digit and 0.46em per separator to prevent movement during font swap; each complete value keeps one accessible label. The static PNG renderer uses Inter with equal0.67em digit cells for score, record andformation, because its text doesnot inherit browserCSS. Sharecontent/size/models stay unchanged.

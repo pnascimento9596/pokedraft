@@ -1,0 +1,56 @@
+{
+  "shifts": [
+    {
+      "value": 0.0017176290990050626,
+      "nodes": [
+        {
+          "html": "<p class=\"kicker d8h8bG_loading\">Loading the board</p>",
+          "before": {
+            "x": 33,
+            "y": 526.953125,
+            "width": 294,
+            "height": 58,
+            "top": 526.953125,
+            "right": 327,
+            "bottom": 584.953125,
+            "left": 33
+          },
+          "after": {
+            "x": 33,
+            "y": 544.953125,
+            "width": 294,
+            "height": 58,
+            "top": 544.953125,
+            "right": 327,
+            "bottom": 602.953125,
+            "left": 33
+          }
+        },
+        {
+          "html": "native",
+          "before": {
+            "x": 152,
+            "y": 409.953125,
+            "width": 44,
+            "height": 20,
+            "top": 409.953125,
+            "right": 196,
+            "bottom": 429.953125,
+            "left": 152
+          },
+          "after": {
+            "x": 152,
+            "y": 408.953125,
+            "width": 44,
+            "height": 20,
+            "top": 408.953125,
+            "right": 196,
+            "bottom": 428.953125,
+            "left": 152
+          }
+        }
+      ]
+    }
+  ],
+  "input": ""
+}

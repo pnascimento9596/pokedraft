@@ -106,3 +106,8 @@ History/help/404/gate plusreadabilityandhumanroundlabels: unit735/80, fullbrowse
 PR25–31 are merged. PR31 exactreviewc8c4d58, squash5199e56, CI38175095402 green734unit/542browser/51skip aftersame-head checkrerun. Productionlive4/mobile242+46skip/cleanup0, UbuntuLH38176506885 all24samples100/exact0. Tiny late-font fixture shifts are resolved in8F.
 
 8F finalcandidate:735unit/80files; full623-case browser suite572pass51skip; allstatic/contrast/color/CVD/image/bundle/mirror gates green. Beforeafter68viewport+68full each, zerooverflow, card1200x630, figures186/10both themes unchanged. Exact-headLinuxCI, independentGLMreview, merge andproduction8F verification pending. Wholelanecloseout remainspending.
+
+
+### Dispatch 8F Linux correction checkpoint
+
+PR #32 remains unmerged. First exact-head Linux browser CI 38193051091 found four delayed-font failures (568 passed, 51 existing skips); its static/unit job passed 735 tests. The prior fc070324 review is superseded. The native date field now reserves geometry and shows Loading date until fonts are ready; caption line space is reserved. No second font or original mobile assertion changed. Linux focused 12 and macOS focused 62 pass, native date editing is preserved, and 186/10 figure snapshots remain identical. New full CI and independent review are required. A local concurrent unit run timed out four unchanged tests; isolated validation is pending.

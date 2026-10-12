@@ -1,3 +1,38 @@
 # Before screenshots: 8f
 
-32 viewport and32 fullpage captures at390x844 and1440x900, inlight/dark. Themanifest recordszerooverflow. Support states coverempty/seededhistory, help,404,gate/unavailablegate,invalidsettings andmissingreplay. Type states coverbuilder,picker,roundchart,draft andsharedresults. Board states coverpopulated,empty andunavailableboards viafixed browserAPIfixtures. Before supportsource is the unchanged8D/8E support area; beforetype/board use the8Ecorrection build. After uses the final8Fcandidate. Final production captures are separate.
+32 viewport and 32 full-page captures at 390x844 and 1440x900, in both themes. This directory contains empty and seeded history, How to Play, 404, gate, unavailable gate, invalid settings and missing replay. The manifest records zero horizontal overflow.
+
+These area captures were taken against the preceding warm-theme builds, before the 8F changes. Support code was unchanged across the 8D/8E builds; type and board captures used the 8E correction build. The original manifests did not embed a build SHA, so their exact build identity is not independently established here. The whole-lane production baseline has its recorded identity in ../before/README.md.
+
+- [history-empty__390__light.webp](history-empty__390__light.webp)
+- [history__390__light.webp](history__390__light.webp)
+- [help__390__light.webp](help__390__light.webp)
+- [404__390__light.webp](404__390__light.webp)
+- [gate__390__light.webp](gate__390__light.webp)
+- [gate-unavailable__390__light.webp](gate-unavailable__390__light.webp)
+- [invalid__390__light.webp](invalid__390__light.webp)
+- [missing__390__light.webp](missing__390__light.webp)
+- [history-empty__390__dark.webp](history-empty__390__dark.webp)
+- [history__390__dark.webp](history__390__dark.webp)
+- [help__390__dark.webp](help__390__dark.webp)
+- [404__390__dark.webp](404__390__dark.webp)
+- [gate__390__dark.webp](gate__390__dark.webp)
+- [gate-unavailable__390__dark.webp](gate-unavailable__390__dark.webp)
+- [invalid__390__dark.webp](invalid__390__dark.webp)
+- [missing__390__dark.webp](missing__390__dark.webp)
+- [history-empty__1440__light.webp](history-empty__1440__light.webp)
+- [history__1440__light.webp](history__1440__light.webp)
+- [help__1440__light.webp](help__1440__light.webp)
+- [404__1440__light.webp](404__1440__light.webp)
+- [gate__1440__light.webp](gate__1440__light.webp)
+- [gate-unavailable__1440__light.webp](gate-unavailable__1440__light.webp)
+- [invalid__1440__light.webp](invalid__1440__light.webp)
+- [missing__1440__light.webp](missing__1440__light.webp)
+- [history-empty__1440__dark.webp](history-empty__1440__dark.webp)
+- [history__1440__dark.webp](history__1440__dark.webp)
+- [help__1440__dark.webp](help__1440__dark.webp)
+- [404__1440__dark.webp](404__1440__dark.webp)
+- [gate__1440__dark.webp](gate__1440__dark.webp)
+- [gate-unavailable__1440__dark.webp](gate-unavailable__1440__dark.webp)
+- [invalid__1440__dark.webp](invalid__1440__dark.webp)
+- [missing__1440__dark.webp](missing__1440__dark.webp)

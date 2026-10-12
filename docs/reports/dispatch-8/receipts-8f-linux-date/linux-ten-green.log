@@ -1,0 +1,15 @@
+
+Running 10 tests using 2 workers
+
+  ✓   2 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px dark (3.9s)
+  ✓   1 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px light (4.1s)
+  ✓   3 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px light (3.6s)
+  ✓   4 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px dark (3.5s)
+  ✓   5 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px light (3.7s)
+  ✓   6 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px dark (3.6s)
+  ✓   7 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px light (5.3s)
+  ✓   8 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px dark (5.3s)
+  ✓   9 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px light (5.3s)
+  ✓  10 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px dark (5.3s)
+
+  10 passed (22.3s)

@@ -265,7 +265,7 @@ Fullcurrent611-case browser suite560pass51skip, includingunchangedmobile/allform
 
 ### Async unit-test precondition
 
-The unchangedbuilderdragunitguard's firstcoldrestoreusesfindByRole's1sdefault,buttheengineisloadedwithimport(),anditsownpickerhelperalreadywaitsupto10s. Thisfailed locallyunderCPUcontention (733/1) andagain onPR31Ubuntu (733/1, unit100.87s), whileisolatedfull735passed16.87sandrealbrowserdrag/mobilesuitespassed. In8F, thetwocoldrestorepreconditionsnowusethesame10sboundasopenPicker, returningas soonas literalLCBBulbasaurappears. Drag/swap/duplicationassertionsandallmobileacceptancespecsremainunchanged. Thisisatest-readinesscorrection, noapplicationtimingorbehaviorchange. PR31'ssame-headCIrerunmuststillgreenbeforemerge.
+The unchangedbuilderdragunitguard's firstcoldrestoreusesfindByRole's1sdefault,buttheengineisloadedwithimport(),anditsownpickerhelperalreadywaitsupto10s. Thisfailed locallyunderCPUcontention (733/1) andagain onPR31Ubuntu (733/1, unit100.87s), whileisolatedfull735passed16.87sandrealbrowserdrag/mobilesuitespassed. In8F, nine readiness await sitesnowusethesame10sboundasopenPicker, returningas soonas literalLCBBulbasaurappears. Drag/swap/duplicationassertionsandallmobileacceptancespecsremainunchanged. Thisisatest-readinesscorrection, noapplicationtimingorbehaviorchange. PR31'ssame-headCIrerunmuststillgreenbeforemerge.
 
 ## PR 8F final candidate and the font-swap correction
 
@@ -276,3 +276,16 @@ Two additional production cold-board checks found tinyfontswap shifts0.00025763/
 The draft's eyebrow nowuses11/16/700/link; pageheadline uses the sourceclamp at600. Four additional type assertions were committedRED beforecorrection. A testvariable namedmodule violated the existingNext lint rule; renamedcard, literal560px guardunchanged.
 
 Final local gates:735unit/80files,623browsercases572pass51skip, allstatic/palette/image/mirror/bundle gates pass. Sourceengine/scouting/API/images remainunchanged. Figures186results/10board pertheme remainidentical. Before/after each contain68viewport+68fullpage captures (32support+20type+16board), bothsizes/themes, zerooverflow, plus1200x630card. Exact-headLinuxCI/GLMreview andproduction remainmandatorybefore thisarea is shipped. Finalreadback will be a separate documentationPR afterlive evidencearrives.
+
+
+## PR 8F Linux font correction
+
+Exact-head CI 38193051091 passed all 735 unit tests and static gates, but its browser job failed four delayed-font tests: 568 passed, 51 existing skips, four failures. Both themes and retry attempts exposed native date-input layout movement on Linux, despite the full local macOS suite passing. This is a real platform-specific regression, not an accepted timing failure. The prior GLM approval for fc070324 is superseded by this correction and a fresh review is required.
+
+The date input now reserves an explicit 44 px height. Its calendar indicator is anchored at top/right zero with border-box sizing. The Linux probe additionally exposed a caption wrapping from four to five lines and a one-pixel native year-field font shift. The caption now reserves responsive line space. The native input reserves its geometry and shows a neutral Loading date label until document.fonts.ready resolves, then exposes the same native field. Inter still uses swap; no font was added. Native date editing, routing, values, 16 px text and the 44 px picker target remain unchanged. Strict zero-entry assertions and all original mobile acceptance tests remain unchanged. Focused macOS cold-load and delayed-font checks pass: 10 cases. Linux verification and the fresh exact-head full CI/review are pending.
+
+The review's documentation findings are corrected here: nine builder readiness await sites use the existing 10-second bound, and tokens.md records the web figure cells. History and help descriptions already render in ModuleCard headers; the suggested hidden-description issue was checked and was not present.
+
+Linux focused verification passes all 12 cold-load, delayed-font and native editing cases. macOS focused verification passes 62 axe/contrast/CLS/native editing cases. The Date placeholder required explicit aria-labelledby to retain the original Date label; two guards were committed RED before that correction. Figure snapshots still match 186 results and 10 leaderboard numbers in both themes. A concurrent local unit run hit four timeouts (731 passed, four failed); its receipt is retained and an isolated full unit run is required before acceptance.
+
+The isolated local repeat also hit an unchanged replay-import five-second deadline. No test was weakened. The exact new-head GitHub check job must pass all 735 unit tests, and the full browser job must pass all 625 cases (574 passing plus 51 existing skips), before merge. The two native date guards increase the browser suite from 623 to 625 cases.
