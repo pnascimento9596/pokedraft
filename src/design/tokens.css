@@ -163,6 +163,10 @@ body { background: var(--canvas); color: var(--text-soft); font-family: Inter, s
   --radius: var(--radius-lg);
   --gutter: 16px;
   --shadow: var(--shadow-rest);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --ease-out: cubic-bezier(0.16, 0.74, 0.12, 1);
   --type-normal: #363126;
   --type-normal-ink: var(--type-normal);
   --type-fighting: #764257;

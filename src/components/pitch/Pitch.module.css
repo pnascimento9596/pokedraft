@@ -107,8 +107,8 @@
     0 0 0 2px var(--token-ring),
     var(--shadow-rest);
   transition:
-    box-shadow 120ms ease,
-    transform 120ms ease;
+    box-shadow var(--dur-1) ease,
+    transform var(--dur-1) var(--ease-out);
 }
 
 .token[data-filled="false"] .tokenImage {
@@ -131,6 +131,10 @@
 /* The player picked for a tap swap. */
 .token[aria-pressed="true"] .tokenImage {
   box-shadow: 0 0 0 3px var(--focus);
+}
+
+.token:not(:disabled, [aria-disabled="true"]):not([data-dragging]):not([data-drop]):active .tokenImage {
+  transform: scale(0.94);
 }
 
 .token[data-drop] .tokenImage {

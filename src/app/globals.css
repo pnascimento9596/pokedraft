@@ -15,6 +15,14 @@ body {
   overflow-x: hidden;
 }
 
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(a, button, summary, label, select, [role="button"]) {
+  touch-action: manipulation;
+}
+
 /* viewport-fit=cover (layout.tsx) lets the page run under a landscape notch and the home
    indicator, so the sides keep clear of them. */
 body {
@@ -110,13 +118,15 @@ select {
   text-decoration: none;
   cursor: pointer;
   transition:
-    background 120ms ease,
-    border-color 120ms ease,
-    transform 120ms ease;
+    background var(--dur-1) ease,
+    border-color var(--dur-1) ease,
+    transform var(--dur-1) ease;
 }
 
-.btn:hover:not(:disabled, [aria-disabled="true"]) {
-  border-color: var(--ink-soft);
+@media (hover: hover) {
+  .btn:hover:not(:disabled, [aria-disabled="true"]) {
+    border-color: var(--ink-soft);
+  }
 }
 
 .btn:active:not(:disabled, [aria-disabled="true"]) {
@@ -135,8 +145,10 @@ select {
   color: var(--flood-ink);
 }
 
-.btn--primary:hover:not(:disabled, [aria-disabled="true"]) {
-  border-color: var(--ink);
+@media (hover: hover) {
+  .btn--primary:hover:not(:disabled, [aria-disabled="true"]) {
+    border-color: var(--ink);
+  }
 }
 
 .btn--ghost {
@@ -165,6 +177,14 @@ select {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
+  transition:
+    background-color var(--dur-1) ease,
+    border-color var(--dur-1) ease,
+    transform var(--dur-1) var(--ease-out);
+}
+
+.chip:active:not(:disabled, [aria-disabled="true"]) {
+  transform: scale(0.96);
 }
 
 .chip[aria-pressed="true"],
@@ -303,8 +323,10 @@ body:has(.page-loading) > .site-footer {
   color: var(--ink-soft);
 }
 
-.site-header nav a:hover {
-  color: var(--ink);
+@media (hover: hover) {
+  .site-header nav a:hover {
+    color: var(--ink);
+  }
 }
 
 .page {
@@ -347,9 +369,14 @@ body:has(.page-loading) > .site-footer {
   display: none;
 }
 
-.image-settings summary:hover,
 .image-settings[open] summary {
   color: var(--ink);
+}
+
+@media (hover: hover) {
+  .image-settings summary:hover {
+    color: var(--ink);
+  }
 }
 
 .image-settings__panel {

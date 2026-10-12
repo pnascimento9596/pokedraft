@@ -2,15 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { readJson, writeJson } from "@/ui/storage";
+import { THEME_KEY, type Theme } from "@/ui/theme";
 
-type Theme = "system" | "light" | "dark";
 const NEXT: Readonly<Record<Theme, Theme>> = { system: "dark", dark: "light", light: "system" };
 const LABEL: Readonly<Record<Theme, string>> = {
   system: "Auto",
   dark: "Night",
   light: "Day",
 };
-const KEY = "pokedraft:theme";
 
 function apply(theme: Theme): void {
   if (theme === "system") document.documentElement.removeAttribute("data-theme");
@@ -21,7 +20,7 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>("system");
 
   useEffect(() => {
-    const saved = readJson<Theme>(KEY, "system");
+    const saved = readJson<Theme>(THEME_KEY, "system");
     const valid: Theme = saved in NEXT ? saved : "system";
     apply(valid);
     // eslint-disable-next-line react-hooks/set-state-in-effect -- sync from localStorage after hydration
@@ -36,7 +35,7 @@ export function ThemeToggle() {
       onClick={() => {
         const next = NEXT[theme];
         apply(next);
-        writeJson(KEY, next);
+        writeJson(THEME_KEY, next);
         setTheme(next);
       }}
     >

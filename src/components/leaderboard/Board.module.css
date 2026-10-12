@@ -28,11 +28,13 @@
   color: var(--text-soft);
   font-variant-numeric: tabular-nums;
 }
-.link:hover {
-  background: var(--surface-sunken);
-}
-.link:hover .nick {
-  text-decoration: underline;
+@media (hover: hover) {
+  .link:hover {
+    background: var(--surface-sunken);
+  }
+  .link:hover .nick {
+    text-decoration: underline;
+  }
 }
 .rank {
   font-weight: 600;
