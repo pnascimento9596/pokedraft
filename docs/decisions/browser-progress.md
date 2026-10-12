@@ -26,6 +26,8 @@ A WebKit browser run found a filled Builder lineup whose checkpoint remained abs
 
 The retained local evidence directory is `output/progress/`. Early browser harness attempts assumed two candidates for every random roll and omitted a base URL for a restarted context. Those assumptions were corrected; failure logs remain retained. A concurrent baseline and local run also collided in Playwright's default artifact directory; the accepted local run used a dedicated output directory and passed. The ordinary-run production guard was rerun after correction to prove the actual refresh regression.
 
+The first final-head Linux static/unit job passed 792 tests and failed one existing Start-focus assertion. It awaited the asynchronously loaded heading, then immediately read focus before React's passive focus effect ran. The test now awaits that same expected focus; no application focus behavior or assertion value changed. The corrected focused file passed all ten tests, and typecheck/scoped lint passed. The earlier review is superseded by the test correction; fresh head review and CI are required.
+
 ## Scope and rollback
 
 Engine actions, scoring, tokens, generated data, leaderboard persistence, and passcode policy retain their contracts. Rollback is a code revert; no database migration or cloud resource change is involved. The durable snapshots use the existing token decoder and require no schema migration.

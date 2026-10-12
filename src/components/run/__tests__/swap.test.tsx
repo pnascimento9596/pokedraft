@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 // Theme 7F: a swap without a drag (SA-02, SB-26, SC-10) and focus after screen swaps, picks and
 // rerolls (SC-11).
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayScreen } from "../PlayScreen";
 
@@ -172,7 +172,7 @@ describe("focus after the screen changes (SC-11)", () => {
     fireEvent.click(screen.getByTestId("run-start"));
     // Start loads the draft with import(), so the board and its focus move arrive a tick later.
     await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
-    expect(focused()).toBe("H1: Round 1 of 16");
+    await waitFor(() => expect(focused()).toBe("H1: Round 1 of 16"));
   });
 
   it("a Position First pick, whose player list goes away, moves focus to the round heading", async () => {

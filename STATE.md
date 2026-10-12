@@ -147,3 +147,8 @@ Separate browser profiles retain independent history, stats, preferences, and ac
 Builder now persists exact player edits synchronously before render and restores the lineup on plain home reopen. Explicit shared lineup links retain priority, and viewing or clearing another squad protects the unrelated owned checkpoint. Browser storage remains best effort; accounts and cross-device synchronization are outside this change. Engine/scoring/leaderboard contracts are unchanged.
 
 Failing unit guards preceded the fixes. Local lint, typecheck, production build, and 793 unit tests across 82 files pass. Twenty-five focused browser cases pass with one existing desktop touch-share skip; all six new progress guards pass in Chromium and iPhone-profile WebKit. They cover independent players, tab ownership, random refresh, browser restart, replay isolation, and Builder recovery. Exact-head review, full CI, merge, and production receipts belong to the correction PR. See `docs/decisions/browser-progress.md`.
+
+
+### Browser progress CI focus correction
+
+The initial final-head Linux unit job passed 792 tests and failed the existing async Start-focus assertion. That test now awaits its unchanged expected heading focus after the lazy screen loads; application focus behavior is unchanged. The corrected file passes all ten tests with scoped lint/typecheck green. Prior review is superseded; fresh exact-head review and CI are required.
