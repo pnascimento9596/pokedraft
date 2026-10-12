@@ -28,6 +28,10 @@ The retained local evidence directory is `output/progress/`. Early browser harne
 
 The first final-head Linux static/unit job passed 792 tests and failed one existing Start-focus assertion. It awaited the asynchronously loaded heading, then immediately read focus before React's passive focus effect ran. The test now awaits that same expected focus; no application focus behavior or assertion value changed. The corrected focused file passed all ten tests, and typecheck/scoped lint passed. The earlier review is superseded by the test correction; fresh head review and CI are required.
 
+The next full Linux browser run passed 602 cases, had one pass on retry and 51 existing skips, and failed New run heading focus on both attempts. Removing the explicit seed remounted Challenge after its old Start heading had received focus. The remount now focuses the replacement heading when its tab holds the cleared marker. A strengthened unit guard failed before this five-line runtime correction; all 47 focused run tests then passed. The browser guard now waits for the final seed-free URL before checking the same heading focus; the old built app failed that stronger guard.
+
+The WebKit retry was a bounded lazy-load deadline: its trace contains the exact restored Round 1 heading at 5,046 ms after the assertion began. Only that first restored-round assertion now uses the existing ten-second lazy-load budget. No initial-save or persistence rewrite was justified by this trace.
+
 ## Scope and rollback
 
 Engine actions, scoring, tokens, generated data, leaderboard persistence, and passcode policy retain their contracts. Rollback is a code revert; no database migration or cloud resource change is involved. The durable snapshots use the existing token decoder and require no schema migration.

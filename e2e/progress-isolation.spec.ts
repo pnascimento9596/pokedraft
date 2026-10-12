@@ -29,7 +29,9 @@ test("an ordinary random run keeps its first roll and progress on refresh", asyn
   await expect(candidates.first()).toBeVisible();
   const firstRoll = await candidates.allTextContents();
   await page.reload();
-  await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
+  await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16", {
+    timeout: 10_000,
+  });
   await expect(candidates).toHaveText(firstRoll);
   await pick(page, 1, 2);
   const before = await squad(page);

@@ -152,3 +152,8 @@ Failing unit guards preceded the fixes. Local lint, typecheck, production build,
 ### Browser progress CI focus correction
 
 The initial final-head Linux unit job passed 792 tests and failed the existing async Start-focus assertion. That test now awaits its unchanged expected heading focus after the lazy screen loads; application focus behavior is unchanged. The corrected file passes all ten tests with scoped lint/typecheck green. Prior review is superseded; fresh exact-head review and CI are required.
+
+
+### Browser progress route focus correction
+
+Full Linux browser CI found a real New run focus regression after explicit-seed removal remounted Challenge. The cleared-tab mount now focuses the replacement Start heading. The strengthened unit guard preceded the runtime fix and the 47-test run group passes. The browser guard awaits the final seed-free URL before asserting focus. WebKit's restored Round 1 appeared 5,046 ms after its five-second deadline; only that assertion now uses the existing ten-second lazy-load budget. The previous review is superseded; fresh exact-head review/CI remain required.

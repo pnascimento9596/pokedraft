@@ -74,6 +74,8 @@ test("Start run, See results and New run each move focus to the new screen's hea
   await page.getByRole("button", { name: "New run" }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByTestId("run-start")).toBeVisible();
+  await expect(page).not.toHaveURL(/(?:\?|&)seed=/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
   expect({ afterStart, afterResults, afterNewRun: await focused(page) }).toEqual({
     afterStart: "H1: Round 1 of 16",
     afterResults: "H1: 8-0 Challenge, Classic",
