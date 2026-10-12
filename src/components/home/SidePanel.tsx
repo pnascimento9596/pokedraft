@@ -92,7 +92,10 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
       setOpen(true);
     });
     const select = document.getElementById(formationId);
-    select?.scrollIntoView({ block: "center" });
+    if (select) {
+      const { top, bottom } = select.getBoundingClientRect();
+      if (top < 0 || bottom > window.innerHeight) select.scrollIntoView({ block: "center" });
+    }
     select?.focus({ preventScroll: true });
   };
 
