@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 // Theme 7F: a swap without a drag (SA-02, SB-26, SC-10) and focus after screen swaps, picks and
 // rerolls (SC-11).
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayScreen } from "../PlayScreen";
 
@@ -27,6 +27,7 @@ afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
   sessionStorage.clear();
+  localStorage.clear();
 });
 
 const SQUAD_FIRST = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
@@ -40,9 +41,10 @@ const header = () => screen.getByTestId("round-header").textContent;
 
 async function start(q: string) {
   query.current = q;
-  render(<PlayScreen />);
+  const view = render(<PlayScreen />);
   fireEvent.click(screen.getByTestId("run-start"));
   await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
+  return view;
 }
 
 // The first offered player into the first open slot, every round, as e2e/helpers.ts drafts.
@@ -171,7 +173,7 @@ describe("focus after the screen changes (SC-11)", () => {
     fireEvent.click(screen.getByTestId("run-start"));
     // Start loads the draft with import(), so the board and its focus move arrive a tick later.
     await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
-    expect(focused()).toBe("H1: Round 1 of 16");
+    await waitFor(() => expect(focused()).toBe("H1: Round 1 of 16"));
   });
 
   it("a Position First pick, whose player list goes away, moves focus to the round heading", async () => {
@@ -183,8 +185,8 @@ describe("focus after the screen changes (SC-11)", () => {
     expect(focused()).toBe("H1: Round 2 of 16");
   });
 
-  it("See results moves focus to the results heading, and New run to the start heading", async () => {
-    await start(SQUAD_FIRST);
+  it("New run keeps the start heading focused when removing a shared seed remounts the route", async () => {
+    const view = await start(SQUAD_FIRST);
     draftAll();
     screen.getByTestId("see-results").focus();
     fireEvent.click(screen.getByTestId("see-results"));
@@ -192,6 +194,9 @@ describe("focus after the screen changes (SC-11)", () => {
     const newRun = screen.getByRole("button", { name: "New run" });
     newRun.focus();
     fireEvent.click(newRun);
+    expect(focused()).toBe("H1: 8-0 Challenge");
+    query.current = SQUAD_FIRST.replace("&seed=run-test", "");
+    view.rerender(<PlayScreen />);
     expect(focused()).toBe("H1: 8-0 Challenge");
   });
 

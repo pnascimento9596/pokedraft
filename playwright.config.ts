@@ -42,6 +42,11 @@ export default defineConfig({
       testMatch: /wheel-results\.spec\.ts/,
     },
     {
+      name: "webkit-progress",
+      use: { ...devices["iPhone 14"] },
+      testMatch: /progress-isolation\.spec\.ts/,
+    },
+    {
       name: "iphone-14",
       use: { ...devices["iPhone 14"] },
       testMatch: /mobile-(acceptance|targets|draft)\.spec\.ts/,

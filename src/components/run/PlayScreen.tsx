@@ -10,8 +10,9 @@ import { unlockAudio } from "@/components/wheel/sound";
 import { focusHeading } from "@/ui/focus";
 import { GEN_REGION, MODE_LABEL, ORDER_LABEL, REGION_LABEL, STYLE_LABEL } from "@/ui/labels";
 import { freshSeed, parsePlayQuery } from "@/ui/settings";
-import { readSession, runSlotKey, writeSession } from "@/ui/storage";
+import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
+import type { Restored } from "./savedRun";
 import { RoadStrip } from "./RoadStrip";
 import { ModuleCard, StatusNote } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
@@ -57,11 +58,7 @@ export function PlayScreen() {
     );
   }
   return (
-    <Challenge
-      key={JSON.stringify(parsed.settings)}
-      settings={parsed.settings}
-      querySeed={parsed.seed}
-    />
+    <Challenge key={JSON.stringify(parsed)} settings={parsed.settings} querySeed={parsed.seed} />
   );
 }
 
@@ -105,7 +102,7 @@ export function Challenge({
   const [live, setLive] = useState<{
     readonly seed: string;
     readonly LiveRun: typeof LiveRun;
-    readonly restore: boolean;
+    readonly initial: Restored | null;
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -133,13 +130,24 @@ export function Challenge({
   const start = (restore = false) => {
     if (loading) return;
     unlockAudio();
-    const seed = fixedSeed ?? freshSeed();
+    const seed = fixedSeed ?? (restore ? null : freshSeed());
     setLoading(true);
     setLoadFailed(false);
     loadLiveRun().then(
       (mod) => {
         setLoading(false);
-        setLive({ seed, LiveRun: mod.LiveRun, restore });
+        const initial = restore
+          ? mod.restoreRun({ settings, seed: fixedSeed, daily: daily ?? null })
+          : null;
+        if (restore && initial === null) return;
+        const actualSeed =
+          initial === null
+            ? seed
+            : initial.kind === "draft"
+              ? initial.run.seed
+              : initial.draft.seed;
+        if (actualSeed === null) return;
+        setLive({ seed: actualSeed, LiveRun: mod.LiveRun, initial });
       },
       () => {
         setLoading(false);
@@ -149,15 +157,20 @@ export function Challenge({
   };
 
   // A reload, a discarded tab or Back then Forward mounts this screen again with nothing in React
-  // state. When the tab holds a saved run for these settings, the draft loads straight into it.
-  // The peek reads only the settings key, never the species data.
+  // state. The tab snapshot takes priority; a browser checkpoint also survives closing the site.
+  // The peek reads only the slot key, never the species data.
   useEffect(() => {
     const slot = {
       settings,
       seed: daily !== undefined ? dailySeed(daily) : querySeed,
       daily: daily ?? null,
     };
-    if (readSession(runSlotKey(slot)) === null) return;
+    const session = readSession(runSlotKey(slot));
+    if (session === RUN_CLEARED) {
+      focusHeading();
+      return;
+    }
+    if (session === null && readRunCheckpoint(slot) === null) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- auto-enter the saved run after hydration
     start(true);
     // Only on mount: later starts come from the Start button.
@@ -167,15 +180,6 @@ export function Challenge({
   const newRun = () => {
     setUseQuerySeed(false);
     setLive(null);
-    // The run on screen is gone, so a later mount must not bring it back.
-    writeSession(
-      runSlotKey({
-        settings,
-        seed: daily !== undefined ? dailySeed(daily) : querySeed,
-        daily: daily ?? null,
-      }),
-      null,
-    );
     if (params.has("seed")) {
       const q = new URLSearchParams(params.toString());
       q.delete("seed");
@@ -193,7 +197,7 @@ export function Challenge({
         seed={live.seed}
         daily={daily}
         title={title}
-        restore={live.restore}
+        initial={live.initial}
         onNewRun={newRun}
       />
     );

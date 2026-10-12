@@ -138,3 +138,22 @@ Independent review and CI receipts belong to the correction PR. Merge and produc
 Two full Linux attempts on `1892394` passed all Share cases but failed the existing natural wheel candidate deadline. First results were 589 pass, 51 skip, two pass on retry, one fail. The unchanged rerun was 586 pass, 51 skip, five pass on retry, one fail. A focused unchanged wheel run passed all 12 Chromium/WebKit cases. Traces show candidates appearing just after the five-second assertion, while the nominal spin/pause sequence alone is 4,380 ms. The browser test now awaits both settled wheel results before its unchanged candidate assertion at both rounds. This changes only the test protocol. The prior review receipt is superseded; fresh exact-head review and CI remain required.
 
 The corrected wheel wait and Share cases passed all 19 focused browser checks across Chromium and WebKit. Only two settlement waits were added to the existing browser test; the original candidate, result text, geometry, selection, and next-round assertions remain. No application source changed in this correction.
+
+
+## Browser progress and simultaneous players
+
+Separate browser profiles retain independent history, stats, preferences, and active runs. Run snapshots now preserve the original random seed and persist to both per-tab storage and a durable browser checkpoint. The tab owns its active run; reopening the site can recover the latest checkpoint per mode or Daily. New run clears only matching owned bytes and leaves a cleared tab marker. Existing tab-only saves migrate when no durable checkpoint exists. Settings, seed, date, and reconstructed token are validated behind the existing lazy run import.
+
+Builder now persists exact player edits synchronously before render and restores the lineup on plain home reopen. Explicit shared lineup links retain priority, and viewing or clearing another squad protects the unrelated owned checkpoint. Browser storage remains best effort; accounts and cross-device synchronization are outside this change. Engine/scoring/leaderboard contracts are unchanged.
+
+Failing unit guards preceded the fixes. Local lint, typecheck, production build, and 793 unit tests across 82 files pass. Twenty-five focused browser cases pass with one existing desktop touch-share skip; all six new progress guards pass in Chromium and iPhone-profile WebKit. They cover independent players, tab ownership, random refresh, browser restart, replay isolation, and Builder recovery. Exact-head review, full CI, merge, and production receipts belong to the correction PR. See `docs/decisions/browser-progress.md`.
+
+
+### Browser progress CI focus correction
+
+The initial final-head Linux unit job passed 792 tests and failed the existing async Start-focus assertion. That test now awaits its unchanged expected heading focus after the lazy screen loads; application focus behavior is unchanged. The corrected file passes all ten tests with scoped lint/typecheck green. Prior review is superseded; fresh exact-head review and CI are required.
+
+
+### Browser progress route focus correction
+
+Full Linux browser CI found a real New run focus regression after explicit-seed removal remounted Challenge. The cleared-tab mount now focuses the replacement Start heading. The strengthened unit guard preceded the runtime fix and the 47-test run group passes. The browser guard awaits the final seed-free URL before asserting focus. WebKit's restored Round 1 appeared 5,046 ms after its five-second deadline; only that assertion now uses the existing ten-second lazy-load budget. The previous review is superseded; fresh exact-head review/CI remain required.

@@ -21,7 +21,7 @@ export function writeJson(key: string, value: unknown): void {
   }
 }
 
-// Per-tab storage for state that should survive a reload or Back but not outlive the tab.
+// Per-tab storage keeps independent active runs from replacing each other's progress.
 export function readSession(key: string): string | null {
   try {
     if (typeof window === "undefined") return null;
@@ -48,8 +48,36 @@ export interface RunSlot {
   readonly daily: IsoDate | null;
 }
 
-// The tab keeps one saved run per mode (daily shares one). The key uses only the settings and
-// the date, so the start panel can peek for a saved run without the species data.
+export const RUN_CLEARED = "cleared";
+
 export function runSlotKey(slot: RunSlot): string {
   return `pokedraft.run.${slot.daily !== null ? "daily" : slot.settings.mode}`;
+}
+
+export function readRunCheckpoint(slot: RunSlot): string | null {
+  try {
+    if (typeof window === "undefined") return null;
+    return window.localStorage.getItem(runSlotKey(slot));
+  } catch {
+    return null;
+  }
+}
+
+export function writeRunCheckpoint(slot: RunSlot, value: string | null): void {
+  try {
+    if (typeof window === "undefined") return;
+    const key = runSlotKey(slot);
+    if (value === null) window.localStorage.removeItem(key);
+    else window.localStorage.setItem(key, value);
+  } catch {
+    // The tab can still persist its run when durable browser storage is unavailable.
+  }
+}
+
+export function forgetRunSnapshot(slot: RunSlot, snapshot?: string): void {
+  const key = runSlotKey(slot);
+  const own = snapshot ?? readSession(key);
+  // A different tab may have saved a newer browser checkpoint since this tab's last action.
+  if (own !== null && readRunCheckpoint(slot) === own) writeRunCheckpoint(slot, null);
+  writeSession(key, RUN_CLEARED);
 }
