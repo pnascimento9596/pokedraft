@@ -10,15 +10,15 @@ import {
   type DraftState,
   type Gen,
   type PokemonType,
-  type Role,
   type SlotRef,
   type Species,
   type SpeciesId,
 } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeChip } from "@/components/TypeChip";
-import { genLabel, qualityScore, typeLabel, versusLabel } from "@/ui/labels";
+import { genLabel, typeLabel } from "@/ui/labels";
 import { ALL_REFS, valueAt } from "@/ui/lineup";
+import { ratingFor } from "@/ui/rating";
 import { StatusNote } from "@/components/ui/primitives";
 import s from "./Picker.module.css";
 
@@ -137,19 +137,6 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
   const hiddenBySettings = matches.length === 0 && SPECIES.some(filter);
 
   const shown = matches.slice(0, PICKER_LIMIT);
-
-  // What a row shows with Show ratings on: where the player ranks for the slot's role among all
-  // Pokémon (0 to 100, the engine's quality), and the raw fit as the row's description. A bench
-  // slot has no role, so it rates the player at their best one.
-  const ratingOf = (sp: Species) => {
-    const rated: Role = role ?? sp.bestRoles[0]!;
-    return {
-      best: role === null ? rated : null,
-      score: qualityScore(sp.quality[rated]),
-      versus: versusLabel(rated),
-      raw: `Raw fit ${sp.fits[rated]} of 100 for ${role === null ? rated : slotLabel}`,
-    };
-  };
 
   return (
     <dialog
@@ -288,7 +275,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           {shown.map((sp) => {
             const at = onField.get(sp.id);
             const here = current === sp.id;
-            const rating = showRatings ? ratingOf(sp) : null;
+            const rating = showRatings ? ratingFor(sp, role, slotLabel) : null;
             return (
               <li key={sp.id}>
                 <button

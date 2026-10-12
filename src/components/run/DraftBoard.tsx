@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import {
   DRAFT_ROUNDS,
+  FORMATIONS,
   REROLLS,
   speciesById,
   type DraftAction,
@@ -13,6 +14,7 @@ import {
 } from "@/engine";
 import { announce } from "@/components/Announcer";
 import { Pitch } from "@/components/pitch/Pitch";
+import { RatingNote } from "@/components/pitch/RatingNote";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeChip } from "@/components/TypeChip";
 import { RollReveal } from "@/components/wheel/RollReveal";
@@ -22,6 +24,7 @@ import { unlockAudio } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { REGION_LABEL } from "@/ui/labels";
 import { sameRef, slotLabel, valueAt } from "@/ui/lineup";
+import { ratingFor, type Rating } from "@/ui/rating";
 import { swapMessage } from "@/ui/swap-message";
 import { RoadStrip } from "./RoadStrip";
 import { NavIcon } from "@/components/ui/nav-icons";
@@ -33,6 +36,7 @@ export interface DraftBoardProps {
   readonly navFamily?: "play" | "daily";
   readonly run: Run;
   readonly failure: string | null;
+  readonly showRatings: boolean;
   readonly onAction: (action: DraftAction) => void;
   readonly onRun: (run: Run) => void;
   readonly onNewRun: () => void;
@@ -95,6 +99,7 @@ export function DraftBoard({
   navFamily = "play",
   run,
   failure,
+  showRatings,
   onAction,
   onRun,
   onNewRun,
@@ -178,6 +183,22 @@ export function DraftBoard({
       : null;
   const pickedName = picked === null ? null : speciesById(valueAt(state.lineup, picked)!).name;
 
+  const slotRole = (ref: SlotRef) =>
+    ref.kind === "starter" ? FORMATIONS[settings.formation].slots[ref.index].role : null;
+  const rateOffer = (id: SpeciesId): Rating =>
+    committed === null
+      ? ratingFor(speciesById(id), null, "")
+      : ratingFor(speciesById(id), slotRole(committed), slotLabel(state.lineup, committed));
+  const tokenNote = (ref: SlotRef): ReactNode => {
+    const id = valueAt(state.lineup, ref);
+    if (id === null) return null;
+    return (
+      <RatingNote
+        rating={ratingFor(speciesById(id), slotRole(ref), slotLabel(state.lineup, ref))}
+      />
+    );
+  };
+
   const act = (action: DraftAction) => {
     focusBefore.current = document.activeElement;
     setSwapFrom(null);
@@ -230,7 +251,11 @@ export function DraftBoard({
   const message = failure ?? run.error ?? (pickedName === null ? null : swapPrompt(pickedName));
 
   return (
-    <div className={s.board} data-revealed={revealed || undefined}>
+    <div
+      className={s.board}
+      data-revealed={revealed || undefined}
+      data-rated={showRatings || undefined}
+    >
       <section className={s.side} aria-label="Draft">
         <header className={s.header}>
           <div className={s.titleRow}>
@@ -322,6 +347,7 @@ export function DraftBoard({
             big={roll?.kind === "species" || (roll?.kind === "combo" && roll.offers !== null)}
             selected={selected}
             committed={choosing?.slot !== null}
+            rate={showRatings ? rateOffer : null}
             onTap={tapCandidate}
           />
         ) : null}
@@ -341,6 +367,11 @@ export function DraftBoard({
         ) : null}
 
         <div className={s.footer}>
+          {showRatings ? (
+            <p className={s.legend} data-testid="ratings-legend">
+              Ratings are 0 to 100, vs other players in the same role.
+            </p>
+          ) : null}
           <button
             type="button"
             className="btn btn--ghost btn--sm"
@@ -366,6 +397,7 @@ export function DraftBoard({
           highlight={committed}
           selected={picked}
           label="Your formation"
+          tokenNote={showRatings ? tokenNote : undefined}
           fit
         />
       </section>
@@ -378,14 +410,17 @@ function Candidates({
   big,
   selected,
   committed,
+  rate,
   onTap,
 }: {
   readonly ids: readonly SpeciesId[];
   readonly big: boolean;
   readonly selected: SpeciesId | null;
   readonly committed: boolean;
+  readonly rate: ((id: SpeciesId) => Rating) | null;
   readonly onTap: (id: SpeciesId) => void;
 }) {
+  const rawFitId = useId();
   return (
     <div className={s.candidates} data-big={big || undefined}>
       <p className="kicker">
@@ -395,6 +430,7 @@ function Candidates({
       <ul className={big ? s.cards : s.rows}>
         {ids.map((id) => {
           const sp = speciesById(id);
+          const rating = rate === null ? null : rate(id);
           return (
             <li key={id}>
               <button
@@ -402,6 +438,8 @@ function Candidates({
                 className={big ? s.card : s.row}
                 data-testid={`candidate-${id}`}
                 aria-pressed={committed ? undefined : selected === id}
+                aria-describedby={rating !== null ? `${rawFitId}-${id}` : undefined}
+                data-rated={rating !== null || undefined}
                 onClick={() => onTap(id)}
               >
                 <PlayerImage dexId={id} size={big ? 72 : 40} alt={sp.name} />
@@ -412,7 +450,24 @@ function Candidates({
                     <TypeChip key={t} type={t} />
                   ))}
                 </span>
+                {rating !== null ? (
+                  <span className={s.candFit} data-testid={`fit-${id}`}>
+                    {rating.best !== null ? (
+                      <>
+                        <span className={s.candFitLabel}>Best: {rating.best}</span>{" "}
+                      </>
+                    ) : null}
+                    <span className="num">{rating.score}</span>{" "}
+                    <span className={s.candFitVs}>{rating.versus}</span>
+                  </span>
+                ) : null}
               </button>
+              {/* Outside the button, so the raw fit is a description and not part of its name. */}
+              {rating !== null ? (
+                <span id={`${rawFitId}-${id}`} className="visually-hidden">
+                  {rating.raw}
+                </span>
+              ) : null}
             </li>
           );
         })}

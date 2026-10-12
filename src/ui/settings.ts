@@ -17,6 +17,7 @@ export interface PanelSettings {
   readonly style: DraftStyle;
   readonly order: DraftOrder;
   readonly showRatings: boolean;
+  readonly showChallengeRatings: boolean;
 }
 
 export const DEFAULT_PANEL: PanelSettings = {
@@ -26,6 +27,7 @@ export const DEFAULT_PANEL: PanelSettings = {
   style: "open",
   order: "squadFirst",
   showRatings: false,
+  showChallengeRatings: false,
 };
 
 const PANEL_KEY = "pokedraft:panel";
@@ -45,6 +47,10 @@ function parsePanel(raw: unknown): PanelSettings {
     style: r.style === "classic3" || r.style === "open" ? r.style : DEFAULT_PANEL.style,
     order: r.order === "positionFirst" || r.order === "squadFirst" ? r.order : DEFAULT_PANEL.order,
     showRatings: typeof r.showRatings === "boolean" ? r.showRatings : DEFAULT_PANEL.showRatings,
+    showChallengeRatings:
+      typeof r.showChallengeRatings === "boolean"
+        ? r.showChallengeRatings
+        : DEFAULT_PANEL.showChallengeRatings,
   };
 }
 

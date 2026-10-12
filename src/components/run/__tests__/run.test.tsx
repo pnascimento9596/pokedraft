@@ -125,6 +125,100 @@ describe("challenge run screen", () => {
   });
 });
 
+const CUP8_SQUAD_FIRST = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
+
+function savePanelJson(panel: Record<string, unknown>): void {
+  localStorage.setItem("pokedraft:panel", JSON.stringify(panel));
+}
+
+const fitTexts = () => screen.queryAllByTestId(/^fit-/).map((el) => el.textContent);
+
+describe("Show ratings (challenges) on the draft screen", () => {
+  it("shows the best-role rating on an offered player and the legend when the setting is on (Dustox: Best FB, 51 vs other FBs, raw fit 57)", async () => {
+    savePanelJson({ showChallengeRatings: true });
+    query.current = CUP8_SQUAD_FIRST;
+    render(<PlayScreen />);
+    await start();
+    expect(screen.getByTestId("fit-269").textContent).toBe("Best: FB 51 vs other FBs");
+    expect(
+      screen.getByRole("button", { name: /Dustox/, description: "Raw fit 57 of 100 for FB" }),
+    ).toBeTruthy();
+    expect(screen.getByTestId("ratings-legend").textContent).toBe(
+      "Ratings are 0 to 100, vs other players in the same role.",
+    );
+  });
+
+  it("keeps the raw fit out of the button's own name, so the offered player is still announced by name only", async () => {
+    savePanelJson({ showChallengeRatings: true });
+    query.current = CUP8_SQUAD_FIRST;
+    render(<PlayScreen />);
+    await start();
+    expect(screen.getByTestId("candidate-269").textContent).not.toContain("Raw fit");
+  });
+
+  it("shows a placed player's rating on the pitch token (Gulpin at ST: 5 vs other strikers)", async () => {
+    savePanelJson({ showChallengeRatings: true });
+    query.current = CUP8_SQUAD_FIRST;
+    render(<PlayScreen />);
+    await start();
+    fireEvent.click(screen.getByTestId("candidate-316"));
+    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Gulpin 5 vs other strikers");
+  });
+
+  it("rates every offered player at the committed slot's role in Position First, with no Best label (ST: Roselia 52, Gulpin 5, Seviper 71)", async () => {
+    savePanelJson({ showChallengeRatings: true });
+    query.current = "mode=cup8&f=4-3-3&order=positionFirst&g=123456789&style=open&seed=run-test";
+    render(<PlayScreen />);
+    await start();
+    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    expect(fitTexts()).toEqual([
+      "24 vs other strikers",
+      "52 vs other strikers",
+      "5 vs other strikers",
+      "38 vs other strikers",
+      "71 vs other strikers",
+    ]);
+    expect(
+      screen.getByRole("button", { name: /Gulpin/, description: "Raw fit 27 of 100 for ST" }),
+    ).toBeTruthy();
+  });
+
+  it("rates a bench-slot offer at the player's best role in the 151 card layout (Magmar: Best ST 92)", async () => {
+    savePanelJson({ showChallengeRatings: true });
+    query.current = "mode=kanto151&f=4-3-3&order=positionFirst&seed=run-test";
+    render(<PlayScreen />);
+    await start();
+    fireEvent.click(screen.getByRole("button", { name: "Empty SUB 1 slot" }));
+    expect(fitTexts()).toEqual(["Best: ST 92 vs other strikers"]);
+    expect(
+      screen.getByRole("button", { name: /Magmar/, description: "Raw fit 85 of 100 for ST" }),
+    ).toBeTruthy();
+  });
+
+  it("shows nothing extra with the setting off: no rating, no legend, no token note", async () => {
+    query.current = CUP8_SQUAD_FIRST;
+    render(<PlayScreen />);
+    await start();
+    fireEvent.click(screen.getByTestId("candidate-316"));
+    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    expect(fitTexts()).toEqual([]);
+    expect(screen.queryByTestId("ratings-legend")).toBeNull();
+    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Gulpin");
+    expect(document.body.textContent).not.toMatch(/vs other/);
+  });
+
+  it("is not switched on by the builder's Show ratings alone", async () => {
+    savePanelJson({ showRatings: true });
+    query.current = CUP8_SQUAD_FIRST;
+    render(<PlayScreen />);
+    await start();
+    expect(fitTexts()).toEqual([]);
+    expect(screen.queryByTestId("ratings-legend")).toBeNull();
+    expect(screen.getByTestId("candidate-269").textContent).toBe("Dustox#269BugPoison");
+  });
+});
+
 describe("road to the final on the run screens", () => {
   const ratings = () => screen.queryAllByText(/, rating \d+$/).map((el) => el.textContent);
   const SHARED = "mode=kanto151&f=4-4-2&order=squadFirst&seed=golden-1";
