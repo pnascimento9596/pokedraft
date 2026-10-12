@@ -1,0 +1,82 @@
+[
+  {
+    "headRefOid": "2eda683327f9ff7cd08cdf05b7f7e1211497b2b0",
+    "mergeCommit": {
+      "oid": "56b9f754d88388223725ad2f3512f239b18fd229"
+    },
+    "mergedAt": "2026-10-11T10:01:06Z",
+    "number": 25,
+    "title": "feat: dispatch 8.0 health identity and clean production measurement",
+    "url": "https://github.com/pnascimento9596/pokedraft/pull/25"
+  },
+  {
+    "headRefOid": "89b390f0c4e1f7538c8166652d31cc05f91e6dbe",
+    "mergeCommit": {
+      "oid": "e8ce2d332824def968132287e07b8cbbe89b34c2"
+    },
+    "mergedAt": "2026-10-11T15:01:54Z",
+    "number": 26,
+    "title": "feat: dispatch 8A warm tokens Inter and accessible primitives",
+    "url": "https://github.com/pnascimento9596/pokedraft/pull/26"
+  },
+  {
+    "headRefOid": "249a6dd5151bbe52899600ade150f0ca50a2a970",
+    "mergeCommit": {
+      "oid": "6e7d34e6071f21c976f875a0cbb1b7303407054e"
+    },
+    "mergedAt": "2026-10-11T15:29:43Z",
+    "number": 27,
+    "title": "feat(theme): warm home and friendly builder modules (dispatch 8B)",
+    "url": "https://github.com/pnascimento9596/pokedraft/pull/27"
+  },
+  {
+    "headRefOid": "6568b065043fe42d0739676c09c35ed6036b9067",
+    "mergeCommit": {
+      "oid": "bac8beafd762397a638903ae3bcd3e469ae47478"
+    },
+    "mergedAt": "2026-10-11T20:05:59Z",
+    "number": 28,
+    "title": "feat(theme): warm draft and wheel, resolve short-field collisions",
+    "url": "https://github.com/pnascimento9596/pokedraft/pull/28"
+  },
+  {
+    "headRefOid": "e0c79031d063ee19c9cc84c17e94be0741699242",
+    "mergeCommit": {
+      "oid": "b3ab2c790007494e611918b13b3b5284832f6522"
+    },
+    "mergedAt": "2026-10-11T20:38:17Z",
+    "number": 29,
+    "title": "feat(theme): warm results and Inter share cards",
+    "url": "https://github.com/pnascimento9596/pokedraft/pull/29"
+  },
+  {
+    "headRefOid": "b47a8e3eaa80e9f68eafa4e66ad0d81f358833fa",
+    "mergeCommit": {
+      "oid": "f5e225626facc6a1d24fb8b0e5c9ee01e9821515"
+    },
+    "mergedAt": "2026-10-11T20:55:38Z",
+    "number": 30,
+    "title": "feat(theme): warm daily and leaderboard modules",
+    "url": "https://github.com/pnascimento9596/pokedraft/pull/30"
+  },
+  {
+    "headRefOid": "c8c4d58b66909e6e83c9725a8bf3f71970cc46b5",
+    "mergeCommit": {
+      "oid": "5199e56c10b14cca7e49b0229d86f37639047a75"
+    },
+    "mergedAt": "2026-10-11T21:27:06Z",
+    "number": 31,
+    "title": "fix(ui): keep leaderboard cold-load CLS at zero (8E)",
+    "url": "https://github.com/pnascimento9596/pokedraft/pull/31"
+  },
+  {
+    "headRefOid": "792c841146a3fcec7aa0304afb61810f57e24315",
+    "mergeCommit": {
+      "oid": "b6c9bb71f0f12ad56b37e5945c302712dc6388a7"
+    },
+    "mergedAt": "2026-10-12T02:34:47Z",
+    "number": 32,
+    "title": "feat(theme): finish warm pages and typography (8F)",
+    "url": "https://github.com/pnascimento9596/pokedraft/pull/32"
+  }
+]

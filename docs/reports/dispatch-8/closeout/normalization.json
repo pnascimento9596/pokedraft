@@ -1,0 +1,62 @@
+[
+  {
+    "file": "ci-check.log",
+    "source": "ci-8f-new-check.log",
+    "rawSha256": "999cef00fa6e6b98aa4f87a66667d093be5895c99a4421a7a02e9bad461870a6",
+    "normalizedSha256": "cac889159d7de5d09e8f12682b9920712b668f743512c7394709b86c83f185f4"
+  },
+  {
+    "file": "ci-browser.log",
+    "source": "ci-8f-new-browser.log",
+    "rawSha256": "00060f7c658f30e4d1bd35fb552cddc9265448930fbba1bbcb5074e77db73584",
+    "normalizedSha256": "0566432dc2a6ecf32d8662a361a2bd0e7848afcfa99701829d65a84df4ee664f"
+  },
+  {
+    "file": "live.log",
+    "source": "live-8f.log",
+    "rawSha256": "bb2e98ce44030dddabbab69aba9b572f264fd014f020d617c46760f7225155f9",
+    "normalizedSha256": "bb2e98ce44030dddabbab69aba9b572f264fd014f020d617c46760f7225155f9"
+  },
+  {
+    "file": "mobile.log",
+    "source": "mobile-8f.log",
+    "rawSha256": "07b699981a6c792a5aa710d3c8111439f2e798c71bae57c2d9710e247bc7aeee",
+    "normalizedSha256": "07b699981a6c792a5aa710d3c8111439f2e798c71bae57c2d9710e247bc7aeee"
+  },
+  {
+    "file": "production-ui.log",
+    "source": "ui-production-8f.log",
+    "rawSha256": "019dfae588daf0351276daaea424ab4544b094d7b8e2628e5124ed2e7672b507",
+    "normalizedSha256": "019dfae588daf0351276daaea424ab4544b094d7b8e2628e5124ed2e7672b507"
+  },
+  {
+    "file": "font-proof.log",
+    "source": "font-proof-final.log",
+    "rawSha256": "560fc736fbe826cdb4f71e33c9ef1d18780c3a9d6b6c81c5634921fee5eecfea",
+    "normalizedSha256": "560fc736fbe826cdb4f71e33c9ef1d18780c3a9d6b6c81c5634921fee5eecfea"
+  },
+  {
+    "file": "figures.log",
+    "source": "figures-production-final.log",
+    "rawSha256": "7ab949707c3c542532ef22d3ff89041e877a20b8a44bb5bdf9c9e51694e6865b",
+    "normalizedSha256": "7ab949707c3c542532ef22d3ff89041e877a20b8a44bb5bdf9c9e51694e6865b"
+  },
+  {
+    "file": "captures.log",
+    "source": "captures-production-final.log",
+    "rawSha256": "226cab2b0e045bdd09e46972b68bdd9dbe9dc233c093a87a5bbf43678951bd66",
+    "normalizedSha256": "226cab2b0e045bdd09e46972b68bdd9dbe9dc233c093a87a5bbf43678951bd66"
+  },
+  {
+    "file": "unit-isolated-failed.log",
+    "source": "unit-date-isolated.log",
+    "rawSha256": "7db9ab465375875175366e6c7b4e54ea3354987038fe546a750ace9a553cb1f4",
+    "normalizedSha256": "7db9ab465375875175366e6c7b4e54ea3354987038fe546a750ace9a553cb1f4"
+  },
+  {
+    "file": "unit-replay-isolated-green.log",
+    "source": "unit-replay-isolated.log",
+    "rawSha256": "75b0610661c936894dd621c71bb56dda03c4884690583b5865ce31797149091b",
+    "normalizedSha256": "75b0610661c936894dd621c71bb56dda03c4884690583b5865ce31797149091b"
+  }
+]

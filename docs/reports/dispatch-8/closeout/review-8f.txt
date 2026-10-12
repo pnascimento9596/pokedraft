@@ -1,0 +1,53 @@
+
+VERDICT: APPROVE
+CANARY-d3d45289b5c26d6cc9e89ff7
+WARNING docs/decisions/dispatch-8.md: the exact-head browser job of run 381
+38195371430 has no green receipt in this packet; the check job log (pull/32
+(pull/32/merge edc2a17, containing 792c841146a3fcec7aa0304afb61810f57e24315
+792c841146a3fcec7aa0304afb61810f57e24315) is verified green with 735 units,
+units, lint/type/build, mirrors/seam/packs/contrast/colors/CVD/bundle, and 
+byte-stable regenerated data, but the full 625-case browser job must pass o
+on this exact head before the pinned squash, and any later commit voids the
+these receipts.
+WARNING docs/reports/dispatch-8/receipts-8f-local/README.md: the final loca
+local suite is 623 cases (572 pass, 51 skip) and excludes the two new nativ
+native Date guards, so the dispatch's 625-case / 574-pass figure is asserte
+asserted but not evidenced anywhere yet; only the 12-case Linux and 62-case
+62-case macOS focused receipts prove those guards locally.
+WARNING docs/decisions/dispatch-8.md: post-merge obligations (cache-busted 
+health proving merge SHA/no-store, live 4, unchanged mobile and formations,
+formations, route screenshots, font HTML/network proof, figures, axe/contra
+axe/contrast/CLS, verify-bot cleanup 0, Ubuntu three-run Lighthouse over al
+all 8 routes with Accessibility100 and exact CLS0) remain open and are corr
+correctly not claimed finished here; the readback documentation PR must fol
+follow them.
+WARNING docs/reports/dispatch-8/before-8f-board/README.md: the before manif
+manifests embed no build SHA, so before/after provenance is asserted not pr
+proven; carry this honest caveat into the closeout rather than letting the 
+pairs be presented as identity-proven later.
+NIT src/components/run/DraftBoard.module.css: the newly added .round rule (
+(clamp 1.3rem/2vw/1.9rem, weight 600) has no caller in the visible DraftBoa
+DraftBoard.tsx diff; if it styles the existing round-header element keep it
+it, otherwise remove the dead CSS.
+NIT src/components/leaderboard/Board.module.css: the fixed 28/52/72px track
+tracks have no named guard for the widest real two-digit record; one two-di
+two-digit value in three segments is about 4.4em at 13px, close to the 52px
+52px track, so spot-check that row in the 50-row acceptance captures even t
+though overflow tests pass.
+NIT e2e/theme-type.spec.ts: thead th 13/18 is asserted only at 390; Results
+ResultsView.module.css applies the same size at desktop too, so the 1440 co
+column-header size is untested while the type-audit.json receipt happens to
+to cover it.
+NIT src/app/history/page.module.css: this and how-to-play/page.module.css b
+both render a quiet header description and then hide .module-card__body wit
+with display:none, producing invisible copy; drop the description prop or s
+show it visibly.
+NIT docs/reports/dispatch-8/figures-8f/leaderboard-light.json: the figures 
+readback uses the Misty/Brock 845/790 fixture while the readability and fon
+font guards use BOARD_ONE (983, 8-1-1); carried from the 8E NIT, so name th
+the producing fixture at the top of each figures file to keep one dataset p
+per claim.
+NIT STATE.md: the Linux-correction checkpoint still says isolated validatio
+validation is pending, but the isolated narrow repeat passed in 2.41s and t
+the 735 unit gate is now green in CI; sync this line with receipts-8f-linux
+receipts-8f-linux-date/README.md.

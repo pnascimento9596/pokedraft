@@ -111,3 +111,10 @@ PR25–31 are merged. PR31 exactreviewc8c4d58, squash5199e56, CI38175095402 gree
 ### Dispatch 8F Linux correction checkpoint
 
 PR #32 remains unmerged. First exact-head Linux browser CI 38193051091 found four delayed-font failures (568 passed, 51 existing skips); its static/unit job passed 735 tests. The prior fc070324 review is superseded. The native date field now reserves geometry and shows Loading date until fonts are ready; caption line space is reserved. No second font or original mobile assertion changed. Linux focused 12 and macOS focused 62 pass, native date editing is preserved, and 186/10 figure snapshots remain identical. New full CI and independent review are required. A local concurrent unit run timed out four unchanged tests; isolated validation is pending.
+
+
+## Dispatch 8 source acceptance complete
+
+PR25–32 are merged. Final theme merge b6c9bb71f0f12ad56b37e5945c302712dc6388a7, reviewed792c841146a3fcec7aa0304afb61810f57e24315, GLM high APPROVE/canary verified. CI38195371430:735unit/80files; browser573pass,1pass-on-retry,51existing skips,625total. Productionhealth/live4/mobile+formations286/50/UI71 pass, exact verify-bot cleanup0. Forty-four production viewport+full-page pairs are bound to the health SHA; all zero overflow/oneh1. Inter-only HTML/network proof and1200x630 card/OG pass; figures186/10 unchanged per theme.
+
+Final clean Ubuntu Lighthouse38246671783: all24 samples Accessibility100/exactCLS0,3run medians per8routes, matching baseline environment. Source before/after screenshots, contrast minima, type-color simulations and full metrics are in docs/reports/dispatch-8/readback.md and screenshots.md. The documentation closeout PR carries these receipts and still requires its own exact-head review/CI/merge/production sequence. The final response records that PR’s identity and post-merge result. Earlier pending checkpoints are historical and superseded by this section.

@@ -1,0 +1,122 @@
+[
+  {
+    "file": "daily-1.json",
+    "sha256": "9d900a0815c5acc8b124a38cb1874de5d39887415096dae22b0896bc30d7159a",
+    "bytes": 504548
+  },
+  {
+    "file": "daily-2.json",
+    "sha256": "d811482c6872fda57d135c688e0af4fb5b197f8abb968d3356fdedb983fc391c",
+    "bytes": 526304
+  },
+  {
+    "file": "daily-3.json",
+    "sha256": "e0ff43d4a834ede0dbb903f5345227003e6f536fff72024bd2ce8950dce04555",
+    "bytes": 526171
+  },
+  {
+    "file": "history-1.json",
+    "sha256": "d43a3f1b8bf6243793e7a2872108d84fbf030ae45c83b86245eb8efc9f67ee24",
+    "bytes": 395480
+  },
+  {
+    "file": "history-2.json",
+    "sha256": "63aa8d6b2b8208ca527989d99f16b46da21eadf5d1467a9b4a11bea20f9186e3",
+    "bytes": 456686
+  },
+  {
+    "file": "history-3.json",
+    "sha256": "e6fb65acd4f812526321ae347c75ce144e5a5460ad18e231673a74e8c81c26a4",
+    "bytes": 456988
+  },
+  {
+    "file": "home-1.json",
+    "sha256": "9655817d3d5e19e2c3bfcc514b8e0835ca7065ae91346f1eec97e05621fb5b3b",
+    "bytes": 363008
+  },
+  {
+    "file": "home-2.json",
+    "sha256": "3dd6ee46f0f6c7ab42768fda98deb3f6c58103a39610aeacee6b9a26c61068d2",
+    "bytes": 501826
+  },
+  {
+    "file": "home-3.json",
+    "sha256": "95c5aa07221914ce0bcdc683159c25a65a74a65586a109307908fafc031939ff",
+    "bytes": 502013
+  },
+  {
+    "file": "how-to-play-1.json",
+    "sha256": "8bc96679388fdc72e6af271683e3a381474cdb1fb43b091c06b105c21acfb840",
+    "bytes": 563706
+  },
+  {
+    "file": "how-to-play-2.json",
+    "sha256": "09380af1a8e067571a280fe464479d005054f768b63df913df5ce6789f49a8b0",
+    "bytes": 656210
+  },
+  {
+    "file": "how-to-play-3.json",
+    "sha256": "73cd6a051da6e2a6503ebd5a0a39935fb6cc84cd930fd762e8b1cf56fd069bd6",
+    "bytes": 655165
+  },
+  {
+    "file": "leaderboard-1.json",
+    "sha256": "c257713c6d4ba6265c27e566590230ceef55030b480019f59bc9f2d98c45b511",
+    "bytes": 409766
+  },
+  {
+    "file": "leaderboard-2.json",
+    "sha256": "5168fb333b2ebf419d54e9bb7ef08726d2f7dd9b99bdbe6af8f82e4188766244",
+    "bytes": 440082
+  },
+  {
+    "file": "leaderboard-3.json",
+    "sha256": "b5db0ce04e119ddf49526d13f29c9a594579aeb230610e1973d3692d29b7ccb9",
+    "bytes": 452963
+  },
+  {
+    "file": "play-1.json",
+    "sha256": "ae37275e2aa60b591f996546874b0bc2e850142465e3bd927b74c27343bc4de5",
+    "bytes": 367145
+  },
+  {
+    "file": "play-2.json",
+    "sha256": "72009dd75153093d03bfe87bdce99ac9e9057d4513268a15ceb57ff8272699fa",
+    "bytes": 367403
+  },
+  {
+    "file": "play-3.json",
+    "sha256": "b64b3accd639f9789a672a8565f22e898296334c5568637c02b611ae237679fd",
+    "bytes": 368068
+  },
+  {
+    "file": "play-kanto151-1.json",
+    "sha256": "c2215fd20729ecce953ea3938617c61de891983b2b29ee8865d9f2721f60e549",
+    "bytes": 472341
+  },
+  {
+    "file": "play-kanto151-2.json",
+    "sha256": "2363046b3d6b50900389ff4dfa3be09e6f7788134c79fb1df9d38d2578ef360a",
+    "bytes": 471859
+  },
+  {
+    "file": "play-kanto151-3.json",
+    "sha256": "ca6d9be6e1d8325fa545bc8e5b0a3ccb2f4f64e7d457c0813ba1f285dd3b770b",
+    "bytes": 472697
+  },
+  {
+    "file": "run-1.json",
+    "sha256": "4594d7617d4e76a46a75e422e0609186c1f75b608a3dabcc238ce5bcaf2b719d",
+    "bytes": 666378
+  },
+  {
+    "file": "run-2.json",
+    "sha256": "e4d4d543d238bd20f7f45d3231a2be01fcdf99904e76707836feeaeae016a048",
+    "bytes": 616762
+  },
+  {
+    "file": "run-3.json",
+    "sha256": "e554b6b1e1cec29ed7a525f3ba510d81dea559c2ade47145fb5756e917d9887e",
+    "bytes": 666128
+  }
+]

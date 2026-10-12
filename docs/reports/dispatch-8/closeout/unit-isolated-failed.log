@@ -1,0 +1,33 @@
+$ vitest run --maxWorkers=4
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate
+
+ ❯ src/app/r/[token]/__tests__/replay-count.test.ts (2 tests | 1 failed) 6770ms
+   ❯ /r/[token] replay count (catches the dispatch 3 page that replayed a token three times per view) (2)
+     × replays once for the page and its metadata in one request 5060ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/r/[token]/__tests__/replay-count.test.ts > /r/[token] replay count (catches the dispatch 3 page that replayed a token three times per view) > replays once for the page and its metadata in one request
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/app/r/[token]/__tests__/replay-count.test.ts:52:3
+     50|
+     51| describe("/r/[token] replay count (catches the dispatch 3 page that re…
+     52|   it("replays once for the page and its metadata in one request", asyn…
+       |   ^
+     53|     const page = await import("../page");
+     54|     const meta = await page.generateMetadata({ params } as never);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 79 passed (80)
+      Tests  1 failed | 734 passed (735)
+   Start at  22:18:36
+   Duration  82.13s (tests 67%, import 15%, environment 11%, transform 7%)
+
+    Isolate  80 workers spawned · ~581ms startup each (spawn + environment, per file)
+             at least ~11.03s faster with isolate: false — reuses workers across files instead of one per file
+
+[ELIFECYCLE] Test failed. See above for more details.
