@@ -77,7 +77,6 @@ describe("browser checkpoints with per-tab authority", () => {
     sessionStorage.setItem(KEY, CHECKPOINT);
     localStorage.setItem(KEY, CHECKPOINT);
     forgetRun(SLOT);
-    expect(sessionStorage.getItem(KEY)).toBeNull();
     expect(localStorage.getItem(KEY)).toBeNull();
     expect(restoreRun(SLOT)).toBeNull();
   });
@@ -86,8 +85,13 @@ describe("browser checkpoints with per-tab authority", () => {
     sessionStorage.setItem(KEY, CHECKPOINT);
     localStorage.setItem(KEY, OTHER_CHECKPOINT);
     forgetRun(SLOT);
-    expect(sessionStorage.getItem(KEY)).toBeNull();
     expect(localStorage.getItem(KEY)).toBe(OTHER_CHECKPOINT);
+    expect(restoreRun(SLOT)).toBeNull();
+    sessionStorage.clear();
+    const reopened = restoreRun(SLOT);
+    expect(reopened?.kind).toBe("draft");
+    if (reopened?.kind !== "draft") throw new Error("draft not restored");
+    expect(runToken(reopened.run)).toBe(OTHER);
   });
 
   it("ignores malformed browser checkpoints without crashing", () => {
@@ -114,6 +118,6 @@ describe("browser checkpoints with per-tab authority", () => {
     if (restored?.kind !== "draft") throw new Error("draft not restored");
     expect(runToken(restored.run)).toBe(PICKED);
     forgetRun(SLOT);
-    expect(sessionStorage.getItem(KEY)).toBeNull();
+    expect(restoreRun(SLOT)).toBeNull();
   });
 });

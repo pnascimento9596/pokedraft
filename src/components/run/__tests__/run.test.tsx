@@ -234,6 +234,22 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
     expect(freshSeed).toHaveBeenCalledTimes(1);
   });
 
+  it("saves a new unseeded run before its first pick and keeps its seed after reopening", async () => {
+    query.current = RUN_TEST.replace("&seed=run-test", "");
+    fresh.seed = "run-test";
+    render(<PlayScreen />);
+    await start();
+    expect(localStorage.getItem("pokedraft.run.cup8")).not.toBeNull();
+    cleanup();
+    sessionStorage.clear();
+    fresh.seed = "other-seed";
+    render(<PlayScreen />);
+    await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 1 of 16");
+    expect(screen.getByTestId("candidate-316").textContent).toBe("Gulpin#316Poison");
+    expect(freshSeed).toHaveBeenCalledTimes(1);
+  });
+
   it("recovers the exact token and squad after the tab closes and only browser storage remains", async () => {
     query.current = RUN_TEST;
     render(<PlayScreen />);
@@ -274,6 +290,7 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
 
     reload(<PlayScreen />);
 
+    await act(async () => {});
     expect(screen.getByTestId("run-start")).toBeTruthy();
   });
 
@@ -285,6 +302,7 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
     query.current = RUN_TEST.replace("seed=run-test", "seed=other-seed");
     reload(<PlayScreen />);
 
+    await act(async () => {});
     expect(screen.getByTestId("run-start")).toBeTruthy();
   });
 
@@ -307,7 +325,27 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
 
     reload(daily("2026-10-11"));
+    await act(async () => {});
     expect(screen.getByTestId("run-start")).toBeTruthy();
+  });
+
+  it("forgets its own browser checkpoint after New run even when tab storage is blocked", async () => {
+    vi.spyOn(window, "sessionStorage", "get").mockImplementation(() => {
+      throw new DOMException("blocked", "SecurityError");
+    });
+    try {
+      query.current = RUN_TEST;
+      render(<PlayScreen />);
+      await pickGulpinAtStriker();
+      expect(localStorage.getItem("pokedraft.run.cup8")).not.toBeNull();
+      fireEvent.click(screen.getByTestId("new-run"));
+      expect(localStorage.getItem("pokedraft.run.cup8")).toBeNull();
+      reload(<PlayScreen />);
+      await act(async () => {});
+      expect(screen.getByTestId("run-start")).toBeTruthy();
+    } finally {
+      vi.restoreAllMocks();
+    }
   });
 
   it("still plays when the browser refuses storage (private windows, blocked site data)", async () => {
