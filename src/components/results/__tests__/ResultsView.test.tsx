@@ -176,7 +176,7 @@ describe("ResultsView", () => {
     expect(loadHistory()).toEqual([]);
   });
 
-  it("copies the /r/ link on Share and says so, and offers Play your own instead of New run when shared", async () => {
+  it("copies a query-format /r/ link so message apps keep the payload, and offers Play your own instead of New run when shared", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
     view(ELIMINATED);
@@ -184,7 +184,7 @@ describe("ResultsView", () => {
     expect(screen.getByRole("link", { name: "Play your own" }).getAttribute("href")).toBe("/");
     fireEvent.click(screen.getByRole("button", { name: "Share" }));
     expect(await screen.findByText("Link copied")).toBeTruthy();
-    expect(writeText.mock.calls).toEqual([[`${location.origin}/r/${ELIMINATED}`]]);
+    expect(writeText.mock.calls).toEqual([[`${location.origin}/r/pd1?t=${ELIMINATED.slice(4)}`]]);
   });
 
   it("renders the submit slot on a live run and never on a shared view", () => {

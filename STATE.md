@@ -124,3 +124,17 @@ Final clean Ubuntu Lighthouse38246671783: all24 samples Accessibility100/exactCL
 The region/type wheel windows no longer inherit the animation strip's transform or blur after settlement. Spinning and settled reels have distinct DOM keys. Draft state, timing, engine rolls, and generated data are unchanged. The failing component guards were committed before the fix.
 
 Local validation passed lint, typecheck, production build, and 739 unit tests across 80 files. Twelve browser cases passed in Chromium and WebKit at 390 and 1440 px, covering natural completion, mid-spin skip, reduced motion, candidate selection, and the next round. Exact-head review and CI receipts belong to the correction PR. Merge and post-deploy verification are NOT RUN until deployment is authorized. See `docs/decisions/wheel-results.md`.
+
+## Share link transport correction
+
+Share copies `/r/pdN?t=<payload>` so Apple's native link detector preserves the complete run payload. The proxy reconstructs the existing canonical token and rewrites to the result route after passcode checks. Complete legacy path links, current and retained engine replay, previews, image downloads, and scoring retain their contracts. Production requests to a truncated `/r/pd3` returned HTTP 404, matching the player's reported link.
+
+The regression commit preceded the fix and failed six checks. Local validation passed lint, typecheck, production build, and 762 unit tests across 81 files. Fifteen focused browser cases passed for Share/replay, draft orders, retained links, gate preview metadata, and invalid-link status. Chromium and iPhone-profile WebKit both restored the observed `1-1-1`, Team Score `283` run. Apple's native detector recognized all 434 characters of the corrected copied link, versus 39 of 432 for the original. A test selector was scoped to the results status after the separate capture harness exposed the global announcer.
+
+Independent review and CI receipts belong to the correction PR. Merge and production verification are NOT RUN until deployment is authorized. Physical iPhone messaging applications are NOT RUN. The shortened `/r/pd3` alone has no seed or action payload to recover. See `docs/decisions/share-links.md`.
+
+### Share correction browser gate
+
+Two full Linux attempts on `1892394` passed all Share cases but failed the existing natural wheel candidate deadline. First results were 589 pass, 51 skip, two pass on retry, one fail. The unchanged rerun was 586 pass, 51 skip, five pass on retry, one fail. A focused unchanged wheel run passed all 12 Chromium/WebKit cases. Traces show candidates appearing just after the five-second assertion, while the nominal spin/pause sequence alone is 4,380 ms. The browser test now awaits both settled wheel results before its unchanged candidate assertion at both rounds. This changes only the test protocol. The prior review receipt is superseded; fresh exact-head review and CI remain required.
+
+The corrected wheel wait and Share cases passed all 19 focused browser checks across Chromium and WebKit. Only two settlement waits were added to the existing browser test; the original candidate, result text, geometry, selection, and next-round assertions remain. No application source changed in this correction.

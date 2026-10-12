@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { prerender } from "react-dom/static";
-import GatePage from "../page";
+import GatePage, { generateMetadata } from "../page";
+import { A11Y_RUN_V1, GOLDEN_CUP8_V2 } from "@/engine/versions/__tests__/fixtures";
 
 // GateForm is an async server component, so the page is rendered the way the server renders it.
 async function renderGate(error?: string): Promise<string> {
@@ -32,5 +33,41 @@ describe("gate page error copy (catches a silent or unannounced unlock failure)"
     expect(alerts(html)).toEqual([]);
     expect(html).toContain('<form class="form" action="/gate/unlock" method="post">');
     expect(html).toContain('<input type="hidden" name="next" value="/daily"/>');
+  });
+});
+
+const CURRENT_RUN =
+  "pd3.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwiMDE0OGVhNzFlMWFjNTFlMyIsW1sicCIsNzQ5LCJzMCJdLFsicCIsNjMsInMxIl0sWyJwIiw5NDQsInMyIl0sWyJwIiwyNywiczMiXSxbInAiLDgyMSwiczQiXSxbInAiLDY1NiwiczUiXSxbInAiLDIwMCwiczYiXSxbInAiLDUyNCwiczciXSxbInAiLDI2OSwiczgiXSxbInAiLDQzMywiczkiXSxbInAiLDU0MywiczEwIl0sWyJwIiw5NDgsImIwIl0sWyJwIiw1MjksImIxIl0sWyJwIiw4MzQsImIyIl0sWyJwIiwzOTMsImIzIl0sWyJwIiwyNSwiYjQiXV1d";
+
+describe("gated share metadata (catches query links losing their title and card)", () => {
+  it.each([
+    [CURRENT_RUN, "pokedraft run: 1-1-1, Team Score 283"],
+    [A11Y_RUN_V1, "pokedraft run: 8-0-0, Team Score 845"],
+    [GOLDEN_CUP8_V2, "pokedraft run: 3-0-2, Team Score 593"],
+  ])("replays a query-format link through its own engine", async (token, title) => {
+    const [version, payload] = token.split(".");
+    const meta = await generateMetadata({
+      params: Promise.resolve({}),
+      searchParams: Promise.resolve({ next: `/r/${version}?t=${payload}` }),
+    });
+    const image = `/r/${token}/opengraph-image`;
+    expect(meta).toEqual({
+      title,
+      openGraph: { title, images: [{ url: image, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", title, images: [image] },
+    });
+  });
+
+  it("keeps legacy dot links previewable", async () => {
+    const meta = await generateMetadata({
+      params: Promise.resolve({}),
+      searchParams: Promise.resolve({ next: `/r/${A11Y_RUN_V1}` }),
+    });
+    expect(meta.title).toBe("pokedraft run: 8-0-0, Team Score 845");
+    expect(meta.twitter).toEqual({
+      card: "summary_large_image",
+      title: "pokedraft run: 8-0-0, Team Score 845",
+      images: [`/r/${A11Y_RUN_V1}/opengraph-image`],
+    });
   });
 });

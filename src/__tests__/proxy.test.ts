@@ -5,7 +5,7 @@ import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
 import { config, proxy } from "../proxy";
 import { scriptedToken } from "../leaderboard/server/__tests__/fixtures";
 import { RUN_TOKEN_VERSION } from "../engine";
-import { A11Y_RUN_V1 } from "../engine/versions/__tests__/fixtures";
+import { A11Y_RUN_V1, GOLDEN_CUP8_V2 } from "../engine/versions/__tests__/fixtures";
 
 function req(path: string, cookie?: string): NextRequest {
   const headers = cookie ? { cookie: `${PASSCODE_COOKIE}=${cookie}` } : undefined;
@@ -118,6 +118,58 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     const res = proxy(req(`/r/${A11Y_RUN_V1}`));
     expect(res.headers.get("x-middleware-rewrite")).toBeNull();
     expect(res.headers.get("x-middleware-next")).toBe("1");
+  });
+
+  it("restores the payload from a message-safe query link before rendering the canonical run", () => {
+    vi.stubEnv("FRIENDS_PASSCODE", "");
+    const real = scriptedToken(
+      { mode: "kanto151", formation: "4-4-2", order: "squadFirst" },
+      "proxy-seed",
+    );
+    const res = proxy(req(`/r/pd3?t=${real.slice(4)}`));
+    expect(res.headers.get("x-middleware-rewrite")).toBe(`https://pokedraft.test/r/${real}`);
+    expect(
+      proxy(req(`/r/pd3?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
+        "x-middleware-rewrite",
+      ),
+    ).toBe(`https://pokedraft.test/r/${real}?_rsc=123&source=chat`);
+    for (const token of [A11Y_RUN_V1, GOLDEN_CUP8_V2]) {
+      const [version, payload] = token.split(".");
+      expect(proxy(req(`/r/${version}?t=${payload}`)).headers.get("x-middleware-rewrite")).toBe(
+        `https://pokedraft.test/r/${token}`,
+      );
+    }
+  });
+
+  it("keeps missing, malformed and unsupported query payloads on the real 404 route", () => {
+    vi.stubEnv("FRIENDS_PASSCODE", "");
+    for (const path of [
+      "/r/pd3",
+      "/r/pd3?t=",
+      "/r/pd3?t=%%%",
+      "/r/pd3?t=e30",
+      "/r/pd99?t=abc",
+      "/r/pd0?t=abc",
+      "/r/pd1?t=abc/def",
+      "/r/pd2?t=abc.def",
+      "/r/pd3?t=abc&t=def",
+    ]) {
+      expect(proxy(req(path)).headers.get("x-middleware-rewrite")).toBe(
+        "https://pokedraft.test/run-not-found",
+      );
+    }
+  });
+
+  it("gates the complete query link before rewriting and lets an unlocked player replay it", () => {
+    vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
+    const path = `/r/pd1?t=${A11Y_RUN_V1.slice(4)}`;
+    const res = proxy(req(path));
+    expect(res.status).toBe(307);
+    expect(new URL(res.headers.get("location")!).searchParams.get("next")).toBe(path);
+    expect(res.headers.get("x-middleware-rewrite")).toBeNull();
+    expect(proxy(req(path, passcodeDigest("pikachu"))).headers.get("x-middleware-rewrite")).toBe(
+      `https://pokedraft.test/r/${A11Y_RUN_V1}`,
+    );
   });
 
   it("only follows same-site relative next paths", () => {

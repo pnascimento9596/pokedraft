@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { decodeToken } from "./engine";
 import { RETAINED_TOKEN_VERSIONS } from "./engine/versions/label";
 import { PASSCODE_COOKIE, cookieMatches, isPublicPath } from "./passcode";
+import { runTokenFromUrl } from "./ui/run-link";
 
 const SHARE_PATH = /^\/r\/([^/]+)$/;
 
@@ -9,11 +10,9 @@ const SHARE_PATH = /^\/r\/([^/]+)$/;
 // before the body starts. Tokens that decode but fail the replay keep the friendly 200 page.
 // Links from an older engine go through: only that engine's retained bundle can decode them,
 // and the page replays them there.
-function brokenShareLink(pathname: string): boolean {
-  const m = SHARE_PATH.exec(pathname);
-  if (m === null) return false;
+function brokenShareLink(token: string | null): boolean {
+  if (token === null) return true;
   try {
-    const token = decodeURIComponent(m[1]!);
     const version = Number(/^pd(\d+)\./.exec(token)?.[1]);
     if (RETAINED_TOKEN_VERSIONS.includes(version)) return false;
     decodeToken(token);
@@ -24,9 +23,18 @@ function brokenShareLink(pathname: string): boolean {
 }
 
 function pass(request: NextRequest): NextResponse {
-  return brokenShareLink(request.nextUrl.pathname)
-    ? NextResponse.rewrite(new URL("/run-not-found", request.url))
-    : NextResponse.next();
+  if (!SHARE_PATH.test(request.nextUrl.pathname)) return NextResponse.next();
+  const token = runTokenFromUrl(request.nextUrl);
+  if (brokenShareLink(token)) {
+    return NextResponse.rewrite(new URL("/run-not-found", request.url));
+  }
+  if (/^\/r\/pd\d+$/.test(request.nextUrl.pathname)) {
+    const canonical = request.nextUrl.clone();
+    canonical.pathname = `/r/${token}`;
+    canonical.searchParams.delete("t");
+    return NextResponse.rewrite(canonical);
+  }
+  return NextResponse.next();
 }
 
 export function proxy(request: NextRequest): NextResponse {

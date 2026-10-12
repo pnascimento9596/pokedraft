@@ -42,6 +42,7 @@ for (const width of [390, 1440]) {
             .toMatch(/-[1-9]/);
           await page.getByRole("button", { name: "Tap to skip" }).click();
         }
+        await expect(page.getByTestId("wheel-result")).toHaveCount(2, { timeout: 10_000 });
         await expect(page.locator('[data-testid^="candidate-"]').first()).toBeVisible();
         await expect(page.getByTestId("wheel-result")).toHaveText(["Johto", "Fire"]);
         await expectResultsInWindows(page);
@@ -56,6 +57,7 @@ for (const width of [390, 1440]) {
           .first()
           .click();
         await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
+        await expect(page.getByTestId("wheel-result")).toHaveCount(2, { timeout: 10_000 });
         await expect(page.locator('[data-testid^="candidate-"]').first()).toBeVisible();
         await expectResultsInWindows(page);
       });
