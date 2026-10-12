@@ -45,4 +45,3 @@ AssertionError: expected { G1: 'G1', G2: 'G2', G3: 'G3', …(5) } to deeply equa
       Tests  1 failed | 4 passed (5)
    Start at  17:06:33
    Duration  84ms (transform 53%, import 21%, tests 19%, worker 7%)
-

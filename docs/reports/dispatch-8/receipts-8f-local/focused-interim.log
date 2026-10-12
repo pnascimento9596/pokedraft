@@ -132,7 +132,7 @@ Running 117 tests using 4 workers
   ✓  117 [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /missing-theme-page 1440 dark (581ms)
 
 
-  1) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light 
+  1) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light
 
     TypeError: Cannot read properties of null (reading 'height')
 
@@ -155,7 +155,7 @@ Running 117 tests using 4 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  2) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark 
+  2) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark
 
     Error: expect(locator).toHaveClass(expected) failed
 
@@ -189,7 +189,7 @@ Running 117 tests using 4 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  3) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light 
+  3) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light
 
     Error: expect(locator).toHaveClass(expected) failed
 
@@ -223,7 +223,7 @@ Running 117 tests using 4 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  4) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark 
+  4) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark
 
     TypeError: Cannot read properties of null (reading 'height')
 
@@ -247,8 +247,8 @@ Running 117 tests using 4 workers
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   4 failed
-    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light 
-    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark 
-    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light 
-    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark
   113 passed (41.1s)

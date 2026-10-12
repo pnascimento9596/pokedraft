@@ -15,7 +15,7 @@ Running 4 tests using 2 workers
   ✘  4 [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token dark (510ms)
 
 
-  1) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page light 
+  1) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page light
 
     Error: expect(received).toBeLessThanOrEqual(expected)
 
@@ -41,7 +41,7 @@ Running 4 tests using 2 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  2) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token light 
+  2) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token light
 
     Error: expect(received).toBeLessThanOrEqual(expected)
 
@@ -67,7 +67,7 @@ Running 4 tests using 2 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  3) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page dark 
+  3) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page dark
 
     Error: expect(received).toBeLessThanOrEqual(expected)
 
@@ -93,7 +93,7 @@ Running 4 tests using 2 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  4) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token dark 
+  4) [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token dark
 
     Error: expect(received).toBeLessThanOrEqual(expected)
 
@@ -120,7 +120,7 @@ Running 4 tests using 2 workers
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   4 failed
-    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page light 
-    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token light 
-    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page dark 
-    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token dark 
+    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page light
+    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token light
+    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /missing-theme-page dark
+    [chromium] › e2e/theme-missing-width.spec.ts:4:9 › short missing-data module stays within 560px /r/garbage-not-a-token dark

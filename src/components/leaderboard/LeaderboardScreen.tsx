@@ -25,6 +25,12 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
     router.replace(boardHref({ ...view, ...next }), { scroll: false });
   };
 
+  const caption = `${
+    view.scope === "daily"
+      ? `Daily ${MODE_LABEL.cup8} for ${longDate(view.date)}${view.date === today ? " (today)" : ""}.`
+      : `${MODE_LABEL[view.mode]}, all-time. Every draft setting shares this board, and each row names its settings.`
+  } Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top ${BOARD_LIMIT}.`;
+
   return (
     <ModuleCard
       className={s.screen}
@@ -77,13 +83,7 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
           </label>
         ) : null}
       </div>
-      <p className={s.caption}>
-        {view.scope === "daily"
-          ? `Daily ${MODE_LABEL.cup8} for ${longDate(view.date)}${view.date === today ? " (today)" : ""}.`
-          : `${MODE_LABEL[view.mode]}, all-time. Every draft setting shares this board, and each row names its settings.`}{" "}
-        Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top{" "}
-        {BOARD_LIMIT}.
-      </p>
+      <p className={s.caption}>{caption}</p>
       <Board view={view} />
     </ModuleCard>
   );

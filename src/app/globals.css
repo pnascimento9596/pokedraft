@@ -266,10 +266,6 @@ body:has(.page-loading) > .site-footer {
   text-decoration: none;
 }
 
-.site-header__brand span {
-  color: var(--flood-text);
-}
-
 .site-header nav {
   display: flex;
   flex-wrap: wrap;

@@ -636,7 +636,7 @@ Running 595 tests using 4 workers
   ✓  594 [pixel-7] › e2e/mobile-targets.spec.ts:160:1 › phone targets: gate (735ms)
 
 
-  1) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light 
+  1) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light
 
     TypeError: Cannot read properties of null (reading 'height')
 
@@ -659,7 +659,7 @@ Running 595 tests using 4 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  2) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark 
+  2) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark
 
     TypeError: Cannot read properties of null (reading 'height')
 
@@ -682,7 +682,7 @@ Running 595 tests using 4 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  3) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light 
+  3) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light
 
     TypeError: Cannot read properties of null (reading 'height')
 
@@ -705,7 +705,7 @@ Running 595 tests using 4 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  4) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark 
+  4) [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark
 
     TypeError: Cannot read properties of null (reading 'height')
 
@@ -729,9 +729,9 @@ Running 595 tests using 4 workers
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   4 failed
-    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light 
-    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark 
-    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light 
-    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark 
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 light
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 390 dark
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 light
+    [chromium] › e2e/theme-support.spec.ts:12:11 › support modules and neutral unavailable state /gate?error=unavailable 1440 dark
   51 skipped
   540 passed (3.8m)

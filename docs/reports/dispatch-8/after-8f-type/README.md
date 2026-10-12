@@ -1,3 +1,3 @@
-# Mobile type completion: after
+# After screenshots: 8f-type
 
-20viewport and20fullpage screenshots: filledbuilder, picker, cupstart/chart, draft, seededsharedresults. Bothwidths/themes, zerooverflow. Before uses the8E/leaderboard-correction build withunchangedtype/stylesin theseareas. After uses8F. ROUND_SHORT nowuseshumanreadablelabels; everydisplayednumber unchanged. Final chart18pxvalue line andrebasedhead are recaptured before review.
+20 viewport and20 fullpage captures at390x844 and1440x900, inlight/dark. Themanifest recordszerooverflow. Support states coverempty/seededhistory, help,404,gate/unavailablegate,invalidsettings andmissingreplay. Type states coverbuilder,picker,roundchart,draft andsharedresults. Board states coverpopulated,empty andunavailableboards viafixed browserAPIfixtures. Before supportsource is the unchanged8D/8E support area; beforetype/board use the8Ecorrection build. After uses the final8Fcandidate. Final production captures are separate.

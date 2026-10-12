@@ -15,6 +15,19 @@ const ERROR_COPY: Readonly<Record<Extract<BoardResult, { kind: "error" }>["reaso
   unexpected: "The leaderboard sent a reply we could not read.",
 };
 
+function Figure({ value }: { readonly value: string | number }) {
+  const text = String(value);
+  return (
+    <bdi className={s.figure} role="group" aria-label={text}>
+      {[...text].map((character, index) => (
+        <span key={index} className={character === "-" ? s.separator : s.digit} aria-hidden="true">
+          {character}
+        </span>
+      ))}
+    </bdi>
+  );
+}
+
 export function Board({ view }: { readonly view: BoardView }) {
   const [attempt, setAttempt] = useState(0);
   const key = `${view.mode}|${view.scope}|${view.scope === "daily" ? view.date : ""}|${attempt}`;
@@ -111,11 +124,15 @@ export function Board({ view }: { readonly view: BoardView }) {
             </span>
             <span className={s.recordCol}>
               <span className={s.label}>W-D-L</span>
-              <span className={s.record}>{record(e.wins, e.draws, e.losses)}</span>
+              <span className={s.record}>
+                <Figure value={record(e.wins, e.draws, e.losses)} />
+              </span>
             </span>
             <span className={s.scoreCol}>
               <span className={s.label}>Team Score</span>
-              <span className={s.score}>{e.teamScore}</span>
+              <span className={s.score}>
+                <Figure value={e.teamScore} />
+              </span>
             </span>
           </Link>
         </li>

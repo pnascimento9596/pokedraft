@@ -1,3 +1,3 @@
-# Support pages: before
+# Before screenshots: 8f
 
-32viewport and32fullpage screenshots: empty/seededhistory, help, 404, gate, unavailablegate, invalidsettings andmissingreplay. 390x844/1440x900, light/dark. Before uses the8Dproduction build, whose supportsource remains unchanged in8E. After uses the8Fcandidate. Manifest recordszerooverflow. CardPNGis1200x630 withidenticalmodel/figures.
+32 viewport and32 fullpage captures at390x844 and1440x900, inlight/dark. Themanifest recordszerooverflow. Support states coverempty/seededhistory, help,404,gate/unavailablegate,invalidsettings andmissingreplay. Type states coverbuilder,picker,roundchart,draft andsharedresults. Board states coverpopulated,empty andunavailableboards viafixed browserAPIfixtures. Before supportsource is the unchanged8D/8E support area; beforetype/board use the8Ecorrection build. After uses the final8Fcandidate. Final production captures are separate.

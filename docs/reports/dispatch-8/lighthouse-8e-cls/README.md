@@ -1,0 +1,3 @@
+# Leaderboard footer correction: production measurement
+
+[GitHub Ubuntu run 38176506885](https://github.com/pnascimento9596/pokedraft/actions/runs/38176506885) against merge5199e56c10b14cca7e49b0229d86f37639047a75. Three mobile runs per route in the same pinned workflow environment as baseline. Every individual sample has Accessibility100 and exactCLS0. This closes the0.0116 footer regression from38174354317. An additional delayed-font fixture exposed smaller geometry shifts in the split brand/native date/record columns;8F corrects those separately. This intermediate receipt is not the final whole-theme measurement.

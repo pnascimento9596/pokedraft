@@ -5,8 +5,8 @@ for (const theme of ["light", "dark"] as const)
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.emulateMedia({ colorScheme: theme });
       await page.goto(route);
-      const module = page.locator(".module-card").first();
-      await expect(module).toBeVisible();
-      expect((await module.boundingBox())!.width).toBeLessThanOrEqual(560);
+      const card = page.locator(".module-card").first();
+      await expect(card).toBeVisible();
+      expect((await card.boundingBox())!.width).toBeLessThanOrEqual(560);
     });
   }

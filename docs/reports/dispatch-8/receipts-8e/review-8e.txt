@@ -33,20 +33,20 @@ sentence and the exact unavailable reason (good), but asserting "Rank unava
 unavailableYour rank could not be loaded right now." couples the test to St
 StatusNote's title/body adjacency with no separator, which breaks on any ti
 title rewording or render change; assert the two parts separately.
-NIT e2e/theme-board.spec.ts: the literal score 983 comes from BOARD_ONE in 
+NIT e2e/theme-board.spec.ts: the literal score 983 comes from BOARD_ONE in
 mobile/scenes, while the retained figure readbacks (figures-8e/leaderboard-
 (figures-8e/leaderboard-*.json) show a different fixture (845/790 rows), so
 so the 10-figure numbers gate and the readability guards exercise different
-different board rows; a one-line comment naming the fixture would keep the 
+different board rows; a one-line comment naming the fixture would keep the
 receipt trail from being skimmed as one dataset.
 NIT src/components/leaderboard/SubmitPanel.module.css: `.unavailable` hand-
 hand-rolls the sunken neutral recipe (surface-sunken background, border-str
 border-strong, muted text) instead of reusing the status-note family used b
-by the board error/empty and rank-unavailable notes; two styling paths for 
+by the board error/empty and rank-unavailable notes; two styling paths for
 the same honest-unavailable look invites drift.
 NIT scripts/audit/theme-figures.mjs: the figures gate still compares number
 numbers and named fields only and never diffs the retained full-text readba
-readbacks (carried from the 8D review NIT); a loose text check would catch 
+readbacks (carried from the 8D review NIT); a loose text check would catch
 accidental copy loss in future presentation PRs.
 NIT docs/reports/dispatch-8/after-8e/README.md: fine as-is, but note the da
 daily start captures are byte-identical between before-8e and after-8e (sam

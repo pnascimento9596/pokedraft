@@ -17,7 +17,7 @@
 }
 .link {
   display: grid;
-  grid-template-columns: 2.4ch minmax(0, 1fr) auto auto;
+  grid-template-columns: 28px minmax(0, 1fr) 52px 72px;
   align-items: center;
   gap: 8px;
   padding: 10px 4px;
@@ -60,9 +60,11 @@
 .scoreCol {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: stretch;
+  text-align: right;
 }
 .label {
+  text-align: left;
   color: var(--text-faint);
   white-space: nowrap;
 }
@@ -91,4 +93,18 @@
   .score {
     font-size: 12px;
   }
+}
+
+.figure {
+  display: inline-block;
+  white-space: nowrap;
+}
+.digit,
+.separator {
+  display: inline-block;
+  width: 0.7em;
+  text-align: left;
+}
+.separator {
+  width: 0.46em;
 }

@@ -1,0 +1,180 @@
+
+Running 4 tests using 2 workers
+
+(node:67154) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67155) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px dark (1.8s)
+  ✘  1 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px light (1.8s)
+(node:67257) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67256) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px dark (1.8s)
+  ✘  4 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px light (1.8s)
+
+
+  1) [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px light
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 12
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "nodes": Array [
+    +       " ",
+    +       "<span>draft</span>",
+    +       "native input field",
+    +       "<span class=\"d8h8bG_recordCol\"><span class=\"d8h8bG_label\">W-D-L</span><span class=\"d8h8bG_record\">8-1-1</span></span>",
+    +       "native input field",
+    +     ],
+    +     "value": 0.0003817958316990545,
+    +   },
+    + ]
+
+      46 |                 .__fontShifts,
+      47 |           ),
+    > 48 |         ).toEqual([]);
+         |           ^
+      49 |       }
+      50 |     });
+      51 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/leaderboard-font-cls.spec.ts:48:11
+
+    Error Context: output/dispatch-8/font-cls-red/leaderboard-font-cls-late--f3c30-d-figures-fixed-360px-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/font-cls-red/leaderboard-font-cls-late--f3c30-d-figures-fixed-360px-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/font-cls-red/leaderboard-font-cls-late--f3c30-d-figures-fixed-360px-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px dark
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 12
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "nodes": Array [
+    +       " ",
+    +       "<span>draft</span>",
+    +       "native input field",
+    +       "<span class=\"d8h8bG_recordCol\"><span class=\"d8h8bG_label\">W-D-L</span><span class=\"d8h8bG_record\">8-1-1</span></span>",
+    +       "native input field",
+    +     ],
+    +     "value": 0.0003817958316990545,
+    +   },
+    + ]
+
+      46 |                 .__fontShifts,
+      47 |           ),
+    > 48 |         ).toEqual([]);
+         |           ^
+      49 |       }
+      50 |     });
+      51 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/leaderboard-font-cls.spec.ts:48:11
+
+    Error Context: output/dispatch-8/font-cls-red/leaderboard-font-cls-late--22325-nd-figures-fixed-360px-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/font-cls-red/leaderboard-font-cls-late--22325-nd-figures-fixed-360px-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/font-cls-red/leaderboard-font-cls-late--22325-nd-figures-fixed-360px-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px light
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 11
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "nodes": Array [
+    +       "<span>draft</span>",
+    +       "native input field",
+    +       "<span class=\"d8h8bG_recordCol\"><span class=\"d8h8bG_label\">W-D-L</span><span class=\"d8h8bG_record\">8-1-1</span></span>",
+    +       "native input field",
+    +     ],
+    +     "value": 0.000192433838529689,
+    +   },
+    + ]
+
+      46 |                 .__fontShifts,
+      47 |           ),
+    > 48 |         ).toEqual([]);
+         |           ^
+      49 |       }
+      50 |     });
+      51 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/leaderboard-font-cls.spec.ts:48:11
+
+    Error Context: output/dispatch-8/font-cls-red/leaderboard-font-cls-late--dfcab-d-figures-fixed-412px-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/font-cls-red/leaderboard-font-cls-late--dfcab-d-figures-fixed-412px-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/font-cls-red/leaderboard-font-cls-late--dfcab-d-figures-fixed-412px-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px dark
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 11
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "nodes": Array [
+    +       "<span>draft</span>",
+    +       "native input field",
+    +       "<span class=\"d8h8bG_recordCol\"><span class=\"d8h8bG_label\">W-D-L</span><span class=\"d8h8bG_record\">8-1-1</span></span>",
+    +       "native input field",
+    +     ],
+    +     "value": 0.000192433838529689,
+    +   },
+    + ]
+
+      46 |                 .__fontShifts,
+      47 |           ),
+    > 48 |         ).toEqual([]);
+         |           ^
+      49 |       }
+      50 |     });
+      51 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/leaderboard-font-cls.spec.ts:48:11
+
+    Error Context: output/dispatch-8/font-cls-red/leaderboard-font-cls-late--4ce3a-nd-figures-fixed-412px-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/font-cls-red/leaderboard-font-cls-late--4ce3a-nd-figures-fixed-412px-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/font-cls-red/leaderboard-font-cls-late--4ce3a-nd-figures-fixed-412px-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px light
+    [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px dark
+    [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px light
+    [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px dark

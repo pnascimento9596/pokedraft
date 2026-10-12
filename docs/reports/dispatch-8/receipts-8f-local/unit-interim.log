@@ -12,336 +12,336 @@ $ vitest run --maxWorkers=4
 TestingLibraryElementError: Unable to find role="button" and name "LCB Bulbasaur"
 
 Ignored nodes: comments, script, style
-[36m<body>[39m
-  [36m<div>[39m
-    [36m<div[39m
-      [33mclass[39m=[32m"home"[39m
-    [36m>[39m
-      [36m<aside[39m
-        [33maria-label[39m=[32m"Control desk"[39m
-        [33mclass[39m=[32m"panel"[39m
-      [36m>[39m
-        [36m<section[39m
-          [33maria-labelledby[39m=[32m"_r_2_"[39m
-          [33mclass[39m=[32m"module-card module-card--default "[39m
-        [36m>[39m
-          [36m<header[39m
-            [33mclass[39m=[32m"module-card__header"[39m
-          [36m>[39m
-            [36m<div[39m
-              [33mclass[39m=[32m"module-card__heading"[39m
-            [36m>[39m
-              [36m<span[39m
-                [33maria-hidden[39m=[32m"true"[39m
-                [33mclass[39m=[32m"icon-tile"[39m
-                [33mstyle[39m=[32m"--icon-color: var(--viz-1);"[39m
-              [36m>[39m
-                [36m<svg[39m
-                  [33maria-hidden[39m=[32m"true"[39m
-                  [33mclass[39m=[32m"lucide lucide-gamepad-2"[39m
-                  [33mfill[39m=[32m"none"[39m
-                  [33mheight[39m=[32m"14"[39m
-                  [33mstroke[39m=[32m"currentColor"[39m
-                  [33mstroke-linecap[39m=[32m"round"[39m
-                  [33mstroke-linejoin[39m=[32m"round"[39m
-                  [33mstroke-width[39m=[32m"2"[39m
-                  [33mviewBox[39m=[32m"0 0 24 24"[39m
-                  [33mwidth[39m=[32m"14"[39m
-                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
-                [36m>[39m
-                  [36m<line[39m
-                    [33mx1[39m=[32m"6"[39m
-                    [33mx2[39m=[32m"10"[39m
-                    [33my1[39m=[32m"11"[39m
-                    [33my2[39m=[32m"11"[39m
-                  [36m/>[39m
-                  [36m<line[39m
-                    [33mx1[39m=[32m"8"[39m
-                    [33mx2[39m=[32m"8"[39m
-                    [33my1[39m=[32m"9"[39m
-                    [33my2[39m=[32m"13"[39m
-                  [36m/>[39m
-                  [36m<line[39m
-                    [33mx1[39m=[32m"15"[39m
-                    [33mx2[39m=[32m"15.01"[39m
-                    [33my1[39m=[32m"12"[39m
-                    [33my2[39m=[32m"12"[39m
-                  [36m/>[39m
-                  [36m<line[39m
-                    [33mx1[39m=[32m"18"[39m
-                    [33mx2[39m=[32m"18.01"[39m
-                    [33my1[39m=[32m"10"[39m
-                    [33my2[39m=[32m"10"[39m
-                  [36m/>[39m
-                  [36m<path[39m
-                    [33md[39m=[32m"M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"[39m
-                  [36m/>[39m
-                [36m</svg>[39m
-              [36m</span>[39m
-              [36m<div>[39m
-                [36m<p[39m
-                  [33mclass[39m=[32m"eyebrow"[39m
-                [36m>[39m
-                  [0mChallenges[0m
-                [36m</p>[39m
-                [36m<h2[39m
-                  [33mclass[39m=[32m"module-title"[39m
-                  [33mid[39m=[32m"_r_2_"[39m
-                [36m>[39m
-                  [0mPlay[0m
-                [36m</h2>[39m
-                [36m<p[39m
-                  [33mclass[39m=[32m"module-description"[39m
-                [36m>[39m
-                  [0mChoose a cup and draft your squad.[0m
-                [36m</p>[39m
-              [36m</div>[39m
-            [36m</div>[39m
-          [36m</header>[39m
-          [36m<div[39m
-            [33mclass[39m=[32m"module-card__body"[39m
-          [36m>[39m
-            [36m<div[39m
-              [33mclass[39m=[32m"section"[39m
-            [36m>[39m
-              [36m<div[39m
-                [33mclass[39m=[32m"ctas"[39m
-              [36m>[39m
-                [36m<a[39m
-                  [33mclass[39m=[32m"btn btn--primary cta"[39m
-                  [33mhref[39m=[32m"/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open"[39m
-                [36m>[39m
-                  [0mPlay 8-0 Challenge[0m
-                [36m</a>[39m
-                [36m<a[39m
-                  [33mclass[39m=[32m"btn btn--primary cta"[39m
-                  [33mhref[39m=[32m"/play?mode=kanto151&f=4-3-3&order=squadFirst"[39m
-                [36m>[39m
-                  [0mPlay 151 Challenge[0m
-                [36m</a>[39m
-              [36m</div>[39m
-              [36m<p[39m
-                [33mclass[39m=[32m"hint"[39m
-              [36m>[39m
-                [0mChallenge runs keep ratings hidden.[0m
-              [36m</p>[39m
-              [36m<button[39m
-                [33maria-controls[39m=[32m"_r_1_"[39m
-                [33maria-expanded[39m=[32m"false"[39m
-                [33mclass[39m=[32m"btn btn--ghost btn--sm moreToggle"[39m
-                [33mtype[39m=[32m"button"[39m
-              [36m>[39m
-                [0mSettings and records[0m
-              [36m</button>[39m
-            [36m</div>[39m
-          [36m</div>[39m
-        [36m</section>[39m
-        [36m<div[39m
-          [33mclass[39m=[32m"more"[39m
-          [33mdata-open[39m=[32m"false"[39m
-          [33mid[39m=[32m"_r_1_"[39m
-        [36m>[39m
-          [36m<section[39m
-            [33maria-labelledby[39m=[32m"_r_3_"[39m
-            [33mclass[39m=[32m"module-card module-card--default "[39m
-          [36m>[39m
-            [36m<header[39m
-              [33mclass[39m=[32m"module-card__header"[39m
-            [36m>[39m
-              [36m<div[39m
-                [33mclass[39m=[32m"module-card__heading"[39m
-              [36m>[39m
-                [36m<div>[39m
-                  [36m<p[39m
-                    [33mclass[39m=[32m"eyebrow"[39m
-                  [36m>[39m
-                    [0mYour game[0m
-                  [36m</p>[39m
-                  [36m<h2[39m
-                    [33mclass[39m=[32m"module-title"[39m
-                    [33mid[39m=[32m"_r_3_"[39m
-                  [36m>[39m
-                    [0mSettings and records[0m
-                  [36m</h2>[39m
-                  [36m<p[39m
-                    [33mclass[39m=[32m"module-description"[39m
-                  [36m>[39m
-                    [0mSet up the builder and check your saved results.[0m
-                  [36m</p>[39m
-                [36m</div>[39m
-              [36m</div>[39m
-            [36m</header>[39m
-            [36m<div[39m
-              [33mclass[39m=[32m"module-card__body"[39m
-            [36m>[39m
-              [36m<section[39m
-                [33mclass[39m=[32m"secti...
+<body>
+  <div>
+    <div
+      class="home"
+    >
+      <aside
+        aria-label="Control desk"
+        class="panel"
+      >
+        <section
+          aria-labelledby="_r_2_"
+          class="module-card module-card--default "
+        >
+          <header
+            class="module-card__header"
+          >
+            <div
+              class="module-card__heading"
+            >
+              <span
+                aria-hidden="true"
+                class="icon-tile"
+                style="--icon-color: var(--viz-1);"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-gamepad-2"
+                  fill="none"
+                  height="14"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="14"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <line
+                    x1="6"
+                    x2="10"
+                    y1="11"
+                    y2="11"
+                  />
+                  <line
+                    x1="8"
+                    x2="8"
+                    y1="9"
+                    y2="13"
+                  />
+                  <line
+                    x1="15"
+                    x2="15.01"
+                    y1="12"
+                    y2="12"
+                  />
+                  <line
+                    x1="18"
+                    x2="18.01"
+                    y1="10"
+                    y2="10"
+                  />
+                  <path
+                    d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"
+                  />
+                </svg>
+              </span>
+              <div>
+                <p
+                  class="eyebrow"
+                >
+                  Challenges
+                </p>
+                <h2
+                  class="module-title"
+                  id="_r_2_"
+                >
+                  Play
+                </h2>
+                <p
+                  class="module-description"
+                >
+                  Choose a cup and draft your squad.
+                </p>
+              </div>
+            </div>
+          </header>
+          <div
+            class="module-card__body"
+          >
+            <div
+              class="section"
+            >
+              <div
+                class="ctas"
+              >
+                <a
+                  class="btn btn--primary cta"
+                  href="/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open"
+                >
+                  Play 8-0 Challenge
+                </a>
+                <a
+                  class="btn btn--primary cta"
+                  href="/play?mode=kanto151&f=4-3-3&order=squadFirst"
+                >
+                  Play 151 Challenge
+                </a>
+              </div>
+              <p
+                class="hint"
+              >
+                Challenge runs keep ratings hidden.
+              </p>
+              <button
+                aria-controls="_r_1_"
+                aria-expanded="false"
+                class="btn btn--ghost btn--sm moreToggle"
+                type="button"
+              >
+                Settings and records
+              </button>
+            </div>
+          </div>
+        </section>
+        <div
+          class="more"
+          data-open="false"
+          id="_r_1_"
+        >
+          <section
+            aria-labelledby="_r_3_"
+            class="module-card module-card--default "
+          >
+            <header
+              class="module-card__header"
+            >
+              <div
+                class="module-card__heading"
+              >
+                <div>
+                  <p
+                    class="eyebrow"
+                  >
+                    Your game
+                  </p>
+                  <h2
+                    class="module-title"
+                    id="_r_3_"
+                  >
+                    Settings and records
+                  </h2>
+                  <p
+                    class="module-description"
+                  >
+                    Set up the builder and check your saved results.
+                  </p>
+                </div>
+              </div>
+            </header>
+            <div
+              class="module-card__body"
+            >
+              <section
+                class="secti...
 
 Ignored nodes: comments, script, style
-[36m<body>[39m
-  [36m<div>[39m
-    [36m<div[39m
-      [33mclass[39m=[32m"home"[39m
-    [36m>[39m
-      [36m<aside[39m
-        [33maria-label[39m=[32m"Control desk"[39m
-        [33mclass[39m=[32m"panel"[39m
-      [36m>[39m
-        [36m<section[39m
-          [33maria-labelledby[39m=[32m"_r_2_"[39m
-          [33mclass[39m=[32m"module-card module-card--default "[39m
-        [36m>[39m
-          [36m<header[39m
-            [33mclass[39m=[32m"module-card__header"[39m
-          [36m>[39m
-            [36m<div[39m
-              [33mclass[39m=[32m"module-card__heading"[39m
-            [36m>[39m
-              [36m<span[39m
-                [33maria-hidden[39m=[32m"true"[39m
-                [33mclass[39m=[32m"icon-tile"[39m
-                [33mstyle[39m=[32m"--icon-color: var(--viz-1);"[39m
-              [36m>[39m
-                [36m<svg[39m
-                  [33maria-hidden[39m=[32m"true"[39m
-                  [33mclass[39m=[32m"lucide lucide-gamepad-2"[39m
-                  [33mfill[39m=[32m"none"[39m
-                  [33mheight[39m=[32m"14"[39m
-                  [33mstroke[39m=[32m"currentColor"[39m
-                  [33mstroke-linecap[39m=[32m"round"[39m
-                  [33mstroke-linejoin[39m=[32m"round"[39m
-                  [33mstroke-width[39m=[32m"2"[39m
-                  [33mviewBox[39m=[32m"0 0 24 24"[39m
-                  [33mwidth[39m=[32m"14"[39m
-                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
-                [36m>[39m
-                  [36m<line[39m
-                    [33mx1[39m=[32m"6"[39m
-                    [33mx2[39m=[32m"10"[39m
-                    [33my1[39m=[32m"11"[39m
-                    [33my2[39m=[32m"11"[39m
-                  [36m/>[39m
-                  [36m<line[39m
-                    [33mx1[39m=[32m"8"[39m
-                    [33mx2[39m=[32m"8"[39m
-                    [33my1[39m=[32m"9"[39m
-                    [33my2[39m=[32m"13"[39m
-                  [36m/>[39m
-                  [36m<line[39m
-                    [33mx1[39m=[32m"15"[39m
-                    [33mx2[39m=[32m"15.01"[39m
-                    [33my1[39m=[32m"12"[39m
-                    [33my2[39m=[32m"12"[39m
-                  [36m/>[39m
-                  [36m<line[39m
-                    [33mx1[39m=[32m"18"[39m
-                    [33mx2[39m=[32m"18.01"[39m
-                    [33my1[39m=[32m"10"[39m
-                    [33my2[39m=[32m"10"[39m
-                  [36m/>[39m
-                  [36m<path[39m
-                    [33md[39m=[32m"M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"[39m
-                  [36m/>[39m
-                [36m</svg>[39m
-              [36m</span>[39m
-              [36m<div>[39m
-                [36m<p[39m
-                  [33mclass[39m=[32m"eyebrow"[39m
-                [36m>[39m
-                  [0mChallenges[0m
-                [36m</p>[39m
-                [36m<h2[39m
-                  [33mclass[39m=[32m"module-title"[39m
-                  [33mid[39m=[32m"_r_2_"[39m
-                [36m>[39m
-                  [0mPlay[0m
-                [36m</h2>[39m
-                [36m<p[39m
-                  [33mclass[39m=[32m"module-description"[39m
-                [36m>[39m
-                  [0mChoose a cup and draft your squad.[0m
-                [36m</p>[39m
-              [36m</div>[39m
-            [36m</div>[39m
-          [36m</header>[39m
-          [36m<div[39m
-            [33mclass[39m=[32m"module-card__body"[39m
-          [36m>[39m
-            [36m<div[39m
-              [33mclass[39m=[32m"section"[39m
-            [36m>[39m
-              [36m<div[39m
-                [33mclass[39m=[32m"ctas"[39m
-              [36m>[39m
-                [36m<a[39m
-                  [33mclass[39m=[32m"btn btn--primary cta"[39m
-                  [33mhref[39m=[32m"/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open"[39m
-                [36m>[39m
-                  [0mPlay 8-0 Challenge[0m
-                [36m</a>[39m
-                [36m<a[39m
-                  [33mclass[39m=[32m"btn btn--primary cta"[39m
-                  [33mhref[39m=[32m"/play?mode=kanto151&f=4-3-3&order=squadFirst"[39m
-                [36m>[39m
-                  [0mPlay 151 Challenge[0m
-                [36m</a>[39m
-              [36m</div>[39m
-              [36m<p[39m
-                [33mclass[39m=[32m"hint"[39m
-              [36m>[39m
-                [0mChallenge runs keep ratings hidden.[0m
-              [36m</p>[39m
-              [36m<button[39m
-                [33maria-controls[39m=[32m"_r_1_"[39m
-                [33maria-expanded[39m=[32m"false"[39m
-                [33mclass[39m=[32m"btn btn--ghost btn--sm moreToggle"[39m
-                [33mtype[39m=[32m"button"[39m
-              [36m>[39m
-                [0mSettings and records[0m
-              [36m</button>[39m
-            [36m</div>[39m
-          [36m</div>[39m
-        [36m</section>[39m
-        [36m<div[39m
-          [33mclass[39m=[32m"more"[39m
-          [33mdata-open[39m=[32m"false"[39m
-          [33mid[39m=[32m"_r_1_"[39m
-        [36m>[39m
-          [36m<section[39m
-            [33maria-labelledby[39m=[32m"_r_3_"[39m
-            [33mclass[39m=[32m"module-card module-card--default "[39m
-          [36m>[39m
-            [36m<header[39m
-              [33mclass[39m=[32m"module-card__header"[39m
-            [36m>[39m
-              [36m<div[39m
-                [33mclass[39m=[32m"module-card__heading"[39m
-              [36m>[39m
-                [36m<div>[39m
-                  [36m<p[39m
-                    [33mclass[39m=[32m"eyebrow"[39m
-                  [36m>[39m
-                    [0mYour game[0m
-                  [36m</p>[39m
-                  [36m<h2[39m
-                    [33mclass[39m=[32m"module-title"[39m
-                    [33mid[39m=[32m"_r_3_"[39m
-                  [36m>[39m
-                    [0mSettings and records[0m
-                  [36m</h2>[39m
-                  [36m<p[39m
-                    [33mclass[39m=[32m"module-description"[39m
-                  [36m>[39m
-                    [0mSet up the builder and check your saved results.[0m
-                  [36m</p>[39m
-                [36m</div>[39m
-              [36m</div>[39m
-            [36m</header>[39m
-            [36m<div[39m
-              [33mclass[39m=[32m"module-card__body"[39m
-            [36m>[39m
-              [36m<section[39m
-                [33mclass[39m=[32m"secti...
+<body>
+  <div>
+    <div
+      class="home"
+    >
+      <aside
+        aria-label="Control desk"
+        class="panel"
+      >
+        <section
+          aria-labelledby="_r_2_"
+          class="module-card module-card--default "
+        >
+          <header
+            class="module-card__header"
+          >
+            <div
+              class="module-card__heading"
+            >
+              <span
+                aria-hidden="true"
+                class="icon-tile"
+                style="--icon-color: var(--viz-1);"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-gamepad-2"
+                  fill="none"
+                  height="14"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="14"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <line
+                    x1="6"
+                    x2="10"
+                    y1="11"
+                    y2="11"
+                  />
+                  <line
+                    x1="8"
+                    x2="8"
+                    y1="9"
+                    y2="13"
+                  />
+                  <line
+                    x1="15"
+                    x2="15.01"
+                    y1="12"
+                    y2="12"
+                  />
+                  <line
+                    x1="18"
+                    x2="18.01"
+                    y1="10"
+                    y2="10"
+                  />
+                  <path
+                    d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"
+                  />
+                </svg>
+              </span>
+              <div>
+                <p
+                  class="eyebrow"
+                >
+                  Challenges
+                </p>
+                <h2
+                  class="module-title"
+                  id="_r_2_"
+                >
+                  Play
+                </h2>
+                <p
+                  class="module-description"
+                >
+                  Choose a cup and draft your squad.
+                </p>
+              </div>
+            </div>
+          </header>
+          <div
+            class="module-card__body"
+          >
+            <div
+              class="section"
+            >
+              <div
+                class="ctas"
+              >
+                <a
+                  class="btn btn--primary cta"
+                  href="/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open"
+                >
+                  Play 8-0 Challenge
+                </a>
+                <a
+                  class="btn btn--primary cta"
+                  href="/play?mode=kanto151&f=4-3-3&order=squadFirst"
+                >
+                  Play 151 Challenge
+                </a>
+              </div>
+              <p
+                class="hint"
+              >
+                Challenge runs keep ratings hidden.
+              </p>
+              <button
+                aria-controls="_r_1_"
+                aria-expanded="false"
+                class="btn btn--ghost btn--sm moreToggle"
+                type="button"
+              >
+                Settings and records
+              </button>
+            </div>
+          </div>
+        </section>
+        <div
+          class="more"
+          data-open="false"
+          id="_r_1_"
+        >
+          <section
+            aria-labelledby="_r_3_"
+            class="module-card module-card--default "
+          >
+            <header
+              class="module-card__header"
+            >
+              <div
+                class="module-card__heading"
+              >
+                <div>
+                  <p
+                    class="eyebrow"
+                  >
+                    Your game
+                  </p>
+                  <h2
+                    class="module-title"
+                    id="_r_3_"
+                  >
+                    Settings and records
+                  </h2>
+                  <p
+                    class="module-description"
+                  >
+                    Set up the builder and check your saved results.
+                  </p>
+                </div>
+              </div>
+            </header>
+            <div
+              class="module-card__body"
+            >
+              <section
+                class="secti...
  ❯ waitForWrapper node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/wait-for.js:163:27
  ❯ node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
  ❯ src/components/builder/__tests__/Builder.test.tsx:101:31

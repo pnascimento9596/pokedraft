@@ -65,7 +65,7 @@ Running 56 tests using 3 workers
   ✘  56 [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 dark (5.6s)
 
 
-  1) [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 light 
+  1) [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 light
 
     Error: expect(locator).toBeVisible() failed
 
@@ -101,7 +101,7 @@ Running 56 tests using 3 workers
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  2) [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 dark 
+  2) [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 dark
 
     Error: expect(locator).toBeVisible() failed
 
@@ -138,6 +138,6 @@ Running 56 tests using 3 workers
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   2 failed
-    [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 light 
-    [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 dark 
+    [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 light
+    [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 dark
   54 passed (23.0s)

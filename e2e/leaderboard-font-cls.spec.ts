@@ -36,6 +36,9 @@ for (const width of [360, 412])
       for (let load = 0; load < 3; load++) {
         await page.goto("/leaderboard");
         await expect(page.getByTestId("board")).toBeVisible();
+        await expect(page.getByTestId("board-row").first().getByRole("link")).toHaveAccessibleName(
+          "1 WWWWWWWWWWWWWWWWWWWW Classic, Squad First, All regions W-D-L 8-1-1 Team Score 983",
+        );
         await page.waitForLoadState("networkidle");
         await page.evaluate(() => document.fonts.ready);
         await page.waitForTimeout(500);
