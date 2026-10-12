@@ -9,7 +9,7 @@ import {
   type SlotRef,
   type SpeciesId,
 } from "@/engine";
-import { builderToken } from "@/ui/builder-token";
+import { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
 import { BUILDER_URL_SEED } from "@/ui/lineup";
 
 const GEN1: DraftSettings = { mode: "builder", formation: "4-3-3", gens: [1], legendaries: false };
@@ -326,6 +326,45 @@ async function replaceBulbasaurWithPikachu() {
 }
 
 describe("browser builder checkpoints (catches drafts lost when reopening the plain home page)", () => {
+  it("checkpoints Randomize synchronously before React commits, so immediate close cannot lose the squad", async () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: true }));
+    try {
+      openWithTwoPlaced();
+      await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+      act(() => {
+        fireEvent.click(screen.getByRole("button", { name: "Randomize" }));
+        const raw = localStorage.getItem("pokedraft.builder");
+        expect(raw).not.toBeNull();
+        const saved = draftFromBuilderToken(JSON.parse(raw!));
+        expect([
+          saved?.lineup.starters.filter((id) => id !== null).length,
+          saved?.lineup.bench.filter((id) => id !== null).length,
+        ]).toEqual([11, 5]);
+      });
+      expect(filledSlots()).toBe(16);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("Randomize from the idle builder saves the edited squad rather than consuming its checkpoint on the initial empty draft", async () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: true }));
+    try {
+      render(<HomeScreen />);
+      fireEvent.click(screen.getByRole("button", { name: "Randomize" }));
+      await waitFor(() => expect(filledSlots()).toBe(16));
+      const raw = localStorage.getItem("pokedraft.builder");
+      expect(raw).not.toBeNull();
+      const saved = draftFromBuilderToken(JSON.parse(raw!));
+      expect([
+        saved?.lineup.starters.filter((id) => id !== null).length,
+        saved?.lineup.bench.filter((id) => id !== null).length,
+      ]).toEqual([11, 5]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("restores the exact saved formation, pool, starters and bench without a shared URL", async () => {
     localStorage.setItem("pokedraft.builder", JSON.stringify(POOL_BUILDER_TOKEN));
     render(<HomeScreen />);
