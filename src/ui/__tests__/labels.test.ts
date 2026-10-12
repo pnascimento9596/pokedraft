@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ROLES } from "@/scouting/types";
-import { ROLE_PLURAL, qualityScore, versusLabel } from "../labels";
+import { ROUND_SHORT, ROLE_PLURAL, qualityScore, versusLabel } from "../labels";
 
 describe("role plurals", () => {
   it("names every role the formations use, in the words the cards print", () => {
@@ -47,5 +47,18 @@ describe("qualityScore", () => {
     expect(() => qualityScore(-0.1)).toThrow(
       new RangeError("quality must be a number in 0..1, got -0.1"),
     );
+  });
+});
+
+it("prints readable round names instead of internal round codes", () => {
+  expect(ROUND_SHORT).toEqual({
+    G1: "Game 1",
+    G2: "Game 2",
+    G3: "Game 3",
+    R32: "Round 32",
+    R16: "Round 16",
+    QF: "Quarter",
+    SF: "Semi",
+    F: "Final",
   });
 });

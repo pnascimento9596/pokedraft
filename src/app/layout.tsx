@@ -36,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <header className="site-header">
           <Link href="/" className="site-header__brand">
-            poke<span>draft</span>
+            pokedraft
           </Link>
           <SiteNav>
             {(Object.keys(NAV_ICONS) as NavFamily[]).map((family) => (

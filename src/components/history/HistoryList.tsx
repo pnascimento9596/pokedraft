@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
+import { StatusNote } from "@/components/ui/primitives";
 import { FINISH_LABEL, record } from "@/ui/labels";
 import { BUCKET_LABEL, loadHistory, type RunRecord } from "@/ui/runs";
 import s from "./HistoryList.module.css";
@@ -36,12 +37,12 @@ export function HistoryList() {
   if (runs === null) return <p className="kicker">Loading your runs</p>;
   if (runs.length === 0) {
     return (
-      <div className={s.empty} data-testid="history-empty">
-        <p>No runs yet. Finished runs on this device show up here.</p>
+      <StatusNote className={s.empty} title="No runs yet." data-testid="history-empty">
+        <span>Finished runs on this device show up here.</span>
         <Link href="/" className="btn btn--primary">
           Start a run
         </Link>
-      </div>
+      </StatusNote>
     );
   }
   return (

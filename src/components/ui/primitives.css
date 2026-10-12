@@ -60,6 +60,11 @@
   letter-spacing: -0.015em;
   text-transform: none;
 }
+h1.module-title {
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  line-height: 1.2;
+}
+
 .module-description {
   margin: 4px 0 0;
   color: var(--text-muted);
@@ -116,11 +121,15 @@
   color: var(--text-soft);
   font-variant-numeric: tabular-nums;
 }
-.theme-table th {
+.theme-table thead th {
   color: var(--text-faint);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+.theme-table tbody th {
+  color: var(--text-soft);
+  font-weight: 600;
 }
 .theme-table thead {
   background: color-mix(in srgb, var(--surface-sunken) 70%, var(--surface));
@@ -159,8 +168,8 @@
   border-radius: var(--radius-sm);
   color: var(--link);
   background: var(--surface);
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 15px;
+  line-height: 20px;
   font-weight: 600;
   cursor: pointer;
 }

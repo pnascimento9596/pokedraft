@@ -1,0 +1,195 @@
+
+Running 22 tests using 2 workers
+
+(node:52270) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:52271) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px light (4.3s)
+  ✓   1 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 360px dark (4.4s)
+  ✓   4 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px dark (3.6s)
+  ✓   3 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 390px light (3.8s)
+  ✓   6 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px dark (3.8s)
+  ✓   5 [chromium] › e2e/leaderboard-cls.spec.ts:6:9 › leaderboard cold-load footer has exactly zero CLS at 412px light (4.2s)
+  ✘   7 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px light (1.9s)
+(node:52784) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   8 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px dark (1.9s)
+(node:52802) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   9 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px light (1.9s)
+(node:53008) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px dark (1.9s)
+(node:53040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 390 light (817ms)
+  ✓  12 [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 390 light (951ms)
+  ✓  13 [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 390 dark (812ms)
+  ✓  14 [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 390 dark (330ms)
+  ✓  16 [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 1440 light (609ms)
+  ✓  15 [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 1440 light (781ms)
+  ✓  18 [chromium] › e2e/theme-board.spec.ts:28:9 › empty and unavailable boards use neutral reasons at 1440 dark (342ms)
+  ✓  17 [chromium] › e2e/theme-board.spec.ts:7:9 › leaderboard module rows are readable and reachable at 1440 dark (538ms)
+  ✓  19 [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 390 light (1.4s)
+  ✓  20 [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 390 dark (1.4s)
+  ✓  21 [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 light (1.2s)
+  ✓  22 [chromium] › e2e/theme-type.spec.ts:26:9 › labels, pills and round buttons meet mobile type overrides 1440 dark (1.2s)
+
+
+  1) [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px light
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "nodes": Array [
+    +       " ",
+    +       "W-D-L",
+    +       "8-1-1",
+    +     ],
+    +     "value": 0.0002497309283966875,
+    +   },
+    + ]
+
+      46 |                 .__fontShifts,
+      47 |           ),
+    > 48 |         ).toEqual([]);
+         |           ^
+      49 |       }
+      50 |     });
+      51 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/leaderboard-font-cls.spec.ts:48:11
+
+    Error Context: output/dispatch-8/font-cls-green/leaderboard-font-cls-late--f3c30-d-figures-fixed-360px-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/font-cls-green/leaderboard-font-cls-late--f3c30-d-figures-fixed-360px-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/font-cls-green/leaderboard-font-cls-late--f3c30-d-figures-fixed-360px-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px dark
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "nodes": Array [
+    +       " ",
+    +       "W-D-L",
+    +       "8-1-1",
+    +     ],
+    +     "value": 0.0002497309283966875,
+    +   },
+    + ]
+
+      46 |                 .__fontShifts,
+      47 |           ),
+    > 48 |         ).toEqual([]);
+         |           ^
+      49 |       }
+      50 |     });
+      51 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/leaderboard-font-cls.spec.ts:48:11
+
+    Error Context: output/dispatch-8/font-cls-green/leaderboard-font-cls-late--22325-nd-figures-fixed-360px-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/font-cls-green/leaderboard-font-cls-late--22325-nd-figures-fixed-360px-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/font-cls-green/leaderboard-font-cls-late--22325-nd-figures-fixed-360px-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px light
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 9
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "nodes": Array [
+    +       "W-D-L",
+    +       "8-1-1",
+    +     ],
+    +     "value": 0.00005702008805661794,
+    +   },
+    + ]
+
+      46 |                 .__fontShifts,
+      47 |           ),
+    > 48 |         ).toEqual([]);
+         |           ^
+      49 |       }
+      50 |     });
+      51 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/leaderboard-font-cls.spec.ts:48:11
+
+    Error Context: output/dispatch-8/font-cls-green/leaderboard-font-cls-late--dfcab-d-figures-fixed-412px-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/font-cls-green/leaderboard-font-cls-late--dfcab-d-figures-fixed-412px-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/font-cls-green/leaderboard-font-cls-late--dfcab-d-figures-fixed-412px-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px dark
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 9
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "nodes": Array [
+    +       "W-D-L",
+    +       "8-1-1",
+    +     ],
+    +     "value": 0.00005702008805661794,
+    +   },
+    + ]
+
+      46 |                 .__fontShifts,
+      47 |           ),
+    > 48 |         ).toEqual([]);
+         |           ^
+      49 |       }
+      50 |     });
+      51 |
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/leaderboard-font-cls.spec.ts:48:11
+
+    Error Context: output/dispatch-8/font-cls-green/leaderboard-font-cls-late--4ce3a-nd-figures-fixed-412px-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/font-cls-green/leaderboard-font-cls-late--4ce3a-nd-figures-fixed-412px-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/font-cls-green/leaderboard-font-cls-late--4ce3a-nd-figures-fixed-412px-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px light
+    [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 360px dark
+    [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px light
+    [chromium] › e2e/leaderboard-font-cls.spec.ts:6:9 › late Inter swap keeps board controls and figures fixed 412px dark
+  18 passed (22.5s)

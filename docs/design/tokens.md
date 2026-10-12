@@ -40,7 +40,7 @@ The engineering guard requires every pair to retain at least 4.0 on that scale i
 
 ## Compatibility and retirement
 
-Existing night/bg/panel/ink/flood/grass tokens resolve to the new semantic roles during the page-by-page migration. The mapping is recorded in [dispatch-8.md](../decisions/dispatch-8.md). Legacy card renderer colors are isolated in `src/design/card-tokens.ts` and retain their original values until the results/share PR replaces them. They are not new palette additions.
+Existing night/bg/panel/ink/flood/grass tokens resolve to the new semantic roles during the page-by-page migration. The mapping is recorded in [dispatch-8.md](../decisions/dispatch-8.md). The 1200x630 card and OG renderer use the source light palette in `src/design/card-tokens.ts`, with bundled Inter400/600/700. Its score, record and formation use explicit tabular digit cells because the static font subset has proportional advances. The content and image model are preserved.
 
 ## CI commands
 
@@ -119,3 +119,7 @@ Ratios below are unrounded during validation. Displayed rounding never turns a f
 ## Static share renderer
 
 `src/design/card-tokens.ts` mirrors the light palette for Satori, which cannot resolve CSS variables. Its canvas, surface, emphasis, sunken, border, action/foreground, ok, pitch/stripe and warm line values are identical to the checked CSS roles. Card names use accent-fg on accent; body/figures use text or muted on canvas; the Team Score action uses accent-fg on accent. The same contrast roles apply. The 1200x630 renderer uses only Inter400/600/700 with local licensed subsets; next/font remains the sole browser family. No calculations, content or image pack pixels changed.
+
+### Final type application
+
+Module h1 uses source `clamp(1.3rem, 2vw, 1.9rem)`; h2 uses the mobile17/23 anddesktop15/21 overrides. Browser figures inherit tabular numerals. Leaderboard figures additionally reserve 0.7em per digit and 0.46em per separator to prevent movement during font swap; each complete value keeps one accessible label. The static PNG renderer uses Inter with equal0.67em digit cells for score, record andformation, because its text doesnot inherit browserCSS. Sharecontent/size/models stay unchanged.

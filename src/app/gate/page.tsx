@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { safeNext } from "@/passcode";
 import { loadRun } from "../r/[token]/run";
 import { runTitle } from "../r/[token]/title";
+import { ModuleCard } from "@/components/ui/primitives";
+import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./page.module.css";
 
 const SHARE = /^\/r\/([^/?#]+)$/;
@@ -52,7 +54,7 @@ async function GateForm({ searchParams }: { searchParams: PageProps<"/gate">["se
         />
       </label>
       {error !== undefined ? (
-        <p role="alert" className={s.error}>
+        <p role="alert" className={error === "unavailable" ? s.unavailable : s.error}>
           {GATE_ERROR[error] ?? GATE_ERROR["1"]}
         </p>
       ) : null}
@@ -66,13 +68,18 @@ async function GateForm({ searchParams }: { searchParams: PageProps<"/gate">["se
 export default function GatePage({ searchParams }: PageProps<"/gate">) {
   return (
     <main className="page">
-      <section className={s.gate}>
-        <h1>pokedraft is friends only</h1>
-        <p>Ask the group for the passcode. You only need it once on this device.</p>
+      <ModuleCard
+        className={s.gate}
+        eyebrow="Friends only"
+        title="pokedraft is friends only"
+        headingLevel={1}
+        description="Ask the group for the passcode. You only need it once on this device."
+        icon={<NavIcon family="play" />}
+      >
         <Suspense fallback={null}>
           <GateForm searchParams={searchParams} />
         </Suspense>
-      </section>
+      </ModuleCard>
     </main>
   );
 }

@@ -1,0 +1,22 @@
+{
+  "runId": "38174354317",
+  "runAttempt": "1",
+  "workflowSha": "f5e225626facc6a1d24fb8b0e5c9ee01e9821515",
+  "runnerImage": "ubuntu24",
+  "runnerImageVersion": "20261004.327.1",
+  "node": "v22.23.3",
+  "cpus": 4,
+  "lighthouse": "13.5.0",
+  "chrome": "Google Chrome for Testing 156.0.8078.4",
+  "identityBefore": {
+    "sha": "f5e225626facc6a1d24fb8b0e5c9ee01e9821515",
+    "env": "production",
+    "region": "iad1",
+    "engine": "pokedraft-engine-3",
+    "tokenVersions": [
+      1,
+      2,
+      3
+    ]
+  }
+}

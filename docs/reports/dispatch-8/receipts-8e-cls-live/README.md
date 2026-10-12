@@ -1,0 +1,3 @@
+# Production correction checks
+
+Firstcachebustedhealth5199e56/no-store, live4pass aftercorrectingomittedLIVE_URL (firstcommandstoppedbeforetests/writes). Mobilecombined246pass/46skip/2fail: unchangedacceptance242/46allpass;newcoldboardguards4pass/2fail with0.00025763 and0.00011317 shifts. A700ms fontdelay withCPU4 identifiesbrandspan/nativeDatefields/recordcolumns. This residual is assignedto8F; no epsilon/filteradded. Lighthouse38176506885 onrealproductiondata passesall24samples100/exact0. Verifybotexact76a9f48d-4154-4320-aa5a-3bd8a6b9e1b1deletedpredicateid/name/mode/date, count0. Production390sixboardstateshotszerooverflow.

@@ -1,0 +1,3 @@
+# Production daily and board spot checks
+
+Productionf5e2256,390x844light/dark. Daily start/results andpopulated/empty/unavailableboards:10viewport+10fullpage, allzerooverflow. BoardstatesarefixedbrowserAPIfixtures; realproductionliveAPIsaretestedseparately. LighthousefoundfooterCLSdespite thesesettledscreenshots; thatregressionisnotclaimedclosedhere.

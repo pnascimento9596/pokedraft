@@ -1,0 +1,8 @@
+$ eslint
+
+/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-missing-width.spec.ts
+  8:7  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+
+✖ 1 problem (1 error, 0 warnings)
+
+[ELIFECYCLE] Command failed with exit code 1.

@@ -1,0 +1,3 @@
+# Rejected production measurement
+
+[Ubuntu run38174354317](https://github.com/pnascimento9596/pokedraft/actions/runs/38174354317) againstf5e225626facc6a1d24fb8b0e5c9ee01e9821515. All24samplesAccessibility100, butallthreeboardCLS0.011626827583050482. This is a failedgate, notacceptedfinalmeasurement. Twofooter-shiftentriesinrawleaderboardreportsidentifybody>footer.site-footer. Raw24LighthouseJSONreportsretainedintheworkflowartifact. PR31fixesviewportreservationandmustbeverifiedbysamenvironment3-runworkflow.

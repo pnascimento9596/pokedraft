@@ -78,13 +78,13 @@ export const LADDER_SHAPE =
   "The group games are the gentle start. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test.";
 
 export const ROUND_SHORT: Readonly<Record<CupRound, string>> = {
-  G1: "G1",
-  G2: "G2",
-  G3: "G3",
-  R32: "R32",
-  R16: "R16",
-  QF: "QF",
-  SF: "SF",
+  G1: "Game 1",
+  G2: "Game 2",
+  G3: "Game 3",
+  R32: "Round 32",
+  R16: "Round 16",
+  QF: "Quarter",
+  SF: "Semi",
   F: "Final",
 };
 

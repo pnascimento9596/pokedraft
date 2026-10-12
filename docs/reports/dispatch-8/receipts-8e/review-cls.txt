@@ -1,0 +1,53 @@
+
+VERDICT: APPROVE
+CANARY-974af22b634ea46b67fd2577
+
+WARNING: STATE.md — the dispatch's mandatory pre/post-merge gates (full exa
+exact-head GitHub Ubuntu suites 734 unit/536 browser/51 skip, GLM approve/c
+approve/canary, pinned squash merge, post-merge health SHA/no-store, live 4
+4/mobile 242, 390 spots, verify-bot cleanup 0, GitHub 3-run Lighthouse) hav
+have no attached evidence for this head; STATE.md and docs/decisions/dispat
+docs/decisions/dispatch-8.md honestly record them as pending, so this appro
+approval is valid only if those runs complete clean on c8c4d58b before/at m
+merge.
+WARNING: e2e/leaderboard-cls.spec.ts — exact zero is demonstrated only agai
+against the stubbed BOARD_ONE fixture at 360/390/412x823; the reservation p
+pins the footer below the first-viewport fold so real, larger boards should
+should remain clean, but the production Lighthouse rerun on real data (alre
+(already mandated, pending) is the definitive closure and must not be skipp
+skipped.
+NIT: docs/reports/dispatch-8/receipts-8e-cls-local/board-cls-red.log — the
+RED code frame shows a single-line expect ending ".toBe(0)" at line 24 with
+with fonts.ready at lines 22/23, while the committed spec formats the same
+assertion multiline (expect block at lines 26–33, fonts.ready at line 24),
+so the RED receipt was captured on a pre-tidy formatting of the same test;
+values (0.00828–0.02509), titles, and strictness match HEAD, so this is pro
+provenance cosmetics, not a weakened guard.
+NIT: docs/reports/dispatch-8/receipts-8e-cls-local/board-cls-red.log — the
+log records no base URL or deployment target, so "committed RED against pro
+production f5e2256" is asserted in the receipts README and decision log but
+but not independently provable from the receipt itself.
+NIT: e2e/leaderboard-cls.spec.ts — the test title narrows to "footer" while
+while the PerformanceObserver sums every layout-shift entry on the page; st
+stricter than the name implies, slightly misleading naming only.
+
+Compliance summary of the diff against the dispatch contract: the CSS-only
+fix matches verbatim (min-height calc(100svh - var(--site-header-h, 69px))
+plus align-content:start on leaderboard main, mirroring the play-page patte
+pattern and keeping modules unstretched; page.module.css adds exactly 2 lin
+lines). The six strict cold-load guards exist (3 widths x 2 themes, 3 cold
+loads each) and assert literal exact zero via toBe(0), no epsilon, no mobil
+mobile assertions touched anywhere (no existing spec modified). The RED rec
+receipt (6 failed against production) is honestly retained, and the green g
+gate, 30 contrast, and 20 axe runs in the packet match the receipts byte-fo
+byte-for-byte in content and totals (21/30/20; seven existing CLS, eight bo
+board, six new). Figures record 186 results/10 board figures unchanged per
+theme and are committed; both before/after phases carry 12 viewport + 12 fu
+full screenshots with manifests recording overflow 0. No engine, API, data,
+data, font, image, or figure file is modified (only summarized artifacts ap
+appear, with matching hashes), so build determinism is unaffected and there
+there is no time or randomness in any build path added. No em dashes in add
+added copy, no Pokédex flavor text added, no coefficient tables touched. Th
+The failed Lighthouse 38174354317 numbers are explicitly quarantined as non
+non-final evidence in three places, which is the honest posture this review
+review expects.

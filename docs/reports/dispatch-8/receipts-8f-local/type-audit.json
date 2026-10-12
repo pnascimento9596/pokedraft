@@ -1,0 +1,2422 @@
+[
+  {
+    "state": "home",
+    "small": [
+      {
+        "tag": "P",
+        "text": "Challenges",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Friendly builder",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Settings and records",
+        "class": "btn btn--ghost btn--sm NzhGzW_moreToggle",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "+GK",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+LB",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+LCB",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+RCB",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+RB",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+CDM",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+LCM",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+RCM",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+LW",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+ST",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+RW",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 1",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 2",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 3",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 4",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 5",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Randomize",
+        "class": "btn btn--primary",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Clear all",
+        "class": "btn",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Reset",
+        "class": "btn",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Download image",
+        "class": "btn btn--ghost",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Copy link",
+        "class": "btn btn--ghost",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Play a friendly cup",
+        "class": "btn btn--primary",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      }
+    ]
+  },
+  {
+    "state": "builder",
+    "small": [
+      {
+        "tag": "P",
+        "text": "Challenges",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Friendly builder",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Guzzlord",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Onix",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Medicham",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Skorupi",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Shuppet",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Celesteela",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Bruxish",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Rotom",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Crabrawler",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Jellicent",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Houndoom",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Skarmory",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Decidueye",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Caterpie",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Tauros",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Luxray",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Settings and records",
+        "class": "btn btn--ghost btn--sm NzhGzW_moreToggle",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "GK Guzzlord",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LB Onix",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LCB Medicham",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RCB Skorupi",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RB Shuppet",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "CDM Celesteela",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LCM Bruxish",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RCM Rotom",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LW Crabrawler",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "ST Jellicent",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RW Houndoom",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 1 Skarmory",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 2 Decidueye",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 3 Caterpie",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 4 Tauros",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 5 Luxray",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Randomize",
+        "class": "btn btn--primary",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Clear all",
+        "class": "btn",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Reset",
+        "class": "btn",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Download image",
+        "class": "btn btn--ghost",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Copy link",
+        "class": "btn btn--ghost",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Play a friendly cup",
+        "class": "btn btn--primary",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      }
+    ]
+  },
+  {
+    "state": "picker",
+    "small": [
+      {
+        "tag": "P",
+        "text": "Challenges",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Friendly builder",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Igglybuff",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Horsea",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Munchlax",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Bibarel",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Grotle",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Rotom",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Spinda",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Salamence",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Lechonk",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Abomasnow",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Skitty",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Samurott",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Flutter Mane",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Runerigus",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Naclstack",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Meowth",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Settings and records",
+        "class": "btn btn--ghost btn--sm NzhGzW_moreToggle",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "GK Igglybuff",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LB Horsea",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LCB Munchlax",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RCB Bibarel",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RB Grotle",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "CDM Rotom",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LCM Spinda",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RCM Salamence",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LW Lechonk",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "ST Abomasnow",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RW Skitty",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 1 Samurott",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 2 Flutter Mane",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 3 Runerigus",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 4 Naclstack",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 5 Meowth",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Randomize",
+        "class": "btn btn--primary",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Clear all",
+        "class": "btn",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Reset",
+        "class": "btn",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Download image",
+        "class": "btn btn--ghost",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Copy link",
+        "class": "btn btn--ghost",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Play a friendly cup",
+        "class": "btn btn--primary",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Clear slot",
+        "class": "btn btn--ghost btn--sm",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Close",
+        "class": "btn btn--sm",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Normal",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Fighting",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Flying",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Poison",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Ground",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Rock",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Bug",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Ghost",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Steel",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Fire",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Water",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Grass",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Electric",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Psychic",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Ice",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Dragon",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Dark",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Fairy",
+        "class": "chip LK0oRG_typeChip",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Bulbasaur#001GrassPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Ivysaur#002GrassPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Venusaur#003GrassPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Charmander#004Fire",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Charmeleon#005Fire",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Charizard#006FireFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Squirtle#007Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Wartortle#008Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Blastoise#009Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Caterpie#010Bug",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Metapod#011Bug",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Butterfree#012BugFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Weedle#013BugPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Kakuna#014BugPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Beedrill#015BugPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Pidgey#016NormalFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Pidgeotto#017NormalFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Pidgeot#018NormalFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Rattata#019Normal",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Raticate#020Normal",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Spearow#021NormalFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Fearow#022NormalFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Ekans#023Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Arbok#024Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Pikachu#025Electric",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Raichu#026Electric",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Sandshrew#027Ground",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Sandslash#028Ground",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Nidoran♀#029Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Nidorina#030Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Nidoqueen#031PoisonGround",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Nidoran♂#032Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Nidorino#033Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Nidoking#034PoisonGround",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Clefairy#035Fairy",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Clefable#036Fairy",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Vulpix#037Fire",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Ninetales#038Fire",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Jigglypuff#039NormalFairy",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Wigglytuff#040NormalFairy",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Zubat#041PoisonFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Golbat#042PoisonFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Oddish#043GrassPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Gloom#044GrassPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Vileplume#045GrassPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Paras#046BugGrass",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Parasect#047BugGrass",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Venonat#048BugPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Venomoth#049BugPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Diglett#050Ground",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Dugtrio#051Ground",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Meowth#052NormalSwap with SUB 5",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Persian#053Normal",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Psyduck#054Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Golduck#055Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Mankey#056Fighting",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Primeape#057Fighting",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Growlithe#058Fire",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Arcanine#059Fire",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Poliwag#060Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Poliwhirl#061Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Poliwrath#062WaterFighting",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Abra#063Psychic",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Kadabra#064Psychic",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Alakazam#065Psychic",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Machop#066Fighting",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Machoke#067Fighting",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Machamp#068Fighting",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Bellsprout#069GrassPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Weepinbell#070GrassPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Victreebel#071GrassPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Tentacool#072WaterPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Tentacruel#073WaterPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Geodude#074RockGround",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Graveler#075RockGround",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Golem#076RockGround",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Ponyta#077Fire",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Rapidash#078Fire",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Slowpoke#079WaterPsychic",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Slowbro#080WaterPsychic",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Magnemite#081ElectricSteel",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Magneton#082ElectricSteel",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Farfetch’d#083NormalFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Doduo#084NormalFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Dodrio#085NormalFlying",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Seel#086Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Dewgong#087WaterIce",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Grimer#088Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Muk#089Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Shellder#090Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Cloyster#091WaterIce",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Gastly#092GhostPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Haunter#093GhostPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Gengar#094GhostPoison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Onix#095RockGround",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Drowzee#096Psychic",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Hypno#097Psychic",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Krabby#098Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Kingler#099Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Voltorb#100Electric",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Electrode#101Electric",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Exeggcute#102GrassPsychic",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Exeggutor#103GrassPsychic",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Cubone#104Ground",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Marowak#105Ground",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Hitmonlee#106Fighting",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Hitmonchan#107Fighting",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Lickitung#108Normal",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Koffing#109Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Weezing#110Poison",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Rhyhorn#111GroundRock",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Rhydon#112GroundRock",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Chansey#113Normal",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Tangela#114Grass",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Kangaskhan#115Normal",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Horsea#116WaterSwap with LB",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Seadra#117Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Goldeen#118Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Seaking#119Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Staryu#120Water",
+        "class": "LK0oRG_row",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      }
+    ]
+  },
+  {
+    "state": "draft",
+    "small": [
+      {
+        "tag": "P",
+        "text": "Your opponents",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Sound off",
+        "class": "btn btn--ghost btn--sm",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Reroll type 3 left",
+        "class": "btn btn--sm",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Reroll region 3 left",
+        "class": "btn btn--sm",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Wyrdeer#899NormalPsychic",
+        "class": "H3tqIq_card",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Wooloo#831Normal",
+        "class": "H3tqIq_card",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "Indeedee#876PsychicNormal",
+        "class": "H3tqIq_card",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "New run",
+        "class": "btn btn--ghost btn--sm",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Game 1",
+        "class": "theme-tooltip__trigger",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Game 2",
+        "class": "theme-tooltip__trigger",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Game 3",
+        "class": "theme-tooltip__trigger",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Round 32",
+        "class": "theme-tooltip__trigger",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Round 16",
+        "class": "theme-tooltip__trigger",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Quarter",
+        "class": "theme-tooltip__trigger",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Semi",
+        "class": "theme-tooltip__trigger",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Final",
+        "class": "theme-tooltip__trigger",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "+GK",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+LB",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+LCB",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+RCB",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+RB",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+LM",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+LCM",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+RCM",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+RM",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+LF",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+RF",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 1",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 2",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 3",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 4",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "+SUB 5",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      }
+    ]
+  },
+  {
+    "state": "results",
+    "small": [
+      {
+        "tag": "P",
+        "text": "Run results",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Leaderboard",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Matches",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Standings",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Standout players",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Your squad",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Ninetales",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Nidorino",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Sandshrew",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Koffing",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Slowpoke",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Poliwhirl",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Rattata",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Fearow",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Weepinbell",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Jigglypuff",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Weezing",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Flareon",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Clefairy",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Mew",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Magmar",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "text": "Weedle",
+        "class": "yzX6Rq_tokenName",
+        "size": "12px",
+        "line": "14px"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Share",
+        "class": "btn btn--primary",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Download image",
+        "class": "btn",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "New run",
+        "class": "btn btn--ghost",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "Submit",
+        "class": "btn btn--primary",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "GK Ninetales",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LB Nidorino",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LCB Sandshrew",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RCB Koffing",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RB Slowpoke",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "CDM Poliwhirl",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LCM Rattata",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RCM Fearow",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "LW Weepinbell",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "ST Jigglypuff",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "RW Weezing",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 1 Flareon",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 2 Clefairy",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 3 Mew",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 4 Magmar",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      },
+      {
+        "text": "SUB 5 Weedle",
+        "class": "yzX6Rq_token",
+        "size": "15px",
+        "weight": "400",
+        "line": "22px"
+      }
+    ]
+  },
+  {
+    "state": "board",
+    "small": [
+      {
+        "tag": "P",
+        "text": "Ranked runs",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Daily board",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Daily",
+        "class": "rpEM1q_tab",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      },
+      {
+        "text": "All-time",
+        "class": "rpEM1q_tab",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      }
+    ]
+  },
+  {
+    "state": "history",
+    "small": [
+      {
+        "tag": "P",
+        "text": "This device",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Saved runs",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      }
+    ],
+    "buttons": []
+  },
+  {
+    "state": "help",
+    "small": [
+      {
+        "tag": "P",
+        "text": "Rules of the game",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Game guide",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Game guide",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Game guide",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Game guide",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Game guide",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Game guide",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      },
+      {
+        "tag": "P",
+        "text": "Game guide",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      }
+    ],
+    "buttons": []
+  },
+  {
+    "state": "gate",
+    "small": [
+      {
+        "tag": "P",
+        "text": "Friends only",
+        "class": "eyebrow",
+        "size": "11px",
+        "line": "16px"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Enter",
+        "class": "btn btn--primary",
+        "size": "15px",
+        "weight": "600",
+        "line": "20px"
+      }
+    ]
+  }
+]

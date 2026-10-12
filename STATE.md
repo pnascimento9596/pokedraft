@@ -93,3 +93,21 @@ Daily/leaderboard presentation restyle; local unit734/80 and browser536/51skip, 
 ## Dispatch 8E production correction
 
 PR30 shippedf5e2256, reviewedb47a8e3 GLMAPPROVE, CI38173336275 unit734/browser536+51skip. Productionlive4/mobile242+46skipgreen, exactbotcleanup0. Lighthouse38174354317 exposedboardfooterCLS0.011626827583050482 all3samples; gateRED. SixnewcoldloadguardscommittedRED, candidate viewportreservation yields21focusedpass. ExactLinuxCI/review/productionpending. Support8F workcontinuesisolated.
+## Dispatch 8F candidate
+
+Support pages and final type/table/static-figure presentation implemented. Currentbase8D; 8E will be integrated before finalgates/review. Correctedfocused73pass; priorfull540/51skip/4testselectorfail preserved. Finalexact-headLinuxCI andproductionpending.
+
+## Dispatch 8F final candidate
+
+History/help/404/gate plusreadabilityandhumanroundlabels: unit735/80, fullbrowser560/51skip(611cases), primitives44 unchangedvisualrefs, figures186/10both themesunchanged. Targetedtype4passaftertestselectorfixes; historicalfailedruns preserved. Beforeafter52viewport+52full eachzerooverflow/card1200x630. Rebaseonto8ECLSfix, exact617-caseLinuxCI/independentreview/productionremainpending. PR31correctionhasGLMAPPROVE; firstLinuxcheckfailed733/1duetotheunchangedbuilderlazyrestore1swait, fullgateunaccepteduntilgreen.
+
+## Current Dispatch 8 checkpoint
+
+PR25–31 are merged. PR31 exactreviewc8c4d58, squash5199e56, CI38175095402 green734unit/542browser/51skip aftersame-head checkrerun. Productionlive4/mobile242+46skip/cleanup0, UbuntuLH38176506885 all24samples100/exact0. Tiny late-font fixture shifts are resolved in8F.
+
+8F finalcandidate:735unit/80files; full623-case browser suite572pass51skip; allstatic/contrast/color/CVD/image/bundle/mirror gates green. Beforeafter68viewport+68full each, zerooverflow, card1200x630, figures186/10both themes unchanged. Exact-headLinuxCI, independentGLMreview, merge andproduction8F verification pending. Wholelanecloseout remainspending.
+
+
+### Dispatch 8F Linux correction checkpoint
+
+PR #32 remains unmerged. First exact-head Linux browser CI 38193051091 found four delayed-font failures (568 passed, 51 existing skips); its static/unit job passed 735 tests. The prior fc070324 review is superseded. The native date field now reserves geometry and shows Loading date until fonts are ready; caption line space is reserved. No second font or original mobile assertion changed. Linux focused 12 and macOS focused 62 pass, native date editing is preserved, and 186/10 figure snapshots remain identical. New full CI and independent review are required. A local concurrent unit run timed out four unchanged tests; isolated validation is pending.

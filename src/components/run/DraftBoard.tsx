@@ -234,7 +234,7 @@ export function DraftBoard({
       <section className={s.side} aria-label="Draft">
         <header className={s.header}>
           <div className={s.titleRow}>
-            <span className="kicker">
+            <span className="eyebrow">
               <NavIcon family={navFamily} />
               {title}
             </span>

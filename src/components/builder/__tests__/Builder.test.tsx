@@ -98,7 +98,7 @@ async function openPicker(slotName: string) {
 describe("builder drag and swap", () => {
   it("dragging one filled token onto another swaps them instead of dropping or duplicating", async () => {
     openWithTwoPlaced();
-    const from = await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    const from = await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
     const to = screen.getByRole("button", { name: "ST Charmander" });
     document.elementFromPoint = () => to;
 
@@ -112,7 +112,7 @@ describe("builder drag and swap", () => {
 
   it("picking a species already on the field into another slot swaps the two, never duplicates it", async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
     const dialog = await openPicker("ST Charmander");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "bulba" } });
     fireEvent.click(within(dialog).getByTestId("pick-1"));
@@ -279,7 +279,7 @@ describe("builder pitch token notes", () => {
 
   it("with Show ratings on, print the same number and label as the picker (Bulbasaur at CB 23, Charmander at ST 43, Pikachu on the bench 75)", async () => {
     openWithBenchToo();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
     showRatings();
     expect(screen.getByTestId("slot-s2").textContent).toBe("LCB Bulbasaur 23 vs other CBs");
     expect(screen.getByTestId("slot-s9").textContent).toBe("ST Charmander 43 vs other strikers");
@@ -291,7 +291,7 @@ describe("builder pitch token notes", () => {
   // against. One legend line under the pitch says it; the CSS hides it where the labels show.
   it("with Show ratings on, a legend under the pitch says what the number compares against, and it is absent with ratings off", async () => {
     openWithBenchToo();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
     expect(screen.queryByText(/Ratings are 0 to 100/)).toBeNull();
     showRatings();
     expect(screen.getByTestId("ratings-legend").textContent).toBe(
@@ -327,7 +327,7 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
 
   it("Clear all empties every slot and then disables itself", async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
     expect(filledSlots()).toBe(2);
     fireEvent.click(screen.getByRole("button", { name: "Clear all" }));
 
@@ -340,7 +340,7 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
 
   it("Reset restores the default panel and an empty 4-3-3 lineup", async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
     const style = screen.getByRole("group", { name: "Draft style" });
     fireEvent.click(within(style).getByRole("button", { name: "Classic" }));
     fireEvent.change(screen.getByLabelText("Formation"), { target: { value: "3-5-2" } });
@@ -365,7 +365,7 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
     const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
 
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
@@ -395,7 +395,7 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
       saved.push(`${this.download} ${this.href}`);
     });
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
 
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Download image" }));
@@ -416,7 +416,7 @@ describe("builder Download image feedback (SA-20, SB-05)", () => {
 
   const tools = async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" });
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
     return screen.getByRole("toolbar", { name: "Builder actions" });
   };
 

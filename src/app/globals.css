@@ -83,9 +83,10 @@ select {
 
 .kicker {
   font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
@@ -101,7 +102,6 @@ select {
   border-radius: var(--radius-sm);
   background: var(--bg-raised);
   font-family: var(--font-display);
-  font-weight: 700;
   font-size: 15px;
   line-height: 20px;
   font-weight: 600;
@@ -145,7 +145,7 @@ select {
 
 .btn--sm {
   min-height: 44px;
-  font-size: 0.82rem;
+  font-size: 15px;
   padding: 0.3em 0.7em;
 }
 
@@ -159,8 +159,9 @@ select {
   border-radius: 999px;
   background: transparent;
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
@@ -183,7 +184,8 @@ select {
   border: 1px solid var(--type-color, var(--text-muted));
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 13px;
+  line-height: 18px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -262,10 +264,6 @@ body:has(.page-loading) > .site-footer {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-decoration: none;
-}
-
-.site-header__brand span {
-  color: var(--flood-text);
 }
 
 .site-header nav {

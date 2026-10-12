@@ -1,0 +1,54 @@
+
+VERDICT: APPROVE
+CANARY-b62670fb49e9d0b17de2760b
+WARNING docs/decisions/dispatch-8.md: merge conditions are not yet proven a
+at head b47a8e3eaa80e9f68eafa4e66ad0d81f358833fa: the exact-head Linux full
+full suite (must be green before merge; any post-PASS commit voids the rece
+receipt) is shown only as pending in STATE.md and this decision log, so thi
+this APPROVE rests on the local receipts (unit 734/80, focused 65, full bro
+browser 536 pass/51 skip of 587, lint/type/build/mirror/image/bundle/contra
+lint/type/build/mirror/image/bundle/contrast/color/CVD) and the 8D prior-ru
+prior-run CI logs; do not merge on the local evidence alone.
+WARNING docs/reports/dispatch-8/receipts-8d-live/deployment.json: lighthous
+lighthouseStatus is still "pending" for run 38173121186; the contract requi
+requires the pending 8D measurement to complete before the next merge (this
+(this 8E), so it must finish before squash, and the post-merge sequence (fi
+(first cache-busted health proving SHA/no-store, live 4, unchanged mobile t
+three profiles with 390 spot captures, verify-bot cleanup count 0, same-Ubu
+same-Ubuntu three-run Lighthouse median) remains owed afterwards.
+WARNING src/components/results/ResultsView.tsx: the new navFamily prop defa
+defaults to "play", so a daily run replayed from a /r/ shared link shows th
+the play icon rather than the daily one; the contract sentence covers the d
+daily area results (satisfied via LiveRun passing "daily"), but confirm the
+the intended icon for shared daily replays is play, not daily, or scope the
+the default later in 8F.
+NIT src/app/leaderboard/page.tsx: the quiet header module renders descripti
+description "Compare completed runs and open a replay." while page.module.c
+page.module.css hides `.module-card__body` with display:none, shipping invi
+invisible copy that screen readers may or may not see depending on the Modu
+ModuleCard wiring; render it visibly or drop it from the quiet header.
+NIT src/components/leaderboard/SubmitPanel.test.tsx: the unit check was upd
+updated to the split success/note DOM; it keeps the literal success sentenc
+sentence and the exact unavailable reason (good), but asserting "Rank unava
+unavailableYour rank could not be loaded right now." couples the test to St
+StatusNote's title/body adjacency with no separator, which breaks on any ti
+title rewording or render change; assert the two parts separately.
+NIT e2e/theme-board.spec.ts: the literal score 983 comes from BOARD_ONE in
+mobile/scenes, while the retained figure readbacks (figures-8e/leaderboard-
+(figures-8e/leaderboard-*.json) show a different fixture (845/790 rows), so
+so the 10-figure numbers gate and the readability guards exercise different
+different board rows; a one-line comment naming the fixture would keep the
+receipt trail from being skimmed as one dataset.
+NIT src/components/leaderboard/SubmitPanel.module.css: `.unavailable` hand-
+hand-rolls the sunken neutral recipe (surface-sunken background, border-str
+border-strong, muted text) instead of reusing the status-note family used b
+by the board error/empty and rank-unavailable notes; two styling paths for
+the same honest-unavailable look invites drift.
+NIT scripts/audit/theme-figures.mjs: the figures gate still compares number
+numbers and named fields only and never diffs the retained full-text readba
+readbacks (carried from the 8D review NIT); a loose text check would catch
+accidental copy loss in future presentation PRs.
+NIT docs/reports/dispatch-8/after-8e/README.md: fine as-is, but note the da
+daily start captures are byte-identical between before-8e and after-8e (sam
+(same git blob indices), which is good determinism evidence worth stating e
+explicitly next time.

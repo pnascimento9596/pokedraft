@@ -1,0 +1,98 @@
+[
+  {
+    "source": "ci-8f-browser-first.log",
+    "file": "ci-first-browser.log",
+    "rawSha256": "d68b4bf7205c30f3c4ec87bccbc2683625e89829119beecda43578da4f06b1d0",
+    "normalizedSha256": "0bd3e35d4aa77a758ab027c64a32e6787f8cc28f5ba72e887a1d972fe35e0157"
+  },
+  {
+    "source": "linux-date-fixed-probe.log",
+    "file": "linux-input-height-only-red.json",
+    "rawSha256": "8a33e34ff92aa0b2094d2a898a56687f7045cfdeb5668c7b640644c8a7dce4d7",
+    "normalizedSha256": "8a33e34ff92aa0b2094d2a898a56687f7045cfdeb5668c7b640644c8a7dce4d7"
+  },
+  {
+    "source": "linux-date-ready-probe.log",
+    "file": "linux-font-ready-green-probe.json",
+    "rawSha256": "4e14a4d5213daca6f5bd796929631cfb2b2111b7a75333a8bdcb3a1f67b488aa",
+    "normalizedSha256": "4e14a4d5213daca6f5bd796929631cfb2b2111b7a75333a8bdcb3a1f67b488aa"
+  },
+  {
+    "source": "linux-date-ready.log",
+    "file": "linux-ten-green.log",
+    "rawSha256": "21821fd021c5e25fa70d3cafdf371de39daed32e5a270b54692177f3035b387d",
+    "normalizedSha256": "21821fd021c5e25fa70d3cafdf371de39daed32e5a270b54692177f3035b387d"
+  },
+  {
+    "source": "date-label-red.log",
+    "file": "date-label-red.log",
+    "rawSha256": "bb0e278c468b12b0886805b44614c1c005f02f2b1cc8a2f58e7ddfff77754791",
+    "normalizedSha256": "ffb2849bbe447aaac097fdfbe370782374502923deb2e17ddadcf1ef689b9fd9"
+  },
+  {
+    "source": "unit-date-ready.log",
+    "file": "unit.log",
+    "rawSha256": "1e587a2fb1a9bfd29566250794a1e898e04e1b6ea6ed41f07a4e5cc554ced1b3",
+    "normalizedSha256": "1e587a2fb1a9bfd29566250794a1e898e04e1b6ea6ed41f07a4e5cc554ced1b3"
+  },
+  {
+    "source": "lint-date-ready.log",
+    "file": "lint.log",
+    "rawSha256": "ebfee82d478f07b1e725885398b7046100b7b6a51ffc6438f52db8dc0230ea78",
+    "normalizedSha256": "ebfee82d478f07b1e725885398b7046100b7b6a51ffc6438f52db8dc0230ea78"
+  },
+  {
+    "source": "build-date-ready.log",
+    "file": "build.log",
+    "rawSha256": "499c2e0ec655618579a6864da198c9a02558efd86e3f7e145ea83952227f2c4a",
+    "normalizedSha256": "c34f63205b1e74aa0f080acbe06005d4474c11eef4effc2d3084e9265c6de008"
+  },
+  {
+    "source": "unit-date-final.log",
+    "file": "unit-concurrent-failed.log",
+    "rawSha256": "43c02550294c9b86e63d24962c27f53f279c6cfdfffd09959429de12edc0b1fb",
+    "normalizedSha256": "43c02550294c9b86e63d24962c27f53f279c6cfdfffd09959429de12edc0b1fb"
+  },
+  {
+    "source": "linux-date-final.log",
+    "file": "linux-twelve-green.log",
+    "rawSha256": "5c3a6b7a5ce9c4b847ee872c0855b8af10a49a5867251ec755246eca0c28bb3a",
+    "normalizedSha256": "5c3a6b7a5ce9c4b847ee872c0855b8af10a49a5867251ec755246eca0c28bb3a"
+  },
+  {
+    "source": "date-final-focused.log",
+    "file": "mac-focused-62-green.log",
+    "rawSha256": "12e741adc56c713eb1580ae1d4d8fc41f201cf2c57709ff7392527424ab06f07",
+    "normalizedSha256": "12e741adc56c713eb1580ae1d4d8fc41f201cf2c57709ff7392527424ab06f07"
+  },
+  {
+    "source": "date-native-editing-green.log",
+    "file": "native-editing-green.log",
+    "rawSha256": "e1468f885554b171161ab83f2fcb2d727bafe275b9ed19c5e29451d6a9de9369",
+    "normalizedSha256": "e1468f885554b171161ab83f2fcb2d727bafe275b9ed19c5e29451d6a9de9369"
+  },
+  {
+    "source": "figures-date-final.log",
+    "file": "figures-green.log",
+    "rawSha256": "7ab949707c3c542532ef22d3ff89041e877a20b8a44bb5bdf9c9e51694e6865b",
+    "normalizedSha256": "7ab949707c3c542532ef22d3ff89041e877a20b8a44bb5bdf9c9e51694e6865b"
+  },
+  {
+    "source": "build-date-label.log",
+    "file": "build-final.log",
+    "rawSha256": "95105590e69f460c101b0e0cef303863393be3ac0bf9e1858e8bf539bd9b71f2",
+    "normalizedSha256": "2d092752713ae709b6848d32f36cb579314691930290c0114be539b17722374b"
+  },
+  {
+    "source": "colors-date-final.log",
+    "file": "colors.log",
+    "rawSha256": "0ee63fb7c55714d803621c04d5460ef8896560bfa25231ef02f7dc33878f47c8",
+    "normalizedSha256": "0ee63fb7c55714d803621c04d5460ef8896560bfa25231ef02f7dc33878f47c8"
+  },
+  {
+    "source": "lint-date-final.log",
+    "file": "lint-final.log",
+    "rawSha256": "ebfee82d478f07b1e725885398b7046100b7b6a51ffc6438f52db8dc0230ea78",
+    "normalizedSha256": "ebfee82d478f07b1e725885398b7046100b7b6a51ffc6438f52db8dc0230ea78"
+  }
+]

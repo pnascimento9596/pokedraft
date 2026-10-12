@@ -1,0 +1,7 @@
+.module {
+  max-width: 560px;
+}
+.module :global(.module-card__body) {
+  display: grid;
+  gap: 12px;
+}

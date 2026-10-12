@@ -1,0 +1,2 @@
+$ node scripts/audit/theme-color-lint.mjs
+No stray hex colors; viz-8 remains reserved for heat fills.

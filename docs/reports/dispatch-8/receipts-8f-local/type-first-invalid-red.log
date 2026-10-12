@@ -1,0 +1,158 @@
+
+Running 4 tests using 2 workers
+
+(node:9200) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9199) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 390 light (5.4s)
+  ✘  1 [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 390 dark (5.4s)
+(node:9276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9277) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 1440 light (5.3s)
+  ✘  3 [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 1440 dark (5.3s)
+
+
+  1) [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 390 light
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.type-chip').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.type-chip').first() with timeout 5000ms
+      - waiting for locator('.type-chip').first()
+
+
+      4 |
+      5 | async function type(locator: Locator, size: number, line: number, weight?: string) {
+    > 6 |   await expect(locator.first()).toBeVisible();
+        |                                 ^
+      7 |   const values = await locator.evaluateAll((els) => els.map((el) => {
+      8 |     const s = getComputedStyle(el);
+      9 |     return { size: parseFloat(s.fontSize), line: parseFloat(s.lineHeight), ...(s.fontWeight ? { weight: s.fontWeight } : {}) };
+        at type (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:6:33)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:25:13
+
+    Error Context: output/dispatch-8/type-red/theme-type-labels-pills-an-77f8b-le-type-overrides-390-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/type-red/theme-type-labels-pills-an-77f8b-le-type-overrides-390-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/type-red/theme-type-labels-pills-an-77f8b-le-type-overrides-390-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 390 dark
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.type-chip').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.type-chip').first() with timeout 5000ms
+      - waiting for locator('.type-chip').first()
+
+
+      4 |
+      5 | async function type(locator: Locator, size: number, line: number, weight?: string) {
+    > 6 |   await expect(locator.first()).toBeVisible();
+        |                                 ^
+      7 |   const values = await locator.evaluateAll((els) => els.map((el) => {
+      8 |     const s = getComputedStyle(el);
+      9 |     return { size: parseFloat(s.fontSize), line: parseFloat(s.lineHeight), ...(s.fontWeight ? { weight: s.fontWeight } : {}) };
+        at type (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:6:33)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:25:13
+
+    Error Context: output/dispatch-8/type-red/theme-type-labels-pills-an-240fe-ile-type-overrides-390-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/type-red/theme-type-labels-pills-an-240fe-ile-type-overrides-390-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/type-red/theme-type-labels-pills-an-240fe-ile-type-overrides-390-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 1440 light
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.type-chip').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.type-chip').first() with timeout 5000ms
+      - waiting for locator('.type-chip').first()
+
+
+      4 |
+      5 | async function type(locator: Locator, size: number, line: number, weight?: string) {
+    > 6 |   await expect(locator.first()).toBeVisible();
+        |                                 ^
+      7 |   const values = await locator.evaluateAll((els) => els.map((el) => {
+      8 |     const s = getComputedStyle(el);
+      9 |     return { size: parseFloat(s.fontSize), line: parseFloat(s.lineHeight), ...(s.fontWeight ? { weight: s.fontWeight } : {}) };
+        at type (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:6:33)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:25:13
+
+    Error Context: output/dispatch-8/type-red/theme-type-labels-pills-an-b9df0-e-type-overrides-1440-light-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/type-red/theme-type-labels-pills-an-b9df0-e-type-overrides-1440-light-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/type-red/theme-type-labels-pills-an-b9df0-e-type-overrides-1440-light-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 1440 dark
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.type-chip').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.type-chip').first() with timeout 5000ms
+      - waiting for locator('.type-chip').first()
+
+
+      4 |
+      5 | async function type(locator: Locator, size: number, line: number, weight?: string) {
+    > 6 |   await expect(locator.first()).toBeVisible();
+        |                                 ^
+      7 |   const values = await locator.evaluateAll((els) => els.map((el) => {
+      8 |     const s = getComputedStyle(el);
+      9 |     return { size: parseFloat(s.fontSize), line: parseFloat(s.lineHeight), ...(s.fontWeight ? { weight: s.fontWeight } : {}) };
+        at type (/Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:6:33)
+        at /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate/e2e/theme-type.spec.ts:25:13
+
+    Error Context: output/dispatch-8/type-red/theme-type-labels-pills-an-49269-le-type-overrides-1440-dark-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    output/dispatch-8/type-red/theme-type-labels-pills-an-49269-le-type-overrides-1440-dark-chromium/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace output/dispatch-8/type-red/theme-type-labels-pills-an-49269-le-type-overrides-1440-dark-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 390 light
+    [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 390 dark
+    [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 1440 light
+    [chromium] › e2e/theme-type.spec.ts:20:9 › labels, pills and round buttons meet mobile type overrides 1440 dark

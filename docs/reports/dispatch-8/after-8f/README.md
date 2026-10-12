@@ -1,0 +1,38 @@
+# After screenshots: 8f
+
+32 viewport and 32 full-page captures at 390x844 and 1440x900, in both themes. This directory contains empty and seeded history, How to Play, 404, gate, unavailable gate, invalid settings and missing replay. The manifest records zero horizontal overflow.
+
+Captured from the local 8F candidate. Exact production captures and their health identity are retained separately in the closeout set. Native date screenshots were refreshed after the Linux correction.
+
+- [history-empty__390__light.webp](history-empty__390__light.webp)
+- [history__390__light.webp](history__390__light.webp)
+- [help__390__light.webp](help__390__light.webp)
+- [404__390__light.webp](404__390__light.webp)
+- [gate__390__light.webp](gate__390__light.webp)
+- [gate-unavailable__390__light.webp](gate-unavailable__390__light.webp)
+- [invalid__390__light.webp](invalid__390__light.webp)
+- [missing__390__light.webp](missing__390__light.webp)
+- [history-empty__390__dark.webp](history-empty__390__dark.webp)
+- [history__390__dark.webp](history__390__dark.webp)
+- [help__390__dark.webp](help__390__dark.webp)
+- [404__390__dark.webp](404__390__dark.webp)
+- [gate__390__dark.webp](gate__390__dark.webp)
+- [gate-unavailable__390__dark.webp](gate-unavailable__390__dark.webp)
+- [invalid__390__dark.webp](invalid__390__dark.webp)
+- [missing__390__dark.webp](missing__390__dark.webp)
+- [history-empty__1440__light.webp](history-empty__1440__light.webp)
+- [history__1440__light.webp](history__1440__light.webp)
+- [help__1440__light.webp](help__1440__light.webp)
+- [404__1440__light.webp](404__1440__light.webp)
+- [gate__1440__light.webp](gate__1440__light.webp)
+- [gate-unavailable__1440__light.webp](gate-unavailable__1440__light.webp)
+- [invalid__1440__light.webp](invalid__1440__light.webp)
+- [missing__1440__light.webp](missing__1440__light.webp)
+- [history-empty__1440__dark.webp](history-empty__1440__dark.webp)
+- [history__1440__dark.webp](history__1440__dark.webp)
+- [help__1440__dark.webp](help__1440__dark.webp)
+- [404__1440__dark.webp](404__1440__dark.webp)
+- [gate__1440__dark.webp](gate__1440__dark.webp)
+- [gate-unavailable__1440__dark.webp](gate-unavailable__1440__dark.webp)
+- [invalid__1440__dark.webp](invalid__1440__dark.webp)
+- [missing__1440__dark.webp](missing__1440__dark.webp)

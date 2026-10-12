@@ -1,0 +1,2 @@
+$ bash scripts/check-image-seam.sh
+image seam clean

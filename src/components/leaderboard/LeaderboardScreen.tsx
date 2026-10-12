@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useId, useState } from "react";
 import type { IsoDate } from "@/engine";
 import { BOARD_LIMIT, BOARD_MODES, BOARD_SCOPES, type BoardScope } from "@/leaderboard/contract";
 import { MODE_LABEL } from "@/ui/labels";
@@ -17,6 +18,18 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
   const today = useToday(serverToday ?? null);
   const params = useSearchParams();
   const router = useRouter();
+  const dateLabelId = useId();
+  const [dateFontReady, setDateFontReady] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    (document.fonts?.ready ?? Promise.resolve()).then(() => {
+      if (active) setDateFontReady(true);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   if (today === null) return <p className="kicker">Loading the board</p>;
 
@@ -24,6 +37,12 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
   const go = (next: Partial<BoardView>) => {
     router.replace(boardHref({ ...view, ...next }), { scroll: false });
   };
+
+  const caption = `${
+    view.scope === "daily"
+      ? `Daily ${MODE_LABEL.cup8} for ${longDate(view.date)}${view.date === today ? " (today)" : ""}.`
+      : `${MODE_LABEL[view.mode]}, all-time. Every draft setting shares this board, and each row names its settings.`
+  } Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top ${BOARD_LIMIT}.`;
 
   return (
     <ModuleCard
@@ -65,25 +84,25 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
         ) : null}
         {view.scope === "daily" ? (
           <label className={s.date}>
-            <span className="kicker">Date</span>
-            <input
-              type="date"
-              value={view.date}
-              max={today}
-              onChange={(e) => {
-                if (e.target.value) go({ date: e.target.value });
-              }}
-            />
+            <span id={dateLabelId} className="kicker">Date</span>
+            <span className={s.dateField} data-font-ready={dateFontReady}>
+              <span className={s.dateLoading} aria-hidden="true">
+                Loading date
+              </span>
+              <input
+                type="date"
+                aria-labelledby={dateLabelId}
+                value={view.date}
+                max={today}
+                onChange={(e) => {
+                  if (e.target.value) go({ date: e.target.value });
+                }}
+              />
+            </span>
           </label>
         ) : null}
       </div>
-      <p className={s.caption}>
-        {view.scope === "daily"
-          ? `Daily ${MODE_LABEL.cup8} for ${longDate(view.date)}${view.date === today ? " (today)" : ""}.`
-          : `${MODE_LABEL[view.mode]}, all-time. Every draft setting shares this board, and each row names its settings.`}{" "}
-        Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top{" "}
-        {BOARD_LIMIT}.
-      </p>
+      <p className={s.caption}>{caption}</p>
       <Board view={view} />
     </ModuleCard>
   );
