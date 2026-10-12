@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { runHref } from "@/ui/run-link";
 import {
   DOWNLOAD_FAILED,
   downloadStatus,
@@ -22,7 +23,7 @@ export function ShareActions({
   const card = useCardDownload();
 
   const share = async () => {
-    const url = `${location.origin}/r/${token}`;
+    const url = `${location.origin}${runHref(token)}`;
     card.reset();
     try {
       await navigator.clipboard.writeText(url);

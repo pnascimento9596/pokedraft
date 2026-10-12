@@ -128,6 +128,11 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     );
     const res = proxy(req(`/r/pd3?t=${real.slice(4)}`));
     expect(res.headers.get("x-middleware-rewrite")).toBe(`https://pokedraft.test/r/${real}`);
+    expect(
+      proxy(req(`/r/pd3?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
+        "x-middleware-rewrite",
+      ),
+    ).toBe(`https://pokedraft.test/r/${real}?_rsc=123&source=chat`);
     for (const token of [A11Y_RUN_V1, GOLDEN_CUP8_V2]) {
       const [version, payload] = token.split(".");
       expect(proxy(req(`/r/${version}?t=${payload}`)).headers.get("x-middleware-rewrite")).toBe(

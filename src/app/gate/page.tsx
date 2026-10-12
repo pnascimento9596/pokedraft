@@ -1,21 +1,19 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { safeNext } from "@/passcode";
+import { runTokenFromUrl } from "@/ui/run-link";
 import { loadRun } from "../r/[token]/run";
 import { runTitle } from "../r/[token]/title";
 import { ModuleCard } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./page.module.css";
 
-const SHARE = /^\/r\/([^/?#]+)$/;
-
 // Preview bots follow the redirect to this page, so a gated share link still carries the
 // run's title and its (public) card image.
 export async function generateMetadata({ searchParams }: PageProps<"/gate">): Promise<Metadata> {
   const next = safeNext(firstParam((await searchParams).next));
-  const share = SHARE.exec(next);
-  if (share === null) return { title: "pokedraft" };
-  const token = share[1]!;
+  const token = runTokenFromUrl(new URL(next, "https://pokedraft.invalid"));
+  if (token === null) return { title: "pokedraft" };
   const title = runTitle(loadRun(token));
   const image = `/r/${encodeURIComponent(token)}/opengraph-image`;
   return {
