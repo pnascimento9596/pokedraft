@@ -29,7 +29,6 @@ export function LiveRun({
   readonly seed: string;
   readonly daily?: IsoDate;
   readonly title: string;
-  /** A validated snapshot rebuilt once after PlayScreen loads this module. */
   readonly initial: Restored | null;
   readonly onNewRun: () => void;
 }) {

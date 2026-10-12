@@ -73,8 +73,6 @@ function rebuild(slot: RunSlot, saved: Saved): Run | null {
 export function restoreRun(slot: RunSlot): Restored | null {
   const session = readSession(runSlotKey(slot));
   if (session === RUN_CLEARED) return null;
-  // A valid tab envelope owns this slot even when another tab saved a different browser run.
-  // A corrupt envelope can fall back to the browser checkpoint.
   const raw = session !== null && parse(session) !== null ? session : readRunCheckpoint(slot);
   if (raw === null) return null;
   const saved = parse(raw);

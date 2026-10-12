@@ -77,7 +77,6 @@ export function HomeScreen() {
     setPanel(next);
   };
 
-  // A shared or saved lineup sets the formation and pool it was built with.
   const startLive = (b: string | null): Promise<LiveDesk> => {
     loading.current ??= loadEngine().then(
       (engine) => {
@@ -135,7 +134,6 @@ export function HomeScreen() {
     const url =
       token === null ? window.location.pathname : `${window.location.pathname}?b=${token}`;
     window.history.replaceState(window.history.state, "", url);
-    // Viewing a shared squad must not adopt it or erase another squad saved by this browser.
     if (!dirty.current) return;
     dirty.current = false;
     if (

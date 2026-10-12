@@ -48,11 +48,8 @@ export interface RunSlot {
   readonly daily: IsoDate | null;
 }
 
-// A cleared tab must stay on Start even when another tab has a browser checkpoint.
 export const RUN_CLEARED = "cleared";
 
-// Each tab and the browser checkpoint keep one run per mode (Daily shares one). Checking for a
-// snapshot needs no species data; the lazy run module validates its settings, seed and date.
 export function runSlotKey(slot: RunSlot): string {
   return `pokedraft.run.${slot.daily !== null ? "daily" : slot.settings.mode}`;
 }
