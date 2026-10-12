@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   applyAction,
   createDraft,
@@ -17,7 +17,10 @@ import { RollReveal } from "../RollReveal";
 import { Wheel } from "../Wheel";
 import { buildStrip, faceValue, speciesFaces, stagesFor, type RollCause } from "../reel";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 const SETTINGS: readonly DraftSettings[] = [
   {
@@ -81,6 +84,50 @@ function expectedValues(roll: Roll, cause: RollCause): string[] {
 }
 
 describe("randomizer wheel", () => {
+  describe.each([
+    { kind: "region", stageIndex: 0, label: "Hoenn", value: "hoenn" },
+    { kind: "type", stageIndex: 1, label: "Water", value: "water" },
+  ])("$kind reel", ({ stageIndex, label, value }) => {
+    it.each(["finished", "skipped"] as const)(
+      "clears the animated offset and blur when %s, so the settled result stays in the wheel window",
+      (reason) => {
+        let frame: FrameRequestCallback | undefined;
+        vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+          frame = callback;
+          return 1;
+        });
+        vi.stubGlobal("cancelAnimationFrame", vi.fn());
+        const advance = (timestamp: number) => {
+          act(() => {
+            if (frame === undefined) throw new Error("wheel did not schedule a frame");
+            frame(timestamp);
+          });
+        };
+        const roll: Roll = { kind: "combo", region: "hoenn", type: "water", offers: null };
+        const stage = stagesFor(roll, SETTINGS[0]!, "new")[stageIndex]!;
+        const onSettle = vi.fn();
+        const { rerender } = render(<Wheel stage={stage} state="spinning" onSettle={onSettle} />);
+        advance(0);
+        advance(200);
+        const animatedReel = screen.getByTestId("wheel").querySelector<HTMLElement>(".reel")!;
+        expect(animatedReel.style.transform).toContain("translate3d(0, -");
+        expect(animatedReel.style.filter).toBe("blur(2.20px)");
+        if (reason === "finished") advance(3000);
+        else fireEvent.click(screen.getByRole("button", { name: "Tap to skip" }));
+        expect(onSettle).toHaveBeenCalledWith(reason);
+
+        rerender(<Wheel stage={stage} state="settled" onSettle={onSettle} />);
+
+        const result = screen.getByTestId("wheel-result");
+        expect(result.textContent).toBe(label);
+        expect(result.getAttribute("data-value")).toBe(value);
+        expect(screen.getByTestId("wheel").getAttribute("data-state")).toBe("settled");
+        expect(result.parentElement!.style.transform).toBe("");
+        expect(result.parentElement!.style.filter).toBe("");
+      },
+    );
+  });
+
   // 500 jsdom mount and unmount cycles in one synchronous body take 0.46 to 0.5 s alone and 1.2 s
   // in the full suite on a loaded laptop, and up to 2.8 s on CI. One local run failed at 6.5 s
   // against the 5 s default (SF-09). Keep all 500 cases and give the test its own budget.

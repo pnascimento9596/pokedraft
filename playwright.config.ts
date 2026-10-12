@@ -37,6 +37,11 @@ export default defineConfig({
       testMatch: /mobile-(acceptance|targets|draft)\.spec\.ts/,
     },
     {
+      name: "webkit-wheel",
+      use: { browserName: "webkit" },
+      testMatch: /wheel-results\.spec\.ts/,
+    },
+    {
       name: "iphone-14",
       use: { ...devices["iPhone 14"] },
       testMatch: /mobile-(acceptance|targets|draft)\.spec\.ts/,
