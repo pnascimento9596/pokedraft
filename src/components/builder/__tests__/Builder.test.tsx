@@ -330,18 +330,18 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     localStorage.setItem("pokedraft.builder", JSON.stringify(POOL_BUILDER_TOKEN));
     render(<HomeScreen />);
 
-    await screen.findByRole("button", { name: "LCB Pikachu" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: "CB Pikachu" }, { timeout: 10_000 });
     expect(screen.getByTestId("slot-b0").getAttribute("aria-label")).toBe("SUB 1 Charmander");
     expect(filledSlots()).toBe(2);
     expect((screen.getByLabelText("Formation") as HTMLSelectElement).value).toBe("3-5-2");
-    expect(screen.getByRole("switch", { name: "Legendaries" }).getAttribute("aria-checked")).toBe(
+    expect(screen.getByRole("switch", { name: /Legendaries/ }).getAttribute("aria-checked")).toBe(
       "true",
     );
     const gens = screen.getByRole("group", { name: "Generations" });
-    expect(within(gens).getByRole("button", { name: "Gen 1" }).getAttribute("aria-pressed")).toBe(
+    expect(within(gens).getByRole("button", { name: /Gen 1/ }).getAttribute("aria-pressed")).toBe(
       "true",
     );
-    expect(within(gens).getByRole("button", { name: "Gen 3" }).getAttribute("aria-pressed")).toBe(
+    expect(within(gens).getByRole("button", { name: /Gen 3/ }).getAttribute("aria-pressed")).toBe(
       "false",
     );
   });
@@ -421,7 +421,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     cleanup();
     window.history.replaceState(null, "", "/");
     render(<HomeScreen />);
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: "CB Bulbasaur" }, { timeout: 10_000 });
     expect((screen.getByLabelText("Formation") as HTMLSelectElement).value).toBe("3-5-2");
     expect(filledSlots()).toBe(2);
   });
