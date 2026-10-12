@@ -20,6 +20,10 @@ The browser command `PLAYWRIGHT_PORT=3417 pnpm exec playwright test e2e/share.sp
 
 Native proof is repeatable with `swift output/share-links/detect-link.swift output/share-links/original-link.txt` and `swift output/share-links/detect-copied.swift output/share-links/copied-after.txt`. Browser captures are under `output/share-links/`. The first capture harness attempt matched both the results status and the global announcer. Its locator and the browser regression were scoped to the results region.
 
+The first full Linux browser attempt recorded 589 passes, 51 existing skips, two passes on retry, and one failure in the unchanged natural wheel test. The unchanged rerun recorded 586 passes, 51 skips, five passes on retry, and one failure in the same natural-animation boundary at another width. All Share cases passed in both attempts. The focused unchanged wheel suite passed all 12 Chromium and WebKit cases.
+
+The wheel's two spins and pauses take 4,380 ms before scheduling and loading. Its candidate assertion starts immediately after Start with a five-second deadline. The initial failed trace contains three candidate buttons 5.411 ms after the assertion failed. A retry shows both wheels settled with the final completion pause still pending. The test now waits up to ten seconds for both actual wheel results before starting its existing five-second candidate assertion, at both rounds. Its visible result, geometry, pick, and next-round checks remain. Application animation, timing, state, and scoring are unchanged. The previous exact-head approval is superseded by this test-only correction; fresh review and CI are required.
+
 Independent exact-head review and CI receipts belong to the correction PR. Merge is a production deployment and remains pending explicit deployment authorization under the repository skill.
 
 ## Decisions
