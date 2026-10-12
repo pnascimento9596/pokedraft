@@ -4,16 +4,18 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dailySeed } from "@/engine/rng";
-import { DRAFT_ROUNDS, GENS, type DraftSettings, type IsoDate } from "@/engine/types";
+import { DRAFT_ROUNDS, type DraftSettings, type IsoDate } from "@/engine/types";
 import { longDate } from "@/components/leaderboard/format";
 import { unlockAudio } from "@/components/wheel/sound";
 import { focusHeading } from "@/ui/focus";
-import { GEN_REGION, MODE_LABEL, ORDER_LABEL, REGION_LABEL, STYLE_LABEL } from "@/ui/labels";
+import { MODE_LABEL } from "@/ui/labels";
 import { freshSeed, parsePlayQuery } from "@/ui/settings";
+import { settingsSummary } from "@/ui/settingsSummary";
 import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
 import type { Restored } from "./savedRun";
 import { RoadStrip } from "./RoadStrip";
+import { SettingsSummary } from "@/components/SettingsSummary";
 import { ModuleCard, StatusNote } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./PlayScreen.module.css";
@@ -59,30 +61,6 @@ export function PlayScreen() {
   }
   return (
     <Challenge key={JSON.stringify(parsed)} settings={parsed.settings} querySeed={parsed.seed} />
-  );
-}
-
-function gensSummary(settings: DraftSettings): string | null {
-  if (settings.mode !== "cup8") return null;
-  if (settings.gens.length === GENS.length) return "All regions";
-  return settings.gens.map((g) => REGION_LABEL[GEN_REGION[g]]).join(", ");
-}
-
-export function SettingsSummary({ settings }: { readonly settings: DraftSettings }) {
-  const gens = gensSummary(settings);
-  const items: [string, string][] = [["Formation", settings.formation]];
-  if (gens !== null) items.push(["Regions", gens]);
-  if (settings.mode === "cup8") items.push(["Style", STYLE_LABEL[settings.style]]);
-  if (settings.mode !== "builder") items.push(["Order", ORDER_LABEL[settings.order]]);
-  return (
-    <dl className={s.summary}>
-      {items.map(([k, v]) => (
-        <div key={k}>
-          <dt className="kicker">{k}</dt>
-          <dd>{v}</dd>
-        </div>
-      ))}
-    </dl>
   );
 }
 
@@ -214,7 +192,7 @@ export function Challenge({
         icon={<NavIcon family={daily !== undefined ? "daily" : "play"} />}
         data-testid={daily !== undefined ? "daily-kicker" : undefined}
       >
-        <SettingsSummary settings={settings} />
+        <SettingsSummary items={settingsSummary(settings)} />
         <button
           type="button"
           className="btn btn--primary"

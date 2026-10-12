@@ -49,27 +49,6 @@
   color: var(--ink-soft);
 }
 
-.summary {
-  margin: 4px 0 8px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 20px;
-}
-
-.summary div {
-  display: flex;
-  flex-direction: column;
-}
-
-.summary dd {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.15rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
 .dailyNext {
   margin: 0;
   color: var(--ink-soft);
@@ -100,14 +79,4 @@
   flex-direction: column;
   gap: 12px;
   align-items: flex-start;
-}
-.summary {
-  gap: 8px 16px;
-}
-.summary dt,
-.summary dd {
-  font-size: 13px;
-  line-height: 18px;
-  letter-spacing: 0;
-  text-transform: none;
 }
