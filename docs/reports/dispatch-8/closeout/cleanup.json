@@ -1,0 +1,21 @@
+{
+  "sha": "b6c9bb71f0f12ad56b37e5945c302712dc6388a7",
+  "deleted": {
+    "content": [
+      {
+        "type": "text",
+        "text": "[\n  {\n    \"id\": \"f74330c1-2956-45ed-89ac-817ee4fabadd\",\n    \"nickname\": \"verify-bot\",\n    \"mode\": \"cup8\",\n    \"daily_date\": \"2026-10-12T00:00:00.000Z\"\n  }\n]"
+      }
+    ],
+    "isError": false
+  },
+  "readback": {
+    "content": [
+      {
+        "type": "text",
+        "text": "[\n  {\n    \"remaining\": \"0\"\n  }\n]"
+      }
+    ],
+    "isError": false
+  }
+}

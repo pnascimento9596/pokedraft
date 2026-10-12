@@ -1,0 +1,10 @@
+$ vitest run 'src/app/r/[token]/__tests__/replay-count.test.ts' --maxWorkers=1
+
+ RUN  v5.0.3 /Users/paulo/Projects/pokedraft/output/dispatch-8/worktrees/history-help-gate
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  22:20:43
+   Duration  2.41s (tests 61%, import 23%, transform 16%)
+

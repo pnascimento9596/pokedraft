@@ -18,9 +18,9 @@ Read the Principles section of poteto-mode. Apply figure-it-out, with this dispa
 
 - [x] Phase A: Frame. Seven independently shipped units, with production verification after each. Done means every listed route uses the new light and dark theme, the unchanged mobile acceptance suite passes, figures are preserved, contrast and color lint run in CI, and baseline/final three-run mobile Lighthouse receipts are available.
 - [x] Phase B: Design the workflow. Preserve the dispatch's PR areas and order. Each ships only after exact-head review and its required gates. The dispatch's multiple-PR instruction supersedes the repository's one-PR-per-dispatch default.
-- [ ] Phase C: Run the loop. PR 8.0 health and measurement first. Then PR 8A tokens/font/components; 8B home/builder; 8C draft/wheel; 8D results/share; 8E daily/leaderboard; 8F history/help/404/gate.
-- [ ] Phase D: Keep the audit trail. Append actual decisions and evidence as each unit completes.
-- [ ] Phase E: Verify and hand back. Produce the full readback only after the required production gates.
+- [x] Phase C: Run the loop. PR 8.0 health and measurement first. Then PR 8A tokens/font/components; 8B home/builder; 8C draft/wheel; 8D results/share; 8E daily/leaderboard; 8F history/help/404/gate.
+- [x] Phase D: Keep the audit trail. Append actual decisions and evidence as each unit completes.
+- [x] Phase E: Verify and hand back. Produce the full readback only after the required production gates.
 
 `architect skipped: dispatch fixed the design`. `how`, `swarm`, `arena`, `reflect`, `deslop`, `control-ui`, `control-cli`, and `create-skill`: `skip: not installed`. Browser evidence uses Playwright. GLM 5.3 Flash cloud is installed for the prescribed first independent reviewer; availability is not yet a verdict. No delegation is needed for the first unit.
 
@@ -289,3 +289,20 @@ The review's documentation findings are corrected here: nine builder readiness a
 Linux focused verification passes all 12 cold-load, delayed-font and native editing cases. macOS focused verification passes 62 axe/contrast/CLS/native editing cases. The Date placeholder required explicit aria-labelledby to retain the original Date label; two guards were committed RED before that correction. Figure snapshots still match 186 results and 10 leaderboard numbers in both themes. A concurrent local unit run hit four timeouts (731 passed, four failed); its receipt is retained and an isolated full unit run is required before acceptance.
 
 The isolated local repeat also hit an unchanged replay-import five-second deadline. No test was weakened. The exact new-head GitHub check job must pass all 735 unit tests, and the full browser job must pass all 625 cases (574 passing plus 51 existing skips), before merge. The two native date guards increase the browser suite from 623 to 625 cases.
+
+
+## Final source production acceptance
+
+PR #32 shipped as b6c9bb71f0f12ad56b37e5945c302712dc6388a7, reviewed 792c841146a3fcec7aa0304afb61810f57e24315. Fresh GLM 5.3 Flash cloud high APPROVE with verified canary d3d45289b5c26d6cc9e89ff7. Exact-head GitHub CI 38195371430 passed all 735 unit tests in 80 files and the 625-case browser suite: 573 passes, one pass on retry, 51 existing skips. The retry was the unchanged Pixel 7 tap-after-drag case. No assertion or retry configuration was changed.
+
+Production first cache-busted health proves b6c9bb7, production/iad1/engine3/token versions1/2/3 and no-store. Live4 passed, unchanged acceptance plus formation guards286/50 passed without failures or retries on all three devices, and production axe/contrast/strict CLS/date/theme-choice71 passed. Real card and OG responses are HTTP200 image/png1200x630. Production HTML/CSS/network confirm Inter only, with its local fallback; Big Shoulders/Barlow are absent. Figures preserve186 results and10 leaderboard values per theme for identical pinned inputs. Forty-four viewport and44 full-page production captures have zero overflow and one h1, both widths/themes.
+
+The new verify-bot f74330c1-2956-45ed-89ac-817ee4fabadd, cup8,2026-10-12, was removed with an exact id/name/mode/date predicate; readback found0. Neon’s first query had an internal MCP error; retry succeeded without authentication or configuration changes.
+
+Final production Lighthouse run38246671783 passed all24 individual samples, each Accessibility100 and exactCLS0. Every route’s summary is the median of three mobile runs. Baseline and final match ubuntu24 image20261004.327.1, Node22.23.3,4CPUs, Lighthouse13.5.0, Chrome156.0.8078.4. Final Performance/LCPms: home85/2112.4, play97/2258.4, daily85/2237.8, leaderboard77/3529.6, history96/1956.6, help95/2108.7, results76/3760.9, Kanto88/2109.8. History LCP is effectively flat; its and help’s Performance scores each fell2points. No cherry-picked rerun or causal font-only claim is made.
+
+The full readback, role contrast minima, type-color simulation and paired screenshot index are in docs/reports/dispatch-8/readback.md and screenshots.md. Current source acceptance is complete. This documentation closeout PR must still pass exact-head independent review and full CI, then pinned merge and production health/live/mobile/spot captures/bot cleanup. Its own identity and post-merge receipts are reported in the final response, avoiding a self-referential commit chain.
+
+Earlier local area screenshot manifests did not embed exact build SHA; their limitation remains explicit. Figure preservation uses the Misty/Brock845/790 fixture, while geometry/font guards use BOARD_ONE983/8-1-1. Header descriptions are visible in ModuleCard headers; the review’s repeated hidden-description suggestion was checked and is not present. DraftBoard’s round class is used by its h1.
+
+NOT RUN: physical phones/native keyboards, Computer Use desktop UI actions, Render workspace selection at the user’s request, a standalone causal font benchmark, and human perception testing beyond the documented color-vision simulation. Three inherited route-CLS guards still filter below0.001; exact-zero claims use the strict new guards and final24 Lighthouse samples. Other skipped portable playbook steps retain their recorded reasons.

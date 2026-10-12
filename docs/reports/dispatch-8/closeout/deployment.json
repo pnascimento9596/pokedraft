@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"result\": {\n    \"deployment\": {\n      \"id\": \"dpl_BUAXh36zhRvtR9dHQe5DWdFu3XMM\",\n      \"name\": \"pokedraft\",\n      \"url\": \"pokedraft-6apn1r256-pnascimento9596s-projects.vercel.app\",\n      \"type\": \"LAMBDAS\",\n      \"state\": \"READY\",\n      \"createdAt\": 1791772490169,\n      \"creator\": {\n        \"uid\": \"RLHbWVtqwEqwRyF6c9xUH3gO\",\n        \"username\": \"pnascimento9596\"\n      },\n      \"project\": {\n        \"id\": \"prj_GfNWnE8gbjY2YXOPOWszq7vxGOnL\",\n        \"name\": \"pokedraft\",\n        \"framework\": \"nextjs\"\n      },\n      \"meta\": {\n        \"githubCommitRef\": \"main\",\n        \"githubCommitSha\": \"b6c9bb71f0f12ad56b37e5945c302712dc6388a7\",\n        \"githubCommitMessage\": \"feat(theme): finish warm pages and typography (8F) (#32)\\n\\n* test(theme): guard support modules and accessible passcode field\\n\\n* feat(theme): warm support pages and finish figure typography\\n\\n* test(theme): guard short missing-page module widths\\n\\n* test(ui): expose undersized labels and round contr...\",\n        \"githubRepo\": \"pokedraft\",\n        \"githubOrg\": \"pnascimento9596\"\n      },\n      \"alias\": [\n        \"pokedraft-woad.vercel.app\",\n        \"pokedraft-pnascimento9596s-projects.vercel.app\",\n        \"pokedraft-git-main-pnascimento9596s-projects.vercel.app\"\n      ],\n      \"target\": \"production\",\n      \"regions\": [\n        \"iad1\"\n      ],\n      \"buildingAt\": 1791772491511,\n      \"ready\": 1791772525215,\n      \"readyState\": \"READY\",\n      \"source\": \"git\",\n      \"aliasError\": null\n    }\n  }\n}"
+    }
+  ],
+  "isError": false
+}
