@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { NextRequest } from "next/server";
 import sharp from "sharp";
-import { FORMATIONS } from "@/engine";
 import { GET } from "@/app/card/route";
 import { tokenImageRect } from "@/components/share/card";
 
@@ -73,7 +72,7 @@ describe("GET /card", () => {
       const i = (y * info.width + x) * info.channels;
       return [data[i]!, data[i + 1]!, data[i + 2]!];
     };
-    const r = tokenImageRect(FORMATIONS["4-3-3"].slots[slotIndex]!);
+    const r = tokenImageRect("4-3-3", slotIndex);
     const bg = px(r.left - 3, r.top + 26);
     let count = 0;
     for (let y = r.top; y < r.top + r.size; y++) {
@@ -83,6 +82,10 @@ describe("GET /card", () => {
     }
     return count;
   }
+
+  it("draws each creature in a picture box of at least 104 px (the 52 px icons were unreadable in chat)", () => {
+    expect(tokenImageRect("4-3-3", 9).size).toBeGreaterThanOrEqual(104);
+  });
 
   it.each(["pokeapi-pixel", "pokeapi-art"])(
     "draws real creature pixels from the %s pack, not an empty square",
