@@ -69,7 +69,7 @@ export function HomeScreen() {
   }, [showingResults]);
   const panelRef = useRef(panel);
   const loading = useRef<Promise<LiveDesk> | null>(null);
-  const dirty = useRef(false);
+  const loadedEngine = useRef<BuilderEngine | null>(null);
   const ownCheckpoint = useRef<string | null>(null);
 
   const updatePanel = (next: PanelSettings) => {
@@ -96,6 +96,7 @@ export function HomeScreen() {
             : saved;
         if (next !== saved) updatePanel(next);
         const desk = { engine, draft: shared ?? freshDraft(engine, next) };
+        loadedEngine.current = engine;
         setLive(desk);
         return desk;
       },
@@ -108,6 +109,22 @@ export function HomeScreen() {
   };
 
   const ensureLive = () => (live !== null ? Promise.resolve(live) : startLive(null));
+
+  const changeDraft = ({ engine, draft }: LiveDesk) => {
+    const token =
+      filledCount(draft.lineup) === 0
+        ? null
+        : engine.builderToken(draft.settings, draft.lineup, BUILDER_URL_SEED);
+    if (
+      token !== null ||
+      (ownCheckpoint.current !== null &&
+        ownCheckpoint.current === readJson<unknown>(BUILDER_CHECKPOINT_KEY, null))
+    ) {
+      writeJson(BUILDER_CHECKPOINT_KEY, token);
+    }
+    ownCheckpoint.current = token;
+    setLive({ engine, draft });
+  };
 
   useEffect(() => {
     const b = new URLSearchParams(window.location.search).get("b");
@@ -134,24 +151,13 @@ export function HomeScreen() {
     const url =
       token === null ? window.location.pathname : `${window.location.pathname}?b=${token}`;
     window.history.replaceState(window.history.state, "", url);
-    if (!dirty.current) return;
-    dirty.current = false;
-    if (
-      token !== null ||
-      (ownCheckpoint.current !== null &&
-        ownCheckpoint.current === readJson<unknown>(BUILDER_CHECKPOINT_KEY, null))
-    ) {
-      writeJson(BUILDER_CHECKPOINT_KEY, token);
-    }
-    ownCheckpoint.current = token;
   }, [live]);
 
   const changePanel = (next: PanelSettings) => {
     updatePanel(next);
     savePanel(next);
     if (live !== null && poolChanged(panel, next)) {
-      dirty.current = true;
-      setLive({
+      changeDraft({
         ...live,
         draft: live.engine.rebuildDraft(builderSettings(next), live.draft.lineup, BUILDER_URL_SEED),
       });
@@ -183,16 +189,14 @@ export function HomeScreen() {
         desk={desk}
         ensureLive={ensureLive}
         onChange={(draft) => {
-          dirty.current = true;
-          setLive((cur) => (cur === null ? cur : { ...cur, draft }));
+          if (loadedEngine.current !== null) changeDraft({ engine: loadedEngine.current, draft });
         }}
         showRatings={panel.showRatings}
         onReset={() => {
           updatePanel(DEFAULT_PANEL);
           savePanel(DEFAULT_PANEL);
           if (live !== null) {
-            dirty.current = true;
-            setLive({ ...live, draft: freshDraft(live.engine, DEFAULT_PANEL) });
+            changeDraft({ ...live, draft: freshDraft(live.engine, DEFAULT_PANEL) });
           }
         }}
         onFriendly={setFriendly}
