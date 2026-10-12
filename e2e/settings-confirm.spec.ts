@@ -29,6 +29,17 @@ test.describe("settings panel and Play confirmation on a phone", () => {
     await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
   });
 
+  test("Back from /play returns to a home page with no dialog blocking it", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Play 151 Challenge" }).click();
+    await dialog(page).getByRole("button", { name: "Yes, play" }).click();
+    await expect(page).toHaveURL("/play?mode=kanto151&f=4-3-3&order=squadFirst");
+    await page.goBack();
+    await expect(dialog(page)).toHaveCount(0);
+    await page.getByRole("button", { name: "Play 151 Challenge" }).click();
+    await expect(dialog(page)).toBeVisible();
+  });
+
   test("Play 151 lists only formation and order", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Play 151 Challenge" }).click();

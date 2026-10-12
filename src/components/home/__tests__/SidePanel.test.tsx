@@ -64,6 +64,13 @@ describe("home Play buttons ask before they start a run", () => {
     ]);
   });
 
+  it("removes the modal dialog once Yes navigates, so a hidden home page cannot block /play", () => {
+    render(<Harness initial={PICKED} />);
+    fireEvent.click(screen.getByRole("button", { name: "Play 151 Challenge" }));
+    fireEvent.click(screen.getByRole("button", { name: "Yes, play" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
   it("prefetches /play when the dialog opens so Yes is as fast as the old link", () => {
     render(<Harness initial={PICKED} />);
     fireEvent.click(screen.getByRole("button", { name: "Play 8-0 Challenge" }));

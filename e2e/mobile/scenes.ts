@@ -249,7 +249,7 @@ export const SCENES: readonly Scene[] = [
       await page.goto("/");
       await ready(page, page.getByRole("button", { name: "Randomize" }));
     },
-    primary: (page) => page.getByRole("link", { name: "Play 8-0 Challenge" }),
+    primary: (page) => page.getByRole("button", { name: "Play 8-0 Challenge" }),
   },
   {
     id: "home settings open",
@@ -257,13 +257,25 @@ export const SCENES: readonly Scene[] = [
     open: async (page) => {
       await seedStorage(page, { "pokedraft:stats:v1": STATS });
       await page.goto("/");
-      const toggle = page.getByRole("button", { name: "Settings and records" });
-      await ready(page, toggle);
-      await toggle.click();
+      await ready(page, page.getByRole("button", { name: "Hide settings and records" }));
       await expect(page.getByRole("heading", { name: "Your records" })).toBeVisible();
       await settle(page);
     },
-    primary: (page) => page.getByRole("link", { name: "Play 8-0 Challenge" }),
+    primary: (page) => page.getByRole("button", { name: "Play 8-0 Challenge" }),
+  },
+  {
+    id: "play confirmation open",
+    route: "/",
+    modal: true,
+    open: async (page) => {
+      await page.goto("/");
+      const play = page.getByRole("button", { name: "Play 8-0 Challenge" });
+      await ready(page, play);
+      await play.click();
+      await expect(page.getByRole("dialog", { name: "Settings confirmed?" })).toBeVisible();
+      await settle(page);
+    },
+    primary: (page) => page.getByRole("dialog").getByRole("button", { name: "Yes, play" }),
   },
   {
     id: "builder full",
