@@ -4,6 +4,7 @@ import type { ReactElement } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { IsoDate } from "@/engine";
 import { dailySettings } from "@/leaderboard/daily";
+import { freshSeed } from "@/ui/settings";
 import { Challenge, PlayScreen } from "../PlayScreen";
 import { DAILY_2026_10_10_CUP8, GOLDEN_1_KANTO151 } from "./ladders";
 
@@ -13,7 +14,7 @@ const fresh = { seed: "golden-1" };
 // A fresh run draws its seed at Start; the tests pin it so the drawn ladder has a literal value.
 vi.mock("@/ui/settings", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/ui/settings")>()),
-  freshSeed: () => fresh.seed,
+  freshSeed: vi.fn(() => fresh.seed),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -23,6 +24,8 @@ vi.mock("next/navigation", () => ({
 }));
 
 beforeEach(() => {
+  vi.clearAllMocks();
+  fresh.seed = "golden-1";
   vi.stubGlobal("matchMedia", (q: string) => ({
     matches: q.includes("reduce"),
     media: q,
@@ -36,6 +39,7 @@ afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
   sessionStorage.clear();
+  localStorage.clear();
 });
 
 // Start loads the draft (and the species data) with import(), so the board appears a tick later.
@@ -74,7 +78,6 @@ describe("challenge run screen", () => {
       );
       act(() => vi.advanceTimersByTime(1));
       expect(screen.queryByTestId("draft-hint")).toBeNull();
-
     } finally {
       vi.useRealTimers();
     }
@@ -212,6 +215,40 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
     expect(screen.queryByTestId("run-start")).toBeNull();
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
     expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
+  });
+
+  it("resumes an unseeded route without drawing a different fresh seed and restarting the squad", async () => {
+    query.current = RUN_TEST.replace("&seed=run-test", "");
+    fresh.seed = "run-test";
+    render(<PlayScreen />);
+    await pickGulpinAtStriker();
+    const saved = sessionStorage.getItem("pokedraft.run.cup8");
+    fresh.seed = "other-seed";
+
+    reload(<PlayScreen />);
+
+    await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
+    expect(sessionStorage.getItem("pokedraft.run.cup8")).toBe(saved);
+    expect(freshSeed).toHaveBeenCalledTimes(1);
+  });
+
+  it("recovers the exact token and squad after the tab closes and only browser storage remains", async () => {
+    query.current = RUN_TEST;
+    render(<PlayScreen />);
+    await pickGulpinAtStriker();
+    const saved = sessionStorage.getItem("pokedraft.run.cup8");
+    expect(localStorage.getItem("pokedraft.run.cup8")).toBe(saved);
+    cleanup();
+    sessionStorage.clear();
+
+    render(<PlayScreen />);
+
+    await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
+    expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
+    expect(sessionStorage.getItem("pokedraft.run.cup8")).toBe(saved);
   });
 
   it("brings a finished, unsubmitted run back to its results with the same record and the submit form (catches losing the only chance to submit)", async () => {
