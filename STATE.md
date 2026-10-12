@@ -67,12 +67,12 @@ From `docs/decisions/dispatch-5.md`:
 
 ### Dispatch 7 PR 7A
 
-| Not run                                                    | Why                                                                                              |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Real iPhone Safari and a real Android phone                | the browser proof used Playwright WebKit (iPhone 14 profile) and Chromium (Pixel 7 profile) only |
-| "Scouting notes" on a result row with no rationale         | unreachable: 1025 of 1025 species have a rationale                                               |
-| `knip` (unused exports after `NOMINAL_LADDER` was removed) | knip is not a repo dependency; `rg NOMINAL_LADDER` finds no use in `src/` instead                |
-| Field                                                      | Value                                                                                            | Source |
+| Not run                                                    | Why                                                                                                                                                                          |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Real iPhone Safari and a real Android phone                | the browser proof used Playwright WebKit (iPhone 14 profile) and Chromium (Pixel 7 profile) only                                                                             |
+| "Scouting notes" on a result row with no rationale         | unreachable: 1025 of 1025 species have a rationale                                                                                                                           |
+| `knip` (unused exports after `NOMINAL_LADDER` was removed) | knip is not a repo dependency; `rg NOMINAL_LADDER` finds no use in `src/` instead                                                                                            |
+| Home settings (settings-confirm)                           | Settings open by default; home Play buttons open a "Settings confirmed?" dialog (Yes goes to `/play`, No focuses Formation); shared links, daily and friendly are not gated. | `docs/decisions/settings-confirm.md` |
 
 ### Dispatch 8 PR 8B checkpoint
 
