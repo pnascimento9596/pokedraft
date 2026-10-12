@@ -311,6 +311,160 @@ function filledSlots() {
   return document.querySelectorAll('[data-testid^="slot-"][data-filled="true"]').length;
 }
 
+const OWN_BUILDER_TOKEN = "pd3.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDI1LCJzMiJdXV0";
+const EDITED_BUILDER_TOKEN =
+  "pd3.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDI1LCJzMiJdLFsibCIsNCwiczkiXV1d";
+const POOL_BUILDER_TOKEN =
+  "pd3.W1siYiIsIjMtNS0yIiwiMTIiLDFdLCJidWlsZGVyIixbWyJsIiwyNSwiczIiXSxbImwiLDQsImIwIl1dXQ";
+
+async function replaceBulbasaurWithPikachu() {
+  const dialog = await openPicker("LCB Bulbasaur");
+  fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
+  fireEvent.click(within(dialog).getByTestId("pick-25"));
+  await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Pikachu");
+}
+
+describe("browser builder checkpoints (catches drafts lost when reopening the plain home page)", () => {
+  it("restores the exact saved formation, pool, starters and bench without a shared URL", async () => {
+    localStorage.setItem("pokedraft.builder", JSON.stringify(POOL_BUILDER_TOKEN));
+    render(<HomeScreen />);
+
+    await screen.findByRole("button", { name: "LCB Pikachu" }, { timeout: 10_000 });
+    expect(screen.getByTestId("slot-b0").getAttribute("aria-label")).toBe("SUB 1 Charmander");
+    expect(filledSlots()).toBe(2);
+    expect((screen.getByLabelText("Formation") as HTMLSelectElement).value).toBe("3-5-2");
+    expect(screen.getByRole("switch", { name: "Legendaries" }).getAttribute("aria-checked")).toBe(
+      "true",
+    );
+    const gens = screen.getByRole("group", { name: "Generations" });
+    expect(within(gens).getByRole("button", { name: "Gen 1" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(within(gens).getByRole("button", { name: "Gen 3" }).getAttribute("aria-pressed")).toBe(
+      "false",
+    );
+  });
+
+  it("saves a player edit and restores that squad after closing and reopening plain home", async () => {
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await replaceBulbasaurWithPikachu();
+    expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(EDITED_BUILDER_TOKEN));
+
+    cleanup();
+    window.history.replaceState(null, "", "/");
+    render(<HomeScreen />);
+    await screen.findByRole("button", { name: "LCB Pikachu" }, { timeout: 10_000 });
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Charmander");
+    expect(filledSlots()).toBe(2);
+  });
+
+  it("opens the explicit shared squad while viewing, ratings and Reset preserve the player's other saved squad", async () => {
+    localStorage.setItem("pokedraft.builder", JSON.stringify(OWN_BUILDER_TOKEN));
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Charmander");
+    showRatings();
+    expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(OWN_BUILDER_TOKEN));
+    fireEvent.click(screen.getByRole("button", { name: "Reset" }));
+    expect(filledSlots()).toBe(0);
+    expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(OWN_BUILDER_TOKEN));
+
+    cleanup();
+    window.history.replaceState(null, "", "/");
+    render(<HomeScreen />);
+    await screen.findByRole("button", { name: "LCB Pikachu" }, { timeout: 10_000 });
+    expect(filledSlots()).toBe(1);
+  });
+
+  it("adopts an edited shared squad as the player's checkpoint and Reset clears it", async () => {
+    localStorage.setItem("pokedraft.builder", JSON.stringify(OWN_BUILDER_TOKEN));
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await replaceBulbasaurWithPikachu();
+    expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(EDITED_BUILDER_TOKEN));
+    fireEvent.click(screen.getByRole("button", { name: "Reset" }));
+    expect(filledSlots()).toBe(0);
+    expect(JSON.parse(localStorage.getItem("pokedraft.builder") ?? "null")).toBeNull();
+
+    cleanup();
+    window.history.replaceState(null, "", "/");
+    render(<HomeScreen />);
+    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("Empty LCB slot");
+    expect(filledSlots()).toBe(0);
+  });
+
+  it("Clear all clears the checkpoint when the URL is the player's own saved squad", async () => {
+    localStorage.setItem("pokedraft.builder", JSON.stringify(TWO_PLACED_TOKEN));
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    fireEvent.click(screen.getByRole("button", { name: "Clear all" }));
+    expect(filledSlots()).toBe(0);
+    expect(JSON.parse(localStorage.getItem("pokedraft.builder") ?? "null")).toBeNull();
+  });
+
+  it("Reset cannot erase a newer squad checkpoint saved by another tab", async () => {
+    localStorage.setItem("pokedraft.builder", JSON.stringify(TWO_PLACED_TOKEN));
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    localStorage.setItem("pokedraft.builder", JSON.stringify(OWN_BUILDER_TOKEN));
+    fireEvent.click(screen.getByRole("button", { name: "Reset" }));
+    expect(filledSlots()).toBe(0);
+    expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(OWN_BUILDER_TOKEN));
+  });
+
+  it("a formation edit checkpoints the rebuilt squad and survives a plain-home reopen", async () => {
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    fireEvent.change(screen.getByLabelText("Formation"), { target: { value: "3-5-2" } });
+    cleanup();
+    window.history.replaceState(null, "", "/");
+    render(<HomeScreen />);
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    expect((screen.getByLabelText("Formation") as HTMLSelectElement).value).toBe("3-5-2");
+    expect(filledSlots()).toBe(2);
+  });
+
+  it("still plays and edits when browser storage reads and writes throw", async () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await replaceBulbasaurWithPikachu();
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Charmander");
+    expect(filledSlots()).toBe(2);
+  });
+
+  it.each(["{", '{"token":42}', '"pd99.invalid"', '"pd3.invalid"'])(
+    "an invalid checkpoint %s leaves the empty builder usable",
+    async (raw) => {
+      localStorage.setItem("pokedraft.builder", raw);
+      render(<HomeScreen />);
+      const dialog = await openPicker("Empty LCB slot");
+      fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
+      fireEvent.click(within(dialog).getByTestId("pick-25"));
+      await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+      expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Pikachu");
+      expect(filledSlots()).toBe(1);
+    },
+  );
+
+  it("an initial home with no checkpoint keeps its empty idle pitch and does not save a draft on picker open", async () => {
+    render(<HomeScreen />);
+    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("Empty LCB slot");
+    expect(filledSlots()).toBe(0);
+    expect(localStorage.getItem("pokedraft.builder")).toBeNull();
+    const dialog = await openPicker("Empty LCB slot");
+    expect(within(dialog).getByRole("heading").textContent).toBe("Pick for LCB");
+    expect(localStorage.getItem("pokedraft.builder")).toBeNull();
+  });
+});
+
 describe("builder toolbar (catches buttons that stop doing what they say)", () => {
   it("picking a species fills the empty slot and closes the picker", async () => {
     render(<HomeScreen />);
