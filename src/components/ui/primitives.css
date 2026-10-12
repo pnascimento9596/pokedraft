@@ -251,8 +251,10 @@ h1.module-title {
   flex-shrink: 0;
   color: var(--text-muted);
 }
-a.list-row:hover .list-row__arrow {
-  color: var(--link);
+@media (hover: hover) {
+  a.list-row:hover .list-row__arrow {
+    color: var(--link);
+  }
 }
 .primary-button {
   display: inline-flex;
@@ -270,8 +272,10 @@ a.list-row:hover .list-row__arrow {
   font-weight: 600;
   cursor: pointer;
 }
-.primary-button:hover:not(:disabled) {
-  background: var(--accent-hover);
+@media (hover: hover) {
+  .primary-button:hover:not(:disabled) {
+    background: var(--accent-hover);
+  }
 }
 .primary-button:disabled {
   cursor: not-allowed;

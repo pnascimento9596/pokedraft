@@ -246,9 +246,11 @@
   box-shadow: 0 0 0 2px var(--link);
 }
 
-.row:hover,
-.card:hover {
-  border-color: var(--ink-soft);
+@media (hover: hover) {
+  .row:hover,
+  .card:hover {
+    border-color: var(--ink-soft);
+  }
 }
 
 .candName {

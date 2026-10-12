@@ -20,11 +20,13 @@
   min-height: 44px;
   text-decoration: none;
 }
-.link:hover {
-  background: var(--surface-sunken);
-}
-.link:hover .bucket {
-  text-decoration: underline;
+@media (hover: hover) {
+  .link:hover {
+    background: var(--surface-sunken);
+  }
+  .link:hover .bucket {
+    text-decoration: underline;
+  }
 }
 .record {
   font-weight: 600;
