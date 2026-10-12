@@ -107,7 +107,11 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
               Play 151 Challenge
             </Link>
           </div>
-          <p className={s.hint}>Challenge runs keep ratings hidden.</p>
+          <p className={s.hint}>
+            {panel.showChallengeRatings
+              ? "Challenge runs show ratings. Turn them off in Settings to play blind."
+              : "Challenge runs keep ratings hidden."}
+          </p>
           <button
             type="button"
             className={`btn btn--ghost btn--sm ${s.moreToggle}`}
@@ -196,6 +200,12 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
               hint="Casual sighted mode"
               checked={panel.showRatings}
               onChange={(showRatings) => set({ showRatings })}
+            />
+            <Switch
+              label="Show ratings (challenges)"
+              hint="Off keeps challenges blind"
+              checked={panel.showChallengeRatings}
+              onChange={(showChallengeRatings) => set({ showChallengeRatings })}
             />
           </section>
 
