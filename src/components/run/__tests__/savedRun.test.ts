@@ -26,6 +26,13 @@ afterEach(() => {
 });
 
 describe("browser checkpoints with per-tab authority", () => {
+  it("preserves an existing tab-only save durably when it is restored after the update", () => {
+    sessionStorage.setItem(KEY, CHECKPOINT);
+    const restored = restoreRun(SLOT);
+    expect(restored?.kind).toBe("draft");
+    expect(localStorage.getItem(KEY)).toBe(CHECKPOINT);
+  });
+
   it("saves the same action token durably and restores its exact squad with no tab snapshot", () => {
     saveRun(SLOT, "draft", PICKED);
     expect(localStorage.getItem(KEY)).toBe(CHECKPOINT);

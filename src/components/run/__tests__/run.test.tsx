@@ -306,6 +306,17 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
     expect(screen.getByTestId("run-start")).toBeTruthy();
   });
 
+  it("returns to Start when a different shared seed opens in the same mounted play route", async () => {
+    query.current = RUN_TEST;
+    const view = render(<PlayScreen />);
+    await pickGulpinAtStriker();
+    query.current = RUN_TEST.replace("seed=run-test", "seed=other-seed");
+    view.rerender(<PlayScreen />);
+    await act(async () => {});
+    expect(screen.getByTestId("run-start")).toBeTruthy();
+    expect(screen.queryByTestId("round-header")).toBeNull();
+  });
+
   it("restores a Daily run on the same New York date only", async () => {
     const daily = (date: string) => (
       <Challenge settings={dailySettings("4-3-3")} querySeed={null} daily={date as IsoDate} />
