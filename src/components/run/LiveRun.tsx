@@ -1,31 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import {
-  replay,
-  type CupResult,
-  type DraftSettings,
-  type DraftState,
-  type IsoDate,
-} from "@/engine";
+import { useEffect, useRef, useState } from "react";
+import { replay, type DraftSettings, type IsoDate } from "@/engine";
 import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
 import { ResultsView } from "@/components/results/ResultsView";
 import { focusHeading } from "@/ui/focus";
 import { loadPanel, playHref } from "@/ui/settings";
 import { DraftBoard } from "./DraftBoard";
 import { runToken, startRun, step, type Run } from "./runState";
-import { restoreRun, saveRun, type RunSlot } from "./savedRun";
+import { forgetRun, saveRun, type Restored, type RunSlot } from "./savedRun";
 import s from "./PlayScreen.module.css";
 
-type Screen =
-  | { readonly kind: "draft"; readonly run: Run }
-  | {
-      readonly kind: "results";
-      readonly token: string;
-      readonly draft: DraftState;
-      readonly cup: CupResult;
-    };
+type Screen = Restored;
+export { restoreRun } from "./savedRun";
 
 // The draft and the results. PlayScreen loads this module (and the species data under it) with
 // import() at Start, so the start panel's first load carries none of it.
@@ -34,34 +22,30 @@ export function LiveRun({
   seed,
   daily,
   title,
-  restore,
+  initial,
   onNewRun,
 }: {
   readonly settings: DraftSettings;
   readonly seed: string;
   readonly daily?: IsoDate;
   readonly title: string;
-  /** When the tab holds a saved run, boot into it instead of a fresh draft. */
-  readonly restore: boolean;
+  /** A validated snapshot rebuilt once after PlayScreen loads this module. */
+  readonly initial: Restored | null;
   readonly onNewRun: () => void;
 }) {
   const slot: RunSlot = { settings, seed, daily: daily ?? null };
-  const [screen, setScreen] = useState<Screen>(() => {
-    if (restore) {
-      const restored = restoreRun(slot);
-      if (restored !== null) {
-        if (restored.kind === "draft") return { kind: "draft", run: restored.run };
-        return {
-          kind: "results",
-          token: restored.token,
-          draft: restored.draft,
-          cup: restored.cup,
-        };
-      }
-    }
-    return { kind: "draft", run: startRun(settings, seed) };
-  });
+  const [screen, setScreen] = useState<Screen>(
+    () => initial ?? { kind: "draft", run: startRun(settings, seed) },
+  );
   const [failure, setFailure] = useState<string | null>(null);
+  const unsavedStart = useRef(initial === null && screen.kind === "draft" ? screen.run : null);
+
+  useEffect(() => {
+    const run = unsavedStart.current;
+    if (run === null) return;
+    unsavedStart.current = null;
+    saveRun({ settings, seed, daily: daily ?? null }, "draft", runToken(run));
+  }, [settings, seed, daily]);
 
   // Start run, See results and New run each swap the screen; the new screen's heading takes focus.
   useEffect(() => {
@@ -86,6 +70,14 @@ export function LiveRun({
     }
   };
 
+  const newRun = () => {
+    forgetRun(slot, {
+      screen: screen.kind,
+      token: screen.kind === "draft" ? runToken(screen.run) : screen.token,
+    });
+    onNewRun();
+  };
+
   if (screen.kind === "results") {
     return (
       <ResultsView
@@ -94,7 +86,7 @@ export function LiveRun({
         cup={screen.cup}
         variant="live"
         navFamily={daily === undefined ? "play" : "daily"}
-        onNewRun={daily === undefined ? onNewRun : undefined}
+        onNewRun={daily === undefined ? newRun : undefined}
         submit={
           settings.mode === "builder" ? undefined : (
             <>
@@ -121,7 +113,7 @@ export function LiveRun({
       failure={failure}
       onRun={(run) => show({ kind: "draft", run })}
       onAction={(action) => show({ kind: "draft", run: step(screen.run, action) })}
-      onNewRun={onNewRun}
+      onNewRun={newRun}
       onSeeResults={() => seeResults(screen.run)}
     />
   );
