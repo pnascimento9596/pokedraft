@@ -7,6 +7,8 @@ import { PackCredit } from "@/components/PackCredit";
 import { SiteNav } from "@/components/SiteNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NAV_ICONS, NavIcon, type NavFamily } from "@/components/ui/nav-icons";
+import { THEME_COLOR_DARK, THEME_COLOR_LIGHT } from "@/design/theme-color";
+import { THEME_BOOT_SCRIPT } from "@/ui/theme";
 import "./globals.css";
 
 const inter = Inter({
@@ -28,11 +30,21 @@ export const metadata: Metadata = {
 
 // The page draws under the notch and the home indicator; globals.css pads the edges with the
 // safe-area insets.
-export const viewport: Viewport = { viewportFit: "cover" };
+export const viewport: Viewport = {
+  viewportFit: "cover",
+  colorScheme: "light dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: THEME_COLOR_LIGHT },
+    { media: "(prefers-color-scheme: dark)", color: THEME_COLOR_DARK },
+  ],
+};
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+      </head>
       <body>
         <header className="site-header">
           <Link href="/" className="site-header__brand">
