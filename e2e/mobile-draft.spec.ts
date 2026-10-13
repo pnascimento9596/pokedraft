@@ -112,6 +112,30 @@ test("a tap on a taken slot shows the swap hint on screen without a scroll, and 
   await expect(hint).toHaveCount(0);
 });
 
+for (const size of [{ width: 320, height: 568 }, { width: 390, height: 664 }]) {
+  test(`expanded drawer leaves scrolled keeper uncovered and swap hint visible at ${size.width}x${size.height}`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await start(page, PLAY_8_0);
+    await resizeTo(page, size);
+    await tapNow(page, page.locator('[data-testid^="candidate-"]').first(), "candidate");
+    const keeper = page.getByTestId("slot-s0");
+    await keeper.scrollIntoViewIfNeeded();
+    await tapNow(page, keeper, "place keeper");
+    await expect(page.getByTestId("round-header")).toContainText("Round 2 of 16");
+    await expect(page.locator('[data-testid^="candidate-"]').first()).toBeVisible();
+    await keeper.scrollIntoViewIfNeeded();
+    await settle(page);
+    expect((await inViewport(page, keeper)).problem).toBeNull();
+    await tapNow(page, keeper, "select keeper to swap");
+    await expect(page.locator('[data-testid^="candidate-"]').first()).not.toBeVisible();
+    const hint = page.getByTestId("draft-hint");
+    await expect(hint).toHaveText(/^Tap another slot to swap .+, or tap it again to cancel\.$/);
+    expect((await inViewport(page, hint)).problem).toBeNull();
+    await tapNow(page, keeper, "cancel keeper swap");
+    await expect(hint).toHaveCount(0);
+  });
+}
+
 test("candidate cards clear reroll buttons on phone without overlapping outlines", async ({
   page,
 }) => {
