@@ -9,7 +9,7 @@ import { longDate } from "@/components/leaderboard/format";
 import { unlockAudio } from "@/components/wheel/sound";
 import { focusHeading } from "@/ui/focus";
 import { MODE_LABEL } from "@/ui/labels";
-import { freshSeed, parsePlayQuery } from "@/ui/settings";
+import { freshSeed, loadPanel, parsePlayQuery } from "@/ui/settings";
 import { settingsSummary } from "@/ui/settingsSummary";
 import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
@@ -39,7 +39,24 @@ function whenIdleAfterLoad(task: () => void): () => void {
 
 export function PlayScreen() {
   const params = useSearchParams();
-  const parsed = useMemo(() => parsePlayQuery(new URLSearchParams(params.toString())), [params]);
+  const searchStr = params.toString();
+  const parsed = useMemo(() => {
+    if (!searchStr) {
+      const panel = loadPanel();
+      return {
+        settings: {
+          mode: "cup8" as const,
+          formation: panel.formation,
+          gens: panel.gens,
+          style: panel.style,
+          order: panel.order,
+        },
+        seed: null,
+      };
+    }
+    return parsePlayQuery(new URLSearchParams(searchStr));
+  }, [searchStr]);
+
   if (parsed === null) {
     return (
       <ModuleCard
