@@ -81,7 +81,7 @@
   z-index: 1;
 }
 .token[data-filled="false"] {
-  border-style: dashed;
+  border-color: var(--stadium-ring);
   background: color-mix(in srgb, var(--stadium-card) 85%, transparent);
 }
 .token[data-filled="false"] .tokenSlot {
@@ -267,6 +267,9 @@
   .field {
     aspect-ratio: auto;
     height: 740px;
+  }
+  .wrap[data-fit] .field {
+    height: 620px;
   }
   .token {
     width: 56px;

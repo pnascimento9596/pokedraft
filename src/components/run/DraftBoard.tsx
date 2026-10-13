@@ -132,6 +132,19 @@ function ActiveDraftBoard({
   const focusBefore = useRef<Element | null>(null);
   const runBefore = useRef(run);
   const spokenRoll = useRef(-1);
+  const wheelRef = useRef<HTMLDivElement>(null);
+  const scrolledRoll = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (
+      phase.kind !== "choosing" ||
+      scrolledRoll.current === rollId ||
+      !window.matchMedia("(max-width: 959px)").matches
+    )
+      return;
+    scrolledRoll.current = rollId;
+    wheelRef.current?.scrollIntoView({ block: "center", behavior: "instant" });
+  }, [rollId, phase.kind]);
 
   useEffect(() => {
     if (run.error === null) return;
@@ -143,6 +156,9 @@ function ActiveDraftBoard({
     const before = runBefore.current;
     runBefore.current = run;
     if (before === run) return;
+    if (before.seed !== run.seed || (before.actions.length > 0 && run.actions.length === 0)) {
+      scrolledRoll.current = null;
+    }
     const was = focusBefore.current;
     focusBefore.current = null;
     if (was !== null && !was.isConnected) headingRef.current?.focus({ preventScroll: true });
@@ -363,7 +379,7 @@ function ActiveDraftBoard({
         ) : null}
 
         {roll !== null ? (
-          <div className={s.wheels}>
+          <div ref={wheelRef} className={s.wheels} data-testid="draft-wheel">
             <RollReveal
               key={`reveal-${rollId}`}
               stages={stagesFor(roll, settings, run.cause)}

@@ -116,8 +116,10 @@ test("a tap on a taken slot shows the swap hint on screen without a scroll, and 
   await tapNow(page, keeper, "slot-s0 (empty)");
   await expect(keeper).toHaveAttribute("data-filled", "true");
   await expect(page.getByTestId("round-header")).toContainText("Round 2 of 16");
-  // The player is looking at the pitch, as they would be after a scroll to reach it.
-  await keeper.scrollIntoViewIfNeeded();
+  expect((await inViewport(page, page.getByTestId("draft-wheel"))).problem).toBeNull();
+  await keeper.evaluate((element) =>
+    element.scrollIntoView({ block: "center", behavior: "instant" }),
+  );
   await settle(page);
   await tapNow(page, keeper, "slot-s0 (taken)");
   const hint = page.getByTestId("draft-hint");
@@ -138,7 +140,11 @@ for (const size of [
     await page.setViewportSize(size);
     await start(page, PLAY_8_0);
     await resizeTo(page, size);
-    await tapNow(page, page.locator('[data-testid^="candidate-"]').first(), "candidate");
+    expect((await inViewport(page, page.getByTestId("draft-wheel"))).problem).toBeNull();
+    const candidate = page.locator('[data-testid^="candidate-"]').first();
+    await candidate.scrollIntoViewIfNeeded();
+    await settle(page);
+    await tapNow(page, candidate, "candidate");
     const keeper = page.getByTestId("slot-s0");
     await keeper.scrollIntoViewIfNeeded();
     await tapNow(page, keeper, "place keeper");

@@ -218,8 +218,7 @@
   font-size: 13px;
 }
 .pitch[data-armed] :global([data-testid^="slot-"][data-filled="false"]:not(:focus-visible)) {
-  outline: 2px dashed var(--stadium-ring);
-  outline-offset: 2px;
+  border-color: var(--stadium-ring);
 }
 @media (min-width: 960px) {
   .board {
@@ -236,9 +235,11 @@
   }
 }
 @media (max-width: 959px) {
+  .wheels {
+    min-height: 44px;
+  }
   .drawer {
-    border-radius: 16px 16px 0 0;
-    border-top: 1px solid var(--stadium-border);
+    padding: 8px;
   }
   .drawerToggle {
     display: block;
@@ -252,14 +253,14 @@
     display: none;
   }
   .cards[data-scrollable] {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: 104px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     max-height: none;
-    overflow-x: auto;
+    overflow: visible;
   }
   .card {
     min-height: 140px;
+    padding: 6px 2px;
+    gap: 3px;
   }
   .cardArtWrap [data-player-image] {
     zoom: 0.75;
@@ -272,9 +273,6 @@
   }
 }
 @media (max-width: 959px) {
-  :global(html):has(.board[data-drawer][data-revealed]) {
-    scroll-padding-bottom: min(364px, calc(100dvh - 156px));
-  }
   :global(html):has(.board .error) {
     scroll-padding-top: 100px;
   }
@@ -286,44 +284,8 @@
     right: 8px;
     margin: 0;
   }
-  .board {
-    padding-bottom: 100px;
-  }
-  .board[data-drawer] .drawer {
-    position: fixed;
-    z-index: 30;
-    left: 0;
-    right: 0;
-    bottom: 64px;
-    max-height: min(300px, calc(100dvh - 220px));
-    overflow: auto;
-    background: var(--stadium-glass);
-    backdrop-filter: blur(12px);
-    animation: drawer-rise 200ms ease-out;
-  }
-  .board[data-drawer] .rerolls {
-    position: fixed;
-    z-index: 31;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    min-height: 64px;
-    padding: 10px 16px env(safe-area-inset-bottom);
-    background: var(--stadium-glass);
-  }
-}
-@keyframes drawer-rise {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: none;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .board[data-drawer] .drawer {
-    animation: none;
-  }
   .card {
     transition: none;
   }
