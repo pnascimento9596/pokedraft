@@ -74,7 +74,22 @@ function Markings({ formation, edges }: { formation: FormationId; edges: readonl
       <rect x={0} y={0} width={W} height={L} />
       <line x1={0} y1={L / 2} x2={W} y2={L / 2} />
       <g data-testid="pitch-pokeball-mark" className={s.pokeballCenter}>
-        <circle cx={W / 2} cy={L / 2} r={9.15} />
+        <path
+          d={`M ${W / 2 - 9.15} ${L / 2} A 9.15 9.15 0 0 1 ${W / 2 + 9.15} ${L / 2} Z`}
+          className={s.pokeballTop}
+        />
+        <path
+          d={`M ${W / 2 - 9.15} ${L / 2} A 9.15 9.15 0 0 0 ${W / 2 + 9.15} ${L / 2} Z`}
+          className={s.pokeballBottom}
+        />
+        <line
+          x1={W / 2 - 9.15}
+          y1={L / 2}
+          x2={W / 2 + 9.15}
+          y2={L / 2}
+          className={s.pokeballDivider}
+        />
+        <circle cx={W / 2} cy={L / 2} r={9.15} className={s.pokeballOutline} />
         <circle cx={W / 2} cy={L / 2} r={2.8} className={s.pokeballRing} />
         <circle cx={W / 2} cy={L / 2} r={1.2} className={s.pokeballInner} />
         <circle cx={W / 2} cy={L / 2} r={0.45} className={s.spot} />

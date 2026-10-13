@@ -169,6 +169,8 @@ body { background: var(--canvas); color: var(--text-soft); font-family: Inter, s
   --dur-2: 200ms;
   --dur-3: 320ms;
   --ease-out: cubic-bezier(0.16, 0.74, 0.12, 1);
+  --pitch-pokeball-top: rgba(200, 75, 49, 0.78);
+  --pitch-pokeball-bottom: rgba(243, 239, 228, 0.55);
   --type-normal: #363126;
   --type-normal-ink: var(--type-normal);
   --type-fighting: #764257;
@@ -214,6 +216,8 @@ body { background: var(--canvas); color: var(--text-soft); font-family: Inter, s
   --pitch-stripe: #204830;
   --pitch-line: #74E5AD;
   --pitch-line-soft: rgba(116,229,173,.35);
+  --pitch-pokeball-top: #C84B31;
+  --pitch-pokeball-bottom: rgba(243, 239, 228, 0.75);
   --risk-text: #E3A197;
   --action-border: var(--link);
   --overlay: rgba(0,0,0,.52);
@@ -246,6 +250,8 @@ body { background: var(--canvas); color: var(--text-soft); font-family: Inter, s
   --pitch-stripe: #204830;
   --pitch-line: #74E5AD;
   --pitch-line-soft: rgba(116,229,173,.35);
+  --pitch-pokeball-top: #C84B31;
+  --pitch-pokeball-bottom: rgba(243, 239, 228, 0.75);
   --risk-text: #E3A197;
   --action-border: var(--link);
   --overlay: rgba(0,0,0,.52);

@@ -43,16 +43,37 @@
   stroke: none;
 }
 
-.lines .pokeballRing {
+.lines .pokeballTop {
+  fill: var(--pitch-pokeball-top, rgba(200, 75, 49, 0.78));
+  stroke: none;
+}
+
+.lines .pokeballBottom {
+  fill: var(--pitch-pokeball-bottom, rgba(243, 239, 228, 0.65));
+  stroke: none;
+}
+
+.lines .pokeballDivider {
+  stroke: var(--chalk);
+  stroke-width: 0.5;
+}
+
+.lines .pokeballOutline {
   stroke: var(--chalk);
   stroke-width: 0.32;
-  fill: var(--chalk-soft);
+  fill: none;
+}
+
+.lines .pokeballRing {
+  stroke: var(--chalk);
+  stroke-width: 0.4;
+  fill: var(--surface-sunken);
 }
 
 .lines .pokeballInner {
   stroke: var(--chalk);
-  stroke-width: 0.32;
-  fill: var(--grass-1);
+  stroke-width: 0.3;
+  fill: var(--chalk);
 }
 
 .lines .goal {
@@ -111,22 +132,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--token-bg);
+  width: 36px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
   box-shadow:
-    0 0 0 2px var(--token-ring),
-    var(--shadow-rest);
+    0 0 0 1.5px var(--token-ring),
+    0 2px 6px rgba(0, 0, 0, 0.35);
   transition:
     box-shadow var(--dur-1) ease,
     transform var(--dur-1) var(--ease-out);
 }
 
 .token[data-filled="false"] .tokenImage {
-  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
-  box-shadow: 0 0 0 2px var(--chalk-soft);
-  border: 1px dashed var(--chalk);
+  background: rgba(17, 26, 41, 0.65);
+  box-shadow: 0 0 6px rgba(116, 229, 173, 0.15);
+  border: 1.5px dashed var(--chalk-soft);
 }
 
 .token[data-highlight] .tokenImage {

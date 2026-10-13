@@ -231,10 +231,13 @@
   border-radius: var(--radius);
   border: 1px solid var(--line-strong);
   background: var(--surface-sunken);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   cursor: pointer;
   text-align: center;
+  position: relative;
   transition:
     border-color var(--dur-1) ease,
+    box-shadow var(--dur-1) ease,
     transform var(--dur-1) var(--ease-out);
 }
 
@@ -248,8 +251,8 @@
 
 .row[aria-pressed="true"],
 .card[aria-pressed="true"] {
-  border-color: var(--flood-line);
-  box-shadow: 0 0 0 2px var(--link);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent), 0 0 14px rgba(244, 206, 82, 0.4);
 }
 
 @media (hover: hover) {
@@ -526,7 +529,7 @@
   }
 
   .card [data-player-image] {
-    zoom: 0.5;
+    zoom: 0.65;
   }
 
   .card .candName {
@@ -765,7 +768,7 @@
   }
 
   .card[data-rated] [data-player-image] {
-    zoom: 0.52;
+    zoom: 0.60;
   }
 
   .card[data-rated] .candFit {
