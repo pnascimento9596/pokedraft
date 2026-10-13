@@ -149,17 +149,6 @@ export function DraftBoard({
     if (failure !== null) announce(failure);
   }, [failure]);
 
-  useEffect(() => {
-    if (swapFrom === null) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      setSwapFrom(null);
-      announce("Swap cancelled.");
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [swapFrom]);
-
   if (settings.mode === "builder") return null;
   const mode = settings.mode;
   const squadFirst = settings.order === "squadFirst";
@@ -213,6 +202,35 @@ export function DraftBoard({
     }
     setSelection(selected === id ? null : { rollId, species: id });
   };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (swapFrom !== null) {
+          setSwapFrom(null);
+          announce("Swap cancelled.");
+          return;
+        }
+        if (selection !== null) {
+          setSelection(null);
+          announce("Selection cleared.");
+          return;
+        }
+      }
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      const tag = (document.activeElement?.tagName ?? "").toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+      if (revealed && candidates.length > 0) {
+        const index = ["1", "2", "3"].indexOf(e.key);
+        if (index !== -1 && index < candidates.length) {
+          e.preventDefault();
+          tapCandidate(candidates[index]!);
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [swapFrom, selection, revealed, candidates, choosing, act, rollId, selected]);
 
   const tapSlot = (ref: SlotRef) => {
     const id = valueAt(state.lineup, ref);

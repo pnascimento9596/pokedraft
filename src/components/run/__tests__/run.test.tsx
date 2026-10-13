@@ -133,6 +133,23 @@ describe("challenge run screen", () => {
     await start();
     expect(screen.getByTestId("round-header").textContent).toBe("Round 1 of 16");
   });
+
+  it("selects candidate 1, 2, or 3 with keyboard numbers and clears uncommitted selection on Escape", async () => {
+    query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=run-test";
+    render(<PlayScreen />);
+    await start();
+    const cands = screen.getAllByTestId(/^candidate-/);
+    expect(cands).toHaveLength(3);
+
+    fireEvent.keyDown(window, { key: "1" });
+    expect(cands[0]!.getAttribute("aria-pressed")).toBe("true");
+
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(cands[0]!.getAttribute("aria-pressed")).toBe("false");
+
+    fireEvent.keyDown(window, { key: "2" });
+    expect(cands[1]!.getAttribute("aria-pressed")).toBe("true");
+  });
 });
 
 const CUP8_SQUAD_FIRST = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
