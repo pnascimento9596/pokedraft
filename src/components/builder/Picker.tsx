@@ -136,7 +136,18 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
   // The builder pool only drops species by generation or by the Legendaries switch.
   const hiddenBySettings = matches.length === 0 && SPECIES.some(filter);
 
-  const shown = matches.slice(0, PICKER_LIMIT);
+  const [typesExpanded, setTypesExpanded] = useState(false);
+  const [extraPages, setExtraPages] = useState(0);
+  const filterKey = `${query}|${type ?? ""}|${gen ?? ""}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey);
+    setExtraPages(0);
+  }
+
+  const displayLimit = PICKER_LIMIT + extraPages * PICKER_LIMIT;
+  const shown = matches.slice(0, displayLimit);
 
   return (
     <dialog
@@ -233,7 +244,32 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
               ))}
             </select>
           </label>
-          <div className={s.types} role="group" aria-label="Filter by type">
+          <div className={s.typesHeader}>
+            <button
+              type="button"
+              className={`btn btn--ghost btn--sm ${s.typesToggle}`}
+              aria-expanded={typesExpanded}
+              onClick={() => setTypesExpanded((v) => !v)}
+            >
+              {type !== null ? `Type: ${typeLabel(type)}` : "Filter by type (18)"}
+              <span aria-hidden="true">{typesExpanded ? " ▲" : " ▼"}</span>
+            </button>
+            {type !== null && (
+              <button
+                type="button"
+                className={`btn btn--ghost btn--sm ${s.clearType}`}
+                onClick={() => setType(null)}
+              >
+                Clear type
+              </button>
+            )}
+          </div>
+          <div
+            className={s.types}
+            role="group"
+            aria-label="Filter by type"
+            data-expanded={typesExpanded}
+          >
             {TYPES.map((t) => (
               <button
                 key={t}
@@ -254,15 +290,30 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           </div>
         </div>
 
-        <p className={s.count} aria-live="polite">
-          {matches.length === 0
-            ? hiddenBySettings
-              ? "No matches. Your Generations or Legendaries setting hides some Pokémon."
-              : "No matches"
-            : matches.length > PICKER_LIMIT
-              ? `Showing ${PICKER_LIMIT} of ${matches.length}. Refine your search to see more.`
-              : `${matches.length} ${matches.length === 1 ? "match" : "matches"}`}
-        </p>
+        <div className={s.countBar}>
+          <p className={s.count} aria-live="polite">
+            {matches.length === 0
+              ? hiddenBySettings
+                ? "No matches. Your Generations or Legendaries setting hides some Pokémon."
+                : "No matches"
+              : matches.length > displayLimit
+                ? `Showing ${displayLimit} of ${matches.length}.`
+                : `${matches.length} ${matches.length === 1 ? "match" : "matches"}`}
+          </p>
+          {(query !== "" || type !== null || gen !== null) && (
+            <button
+              type="button"
+              className={`btn btn--ghost btn--sm ${s.clearFilters}`}
+              onClick={() => {
+                setQuery("");
+                setType(null);
+                setGen(null);
+              }}
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
 
         {matches.length === 0 ? (
           <StatusNote title="No players found">
@@ -286,7 +337,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   aria-describedby={rating !== null ? `${rawFitId}-${sp.id}` : undefined}
                   onClick={() => leave(() => onPick(sp.id))}
                 >
-                  <PlayerImage dexId={sp.id} size={32} alt={sp.name} />
+                  <PlayerImage dexId={sp.id} size={44} alt={sp.name} />
                   <span className={s.rowMain}>
                     <span className={s.rowName}>{sp.name}</span>
                     <span className={s.rowMeta}>
@@ -321,6 +372,17 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
             );
           })}
         </ul>
+        {matches.length > displayLimit ? (
+          <div className={s.loadMoreWrap}>
+            <button
+              type="button"
+              className={`btn btn--ghost ${s.loadMore}`}
+              onClick={() => setExtraPages((p) => p + 1)}
+            >
+              Load more ({matches.length - displayLimit} remaining)
+            </button>
+          </div>
+        ) : null}
       </div>
     </dialog>
   );

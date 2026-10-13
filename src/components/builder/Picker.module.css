@@ -91,11 +91,32 @@
   max-width: 44vw;
 }
 
+.typesHeader {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.typesToggle,
+.clearType {
+  font-size: 13px;
+  line-height: 18px;
+  min-height: 44px;
+}
+
 .types {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
+}
+
+@media (max-width: 719px) {
+  .types:not([data-expanded="true"]) {
+    display: none;
+  }
 }
 
 .typeChip {
@@ -115,11 +136,37 @@
   outline-offset: -3px;
 }
 
+.countBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px var(--gutter) 8px;
+}
+
 .count {
   margin: 0;
-  padding: 4px var(--gutter) 8px;
+  padding: 0;
   font-size: 13px;
-  color: var(--ink-soft);
+  color: var(--text-muted);
+}
+
+.clearFilters {
+  font-size: 13px;
+  line-height: 18px;
+  min-height: 44px;
+}
+
+.loadMoreWrap {
+  display: flex;
+  justify-content: center;
+  padding: 12px var(--gutter) 24px;
+}
+
+.loadMore {
+  min-height: 44px;
+  width: 100%;
+  max-width: 320px;
 }
 
 .list {

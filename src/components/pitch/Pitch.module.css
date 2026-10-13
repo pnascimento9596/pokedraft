@@ -204,6 +204,18 @@
   color: var(--accent-fg);
 }
 
+:global(:root[data-theme="dark"]) .tokenName {
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .tokenName {
+    background: var(--surface-sunken);
+    color: var(--text);
+  }
+}
+
 .tokenNote {
   max-width: 100%;
   font-family: var(--font-display);
@@ -425,6 +437,17 @@
   background: var(--accent);
   color: var(--accent-fg);
   text-shadow: none;
+}
+:global(:root[data-theme="dark"]) .wrap[data-compact-tags] .tokenName {
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .wrap[data-compact-tags] .tokenName {
+    background: var(--surface-sunken);
+    color: var(--text);
+  }
 }
 .wrap[data-compact-tags] .bench .tokenName {
   background: var(--surface-sunken);
