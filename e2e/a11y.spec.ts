@@ -114,7 +114,7 @@ const PAGES: { name: string; open: (page: Page) => Promise<void> }[] = [
 ];
 
 // The body background of each theme, so a scan cannot silently run the wrong theme.
-const BODY_BACKGROUND = { dark: "rgb(20, 24, 15)", light: "rgb(231, 234, 226)" };
+const BODY_BACKGROUND = { dark: "rgb(11, 18, 32)", light: "rgb(231, 234, 226)" };
 
 for (const colorScheme of ["dark", "light"] as const) {
   test.describe(`${colorScheme} theme`, () => {

@@ -26,7 +26,7 @@ const ENTRY = {
   createdAt: "2026-10-09T12:00:00.000Z",
 };
 
-const BODY_BACKGROUND = { dark: "rgb(20, 24, 15)", light: "rgb(231, 234, 226)" };
+const BODY_BACKGROUND = { dark: "rgb(11, 18, 32)", light: "rgb(231, 234, 226)" };
 
 type Rgb = readonly [number, number, number];
 type Rgba = readonly [number, number, number, number];
