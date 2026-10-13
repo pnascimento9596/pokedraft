@@ -134,4 +134,12 @@ describe("Pitch", () => {
       gk: screen.getByTestId("slot-s0").getAttribute("aria-pressed"),
     }).toEqual({ st: "true", lcb: "false", gk: null });
   });
+
+  it("renders the Poké Ball midfield markings at the pitch center", () => {
+    const { container } = render(
+      <Pitch formation="4-3-3" lineup={empty} speciesOf={speciesById} />,
+    );
+    expect(container.querySelector('[data-testid="pitch-pokeball-mark"]')).not.toBeNull();
+  });
 });
+

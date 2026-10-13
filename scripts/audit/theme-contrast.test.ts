@@ -19,9 +19,9 @@ describe("warm palette contrast gate", () => {
   it("preserves source AA corrections and separates explicit dark overrides", () => {
     const css = readFileSync(new URL("../../src/design/tokens.css", import.meta.url), "utf8");
     expect(palette(css, "light")["--viz-2"]).toBe("#CD7928");
-    expect(palette(css, "dark")["--accent-hover"]).toBe("#365F49");
+    expect(palette(css, "dark")["--accent-hover"]).toBe("#E5BE3E");
     expect(palette(css, "light")["--canvas"]).toBe("#E7EAE2");
-    expect(palette(css, "dark")["--canvas"]).toBe("#14180F");
+    expect(palette(css, "dark")["--canvas"]).toBe("#0B1220");
     expect(checkContrast(css).failures).toEqual([]);
   });
 
@@ -29,7 +29,7 @@ describe("warm palette contrast gate", () => {
     const css = readFileSync(
       new URL("../../src/design/tokens.css", import.meta.url),
       "utf8",
-    ).replace("--text-faint: #8F9981", "--text-faint: #6A735F");
+    ).replace("--text-faint: #8E9EAF", "--text-faint: #6A735F");
     const failures = checkContrast(css).failures;
     expect(
       failures.some(

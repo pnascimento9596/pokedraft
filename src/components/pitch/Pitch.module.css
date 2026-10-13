@@ -43,6 +43,18 @@
   stroke: none;
 }
 
+.lines .pokeballRing {
+  stroke: var(--chalk);
+  stroke-width: 0.32;
+  fill: var(--chalk-soft);
+}
+
+.lines .pokeballInner {
+  stroke: var(--chalk);
+  stroke-width: 0.32;
+  fill: var(--grass-1);
+}
+
 .lines .goal {
   stroke-width: 0.4;
   fill: var(--chalk-soft);
@@ -249,45 +261,27 @@
 
 @container (min-width: 640px) {
   .field {
-    aspect-ratio: 105 / 68;
-    background: repeating-linear-gradient(
-      90deg,
-      var(--grass-1) 0,
-      var(--grass-1) 9.0909%,
-      var(--grass-2) 9.0909%,
-      var(--grass-2) 18.1818%
-    );
-  }
-  .vertical {
-    display: none;
-  }
-  .horizontal {
-    display: block;
-  }
-  .field > .token {
-    left: calc(5% + var(--y) * 0.9%);
-    top: calc(5% + var(--x) * 0.9%);
-  }
-  .wrap[data-mirror="on"] .token[data-half-portrait="right"] .tokenImage img {
-    transform: none;
-  }
-  .wrap[data-mirror="on"] .token[data-half-landscape="right"] .tokenImage img {
-    transform: scaleX(-1);
+    max-width: 540px;
+    margin: 0 auto;
   }
   .token {
     width: 72px;
-    gap: 1px;
+    gap: 2px;
   }
   .tokenName {
     max-width: 72px;
   }
   .tokenImage {
-    width: 38px;
-    height: 38px;
+    width: 42px;
+    height: 42px;
   }
 }
 
 @container (min-width: 900px) {
+  .field {
+    max-width: 580px;
+    margin: 0 auto;
+  }
   .token {
     width: 84px;
     gap: 2px;
@@ -297,8 +291,8 @@
     font-size: 0.8rem;
   }
   .tokenImage {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
   }
 }
 
