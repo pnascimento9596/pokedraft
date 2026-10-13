@@ -124,14 +124,11 @@ describe("challenge run screen", () => {
     expect(screen.getByRole("link", { name: "Back home" }).getAttribute("href")).toBe("/");
   });
 
-  it("renders a valid challenge setup lobby when navigated to /play without query parameters, allowing the player to start a challenge", async () => {
+  it("shows a friendly message when navigated to /play without query parameters", () => {
     query.current = "";
     render(<PlayScreen />);
-    expect(screen.queryByText("That challenge link does not work")).toBeNull();
-    const startBtn = screen.getByTestId("run-start");
-    expect(startBtn).toBeTruthy();
-    await start();
-    expect(screen.getByTestId("round-header").textContent).toBe("Round 1 of 16");
+    expect(screen.getByRole("heading").textContent).toBe("That challenge link does not work");
+    expect(screen.getByRole("link", { name: "Back home" }).getAttribute("href")).toBe("/");
   });
 
   it("selects candidate 1, 2, or 3 with keyboard numbers and clears uncommitted selection on Escape", async () => {

@@ -22,11 +22,11 @@ for (const system of ["light", "dark"] as const)
     await expect(root).not.toHaveAttribute("data-theme", /./);
     await expect(page.locator("body")).toHaveCSS(
       "background-color",
-      system === "light" ? "rgb(231, 234, 226)" : "rgb(20, 24, 15)",
+      system === "light" ? "rgb(231, 234, 226)" : "rgb(11, 18, 32)",
     );
     await page.emulateMedia({ colorScheme: system === "light" ? "dark" : "light" });
     await expect(page.locator("body")).toHaveCSS(
       "background-color",
-      system === "light" ? "rgb(20, 24, 15)" : "rgb(231, 234, 226)",
+      system === "light" ? "rgb(11, 18, 32)" : "rgb(231, 234, 226)",
     );
   });

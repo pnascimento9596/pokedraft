@@ -2,7 +2,7 @@ import { BookOpen, CalendarDays, Gamepad2, History, Trophy } from "lucide-react"
 import { IconTile } from "./primitives";
 
 export const NAV_ICONS = {
-  play: { icon: Gamepad2, color: "var(--viz-1)", href: "/play", label: "Play" },
+  play: { icon: Gamepad2, color: "var(--viz-1)", href: "/", label: "Play" },
   daily: { icon: CalendarDays, color: "var(--viz-2)", href: "/daily", label: "Daily" },
   leaderboard: { icon: Trophy, color: "var(--viz-4)", href: "/leaderboard", label: "Leaderboard" },
   history: { icon: History, color: "var(--viz-6)", href: "/history", label: "History" },

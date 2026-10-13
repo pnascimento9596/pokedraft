@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   DRAFT_ROUNDS,
   FORMATIONS,
   REROLLS,
   speciesById,
   type DraftAction,
+  type DraftSettings,
   type DraftState,
   type RerollTarget,
   type SlotRef,
@@ -94,7 +95,14 @@ interface Selection {
   readonly species: SpeciesId;
 }
 
-export function DraftBoard({
+type ActiveDraftSettings = Exclude<DraftSettings, { readonly mode: "builder" }>;
+
+export function DraftBoard(props: DraftBoardProps) {
+  if (props.run.state.settings.mode === "builder") return null;
+  return <ActiveDraftBoard {...props} settings={props.run.state.settings} />;
+}
+
+function ActiveDraftBoard({
   title,
   navFamily = "play",
   run,
@@ -104,9 +112,10 @@ export function DraftBoard({
   onRun,
   onNewRun,
   onSeeResults,
-}: DraftBoardProps) {
+  settings,
+}: DraftBoardProps & { readonly settings: ActiveDraftSettings }) {
   const { state, rollId } = run;
-  const { settings, phase } = state;
+  const { phase } = state;
   const reduced = useReducedMotion();
   const [revealedId, setRevealedId] = useState(-1);
   const [selection, setSelection] = useState<Selection | null>(null);
@@ -149,12 +158,11 @@ export function DraftBoard({
     if (failure !== null) announce(failure);
   }, [failure]);
 
-  if (settings.mode === "builder") return null;
   const mode = settings.mode;
   const squadFirst = settings.order === "squadFirst";
   const choosing = phase.kind === "choosing" ? phase : null;
   const revealed = choosing !== null && (reduced || revealedId === rollId);
-  const candidates = revealed ? candidatesFor(state) : [];
+  const candidates = useMemo(() => (revealed ? candidatesFor(state) : []), [revealed, state]);
   const single = candidates.length === 1 ? candidates[0]! : null;
   const selected =
     selection !== null && selection.rollId === rollId && candidates.includes(selection.species)
@@ -188,20 +196,26 @@ export function DraftBoard({
     );
   };
 
-  const act = (action: DraftAction) => {
-    focusBefore.current = document.activeElement;
-    setSwapFrom(null);
-    onAction(action);
-  };
+  const act = useCallback(
+    (action: DraftAction) => {
+      focusBefore.current = document.activeElement;
+      setSwapFrom(null);
+      onAction(action);
+    },
+    [onAction],
+  );
 
-  const tapCandidate = (id: SpeciesId) => {
-    if (choosing === null) return;
-    if (choosing.slot !== null) {
-      act({ type: "pick", species: id, slot: choosing.slot });
-      return;
-    }
-    setSelection(selected === id ? null : { rollId, species: id });
-  };
+  const tapCandidate = useCallback(
+    (id: SpeciesId) => {
+      if (choosing === null) return;
+      if (choosing.slot !== null) {
+        act({ type: "pick", species: id, slot: choosing.slot });
+        return;
+      }
+      setSelection(selected === id ? null : { rollId, species: id });
+    },
+    [choosing, act, selected, rollId],
+  );
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -230,7 +244,7 @@ export function DraftBoard({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [swapFrom, selection, revealed, candidates, choosing, act, rollId, selected]);
+  }, [swapFrom, selection, revealed, candidates, tapCandidate]);
 
   const tapSlot = (ref: SlotRef) => {
     const id = valueAt(state.lineup, ref);

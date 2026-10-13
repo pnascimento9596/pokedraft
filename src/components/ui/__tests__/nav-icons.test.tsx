@@ -12,6 +12,7 @@ describe("shared navigation families", () => {
       ["help", "var(--viz-7)"],
     ]);
     expect(renderToStaticMarkup(<NavIcon family="daily" />)).toContain("lucide-calendar-days");
+    expect(NAV_ICONS.play.href).toBe("/");
     expect(NAV_ICONS.help.href).toBe("/how-to-play");
   });
 });
