@@ -156,6 +156,9 @@ function ActiveDraftBoard({
     const before = runBefore.current;
     runBefore.current = run;
     if (before === run) return;
+    if (before.seed !== run.seed || (before.actions.length > 0 && run.actions.length === 0)) {
+      scrolledRoll.current = null;
+    }
     const was = focusBefore.current;
     focusBefore.current = null;
     if (was !== null && !was.isConnected) headingRef.current?.focus({ preventScroll: true });

@@ -98,9 +98,7 @@
   pointer-events: none;
   opacity: 0.9;
 }
-.token[data-highlight] {
-  border-color: var(--stadium-ring);
-}
+.token[data-highlight],
 .token[data-drop],
 .token[aria-pressed="true"] {
   outline: 3px solid var(--stadium-ring);

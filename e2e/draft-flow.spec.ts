@@ -119,6 +119,16 @@ for (const engine of ["chromium", "webkit"] as const) {
       await expect(page.getByTestId("draft-wheel")).toHaveCount(0);
       await page.getByTestId("slot-s9").tap();
       await wheelVisible(page);
+      const committedFrame = await page.getByTestId("slot-s9").evaluate((element) => {
+        const s = getComputedStyle(element);
+        return { border: s.borderStyle, outline: s.outlineStyle };
+      });
+      const uncommittedFrame = await page.getByTestId("slot-s0").evaluate((element) => {
+        const s = getComputedStyle(element);
+        return { border: s.borderStyle, outline: s.outlineStyle };
+      });
+      expect(committedFrame).toEqual({ border: "solid", outline: "solid" });
+      expect(uncommittedFrame).toEqual({ border: "solid", outline: "none" });
       await page.screenshot({
         path: `output/mobile-draft-flow/${engine}-${width}-wheel.png`,
         fullPage: true,
