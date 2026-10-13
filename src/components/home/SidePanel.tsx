@@ -137,22 +137,24 @@ export function SidePanel({
         icon={<NavIcon family="play" />}
       >
         <div className={s.section}>
-          <div className={s.bannerTitle}>Pokémon Challenge</div>
-          <div className={s.ctas}>
-            <button
-              type="button"
-              className={`btn btn--primary ${s.cta}`}
-              onClick={() => setConfirming("cup8")}
-            >
-              Play 8-0 Challenge
-            </button>
-            <button
-              type="button"
-              className={`btn btn--primary ${s.cta}`}
-              onClick={() => setConfirming("kanto151")}
-            >
-              Play 151 Challenge
-            </button>
+          <div className={s.challengeGroup}>
+            <div className={s.bannerTitle}>Pokémon Challenge</div>
+            <div className={s.ctas}>
+              <button
+                type="button"
+                className={`btn btn--primary ${s.cta}`}
+                onClick={() => setConfirming("cup8")}
+              >
+                Play 8-0 Challenge
+              </button>
+              <button
+                type="button"
+                className={`btn btn--primary ${s.cta}`}
+                onClick={() => setConfirming("kanto151")}
+              >
+                Play 151 Challenge
+              </button>
+            </div>
           </div>
           <p className={s.hint}>
             {panel.showChallengeRatings

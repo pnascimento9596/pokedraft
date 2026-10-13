@@ -252,6 +252,7 @@ export function Builder({
       >
         <div className={s.pitch} data-animating={animating || undefined}>
           <Pitch
+            fit
             compactTags
             edges={teamRating?.edges}
             formation={lineup.formation}
