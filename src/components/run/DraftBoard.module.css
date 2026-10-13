@@ -262,43 +262,47 @@
 .selectionName {
   font-size: 13px;
   font-weight: 700;
-  color: var(--stadium-ink);
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .selectionHint {
   font-size: 11px;
-  color: var(--stadium-muted);
+  color: var(--text-muted);
 }
 .selectionLegend {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   font-size: 11px;
 }
 .legendItem {
   display: inline-flex;
   align-items: center;
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-weight: 700;
+  gap: 4px;
   font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
 }
-.legendItem[data-suit="rec"] {
-  color: var(--stadium-suitability-best);
-  background: color-mix(in srgb, var(--stadium-suitability-best) 15%, transparent);
-  border: 1px solid var(--stadium-suitability-best);
+.legendDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
-.legendItem[data-suit="ok"] {
-  color: var(--stadium-suitability-ok);
-  background: color-mix(in srgb, var(--stadium-suitability-ok) 15%, transparent);
-  border: 1px solid var(--stadium-suitability-ok);
+.legendDot[data-suit="rec"] {
+  background: var(--stadium-suitability-best);
+  box-shadow: 0 0 6px var(--stadium-suitability-best-glow);
 }
-.legendItem[data-suit="bad"] {
-  color: var(--stadium-suitability-bad);
-  background: color-mix(in srgb, var(--stadium-suitability-bad) 15%, transparent);
-  border: 1px solid var(--stadium-suitability-bad);
+.legendDot[data-suit="ok"] {
+  background: var(--stadium-suitability-ok);
+  box-shadow: 0 0 6px var(--stadium-suitability-ok-glow);
+}
+.legendDot[data-suit="bad"] {
+  background: var(--stadium-suitability-bad);
+  box-shadow: 0 0 6px var(--stadium-suitability-bad-glow);
 }
 .changePickBtn {
   margin-left: auto;
@@ -335,7 +339,7 @@
 .drawerBackdrop {
   display: none;
 }
-@media (max-width: 959px) {
+@media (max-width: 959px) and (min-height: 500px) {
   .board[data-choosing][data-drawer] .drawerBackdrop {
     display: block;
     position: fixed;
@@ -369,6 +373,8 @@
     opacity: 0.1;
     pointer-events: none;
   }
+}
+@media (max-width: 959px) {
   .wheels {
     min-height: 44px;
   }

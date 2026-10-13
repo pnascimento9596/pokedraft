@@ -81,7 +81,7 @@ for (const engine of ["chromium", "webkit"] as const) {
         const s = getComputedStyle(element);
         return { border: s.borderStyle, outline: s.outlineStyle };
       });
-      expect(frame).toEqual({ border: "solid", outline: "solid" });
+      expect(frame).toEqual({ border: "solid", outline: "none" });
       await page.getByTestId("slot-s9").tap();
       await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
       await wheelVisible(page);

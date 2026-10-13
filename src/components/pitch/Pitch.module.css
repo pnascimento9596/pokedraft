@@ -123,25 +123,22 @@
 }
 .token[data-suitability="recommended"] {
   border-color: var(--stadium-suitability-best);
-  outline: 3px solid var(--stadium-suitability-best);
-  outline-offset: 2px;
   box-shadow:
+    0 0 0 2px var(--stadium-suitability-best),
     0 0 16px var(--stadium-suitability-best-glow),
     0 4px 6px rgba(0, 0, 0, 0.5);
 }
 .token[data-suitability="ok"] {
   border-color: var(--stadium-suitability-ok);
-  outline: 2px solid var(--stadium-suitability-ok);
-  outline-offset: 1px;
   box-shadow:
+    0 0 0 2px var(--stadium-suitability-ok),
     0 0 10px var(--stadium-suitability-ok-glow),
     0 4px 6px rgba(0, 0, 0, 0.5);
 }
 .token[data-suitability="bad"] {
   border-color: var(--stadium-suitability-bad);
-  outline: 3px solid var(--stadium-suitability-bad);
-  outline-offset: 2px;
   box-shadow:
+    0 0 0 2px var(--stadium-suitability-bad),
     0 0 16px var(--stadium-suitability-bad-glow),
     0 4px 6px rgba(0, 0, 0, 0.5);
 }
@@ -307,7 +304,7 @@
 @container (max-width: 540px) {
   .field {
     aspect-ratio: auto;
-    height: 560px;
+    height: 580px;
   }
   .wrap[data-fit] .field {
     height: 520px;

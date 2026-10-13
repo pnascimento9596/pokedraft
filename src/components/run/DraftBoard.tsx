@@ -572,13 +572,16 @@ function ActiveDraftBoard({
               </div>
             </div>
             <div className={s.selectionLegend} aria-hidden="true">
-              <span className={s.legendItem} data-suit="rec">
+              <span className={s.legendItem}>
+                <span className={s.legendDot} data-suit="rec" />
                 Best
               </span>
-              <span className={s.legendItem} data-suit="ok">
+              <span className={s.legendItem}>
+                <span className={s.legendDot} data-suit="ok" />
                 OK
               </span>
-              <span className={s.legendItem} data-suit="bad">
+              <span className={s.legendItem}>
+                <span className={s.legendDot} data-suit="bad" />
                 Poor
               </span>
             </div>
