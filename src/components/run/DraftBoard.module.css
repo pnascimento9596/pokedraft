@@ -83,6 +83,7 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  margin-top: 8px;
 }
 .rerolls button {
   border-color: var(--stadium-line);
@@ -152,6 +153,7 @@
   color: var(--stadium-ink);
   box-shadow: 0 0 12px color-mix(in srgb, var(--card-type) 40%, transparent);
   cursor: pointer;
+  touch-action: pan-y;
 }
 .card[aria-pressed="true"] {
   outline: 3px solid var(--stadium-line);
@@ -234,6 +236,144 @@
     font-weight: 700;
   }
 }
+.selectionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  background: var(--stadium-glass);
+  border: 1px solid var(--stadium-border);
+  box-shadow: var(--stadium-glow);
+}
+.selectionMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.selectionDetails {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.selectionName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.selectionHint {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.selectionLegend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+}
+.legendDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.legendDot[data-suit="rec"] {
+  background: var(--stadium-suitability-best);
+  box-shadow: 0 0 6px var(--stadium-suitability-best-glow);
+}
+.legendDot[data-suit="ok"] {
+  background: var(--stadium-suitability-ok);
+  box-shadow: 0 0 6px var(--stadium-suitability-ok-glow);
+}
+.legendDot[data-suit="bad"] {
+  background: var(--stadium-suitability-bad);
+  box-shadow: 0 0 6px var(--stadium-suitability-bad-glow);
+}
+.changePickBtn {
+  margin-left: auto;
+  white-space: nowrap;
+}
+.dragPreview {
+  position: fixed;
+  pointer-events: none;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px;
+  background: var(--stadium-card);
+  border: 2px solid var(--stadium-ring);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.85);
+  opacity: 0.95;
+}
+.dragPreview span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--stadium-ink);
+  white-space: nowrap;
+  max-width: 56px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.drawerBackdrop {
+  display: none;
+}
+@media (max-width: 959px) and (min-height: 500px) {
+  .board[data-choosing][data-drawer] .drawerBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 45;
+    pointer-events: none;
+  }
+  .board[data-choosing][data-drawer] .drawer {
+    position: fixed;
+    bottom: 0;
+    left: 8px;
+    right: 8px;
+    z-index: 50;
+    max-height: calc(100dvh - 225px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--stadium-card);
+    border: 2px solid var(--stadium-border);
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.9);
+    padding: 12px 12px calc(14px + env(safe-area-inset-bottom));
+  }
+  .board[data-dragging-candidate] .drawer {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+  .board[data-dragging-candidate] .drawerBackdrop {
+    opacity: 0.1;
+    pointer-events: none;
+  }
+}
 @media (max-width: 959px) {
   .wheels {
     min-height: 44px;
@@ -246,7 +386,8 @@
     width: 100%;
     min-height: 44px;
   }
-  .board:not([data-drawer]) .candidates {
+  .board:not([data-drawer]) .candidates,
+  .board:not([data-drawer]) .rerolls {
     display: none;
   }
   .board[data-revealed] .wheels > * > :not(p) {
@@ -273,6 +414,15 @@
   }
 }
 @media (max-width: 959px) {
+  :global(html) {
+    scroll-padding-top: 72px;
+  }
+  :global(html):has(.board[data-drawer][data-revealed]) {
+    scroll-padding-bottom: min(280px, calc(100vh - 156px));
+  }
+  .board {
+    padding-bottom: 120px;
+  }
   :global(html):has(.board .error) {
     scroll-padding-top: 100px;
   }

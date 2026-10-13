@@ -30,8 +30,10 @@ export function Pitch3DStage({
           <rect x="5" y="5" width="90" height="90" />
           <line x1="5" y1="50" x2="95" y2="50" />
           <g data-testid="pitch-pokeball-mark">
-            <circle cx="50" cy="50" r="14" />
+            <circle cx="50" cy="50" r="14" className={s.pokeballOutline} />
             <path d="M36 50 A14 14 0 0 1 64 50 Z" className={s.pokeballTop} />
+            <path d="M36 50 A14 14 0 0 0 64 50 Z" className={s.pokeballBottom} />
+            <line x1="36" y1="50" x2="64" y2="50" className={s.pokeballBand} />
             <circle cx="50" cy="50" r="4.5" className={s.pokeballRing} />
             <circle cx="50" cy="50" r="2" className={s.spot} />
           </g>

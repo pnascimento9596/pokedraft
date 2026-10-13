@@ -183,13 +183,17 @@ for (const engine of ["chromium", "webkit"] as const) {
           ),
         ).toBe(true);
       }
-      expect(await picker.evaluate((e) => getComputedStyle(e).position)).toBe("static");
-      const bottom = await picker.evaluate((e) => e.getBoundingClientRect().bottom);
+      expect(await picker.evaluate((e) => getComputedStyle(e).position)).toBe("fixed");
+      const lowestCardBottom = await page
+        .locator('[data-testid^="candidate-"]')
+        .evaluateAll((elements) =>
+          Math.max(...elements.map((e) => e.getBoundingClientRect().bottom)),
+        );
       expect(
         await page
           .getByRole("button", { name: /^Reroll type/ })
           .evaluate((e) => e.getBoundingClientRect().top),
-      ).toBeGreaterThanOrEqual(bottom);
+      ).toBeGreaterThanOrEqual(lowestCardBottom);
       for (const card of await page.locator('[data-testid^="candidate-"]').all()) {
         const r = await card.boundingBox();
         expect(r!.width).toBeGreaterThanOrEqual(44);
@@ -229,8 +233,9 @@ for (const engine of ["chromium", "webkit"] as const) {
           `/play?mode=kanto151&f=${formation}&order=squadFirst&seed=compact-${formation}`,
         );
         await page.getByTestId("run-start").tap();
+        await page.locator('[data-testid^="candidate-"]').first().tap();
         const field = page.getByTestId("pitch-stage");
-        expect(await field.evaluate((e) => getComputedStyle(e).height)).toBe("620px");
+        expect(await field.evaluate((e) => getComputedStyle(e).height)).toBe("520px");
         const boxes = await page.locator('[data-testid^="slot-s"]').evaluateAll((elements) =>
           elements.map((e) => {
             const r = e.getBoundingClientRect();

@@ -159,10 +159,31 @@ describe("Pitch", () => {
     }).toEqual({ st: "true", lcb: "false", gk: null });
   });
 
-  it("renders the Poké Ball midfield markings at the pitch center", () => {
+  it("renders the Poké Ball midfield markings with red top, white bottom, and center band", () => {
     const { container } = render(
       <Pitch formation="4-3-3" lineup={empty} speciesOf={speciesById} />,
     );
-    expect(container.querySelector('[data-testid="pitch-pokeball-mark"]')).not.toBeNull();
+    const mark = container.querySelector('[data-testid="pitch-pokeball-mark"]');
+    expect(mark).not.toBeNull();
+    expect(mark?.querySelector("path")).not.toBeNull();
+    expect(mark?.querySelectorAll("circle").length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("applies position suitability attributes to empty slots", () => {
+    render(
+      <Pitch
+        formation="4-3-3"
+        lineup={empty}
+        speciesOf={speciesById}
+        suitabilityOf={(ref) => {
+          if (ref.kind === "starter" && ref.index === 9) return "recommended";
+          if (ref.kind === "starter" && ref.index === 0) return "bad";
+          return "ok";
+        }}
+      />,
+    );
+    expect(screen.getByTestId("slot-s9").getAttribute("data-suitability")).toBe("recommended");
+    expect(screen.getByTestId("slot-s0").getAttribute("data-suitability")).toBe("bad");
+    expect(screen.getByTestId("slot-s2").getAttribute("data-suitability")).toBe("ok");
   });
 });

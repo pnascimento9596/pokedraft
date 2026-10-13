@@ -38,14 +38,31 @@
   pointer-events: none;
 }
 .spot {
-  fill: var(--stadium-line);
+  fill: var(--stadium-pokeball-white);
+}
+.pokeballOutline {
+  fill: none;
+  stroke: var(--stadium-edge);
+  stroke-width: 0.8;
 }
 .pokeballTop {
-  fill: color-mix(in srgb, var(--stadium-line) 8%, transparent);
+  fill: var(--stadium-pokeball-red);
+  fill-opacity: 0.88;
   stroke: none;
+}
+.pokeballBottom {
+  fill: var(--stadium-pokeball-white);
+  fill-opacity: 0.88;
+  stroke: none;
+}
+.pokeballBand {
+  stroke: var(--stadium-edge);
+  stroke-width: 1.2;
 }
 .pokeballRing {
   fill: var(--stadium-edge);
+  stroke: var(--stadium-pokeball-white);
+  stroke-width: 0.5;
 }
 .chemistry {
   transform: translateZ(1px);
@@ -103,6 +120,27 @@
 .token[aria-pressed="true"] {
   outline: 3px solid var(--stadium-ring);
   outline-offset: 2px;
+}
+.token[data-suitability="recommended"] {
+  border-color: var(--stadium-suitability-best);
+  box-shadow:
+    0 0 0 2px var(--stadium-suitability-best),
+    0 0 16px var(--stadium-suitability-best-glow),
+    0 4px 6px rgba(0, 0, 0, 0.5);
+}
+.token[data-suitability="ok"] {
+  border-color: var(--stadium-suitability-ok);
+  box-shadow:
+    0 0 0 2px var(--stadium-suitability-ok),
+    0 0 10px var(--stadium-suitability-ok-glow),
+    0 4px 6px rgba(0, 0, 0, 0.5);
+}
+.token[data-suitability="bad"] {
+  border-color: var(--stadium-suitability-bad);
+  box-shadow:
+    0 0 0 2px var(--stadium-suitability-bad),
+    0 0 16px var(--stadium-suitability-bad-glow),
+    0 4px 6px rgba(0, 0, 0, 0.5);
 }
 .token[data-weak] {
   box-shadow: 0 0 0 3px var(--stadium-ring);
@@ -266,16 +304,19 @@
 @container (max-width: 540px) {
   .field {
     aspect-ratio: auto;
-    height: 740px;
+    height: 580px;
   }
   .wrap[data-fit] .field {
-    height: 620px;
+    height: 520px;
   }
   .token {
     width: 56px;
     height: 88px;
     gap: 2px;
     padding: 2px;
+  }
+  .wrap[data-fit] .token {
+    height: 72px;
   }
   .tokenImage {
     height: 32px;
@@ -295,6 +336,18 @@
   }
   .emptyPrompt {
     font-size: 11px;
+  }
+  .emptyPrompt[data-suitability="recommended"] {
+    color: var(--stadium-suitability-best);
+    font-weight: 700;
+  }
+  .emptyPrompt[data-suitability="ok"] {
+    color: var(--stadium-suitability-ok);
+    font-weight: 700;
+  }
+  .emptyPrompt[data-suitability="bad"] {
+    color: var(--stadium-suitability-bad);
+    font-weight: 700;
   }
   .bench {
     padding: 10px 6px;
