@@ -47,8 +47,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body>
         <header className="site-header">
-          <Link href="/" className="site-header__brand">
-            pokedraft
+          <Link href="/" className="site-header__brand" aria-label="PokeDraft">
+            <span className="site-header__brand-poke">Poke</span>
+            <span className="site-header__brand-draft">Draft</span>
           </Link>
           <SiteNav>
             {(Object.keys(NAV_ICONS) as NavFamily[]).map((family) => (

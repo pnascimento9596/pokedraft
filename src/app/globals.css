@@ -278,12 +278,25 @@ body:has(.page-loading) > .site-footer {
 }
 
 .site-header__brand {
+  display: inline-flex;
+  align-items: center;
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 1.35rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-decoration: none;
+  line-height: 1;
+}
+
+.site-header__brand-poke {
+  color: var(--accent);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.site-header__brand-draft {
+  color: var(--text);
+  margin-left: 1px;
 }
 
 .site-header nav {

@@ -108,7 +108,7 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
   return (
     <aside className={s.panel} aria-label="Control desk">
       <ModuleCard
-        eyebrow="Challenges"
+        eyebrow="Trainer Dugout"
         title="Play"
         description="Choose a cup and draft your squad."
         icon={<NavIcon family="play" />}

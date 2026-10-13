@@ -7,8 +7,8 @@
 
 @media (min-width: 1024px) {
   .home {
-    grid-template-columns: 340px minmax(0, 1fr);
-    gap: 16px;
+    grid-template-columns: clamp(280px, 26vw, 320px) minmax(0, 1fr);
+    gap: 20px;
   }
 
   .home > aside {

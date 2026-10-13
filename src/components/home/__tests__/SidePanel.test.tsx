@@ -60,4 +60,9 @@ describe("the Show ratings (challenges) switch (catches a challenge setting that
     expect(saved()).toMatchObject({ showRatings: true, showChallengeRatings: true });
     expect(builderSwitch().getAttribute("aria-checked")).toBe("true");
   });
+
+  it("renders the Trainer Dugout eyebrow on the Play module card", () => {
+    render(<HomeScreen />);
+    expect(screen.getByText("Trainer Dugout")).toBeTruthy();
+  });
 });
