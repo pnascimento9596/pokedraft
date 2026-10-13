@@ -149,10 +149,14 @@ function ActiveDraftBoard({
   const [prevRollId, setPrevRollId] = useState(rollId);
   if (rollId !== prevRollId) {
     setPrevRollId(rollId);
+    setSelection(null);
+    setDropSlot(null);
     if (phase.kind === "choosing") {
       setDrawerOpen(true);
     }
   }
+
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (
@@ -275,13 +279,25 @@ function ActiveDraftBoard({
       if (dragPointerId.current !== e.pointerId) return;
       const dx = e.clientX - dragStartPos.current.x;
       const dy = e.clientY - dragStartPos.current.y;
-      const moved = (dragCandidateRef.current?.moved ?? false) || Math.hypot(dx, dy) > 8;
+      const threshold = e.pointerType === "touch" ? 16 : 8;
+      const moved = (dragCandidateRef.current?.moved ?? false) || Math.hypot(dx, dy) > threshold;
       if (dragCandidateRef.current) dragCandidateRef.current.moved = moved;
       setDragCandidate((prev) => (prev ? { ...prev, x: e.clientX, y: e.clientY, moved } : null));
       if (moved) {
-        const el = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-slot-key]");
-        const under = el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null;
-        setDropSlot(under !== null && valueAt(state.lineup, under) === null ? under : null);
+        const drawerRect = drawerRef.current?.getBoundingClientRect();
+        const overDrawer =
+          drawerRect !== undefined &&
+          e.clientX >= drawerRect.left &&
+          e.clientX <= drawerRect.right &&
+          e.clientY >= drawerRect.top &&
+          e.clientY <= drawerRect.bottom;
+        if (overDrawer) {
+          setDropSlot(null);
+        } else {
+          const el = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-slot-key]");
+          const under = el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null;
+          setDropSlot(under !== null && valueAt(state.lineup, under) === null ? under : null);
+        }
       }
     };
     const onPointerCancel = (e: PointerEvent) => {
@@ -295,8 +311,16 @@ function ActiveDraftBoard({
       if (dragPointerId.current !== e.pointerId) return;
       const dx = e.clientX - dragStartPos.current.x;
       const dy = e.clientY - dragStartPos.current.y;
-      const moved = (dragCandidateRef.current?.moved ?? false) || Math.hypot(dx, dy) > 8;
-      if (moved && dragCandidateRef.current) {
+      const threshold = e.pointerType === "touch" ? 16 : 8;
+      const moved = (dragCandidateRef.current?.moved ?? false) || Math.hypot(dx, dy) > threshold;
+      const drawerRect = drawerRef.current?.getBoundingClientRect();
+      const overDrawer =
+        drawerRect !== undefined &&
+        e.clientX >= drawerRect.left &&
+        e.clientX <= drawerRect.right &&
+        e.clientY >= drawerRect.top &&
+        e.clientY <= drawerRect.bottom;
+      if (moved && dragCandidateRef.current && !overDrawer) {
         const el = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-slot-key]");
         const target =
           choosing?.slot ?? (el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null);
@@ -486,7 +510,7 @@ function ActiveDraftBoard({
         ) : null}
 
         {revealed ? (
-          <div className={s.drawer} data-testid="draft-drawer">
+          <div ref={drawerRef} className={s.drawer} data-testid="draft-drawer">
             <button
               type="button"
               className={`btn btn--ghost ${s.drawerToggle}`}

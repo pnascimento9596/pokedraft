@@ -477,3 +477,45 @@ test("pointer drag from candidate card directly drops onto empty slot", async ({
   await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
 });
 
+test("desktop candidate selection is cleared on reroll without leaving stale suitability", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto(PLAY_8_0);
+  await page.getByTestId("run-start").click();
+  await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
+
+  const firstCard = page.locator('[data-testid^="candidate-"]').first();
+  await expect(firstCard).toBeVisible();
+  await firstCard.click();
+
+  // Selection bar and suitability on pitch appear
+  await expect(page.getByTestId("draft-selection-bar")).toBeVisible();
+  const recSlots = page.locator('[data-testid^="slot-"][data-suitability="recommended"]');
+  expect(await recSlots.count()).toBeGreaterThan(0);
+
+  // Click reroll button
+  const reroll = page.getByRole("button", { name: /^Reroll type/ });
+  await reroll.click();
+
+  // Selection bar and suitability highlights must be gone on new roll
+  await expect(page.getByTestId("draft-selection-bar")).toHaveCount(0);
+  await expect(page.locator('[data-testid^="slot-"][data-suitability]')).toHaveCount(0);
+});
+
+test("touch release over drawer does not place into occluded slots", async ({ page }) => {
+  await start(page, PLAY_8_0);
+  const firstCard = page.locator('[data-testid^="candidate-"]').first();
+  await expect(firstCard).toBeVisible();
+
+  const cardBox = (await firstCard.boundingBox())!;
+
+  // Drag down slightly within drawer (e.g. 20px) and release still over drawer
+  await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2 + 25, { steps: 5 });
+  await page.mouse.up();
+
+  // Round must NOT have advanced (remains Round 1)
+  await expect(page.getByTestId("round-header")).toHaveText("Round 1 of 16");
+});
+
+

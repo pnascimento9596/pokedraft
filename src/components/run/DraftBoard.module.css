@@ -153,7 +153,7 @@
   color: var(--stadium-ink);
   box-shadow: 0 0 12px color-mix(in srgb, var(--card-type) 40%, transparent);
   cursor: pointer;
-  touch-action: none;
+  touch-action: pan-y;
 }
 .card[aria-pressed="true"] {
   outline: 3px solid var(--stadium-line);
