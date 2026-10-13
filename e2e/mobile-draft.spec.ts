@@ -423,3 +423,57 @@ for (const formation of [
     expect(collisions).toEqual([]);
   });
 }
+
+test("tap candidate dismisses drawer, renders selection bar with suitability on empty slots, reopens via Spin results, and places on slot tap", async ({
+  page,
+}) => {
+  await start(page, PLAY_8_0);
+  const candidates = page.locator('[data-testid^="candidate-"]');
+  await expect(candidates).toHaveCount(3);
+  const firstCard = candidates.first();
+  await firstCard.tap();
+
+  // Drawer dismisses, selection bar appears
+  const selectionBar = page.getByTestId("draft-selection-bar");
+  await expect(selectionBar).toBeVisible();
+  await expect(firstCard).not.toBeVisible();
+
+  // Suitability attributes are applied to empty slots
+  const recSlots = page.locator('[data-testid^="slot-"][data-suitability="recommended"]');
+  expect(await recSlots.count()).toBeGreaterThan(0);
+
+  // Reopen via "Spin results"
+  await page.getByRole("button", { name: "Back to spin results" }).tap();
+  await expect(firstCard).toBeVisible();
+  await expect(selectionBar).toHaveCount(0);
+
+  // Tap candidate again, dismisses drawer
+  await firstCard.tap();
+  await expect(selectionBar).toBeVisible();
+
+  // Tap a recommended empty slot places candidate and advances to Round 2
+  await recSlots.first().tap();
+  await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
+});
+
+test("pointer drag from candidate card directly drops onto empty slot", async ({ page }) => {
+  await start(page, PLAY_8_0);
+  const firstCard = page.locator('[data-testid^="candidate-"]').first();
+  await expect(firstCard).toBeVisible();
+
+  const emptySlot = page.locator('[data-testid^="slot-s"][data-filled="false"]').first();
+  await emptySlot.scrollIntoViewIfNeeded();
+
+  const cardBox = (await firstCard.boundingBox())!;
+  const slotBox = (await emptySlot.boundingBox())!;
+
+  // Drag from center of candidate card to center of empty slot
+  await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(slotBox.x + slotBox.width / 2, slotBox.y + slotBox.height / 2, { steps: 5 });
+  await page.mouse.up();
+
+  // Verify placement advances round
+  await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
+});
+

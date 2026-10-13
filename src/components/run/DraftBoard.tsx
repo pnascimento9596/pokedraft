@@ -134,6 +134,7 @@ function ActiveDraftBoard({
   const [dropSlot, setDropSlot] = useState<SlotRef | null>(null);
   const dragPointerId = useRef<number | null>(null);
   const dragStartPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const dragCandidateRef = useRef<{ id: SpeciesId; moved: boolean } | null>(null);
   // The player picked for a tap swap: a tap on a placed player, then a tap on another slot.
   const [swapFrom, setSwapFrom] = useState<SlotRef | null>(null);
   const onRevealDone = useCallback(() => setRevealedId(rollId), [rollId]);
@@ -264,6 +265,7 @@ function ActiveDraftBoard({
     if (e.button !== 0) return;
     dragPointerId.current = e.pointerId;
     dragStartPos.current = { x: e.clientX, y: e.clientY };
+    dragCandidateRef.current = { id, moved: false };
     setDragCandidate({ id, x: e.clientX, y: e.clientY, moved: false });
   }, []);
 
@@ -273,7 +275,8 @@ function ActiveDraftBoard({
       if (dragPointerId.current !== e.pointerId) return;
       const dx = e.clientX - dragStartPos.current.x;
       const dy = e.clientY - dragStartPos.current.y;
-      const moved = dragCandidate.moved || Math.hypot(dx, dy) > 8;
+      const moved = (dragCandidateRef.current?.moved ?? false) || Math.hypot(dx, dy) > 8;
+      if (dragCandidateRef.current) dragCandidateRef.current.moved = moved;
       setDragCandidate((prev) => (prev ? { ...prev, x: e.clientX, y: e.clientY, moved } : null));
       if (moved) {
         const el = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-slot-key]");
@@ -283,22 +286,27 @@ function ActiveDraftBoard({
     };
     const onPointerCancel = (e: PointerEvent) => {
       if (dragPointerId.current !== e.pointerId) return;
+      dragCandidateRef.current = null;
       setDragCandidate(null);
       setDropSlot(null);
       dragPointerId.current = null;
     };
     const onPointerUp = (e: PointerEvent) => {
       if (dragPointerId.current !== e.pointerId) return;
-      if (dragCandidate.moved) {
+      const dx = e.clientX - dragStartPos.current.x;
+      const dy = e.clientY - dragStartPos.current.y;
+      const moved = (dragCandidateRef.current?.moved ?? false) || Math.hypot(dx, dy) > 8;
+      if (moved && dragCandidateRef.current) {
         const el = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-slot-key]");
         const target =
           choosing?.slot ?? (el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null);
         if (target !== null && valueAt(state.lineup, target) === null) {
-          act({ type: "pick", species: dragCandidate.id, slot: target });
+          act({ type: "pick", species: dragCandidateRef.current.id, slot: target });
           setSelection(null);
           setDrawerOpen(false);
         }
       }
+      dragCandidateRef.current = null;
       setDragCandidate(null);
       setDropSlot(null);
       dragPointerId.current = null;
@@ -562,7 +570,7 @@ function ActiveDraftBoard({
       </div>
 
       <section className={s.pitch} data-armed={armed || undefined} aria-label="Your squad">
-        {selected !== null && phase.kind === "choosing" ? (
+        {selected !== null && phase.kind === "choosing" && !drawerOpen ? (
           <div className={s.selectionBar} data-testid="draft-selection-bar">
             <div className={s.selectionMeta}>
               <PlayerImage dexId={selected} size={32} alt={speciesById(selected).name} />
@@ -588,7 +596,10 @@ function ActiveDraftBoard({
             <button
               type="button"
               className={`btn btn--sm ${s.changePickBtn}`}
-              onClick={() => setDrawerOpen(true)}
+              onClick={() => {
+                setSelection(null);
+                setDrawerOpen(true);
+              }}
               aria-label="Back to spin results"
             >
               Spin results
