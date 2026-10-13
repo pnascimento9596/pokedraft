@@ -14,6 +14,7 @@
     linear-gradient(180deg, #09261b 0%, #0e3626 100%);
   --stadium-edge: #051a12;
   --stadium-line: #34d399;
+  --stadium-ring: #b07018;
   --stadium-card: #0f172a;
   --stadium-ink: #f8fafc;
   --stadium-muted: #cbd5e1;
@@ -23,12 +24,12 @@
   --stadium-rainbow: linear-gradient(135deg, #f43f5e, #ec4899, #8b5cf6, #3b82f6, #10b981);
 }
 :root[data-theme="light"] {
-  --stadium-shell: var(--canvas);
+  --stadium-shell: none;
   --stadium-glass: var(--surface);
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --stadium-shell: var(--canvas);
+    --stadium-shell: none;
     --stadium-glass: var(--surface);
   }
 }

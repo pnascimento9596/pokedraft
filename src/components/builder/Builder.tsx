@@ -204,11 +204,16 @@ export function Builder({
     });
 
   // The same number and label as the picker row.
-  const tokenNote = (engine: BuilderEngine, ref: SlotRef): ReactNode => {
+  const tokenNote = (engine: BuilderEngine, ref: SlotRef, noteId: string): ReactNode => {
     const id = valueAt(lineup, ref);
     if (id === null) return null;
     const role = ref.kind === "starter" ? slots[ref.index].role : null;
-    return <RatingNote rating={ratingFor(engine.speciesById(id), role, slotLabel(lineup, ref))} />;
+    return (
+      <RatingNote
+        id={noteId}
+        rating={ratingFor(engine.speciesById(id), role, slotLabel(lineup, ref))}
+      />
+    );
   };
 
   return (
@@ -264,7 +269,7 @@ export function Builder({
             }
             tokenNote={
               showRatings && !animating && desk.kind === "live"
-                ? (ref) => tokenNote(desk.engine, ref)
+                ? (ref, noteId) => tokenNote(desk.engine, ref, noteId)
                 : undefined
             }
           />

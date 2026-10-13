@@ -28,7 +28,7 @@ export interface PitchProps {
   /** Enables drag-to-swap between filled tokens (pointer events, works on touch). */
   readonly onSwap?: (a: SlotRef, b: SlotRef) => void;
   /** Extra line under a filled token, e.g. a fit number in sighted mode. */
-  readonly tokenNote?: (ref: SlotRef) => ReactNode;
+  readonly tokenNote?: (ref: SlotRef, id: string) => ReactNode;
   readonly highlight?: SlotRef | null;
   /** The player picked for a tap swap. Passing it (even null) makes filled tokens toggle buttons. */
   readonly selected?: SlotRef | null;
@@ -118,11 +118,15 @@ export function Pitch({
         data-drop={dropKey === key || undefined}
         data-dragging={dragging || undefined}
         disabled={disabled || (onSlotTap === undefined && onSwap === undefined)}
+        id={`${labelId}-${key}`}
         aria-label={name}
         aria-labelledby={
-          species !== null && tokenNote
-            ? `${labelId}-${key}-slot ${labelId}-${key}-name ${labelId}-${key}-note`
-            : undefined
+          species === null
+            ? `${labelId}-${key} ${labelId}-${key}-role ${labelId}-${key}-slot ${labelId}-${key}-prompt`
+            : `${labelId}-${key} ${labelId}-${key}-role${tokenNote ? ` ${labelId}-${key}-note-score` : ""} ${labelId}-${key}-slot ${labelId}-${key}-name ${labelId}-${key}-types`
+        }
+        aria-describedby={
+          species !== null && tokenNote ? `${labelId}-${key}-note-label` : undefined
         }
         style={{
           ...style,
@@ -185,7 +189,7 @@ export function Pitch({
           species={species}
           slotLabel={slotLabel}
           role={ref.kind === "starter" ? CARD_ROLE[slots[ref.index].role] : "SUB"}
-          note={species !== null ? tokenNote?.(ref) : undefined}
+          note={species !== null ? tokenNote?.(ref, `${labelId}-${key}-note`) : undefined}
           id={`${labelId}-${key}`}
         />
       </button>

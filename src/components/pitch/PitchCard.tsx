@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import type { Species } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { typeLabel } from "@/ui/labels";
@@ -21,16 +21,18 @@ export function PitchCard({
   return (
     <>
       <span className={s.cardHeader}>
-        <span className={s.cardRole}>{role}</span>
+        <span id={`${id}-role`} className={s.cardRole}>
+          {role}
+        </span>{" "}
         {species !== null && note !== undefined ? (
           <span id={`${id}-note`} className={s.tokenNote}>
             {note}
           </span>
         ) : null}
-      </span>
+      </span>{" "}
       <span id={`${id}-slot`} className={s.tokenSlot}>
         {slotLabel}
-      </span>
+      </span>{" "}
       <span className={s.tokenImage}>
         {species === null ? (
           <span className={s.tokenEmpty} aria-hidden="true">
@@ -39,19 +41,21 @@ export function PitchCard({
         ) : (
           <PlayerImage dexId={species.id} size={48} alt={species.name} />
         )}
-      </span>
+      </span>{" "}
       {species === null ? (
-        <span className={s.emptyPrompt}>Tap to Draft!</span>
+        <span id={`${id}-prompt`} className={s.emptyPrompt}>
+          Tap to Draft!
+        </span>
       ) : (
         <>
           <span id={`${id}-name`} className={s.tokenName}>
             {species.name}
-          </span>
-          <span className={s.cardTypes}>
+          </span>{" "}
+          <span id={`${id}-types`} className={s.cardTypes}>
             {species.types.map((type) => (
-              <span key={type} style={{ borderColor: TYPE_PALETTE[type] }}>
-                {typeLabel(type)}
-              </span>
+              <Fragment key={type}>
+                <span style={{ borderColor: TYPE_PALETTE[type] }}>{typeLabel(type)}</span>{" "}
+              </Fragment>
             ))}
           </span>
         </>

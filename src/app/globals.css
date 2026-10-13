@@ -32,7 +32,8 @@ body {
   display: flex;
   flex-direction: column;
   color: var(--text-soft);
-  background: var(--stadium-shell);
+  background-color: var(--canvas);
+  background-image: var(--stadium-shell);
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 22px;
@@ -289,6 +290,9 @@ body:has(.page-loading) > .site-footer {
   letter-spacing: -0.03em;
   text-decoration: none;
   line-height: 1;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--stadium-card);
   color: var(--stadium-wordmark);
   -webkit-text-stroke: 1px var(--stadium-wordmark-shadow);
   text-shadow:

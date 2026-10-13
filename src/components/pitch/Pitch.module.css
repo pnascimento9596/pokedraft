@@ -4,6 +4,8 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  background: var(--stadium-card);
+  border-radius: 16px;
 }
 .perspective {
   perspective: 1200px;
@@ -99,15 +101,16 @@
 .token[data-highlight],
 .token[data-drop],
 .token[aria-pressed="true"] {
-  outline: 3px solid var(--stadium-line);
+  outline: 3px solid var(--stadium-ring);
   outline-offset: 2px;
 }
 .token[data-weak] {
-  outline: 3px solid var(--token-weak);
+  box-shadow: 0 0 0 3px var(--stadium-ring);
+  outline: 3px solid var(--stadium-ring);
   outline-offset: 2px;
 }
 .token:focus-visible {
-  outline: 3px solid var(--focus);
+  outline: 3px solid var(--stadium-ink);
   outline-offset: 3px;
 }
 .cardHeader {
@@ -140,6 +143,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  container-type: size;
   width: 100%;
   height: 42px;
   flex: 1;
@@ -147,8 +151,8 @@
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
 }
 .tokenImage > :global([data-player-image]) {
-  width: 100% !important;
-  height: 100% !important;
+  width: min(48px, 100cqw, 100cqh) !important;
+  height: min(48px, 100cqw, 100cqh) !important;
 }
 .tokenImage img {
   max-width: 100%;

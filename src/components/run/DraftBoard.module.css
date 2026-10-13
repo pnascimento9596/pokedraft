@@ -54,8 +54,8 @@
   gap: 8px;
 }
 .round {
-  font-size: 22px;
-  line-height: 28px;
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  line-height: 1.3;
 }
 .round:focus {
   outline: none;
@@ -155,6 +155,7 @@
 }
 .card[aria-pressed="true"] {
   outline: 3px solid var(--stadium-line);
+  box-shadow: 0 0 0 3px var(--flood-text);
 }
 .cardArtWrap {
   display: flex;
@@ -216,8 +217,8 @@
 .legend {
   font-size: 13px;
 }
-.pitch[data-armed] :global([data-testid^="slot-"][data-filled="false"]) {
-  outline: 2px dashed var(--stadium-line);
+.pitch[data-armed] :global([data-testid^="slot-"][data-filled="false"]:not(:focus-visible)) {
+  outline: 2px dashed var(--stadium-ring);
   outline-offset: 2px;
 }
 @media (min-width: 960px) {

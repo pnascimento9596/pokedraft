@@ -191,11 +191,12 @@ function ActiveDraftBoard({
     committed === null
       ? ratingFor(speciesById(id), null, "")
       : ratingFor(speciesById(id), slotRole(committed), slotLabel(state.lineup, committed));
-  const tokenNote = (ref: SlotRef): ReactNode => {
+  const tokenNote = (ref: SlotRef, noteId: string): ReactNode => {
     const id = valueAt(state.lineup, ref);
     if (id === null) return null;
     return (
       <RatingNote
+        id={noteId}
         rating={ratingFor(speciesById(id), slotRole(ref), slotLabel(state.lineup, ref))}
       />
     );
@@ -421,7 +422,7 @@ function ActiveDraftBoard({
                   key={target}
                   type="button"
                   className="btn btn--sm"
-                  aria-label={`${label} ${remaining} left`}
+                  aria-label={`${label} ${remaining}/${REROLLS[mode]}, ${remaining} left`}
                   aria-disabled={off || undefined}
                   onClick={() => {
                     if (off) return;
