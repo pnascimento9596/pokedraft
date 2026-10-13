@@ -59,7 +59,7 @@ describe("challenge run screen", () => {
     const gulpin = screen.getByTestId("candidate-316");
     fireEvent.click(gulpin);
     expect(gulpin.getAttribute("aria-pressed")).toBe("true");
-    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
 
     expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
@@ -71,7 +71,7 @@ describe("challenge run screen", () => {
     await start();
     vi.useFakeTimers();
     try {
-      fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+      fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
       act(() => vi.advanceTimersByTime(3999));
       expect(screen.queryByTestId("draft-hint")?.textContent).toBe(
         "Choose a player first, then tap a slot.",
@@ -103,9 +103,9 @@ describe("challenge run screen", () => {
     render(<PlayScreen />);
     await start();
     fireEvent.click(screen.getByTestId("candidate-316"));
-    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
     fireEvent.click(document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!);
-    fireEvent.click(screen.getByRole("button", { name: "ST Gulpin" }));
+    fireEvent.click(screen.getByRole("button", { name: /ST Gulpin/ }));
     expect({
       hint: screen.getByTestId("draft-hint").textContent,
       st: screen.getByTestId("slot-s9").getAttribute("aria-label"),
@@ -124,11 +124,13 @@ describe("challenge run screen", () => {
     expect(screen.getByRole("link", { name: "Back home" }).getAttribute("href")).toBe("/");
   });
 
-  it("shows a friendly message when navigated to /play without query parameters", () => {
+  it("opens the existing default Open Squad First lobby on bare /play", () => {
     query.current = "";
     render(<PlayScreen />);
-    expect(screen.getByRole("heading").textContent).toBe("That challenge link does not work");
-    expect(screen.getByRole("link", { name: "Back home" }).getAttribute("href")).toBe("/");
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("8-0 Challenge");
+    expect(screen.getByTestId("run-start").textContent).toBe("Start run");
+    expect(screen.getByText("Open").textContent).toBe("Open");
+    expect(screen.getByText("Squad First").textContent).toBe("Squad First");
   });
 
   it("selects candidate 1, 2, or 3 with keyboard numbers and clears uncommitted selection on Escape", async () => {
@@ -186,8 +188,8 @@ describe("Show ratings (challenges) on the draft screen", () => {
     render(<PlayScreen />);
     await start();
     fireEvent.click(screen.getByTestId("candidate-316"));
-    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
-    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Gulpin 5 vs other strikers");
+    fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
+    expect(screen.getByTestId("slot-s9").textContent).toBe("FW 5 vs other strikers ST  Gulpin Poison ");
   });
 
   it("rates every offered player at the committed slot's role in Position First, with no Best label (ST: Roselia 52, Gulpin 5, Seviper 71)", async () => {
@@ -195,7 +197,7 @@ describe("Show ratings (challenges) on the draft screen", () => {
     query.current = "mode=cup8&f=4-3-3&order=positionFirst&g=123456789&style=open&seed=run-test";
     render(<PlayScreen />);
     await start();
-    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
     expect(fitTexts()).toEqual([
       "24 vs other strikers",
       "52 vs other strikers",
@@ -213,7 +215,7 @@ describe("Show ratings (challenges) on the draft screen", () => {
     query.current = "mode=kanto151&f=4-3-3&order=positionFirst&seed=run-test";
     render(<PlayScreen />);
     await start();
-    fireEvent.click(screen.getByRole("button", { name: "Empty SUB 1 slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty SUB 1 slot/ }));
     expect(fitTexts()).toEqual(["Best: ST 92 vs other strikers"]);
     expect(
       screen.getByRole("button", { name: /Magmar/, description: "Raw fit 85 of 100 for ST" }),
@@ -225,10 +227,10 @@ describe("Show ratings (challenges) on the draft screen", () => {
     render(<PlayScreen />);
     await start();
     fireEvent.click(screen.getByTestId("candidate-316"));
-    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
     expect(fitTexts()).toEqual([]);
     expect(screen.queryByTestId("ratings-legend")).toBeNull();
-    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Gulpin");
+    expect(screen.getByTestId("slot-s9").textContent).toBe("FW  ST  Gulpin Poison ");
     expect(document.body.textContent).not.toMatch(/vs other/);
   });
 
@@ -305,7 +307,7 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
   const pickGulpinAtStriker = async () => {
     await start();
     fireEvent.click(screen.getByTestId("candidate-316"));
-    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
   };
 
   const draftSixteen = () => {

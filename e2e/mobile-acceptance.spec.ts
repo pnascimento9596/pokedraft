@@ -12,7 +12,7 @@
 //
 // Groups. Every test title starts with its group number, so a CI line maps to GATE 4.
 //   0 self-check   the helpers prove their own verdicts on controlled pages
-//   1 flow         a full 8-0 Challenge, 151 Challenge and Daily with taps only, no page scroll
+//   1 flow         a full 8-0 Challenge, 151 Challenge and Daily with deliberate scroll and real taps
 //   2 overflow     no sideways overflow at 320, 360, 390 and 430 px, dark and light
 //   3 targets      every interactive element is at least 44 by 44 px, at 390 and 320 px
 //   4 picker       the builder sheet scrolls its own list and closes on swipe, Back and Close
@@ -734,8 +734,7 @@ test("0 self-check: a tap leaves no button focused, as on iOS, and a text field 
 });
 
 // ---------------------------------------------------------------------------------------------
-// Group 1. A whole run with taps only. Every primary action must be on screen, uncovered, and
-// reachable without a page scroll since the previous step.
+// Group 1. The scrollable stadium keeps every primary action reachable with an uncovered real tap.
 
 class Walk {
   readonly failures: ReachError[] = [];
@@ -790,12 +789,26 @@ interface Flow {
   readonly record: string | null;
 }
 
+async function scrollDraftControlToView(page: Page, locator: Locator): Promise<void> {
+  await locator.scrollIntoViewIfNeeded();
+  await settle(page);
+  expect((await inViewport(page, locator)).problem).toBeNull();
+  const bounds = await page.evaluate(() => ({
+    y: scrollY,
+    max: document.documentElement.scrollHeight - innerHeight,
+  }));
+  expect(bounds.y).toBeGreaterThanOrEqual(0);
+  expect(bounds.y).toBeLessThanOrEqual(bounds.max);
+  resetScrollBaseline(page);
+}
+
 async function playFlow(page: Page, flow: Flow): Promise<Walk> {
   await page.goto(flow.url);
   const walk = new Walk(page);
   const start = page.getByTestId("run-start");
   await expect(start).toBeVisible();
   await ready(page, start);
+  await scrollDraftControlToView(page, start);
   await walk.tap("Start run", start);
 
   const header = page.getByTestId("round-header");
@@ -806,13 +819,22 @@ async function playFlow(page: Page, flow: Flow): Promise<Walk> {
   for (let round = 1; round <= 16; round++) {
     await expect(header).toContainText(`Round ${round} of 16`);
     await expect(candidate).toBeVisible();
+    await scrollDraftControlToView(page, candidate);
     if (flow.pickCandidate) await walk.tap(`round ${round} pick a candidate`, candidate);
-    else await walk.see(`round ${round} the offered player`, candidate);
+    else {
+      await walk.see(`round ${round} the offered player`, candidate);
+      await expect(candidate).toHaveAttribute("aria-pressed", "true");
+      const minimize = page.getByRole("button", { name: "Minimize draft picker" });
+      await scrollDraftControlToView(page, minimize);
+      await walk.tap(`round ${round} acknowledge player and read pitch`, minimize);
+    }
+    await scrollDraftControlToView(page, emptySlot);
     await walk.tap(`round ${round} place in an empty slot`, emptySlot);
   }
 
   const seeResults = page.getByTestId("see-results");
   await expect(seeResults).toBeVisible();
+  await scrollDraftControlToView(page, seeResults);
   await walk.tap("See results", seeResults);
   await expect(page.getByTestId("results-record")).toBeVisible();
   if (flow.record !== null)
@@ -820,17 +842,19 @@ async function playFlow(page: Page, flow: Flow): Promise<Walk> {
   return walk;
 }
 
-test("1 flow: 8-0 Challenge Classic, start to results with taps only", async ({ page }) => {
+test("1 flow: 8-0 Challenge Classic, start to results with scroll and real taps", async ({
+  page,
+}) => {
   const walk = await playFlow(page, { url: PLAY_8_0, pickCandidate: true, record: RECORD_8_0 });
   conclude("1 flow: 8-0 Challenge Classic", walk.problems());
 });
 
-test("1 flow: 151 Challenge, start to results with taps only", async ({ page }) => {
+test("1 flow: 151 Challenge, start to results with scroll and real taps", async ({ page }) => {
   const walk = await playFlow(page, { url: PLAY_151, pickCandidate: false, record: RECORD_151 });
   conclude("1 flow: 151 Challenge", walk.problems());
 });
 
-test("1 flow: Daily, start to results with taps only", async ({ page }) => {
+test("1 flow: Daily, start to results with scroll and real taps", async ({ page }) => {
   const walk = await playFlow(page, { url: DAILY, pickCandidate: true, record: null });
   await expect(page.getByTestId("submit-panel")).toBeVisible();
   conclude("1 flow: Daily", walk.problems());
@@ -1296,7 +1320,9 @@ test("5 drag and scroll: on the finished draft, a tap on one player and then ano
     speciesOf((await gk.getAttribute("aria-label"))!),
     speciesOf((await lf.getAttribute("aria-label"))!),
   ];
+  await scrollDraftControlToView(page, gk);
   await tapNow(page, gk, "slot-s0");
+  await scrollDraftControlToView(page, lf);
   await tapNow(page, lf, "slot-s9");
   const read = async () => [
     speciesOf((await gk.getAttribute("aria-label"))!),

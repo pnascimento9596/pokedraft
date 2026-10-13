@@ -335,10 +335,8 @@ for (const colorScheme of ["dark", "light"] as const) {
       const weak = page.locator('[class*="_field"] [data-weak]');
       expect(await weak.count()).toBeGreaterThan(0);
       for (const token of await weak.all()) {
-        const shadow = await token
-          .locator('[class*="_tokenImage"]')
-          .evaluate((el) => getComputedStyle(el).boxShadow);
-        const grass = await grassAround(page, token.locator('[class*="_tokenImage"]'));
+        const shadow = await token.evaluate((el) => getComputedStyle(el).boxShadow);
+        const grass = await grassAround(page, token);
         expect(round2(worst(outerRing(shadow), grass))).toBeGreaterThanOrEqual(3);
       }
     });

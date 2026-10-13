@@ -92,7 +92,7 @@ describe("draft announcements", () => {
     await begin();
     await flush();
     fireEvent.click(screen.getByTestId("candidate-316"));
-    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
     await flush();
     expect(said()).toBe("Signed Gulpin at ST. Round 2 of 16. Region: Hoenn. Type: Fighting.");
   });
@@ -135,7 +135,7 @@ describe("draft announcements", () => {
     await flush();
     const texts: (string | null)[] = [];
     for (let i = 0; i < 2; i++) {
-      fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+      fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
       await flush();
       texts.push(said());
     }

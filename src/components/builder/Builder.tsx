@@ -133,8 +133,9 @@ export function Builder({
   const filled = filledCount(lineup);
   const full = fullLineup(lineup);
   const animating = cascade !== null;
-  const score =
-    desk.kind === "live" && full !== null && !animating ? desk.engine.rateTeam(full).score : null;
+  const teamRating =
+    desk.kind === "live" && full !== null && !animating ? desk.engine.rateTeam(full) : null;
+  const score = teamRating?.score ?? null;
   const shown = cascade === null ? lineup : cascadeFrame(cascade.target, cascade.pool, elapsed);
 
   const preload = () => {
@@ -203,11 +204,16 @@ export function Builder({
     });
 
   // The same number and label as the picker row.
-  const tokenNote = (engine: BuilderEngine, ref: SlotRef): ReactNode => {
+  const tokenNote = (engine: BuilderEngine, ref: SlotRef, noteId: string): ReactNode => {
     const id = valueAt(lineup, ref);
     if (id === null) return null;
     const role = ref.kind === "starter" ? slots[ref.index].role : null;
-    return <RatingNote rating={ratingFor(engine.speciesById(id), role, slotLabel(lineup, ref))} />;
+    return (
+      <RatingNote
+        id={noteId}
+        rating={ratingFor(engine.speciesById(id), role, slotLabel(lineup, ref))}
+      />
+    );
   };
 
   return (
@@ -247,6 +253,7 @@ export function Builder({
         <div className={s.pitch} data-animating={animating || undefined}>
           <Pitch
             compactTags
+            edges={teamRating?.edges}
             formation={lineup.formation}
             lineup={shown}
             speciesOf={desk.kind === "live" ? desk.engine.speciesById : noSpecies}
@@ -262,7 +269,7 @@ export function Builder({
             }
             tokenNote={
               showRatings && !animating && desk.kind === "live"
-                ? (ref) => tokenNote(desk.engine, ref)
+                ? (ref, noteId) => tokenNote(desk.engine, ref, noteId)
                 : undefined
             }
           />

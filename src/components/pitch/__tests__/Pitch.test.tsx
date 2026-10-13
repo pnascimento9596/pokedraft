@@ -66,8 +66,8 @@ describe("Pitch", () => {
     render(
       <Pitch formation="4-3-3" lineup={empty} speciesOf={speciesById} onSlotTap={onSlotTap} />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Empty LCB slot" }));
-    fireEvent.click(screen.getByRole("button", { name: "Empty SUB 2 slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty LCB slot/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty SUB 2 slot/ }));
     expect(onSlotTap.mock.calls).toEqual([
       [{ kind: "starter", index: 2 }],
       [{ kind: "bench", index: 1 }],
@@ -77,12 +77,20 @@ describe("Pitch", () => {
   it("still takes the next tap after a touch drag, which ends with no click (SF-02: a stuck drag flag swallowed it)", () => {
     const onSlotTap = vi.fn();
     const onSwap = vi.fn();
-    render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSlotTap={onSlotTap} onSwap={onSwap} />);
-    touchDrag(
-      screen.getByRole("button", { name: "LCB Bulbasaur" }),
-      screen.getByRole("button", { name: "ST Charmander" }),
+    render(
+      <Pitch
+        formation="4-3-3"
+        lineup={twoPlaced}
+        speciesOf={speciesById}
+        onSlotTap={onSlotTap}
+        onSwap={onSwap}
+      />,
     );
-    tap(screen.getByRole("button", { name: "Empty GK slot" }));
+    touchDrag(
+      screen.getByRole("button", { name: /LCB Bulbasaur/ }),
+      screen.getByRole("button", { name: /ST Charmander/ }),
+    );
+    tap(screen.getByRole("button", { name: /Empty GK slot/ }));
     expect({ swaps: onSwap.mock.calls, taps: onSlotTap.mock.calls }).toEqual({
       swaps: [
         [
@@ -96,20 +104,36 @@ describe("Pitch", () => {
 
   it("still takes Enter or Space on a slot after a touch drag (the keyboard click has no pointer events)", () => {
     const onSlotTap = vi.fn();
-    render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSlotTap={onSlotTap} onSwap={() => {}} />);
-    touchDrag(
-      screen.getByRole("button", { name: "LCB Bulbasaur" }),
-      screen.getByRole("button", { name: "ST Charmander" }),
+    render(
+      <Pitch
+        formation="4-3-3"
+        lineup={twoPlaced}
+        speciesOf={speciesById}
+        onSlotTap={onSlotTap}
+        onSwap={() => {}}
+      />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Empty GK slot" }), { detail: 0 });
+    touchDrag(
+      screen.getByRole("button", { name: /LCB Bulbasaur/ }),
+      screen.getByRole("button", { name: /ST Charmander/ }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Empty GK slot/ }), { detail: 0 });
     expect(onSlotTap.mock.calls).toEqual([[{ kind: "starter", index: 0 }]]);
   });
 
   it("drops the click a mouse drag ends with, so a drag never also opens the slot", () => {
     const onSlotTap = vi.fn();
-    render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSlotTap={onSlotTap} onSwap={() => {}} />);
-    const from = screen.getByRole("button", { name: "LCB Bulbasaur" });
-    document.elementFromPoint = () => screen.getByRole("button", { name: "ST Charmander" });
+    render(
+      <Pitch
+        formation="4-3-3"
+        lineup={twoPlaced}
+        speciesOf={speciesById}
+        onSlotTap={onSlotTap}
+        onSwap={() => {}}
+      />,
+    );
+    const from = screen.getByRole("button", { name: /LCB Bulbasaur/ });
+    document.elementFromPoint = () => screen.getByRole("button", { name: /ST Charmander/ });
     const mouse = { pointerId: 1, pointerType: "mouse", button: 0 };
     fireEvent.pointerDown(from, { ...mouse, clientX: 10, clientY: 10 });
     fireEvent.pointerMove(from, { ...mouse, clientX: 120, clientY: 140 });
@@ -142,4 +166,3 @@ describe("Pitch", () => {
     expect(container.querySelector('[data-testid="pitch-pokeball-mark"]')).not.toBeNull();
   });
 });
-

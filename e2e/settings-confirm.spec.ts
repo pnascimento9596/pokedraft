@@ -16,6 +16,34 @@ test.describe("settings panel and Play confirmation on a phone", () => {
     );
   });
 
+  for (const width of [375, 390]) {
+    test(`default-open settings precede the stadium and Formation is on screen at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto("/");
+      await expect(page.getByRole("button", { name: "Hide settings and records" })).toHaveAttribute(
+        "aria-expanded",
+        "true",
+      );
+      const setup = await formation(page).boundingBox();
+      const pitch = await page.getByTestId("pitch").boundingBox();
+      expect(setup).not.toBeNull();
+      expect(pitch).not.toBeNull();
+      expect(setup!.y).toBeGreaterThanOrEqual(0);
+      expect(setup!.y + setup!.height).toBeLessThanOrEqual(844);
+      expect(setup!.y + setup!.height).toBeLessThan(pitch!.y);
+      for (const label of ["Generations", "Draft style", "Order"]) {
+        await expect(page.getByRole("group", { name: label, exact: true })).toBeVisible();
+      }
+      for (const label of ["Legendaries", "Show ratings (builder)", "Show ratings (challenges)"]) {
+        await expect(
+          page.getByRole("switch", { name: new RegExp(label.replace(/[()]/g, "\\$&")) }),
+        ).toBeVisible();
+      }
+    });
+  }
+
   test("Play 8-0, Yes lands on the matching /play URL and Start drafts", async ({ page }) => {
     await page.goto("/");
     await formation(page).selectOption("4-4-2");

@@ -9,7 +9,7 @@ import { longDate } from "@/components/leaderboard/format";
 import { unlockAudio } from "@/components/wheel/sound";
 import { focusHeading } from "@/ui/focus";
 import { MODE_LABEL } from "@/ui/labels";
-import { freshSeed, parsePlayQuery } from "@/ui/settings";
+import { DEFAULT_PANEL, playHref, freshSeed, parsePlayQuery } from "@/ui/settings";
 import { settingsSummary } from "@/ui/settingsSummary";
 import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
@@ -40,7 +40,12 @@ function whenIdleAfterLoad(task: () => void): () => void {
 export function PlayScreen() {
   const params = useSearchParams();
   const parsed = useMemo(
-    () => parsePlayQuery(new URLSearchParams(params.toString())),
+    () =>
+      parsePlayQuery(
+        new URLSearchParams(
+          params.size === 0 ? playHref("cup8", DEFAULT_PANEL).split("?")[1] : params.toString(),
+        ),
+      ),
     [params],
   );
 

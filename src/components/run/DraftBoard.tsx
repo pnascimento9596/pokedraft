@@ -6,6 +6,7 @@ import {
   FORMATIONS,
   REROLLS,
   speciesById,
+  rateTeam,
   type DraftAction,
   type DraftSettings,
   type DraftState,
@@ -24,12 +25,14 @@ import { announce as stageLine, dexLabel, stagesFor } from "@/components/wheel/r
 import { unlockAudio } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { REGION_LABEL } from "@/ui/labels";
-import { sameRef, slotLabel, valueAt } from "@/ui/lineup";
+import { filledCount, sameRef, slotLabel, valueAt } from "@/ui/lineup";
 import { ratingFor, type Rating } from "@/ui/rating";
 import { swapMessage } from "@/ui/swap-message";
 import { RoadStrip } from "./RoadStrip";
 import { NavIcon } from "@/components/ui/nav-icons";
 import { candidatesFor, withHint, type Run } from "./runState";
+import { typeFrame } from "@/design/stadium";
+import { fullLineup } from "@/components/builder/model";
 import s from "./DraftBoard.module.css";
 
 export interface DraftBoardProps {
@@ -118,6 +121,8 @@ function ActiveDraftBoard({
   const { phase } = state;
   const reduced = useReducedMotion();
   const [revealedId, setRevealedId] = useState(-1);
+  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [hubOpen, setHubOpen] = useState(false);
   const [selection, setSelection] = useState<Selection | null>(null);
   // The player picked for a tap swap: a tap on a placed player, then a tap on another slot.
   const [swapFrom, setSwapFrom] = useState<SlotRef | null>(null);
@@ -186,11 +191,12 @@ function ActiveDraftBoard({
     committed === null
       ? ratingFor(speciesById(id), null, "")
       : ratingFor(speciesById(id), slotRole(committed), slotLabel(state.lineup, committed));
-  const tokenNote = (ref: SlotRef): ReactNode => {
+  const tokenNote = (ref: SlotRef, noteId: string): ReactNode => {
     const id = valueAt(state.lineup, ref);
     if (id === null) return null;
     return (
       <RatingNote
+        id={noteId}
         rating={ratingFor(speciesById(id), slotRole(ref), slotLabel(state.lineup, ref))}
       />
     );
@@ -200,6 +206,7 @@ function ActiveDraftBoard({
     (action: DraftAction) => {
       focusBefore.current = document.activeElement;
       setSwapFrom(null);
+      if (action.type === "pick") setDrawerOpen(true);
       onAction(action);
     },
     [onAction],
@@ -209,10 +216,12 @@ function ActiveDraftBoard({
     (id: SpeciesId) => {
       if (choosing === null) return;
       if (choosing.slot !== null) {
+        setDrawerOpen(false);
         act({ type: "pick", species: id, slot: choosing.slot });
         return;
       }
       setSelection(selected === id ? null : { rollId, species: id });
+      setDrawerOpen(false);
     },
     [choosing, act, selected, rollId],
   );
@@ -258,12 +267,14 @@ function ActiveDraftBoard({
       return;
     }
     if (id !== null) {
+      setDrawerOpen(false);
       const name = speciesById(id).name;
       setSwapFrom(ref);
       announce(`${slotLabel(state.lineup, ref)} ${name} selected. ${swapPrompt(name)}`);
       return;
     }
     if (phase.kind === "awaitingSlot") {
+      setDrawerOpen(true);
       act({ type: "chooseSlot", slot: ref });
       return;
     }
@@ -273,12 +284,15 @@ function ActiveDraftBoard({
       return;
     }
     if (selected === null) {
+      setDrawerOpen(true);
       hint(revealed ? "Choose a player first, then tap a slot." : "Wait for the wheel to stop.");
       return;
     }
     act({ type: "pick", species: selected, slot: ref });
   };
 
+  const full = fullLineup(state.lineup);
+  const teamRating = full === null ? null : rateTeam(full);
   const armed = phase.kind === "awaitingSlot" || (committed === null && selected !== null);
   const message = failure ?? run.error ?? (pickedName === null ? null : swapPrompt(pickedName));
 
@@ -287,7 +301,25 @@ function ActiveDraftBoard({
       className={s.board}
       data-revealed={revealed || undefined}
       data-rated={showRatings || undefined}
+      data-drawer={drawerOpen || undefined}
+      data-hub={hubOpen || undefined}
     >
+      <div className={s.hub}>
+        <button
+          type="button"
+          className="btn btn--ghost"
+          aria-expanded={hubOpen}
+          onClick={() => setHubOpen(!hubOpen)}
+        >
+          Challenge Hub · {title}
+        </button>
+        <p>
+          Draft: {filledCount(state.lineup)}/16 ·{" "}
+          {teamRating === null
+            ? "Chemistry after draft"
+            : `${Math.round(teamRating.synergy * 100)}% Chem`}
+        </p>
+      </div>
       <section className={s.side} aria-label="Draft">
         <header className={s.header}>
           <div className={s.titleRow}>
@@ -321,33 +353,6 @@ function ActiveDraftBoard({
               <span className={s.rolling}>Rolling</span>
             ) : null}
           </div>
-          {phase.kind !== "complete" ? (
-            <div className={s.rerolls}>
-              {REROLL_BUTTONS[mode].map(([target, label]) => {
-                // aria-disabled, not disabled, so a pressed button keeps focus while it is off.
-                const off = remaining <= 0 || !revealed;
-                return (
-                  <button
-                    key={target}
-                    type="button"
-                    className="btn btn--sm"
-                    aria-disabled={off || undefined}
-                    onClick={() => {
-                      if (off) return;
-                      unlockAudio();
-                      act({ type: "reroll", target });
-                    }}
-                  >
-                    {label}{" "}
-                    <span className={s.count}>
-                      {remaining}
-                      <span className="visually-hidden"> left</span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          ) : null}
         </header>
 
         {/* The page's live region reads this out; the line itself is for the eyes. */}
@@ -373,14 +378,24 @@ function ActiveDraftBoard({
         ) : null}
 
         {revealed ? (
-          <Candidates
-            key={`cands-${rollId}`}
-            ids={candidates}
-            selected={selected}
-            committed={choosing?.slot !== null}
-            rate={showRatings ? rateOffer : null}
-            onTap={tapCandidate}
-          />
+          <div className={s.drawer} data-testid="draft-drawer">
+            <button
+              type="button"
+              className={`btn btn--ghost ${s.drawerToggle}`}
+              onClick={() => setDrawerOpen(!drawerOpen)}
+              aria-expanded={drawerOpen}
+            >
+              {drawerOpen ? "Minimize draft picker" : "Choose a player"}
+            </button>
+            <Candidates
+              key={`cands-${rollId}`}
+              ids={candidates}
+              selected={selected}
+              committed={choosing?.slot !== null}
+              rate={showRatings ? rateOffer : null}
+              onTap={tapCandidate}
+            />
+          </div>
         ) : null}
 
         {phase.kind === "complete" ? (
@@ -394,6 +409,34 @@ function ActiveDraftBoard({
             >
               See results
             </button>
+          </div>
+        ) : null}
+
+        {phase.kind !== "complete" ? (
+          <div className={s.rerolls}>
+            {REROLL_BUTTONS[mode].map(([target, label]) => {
+              // aria-disabled, not disabled, so a pressed button keeps focus while it is off.
+              const off = remaining <= 0 || !revealed;
+              return (
+                <button
+                  key={target}
+                  type="button"
+                  className="btn btn--sm"
+                  aria-label={`${label} ${remaining}/${REROLLS[mode]}, ${remaining} left`}
+                  aria-disabled={off || undefined}
+                  onClick={() => {
+                    if (off) return;
+                    unlockAudio();
+                    act({ type: "reroll", target });
+                  }}
+                >
+                  {label}{" "}
+                  <span className={s.count}>
+                    {remaining}/{REROLLS[mode]}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         ) : null}
 
@@ -429,6 +472,7 @@ function ActiveDraftBoard({
           selected={picked}
           label="Your formation"
           tokenNote={showRatings ? tokenNote : undefined}
+          edges={teamRating?.edges}
           fit
         />
       </section>
@@ -470,6 +514,7 @@ function Candidates({
                 className={s.card}
                 data-testid={`candidate-${id}`}
                 data-type={primaryType}
+                style={typeFrame(primaryType)}
                 aria-pressed={committed ? undefined : selected === id}
                 aria-describedby={rating !== null ? `${rawFitId}-${id}` : undefined}
                 data-rated={rating !== null || undefined}

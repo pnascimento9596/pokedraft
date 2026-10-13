@@ -91,15 +91,15 @@ function showRatings() {
 
 // The first tap on an idle builder loads the engine with import(), so the sheet opens a tick later.
 async function openPicker(slotName: string) {
-  fireEvent.click(screen.getByRole("button", { name: slotName }));
+  fireEvent.click(screen.getByRole("button", { name: new RegExp(`^${slotName}(?: |$)`) }));
   return screen.findByRole("dialog", undefined, { timeout: 10_000 });
 }
 
 describe("builder drag and swap", () => {
   it("dragging one filled token onto another swaps them instead of dropping or duplicating", async () => {
     openWithTwoPlaced();
-    const from = await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
-    const to = screen.getByRole("button", { name: "ST Charmander" });
+    const from = await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
+    const to = screen.getByRole("button", { name: /ST Charmander/ });
     document.elementFromPoint = () => to;
 
     fireEvent.pointerDown(from, { pointerId: 1, button: 0, clientX: 10, clientY: 10 });
@@ -112,7 +112,7 @@ describe("builder drag and swap", () => {
 
   it("picking a species already on the field into another slot swaps the two, never duplicates it", async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     const dialog = await openPicker("ST Charmander");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "bulba" } });
     fireEvent.click(within(dialog).getByTestId("pick-1"));
@@ -272,18 +272,24 @@ describe("builder picker", () => {
 describe("builder pitch token notes", () => {
   it("show no rating on any token with Show ratings off", async () => {
     openWithBenchToo();
-    expect((await screen.findByTestId("slot-s2")).textContent).toBe("LCB Bulbasaur");
-    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Charmander");
-    expect(screen.getByTestId("slot-b0").textContent).toBe("SUB 1 Pikachu");
+    expect((await screen.findByTestId("slot-s2")).textContent).toBe("DF  LCB  Bulbasaur Grass Poison ");
+    expect(screen.getByTestId("slot-s9").textContent).toBe("FW  ST  Charmander Fire ");
+    expect(screen.getByTestId("slot-b0").textContent).toBe("SUB  SUB 1  Pikachu Electric ");
   });
 
   it("with Show ratings on, print the same number and label as the picker (Bulbasaur at CB 23, Charmander at ST 43, Pikachu on the bench 75)", async () => {
     openWithBenchToo();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     showRatings();
-    expect(screen.getByTestId("slot-s2").textContent).toBe("LCB Bulbasaur 23 vs other CBs");
-    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Charmander 43 vs other strikers");
-    expect(screen.getByTestId("slot-b0").textContent).toBe("SUB 1 Pikachu 75 vs other wingers");
+    expect(screen.getByTestId("slot-s2").textContent).toBe(
+      "DF 23 vs other CBs LCB  Bulbasaur Grass Poison ",
+    );
+    expect(screen.getByTestId("slot-s9").textContent).toBe(
+      "FW 43 vs other strikers ST  Charmander Fire ",
+    );
+    expect(screen.getByTestId("slot-b0").textContent).toBe(
+      "SUB 75 vs other wingers SUB 1  Pikachu Electric ",
+    );
   });
 
   // Below an 800 px pitch the token pill is the number alone (the "vs other <role>s" line is
@@ -291,7 +297,7 @@ describe("builder pitch token notes", () => {
   // against. One legend line under the pitch says it; the CSS hides it where the labels show.
   it("with Show ratings on, a legend under the pitch says what the number compares against, and it is absent with ratings off", async () => {
     openWithBenchToo();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     expect(screen.queryByText(/Ratings are 0 to 100/)).toBeNull();
     showRatings();
     expect(screen.getByTestId("ratings-legend").textContent).toBe(
@@ -330,7 +336,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     vi.stubGlobal("matchMedia", () => ({ matches: true }));
     try {
       openWithTwoPlaced();
-      await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+      await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
       act(() => {
         fireEvent.click(screen.getByRole("button", { name: "Randomize" }));
         const raw = localStorage.getItem("pokedraft.builder");
@@ -369,7 +375,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     localStorage.setItem("pokedraft.builder", JSON.stringify(POOL_BUILDER_TOKEN));
     render(<HomeScreen />);
 
-    await screen.findByRole("button", { name: "CB Pikachu" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /CB Pikachu/ }, { timeout: 10_000 });
     expect(screen.getByTestId("slot-b0").getAttribute("aria-label")).toBe("SUB 1 Charmander");
     expect(filledSlots()).toBe(2);
     expect((screen.getByLabelText("Formation") as HTMLSelectElement).value).toBe("3-5-2");
@@ -387,14 +393,14 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
 
   it("saves a player edit and restores that squad after closing and reopening plain home", async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     await replaceBulbasaurWithPikachu();
     expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(EDITED_BUILDER_TOKEN));
 
     cleanup();
     window.history.replaceState(null, "", "/");
     render(<HomeScreen />);
-    await screen.findByRole("button", { name: "LCB Pikachu" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Pikachu/ }, { timeout: 10_000 });
     expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Charmander");
     expect(filledSlots()).toBe(2);
   });
@@ -402,7 +408,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
   it("opens the explicit shared squad while viewing, ratings and Reset preserve the player's other saved squad", async () => {
     localStorage.setItem("pokedraft.builder", JSON.stringify(OWN_BUILDER_TOKEN));
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Charmander");
     showRatings();
     expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(OWN_BUILDER_TOKEN));
@@ -413,14 +419,14 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     cleanup();
     window.history.replaceState(null, "", "/");
     render(<HomeScreen />);
-    await screen.findByRole("button", { name: "LCB Pikachu" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Pikachu/ }, { timeout: 10_000 });
     expect(filledSlots()).toBe(1);
   });
 
   it("adopts an edited shared squad as the player's checkpoint and Reset clears it", async () => {
     localStorage.setItem("pokedraft.builder", JSON.stringify(OWN_BUILDER_TOKEN));
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     await replaceBulbasaurWithPikachu();
     expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(EDITED_BUILDER_TOKEN));
     fireEvent.click(screen.getByRole("button", { name: "Reset" }));
@@ -437,7 +443,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
   it("Clear all clears the checkpoint when the URL is the player's own saved squad", async () => {
     localStorage.setItem("pokedraft.builder", JSON.stringify(TWO_PLACED_TOKEN));
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     fireEvent.click(screen.getByRole("button", { name: "Clear all" }));
     expect(filledSlots()).toBe(0);
     expect(JSON.parse(localStorage.getItem("pokedraft.builder") ?? "null")).toBeNull();
@@ -446,7 +452,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
   it("Reset cannot erase a newer squad checkpoint saved by another tab", async () => {
     localStorage.setItem("pokedraft.builder", JSON.stringify(TWO_PLACED_TOKEN));
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     localStorage.setItem("pokedraft.builder", JSON.stringify(OWN_BUILDER_TOKEN));
     fireEvent.click(screen.getByRole("button", { name: "Reset" }));
     expect(filledSlots()).toBe(0);
@@ -455,12 +461,12 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
 
   it("a formation edit checkpoints the rebuilt squad and survives a plain-home reopen", async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     fireEvent.change(screen.getByLabelText("Formation"), { target: { value: "3-5-2" } });
     cleanup();
     window.history.replaceState(null, "", "/");
     render(<HomeScreen />);
-    await screen.findByRole("button", { name: "CB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /CB Bulbasaur/ }, { timeout: 10_000 });
     expect((screen.getByLabelText("Formation") as HTMLSelectElement).value).toBe("3-5-2");
     expect(filledSlots()).toBe(2);
   });
@@ -473,7 +479,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
       throw new Error("blocked");
     });
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     await replaceBulbasaurWithPikachu();
     expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Charmander");
     expect(filledSlots()).toBe(2);
@@ -520,12 +526,12 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
 
   it("Clear all empties every slot and then disables itself", async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     expect(filledSlots()).toBe(2);
     fireEvent.click(screen.getByRole("button", { name: "Clear all" }));
 
     expect(filledSlots()).toBe(0);
-    expect(screen.getByRole("button", { name: "Empty LCB slot" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Empty LCB slot/ })).toBeTruthy();
     expect((screen.getByRole("button", { name: "Clear all" }) as HTMLButtonElement).disabled).toBe(
       true,
     );
@@ -533,7 +539,7 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
 
   it("Reset restores the default panel and an empty 4-3-3 lineup", async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     const style = screen.getByRole("group", { name: "Draft style" });
     fireEvent.click(within(style).getByRole("button", { name: "Classic" }));
     fireEvent.change(screen.getByLabelText("Formation"), { target: { value: "3-5-2" } });
@@ -551,14 +557,14 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
       "true",
     );
     expect(filledSlots()).toBe(0);
-    expect(screen.getByRole("button", { name: "Empty LCB slot" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Empty LCB slot/ })).toBeTruthy();
   });
 
   it("Copy link writes the share URL and says so, and says when the copy fails", async () => {
     const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
 
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
@@ -588,7 +594,7 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
       saved.push(`${this.download} ${this.href}`);
     });
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
 
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Download image" }));
@@ -609,7 +615,7 @@ describe("builder Download image feedback (SA-20, SB-05)", () => {
 
   const tools = async () => {
     openWithTwoPlaced();
-    await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     return screen.getByRole("toolbar", { name: "Builder actions" });
   };
 

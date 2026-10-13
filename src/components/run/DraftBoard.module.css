@@ -1,33 +1,10 @@
 .board {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    "side"
-    "pitch"
-    "road";
+  grid-template-areas: "hub" "pitch" "side" "road";
   gap: 16px;
+  min-width: 0;
 }
-
-@media (min-width: 960px) {
-  .board {
-    grid-template-columns: minmax(0, 1.25fr) minmax(360px, 1fr);
-    grid-template-areas:
-      "pitch side"
-      "pitch road";
-    grid-template-rows: auto 1fr;
-    align-items: start;
-  }
-
-  .pitch {
-    position: sticky;
-    top: 16px;
-  }
-
-  .card {
-    min-height: 220px;
-  }
-}
-
 .side {
   grid-area: side;
   display: flex;
@@ -35,40 +12,54 @@
   gap: 14px;
   min-width: 0;
 }
-
-.road {
-  grid-area: road;
-  min-width: 0;
-}
-
 .pitch {
   grid-area: pitch;
   min-width: 0;
 }
-
+.road {
+  grid-area: road;
+  min-width: 0;
+}
+.hub {
+  grid-area: hub;
+  padding: 10px;
+  border: 1px solid var(--stadium-border);
+  border-radius: 12px;
+  background: var(--stadium-glass);
+  box-shadow: var(--stadium-glow);
+}
+.hub p {
+  margin: 4px 8px;
+  font-size: 13px;
+}
 .header {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px 14px;
-  border-radius: var(--radius);
-  border: 1px solid var(--line);
-  background: var(--surface);
-  box-shadow: var(--shadow-rest);
+  padding: 16px;
+  border: 1px solid var(--stadium-border);
+  border-radius: 16px;
+  background: var(--stadium-glass);
+  box-shadow: var(--stadium-glow);
 }
-
 .titleRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
-
-.round {
-  font-size: clamp(1.9rem, 7vw, 2.6rem);
-  font-variant-numeric: tabular-nums;
+.titleRow > :global(.eyebrow) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-
+.round {
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  line-height: 1.3;
+}
+.round:focus {
+  outline: none;
+}
 .rolled {
   display: flex;
   align-items: center;
@@ -76,998 +67,264 @@
   min-height: 28px;
   flex-wrap: wrap;
 }
-
-.regionTag {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.15rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.rolling {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--flood-text);
-}
-
+.regionTag,
 .prompt {
+  font-size: 13px;
+  line-height: 18px;
+}
+.prompt,
+.help {
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.15rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+}
+.rolling {
   color: var(--flood-text);
 }
-
 .rerolls {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
-
+.rerolls button {
+  border-color: var(--stadium-line);
+  color: var(--flood-text);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--stadium-line) 30%, transparent);
+}
 .count {
-  display: inline-grid;
-  place-items: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--bg);
   font-variant-numeric: tabular-nums;
-  font-size: 0.75rem;
 }
-
 .error {
-  margin: 0;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid color-mix(in srgb, var(--loss) 60%, transparent);
-  background: color-mix(in srgb, var(--loss) 12%, transparent);
-  font-size: 0.92rem;
+  padding: 10px;
+  border: 1px solid var(--loss);
+  border-radius: 8px;
+  background: var(--surface);
 }
-
-.help {
-  margin: 0;
-  color: var(--ink-soft);
+.drawer {
+  border: 1px solid var(--stadium-border);
+  border-radius: 16px;
+  padding: 12px;
+  background: var(--stadium-glass);
+  box-shadow: var(--stadium-glow);
 }
-
+.drawerToggle {
+  display: none;
+}
 .candidates {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  animation: slide-in var(--dur-3) var(--ease-out);
 }
-
-.candidates .kicker {
-  margin: 0;
-}
-
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.rows {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 6px;
-  max-height: 320px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.row {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) auto;
-  grid-template-areas:
-    "img name dex"
-    "img types types";
-  column-gap: 10px;
-  row-gap: 2px;
-  align-items: center;
-  padding: 6px 10px 6px 6px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--line);
-  background: var(--bg-raised);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color var(--dur-1) ease,
-    transform var(--dur-1) var(--ease-out);
-}
-
-.row > :first-child {
-  grid-area: img;
-}
-
-.row .candName {
-  grid-area: name;
-}
-
-.row .candDex {
-  grid-area: dex;
-}
-
-.row .candTypes {
-  grid-area: types;
-}
-
 .dragHandle {
-  display: none;
+  width: 40px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--stadium-muted);
+  margin: 0 auto 4px;
 }
-
-@media (max-width: 959px) {
-  .dragHandle {
-    display: block;
-    width: 38px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.25);
-    border-radius: 999px;
-    margin: 0 auto 10px;
-  }
-}
-
 .cards {
   list-style: none;
+  padding: 4px;
   margin: 0;
-  padding: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 8px;
 }
-
 .cards[data-scrollable] {
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  max-height: 320px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: 4px;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  max-height: 340px;
+  overflow: auto;
 }
-
-.cards li:only-child {
-  grid-column: 1 / -1;
-}
-
-.cardArtWrap {
+.cards li {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  min-width: 0;
 }
-
-.row .cardArtWrap {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-}
-
 .card {
   width: 100%;
   height: 100%;
+  min-height: 148px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 16px 10px 14px;
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--border-emphasis);
-  background: linear-gradient(180deg, rgba(23, 37, 58, 0.95) 0%, rgba(13, 21, 34, 0.98) 100%);
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  gap: 4px;
+  padding: 8px 4px;
+  border: 2px solid var(--card-type);
+  border-radius: 8px;
+  background: var(--stadium-card);
+  color: var(--stadium-ink);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--card-type) 40%, transparent);
   cursor: pointer;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  transition:
-    border-color var(--dur-2) ease,
-    box-shadow var(--dur-2) ease,
-    transform var(--dur-2) var(--ease-out);
 }
-
-.card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%);
-  pointer-events: none;
-}
-
-.card .cardArtWrap {
-  padding: 8px 0 4px;
-}
-
-.card .cardArtWrap::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(116, 229, 173, 0.25) 0%, transparent 70%);
-  filter: blur(8px);
-  pointer-events: none;
-}
-
-/* Authentic type borders and glows matching the reference mockup */
-.card[data-type="fire"] {
-  border-color: rgba(249, 115, 22, 0.85);
-  box-shadow: 0 0 16px rgba(249, 115, 22, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="fire"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="water"] {
-  border-color: rgba(56, 189, 248, 0.85);
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="water"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(56, 189, 248, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="grass"] {
-  border-color: rgba(34, 197, 94, 0.85);
-  box-shadow: 0 0 16px rgba(34, 197, 94, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="grass"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(34, 197, 94, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="electric"] {
-  border-color: rgba(250, 204, 21, 0.85);
-  box-shadow: 0 0 16px rgba(250, 204, 21, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="electric"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(250, 204, 21, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="psychic"] {
-  border-color: rgba(244, 114, 182, 0.85);
-  box-shadow: 0 0 16px rgba(244, 114, 182, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="psychic"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(244, 114, 182, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="ghost"] {
-  border-color: rgba(168, 85, 247, 0.85);
-  box-shadow: 0 0 16px rgba(168, 85, 247, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="ghost"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="dragon"] {
-  border-color: rgba(99, 102, 241, 0.85);
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="dragon"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="poison"] {
-  border-color: rgba(192, 132, 252, 0.85);
-  box-shadow: 0 0 16px rgba(192, 132, 252, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="poison"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(192, 132, 252, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="bug"] {
-  border-color: rgba(163, 230, 53, 0.85);
-  box-shadow: 0 0 16px rgba(163, 230, 53, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="bug"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(163, 230, 53, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="flying"] {
-  border-color: rgba(125, 211, 252, 0.85);
-  box-shadow: 0 0 16px rgba(125, 211, 252, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="flying"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(125, 211, 252, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="ice"] {
-  border-color: rgba(103, 232, 249, 0.85);
-  box-shadow: 0 0 16px rgba(103, 232, 249, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="ice"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(103, 232, 249, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="fighting"] {
-  border-color: rgba(239, 68, 68, 0.85);
-  box-shadow: 0 0 16px rgba(239, 68, 68, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="fighting"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="ground"] {
-  border-color: rgba(217, 119, 6, 0.85);
-  box-shadow: 0 0 16px rgba(217, 119, 6, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="ground"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(217, 119, 6, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="rock"] {
-  border-color: rgba(180, 83, 9, 0.85);
-  box-shadow: 0 0 16px rgba(180, 83, 9, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="rock"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(180, 83, 9, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="steel"] {
-  border-color: rgba(148, 163, 184, 0.85);
-  box-shadow: 0 0 16px rgba(148, 163, 184, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="steel"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(148, 163, 184, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="dark"] {
-  border-color: rgba(100, 116, 139, 0.85);
-  box-shadow: 0 0 16px rgba(100, 116, 139, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="dark"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(100, 116, 139, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="fairy"] {
-  border-color: rgba(244, 114, 182, 0.85);
-  box-shadow: 0 0 16px rgba(244, 114, 182, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="fairy"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(244, 114, 182, 0.4) 0%, transparent 70%);
-}
-
-.card[data-type="normal"] {
-  border-color: rgba(156, 163, 175, 0.85);
-  box-shadow: 0 0 16px rgba(156, 163, 175, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-.card[data-type="normal"] .cardArtWrap::before {
-  background: radial-gradient(circle at center, rgba(156, 163, 175, 0.4) 0%, transparent 70%);
-}
-
-.cards li:only-child .card {
-  flex-direction: row;
-  justify-content: flex-start;
-  text-align: left;
-  gap: 14px;
-  padding: 12px 16px;
-}
-
-.row[aria-pressed="true"],
 .card[aria-pressed="true"] {
-  border-color: var(--accent);
-  box-shadow:
-    0 0 0 2px var(--accent),
-    0 0 24px rgba(244, 206, 82, 0.5),
-    0 12px 28px rgba(0, 0, 0, 0.6);
-  transform: translateY(-4px);
+  outline: 3px solid var(--stadium-line);
+  box-shadow: 0 0 0 3px var(--flood-text);
 }
-
-@media (hover: hover) {
-  .row:hover {
-    border-color: var(--ink-soft);
-  }
-  .card:hover {
-    transform: translateY(-4px) scale(1.02);
-  }
+.cardArtWrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
-
-.row:active:not(:disabled, [aria-disabled="true"]),
-.card:active:not(:disabled, [aria-disabled="true"]) {
-  transform: scale(0.98);
+.cardArtWrap [data-player-image] {
+  max-width: 100%;
 }
-
 .candName {
-  min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--font-display);
+  font-size: 12px;
+  line-height: 16px;
   font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
 }
-
-.card .candName {
-  max-width: 100%;
-  font-size: 1.15rem;
-  color: var(--text);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-
 .candDex {
-  color: var(--ink-soft);
-  font-size: 0.85rem;
+  font-size: 11px;
+  color: var(--stadium-muted);
 }
-
-.card .candDex {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: rgba(0, 0, 0, 0.45);
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  letter-spacing: 0.04em;
-}
-
-.card .candFit {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  border: 1px solid rgba(116, 229, 173, 0.35);
-}
-
-.card .candFit .num {
-  font-size: 1rem;
-  font-weight: 800;
-  color: var(--accent);
-}
-
 .candTypes {
   display: flex;
-  gap: 4px;
   flex-wrap: wrap;
-}
-
-.card .candTypes {
   justify-content: center;
-  gap: 6px;
+  gap: 2px;
 }
-
+.candTypes :global(.type-chip) {
+  font-size: 11px;
+  line-height: 14px;
+  padding: 0 3px;
+}
+.candFit {
+  font-size: 11px;
+  line-height: 14px;
+}
+.candFitLabel,
+.candFitVs {
+  font-size: 11px;
+}
 .done {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 10px;
   padding: 14px;
-  border-radius: var(--radius);
-  border: 1px solid var(--flood);
-  background: color-mix(in srgb, var(--flood) 8%, var(--bg-raised));
+  background: var(--surface);
+  border: 1px solid var(--stadium-line);
+  border-radius: 12px;
 }
-
-.done p {
-  margin: 0;
-}
-
 .footer {
   display: flex;
-  justify-content: flex-end;
-}
-
-/* Selected players show which empty slots accept the pick. */
-.pitch[data-armed] :global([data-testid^="slot-"][data-filled="false"]) {
-  border-radius: 12px;
-  outline: 2px dashed var(--flood-line);
-  outline-offset: 2px;
-  animation: pulse 1.4s ease-in-out infinite;
-}
-
-/* Every armed slot pulses a dashed ring, so the one with keyboard focus gets a steady solid one. */
-.pitch[data-armed] :global([data-testid^="slot-"][data-filled="false"]:focus-visible) {
-  outline: 3px solid var(--focus);
-  animation: none;
-}
-
-@keyframes pulse {
-  50% {
-    outline-color: transparent;
-  }
-}
-
-/* Phones held upright: the draft fits one screen. A compact header row, the pitch in the height that
-   is left, and a bottom tray with the offered players (or the wheel, the help line, the done line)
-   above the action row (rerolls, See results). Every row but the pitch has a fixed height, so the
-   pitch never moves between the slot tap, the spin and the offer, and its height is the screen
-   (100svh, the height with the browser bars shown) minus the rest. The rest is
-   --site-header-h + 8 px above + 24 + 22 header + 6 + 6 + 96 tray + 6 + 44 actions + 8 px below. */
-@media (max-width: 480px) {
-  .board {
-    --pitch-h: max(
-      208px,
-      calc(100svh - var(--site-header-h) - 276px - env(safe-area-inset-bottom, 0px))
-    );
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: 24px 22px 6px var(--pitch-h) 6px minmax(96px, max-content) 6px 44px auto auto;
-    grid-template-areas:
-      "round sound"
-      "rolled sound"
-      ". ."
-      "pitch pitch"
-      ". ."
-      "stage stage"
-      ". ."
-      "actions actions"
-      "footer footer"
-      "road road";
-    column-gap: 8px;
-    row-gap: 0;
-    margin-top: -8px;
-    overscroll-behavior-y: none;
-  }
-
-  .side,
-  .header,
-  .titleRow,
-  .done {
-    display: contents;
-  }
-
-  /* The mode title is on the start screen; here it stays for screen readers only. */
-  .titleRow > :global(.eyebrow) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-  }
-
-  .titleRow > button {
-    grid-area: sound;
-    align-self: center;
-  }
-
-  .round {
-    grid-area: round;
-    font-size: 1.35rem;
-    line-height: 24px;
-    margin: 0;
-    padding: 0;
-    white-space: nowrap;
-  }
-
-  .rolled {
-    grid-area: rolled;
-    min-height: 22px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-    flex-wrap: nowrap;
-    overflow: hidden;
-  }
-
-  .rolled .regionTag,
-  .prompt {
-    font-size: 1rem;
-    white-space: nowrap;
-  }
-
-  .rerolls {
-    grid-area: actions;
-    flex-wrap: nowrap;
-    align-items: center;
-  }
-
-  .pitch {
-    grid-area: pitch;
-    min-height: 0;
-  }
-
-  /* The hint covers the round and roll lines for its few seconds, so nothing on the pitch or in
-     the tray is under it. */
-  .error {
-    grid-row: 1 / 3;
-    grid-column: 1;
-    align-self: stretch;
-    z-index: 6;
-    display: flex;
-    align-items: center;
-    padding: 2px 10px;
-    font-size: 0.85rem;
-    line-height: 1.2;
-    background: color-mix(in srgb, var(--loss) 12%, var(--bg-raised));
-    box-shadow: var(--shadow);
-  }
-
-  .wheels,
-  .help,
-  .candidates,
-  .done p {
-    grid-area: stage;
-    min-height: 0;
-  }
-
-  .help,
-  .done p {
-    align-self: center;
-    font-size: 0.95rem;
-  }
-
-  .done :global(.btn) {
-    grid-area: actions;
-    justify-self: start;
-    align-self: center;
-  }
-
-  /* Open style: one row of players that scrolls sideways inside the tray. */
-  .rows {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(168px, 62%);
-    max-height: none;
-    overflow-x: auto;
-    overflow-y: hidden;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    flex: 1;
-    min-height: 0;
-    align-items: start;
-    padding-bottom: 4px;
-  }
-
-  .rows li {
-    scroll-snap-align: start;
-  }
-
-  .rows .candTypes {
-    flex-wrap: nowrap;
-    overflow: hidden;
-  }
-
-  .footer {
-    grid-area: footer;
-    margin-top: 16px;
-  }
-
-  .road {
-    grid-area: road;
-    margin-top: 16px;
-  }
-}
-
-/* Phones upright and phones on their side: compact offered players, and the wheels give their room
-   back once the players are offered (their result stays in the header and in the result line). */
-@media (max-width: 480px), (orientation: landscape) and (max-height: 500px) and (max-width: 959px) {
-  /* Once the players are offered the reels give the tray back; their result stays in the header
-     row and in the result line (already visually hidden) for screen readers. */
-  .board[data-revealed] .wheels > * > :not(p) {
-    display: none;
-  }
-
-  .candidates {
-    gap: 4px;
-  }
-
-  .candidates :global(.kicker) {
-    margin: 0;
-    line-height: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .cards {
-    flex: 1;
-    min-height: 0;
-    gap: 6px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .cards[data-scrollable] {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(105px, 120px);
-    max-height: none;
-    overflow-x: auto;
-    overflow-y: hidden;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    gap: 8px;
-    padding-bottom: 4px;
-  }
-
-  .cards[data-scrollable] li {
-    scroll-snap-align: start;
-    min-width: 105px;
-  }
-
-  .card {
-    min-height: unset;
-    gap: 2px;
-    padding: 4px 3px;
-    justify-content: center;
-  }
-
-  .card .cardArtWrap {
-    padding: 2px 0;
-  }
-
-  .card [data-player-image] {
-    zoom: 0.6;
-  }
-
-  .card .candName {
-    font-size: 0.95rem;
-  }
-
-  .card .candDex {
-    display: none;
-  }
-
-  .card .candTypes {
-    display: flex;
-    gap: 3px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .card .candTypes :global(.type-chip) {
-    font-size: 11px;
-    line-height: 15px;
-    padding: 0 4px;
-  }
-
-  .cards li:only-child .card {
-    padding: 8px 12px;
-  }
-
-  .cards li:only-child .card [data-player-image] {
-    zoom: 0.8;
-  }
-
-  .cards li:only-child .card .candDex {
-    display: inline;
-  }
-
-  .cards li:only-child .card .candTypes {
-    display: flex;
-  }
-}
-
-/* Phones on their side: the pitch on the left at the height of the screen (Pitch.module.css lays it
-   on its side), the draft column on the right. */
-@media (orientation: landscape) and (max-height: 500px) and (min-width: 481px) and (max-width: 959px) {
-  .board {
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
-    grid-template-areas:
-      "pitch side"
-      "road road";
-    align-items: start;
-    margin-top: -8px;
-  }
-
-  .header {
-    gap: 6px;
-    padding: 8px 12px;
-  }
-
-  .round {
-    font-size: 1.5rem;
-  }
-}
-
-.header {
-  border-radius: var(--radius-lg);
-}
-.regionTag,
-.prompt,
-.candName {
-  font-weight: 600;
-  letter-spacing: 0;
-  text-transform: none;
-}
-.regionTag,
-.prompt {
-  font-size: 13px;
-  line-height: 18px;
-}
-.count,
-.candDex {
-  font-size: 13px;
-  line-height: 18px;
-}
-.row {
-  padding-block: 10px;
-  border-color: var(--border-soft);
-  background: var(--surface);
-}
-.candName,
-.card .candName {
-  font-size: 15px;
-  line-height: 20px;
-}
-
-.board {
-  background: var(--surface-emphasis);
-  border: 1px solid var(--border-emphasis);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-raised);
-  padding: 16px;
-}
-.header {
-  border: 0;
-  box-shadow: none;
-  padding: 0 0 12px;
-  border-bottom: 1px solid var(--border-soft);
-  background: transparent;
-}
-.titleRow > :global(.eyebrow) {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.pitch {
-  padding: 0;
-  border: 0;
-  box-shadow: none;
-  background: transparent;
-}
-.round {
-  font-size: clamp(1.3rem, 2vw, 1.9rem);
-  line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-
-.round:focus,
-.round:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-
-/* Ratings on: where each offered player ranks for the slot's role, 0 to 100 (same pattern as the
-   builder picker's .rowFit). */
-.candFit {
-  max-width: 100%;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--ink-soft);
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-
-.candFit :global(.num) {
-  font-size: 17px;
-  line-height: 20px;
-  color: var(--flood-text);
-}
-
-.candFitLabel {
-  color: var(--ink-faint);
-}
-
-.row[data-rated] {
-  grid-template-areas:
-    "img name dex"
-    "img types types"
-    "img fit fit";
-}
-
-.row .candFit {
-  grid-area: fit;
-  text-align: left;
-}
-
-.cards li:only-child .card[data-rated] {
-  flex-wrap: wrap;
-}
-
-.cards li:only-child .card .candFit {
-  text-align: left;
-}
-
-/* The visually hidden raw-fit sentence and the phone cards' hidden label are absolutely placed, so
-   their offered player is their containing block and the tray's overflow clips them. */
-.rows li,
-.cards li,
-.card {
-  position: relative;
-}
-
-.legend {
-  flex: 1;
-  margin: 0;
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--ink-soft);
-}
-
-.footer {
-  align-items: center;
   gap: 12px;
+  align-items: center;
 }
-
 .footer > button {
   margin-left: auto;
 }
-
-@media (max-width: 480px) {
-  .rows:has(.row[data-rated]) {
-    grid-auto-columns: minmax(272px, 94%);
+.legend {
+  font-size: 13px;
+}
+.pitch[data-armed] :global([data-testid^="slot-"][data-filled="false"]:not(:focus-visible)) {
+  outline: 2px dashed var(--stadium-ring);
+  outline-offset: 2px;
+}
+@media (min-width: 960px) {
+  .board {
+    grid-template-columns: 320px minmax(0, 1fr);
+    grid-template-areas: "hub pitch" "side pitch" "road pitch";
+    align-items: start;
   }
-
-  .row[data-rated] {
-    grid-template-areas:
-      "img name fit"
-      "img types fit";
-    grid-template-columns: 40px minmax(0, 1fr) minmax(0, 4.5rem);
-    padding-block: 6px;
-  }
-
-  .row[data-rated] .candDex {
+  .hub button {
     display: none;
   }
-
-  .row[data-rated] .candFit {
-    align-self: center;
-    text-align: right;
+  .hub::before {
+    content: "Trainer Dugout";
+    font-weight: 700;
   }
-
-  .card[data-rated] {
-    gap: 2px;
-    padding: 4px 3px;
-    border-radius: var(--radius);
+}
+@media (max-width: 959px) {
+  .drawer {
+    border-radius: 16px 16px 0 0;
+    border-top: 1px solid var(--stadium-border);
   }
-
-  .card[data-rated] [data-player-image] {
-    zoom: 0.60;
+  .drawerToggle {
+    display: block;
+    width: 100%;
+    min-height: 44px;
   }
-
-  .card[data-rated] .candFit {
-    line-height: 16px;
+  .board:not([data-drawer]) .candidates {
+    display: none;
   }
-
-  .card[data-rated] .candFitVs {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
+  .board[data-revealed] .wheels > * > :not(p) {
+    display: none;
   }
-
-  .cards li:only-child .card[data-rated] [data-player-image] {
-    zoom: 0.8;
+  .cards[data-scrollable] {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 104px;
+    max-height: none;
+    overflow-x: auto;
   }
-
-  .cards li:only-child .card[data-rated] .candFitVs {
-    position: static;
-    width: auto;
-    height: auto;
-    clip: auto;
-    white-space: normal;
+  .card {
+    min-height: 140px;
+  }
+  .cardArtWrap [data-player-image] {
+    zoom: 0.75;
+  }
+  .board:not([data-hub]) .titleRow {
+    display: none;
+  }
+  .side {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+@media (max-width: 959px) {
+  :global(html):has(.board[data-drawer][data-revealed]) {
+    scroll-padding-bottom: min(364px, calc(100dvh - 156px));
+  }
+  :global(html):has(.board .error) {
+    scroll-padding-top: 100px;
+  }
+  .error {
+    position: fixed;
+    z-index: 40;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    margin: 0;
+  }
+  .board {
+    padding-bottom: 100px;
+  }
+  .board[data-drawer] .drawer {
+    position: fixed;
+    z-index: 30;
+    left: 0;
+    right: 0;
+    bottom: 64px;
+    max-height: min(300px, calc(100dvh - 220px));
+    overflow: auto;
+    background: var(--stadium-glass);
+    backdrop-filter: blur(12px);
+    animation: drawer-rise 200ms ease-out;
+  }
+  .board[data-drawer] .rerolls {
+    position: fixed;
+    z-index: 31;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 64px;
+    padding: 10px 16px env(safe-area-inset-bottom);
+    background: var(--stadium-glass);
+  }
+}
+@keyframes drawer-rise {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .board[data-drawer] .drawer {
+    animation: none;
+  }
+  .card {
+    transition: none;
   }
 }

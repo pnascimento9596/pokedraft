@@ -1,3 +1,8 @@
+@media (max-width: 1023px) {
+  .home > section {
+    grid-row: 4;
+  }
+}
 .home {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -7,7 +12,7 @@
 
 @media (min-width: 1024px) {
   .home {
-    grid-template-columns: clamp(280px, 26vw, 320px) minmax(0, 1fr);
+    grid-template-columns: 320px minmax(0, 1fr);
     gap: 20px;
   }
 

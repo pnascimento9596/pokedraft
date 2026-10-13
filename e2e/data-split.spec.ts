@@ -76,7 +76,7 @@ test("the challenge start panel does not download the species data during load, 
 
 test("a broken challenge link does not download the species data during load", async ({ page }) => {
   const data = watchDataChunk(page);
-  await coldLoad(page, "/play");
+  await coldLoad(page, "/play?mode=invalid");
   await expect(
     page.getByRole("heading", { name: "That challenge link does not work" }),
   ).toBeVisible();

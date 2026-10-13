@@ -111,12 +111,12 @@ describe("tap to swap on the draft board", () => {
   it("mid-draft, a tap on a placed player picks them to swap and a tap on an open slot moves them there, without a pick", async () => {
     await start(SQUAD_FIRST);
     fireEvent.click(screen.getByTestId("candidate-316"));
-    fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
     expect(header()).toBe("Round 2 of 16");
 
-    fireEvent.click(screen.getByRole("button", { name: "ST Gulpin" }));
+    fireEvent.click(screen.getByRole("button", { name: /ST Gulpin/ }));
     expect(pressed("s9")).toBe("true");
-    fireEvent.click(screen.getByRole("button", { name: "Empty GK slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty GK slot/ }));
     expect({ gk: label("s0"), st: label("s9"), round: header() }).toEqual({
       gk: "GK Gulpin",
       st: "Empty ST slot",
@@ -124,15 +124,15 @@ describe("tap to swap on the draft board", () => {
     });
   });
 
-  it("names each reroll button by what it shows, count included, so the visible text is part of its name", async () => {
+  it("names each reroll button by what it shows, count included, while displaying remaining and maximum", async () => {
     await start(SQUAD_FIRST);
     expect(
       screen
         .getAllByRole("button", { name: /^Reroll/ })
         .map((b) => [b.textContent, b.getAttribute("aria-label")]),
     ).toEqual([
-      ["Reroll type 3 left", null],
-      ["Reroll region 3 left", null],
+      ["Reroll type 3/3", "Reroll type 3/3, 3 left"],
+      ["Reroll region 3/3", "Reroll region 3/3, 3 left"],
     ]);
   });
 
@@ -150,7 +150,7 @@ describe("tap to swap on the draft board", () => {
       ariaDisabled: reroll().getAttribute("aria-disabled"),
       focused: document.activeElement === reroll(),
     }).toEqual({
-      name: "Reroll type 0 left",
+      name: "Reroll type 0/3",
       disabled: false,
       ariaDisabled: "true",
       focused: true,
@@ -178,7 +178,7 @@ describe("focus after the screen changes (SC-11)", () => {
 
   it("a Position First pick, whose player list goes away, moves focus to the round heading", async () => {
     await start(POSITION_FIRST);
-    fireEvent.click(screen.getByRole("button", { name: "Empty GK slot" }));
+    fireEvent.click(screen.getByRole("button", { name: /Empty GK slot/ }));
     const candidate = document.querySelector<HTMLElement>('[data-testid^="candidate-"]')!;
     candidate.focus();
     fireEvent.click(candidate);

@@ -1,4 +1,5 @@
 @import "../design/tokens.css";
+@import "../design/stadium.css";
 @import "../components/ui/primitives.css";
 
 *,
@@ -31,7 +32,7 @@ body {
   display: flex;
   flex-direction: column;
   color: var(--text-soft);
-  background: var(--canvas);
+  background: var(--stadium-shell) var(--canvas);
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 22px;
@@ -288,10 +289,14 @@ body:has(.page-loading) > .site-footer {
   letter-spacing: -0.03em;
   text-decoration: none;
   line-height: 1;
-  color: var(--accent);
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--stadium-card);
+  color: var(--stadium-wordmark);
+  -webkit-text-stroke: 1px var(--stadium-wordmark-shadow);
   text-shadow:
-    0 2px 0 rgba(29, 53, 87, 0.9),
-    0 3px 6px rgba(0, 0, 0, 0.55);
+    0 3px 0 var(--stadium-wordmark-shadow),
+    0 4px 6px rgba(0, 0, 0, 0.55);
 }
 
 .site-header nav {
