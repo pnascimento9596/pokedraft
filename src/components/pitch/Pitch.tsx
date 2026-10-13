@@ -40,6 +40,8 @@ export interface PitchProps {
   /** The draft screen: on phones the field takes the height it is given instead of its own. */
   readonly fit?: boolean;
   readonly compactTags?: boolean;
+  readonly suitabilityOf?: (ref: SlotRef) => "recommended" | "ok" | "bad" | null;
+  readonly dropTarget?: SlotRef | null;
 }
 
 interface DragState {
@@ -70,6 +72,8 @@ export function Pitch({
   label = "Pitch",
   fit = false,
   compactTags = false,
+  suitabilityOf,
+  dropTarget = null,
 }: PitchProps) {
   const labelId = useId();
   const slots = FORMATIONS[formation].slots;
@@ -98,7 +102,12 @@ export function Pitch({
     const weak = slotId !== null && weakest.includes(slotId);
     const dragging = drag !== null && sameRef(drag.from, ref) && drag.moved;
     const draggable = onSwap !== undefined && species !== null && !disabled;
-    const name = species === null ? `Empty ${slotLabel} slot` : `${slotLabel} ${species.name}`;
+    const suitability = species === null ? suitabilityOf?.(ref) ?? null : null;
+    const isDropTarget = dropKey === key || sameRef(dropTarget, ref);
+    const name =
+      species === null
+        ? `Empty ${slotLabel} slot${suitability ? ` (${suitability} fit)` : ""}`
+        : `${slotLabel} ${species.name}`;
     return (
       <button
         key={key}
@@ -111,11 +120,12 @@ export function Pitch({
         data-testid={`slot-${key}`}
         data-filled={species !== null}
         data-highlight={sameRef(highlight, ref) || undefined}
+        data-suitability={suitability || undefined}
         aria-pressed={
           selected === undefined || species === null ? undefined : sameRef(selected, ref)
         }
         data-weak={weak || undefined}
-        data-drop={dropKey === key || undefined}
+        data-drop={isDropTarget || undefined}
         data-dragging={dragging || undefined}
         disabled={disabled || (onSlotTap === undefined && onSwap === undefined)}
         id={`${labelId}-${key}`}
@@ -190,6 +200,7 @@ export function Pitch({
           slotLabel={slotLabel}
           role={ref.kind === "starter" ? CARD_ROLE[slots[ref.index].role] : "SUB"}
           note={species !== null ? tokenNote?.(ref, `${labelId}-${key}-note`) : undefined}
+          suitability={suitability}
           id={`${labelId}-${key}`}
         />
       </button>

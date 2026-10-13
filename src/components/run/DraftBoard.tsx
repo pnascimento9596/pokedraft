@@ -25,7 +25,7 @@ import { announce as stageLine, dexLabel, stagesFor } from "@/components/wheel/r
 import { unlockAudio } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { REGION_LABEL } from "@/ui/labels";
-import { filledCount, sameRef, slotLabel, valueAt } from "@/ui/lineup";
+import { filledCount, refFromKey, sameRef, slotLabel, valueAt } from "@/ui/lineup";
 import { ratingFor, type Rating } from "@/ui/rating";
 import { swapMessage } from "@/ui/swap-message";
 import { RoadStrip } from "./RoadStrip";
@@ -33,6 +33,7 @@ import { NavIcon } from "@/components/ui/nav-icons";
 import { candidatesFor, withHint, type Run } from "./runState";
 import { typeFrame } from "@/design/stadium";
 import { fullLineup } from "@/components/builder/model";
+import { getSlotSuitability } from "@/ui/suitability";
 import s from "./DraftBoard.module.css";
 
 export interface DraftBoardProps {
@@ -124,6 +125,15 @@ function ActiveDraftBoard({
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [hubOpen, setHubOpen] = useState(false);
   const [selection, setSelection] = useState<Selection | null>(null);
+  const [dragCandidate, setDragCandidate] = useState<{
+    id: SpeciesId;
+    x: number;
+    y: number;
+    moved: boolean;
+  } | null>(null);
+  const [dropSlot, setDropSlot] = useState<SlotRef | null>(null);
+  const dragPointerId = useRef<number | null>(null);
+  const dragStartPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   // The player picked for a tap swap: a tap on a placed player, then a tap on another slot.
   const [swapFrom, setSwapFrom] = useState<SlotRef | null>(null);
   const onRevealDone = useCallback(() => setRevealedId(rollId), [rollId]);
@@ -135,6 +145,14 @@ function ActiveDraftBoard({
   const wheelRef = useRef<HTMLDivElement>(null);
   const scrolledRoll = useRef<number | null>(null);
 
+  const [prevRollId, setPrevRollId] = useState(rollId);
+  if (rollId !== prevRollId) {
+    setPrevRollId(rollId);
+    if (phase.kind === "choosing") {
+      setDrawerOpen(true);
+    }
+  }
+
   useEffect(() => {
     if (
       phase.kind !== "choosing" ||
@@ -143,7 +161,7 @@ function ActiveDraftBoard({
     )
       return;
     scrolledRoll.current = rollId;
-    wheelRef.current?.scrollIntoView({ block: "center", behavior: "instant" });
+    wheelRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
   }, [rollId, phase.kind]);
 
   useEffect(() => {
@@ -236,11 +254,64 @@ function ActiveDraftBoard({
         act({ type: "pick", species: id, slot: choosing.slot });
         return;
       }
-      setSelection(selected === id ? null : { rollId, species: id });
+      setSelection({ rollId, species: id });
       setDrawerOpen(false);
     },
-    [choosing, act, selected, rollId],
+    [choosing, act, rollId],
   );
+
+  const onCandidatePointerDown = useCallback((id: SpeciesId, e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+    dragPointerId.current = e.pointerId;
+    dragStartPos.current = { x: e.clientX, y: e.clientY };
+    setDragCandidate({ id, x: e.clientX, y: e.clientY, moved: false });
+  }, []);
+
+  useEffect(() => {
+    if (dragCandidate === null) return;
+    const onPointerMove = (e: PointerEvent) => {
+      if (dragPointerId.current !== e.pointerId) return;
+      const dx = e.clientX - dragStartPos.current.x;
+      const dy = e.clientY - dragStartPos.current.y;
+      const moved = dragCandidate.moved || Math.hypot(dx, dy) > 8;
+      setDragCandidate((prev) => (prev ? { ...prev, x: e.clientX, y: e.clientY, moved } : null));
+      if (moved) {
+        const el = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-slot-key]");
+        const under = el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null;
+        setDropSlot(under !== null && valueAt(state.lineup, under) === null ? under : null);
+      }
+    };
+    const onPointerCancel = (e: PointerEvent) => {
+      if (dragPointerId.current !== e.pointerId) return;
+      setDragCandidate(null);
+      setDropSlot(null);
+      dragPointerId.current = null;
+    };
+    const onPointerUp = (e: PointerEvent) => {
+      if (dragPointerId.current !== e.pointerId) return;
+      if (dragCandidate.moved) {
+        const el = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-slot-key]");
+        const target =
+          choosing?.slot ?? (el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null);
+        if (target !== null && valueAt(state.lineup, target) === null) {
+          act({ type: "pick", species: dragCandidate.id, slot: target });
+          setSelection(null);
+          setDrawerOpen(false);
+        }
+      }
+      setDragCandidate(null);
+      setDropSlot(null);
+      dragPointerId.current = null;
+    };
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerCancel);
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerCancel);
+    };
+  }, [dragCandidate, state.lineup, act, choosing?.slot]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -252,7 +323,8 @@ function ActiveDraftBoard({
         }
         if (selection !== null) {
           setSelection(null);
-          announce("Selection cleared.");
+          setDrawerOpen(true);
+          announce("Selection cleared. Reopened spin results.");
           return;
         }
       }
@@ -305,12 +377,18 @@ function ActiveDraftBoard({
       return;
     }
     act({ type: "pick", species: selected, slot: ref });
+    setSelection(null);
   };
 
   const full = fullLineup(state.lineup);
   const teamRating = full === null ? null : rateTeam(full);
   const armed = phase.kind === "awaitingSlot" || (committed === null && selected !== null);
   const message = failure ?? run.error ?? (pickedName === null ? null : swapPrompt(pickedName));
+  const activeSpecies = useMemo(() => {
+    if (dragCandidate !== null) return speciesById(dragCandidate.id);
+    if (selected !== null) return speciesById(selected);
+    return null;
+  }, [dragCandidate, selected]);
 
   return (
     <div
@@ -319,7 +397,13 @@ function ActiveDraftBoard({
       data-rated={showRatings || undefined}
       data-drawer={drawerOpen || undefined}
       data-hub={hubOpen || undefined}
+      data-choosing={phase.kind === "choosing" || undefined}
+      data-has-selection={selected !== null || undefined}
+      data-dragging-candidate={dragCandidate?.moved || undefined}
     >
+      {revealed && drawerOpen && phase.kind === "choosing" ? (
+        <div className={s.drawerBackdrop} aria-hidden="true" />
+      ) : null}
       <div className={s.hub}>
         <button
           type="button"
@@ -410,7 +494,35 @@ function ActiveDraftBoard({
               committed={choosing?.slot !== null}
               rate={showRatings ? rateOffer : null}
               onTap={tapCandidate}
+              onCandidatePointerDown={onCandidatePointerDown}
             />
+            {phase.kind !== "complete" ? (
+              <div className={s.rerolls}>
+                {REROLL_BUTTONS[mode].map(([target, label]) => {
+                  // aria-disabled, not disabled, so a pressed button keeps focus while it is off.
+                  const off = remaining <= 0 || !revealed;
+                  return (
+                    <button
+                      key={target}
+                      type="button"
+                      className="btn btn--sm"
+                      aria-label={`${label} ${remaining}/${REROLLS[mode]}, ${remaining} left`}
+                      aria-disabled={off || undefined}
+                      onClick={() => {
+                        if (off) return;
+                        unlockAudio();
+                        act({ type: "reroll", target });
+                      }}
+                    >
+                      {label}{" "}
+                      <span className={s.count}>
+                        {remaining}/{REROLLS[mode]}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
         ) : null}
 
@@ -425,34 +537,6 @@ function ActiveDraftBoard({
             >
               See results
             </button>
-          </div>
-        ) : null}
-
-        {phase.kind !== "complete" ? (
-          <div className={s.rerolls}>
-            {REROLL_BUTTONS[mode].map(([target, label]) => {
-              // aria-disabled, not disabled, so a pressed button keeps focus while it is off.
-              const off = remaining <= 0 || !revealed;
-              return (
-                <button
-                  key={target}
-                  type="button"
-                  className="btn btn--sm"
-                  aria-label={`${label} ${remaining}/${REROLLS[mode]}, ${remaining} left`}
-                  aria-disabled={off || undefined}
-                  onClick={() => {
-                    if (off) return;
-                    unlockAudio();
-                    act({ type: "reroll", target });
-                  }}
-                >
-                  {label}{" "}
-                  <span className={s.count}>
-                    {remaining}/{REROLLS[mode]}
-                  </span>
-                </button>
-              );
-            })}
           </div>
         ) : null}
 
@@ -478,6 +562,36 @@ function ActiveDraftBoard({
       </div>
 
       <section className={s.pitch} data-armed={armed || undefined} aria-label="Your squad">
+        {selected !== null && phase.kind === "choosing" ? (
+          <div className={s.selectionBar} data-testid="draft-selection-bar">
+            <div className={s.selectionMeta}>
+              <PlayerImage dexId={selected} size={32} alt={speciesById(selected).name} />
+              <div className={s.selectionDetails}>
+                <span className={s.selectionName}>{speciesById(selected).name}</span>
+                <span className={s.selectionHint}>Tap pitch position to place</span>
+              </div>
+            </div>
+            <div className={s.selectionLegend} aria-hidden="true">
+              <span className={s.legendItem} data-suit="rec">
+                Best
+              </span>
+              <span className={s.legendItem} data-suit="ok">
+                OK
+              </span>
+              <span className={s.legendItem} data-suit="bad">
+                Poor
+              </span>
+            </div>
+            <button
+              type="button"
+              className={`btn btn--sm ${s.changePickBtn}`}
+              onClick={() => setDrawerOpen(true)}
+              aria-label="Back to spin results"
+            >
+              Spin results
+            </button>
+          </div>
+        ) : null}
         <Pitch
           formation={settings.formation}
           lineup={state.lineup}
@@ -489,9 +603,29 @@ function ActiveDraftBoard({
           label="Your formation"
           tokenNote={showRatings ? tokenNote : undefined}
           edges={teamRating?.edges}
+          suitabilityOf={
+            activeSpecies !== null
+              ? (ref) => getSlotSuitability(activeSpecies, settings.formation, ref)
+              : undefined
+          }
+          dropTarget={dropSlot}
           fit
         />
       </section>
+
+      {dragCandidate && dragCandidate.moved ? (
+        <div
+          className={s.dragPreview}
+          style={{
+            left: `${dragCandidate.x}px`,
+            top: `${dragCandidate.y}px`,
+          }}
+          aria-hidden="true"
+        >
+          <PlayerImage dexId={dragCandidate.id} size={44} alt="" />
+          <span>{speciesById(dragCandidate.id).name}</span>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -502,12 +636,14 @@ function Candidates({
   committed,
   rate,
   onTap,
+  onCandidatePointerDown,
 }: {
   readonly ids: readonly SpeciesId[];
   readonly selected: SpeciesId | null;
   readonly committed: boolean;
   readonly rate: ((id: SpeciesId) => Rating) | null;
   readonly onTap: (id: SpeciesId) => void;
+  readonly onCandidatePointerDown?: (id: SpeciesId, e: React.PointerEvent) => void;
 }) {
   const rawFitId = useId();
   const isCompact = ids.length > 3;
@@ -535,6 +671,7 @@ function Candidates({
                 aria-describedby={rating !== null ? `${rawFitId}-${id}` : undefined}
                 data-rated={rating !== null || undefined}
                 onClick={() => onTap(id)}
+                onPointerDown={(e) => onCandidatePointerDown?.(id, e)}
               >
                 <div className={s.cardArtWrap}>
                   <PlayerImage dexId={id} size={isCompact ? 72 : 88} alt={sp.name} />

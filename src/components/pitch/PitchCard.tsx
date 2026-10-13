@@ -10,12 +10,14 @@ export function PitchCard({
   slotLabel,
   role,
   note,
+  suitability,
   id,
 }: {
   readonly species: Species | null;
   readonly slotLabel: string;
   readonly role: string;
   readonly note?: ReactNode;
+  readonly suitability?: "recommended" | "ok" | "bad" | null;
   readonly id: string;
 }) {
   return (
@@ -43,8 +45,18 @@ export function PitchCard({
         )}
       </span>{" "}
       {species === null ? (
-        <span id={`${id}-prompt`} className={s.emptyPrompt}>
-          Tap to Draft!
+        <span
+          id={`${id}-prompt`}
+          className={s.emptyPrompt}
+          data-suitability={suitability ?? undefined}
+        >
+          {suitability === "recommended"
+            ? "★ Best"
+            : suitability === "bad"
+              ? "Poor Fit"
+              : suitability === "ok"
+                ? "OK Fit"
+                : "Tap to Draft!"}
         </span>
       ) : (
         <>

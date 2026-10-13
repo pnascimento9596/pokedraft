@@ -22,6 +22,15 @@
   --stadium-wordmark: #ffcc01;
   --stadium-wordmark-shadow: #2a75bb;
   --stadium-rainbow: linear-gradient(135deg, #f43f5e, #ec4899, #8b5cf6, #3b82f6, #10b981);
+  --stadium-pokeball-red: #ef4444;
+  --stadium-pokeball-white: #f8fafc;
+  --stadium-pokeball-dark: #0f172a;
+  --stadium-suitability-best: #10b981;
+  --stadium-suitability-best-glow: rgba(16, 185, 129, 0.45);
+  --stadium-suitability-ok: #f59e0b;
+  --stadium-suitability-ok-glow: rgba(245, 158, 11, 0.35);
+  --stadium-suitability-bad: #ef4444;
+  --stadium-suitability-bad-glow: rgba(239, 68, 68, 0.45);
 }
 :root[data-theme="light"] {
   --stadium-shell: none;
