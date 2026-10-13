@@ -81,7 +81,7 @@
   z-index: 1;
 }
 .token[data-filled="false"] {
-  border-style: dashed;
+  border-color: var(--stadium-ring);
   background: color-mix(in srgb, var(--stadium-card) 85%, transparent);
 }
 .token[data-filled="false"] .tokenSlot {
@@ -98,7 +98,9 @@
   pointer-events: none;
   opacity: 0.9;
 }
-.token[data-highlight],
+.token[data-highlight] {
+  border-color: var(--stadium-ring);
+}
 .token[data-drop],
 .token[aria-pressed="true"] {
   outline: 3px solid var(--stadium-ring);
@@ -267,6 +269,9 @@
   .field {
     aspect-ratio: auto;
     height: 740px;
+  }
+  .wrap[data-fit] .field {
+    height: 620px;
   }
   .token {
     width: 56px;

@@ -370,19 +370,28 @@ for (const colorScheme of ["dark", "light"] as const) {
       const read = (l: Locator) =>
         l.evaluate((el) => {
           const s = getComputedStyle(el);
-          return { style: s.outlineStyle, colour: s.outlineColor, animation: s.animationName };
+          return {
+            style: s.outlineStyle,
+            colour: s.outlineColor,
+            border: s.borderStyle,
+            borderColour: s.borderColor,
+            animation: s.animationName,
+          };
         });
       const focused = await read(first);
       const armed = await read(second);
-      expect({ focused: [focused.style, focused.animation], armed: armed.style }).toEqual({
+      expect({
+        focused: [focused.style, focused.animation],
+        armed: [armed.border, armed.style],
+      }).toEqual({
         focused: ["solid", "none"],
-        armed: "dashed",
+        armed: ["solid", "none"],
       });
       expect(
         round2(worst(parseColor(focused.colour), await grassAround(page, first))),
       ).toBeGreaterThanOrEqual(3);
       expect(
-        round2(worst(parseColor(armed.colour), await grassAround(page, second))),
+        round2(worst(parseColor(armed.borderColour), await grassAround(page, second))),
       ).toBeGreaterThanOrEqual(3);
     });
 

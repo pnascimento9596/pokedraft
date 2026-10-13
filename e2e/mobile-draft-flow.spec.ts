@@ -27,6 +27,8 @@ for (const engine of ["chromium", "webkit"] as const) {
       });
       const page = await context.newPage();
       await page.addInitScript(() => {
+        localStorage.setItem("pokedraft:panel", JSON.stringify({ showChallengeRatings: true }));
+        localStorage.setItem("pokedraft:images", JSON.stringify({ pack: "pokeapi-art" }));
         const original = Element.prototype.scrollIntoView;
         Object.defineProperty(window, "draftScrolls", { value: [], writable: true });
         Element.prototype.scrollIntoView = function (options) {
@@ -46,6 +48,29 @@ for (const engine of ["chromium", "webkit"] as const) {
       const scrolls = () =>
         page.evaluate(() => (window as unknown as { draftScrolls: unknown[] }).draftScrolls.length);
       expect(await scrolls()).toBe(1);
+      await expect(page.locator('[data-testid^="candidate-"]')).toHaveCount(3);
+      const picker = page.getByTestId("draft-drawer");
+      for (const element of [picker, picker.locator("ul")]) {
+        expect(
+          await element.evaluate(
+            (e) => e.scrollHeight <= e.clientHeight && e.scrollWidth <= e.clientWidth,
+          ),
+        ).toBe(true);
+      }
+      const cards = page.locator('[data-testid^="candidate-"]');
+      await expect(cards.first().locator("img")).toHaveAttribute("src", /pokeapi-art/);
+      await expect(cards.first().locator('[data-testid^="fit-"]')).toBeVisible();
+      const lowest = await cards.evaluateAll((elements) =>
+        Math.max(...elements.map((e) => e.getBoundingClientRect().bottom)),
+      );
+      const rerollTop = await page
+        .getByRole("button", { name: /^Reroll type/ })
+        .evaluate((e) => e.getBoundingClientRect().top);
+      expect(rerollTop).toBeGreaterThanOrEqual(lowest);
+      await picker.scrollIntoViewIfNeeded();
+      await page.screenshot({
+        path: `output/mobile-draft-flow/${engine}-${width}-picker-art-ratings.png`,
+      });
       await page.locator('[data-testid^="candidate-"]').first().tap();
       await page.getByTestId("slot-s9").scrollIntoViewIfNeeded();
       const y = await page.evaluate(() => scrollY);
@@ -81,6 +106,10 @@ for (const engine of ["chromium", "webkit"] as const) {
       await expect(page.getByTestId("round-header")).toHaveText("Draft complete");
       expect(await scrolls()).toBe(17);
       await expect(page.getByTestId("draft-wheel")).toHaveCount(0);
+      await page.getByTestId("slot-s9").tap();
+      await page.getByTestId("slot-s0").tap();
+      await page.waitForTimeout(250);
+      expect(await scrolls()).toBe(17);
       await page.screenshot({
         path: `output/mobile-draft-flow/${engine}-${width}-complete.png`,
         fullPage: true,
@@ -93,6 +122,82 @@ for (const engine of ["chromium", "webkit"] as const) {
       await page.screenshot({
         path: `output/mobile-draft-flow/${engine}-${width}-wheel.png`,
         fullPage: true,
+      });
+      await context.close();
+      await browser.close();
+    });
+
+    test(`${engine} ${width}px open art picker uses document scrolling and preserves all five seeded offers`, async ({
+      baseURL,
+    }) => {
+      const browser = await { chromium, webkit }[engine].launch();
+      const context = await browser.newContext({
+        baseURL,
+        viewport: { width, height: 844 },
+        hasTouch: true,
+        reducedMotion: "no-preference",
+      });
+      const page = await context.newPage();
+      await page.addInitScript(() => {
+        localStorage.setItem("pokedraft:panel", JSON.stringify({ showChallengeRatings: true }));
+        localStorage.setItem("pokedraft:images", JSON.stringify({ pack: "pokeapi-art" }));
+      });
+      await page.goto(
+        "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test",
+      );
+      await page.getByTestId("run-start").tap();
+      await wheelVisible(page);
+      await page.getByRole("button", { name: "Tap to skip" }).first().tap();
+      const picker = page.getByTestId("draft-drawer");
+      await expect(page.locator('[data-testid^="candidate-"]')).toHaveCount(5);
+      expect(
+        await page
+          .locator('[data-testid^="candidate-"]')
+          .evaluateAll((elements) => elements.map((e) => e.getAttribute("data-testid"))),
+      ).toEqual([
+        "candidate-269",
+        "candidate-315",
+        "candidate-316",
+        "candidate-317",
+        "candidate-336",
+      ]);
+      await expect(page.getByTestId("fit-269")).toHaveText("Best: FB 51 vs other FBs");
+      await expect(page.getByTestId("candidate-269").locator(".type-chip")).toHaveText([
+        "Bug",
+        "Poison",
+      ]);
+      for (const element of [picker, picker.locator("ul")]) {
+        expect(
+          await element.evaluate(
+            (e) => e.scrollHeight <= e.clientHeight && e.scrollWidth <= e.clientWidth,
+          ),
+        ).toBe(true);
+      }
+      expect(await picker.evaluate((e) => getComputedStyle(e).position)).toBe("static");
+      const bottom = await picker.evaluate((e) => e.getBoundingClientRect().bottom);
+      expect(
+        await page
+          .getByRole("button", { name: /^Reroll type/ })
+          .evaluate((e) => e.getBoundingClientRect().top),
+      ).toBeGreaterThanOrEqual(bottom);
+      for (const card of await page.locator('[data-testid^="candidate-"]').all()) {
+        const r = await card.boundingBox();
+        expect(r!.width).toBeGreaterThanOrEqual(44);
+        expect(r!.height).toBeGreaterThanOrEqual(44);
+        expect(
+          await card
+            .locator("span")
+            .evaluateAll((elements) =>
+              elements.every((e) => parseFloat(getComputedStyle(e).fontSize) >= 11),
+            ),
+        ).toBe(true);
+      }
+      await page.getByTestId("candidate-336").scrollIntoViewIfNeeded();
+      const y = await page.evaluate(() => scrollY);
+      await page.waitForTimeout(300);
+      expect(await page.evaluate(() => scrollY)).toBe(y);
+      await page.screenshot({
+        path: `output/mobile-draft-flow/${engine}-${width}-open-art-ratings.png`,
       });
       await context.close();
       await browser.close();
