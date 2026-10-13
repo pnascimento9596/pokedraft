@@ -266,6 +266,7 @@ function ActiveDraftBoard({
       return;
     }
     if (id !== null) {
+      setDrawerOpen(false);
       const name = speciesById(id).name;
       setSwapFrom(ref);
       announce(`${slotLabel(state.lineup, ref)} ${name} selected. ${swapPrompt(name)}`);

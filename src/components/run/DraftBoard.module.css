@@ -271,6 +271,20 @@
   }
 }
 @media (max-width: 959px) {
+  :global(html):has(.board[data-drawer][data-revealed]) {
+    scroll-padding-bottom: min(364px, calc(100dvh - 156px));
+  }
+  :global(html):has(.board .error) {
+    scroll-padding-top: 100px;
+  }
+  .error {
+    position: fixed;
+    z-index: 40;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    margin: 0;
+  }
   .board {
     padding-bottom: 100px;
   }
@@ -280,7 +294,7 @@
     left: 0;
     right: 0;
     bottom: 64px;
-    max-height: 300px;
+    max-height: min(300px, calc(100dvh - 220px));
     overflow: auto;
     background: var(--stadium-glass);
     backdrop-filter: blur(12px);

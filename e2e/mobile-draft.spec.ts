@@ -39,18 +39,18 @@ const POSITION_FIRST =
 
 type Rect = { top: number; bottom: number; left: number; right: number; height: number };
 
-function rect(locator: Locator): Promise<Rect> {
-  return locator.first().evaluate((el) => {
+function rect(locator: Locator, documentCoordinates = false): Promise<Rect> {
+  return locator.first().evaluate((el, inDocument) => {
     const r = el.getBoundingClientRect();
     const round = (n: number) => Math.round(n * 10) / 10;
     return {
-      top: round(r.top),
-      bottom: round(r.bottom),
+      top: round(r.top + (inDocument ? scrollY : 0)),
+      bottom: round(r.bottom + (inDocument ? scrollY : 0)),
       left: round(r.left),
       right: round(r.right),
       height: round(r.height),
     };
-  });
+  }, documentCoordinates);
 }
 
 async function start(page: Page, url: string): Promise<void> {
@@ -72,21 +72,37 @@ test.describe("draft layout while the wheel spins", () => {
     page,
   }) => {
     await start(page, POSITION_FIRST);
-    const before = await rect(field(page));
-    const slot = page.locator('[data-testid^="slot-"][data-filled="false"]').first();
+    const slot = page.getByTestId("slot-s0");
+    await slot.scrollIntoViewIfNeeded();
+    await settle(page);
+    const before = await rect(field(page), true);
     expect((await inViewport(page, slot)).problem).toBeNull();
     await tapNow(page, slot, "an empty slot");
     await expect(page.getByTestId("wheel").first()).toBeVisible();
-    const spinning = await rect(field(page));
-    await page.getByRole("button", { name: "Tap to skip" }).first().click();
+    const spinning = await rect(field(page), true);
+    const skip = page.getByRole("button", { name: "Tap to skip" }).first();
+    await skip.scrollIntoViewIfNeeded();
+    await skip.click();
     const candidate = page.locator('[data-testid^="candidate-"]').first();
     await expect(candidate).toBeVisible();
     await settle(page);
-    const offered = await rect(field(page));
+    const offered = await rect(field(page), true);
     expect({ spinning, offered }).toEqual({ spinning: before, offered: before });
-    expect((await inViewport(page, candidate)).problem).toBeNull();
-    expect((await inViewport(page, page.locator("[data-highlight]"))).problem).toBeNull();
-    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    const highlighted = page.locator("[data-highlight]");
+    await highlighted.scrollIntoViewIfNeeded();
+    await settle(page);
+    expect((await inViewport(page, highlighted)).problem).toBeNull();
+    expect(await rect(field(page), true)).toEqual(before);
+    await candidate.scrollIntoViewIfNeeded();
+    await tapNow(page, candidate, "sign player for highlighted keeper");
+    await expect(slot).toHaveAttribute("data-filled", "true");
+    expect(await rect(field(page), true)).toEqual(before);
+    const bounds = await page.evaluate(() => ({
+      y: scrollY,
+      max: document.documentElement.scrollHeight - innerHeight,
+    }));
+    expect(bounds.y).toBeGreaterThan(0);
+    expect(bounds.y).toBeLessThanOrEqual(bounds.max);
   });
 });
 
@@ -112,8 +128,13 @@ test("a tap on a taken slot shows the swap hint on screen without a scroll, and 
   await expect(hint).toHaveCount(0);
 });
 
-for (const size of [{ width: 320, height: 568 }, { width: 390, height: 664 }]) {
-  test(`expanded drawer leaves scrolled keeper uncovered and swap hint visible at ${size.width}x${size.height}`, async ({ page }) => {
+for (const size of [
+  { width: 320, height: 568 },
+  { width: 390, height: 664 },
+]) {
+  test(`expanded drawer leaves scrolled keeper uncovered and swap hint visible at ${size.width}x${size.height}`, async ({
+    page,
+  }) => {
     await page.setViewportSize(size);
     await start(page, PLAY_8_0);
     await resizeTo(page, size);
@@ -261,17 +282,42 @@ test.describe("landscape", () => {
     { width: 844, height: 390 },
     { width: 750, height: 340 },
   ]) {
-    test(`the draft pitch lies on its side and fits the screen height at ${size.width}x${size.height}`, async ({
+    test(`the scrollable draft keeps all eleven cards separate and reachable at ${size.width}x${size.height}`, async ({
       page,
     }) => {
       test.skip(test.info().project.name !== "iphone-14", "landscape is specified for iPhone 14");
       await start(page, PLAY_8_0);
       await resizeTo(page, size);
-      const r = await rect(field(page));
-      expect({
-        horizontal: r.right - r.left > r.height,
-        fitsTheHeight: r.height <= size.height,
-      }).toEqual({ horizontal: true, fitsTheHeight: true });
+      await page.getByRole("button", { name: "Minimize draft picker" }).click();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+        size.width,
+      );
+      const cards = page.locator('[data-testid^="slot-s"]');
+      await expect(cards).toHaveCount(11);
+      const boxes = await cards.evaluateAll((elements) =>
+        elements.map((element) => {
+          const r = element.getBoundingClientRect();
+          return { x: r.x, y: r.y, width: r.width, height: r.height };
+        }),
+      );
+      expect(boxes[0]!.y).toBeGreaterThan(boxes[9]!.y);
+      for (const [index, a] of boxes.entries()) {
+        expect(a.width).toBeGreaterThanOrEqual(44);
+        expect(a.height).toBeGreaterThanOrEqual(44);
+        expect(a.x).toBeGreaterThanOrEqual(0);
+        expect(a.x + a.width).toBeLessThanOrEqual(size.width);
+        for (const b of boxes.slice(index + 1)) {
+          expect(
+            Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x) > 0.5 &&
+              Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y) > 0.5,
+          ).toBe(false);
+        }
+      }
+      for (const card of await cards.all()) {
+        await card.scrollIntoViewIfNeeded();
+        await settle(page);
+        expect((await inViewport(page, card)).problem).toBeNull();
+      }
     });
   }
 });
