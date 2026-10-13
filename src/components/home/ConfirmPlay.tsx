@@ -6,6 +6,13 @@ import { SettingsSummary } from "@/components/SettingsSummary";
 import { MODE_LABEL } from "@/ui/labels";
 import type { ChallengeMode, PanelSettings } from "@/ui/settings";
 import { confirmPlay } from "@/ui/settingsSummary";
+import {
+  RUN_CLEARED,
+  runSlotKey,
+  writeRunCheckpoint,
+  writeSession,
+  type RunSlot,
+} from "@/ui/storage";
 import s from "./ConfirmPlay.module.css";
 
 export interface ConfirmPlayProps {
@@ -24,7 +31,7 @@ export function ConfirmPlay({ mode, panel, onEdit, onDone }: ConfirmPlayProps) {
   const yesRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
   const descId = useId();
-  const { href, items } = confirmPlay(mode, panel);
+  const { href, items, settings } = confirmPlay(mode, panel);
 
   useEffect(() => {
     const d = ref.current;
@@ -61,6 +68,9 @@ export function ConfirmPlay({ mode, panel, onEdit, onDone }: ConfirmPlayProps) {
             type="button"
             className="btn btn--primary"
             onClick={() => {
+              const slot: RunSlot = { settings, seed: null, daily: null };
+              writeRunCheckpoint(slot, null);
+              writeSession(runSlotKey(slot), RUN_CLEARED);
               router.push(href);
               onDone();
             }}

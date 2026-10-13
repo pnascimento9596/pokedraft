@@ -326,7 +326,7 @@
 
   .wrap[data-fit] .bench {
     flex: none;
-    padding: 4px 6px;
+    padding: 8px 6px;
   }
 
   .wrap[data-fit] .benchLabel {
@@ -528,6 +528,18 @@
 .bench .token {
   width: 100%;
   min-width: 0;
+  padding-top: 18px;
+}
+.bench .token .tokenSlot {
+  top: 0;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  font-size: 11px;
+  line-height: 14px;
+  padding: 0 4px;
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
 }
 .bench .tokenName {
   max-width: 100%;

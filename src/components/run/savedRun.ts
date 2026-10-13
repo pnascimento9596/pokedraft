@@ -84,6 +84,11 @@ export function restoreRun(slot: RunSlot): Restored | null {
     if (readRunCheckpoint(slot) === null) writeRunCheckpoint(slot, raw);
     return { kind: "draft", run };
   }
+  // An unseeded challenge run entered without an active session token must not
+  // restore an old completed run's results page from durable localStorage.
+  if (slot.seed === null && slot.daily === null && session === null) {
+    return null;
+  }
   try {
     const { draft, cup } = replay(saved.token);
     writeSession(runSlotKey(slot), raw);

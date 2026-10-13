@@ -127,4 +127,12 @@ describe("browser checkpoints with per-tab authority", () => {
     forgetRun(SLOT);
     expect(restoreRun(SLOT)).toBeNull();
   });
+
+  it("does not restore completed results from durable checkpoint on an unseeded challenge with null session", () => {
+    const unseededSlot = { settings: SETTINGS, seed: null, daily: null };
+    saveRun(unseededSlot, "results", PICKED);
+    // Simulate a new tab opening without session snapshot:
+    sessionStorage.clear();
+    expect(restoreRun(unseededSlot)).toBeNull();
+  });
 });

@@ -26,9 +26,13 @@ export function settingsSummary(settings: DraftSettings): readonly SummaryItem[]
 export function confirmPlay(
   mode: ChallengeMode,
   panel: PanelSettings,
-): { readonly href: string; readonly items: readonly SummaryItem[] } {
+): {
+  readonly href: string;
+  readonly items: readonly SummaryItem[];
+  readonly settings: DraftSettings;
+} {
   const href = playHref(mode, panel);
   const parsed = parsePlayQuery(new URL(href, "http://pokedraft.invalid").searchParams);
   if (parsed === null) throw new Error(`home panel produced an unreadable play link: ${href}`);
-  return { href, items: settingsSummary(parsed.settings) };
+  return { href, items: settingsSummary(parsed.settings), settings: parsed.settings };
 }

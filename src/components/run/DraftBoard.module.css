@@ -346,10 +346,10 @@
   .board {
     --pitch-h: max(
       240px,
-      calc(100svh - var(--site-header-h) - 220px - env(safe-area-inset-bottom, 0px))
+      calc(100svh - var(--site-header-h) - 248px - env(safe-area-inset-bottom, 0px))
     );
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: 24px 22px 6px var(--pitch-h) 6px 96px 6px 44px auto auto;
+    grid-template-rows: 24px 22px 6px var(--pitch-h) 6px minmax(96px, max-content) 6px 44px auto auto;
     grid-template-areas:
       "round sound"
       "rolled sound"
@@ -533,9 +533,21 @@
     font-size: 0.95rem;
   }
 
-  .card .candDex,
-  .card .candTypes {
+  .card .candDex {
     display: none;
+  }
+
+  .card .candTypes {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .card .candTypes :global(.type-chip) {
+    font-size: 11px;
+    line-height: 15px;
+    padding: 0 4px;
   }
 
   .cards li:only-child .card {
@@ -747,12 +759,13 @@
   }
 
   .card[data-rated] {
-    gap: 1px;
-    padding: 3px;
+    gap: 2px;
+    padding: 4px 3px;
+    border-radius: var(--radius);
   }
 
   .card[data-rated] [data-player-image] {
-    zoom: 0.4;
+    zoom: 0.52;
   }
 
   .card[data-rated] .candFit {

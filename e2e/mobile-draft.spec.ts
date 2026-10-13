@@ -112,6 +112,54 @@ test("a tap on a taken slot shows the swap hint on screen without a scroll, and 
   await expect(hint).toHaveCount(0);
 });
 
+test("candidate cards clear reroll buttons on phone without overlapping outlines", async ({
+  page,
+}) => {
+  await start(page, PLAY_8_0);
+  const candidates = page.locator('[data-testid^="candidate-"]');
+  await expect(candidates.first()).toBeVisible();
+  const rerollButtons = page.getByRole("button", { name: /^Reroll / });
+  await expect(rerollButtons.first()).toBeVisible();
+
+  const clearance = await page.evaluate(() => {
+    const cards = [...document.querySelectorAll('[data-testid^="candidate-"]')];
+    const rerolls = [...document.querySelectorAll('button')].filter((b) =>
+      b.textContent?.includes("Reroll"),
+    );
+    const lowestCardBottom = Math.max(...cards.map((c) => c.getBoundingClientRect().bottom));
+    const highestRerollTop = Math.min(...rerolls.map((r) => r.getBoundingClientRect().top));
+    return highestRerollTop - lowestCardBottom;
+  });
+
+  expect(clearance).toBeGreaterThanOrEqual(0);
+});
+
+test("bench slot tags are contained inside the bench dugout without colliding with the pitch", async ({
+  page,
+}) => {
+  await start(page, PLAY_8_0);
+  const containment = await page.evaluate(() => {
+    const field = document.querySelector('[data-testid="pitch"] > div:first-child')!;
+    const bench = document.querySelector('[role="group"][aria-label="Bench"]')!;
+    const fieldBottom = field.getBoundingClientRect().bottom;
+    const benchTop = bench.getBoundingClientRect().top;
+    const subSlots = [...bench.querySelectorAll('[id$="-slot"]')];
+    const subTops = subSlots.map((s) => s.getBoundingClientRect().top);
+    const highestSubTop = Math.min(...subTops);
+
+    return {
+      benchBelowPitch: benchTop >= fieldBottom,
+      subsInsideBench: highestSubTop >= benchTop,
+      benchGap: benchTop - fieldBottom,
+      subInset: highestSubTop - benchTop,
+    };
+  });
+
+  expect(containment.benchBelowPitch).toBe(true);
+  expect(containment.subsInsideBench).toBe(true);
+  expect(containment.subInset).toBeGreaterThanOrEqual(0);
+});
+
 test("the Picker is a bottom sheet with a handle, and its species list gets at least half of it", async ({
   page,
 }) => {

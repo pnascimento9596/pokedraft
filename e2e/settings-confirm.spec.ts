@@ -29,6 +29,30 @@ test.describe("settings panel and Play confirmation on a phone", () => {
     await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
   });
 
+  test("Play from home menu starts a fresh run instead of restoring old completed results", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.evaluate(() => {
+      const mockResult = {
+        screen: "results",
+        token:
+          "pd3.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwicnVuLXRlc3QiLFtbInAiLDMxNiwiczkiXV1d",
+        daily: null,
+      };
+      localStorage.setItem("pokedraft.run.cup8", JSON.stringify(mockResult));
+      sessionStorage.setItem("pokedraft.run.cup8", JSON.stringify(mockResult));
+    });
+    await page.getByRole("button", { name: "Play 8-0 Challenge" }).click();
+    await expect(dialog(page)).toBeVisible();
+    await dialog(page).getByRole("button", { name: "Yes, play" }).click();
+    await expect(page).toHaveURL("/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open");
+    await expect(page.getByTestId("run-start")).toBeVisible();
+    await expect(page.getByTestId("results-record")).toHaveCount(0);
+    await page.getByTestId("run-start").click();
+    await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
+  });
+
   test("Back from /play returns to a home page with no dialog blocking it", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Play 151 Challenge" }).click();

@@ -301,7 +301,7 @@
 
   .head {
     align-items: center;
-    padding: 16px var(--gutter) 8px;
+    padding: 10px var(--gutter) 4px;
   }
 
   .titleBlock {
@@ -370,6 +370,10 @@
 /* Phones: 44 px fields and type chips (dispatch 7 GATE 4). The 18 type chips scroll sideways in
    one row instead of wrapping to four rows above the list. */
 @media (max-width: 480px), (max-height: 500px) and (max-width: 959px) {
+  .filters {
+    gap: 6px;
+    padding: 6px var(--gutter) 4px;
+  }
   .search input {
     min-height: 44px;
   }
