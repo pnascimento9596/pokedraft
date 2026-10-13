@@ -11,7 +11,9 @@ import type {
   SpeciesId,
   SynergyEdge,
 } from "@/engine/types";
-import { PlayerImage } from "@/components/PlayerImage";
+import { PitchCard } from "./PitchCard";
+import { Pitch3DStage } from "./Pitch3DStage";
+import { CARD_ROLE, pitchPoints, typeFrame } from "@/design/stadium";
 import { useImageSettings } from "@/images/settings";
 import { BENCH_REFS, STARTER_REFS, refFromKey, refKey, sameRef, valueAt } from "@/ui/lineup";
 import s from "./Pitch.module.css";
@@ -38,83 +40,6 @@ export interface PitchProps {
   /** The draft screen: on phones the field takes the height it is given instead of its own. */
   readonly fit?: boolean;
   readonly compactTags?: boolean;
-}
-
-const W = 68;
-const L = 105;
-const HORIZONTAL = "matrix(0 1 -1 0 105 0)";
-
-function vx(x: number): number {
-  return (x / 100) * W;
-}
-function vy(y: number): number {
-  return L - (y / 100) * L;
-}
-
-function Markings({ formation, edges }: { formation: FormationId; edges: readonly SynergyEdge[] }) {
-  const slots = FORMATIONS[formation].slots;
-  const at = new Map(slots.map((sl) => [sl.id, sl]));
-  const box = (top: boolean) => {
-    const y0 = top ? 0 : L;
-    const dir = top ? 1 : -1;
-    return (
-      <g key={top ? "t" : "b"}>
-        <rect x={(W - 40.32) / 2} y={top ? 0 : L - 16.5} width={40.32} height={16.5} />
-        <rect x={(W - 18.32) / 2} y={top ? 0 : L - 5.5} width={18.32} height={5.5} />
-        <circle cx={W / 2} cy={y0 + dir * 11} r={0.45} className={s.spot} />
-        <path
-          d={`M ${W / 2 - 7.3} ${y0 + dir * 16.5} A 9.15 9.15 0 0 ${top ? 0 : 1} ${W / 2 + 7.3} ${y0 + dir * 16.5}`}
-        />
-        <rect x={(W - 7.32) / 2} y={top ? -2.2 : L} width={7.32} height={2.2} className={s.goal} />
-      </g>
-    );
-  };
-  return (
-    <>
-      <rect x={0} y={0} width={W} height={L} />
-      <line x1={0} y1={L / 2} x2={W} y2={L / 2} />
-      <g data-testid="pitch-pokeball-mark" className={s.pokeballCenter}>
-        <path
-          d={`M ${W / 2 - 9.15} ${L / 2} A 9.15 9.15 0 0 1 ${W / 2 + 9.15} ${L / 2} Z`}
-          className={s.pokeballTop}
-        />
-        <path
-          d={`M ${W / 2 - 9.15} ${L / 2} A 9.15 9.15 0 0 0 ${W / 2 + 9.15} ${L / 2} Z`}
-          className={s.pokeballBottom}
-        />
-        <line
-          x1={W / 2 - 9.15}
-          y1={L / 2}
-          x2={W / 2 + 9.15}
-          y2={L / 2}
-          className={s.pokeballDivider}
-        />
-        <circle cx={W / 2} cy={L / 2} r={9.15} className={s.pokeballOutline} />
-        <circle cx={W / 2} cy={L / 2} r={2.8} className={s.pokeballRing} />
-        <circle cx={W / 2} cy={L / 2} r={1.2} className={s.pokeballInner} />
-        <circle cx={W / 2} cy={L / 2} r={0.45} className={s.spot} />
-      </g>
-      {box(true)}
-      {box(false)}
-      <g className={s.edges}>
-        {edges.map((e) => {
-          const a = at.get(e.a);
-          const b = at.get(e.b);
-          if (!a || !b) return null;
-          return (
-            <line
-              key={`${e.a}-${e.b}`}
-              x1={vx(a.x)}
-              y1={vy(a.y)}
-              x2={vx(b.x)}
-              y2={vy(b.y)}
-              style={{ strokeOpacity: 0.35 + 0.6 * Math.min(1, e.value) }}
-            />
-          );
-        })}
-      </g>
-    </>
-  );
 }
 
 interface DragState {
@@ -148,6 +73,7 @@ export function Pitch({
 }: PitchProps) {
   const labelId = useId();
   const slots = FORMATIONS[formation].slots;
+  const points = pitchPoints(slots);
   const { mirror } = useImageSettings();
   const [drag, setDrag] = useState<DragState | null>(null);
   const [dropKey, setDropKey] = useState<string | null>(null);
@@ -200,6 +126,7 @@ export function Pitch({
         }
         style={{
           ...style,
+          ...(species ? typeFrame(species.types[0]) : null),
           ...(dragging ? { translate: `${drag.dx}px ${drag.dy}px` } : null),
         }}
         onClick={(e) => {
@@ -210,6 +137,7 @@ export function Pitch({
           suppressClick.current = false;
           if (!dragEnd) onSlotTap?.(ref);
         }}
+        onDragStart={(event) => event.preventDefault()}
         onPointerDown={(e) => {
           suppressClick.current = false;
           if (!draggable || e.button !== 0) return;
@@ -253,35 +181,13 @@ export function Pitch({
           setDropKey(null);
         }}
       >
-        <span className={s.tokenImage}>
-          {species === null ? (
-            <span className={s.tokenEmpty} aria-hidden="true">
-              +
-            </span>
-          ) : (
-            <PlayerImage dexId={species.id} size={36} alt={species.name} />
-          )}
-        </span>
-        {/* The spaces keep the visible text "GK Name", which is also the button's accessible name. */}
-        <span id={`${labelId}-${key}-slot`} className={s.tokenSlot}>
-          {slotLabel}
-        </span>
-        {species !== null ? (
-          <>
-            {" "}
-            <span id={`${labelId}-${key}-name`} className={s.tokenName}>
-              {species.name}
-            </span>
-          </>
-        ) : null}
-        {species !== null && tokenNote ? (
-          <>
-            {" "}
-            <span id={`${labelId}-${key}-note`} className={s.tokenNote}>
-              {tokenNote(ref)}
-            </span>
-          </>
-        ) : null}
+        <PitchCard
+          species={species}
+          slotLabel={slotLabel}
+          role={ref.kind === "starter" ? CARD_ROLE[slots[ref.index].role] : "SUB"}
+          note={species !== null ? tokenNote?.(ref) : undefined}
+          id={`${labelId}-${key}`}
+        />
       </button>
     );
   };
@@ -294,35 +200,18 @@ export function Pitch({
       data-fit={fit || undefined}
       data-compact-tags={compactTags || undefined}
     >
-      <div className={s.field} role="group" aria-label={label}>
-        <svg className={`${s.lines} ${s.vertical}`} viewBox={`0 0 ${W} ${L}`} aria-hidden="true">
-          <Markings formation={formation} edges={edges} />
-        </svg>
-        {fit ? (
-          // A fitted field can be shorter than its own shape on an upright phone, where CSS swaps
-          // in these markings, which stretch with it.
-          <svg
-            className={`${s.lines} ${s.stretched}`}
-            viewBox={`0 0 ${W} ${L}`}
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <Markings formation={formation} edges={edges} />
-          </svg>
-        ) : null}
-        <svg className={`${s.lines} ${s.horizontal}`} viewBox={`0 0 ${L} ${W}`} aria-hidden="true">
-          <g transform={HORIZONTAL}>
-            <Markings formation={formation} edges={edges} />
-          </g>
-        </svg>
+      <Pitch3DStage formation={formation} edges={edges} label={label}>
         {STARTER_REFS.map((ref, i) => {
           const sl = slots[i]!;
-          return token(ref, sl.label, { "--x": sl.x, "--y": sl.y } as CSSProperties, sl);
+          const point = points[i];
+          return token(ref, sl.label, { left: `${point.x}%`, top: `${point.y}%` }, sl);
         })}
-      </div>
+      </Pitch3DStage>
       {showBench ? (
         <div className={s.bench} role="group" aria-label="Bench">
-          <span className={`kicker ${s.benchLabel}`}>Bench</span>
+          <span className={`kicker ${s.benchLabel}`}>
+            Bench ({lineup.bench.filter((id) => id !== null).length}/5)
+          </span>
           <div className={s.benchRow}>{BENCH_REFS.map((ref, i) => token(ref, `SUB ${i + 1}`))}</div>
         </div>
       ) : null}

@@ -124,15 +124,15 @@ describe("tap to swap on the draft board", () => {
     });
   });
 
-  it("names each reroll button by what it shows, count included, so the visible text is part of its name", async () => {
+  it("names each reroll button by what it shows, count included, while displaying remaining and maximum", async () => {
     await start(SQUAD_FIRST);
     expect(
       screen
         .getAllByRole("button", { name: /^Reroll/ })
         .map((b) => [b.textContent, b.getAttribute("aria-label")]),
     ).toEqual([
-      ["Reroll type 3 left", null],
-      ["Reroll region 3 left", null],
+      ["Reroll type 3/3", "Reroll type 3 left"],
+      ["Reroll region 3/3", "Reroll region 3 left"],
     ]);
   });
 
@@ -150,7 +150,7 @@ describe("tap to swap on the draft board", () => {
       ariaDisabled: reroll().getAttribute("aria-disabled"),
       focused: document.activeElement === reroll(),
     }).toEqual({
-      name: "Reroll type 0 left",
+      name: "Reroll type 0/3",
       disabled: false,
       ariaDisabled: "true",
       focused: true,

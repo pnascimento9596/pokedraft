@@ -272,18 +272,24 @@ describe("builder picker", () => {
 describe("builder pitch token notes", () => {
   it("show no rating on any token with Show ratings off", async () => {
     openWithBenchToo();
-    expect((await screen.findByTestId("slot-s2")).textContent).toBe("LCB Bulbasaur");
-    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Charmander");
-    expect(screen.getByTestId("slot-b0").textContent).toBe("SUB 1 Pikachu");
+    expect((await screen.findByTestId("slot-s2")).textContent).toBe("DFLCBBulbasaurGrassPoison");
+    expect(screen.getByTestId("slot-s9").textContent).toBe("FWSTCharmanderFire");
+    expect(screen.getByTestId("slot-b0").textContent).toBe("SUBSUB 1PikachuElectric");
   });
 
   it("with Show ratings on, print the same number and label as the picker (Bulbasaur at CB 23, Charmander at ST 43, Pikachu on the bench 75)", async () => {
     openWithBenchToo();
     await screen.findByRole("button", { name: "LCB Bulbasaur" }, { timeout: 10_000 });
     showRatings();
-    expect(screen.getByTestId("slot-s2").textContent).toBe("LCB Bulbasaur 23 vs other CBs");
-    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Charmander 43 vs other strikers");
-    expect(screen.getByTestId("slot-b0").textContent).toBe("SUB 1 Pikachu 75 vs other wingers");
+    expect(screen.getByTestId("slot-s2").textContent).toBe(
+      "DF23 vs other CBsLCBBulbasaurGrassPoison",
+    );
+    expect(screen.getByTestId("slot-s9").textContent).toBe(
+      "FW43 vs other strikersSTCharmanderFire",
+    );
+    expect(screen.getByTestId("slot-b0").textContent).toBe(
+      "SUB75 vs other wingersSUB 1PikachuElectric",
+    );
   });
 
   // Below an 800 px pitch the token pill is the number alone (the "vs other <role>s" line is

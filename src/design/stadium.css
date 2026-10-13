@@ -1,0 +1,32 @@
+:root {
+  --stadium-shell: radial-gradient(ellipse at 50% 15%, #111a2e 0%, #080d16 100%);
+  --stadium-glass: rgba(13, 22, 38, 0.85);
+  --stadium-border: rgba(37, 99, 235, 0.4);
+  --stadium-glow: 0 0 20px rgba(37, 99, 235, 0.18);
+  --stadium-turf: repeating-linear-gradient(
+    180deg,
+    #0b2c1f 0%,
+    #0b2c1f 9.09%,
+    #0e3626 9.09%,
+    #0e3626 18.18%
+  );
+  --stadium-edge: #051a12;
+  --stadium-line: #34d399;
+  --stadium-card: #0f172a;
+  --stadium-ink: #f8fafc;
+  --stadium-muted: #cbd5e1;
+  --stadium-empty: #64748b;
+  --stadium-wordmark: #ffcc01;
+  --stadium-wordmark-shadow: #2a75bb;
+  --stadium-rainbow: linear-gradient(135deg, #f43f5e, #ec4899, #8b5cf6, #3b82f6, #10b981);
+}
+:root[data-theme="light"] {
+  --stadium-shell: var(--canvas);
+  --stadium-glass: var(--surface);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --stadium-shell: var(--canvas);
+    --stadium-glass: var(--surface);
+  }
+}

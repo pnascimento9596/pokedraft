@@ -123,7 +123,7 @@ test("candidate cards clear reroll buttons on phone without overlapping outlines
 
   const clearance = await page.evaluate(() => {
     const cards = [...document.querySelectorAll('[data-testid^="candidate-"]')];
-    const rerolls = [...document.querySelectorAll('button')].filter((b) =>
+    const rerolls = [...document.querySelectorAll("button")].filter((b) =>
       b.textContent?.includes("Reroll"),
     );
     const lowestCardBottom = Math.max(...cards.map((c) => c.getBoundingClientRect().bottom));
@@ -188,10 +188,7 @@ test("round header has no focus outline and clears the rolled region and type ta
 test("open draft mode renders candidates as collectible cards with pitch border clean", async ({
   page,
 }) => {
-  await start(
-    page,
-    "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=e2e-pf",
-  );
+  await start(page, "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=e2e-pf");
   const candidates = page.locator('[data-testid^="candidate-"]');
   await expect(candidates.first()).toBeVisible();
 
@@ -201,7 +198,7 @@ test("open draft mode renders candidates as collectible cards with pitch border 
     const pitchStyle = window.getComputedStyle(pitchSection);
     return {
       count: cards.length,
-      allHaveArt: cards.every((c) => c.querySelector('[data-player-image]') !== null),
+      allHaveArt: cards.every((c) => c.querySelector("[data-player-image]") !== null),
       allSizedProperly: cards.every((c) => c.getBoundingClientRect().height >= 70),
       pitchBorderWidth: Number.parseFloat(pitchStyle.borderWidth) || 0,
     };
@@ -280,13 +277,12 @@ test("at draft complete in 4-4-2, no centre-back's name touches the keeper's pic
   await settle(page);
   const touching = await page.evaluate(() => {
     const box = (el: Element) => el.getBoundingClientRect();
-    const keeper = document.querySelector('[data-testid="slot-s0"] > span')!;
+    const keeper = document.querySelector('[data-testid="slot-s0"] [data-player-image]')!;
     const k = box(keeper);
     const out: string[] = [];
     for (const key of ["s2", "s3"]) {
       const token = document.querySelector(`[data-testid="slot-${key}"]`)!;
-      const parts = token.querySelectorAll(":scope > span");
-      const name = box(parts[parts.length - 1]!);
+      const name = box(token.querySelector('[id$="-name"]')!);
       const gapX = Math.max(k.left - name.right, name.left - k.right);
       const gapY = Math.max(k.top - name.bottom, name.top - k.bottom);
       if (gapX < 1 && gapY < 1)
@@ -322,8 +318,7 @@ for (const formation of [
       ];
       const out: string[] = [];
       for (const token of tokens) {
-        const parts = token.querySelectorAll(":scope > span");
-        const name = parts[parts.length - 1]!;
+        const name = token.querySelector('[id$="-name"]')!;
         const n = name.getBoundingClientRect();
         const ownPicture = token.querySelector("[data-player-image]")!.getBoundingClientRect();
         if (

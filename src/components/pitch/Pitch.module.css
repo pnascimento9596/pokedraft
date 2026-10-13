@@ -3,670 +3,302 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
 }
-
+.perspective {
+  perspective: 1200px;
+  padding: 24px 0 32px;
+}
 .field {
-  --flood-line: var(--pitch-flood);
-  --synergy: var(--pitch-flood);
-  --focus: var(--pitch-focus);
   position: relative;
   width: 100%;
-  aspect-ratio: 68 / 105;
-  margin: 0 auto;
-  border-radius: var(--radius-md);
-  background: repeating-linear-gradient(
-    180deg,
-    var(--grass-1) 0,
-    var(--grass-1) 9.0909%,
-    var(--grass-2) 9.0909%,
-    var(--grass-2) 18.1818%
-  );
-  border: none;
-  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.45);
+  aspect-ratio: 4/3;
+  transform: rotateX(26deg);
+  transform-origin: center bottom;
+  transform-style: preserve-3d;
+  border: 4px solid var(--stadium-edge);
+  border-radius: 16px;
+  background: var(--stadium-turf);
+  box-shadow:
+    0 24px 0 var(--stadium-edge),
+    0 35px 50px rgba(0, 0, 0, 0.85);
 }
-
 .lines {
   position: absolute;
-  inset: 5%;
-  width: 90%;
-  height: 90%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: visible;
   fill: none;
-  stroke: var(--chalk);
-  stroke-width: 0.32;
+  stroke: var(--stadium-line);
+  stroke-width: 0.65;
+  filter: drop-shadow(0 0 6px var(--stadium-line));
   pointer-events: none;
 }
-
-.lines .spot {
-  fill: var(--chalk);
+.spot {
+  fill: var(--stadium-line);
+}
+.pokeballTop {
+  fill: color-mix(in srgb, var(--stadium-line) 8%, transparent);
   stroke: none;
 }
-
-.lines .pokeballTop {
-  fill: var(--pitch-pokeball-top, rgba(225, 29, 72, 0.85));
-  stroke: none;
+.pokeballRing {
+  fill: var(--stadium-edge);
 }
-
-.lines .pokeballBottom {
-  fill: var(--pitch-pokeball-bottom, rgba(243, 239, 228, 0.8));
-  stroke: none;
+.chemistry {
+  transform: translateZ(1px);
 }
-
-.lines .pokeballDivider {
-  stroke: var(--chalk);
-  stroke-width: 0.5;
-}
-
-.lines .pokeballOutline {
-  stroke: var(--chalk);
-  stroke-width: 0.32;
-  fill: none;
-}
-
-.lines .pokeballRing {
-  stroke: var(--chalk);
-  stroke-width: 0.4;
-  fill: var(--surface-sunken);
-}
-
-.lines .pokeballInner {
-  stroke: var(--chalk);
-  stroke-width: 0.3;
-  fill: var(--chalk);
-}
-
-.lines .goal {
-  stroke-width: 0.4;
-  fill: var(--chalk-soft);
-}
-
 .edges line {
-  stroke: var(--synergy);
-  stroke-width: 0.8;
+  stroke-width: 1.2;
   stroke-linecap: round;
-  stroke-dasharray: 1.4 1;
-  filter: drop-shadow(0 0 3px var(--synergy));
 }
-
-.horizontal,
-.stretched {
-  display: none;
-}
-
 .token {
+  pointer-events: auto;
   position: absolute;
-  left: calc(5% + var(--x) * 0.9%);
-  top: calc(5% + (100 - var(--y)) * 0.9%);
-  transform: translate(-50%, -50%);
-  z-index: 1;
+  transform: translate(-50%, -50%) translateZ(40px) rotateX(-26deg);
+  transform-origin: center center;
+  width: 64px;
+  height: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 1 px, as on the 640-899 px pitch: at 390 px in 4-3-3 a 2 px gap put the keeper's picture
-     1.3 px into the left centre-back's name (Linux Chromium). The 900 px pitch sets 2 px again. */
-  gap: 1px;
-  width: 60px;
-  padding: 2px;
-  border: 0;
-  background: none;
-  color: var(--pitch-line);
+  gap: 2px;
+  padding: 3px;
+  border: 2px solid var(--card-type, var(--stadium-empty));
+  border-radius: 8px;
+  background: var(--stadium-card);
+  color: var(--stadium-ink);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--card-type, var(--stadium-empty)) 50%, transparent),
+    0 4px 6px rgba(0, 0, 0, 0.5);
   cursor: pointer;
-  /* Only a token holds the finger for a drag; a swipe on the grass scrolls the page. */
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  z-index: 1;
 }
-
+.token[data-filled="false"] {
+  border-style: dashed;
+  background: color-mix(in srgb, var(--stadium-card) 85%, transparent);
+}
+.token[data-filled="false"] .tokenSlot {
+  position: static;
+  margin-top: 0;
+  font-size: 12px;
+  line-height: 14px;
+}
 .token:disabled {
   cursor: default;
 }
-
 .token[data-dragging] {
   z-index: 5;
   pointer-events: none;
   opacity: 0.9;
-  transition: none;
 }
-
+.token[data-highlight],
+.token[data-drop],
+.token[aria-pressed="true"] {
+  outline: 3px solid var(--stadium-line);
+  outline-offset: 2px;
+}
+.token[data-weak] {
+  outline: 3px solid var(--token-weak);
+  outline-offset: 2px;
+}
+.token:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.cardHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 12px;
+  font-size: 11px;
+  line-height: 12px;
+  font-weight: 800;
+}
+.cardRole {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0 2px;
+  border-radius: 3px;
+}
+.tokenSlot {
+  position: absolute;
+  top: 100%;
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 12px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--stadium-card);
+  color: var(--stadium-ink);
+}
 .tokenImage {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-xs);
-  background: var(--surface-sunken);
-  box-shadow:
-    0 0 0 1.5px var(--token-ring),
-    0 2px 6px rgba(0, 0, 0, 0.35);
-  transition:
-    box-shadow var(--dur-1) ease,
-    transform var(--dur-1) var(--ease-out);
+  width: 100%;
+  height: 42px;
+  flex: 1;
+  min-height: 0;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
 }
-
-.token[data-filled="false"] .tokenImage {
-  background: rgba(17, 26, 41, 0.75);
-  box-shadow: 0 0 8px rgba(116, 229, 173, 0.25);
-  border: 1.5px dashed rgba(116, 229, 173, 0.6);
+.tokenImage > :global([data-player-image]) {
+  width: 100% !important;
+  height: 100% !important;
 }
-
-.token[data-filled="true"] .tokenImage {
-  background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
-  box-shadow:
-    0 0 0 1.5px var(--token-ring),
-    0 0 10px rgba(116, 229, 173, 0.2),
-    0 3px 8px rgba(0, 0, 0, 0.45);
-}
-
-.token[data-highlight] .tokenImage {
-  box-shadow: 0 0 0 3px var(--flood-line);
-}
-
-/* No red reaches 3:1 on green grass, so the red ring sits inside a white halo that does. */
-.token[data-weak] .tokenImage {
-  box-shadow:
-    0 0 0 3px var(--token-weak),
-    0 0 0 5px var(--pitch-halo);
-}
-
-/* The player picked for a tap swap. */
-.token[aria-pressed="true"] .tokenImage {
-  box-shadow: 0 0 0 3px var(--focus);
-}
-
-.token:not(:disabled, [aria-disabled="true"]):not([data-dragging]):not([data-drop]):active
-  .tokenImage {
-  transform: scale(0.94);
-}
-
-.token[data-drop] .tokenImage {
-  box-shadow: 0 0 0 3px var(--focus);
-  transform: scale(1.1);
-}
-
 .tokenImage img {
   max-width: 100%;
   max-height: 100%;
+  object-fit: contain;
 }
-
-/* Right-half tokens face the center. Which half depends on the layout, and the player can turn
-   it off (data-mirror="off" on the wrap). */
 .wrap[data-mirror="on"] .token[data-half-portrait="right"] .tokenImage img {
   transform: scaleX(-1);
 }
-
 .tokenEmpty {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.3rem;
-  color: var(--chalk);
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--stadium-line);
+  border-radius: 50%;
+  color: var(--stadium-line);
+  box-shadow: 0 0 6px var(--stadium-line);
+  font-size: 20px;
   line-height: 1;
 }
-
-.tokenSlot {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.7rem;
-  line-height: 1.2;
-  letter-spacing: 0.1em;
-  padding: 0 4px;
-  border-radius: var(--radius-xs);
-  background: var(--accent);
-  color: var(--accent-fg);
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
 .tokenName {
-  max-width: 60px;
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 14px;
-  padding-inline: 3px;
-  border-radius: var(--radius-xs);
-  background: var(--accent);
-  color: var(--accent-fg);
+  font-size: 11px;
+  line-height: 12px;
+  font-weight: 700;
 }
-
-:global(:root[data-theme="dark"]) .tokenName {
-  background: var(--surface-sunken);
-  color: var(--text);
-}
-
-@media (prefers-color-scheme: dark) {
-  :global(:root:not([data-theme="light"])) .tokenName {
-    background: var(--surface-sunken);
-    color: var(--text);
-  }
-}
-
-.tokenNote {
+.cardTypes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
   max-width: 100%;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.7rem;
-  line-height: 1.15;
-  text-align: center;
-  padding: 0 4px;
-  border-radius: var(--radius-xs);
-  background: var(--flood);
-  color: var(--flood-ink);
+  font-size: 11px;
+  line-height: 12px;
 }
-
+.cardTypes > span {
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 0 1px;
+  background: rgba(0, 0, 0, 0.5);
+}
+.emptyPrompt {
+  font-size: 11px;
+  line-height: 11px;
+  color: var(--stadium-line);
+}
+.tokenNote {
+  display: flex;
+  font-size: 11px;
+  line-height: 12px;
+}
+.tokenNote > :last-child {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
 .bench {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px 6px 10px;
-  border-radius: var(--radius);
-  background: var(--bg-sunk);
-  border: 1px solid var(--line);
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--stadium-glass);
+  border: 1px solid var(--stadium-border);
+  box-shadow: var(--stadium-glow);
 }
-
-.benchLabel {
-  padding-left: 6px;
-}
-
 .benchRow {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  gap: 4px;
 }
-
 .bench .token {
   position: relative;
   left: auto;
   top: auto;
   transform: none;
-  width: 62px;
-  color: var(--ink);
+  flex: none;
 }
-
-.bench .token .tokenName {
-  text-shadow: none;
-  max-width: 62px;
-}
-
-.bench .token[data-filled="false"] .tokenImage {
-  border-color: var(--line-strong);
-  box-shadow: none;
-}
-
-.bench .token[data-filled="false"] .tokenEmpty {
-  color: var(--ink-faint);
-}
-
-@container (min-width: 440px) {
-  .field {
-    max-width: 540px;
-    margin: 0 auto;
-  }
-  .token {
-    width: 72px;
-    gap: 2px;
-  }
-  .tokenName {
-    max-width: 72px;
-  }
-  .tokenImage {
-    width: 42px;
-    height: 42px;
-  }
-}
-
-@container (min-width: 560px) {
-  .field {
-    max-width: 580px;
-    margin: 0 auto;
-  }
-  .token {
-    width: 84px;
-    gap: 2px;
-  }
-  .tokenName {
-    max-width: 84px;
-    font-size: 0.8rem;
-  }
-  .tokenImage {
-    width: 48px;
-    height: 48px;
-  }
-}
-
-/* The draft screen on phones (data-fit): the field takes the height the screen leaves it, never more
-   than its own shape, and the tokens shrink with that height. The bench drops its label. */
-@media (max-width: 480px) {
-  .wrap[data-fit] {
-    height: 100%;
-    gap: 6px;
-  }
-
-  .wrap[data-fit] .field {
-    flex: 1 1 0;
-    min-height: 0;
-    max-height: calc((100vw - 2 * var(--gutter)) * 105 / 68);
-    aspect-ratio: auto;
-    container: field / size;
-  }
-
-  .wrap[data-fit] .bench {
-    flex: none;
-    padding: 8px 6px;
-  }
-
-  .wrap[data-fit] .benchLabel {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-  }
-
-  .wrap[data-fit] .bench .token {
-    width: 56px;
-  }
-
-  .wrap[data-fit] .tokenSlot {
-    line-height: 1.2;
-  }
-
-  /* The field can be shorter than its own shape, so the markings stretch and keep one line width. */
-  .wrap[data-fit] .vertical {
-    display: none;
-  }
-
-  .wrap[data-fit] .stretched {
-    display: block;
-  }
-
-  .wrap[data-fit] .stretched * {
-    vector-effect: non-scaling-stroke;
-    stroke-width: 1.2px;
-  }
-}
-
-@media (max-width: 480px) and (max-height: 760px) {
-  .wrap[data-fit] .bench .tokenImage {
-    zoom: 0.68;
-  }
-
-  .wrap[data-fit] .bench .tokenName {
-    display: none;
-  }
-}
-
-@container field (max-height: 380px) {
-  .token {
-    width: 56px;
-  }
-
-  .tokenImage {
-    zoom: 0.68;
-  }
-
-  .tokenName {
-    max-width: 56px;
-    line-height: 1.05;
-  }
-}
-
-/* The draft screen on a phone on its side: the field lies on its side whatever its width, and is
-   no taller than the screen. The same horizontal field as the 640 px container rule above. */
-@media (orientation: landscape) and (max-height: 500px) and (max-width: 959px) {
-  .wrap[data-fit] .field {
-    width: min(100%, calc((100svh - 16px) * 105 / 68));
-    aspect-ratio: 105 / 68;
-    container: field / size;
-    background: repeating-linear-gradient(
-      90deg,
-      var(--grass-1) 0,
-      var(--grass-1) 9.0909%,
-      var(--grass-2) 9.0909%,
-      var(--grass-2) 18.1818%
-    );
-  }
-  .wrap[data-fit] .vertical,
-  .wrap[data-fit] .stretched {
-    display: none;
-  }
-  .wrap[data-fit] .horizontal {
-    display: block;
-  }
-  .wrap[data-fit] .field > .token {
-    left: calc(5% + var(--y) * 0.9%);
-    top: calc(5% + var(--x) * 0.9%);
-  }
-  .wrap[data-fit][data-mirror="on"] .token[data-half-portrait="right"] .tokenImage img {
-    transform: none;
-  }
-  .wrap[data-fit][data-mirror="on"] .token[data-half-landscape="right"] .tokenImage img {
-    transform: scaleX(-1);
-  }
-}
-
-.wrap[data-compact-tags] .tokenSlot {
-  position: absolute;
-  top: 32px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
-  white-space: nowrap;
-}
-.wrap[data-compact-tags] .tokenName {
-  font-size: 12px;
-  line-height: 14px;
-  font-weight: 600;
-  padding: 1px 3px;
-  border-radius: var(--radius-xs);
-  background: var(--accent);
-  color: var(--accent-fg);
-  text-shadow: none;
-}
-:global(:root[data-theme="dark"]) .wrap[data-compact-tags] .tokenName {
-  background: var(--surface-sunken);
-  color: var(--text);
-}
-
-@media (prefers-color-scheme: dark) {
-  :global(:root:not([data-theme="light"])) .wrap[data-compact-tags] .tokenName {
-    background: var(--surface-sunken);
-    color: var(--text);
-  }
-}
-.wrap[data-compact-tags] .bench .tokenName {
-  background: var(--surface-sunken);
-  color: var(--text);
-}
-@container (min-width:640px) {
-  .wrap[data-compact-tags] .tokenSlot {
-    top: 27px;
-  }
-}
-@container (min-width:900px) {
-  .wrap[data-compact-tags] .tokenSlot {
-    top: 38px;
-  }
-}
-
-.wrap[data-compact-tags] .benchRow {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-}
-.wrap[data-compact-tags] .bench .token {
-  min-width: 0;
-  width: 100%;
-}
-.wrap[data-compact-tags] .bench .tokenName {
-  max-width: 100%;
-}
-
-.bench .tokenName {
-  background: var(--surface-sunken);
-  color: var(--text);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 14px;
-}
-
-@container field (max-height: 350px) {
-  .field > .token {
-    width: 54px;
-    min-height: 44px;
-    flex-direction: row;
-    gap: 2px;
-    padding: 2px 0;
-  }
-  .field > .token .tokenImage {
-    zoom: 1;
-    width: 20px;
-    height: 20px;
-    flex: none;
-  }
-  .field > .token .tokenName {
-    width: 32px;
-    max-width: 32px;
-    flex: none;
-    padding-inline: 2px;
-    font-size: 12px;
-    line-height: 14px;
-  }
-  .field > .token .tokenSlot {
-    position: absolute;
-    top: 0;
-    left: 0;
-    max-width: 26px;
-    padding-inline: 1px;
-    font-size: 11px;
-    line-height: 14px;
-    letter-spacing: 0;
-  }
-  .field > .token[data-filled="false"] {
-    justify-content: center;
-  }
-}
-
-.benchRow {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+.bench .tokenSlot {
+  position: static;
+  margin-top: 0;
+  font-size: 11px;
+  line-height: 12px;
 }
 .bench .token {
-  width: 100%;
-  min-width: 0;
-  padding-top: 18px;
-}
-.bench .token .tokenSlot {
-  top: 0;
-  left: 50%;
-  right: auto;
-  transform: translateX(-50%);
-  font-size: 11px;
-  line-height: 14px;
-  padding: 0 4px;
-  border-radius: var(--radius-xs);
-  white-space: nowrap;
-}
-.bench .tokenName {
-  max-width: 100%;
-}
-
-.tokenSlot,
-.tokenNote {
-  font-size: 13px;
-  line-height: 18px;
-  font-weight: 600;
-  letter-spacing: 0;
-}
-.tokenSlot {
-  top: -4px;
-  right: 0;
-  left: auto;
-  transform: none;
-  white-space: nowrap;
-}
-.wrap[data-compact-tags] .tokenSlot {
-  right: auto;
-}
-.wrap[data-compact-tags] .tokenImage {
-  width: 36px;
-  height: 36px;
-}
-.wrap[data-compact-tags] .tokenSlot {
-  top: 18px;
-}
-@container field (max-height: 350px) {
-  .field > .token .tokenSlot {
-    top: -4px;
-    font-size: 13px;
-    line-height: 18px;
-    max-width: none;
-    white-space: nowrap;
-  }
-}
-
-.token {
-  min-height: 44px;
+  width: calc((100% - 16px) / 5);
+  max-width: 80px;
   min-width: 44px;
 }
-.tokenImage :global([data-player-image]) {
-  max-width: 100%;
-  max-height: 100%;
+.benchLabel {
+  color: var(--text);
 }
-.wrap[data-fit] .token {
-  gap: 2px;
-}
-@container field (max-height: 350px) {
-  .field > .token .tokenSlot {
-    left: 0;
-    transform: none;
+@container (min-width:800px) {
+  .token {
+    width: 80px;
+    height: 112px;
+  }
+  .tokenName {
+    font-size: 11px;
+  }
+  .cardTypes {
+    font-size: 11px;
   }
 }
-@container field (max-width: 300px) and (max-height: 350px) {
-  .field > .token {
-    width: 44px;
+@container (max-width: 540px) {
+  .field {
+    aspect-ratio: auto;
+    height: 740px;
   }
-  .field > .token .tokenName {
-    width: 22px;
-    max-width: 22px;
+  .token {
+    width: 56px;
+    height: 88px;
+    gap: 2px;
+    padding: 2px;
   }
-}
-
-/* On a field that takes the height the screen leaves it, a rating pill must not make its token
-   taller: the keeper sits right under the defenders. On a tall enough field the pill is a corner
-   badge opposite the slot tag; on a short field the token is a row (picture, name), and the pill
-   takes the place of the name, which is cut to a letter or two there anyway. */
-@media (max-width: 480px), (orientation: landscape) and (max-height: 500px) and (max-width: 959px) {
-  .wrap[data-fit] .tokenNote {
+  .tokenImage {
+    height: 32px;
+  }
+  .cardTypes {
+    font-size: 11px;
+    line-height: 12px;
+  }
+  .tokenName {
     font-size: 12px;
     line-height: 14px;
-    padding: 0 3px;
   }
-
-  @container field (not (max-height: 350px)) {
-    .field > .token .tokenNote {
-      position: absolute;
-      top: -4px;
-      left: 0;
-      z-index: 1;
-    }
+  .cardHeader {
+    font-size: 11px;
+    line-height: 12px;
+    min-height: 10px;
   }
-
-  @container field (max-height: 350px) {
-    .field > .token:has(.tokenNote) {
-      justify-content: flex-start;
-    }
-
-    .field > .token:has(.tokenNote) .tokenName {
-      display: none;
-    }
-
-    .field > .token .tokenNote {
-      flex: none;
-    }
+  .emptyPrompt {
+    font-size: 11px;
+  }
+  .bench {
+    padding: 10px 6px;
+  }
+}
+@media (hover: hover) {
+  .token:not(:disabled):hover {
+    filter: brightness(1.15);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .token {
+    transition: none;
   }
 }

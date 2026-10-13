@@ -14,6 +14,8 @@ import s from "./SidePanel.module.css";
 export interface SidePanelProps {
   readonly panel: PanelSettings;
   readonly onChange: (next: PanelSettings) => void;
+  readonly filled?: number;
+  readonly chemistry?: number | null;
   readonly stats: Readonly<Record<StatBucket, BucketStats>> | null;
 }
 
@@ -78,7 +80,13 @@ function Segmented<T extends string>({
   );
 }
 
-export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
+export function SidePanel({
+  panel,
+  onChange,
+  stats,
+  filled = 0,
+  chemistry = null,
+}: SidePanelProps) {
   const formationId = useId();
   const set = (patch: Partial<PanelSettings>) => onChange({ ...panel, ...patch });
   const allGens = panel.gens.length === GENS.length;
@@ -107,6 +115,21 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
 
   return (
     <aside className={s.panel} aria-label="Control desk">
+      <div className={s.hub}>
+        <button
+          type="button"
+          className="btn btn--ghost"
+          aria-expanded={open}
+          aria-controls={moreId}
+          onClick={() => setOpen(!open)}
+        >
+          Challenge Hub
+        </button>
+        <p>
+          {STYLE_LABEL[panel.style]} · Draft: {filled}/16 ·{" "}
+          {chemistry === null ? "Chemistry after draft" : `${Math.round(chemistry * 100)}% Chem`}
+        </p>
+      </div>
       <ModuleCard
         eyebrow="Trainer Dugout"
         title="Play"
@@ -114,6 +137,7 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
         icon={<NavIcon family="play" />}
       >
         <div className={s.section}>
+          <div className={s.bannerTitle}>Pokémon Challenge</div>
           <div className={s.ctas}>
             <button
               type="button"

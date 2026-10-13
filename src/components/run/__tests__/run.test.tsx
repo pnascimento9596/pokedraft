@@ -124,11 +124,13 @@ describe("challenge run screen", () => {
     expect(screen.getByRole("link", { name: "Back home" }).getAttribute("href")).toBe("/");
   });
 
-  it("shows a friendly message when navigated to /play without query parameters", () => {
+  it("opens the existing default Open Squad First lobby on bare /play", () => {
     query.current = "";
     render(<PlayScreen />);
-    expect(screen.getByRole("heading").textContent).toBe("That challenge link does not work");
-    expect(screen.getByRole("link", { name: "Back home" }).getAttribute("href")).toBe("/");
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("8-0 Challenge");
+    expect(screen.getByTestId("run-start").textContent).toBe("Start run");
+    expect(screen.getByText("Open").textContent).toBe("Open");
+    expect(screen.getByText("Squad First").textContent).toBe("Squad First");
   });
 
   it("selects candidate 1, 2, or 3 with keyboard numbers and clears uncommitted selection on Escape", async () => {
@@ -187,7 +189,7 @@ describe("Show ratings (challenges) on the draft screen", () => {
     await start();
     fireEvent.click(screen.getByTestId("candidate-316"));
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
-    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Gulpin 5 vs other strikers");
+    expect(screen.getByTestId("slot-s9").textContent).toBe("FW5 vs other strikersSTGulpinPoison");
   });
 
   it("rates every offered player at the committed slot's role in Position First, with no Best label (ST: Roselia 52, Gulpin 5, Seviper 71)", async () => {
@@ -228,7 +230,7 @@ describe("Show ratings (challenges) on the draft screen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Empty ST slot" }));
     expect(fitTexts()).toEqual([]);
     expect(screen.queryByTestId("ratings-legend")).toBeNull();
-    expect(screen.getByTestId("slot-s9").textContent).toBe("ST Gulpin");
+    expect(screen.getByTestId("slot-s9").textContent).toBe("FWSTGulpinPoison");
     expect(document.body.textContent).not.toMatch(/vs other/);
   });
 
