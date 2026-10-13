@@ -371,18 +371,18 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
               </li>
             );
           })}
+          {matches.length > displayLimit ? (
+            <li className={s.loadMoreWrap}>
+              <button
+                type="button"
+                className={`btn btn--ghost ${s.loadMore}`}
+                onClick={() => setExtraPages((p) => p + 1)}
+              >
+                Load more ({matches.length - displayLimit} remaining)
+              </button>
+            </li>
+          ) : null}
         </ul>
-        {matches.length > displayLimit ? (
-          <div className={s.loadMoreWrap}>
-            <button
-              type="button"
-              className={`btn btn--ghost ${s.loadMore}`}
-              onClick={() => setExtraPages((p) => p + 1)}
-            >
-              Load more ({matches.length - displayLimit} remaining)
-            </button>
-          </div>
-        ) : null}
       </div>
     </dialog>
   );
