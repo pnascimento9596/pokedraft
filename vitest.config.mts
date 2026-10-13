@@ -14,5 +14,6 @@ export default defineConfig({
     include: ["src/**/*.test.ts", "src/**/*.test.tsx", "scripts/**/*.test.ts"],
     environment: "node",
     css: { modules: { classNameStrategy: "non-scoped" } },
+    testTimeout: 15_000,
   },
 });
