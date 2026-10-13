@@ -294,7 +294,9 @@ function ActiveDraftBoard({
         if (overDrawer) {
           setDropSlot(null);
         } else {
-          const el = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-slot-key]");
+          const el = document
+            .elementFromPoint(e.clientX, e.clientY)
+            ?.closest<HTMLElement>("[data-slot-key]");
           const under = el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null;
           setDropSlot(under !== null && valueAt(state.lineup, under) === null ? under : null);
         }
@@ -321,7 +323,9 @@ function ActiveDraftBoard({
         e.clientY >= drawerRect.top &&
         e.clientY <= drawerRect.bottom;
       if (moved && dragCandidateRef.current && !overDrawer) {
-        const el = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-slot-key]");
+        const el = document
+          .elementFromPoint(e.clientX, e.clientY)
+          ?.closest<HTMLElement>("[data-slot-key]");
         const target =
           choosing?.slot ?? (el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null);
         if (target !== null && valueAt(state.lineup, target) === null) {
@@ -433,7 +437,7 @@ function ActiveDraftBoard({
       data-has-selection={selected !== null || undefined}
       data-dragging-candidate={dragCandidate?.moved || undefined}
     >
-      {revealed && drawerOpen && phase.kind === "choosing" ? (
+      {drawerOpen && phase.kind === "choosing" && selected === null ? (
         <div className={s.drawerBackdrop} aria-hidden="true" />
       ) : null}
       <div className={s.hub}>
@@ -494,22 +498,11 @@ function ActiveDraftBoard({
           </p>
         ) : null}
 
-        {roll !== null ? (
-          <div ref={wheelRef} className={s.wheels} data-testid="draft-wheel">
-            <RollReveal
-              key={`reveal-${rollId}`}
-              stages={stagesFor(roll, settings, run.cause)}
-              instant={reduced}
-              onDone={onRevealDone}
-            />
-          </div>
-        ) : null}
-
         {phase.kind === "awaitingSlot" ? (
           <p className={s.help}>Tap an empty slot on the pitch. The wheel rolls for that slot.</p>
         ) : null}
 
-        {revealed ? (
+        {phase.kind === "choosing" ? (
           <div ref={drawerRef} className={s.drawer} data-testid="draft-drawer">
             <button
               type="button"
@@ -517,43 +510,55 @@ function ActiveDraftBoard({
               onClick={() => setDrawerOpen(!drawerOpen)}
               aria-expanded={drawerOpen}
             >
-              {drawerOpen ? "Minimize draft picker" : "Choose a player"}
+              {drawerOpen ? "Minimize draft picker" : revealed ? "Choose a player" : "View spinner"}
             </button>
-            <Candidates
-              key={`cands-${rollId}`}
-              ids={candidates}
-              selected={selected}
-              committed={choosing?.slot !== null}
-              rate={showRatings ? rateOffer : null}
-              onTap={tapCandidate}
-              onCandidatePointerDown={onCandidatePointerDown}
-            />
-            {phase.kind !== "complete" ? (
-              <div className={s.rerolls}>
-                {REROLL_BUTTONS[mode].map(([target, label]) => {
-                  // aria-disabled, not disabled, so a pressed button keeps focus while it is off.
-                  const off = remaining <= 0 || !revealed;
-                  return (
-                    <button
-                      key={target}
-                      type="button"
-                      className="btn btn--sm"
-                      aria-label={`${label} ${remaining}/${REROLLS[mode]}, ${remaining} left`}
-                      aria-disabled={off || undefined}
-                      onClick={() => {
-                        if (off) return;
-                        unlockAudio();
-                        act({ type: "reroll", target });
-                      }}
-                    >
-                      {label}{" "}
-                      <span className={s.count}>
-                        {remaining}/{REROLLS[mode]}
-                      </span>
-                    </button>
-                  );
-                })}
+            {roll !== null ? (
+              <div ref={wheelRef} className={s.wheels} data-testid="draft-wheel">
+                <RollReveal
+                  key={`reveal-${rollId}`}
+                  stages={stagesFor(roll, settings, run.cause)}
+                  instant={reduced}
+                  onDone={onRevealDone}
+                />
               </div>
+            ) : null}
+            {revealed ? (
+              <>
+                <Candidates
+                  key={`cands-${rollId}`}
+                  ids={candidates}
+                  selected={selected}
+                  committed={choosing?.slot !== null}
+                  rate={showRatings ? rateOffer : null}
+                  onTap={tapCandidate}
+                  onCandidatePointerDown={onCandidatePointerDown}
+                />
+                <div className={s.rerolls}>
+                  {REROLL_BUTTONS[mode].map(([target, label]) => {
+                    // aria-disabled, not disabled, so a pressed button keeps focus while it is off.
+                    const off = remaining <= 0 || !revealed;
+                    return (
+                      <button
+                        key={target}
+                        type="button"
+                        className="btn btn--sm"
+                        aria-label={`${label} ${remaining}/${REROLLS[mode]}, ${remaining} left`}
+                        aria-disabled={off || undefined}
+                        onClick={() => {
+                          if (off) return;
+                          unlockAudio();
+                          act({ type: "reroll", target });
+                        }}
+                      >
+                        {label}{" "}
+                        <span className={s.count}>
+                          {remaining}/{REROLLS[mode]}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
             ) : null}
           </div>
         ) : null}

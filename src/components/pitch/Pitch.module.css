@@ -3,18 +3,19 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
   background: var(--stadium-card);
   border-radius: 16px;
 }
 .perspective {
   perspective: 1200px;
-  padding: 24px 0 32px;
+  padding: 12px 0 20px;
 }
 .field {
   position: relative;
   width: 100%;
-  aspect-ratio: 4/3;
+  aspect-ratio: 16 / 11;
+  max-height: 520px;
   transform: rotateX(26deg);
   transform-origin: center bottom;
   transform-style: preserve-3d;
@@ -304,19 +305,19 @@
 @container (max-width: 540px) {
   .field {
     aspect-ratio: auto;
-    height: 580px;
+    height: 480px;
   }
   .wrap[data-fit] .field {
-    height: 520px;
+    height: 450px;
   }
   .token {
     width: 56px;
-    height: 88px;
+    height: 84px;
     gap: 2px;
     padding: 2px;
   }
   .wrap[data-fit] .token {
-    height: 72px;
+    height: 68px;
   }
   .tokenImage {
     height: 32px;

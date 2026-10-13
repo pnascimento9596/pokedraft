@@ -387,7 +387,8 @@
     min-height: 44px;
   }
   .board:not([data-drawer]) .candidates,
-  .board:not([data-drawer]) .rerolls {
+  .board:not([data-drawer]) .rerolls,
+  .board:not([data-drawer]) .wheels {
     display: none;
   }
   .board[data-revealed] .wheels > * > :not(p) {

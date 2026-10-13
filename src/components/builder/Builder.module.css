@@ -57,8 +57,8 @@
    same 11.2 px as the pill label it stands in for. The slot keeps that line's height with ratings
    off, so turning the saved setting on after hydration shifts nothing. */
 .legendSlot {
-  margin-top: 8px;
-  min-height: 36px;
+  margin-top: 4px;
+  min-height: 24px;
 }
 
 .legend {
@@ -105,10 +105,10 @@
 }
 
 .pitch {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 .friendly {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 @media (min-width: 768px) {
   .scoreValue {

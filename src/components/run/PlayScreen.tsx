@@ -220,7 +220,7 @@ export function Challenge({
           </p>
         ) : null}
       </ModuleCard>
-      <RoadStrip seed={fixedSeed} mode={settings.mode} />
+      <RoadStrip seed={fixedSeed} mode={settings.mode} compact />
     </section>
   );
 }
