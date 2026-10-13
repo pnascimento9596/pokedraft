@@ -2,10 +2,32 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, expect, it } from "vitest";
 import { TYPE_PALETTE } from "@/design/stadium";
+import { ratingFor } from "@/ui/rating";
 import { Pitch } from "../Pitch";
 import { applyAction, createDraft, speciesById, type Seed, type SpeciesId } from "@/engine";
 
 afterEach(cleanup);
+it("keeps Pichu's real zero keeper rating visible when a numeric note is enabled", () => {
+  const state = createDraft(
+    { mode: "builder", formation: "4-3-3", gens: [2], legendaries: false },
+    "silph-zero" as Seed,
+  );
+  const lineup = applyAction(state, {
+    type: "place",
+    species: 172 as SpeciesId,
+    slot: { kind: "starter", index: 0 },
+  }).lineup;
+  render(
+    <Pitch
+      formation="4-3-3"
+      lineup={lineup}
+      speciesOf={speciesById}
+      onSlotTap={() => {}}
+      tokenNote={() => ratingFor(speciesById(172 as SpeciesId), "GK", "GK").score}
+    />,
+  );
+  expect(within(screen.getByTestId("slot-s0")).getByText("0").textContent).toBe("0");
+});
 it("owns all eighteen authentic type colors in the typed presentation palette", () => {
   expect(TYPE_PALETTE).toEqual({
     normal: "#A8A77A",
