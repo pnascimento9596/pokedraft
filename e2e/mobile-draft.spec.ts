@@ -160,6 +160,59 @@ test("bench slot tags are contained inside the bench dugout without colliding wi
   expect(containment.subInset).toBeGreaterThanOrEqual(0);
 });
 
+test("round header has no focus outline and clears the rolled region and type tags", async ({
+  page,
+}) => {
+  await start(page, PLAY_8_0);
+  const roundHeader = page.getByTestId("round-header");
+  await roundHeader.focus();
+  await settle(page);
+
+  const metrics = await page.evaluate(() => {
+    const round = document.querySelector('[data-testid="round-header"]')!;
+    const rolled = round.nextElementSibling as HTMLElement;
+    const style = window.getComputedStyle(round);
+    const roundRect = round.getBoundingClientRect();
+    const rolledRect = rolled.getBoundingClientRect();
+    return {
+      outlineWidth: Number.parseFloat(style.outlineWidth) || 0,
+      outlineStyle: style.outlineStyle,
+      clearance: rolledRect.top - roundRect.bottom,
+    };
+  });
+
+  expect(metrics.outlineStyle === "none" || metrics.outlineWidth === 0).toBe(true);
+  expect(metrics.clearance).toBeGreaterThanOrEqual(0);
+});
+
+test("open draft mode renders candidates as collectible cards with pitch border clean", async ({
+  page,
+}) => {
+  await start(
+    page,
+    "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=e2e-pf",
+  );
+  const candidates = page.locator('[data-testid^="candidate-"]');
+  await expect(candidates.first()).toBeVisible();
+
+  const cardStats = await page.evaluate(() => {
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-testid^="candidate-"]')];
+    const pitchSection = document.querySelector<HTMLElement>('[aria-label="Your squad"]')!;
+    const pitchStyle = window.getComputedStyle(pitchSection);
+    return {
+      count: cards.length,
+      allHaveArt: cards.every((c) => c.querySelector('[data-player-image]') !== null),
+      allSizedProperly: cards.every((c) => c.getBoundingClientRect().height >= 70),
+      pitchBorderWidth: Number.parseFloat(pitchStyle.borderWidth) || 0,
+    };
+  });
+
+  expect(cardStats.count).toBeGreaterThan(0);
+  expect(cardStats.allHaveArt).toBe(true);
+  expect(cardStats.allSizedProperly).toBe(true);
+  expect(cardStats.pitchBorderWidth).toBe(0);
+});
+
 test("the Picker is a bottom sheet with a handle, and its species list gets at least half of it", async ({
   page,
 }) => {

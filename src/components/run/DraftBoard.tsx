@@ -376,7 +376,6 @@ function ActiveDraftBoard({
           <Candidates
             key={`cands-${rollId}`}
             ids={candidates}
-            big={roll?.kind === "species" || (roll?.kind === "combo" && roll.offers !== null)}
             selected={selected}
             committed={choosing?.slot !== null}
             rate={showRatings ? rateOffer : null}
@@ -439,28 +438,27 @@ function ActiveDraftBoard({
 
 function Candidates({
   ids,
-  big,
   selected,
   committed,
   rate,
   onTap,
 }: {
   readonly ids: readonly SpeciesId[];
-  readonly big: boolean;
   readonly selected: SpeciesId | null;
   readonly committed: boolean;
   readonly rate: ((id: SpeciesId) => Rating) | null;
   readonly onTap: (id: SpeciesId) => void;
 }) {
   const rawFitId = useId();
+  const isCompact = ids.length > 3;
   return (
-    <div className={s.candidates} data-big={big || undefined}>
+    <div className={s.candidates} data-many={isCompact || undefined}>
       <div className={s.dragHandle} aria-hidden="true" />
       <p className="kicker">
         {committed ? "Tap a player to sign them" : "Tap a player, then an open slot"}
-        {big ? null : ` · ${ids.length} available`}
+        {isCompact ? ` · ${ids.length} available` : null}
       </p>
-      <ul className={big ? s.cards : s.rows}>
+      <ul className={s.cards} data-scrollable={isCompact || undefined}>
         {ids.map((id) => {
           const sp = speciesById(id);
           const rating = rate === null ? null : rate(id);
@@ -469,7 +467,7 @@ function Candidates({
             <li key={id}>
               <button
                 type="button"
-                className={big ? s.card : s.row}
+                className={s.card}
                 data-testid={`candidate-${id}`}
                 data-type={primaryType}
                 aria-pressed={committed ? undefined : selected === id}
@@ -478,7 +476,7 @@ function Candidates({
                 onClick={() => onTap(id)}
               >
                 <div className={s.cardArtWrap}>
-                  <PlayerImage dexId={id} size={big ? 88 : 40} alt={sp.name} />
+                  <PlayerImage dexId={id} size={isCompact ? 72 : 88} alt={sp.name} />
                 </div>
                 <span className={s.candName}>{sp.name}</span>
                 <span className={`num ${s.candDex}`}>{dexLabel(id)}</span>

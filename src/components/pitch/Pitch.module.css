@@ -22,10 +22,8 @@
     var(--grass-2) 9.0909%,
     var(--grass-2) 18.1818%
   );
-  border: 2px solid rgba(116, 229, 173, 0.65);
-  box-shadow:
-    0 0 24px rgba(116, 229, 173, 0.35),
-    inset 0 0 16px rgba(0, 0, 0, 0.45);
+  border: none;
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.45);
 }
 
 .lines {
