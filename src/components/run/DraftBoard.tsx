@@ -455,6 +455,7 @@ function Candidates({
   const rawFitId = useId();
   return (
     <div className={s.candidates} data-big={big || undefined}>
+      <div className={s.dragHandle} aria-hidden="true" />
       <p className="kicker">
         {committed ? "Tap a player to sign them" : "Tap a player, then an open slot"}
         {big ? null : ` · ${ids.length} available`}
@@ -463,18 +464,22 @@ function Candidates({
         {ids.map((id) => {
           const sp = speciesById(id);
           const rating = rate === null ? null : rate(id);
+          const primaryType = sp.types[0];
           return (
             <li key={id}>
               <button
                 type="button"
                 className={big ? s.card : s.row}
                 data-testid={`candidate-${id}`}
+                data-type={primaryType}
                 aria-pressed={committed ? undefined : selected === id}
                 aria-describedby={rating !== null ? `${rawFitId}-${id}` : undefined}
                 data-rated={rating !== null || undefined}
                 onClick={() => onTap(id)}
               >
-                <PlayerImage dexId={id} size={big ? 72 : 40} alt={sp.name} />
+                <div className={s.cardArtWrap}>
+                  <PlayerImage dexId={id} size={big ? 88 : 40} alt={sp.name} />
+                </div>
                 <span className={s.candName}>{sp.name}</span>
                 <span className={`num ${s.candDex}`}>{dexLabel(id)}</span>
                 <span className={s.candTypes}>

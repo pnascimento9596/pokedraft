@@ -203,13 +203,28 @@
   grid-area: types;
 }
 
+.dragHandle {
+  display: none;
+}
+
+@media (max-width: 959px) {
+  .dragHandle {
+    display: block;
+    width: 38px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    margin: 0 auto 10px;
+  }
+}
+
 .cards {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  gap: 8px;
+  gap: 12px;
 }
 
 .candidates[data-big] .cards {
@@ -220,25 +235,214 @@
   grid-column: 1 / -1;
 }
 
+.cardArtWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.row .cardArtWrap {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
+
 .card {
   width: 100%;
   height: 100%;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
-  padding: 14px 8px 12px;
-  border-radius: var(--radius);
-  border: 1px solid var(--line-strong);
-  background: var(--surface-sunken);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: 16px 10px 14px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-emphasis);
+  background: linear-gradient(180deg, rgba(23, 37, 58, 0.95) 0%, rgba(13, 21, 34, 0.98) 100%);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   cursor: pointer;
   text-align: center;
   position: relative;
+  overflow: hidden;
   transition:
-    border-color var(--dur-1) ease,
-    box-shadow var(--dur-1) ease,
-    transform var(--dur-1) var(--ease-out);
+    border-color var(--dur-2) ease,
+    box-shadow var(--dur-2) ease,
+    transform var(--dur-2) var(--ease-out);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.card .cardArtWrap {
+  padding: 8px 0 4px;
+}
+
+.card .cardArtWrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(116, 229, 173, 0.25) 0%, transparent 70%);
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+/* Authentic type borders and glows matching the reference mockup */
+.card[data-type="fire"] {
+  border-color: rgba(249, 115, 22, 0.85);
+  box-shadow: 0 0 16px rgba(249, 115, 22, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="fire"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="water"] {
+  border-color: rgba(56, 189, 248, 0.85);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="water"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(56, 189, 248, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="grass"] {
+  border-color: rgba(34, 197, 94, 0.85);
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="grass"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(34, 197, 94, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="electric"] {
+  border-color: rgba(250, 204, 21, 0.85);
+  box-shadow: 0 0 16px rgba(250, 204, 21, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="electric"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(250, 204, 21, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="psychic"] {
+  border-color: rgba(244, 114, 182, 0.85);
+  box-shadow: 0 0 16px rgba(244, 114, 182, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="psychic"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(244, 114, 182, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="ghost"] {
+  border-color: rgba(168, 85, 247, 0.85);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="ghost"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="dragon"] {
+  border-color: rgba(99, 102, 241, 0.85);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="dragon"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="poison"] {
+  border-color: rgba(192, 132, 252, 0.85);
+  box-shadow: 0 0 16px rgba(192, 132, 252, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="poison"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(192, 132, 252, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="bug"] {
+  border-color: rgba(163, 230, 53, 0.85);
+  box-shadow: 0 0 16px rgba(163, 230, 53, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="bug"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(163, 230, 53, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="flying"] {
+  border-color: rgba(125, 211, 252, 0.85);
+  box-shadow: 0 0 16px rgba(125, 211, 252, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="flying"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(125, 211, 252, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="ice"] {
+  border-color: rgba(103, 232, 249, 0.85);
+  box-shadow: 0 0 16px rgba(103, 232, 249, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="ice"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(103, 232, 249, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="fighting"] {
+  border-color: rgba(239, 68, 68, 0.85);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="fighting"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="ground"] {
+  border-color: rgba(217, 119, 6, 0.85);
+  box-shadow: 0 0 16px rgba(217, 119, 6, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="ground"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(217, 119, 6, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="rock"] {
+  border-color: rgba(180, 83, 9, 0.85);
+  box-shadow: 0 0 16px rgba(180, 83, 9, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="rock"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(180, 83, 9, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="steel"] {
+  border-color: rgba(148, 163, 184, 0.85);
+  box-shadow: 0 0 16px rgba(148, 163, 184, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="steel"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(148, 163, 184, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="dark"] {
+  border-color: rgba(100, 116, 139, 0.85);
+  box-shadow: 0 0 16px rgba(100, 116, 139, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="dark"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(100, 116, 139, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="fairy"] {
+  border-color: rgba(244, 114, 182, 0.85);
+  box-shadow: 0 0 16px rgba(244, 114, 182, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="fairy"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(244, 114, 182, 0.4) 0%, transparent 70%);
+}
+
+.card[data-type="normal"] {
+  border-color: rgba(156, 163, 175, 0.85);
+  box-shadow: 0 0 16px rgba(156, 163, 175, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.card[data-type="normal"] .cardArtWrap::before {
+  background: radial-gradient(circle at center, rgba(156, 163, 175, 0.4) 0%, transparent 70%);
 }
 
 .cards li:only-child .card {
@@ -252,13 +456,19 @@
 .row[aria-pressed="true"],
 .card[aria-pressed="true"] {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent), 0 0 14px rgba(244, 206, 82, 0.4);
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 0 24px rgba(244, 206, 82, 0.5),
+    0 12px 28px rgba(0, 0, 0, 0.6);
+  transform: translateY(-4px);
 }
 
 @media (hover: hover) {
-  .row:hover,
-  .card:hover {
+  .row:hover {
     border-color: var(--ink-soft);
+  }
+  .card:hover {
+    transform: translateY(-4px) scale(1.02);
   }
 }
 
@@ -273,7 +483,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -281,12 +491,48 @@
 
 .card .candName {
   max-width: 100%;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  color: var(--text);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .candDex {
   color: var(--ink-soft);
   font-size: 0.85rem;
+}
+
+.card .candDex {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.04em;
+}
+
+.card .candFit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(116, 229, 173, 0.35);
+}
+
+.card .candFit .num {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--accent);
 }
 
 .candTypes {
@@ -297,6 +543,7 @@
 
 .card .candTypes {
   justify-content: center;
+  gap: 6px;
 }
 
 .done {

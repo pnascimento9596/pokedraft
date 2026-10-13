@@ -22,8 +22,10 @@
     var(--grass-2) 9.0909%,
     var(--grass-2) 18.1818%
   );
-  border: 1px solid var(--border-emphasis);
-  box-shadow: var(--shadow-rest);
+  border: 2px solid rgba(116, 229, 173, 0.65);
+  box-shadow:
+    0 0 24px rgba(116, 229, 173, 0.35),
+    inset 0 0 16px rgba(0, 0, 0, 0.45);
 }
 
 .lines {
@@ -44,12 +46,12 @@
 }
 
 .lines .pokeballTop {
-  fill: var(--pitch-pokeball-top, rgba(200, 75, 49, 0.78));
+  fill: var(--pitch-pokeball-top, rgba(225, 29, 72, 0.85));
   stroke: none;
 }
 
 .lines .pokeballBottom {
-  fill: var(--pitch-pokeball-bottom, rgba(243, 239, 228, 0.65));
+  fill: var(--pitch-pokeball-bottom, rgba(243, 239, 228, 0.8));
   stroke: none;
 }
 
@@ -83,9 +85,10 @@
 
 .edges line {
   stroke: var(--synergy);
-  stroke-width: 0.7;
+  stroke-width: 0.8;
   stroke-linecap: round;
   stroke-dasharray: 1.4 1;
+  filter: drop-shadow(0 0 3px var(--synergy));
 }
 
 .horizontal,
@@ -145,9 +148,17 @@
 }
 
 .token[data-filled="false"] .tokenImage {
-  background: rgba(17, 26, 41, 0.65);
-  box-shadow: 0 0 6px rgba(116, 229, 173, 0.15);
-  border: 1.5px dashed var(--chalk-soft);
+  background: rgba(17, 26, 41, 0.75);
+  box-shadow: 0 0 8px rgba(116, 229, 173, 0.25);
+  border: 1.5px dashed rgba(116, 229, 173, 0.6);
+}
+
+.token[data-filled="true"] .tokenImage {
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+  box-shadow:
+    0 0 0 1.5px var(--token-ring),
+    0 0 10px rgba(116, 229, 173, 0.2),
+    0 3px 8px rgba(0, 0, 0, 0.45);
 }
 
 .token[data-highlight] .tokenImage {
@@ -292,7 +303,7 @@
   color: var(--ink-faint);
 }
 
-@container (min-width: 640px) {
+@container (min-width: 440px) {
   .field {
     max-width: 540px;
     margin: 0 auto;
@@ -310,7 +321,7 @@
   }
 }
 
-@container (min-width: 900px) {
+@container (min-width: 560px) {
   .field {
     max-width: 580px;
     margin: 0 auto;
