@@ -76,6 +76,28 @@ Partial chemistry needs an approved engine/API change or an explicitly authorize
 - Actual failing case details at `output/silph-stadium/failures.json`; original Playwright traces remain under `test-results`.
 - Rerunnable capture scripts at `output/silph-stadium/capture-before.cjs` and `capture-after.cjs`. Do not rerun the former into the immutable baseline directory.
 
+## Resumed parent verification
+
+The parent resumed the existing worktree at `eae10ef` without recreating the implementation or baseline captures. The mobile drawer and swap-feedback fixes left in the working tree were built and exercised in WebKit iPhone SE, WebKit iPhone 14 and Chromium Pixel 7. The focused run passed 26 cases and skipped four landscape cases assigned only to iPhone 14. The corresponding log is `output/silph-stadium/logs/resume-mobile.log`.
+
+The authorized vertical-scroll layout supersedes the old one-screen draft assumptions. The acceptance tests now scroll deliberately before real taps, retain uncovered-target checks and seeded result assertions, measure pitch stability in document coordinates, and verify all eleven landscape targets remain separate and reachable. The drawer reserves scroll padding, shrinks on short viewports, and minimizes when selecting a placed player. Swap feedback stays visible without requiring another scroll.
+
+Parent lint, typecheck, all 864 unit tests in 93 files, production build, theme color/contrast/CVD, image seam, client bundle and mirror checks passed. Hash comparison verified all 163 protected files unchanged against the saved base manifest. Logs use the `resume-` prefix.
+
+The first parent full browser run passed 580 cases, failed 87 and skipped 55. This broader run exposed background fallback, wordmark contrast, accessible card/reroll names, square missing-art placeholders, and outdated bare-play and collapsed-hub expectations. These failures remain recorded in `resume-full-e2e.log`; they are not represented as an accepted gate. The existing main run `38347918588` independently confirms the Round 1 two-tab race on Chromium. No storage or engine fix is in this lane.
+
+## Final parent source acceptance
+
+The resumed fixes add canvas fallback beneath the stadium gradient, a dark wordmark backing in both themes, accessible names containing visible card and reroll text, distinct armed and keyboard-focus rings, and square artwork/error placeholders bounded by the card's available space. Bare `/play` is tested as a valid lobby; the malformed-link data-split guard now uses an explicitly invalid query. The mobile type test opens the collapsed hub before inspecting its header.
+
+Parent re-execution passed lint, typecheck, 864 tests in 93 files and production build. The full final Playwright run passed 667 cases with 55 existing conditional or project-specific skips and no failures. These results supersede the historical failed matrices above. Logs are `parent-final-lint.log`, `parent-final-typecheck.log`, `parent-final-unit.log`, `parent-final-build-v2.log`, and `parent-final-e2e-v2.log` under `output/silph-stadium/logs`.
+
+Theme color, rendered contrast, color-blindness simulation, image seam, client bundle and mirror checks pass without guard changes. The parent corrected the CSS background declaration to retain the gradient and canvas fallback without introducing a forbidden image-loading seam. The reroll tests now assert the complete visible and accessible count, not the former shorter label. The Round 1 two-tab test passed unchanged in the final full run.
+
+The parent captured 34 additional production-build images at 375, 390 and 1280px under `output/silph-stadium/after-final`. These include full-page home and completed draft views as well as pitch, drawers, dugout and real seeded results. The parent visually inspected the final 1280px home and 375/390px filled pitches. Cards remain above turf, chemistry remains behind them, and starters and bench remain separated. The mobile field is deliberately tall and scrollable. Generated reference framing, duplicated illustrative players and bogus type labels are not reproduced. Full scripts and captures remain local build evidence, not overwritten screenshot baselines.
+
+The named data boundary stays `PitchProps`; engine-owned slots, roles, adjacency, seeded output and draft transitions remain frozen. All 163 protected paths still match the original SHA-256 manifest. No dependency or Playwright project configuration changed. Partial chemistry remains unavailable until a complete lineup exists because the frozen engine API requires a complete team. This is an explicit specification limitation, not a fabricated partial total.
+
 ## Not run
 
-Independent reviewer receipt, remote CI for this branch, production deployment, live-site tests, push, PR and merge. Parent owns these. Cursor-only tools and architect exploration were skipped because they are not installed and the dispatch fixed the design. No baseline approval or legacy no-scroll test rewrite was performed.
+Independent reviewer receipt, remote CI for this branch, production deployment, live-site tests, push, PR and merge remain pending. Cursor-only tools and architect exploration were skipped because they are not installed and the dispatch fixed the design. Literal pixel parity and physical-device testing are not claimed.

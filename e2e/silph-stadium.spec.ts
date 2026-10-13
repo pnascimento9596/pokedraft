@@ -80,7 +80,9 @@ for (const width of [375, 390]) {
     await page.getByTestId("slot-s5").tap();
     await expect(page.getByTestId("slot-s5")).toHaveAttribute("data-filled", "true");
     await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
-    await expect(page.getByRole("button", { name: "Reroll type 3 left" })).toContainText("3/3");
+    await expect(page.getByRole("button", { name: "Reroll type 3/3, 3 left" })).toContainText(
+      "3/3",
+    );
     await context.close();
   });
 }

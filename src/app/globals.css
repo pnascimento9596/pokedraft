@@ -32,8 +32,7 @@ body {
   display: flex;
   flex-direction: column;
   color: var(--text-soft);
-  background-color: var(--canvas);
-  background-image: var(--stadium-shell);
+  background: var(--stadium-shell) var(--canvas);
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 22px;
