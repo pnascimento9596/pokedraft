@@ -220,6 +220,10 @@
   transform: translateX(18px);
   background: var(--accent-fg);
 }
+.stats thead th {
+  color: var(--flood-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
 .stats th[scope="row"] {
   text-align: left;
   font-weight: 600;

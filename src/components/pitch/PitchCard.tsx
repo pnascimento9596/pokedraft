@@ -22,7 +22,7 @@ export function PitchCard({
     <>
       <span className={s.cardHeader}>
         <span className={s.cardRole}>{role}</span>
-        {species !== null && note ? (
+        {species !== null && note !== undefined ? (
           <span id={`${id}-note`} className={s.tokenNote}>
             {note}
           </span>
