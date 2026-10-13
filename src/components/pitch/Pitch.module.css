@@ -72,6 +72,7 @@
     0 0 10px color-mix(in srgb, var(--card-type, var(--stadium-empty)) 50%, transparent),
     0 4px 6px rgba(0, 0, 0, 0.5);
   cursor: pointer;
+  transition: scale 200ms ease-out;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -295,6 +296,7 @@
 @media (hover: hover) {
   .token:not(:disabled):hover {
     filter: brightness(1.15);
+    scale: 1.05;
   }
 }
 @media (prefers-reduced-motion: reduce) {

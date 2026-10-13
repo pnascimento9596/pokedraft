@@ -284,6 +284,7 @@
     overflow: auto;
     background: var(--stadium-glass);
     backdrop-filter: blur(12px);
+    animation: drawer-rise 200ms ease-out;
   }
   .board[data-drawer] .rerolls {
     position: fixed;
@@ -296,7 +297,18 @@
     background: var(--stadium-glass);
   }
 }
+@keyframes drawer-rise {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
+  .board[data-drawer] .drawer {
+    animation: none;
+  }
   .card {
     transition: none;
   }
