@@ -111,7 +111,7 @@ for (const width of [390, 1440])
           await page.evaluate(() => document.fonts.ready);
           const html = renderToStaticMarkup(example);
           await page.locator("main").evaluate((element, content) => {
-            element.innerHTML = `<h1 class="visually-hidden">Theme component</h1><div id="primitive-fixture" style="max-width:640px;margin:80px auto 0">${content}</div>`;
+            element.innerHTML = `<h1 class="visually-hidden">Theme component</h1><div id="primitive-fixture" style="max-width:640px;margin:80px auto 0;background:var(--canvas)">${content}</div>`;
           }, html);
           const fixture =
             name === "sheet"

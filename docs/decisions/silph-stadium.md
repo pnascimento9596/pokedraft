@@ -98,6 +98,16 @@ The parent captured 34 additional production-build images at 375, 390 and 1280px
 
 The named data boundary stays `PitchProps`; engine-owned slots, roles, adjacency, seeded output and draft transitions remain frozen. All 163 protected paths still match the original SHA-256 manifest. No dependency or Playwright project configuration changed. Partial chemistry remains unavailable until a complete lineup exists because the frozen engine API requires a complete team. This is an explicit specification limitation, not a fabricated partial total.
 
+## Settings preservation and Linux correction
+
+Paulo's pre-merge review confirmed the visual direction and required all existing options, initially open and easy-to-find settings, and the existing Play confirmation. Formation, all nine generations, Open or Classic style, both draft orders, legendaries, separate builder/challenge rating settings, image pack and mirroring customizations, and theme choice remain available. Settings helpers, persisted defaults and `ConfirmPlay.tsx` are unchanged.
+
+A new literal browser guard exposed the mobile Formation selector below the 844px viewport. RED commit `a63a670` recorded two failures before moving the open settings above the builder. Formation now appears in the first 375/390px screen. Play 8-0 and Play 151 still open the unchanged `Settings confirmed?` dialog; Yes uses the selected settings and No or Escape returns focus to Formation. Parent screenshots show the real 4-4-2 confirmation and default-open mobile panel.
+
+The first Linux CI run `38402356772` had one persistent failure in the quiet component screenshot and one two-tab case that passed on retry. Inspection of downloaded actual, expected and diff images established that the transparent gallery card inherited the new stadium background. The gallery now uses the original `--canvas` as its fixture backdrop. No snapshot, pixel tolerance, primitive styles or product accessibility assertion changed.
+
+Parent reruns passed 66 focused browser cases with two project skips, the full 671-case browser suite with 55 conditional skips and zero failures, 864 units in 93 files, lint, typecheck, production build and all theme/image/bundle/mirror checks. All 163 protected hashes still match. Logs use `settings-visible-` under `output/silph-stadium/logs`. The prior `3bf9681` reviewer receipt is superseded; a fresh exact-head receipt and Linux CI are required.
+
 ## Not run
 
-Independent reviewer receipt, remote CI for this branch, production deployment, live-site tests, push, PR and merge remain pending. Cursor-only tools and architect exploration were skipped because they are not installed and the dispatch fixed the design. Literal pixel parity and physical-device testing are not claimed.
+Production deployment, live-site tests and merge remain pending. PR #42 is open; its first exact-head GLM approval covered the previous source and does not approve the new settings-order correction. Cursor-only tools and architect exploration were skipped because they are not installed and the dispatch fixed the design. Literal pixel parity, physical-device tests and authenticated Vercel preview UI tests are not claimed.
