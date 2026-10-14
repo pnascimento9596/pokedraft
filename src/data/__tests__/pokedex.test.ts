@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { POKEDEX, speciesByName } from "../pokedex";
+import { POKEDEX, pokedexById, speciesByName } from "../pokedex";
 
 describe("pokedex.json", () => {
   it("holds exactly species 1..1025 in order, so a dropped or duplicated species fails", () => {
@@ -42,6 +42,12 @@ describe("pokedex.json", () => {
     expect(["Charmander", "Charmeleon", "Charizard"].map((n) => speciesByName(n).evoStage)).toEqual(
       [1, 2, 3],
     );
+  });
+
+  it("finds species by dex id using pokedexById", () => {
+    expect(pokedexById(25)?.name).toBe("Pikachu");
+    expect(pokedexById(6)?.name).toBe("Charizard");
+    expect(pokedexById(9999)).toBeUndefined();
   });
 
   it("is written in canonical one-species-per-line form, so the build is byte-stable", () => {

@@ -1,0 +1,678 @@
+/* Silph Stadium Match Highlights & Interactive Star MVP Stage */
+
+.highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: radial-gradient(circle at 50% 0%, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl, 18px);
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.headlineGroup {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-light, rgb(56, 189, 248));
+}
+
+.matchTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-heading, var(--stadium-ink));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scorePill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 9999px;
+  letter-spacing: 0.04em;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.scorePill[data-outcome="W"] {
+  color: rgb(74, 222, 128);
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.scorePill[data-outcome="D"] {
+  color: rgb(250, 204, 21);
+  border-color: rgba(250, 204, 21, 0.4);
+  background: rgba(234, 179, 8, 0.12);
+}
+
+.scorePill[data-outcome="L"] {
+  color: rgb(248, 113, 113);
+  border-color: rgba(248, 113, 113, 0.4);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* Match navigation strip */
+.navStrip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 2px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.navArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--stadium-muted);
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.navArrow:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgb(255, 255, 255);
+}
+
+.navArrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.chipList {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.matchChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  min-height: 44px;
+  min-width: 44px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgb(148, 163, 184);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.matchChip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgb(241, 245, 249);
+}
+
+.matchChip[data-active="true"] {
+  background: color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 22%, rgba(15, 23, 42, 0.9));
+  border-color: var(--star-color, rgb(56, 189, 248));
+  color: rgb(255, 255, 255);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 35%, transparent);
+}
+
+.outcomeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.outcomeDot[data-outcome="W"] {
+  background: rgb(74, 222, 128);
+  box-shadow: 0 0 4px rgb(74, 222, 128);
+}
+
+.outcomeDot[data-outcome="D"] {
+  background: rgb(250, 204, 21);
+}
+
+.outcomeDot[data-outcome="L"] {
+  background: rgb(248, 113, 113);
+}
+
+/* Stage Arena */
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  align-items: center;
+  gap: 16px;
+  background: radial-gradient(ellipse at 35% 75%, rgba(16, 185, 129, 0.18) 0%, rgba(6, 78, 59, 0.28) 50%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 40%, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-lg, 14px);
+  padding: 16px 20px;
+  min-height: 200px;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6), 0 0 20px color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 15%, transparent);
+  overflow: hidden;
+}
+
+/* Stadium Floodlight Visual Effects */
+.stage::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 20%;
+  width: 140px;
+  height: 240px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  transform: rotate(-15deg);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.stage::after {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 45%;
+  width: 140px;
+  height: 240px;
+  background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 30%, transparent) 0%, transparent 70%);
+  transform: rotate(15deg);
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Pitch Turf Markings */
+.turfMarking {
+  position: absolute;
+  bottom: 12px;
+  left: 24px;
+  width: 160px;
+  height: 48px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: rotateX(60deg);
+}
+
+/* Player Arena & Motion */
+.playerArea {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 170px;
+  user-select: none;
+}
+
+.elementalAura {
+  position: absolute;
+  top: 15px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 35%, transparent) 0%, color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 10%, transparent) 60%, transparent 80%);
+  filter: blur(8px);
+  animation: auraPulse 2.4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.spriteWrap {
+  position: relative;
+  z-index: 2;
+  transform-origin: bottom center;
+  animation: spriteIdle 1.2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+  transition: transform 0.2s ease;
+}
+
+.spriteWrap[data-striking="true"] {
+  animation: spriteKick 0.5s ease-out forwards;
+}
+
+/* Animated Soccer Ball & Dribble */
+.ballStage {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  width: 80px;
+  height: 40px;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.ballShadow {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  width: 22px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  animation: shadowPulse 1.2s ease-in-out infinite;
+}
+
+.ballShadow[data-striking="true"] {
+  animation: shadowStrike 0.6s ease-out forwards;
+}
+
+.ball {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform-origin: center center;
+  animation: dribbleCrossover 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.ball[data-striking="true"] {
+  animation: ballStrikeShot 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+
+/* Info & Accolade Section */
+.infoArea {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 4;
+}
+
+.starBadgeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rolePill {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--stadium-ink);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  letter-spacing: 0.05em;
+}
+
+.starName {
+  font-size: 20px;
+  font-weight: 800;
+  color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.headlineText {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--star-color, rgb(56, 189, 248));
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.statSummary {
+  font-size: 12px;
+  color: rgb(148, 163, 184);
+  font-weight: 500;
+}
+
+/* Ability Pill */
+.abilityBox {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 28%, rgba(255, 255, 255, 0.08));
+  border-left: 3px solid var(--star-color, rgb(56, 189, 248));
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-top: 2px;
+}
+
+.abilityHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(226, 232, 240);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.abilityTag {
+  color: var(--star-color, rgb(56, 189, 248));
+}
+
+.abilityFlavor {
+  font-size: 12px;
+  color: var(--stadium-muted);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* Actions */
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.strikeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--stadium-card, rgb(15, 23, 42));
+  background: linear-gradient(135deg, rgb(250, 204, 21) 0%, rgb(245, 158, 11) 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+  transition: all 0.15s ease;
+}
+
+.strikeButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45);
+  filter: brightness(1.08);
+}
+
+.strikeButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.strikeButton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.motionToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  min-height: 44px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgb(148, 163, 184);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.motionToggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgb(241, 245, 249);
+}
+
+/* Goal Celebration Overlay */
+.goalOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 10;
+  animation: goalBannerEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: auto;
+}
+
+.goalTitle {
+  font-size: 32px;
+  font-weight: 900;
+  color: rgb(250, 204, 21);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 20px rgba(250, 204, 21, 0.7);
+  animation: goalPop 0.4s ease-out;
+}
+
+.goalSubtitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgb(255, 255, 255);
+  margin-top: 4px;
+}
+
+.goalResetBtn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  min-height: 44px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--stadium-muted);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.goalResetBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgb(255, 255, 255);
+}
+
+/* Keyframe Animations */
+@keyframes auraPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0.95;
+  }
+}
+
+@keyframes spriteIdle {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes spriteKick {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-8px) rotate(-12deg);
+  }
+  60% {
+    transform: translateY(2px) rotate(16deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+/* Authentic crossover dribble: figure-8 bounce between left and right feet */
+@keyframes dribbleCrossover {
+  0% {
+    transform: translate(-14px, 0px) rotate(-35deg) scale(1, 0.92);
+  }
+  25% {
+    transform: translate(-7px, -18px) rotate(45deg) scale(1, 1);
+  }
+  50% {
+    transform: translate(14px, 0px) rotate(125deg) scale(1, 0.92);
+  }
+  75% {
+    transform: translate(7px, -18px) rotate(205deg) scale(1, 1);
+  }
+  100% {
+    transform: translate(-14px, 0px) rotate(325deg) scale(1, 0.92);
+  }
+}
+
+@keyframes shadowPulse {
+  0% {
+    transform: translateX(-50%) translate(-14px, 0) scale(1.1, 1);
+    opacity: 0.7;
+  }
+  25% {
+    transform: translateX(-50%) translate(-7px, 0) scale(0.6, 0.6);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(-50%) translate(14px, 0) scale(1.1, 1);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translateX(-50%) translate(7px, 0) scale(0.6, 0.6);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(-50%) translate(-14px, 0) scale(1.1, 1);
+    opacity: 0.7;
+  }
+}
+
+@keyframes ballStrikeShot {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(-8px, -4px) scale(0.9);
+  }
+  100% {
+    transform: translate(180px, -60px) scale(0.4) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes shadowStrike {
+  0% {
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100px) scale(0.2);
+  }
+}
+
+@keyframes goalBannerEnter {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes goalPop {
+  0% {
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .elementalAura,
+  .spriteWrap,
+  .ball,
+  .ballShadow {
+    animation: none !important;
+  }
+
+  .ball {
+    transform: translate(0, 0) !important;
+  }
+
+  .ballShadow {
+    transform: translateX(-50%) scale(1) !important;
+  }
+}
+
+/* Mobile responsive layout */
+@media (max-width: 640px) {
+  .highlights {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .stage {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 14px;
+    min-height: auto;
+  }
+
+  .playerArea {
+    height: 140px;
+  }
+
+  .turfMarking {
+    left: 50%;
+    transform: translateX(-50%) rotateX(60deg);
+  }
+
+  .starName {
+    font-size: 18px;
+  }
+
+  .infoArea {
+    gap: 6px;
+  }
+
+  .abilityBox {
+    padding: 5px 8px;
+  }
+}

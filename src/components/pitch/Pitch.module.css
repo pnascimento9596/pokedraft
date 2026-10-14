@@ -172,8 +172,8 @@
   padding: 1px 3px;
   border-radius: 3px;
   letter-spacing: 0.02em;
-  font-size: 10px;
-  line-height: 11px;
+  font-size: 11px;
+  line-height: 12px;
 }
 .tokenSlot {
   position: absolute;
@@ -196,14 +196,13 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 38px;
-  flex: 1;
-  min-height: 26px;
+  height: 30px;
+  flex: none;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
 }
 .tokenImage > :global([data-player-image]) {
-  width: 38px !important;
-  height: 38px !important;
+  width: 30px !important;
+  height: 30px !important;
 }
 .tokenImage img {
   max-width: 100%;
@@ -232,9 +231,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 12px;
-  line-height: 14px;
+  line-height: 13px;
   font-weight: 700;
   text-align: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+  min-height: 13px;
 }
 .cardTypes {
   display: flex;
@@ -248,7 +250,7 @@
   flex-shrink: 0;
 }
 .emptyPrompt {
-  font-size: 10px;
+  font-size: 11px;
   line-height: 12px;
   font-weight: 700;
   color: var(--stadium-line);
@@ -294,7 +296,6 @@
   width: calc((100% - 16px) / 5);
   max-width: 80px;
   min-width: 44px;
-  height: 88px;
 }
 .bench .tokenSlot {
   position: static;
@@ -332,27 +333,28 @@
   .token {
     width: 62px;
     height: 90px;
-    gap: 2px;
+    gap: 1px;
     padding: 2px;
   }
   .wrap[data-fit] .token {
     height: 90px;
   }
   .tokenImage {
-    height: 38px;
-    min-height: 26px;
+    height: 30px;
+    flex: none;
   }
   .tokenImage > :global([data-player-image]) {
-    width: 38px !important;
-    height: 38px !important;
+    width: 30px !important;
+    height: 30px !important;
   }
   .cardTypes {
-    min-height: 16px;
+    min-height: 15px;
     gap: 2px;
   }
   .tokenName {
     font-size: 12px;
-    line-height: 14px;
+    line-height: 13px;
+    margin-top: 3px;
   }
   .cardHeader {
     font-size: 11px;
@@ -360,7 +362,7 @@
     min-height: 12px;
   }
   .emptyPrompt {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 12px;
   }
   .emptyPrompt[data-suitability="recommended"] {
@@ -379,7 +381,7 @@
     padding: 10px 6px 12px 6px;
   }
   .bench .token {
-    height: 88px;
+    height: 90px;
   }
 }
 @media (hover: hover) {

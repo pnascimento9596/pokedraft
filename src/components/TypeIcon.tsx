@@ -18,7 +18,7 @@ export function TypeIcon({
   style,
   decorative = false,
 }: TypeIconProps) {
-  const color = TYPE_PALETTE[type] ?? "#A8A77A";
+  const color = TYPE_PALETTE[type] ?? TYPE_PALETTE.normal;
   const label = typeLabel(type);
 
   return (

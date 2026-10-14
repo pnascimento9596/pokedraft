@@ -79,9 +79,14 @@ export type Species = z.infer<typeof SpeciesSchema>;
 export const POKEDEX: readonly Species[] = z.array(SpeciesSchema).parse(raw);
 
 const byName = new Map(POKEDEX.map((s) => [s.name, s]));
+const byId = new Map(POKEDEX.map((s) => [s.id, s]));
 
 export function speciesByName(name: string): Species {
   const s = byName.get(name);
   if (!s) throw new Error(`unknown species ${name}`);
   return s;
+}
+
+export function pokedexById(id: number): Species | undefined {
+  return byId.get(id);
 }
