@@ -41,7 +41,17 @@ export function PitchCard({
             +
           </span>
         ) : (
-          <PlayerImage dexId={species.id} size={48} alt={species.name} />
+          <>
+            <PlayerImage dexId={species.id} size={48} alt={species.name} />
+            <span id={`${id}-types`} className={s.cardTypes}>
+              {species.types.map((type) => (
+                <Fragment key={type}>
+                  <TypeIcon type={type} size={15} decorative />
+                  <span className="visually-hidden">{typeLabel(type)}</span>{" "}
+                </Fragment>
+              ))}
+            </span>
+          </>
         )}
       </span>{" "}
       {species === null ? (
@@ -59,19 +69,9 @@ export function PitchCard({
                 : "Tap to Draft!"}
         </span>
       ) : (
-        <>
-          <span id={`${id}-name`} className={s.tokenName}>
-            {species.name}
-          </span>{" "}
-          <span id={`${id}-types`} className={s.cardTypes}>
-            {species.types.map((type) => (
-              <Fragment key={type}>
-                <TypeIcon type={type} size={15} decorative />
-                <span className="visually-hidden">{typeLabel(type)}</span>{" "}
-              </Fragment>
-            ))}
-          </span>
-        </>
+        <span id={`${id}-name`} className={s.tokenName}>
+          {species.name}
+        </span>
       )}
     </>
   );

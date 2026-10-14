@@ -45,4 +45,20 @@ The WebKit two-tab failure appeared in both sweeps. Trace snapshots show `aria-b
 
 After the empty-decoration repair, the focused landscape, hitbox, drawer-contrast, and two-tab matrix passed 30 cases with 46 existing conditional skips.
 
-Final local lint, typecheck, production build, and client-bundle guard passed. The unit suite passed 881 tests in 97 files. The complete production-build browser suite passed 697 cases with 55 existing conditional skips, zero failures, and zero retries, for 752 cases total. Mirror, image-seam, image-pack, theme contrast, theme-color, and color-blindness guards also passed. Independent exact-head review, GitHub CI, merge, and production verification remain pending at this checkpoint. Physical-device testing and Lighthouse performance measurement are outside this repair.
+At `b886aed`, local lint, typecheck, production build, and client-bundle guard passed. The unit suite passed 881 tests in 97 files. The complete production-build browser suite passed 697 cases with 55 existing conditional skips, zero failures, and zero retries, for 752 cases total. Mirror, image-seam, image-pack, theme contrast, theme-color, and color-blindness guards also passed.
+
+## Independent review correction
+
+GLM 5.3 Flash rejected `b886aed` because the inherited filled-card heights could not contain their role, artwork, name, and types. The existing hitbox and pair-overlap guards did not prove internal containment. Twelve real-browser cases across Chromium and WebKit, builder and completed draft, at 390px, 700px, and 1024px all failed before correction. The regression was committed RED as `82fe1ef`.
+
+Base and unfitted phone cards now retain their original content-sufficient heights, 94px and 90px. Restoring 90px globally to fitted cards made four existing empty-target guards fail and caused two filled-card overlap cases. The fitted height is therefore 88px for filled cards only; empty cards retain their compact dimensions. A direct rated-draft browser matrix at 390px found no content overflow or overlapping filled targets at 88px across all eight formations. The strengthened two-engine filled-target guard was committed RED as `a7a1790`, with two failures and ten passes on the 90px candidate. Narrower widths and repaired field spacing remain, with no artwork reduction. Fresh full browser validation, exact-head independent review, CI, merge, and production verification are required.
+
+## Original screenshot request audit
+
+Paulo supplied the original PR46 request and its three screenshots during this repair. Home-only disclaimer scoping and icon-only pitch types were implemented; the new browser acceptance guards verify the disclaimer on home and its absence from lobby, draft, and shared results, plus unclipped phone round labels. Those two cases passed before any further changes.
+
+The larger-card request also requires identifiable names, not ambiguous ellipses. Both Chromium and WebKit clipped the real `Crabominable` card on a 390px phone. The acceptance guard was committed RED as `309bc77`. Type icons now sit in a narrow column beside the unchanged 30px artwork, freeing a two-line, 12px name area. Corner role/rating badges and primary-type outlines retain their contracts. No visible type words are added. Base, phone, and fitted filled-card heights remain 94px, 90px, and 88px, larger than the pre-PR46 fitted 68px layout.
+
+A 48-scene browser prototype restoring the wider 62px/68px tokens still found overlap in eleven builder/draft/formation cases. The narrower repaired widths therefore remain rather than widening cards back into neighbors. Focused source verification after the content reflow passed 119 browser cases with four existing conditional skips, including full-name, footer, chart-label, internal-containment, filled-target, all-formation, and draft-flow coverage. Final whole-suite verification and independent review remain required for this new source state.
+
+Physical-device testing and Lighthouse performance measurement are outside this repair.
