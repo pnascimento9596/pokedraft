@@ -104,13 +104,7 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
     } else if (topStats.goals === 2) {
       headline = `⚽ Match Brace (${topStats.goals} Goals)`;
     } else if (topStats.goals === 1) {
-      if (match.outcome === "W" && score.user - score.opp === 1) {
-        headline = `⚽ Match Winner (${topStats.latestMinute}')`;
-      } else if (match.outcome === "D") {
-        headline = `⚡ Clutch Equalizer (${topStats.latestMinute}')`;
-      } else {
-        headline = `⚽ Decisive Goal (${topStats.latestMinute}')`;
-      }
+      headline = `⚽ Goal Scorer (${topStats.latestMinute}')`;
     } else {
       headline = `🎯 Key Playmaker (${topStats.assists} Assist${topStats.assists > 1 ? "s" : ""})`;
     }

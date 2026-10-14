@@ -1,9 +1,10 @@
 export interface SoccerBallProps {
   readonly size?: number;
   readonly className?: string;
+  readonly striking?: boolean;
 }
 
-export function SoccerBall({ size = 28, className }: SoccerBallProps) {
+export function SoccerBall({ size = 28, className, striking = false }: SoccerBallProps) {
   return (
     <svg
       width={size}
@@ -12,6 +13,7 @@ export function SoccerBall({ size = 28, className }: SoccerBallProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      data-striking={striking}
       role="img"
       aria-label="Soccer ball"
       data-testid="soccer-ball"
