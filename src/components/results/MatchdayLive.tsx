@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { speciesById, type CupResult, type DraftState } from "@/engine";
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
-import { playGoalHorn } from "@/components/wheel/sound";
-import { absenceLine, goalLine, type PlayedMatch } from "./format";
+import { playGoalHorn, unlockAudio } from "@/components/wheel/sound";
+import { absenceLine, finalScore, goalLine, shootoutLine, type PlayedMatch } from "./format";
 import s from "./MatchdayLive.module.css";
 
 export function MatchdayLive({
@@ -21,47 +21,62 @@ export function MatchdayLive({
   const maxMinute = match?.extraTime ? 120 : 90;
   const [minute, setMinute] = useState(maxMinute);
   const [running, setRunning] = useState(false);
+  const [kickCount, setKickCount] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!running || !match) return;
-    const timer = setInterval(() => {
-      setMinute((prev) => {
-        const next = Math.min(maxMinute, prev + 3);
-        const justScored = match.goals.some(
-          (g) => g.side === "user" && g.minute > prev && g.minute <= next,
-        );
-        if (justScored) playGoalHorn();
-        if (next >= maxMinute) setRunning(false);
-        return next;
-      });
+    if (!running || !match || minute >= maxMinute) return;
+    const timer = setTimeout(() => {
+      const next = Math.min(maxMinute, minute + 3);
+      for (const goal of match.goals) {
+        if (goal.side === "user" && goal.minute > minute && goal.minute <= next) playGoalHorn();
+      }
+      setMinute(next);
+      if (next >= maxMinute) setRunning(false);
     }, 80);
-    return () => clearInterval(timer);
-  }, [running, match, maxMinute]);
+    return () => clearTimeout(timer);
+  }, [running, match, maxMinute, minute]);
 
   if (!match) return null;
 
   const visibleGoals = match.goals.filter((g) => g.minute <= minute);
-  const userGoals = visibleGoals.filter((g) => g.side === "user").length;
-  const oppGoals = visibleGoals.filter((g) => g.side === "opp").length;
+  const recordedScore = finalScore(match);
+  const hasGoalTimeline =
+    match.goals.filter((g) => g.side === "user").length === recordedScore.user &&
+    match.goals.filter((g) => g.side === "opp").length === recordedScore.opp;
+  const atFullTime = minute >= maxMinute;
+  const userGoals = atFullTime
+    ? recordedScore.user
+    : visibleGoals.filter((g) => g.side === "user").length;
+  const oppGoals = atFullTime
+    ? recordedScore.opp
+    : visibleGoals.filter((g) => g.side === "opp").length;
+  const shootout = match.shootout;
+  const visibleKicks = shootout?.kicks.slice(0, kickCount ?? shootout.kicks.length) ?? [];
+  const shootoutComplete = visibleKicks.length === shootout?.kicks.length;
 
   const selectRound = (idx: number) => {
     const target = played[idx];
     setRunning(false);
     setRoundIdx(idx);
     setMinute(target?.extraTime ? 120 : 90);
+    setKickCount(null);
   };
 
-  const startLiveReplay = () => {
-    setMinute(0);
+  const toggleReplay = () => {
+    if (running) {
+      setRunning(false);
+      return;
+    }
+    unlockAudio();
+    if (atFullTime) {
+      setMinute(0);
+      setKickCount(null);
+    }
     setRunning(true);
   };
 
   return (
-    <section
-      className={s.studio}
-      data-testid="matchday-live"
-      aria-label="Matchday Live Broadcast"
-    >
+    <section className={s.studio} data-testid="matchday-live" aria-label="Matchday Live Broadcast">
       <header className={s.header}>
         <div className={s.titleGroup}>
           <span className="kicker">Silph Cup Broadcast</span>
@@ -95,9 +110,7 @@ export function MatchdayLive({
           <span className={`num ${s.teamRating}`}>Rating {match.rating}</span>
         </div>
         <div className={s.centerScore}>
-          <span className={`num ${s.clockPill}`}>
-            {minute >= maxMinute ? "FT" : `${minute}'`}
-          </span>
+          <span className={`num ${s.clockPill}`}>{atFullTime ? "FT" : `${minute}'`}</span>
           <span className={`num ${s.scoreDigits}`} data-testid="broadcast-score">
             {userGoals} - {oppGoals}
           </span>
@@ -120,9 +133,10 @@ export function MatchdayLive({
           type="button"
           className="btn btn--primary btn--sm"
           data-testid="broadcast-replay-btn"
-          onClick={startLiveReplay}
+          onClick={toggleReplay}
+          disabled={!hasGoalTimeline}
         >
-          {running ? "Simulating..." : "▶ Replay Minute-by-Minute"}
+          {running ? "Pause Replay" : atFullTime ? "Replay Minute-by-Minute" : "Resume Replay"}
         </button>
         {minute < maxMinute ? (
           <button
@@ -154,10 +168,14 @@ export function MatchdayLive({
             <span>{absenceLine(a)}</span>
           </div>
         ))}
-        {visibleGoals.length === 0 ? (
+        {!hasGoalTimeline ? (
+          <div className={s.eventRow}>
+            <span>Goal timeline unavailable for this recorded match.</span>
+          </div>
+        ) : visibleGoals.length === 0 ? (
           <div className={s.eventRow}>
             <span>
-              {minute < maxMinute ? "Match underway on the pitch..." : "No goals in open play."}
+              {minute < maxMinute ? "Match underway on the pitch..." : "No goals before full time."}
             </span>
           </div>
         ) : (
@@ -170,22 +188,60 @@ export function MatchdayLive({
         )}
       </div>
 
-      {minute >= maxMinute && match.shootout !== null ? (
+      {atFullTime && shootout !== null ? (
         <div className={s.shootoutBox} data-testid="broadcast-shootout">
           <span className="kicker">
-            Penalty Shootout ({match.shootout.user}-{match.shootout.opp}, Keeper:{" "}
-            {speciesById(match.shootout.keeper).name})
+            Penalty Shootout (Keeper: {speciesById(shootout.keeper).name})
           </span>
-          <div className={s.kickGrid}>
-            {match.shootout.kicks.slice(0, 14).map((k, idx) => (
-              <div key={idx} className={s.kickItem}>
-                <span>
-                  {k.side === "user" ? speciesById(k.taker).name : `Opp No. ${k.taker}`}
-                </span>
-                <span>{k.scored ? "⚽ Scored" : "🧤 Saved"}</span>
-              </div>
-            ))}
+          <p aria-live="polite">
+            Your XI{" "}
+            {shootoutComplete
+              ? shootout.user
+              : visibleKicks.filter((k) => k.side === "user" && k.scored).length}
+            {" - "}
+            {shootoutComplete
+              ? shootout.opp
+              : visibleKicks.filter((k) => k.side === "opp" && k.scored).length}{" "}
+            {match.opponent.name}
+          </p>
+          {shootoutComplete ? (
+            <p role="status">
+              Your XI {match.outcome === "W" ? "won" : "lost"}. {shootoutLine(match)}
+            </p>
+          ) : null}
+          <div className={s.controls}>
+            <button type="button" className="btn btn--sm" onClick={() => setKickCount(0)}>
+              Replay Shootout
+            </button>
+            {!shootoutComplete ? (
+              <>
+                <button
+                  type="button"
+                  className="btn btn--sm"
+                  onClick={() => setKickCount(visibleKicks.length + 1)}
+                >
+                  Next Kick
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--ghost btn--sm"
+                  onClick={() => setKickCount(null)}
+                >
+                  Show All Kicks
+                </button>
+              </>
+            ) : null}
           </div>
+          <ol className={s.kickGrid} aria-label="Shootout kicks" tabIndex={0}>
+            {visibleKicks.map((k, idx) => (
+              <li key={idx} className={s.kickItem}>
+                <span>
+                  {idx + 1}. {k.side === "user" ? speciesById(k.taker).name : `Opp No. ${k.taker}`}
+                </span>
+                <span>{k.scored ? "Scored" : "Not scored"}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       ) : null}
     </section>
