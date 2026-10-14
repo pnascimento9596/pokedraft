@@ -227,11 +227,21 @@ describe("ResultsView", () => {
 
   it("offers Challenge this Seed, Open in Builder, and Play Exhibition vs Squad on shared runs", () => {
     const { draft: challenger } = replay(FLAWLESS);
-    localStorage.setItem("pokedraft.builder", JSON.stringify(builderToken(
-      { mode: "builder", formation: challenger.lineup.formation, gens: [1,2,3,4,5,6,7,8,9], legendaries: true },
-      challenger.lineup,
-      BUILDER_URL_SEED,
-    )));
+    localStorage.setItem(
+      "pokedraft.builder",
+      JSON.stringify(
+        builderToken(
+          {
+            mode: "builder",
+            formation: challenger.lineup.formation,
+            gens: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            legendaries: true,
+          },
+          challenger.lineup,
+          BUILDER_URL_SEED,
+        ),
+      ),
+    );
     view(ELIMINATED, "shared");
     const challengeLink = screen.getByTestId("challenge-seed");
     expect(challengeLink.getAttribute("href")).toBe(
@@ -239,7 +249,9 @@ describe("ResultsView", () => {
     );
     const builderLink = screen.getByTestId("open-in-builder");
     expect(builderLink.getAttribute("href")).toMatch(/^\/\?b=pd\d+\./);
-    const copied = draftFromBuilderToken(new URL(builderLink.getAttribute("href")!, "https://example.test").searchParams.get("b")!);
+    const copied = draftFromBuilderToken(
+      new URL(builderLink.getAttribute("href")!, "https://example.test").searchParams.get("b")!,
+    );
     expect(copied?.lineup).toEqual(replay(ELIMINATED).draft.lineup);
 
     fireEvent.click(screen.getByTestId("play-exhibition"));
@@ -249,12 +261,17 @@ describe("ResultsView", () => {
     expect(loadHistory()).toEqual([]);
   });
 
-  it.each([null, "bad-token", JSON.stringify("bad-token")])("does not invent an exhibition challenger when the saved squad is missing or invalid (%s)", (saved) => {
-    if (saved !== null) localStorage.setItem("pokedraft.builder", saved);
-    view(ELIMINATED, "shared");
-    fireEvent.click(screen.getByTestId("play-exhibition"));
-    expect(screen.getByTestId("exhibition-modal").textContent).toContain("Save a complete squad in the Builder");
-    expect(screen.queryByTestId("exhibition-score")).toBeNull();
-    expect(loadHistory()).toEqual([]);
-  });
+  it.each([null, "bad-token", JSON.stringify("bad-token")])(
+    "does not invent an exhibition challenger when the saved squad is missing or invalid (%s)",
+    (saved) => {
+      if (saved !== null) localStorage.setItem("pokedraft.builder", saved);
+      view(ELIMINATED, "shared");
+      fireEvent.click(screen.getByTestId("play-exhibition"));
+      expect(screen.getByTestId("exhibition-modal").textContent).toContain(
+        "Save a complete squad in the Builder",
+      );
+      expect(screen.queryByTestId("exhibition-score")).toBeNull();
+      expect(loadHistory()).toEqual([]);
+    },
+  );
 });

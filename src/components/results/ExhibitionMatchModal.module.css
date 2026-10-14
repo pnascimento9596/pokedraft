@@ -1,0 +1,77 @@
+.dialog {
+  width: min(680px, calc(100% - 24px));
+  max-height: 88dvh;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-raised);
+}
+.dialog::backdrop {
+  background: var(--overlay);
+}
+.content {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  min-width: 0;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.header h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  margin: 4px 0 0;
+}
+.note {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+.scoreboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: 16px 12px;
+  text-align: center;
+  font-weight: 600;
+}
+.scoreboard small {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.score {
+  font-size: clamp(22px, 6vw, 36px);
+  white-space: nowrap;
+}
+.goals {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.goals li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 12px;
+  border-left: 3px solid var(--viz-1);
+  background: var(--surface-sunken);
+  border-radius: var(--radius-xs);
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.goals li[data-side="opp"] {
+  border-color: var(--viz-2);
+}

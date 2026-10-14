@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import type { Contribution, CupResult, CupRound, DraftState, PlayerLine, SpeciesId } from "@/engine";
+import type {
+  Contribution,
+  CupResult,
+  CupRound,
+  DraftState,
+  PlayerLine,
+  SpeciesId,
+} from "@/engine";
 import { speciesById } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { Pitch } from "@/components/pitch/Pitch";
@@ -111,7 +118,7 @@ export function ResultsView({
         ) : null}
       </ModuleCard>
 
-      <ShareActions token={token} variant={variant} onNewRun={onNewRun} />
+      <ShareActions token={token} draft={draft} variant={variant} onNewRun={onNewRun} />
       {variant === "live" ? submit : null}
 
       <div className={s.actions}>
@@ -231,7 +238,11 @@ export function ResultsView({
         title="How the eleven fit"
         description="Your lineup, Synergy links and ratings for each role."
       >
-        <div className={s.breakdownBar} data-testid="score-breakdown" aria-label="Squad rating breakdown">
+        <div
+          className={s.breakdownBar}
+          data-testid="score-breakdown"
+          aria-label="Squad rating breakdown"
+        >
           <div className={s.breakdownItem}>
             <span className="kicker">GK</span>
             <span className="num">{Math.round(cup.rating.lines.GK)}</span>
