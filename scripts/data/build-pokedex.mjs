@@ -7,6 +7,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { tsImport } from "tsx/esm/api";
 
 const POKEAPI_COMMIT = "c80757193bd0889054e36f4209762360bdaa4b95";
 const BASE_URL = `https://raw.githubusercontent.com/PokeAPI/pokeapi/${POKEAPI_COMMIT}/data/v2/csv`;
@@ -238,6 +239,8 @@ async function main() {
     Object.entries(traitsDoc.moves).map(([k, v]) => [k, v.trait]),
   );
   const entries = buildPokedex(csv, moveTraits);
+  const { validatePokedex } = await tsImport("./validate-artifacts.ts", import.meta.url);
+  validatePokedex(entries);
   mkdirSync(path.dirname(outPath), { recursive: true });
   writeFileSync(outPath, serialize(entries));
   writeFileSync(sourcesPath, JSON.stringify(sources, null, 2) + "\n");

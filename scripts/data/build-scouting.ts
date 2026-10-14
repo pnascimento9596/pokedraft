@@ -7,7 +7,9 @@ import { ABILITY_TRAITS } from "@/scouting/ability-traits";
 import { buildScouting, serializeScouting } from "@/scouting/build";
 import { checkReviewFile } from "@/scouting/review";
 import { REVIEW_FILES, REVIEWS } from "@/scouting/reviews";
+import { validatePokedex, validateScouting } from "./validate-artifacts";
 
+validatePokedex(POKEDEX);
 const problems = REVIEW_FILES.flatMap((f) => checkReviewFile(f, POKEDEX));
 if (problems.length > 0) {
   console.error(problems.join("\n"));
@@ -15,5 +17,6 @@ if (problems.length > 0) {
 }
 const out = path.resolve(import.meta.dirname, "../../src/data/scouting.json");
 const entries = buildScouting(POKEDEX, ABILITY_TRAITS, REVIEWS);
+validateScouting(entries);
 writeFileSync(out, serializeScouting(entries));
 console.log(`wrote ${entries.length} species to src/data/scouting.json`);
