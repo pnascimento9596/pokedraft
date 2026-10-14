@@ -14,9 +14,15 @@ export interface MatchHighlightsProps {
   readonly cup: CupResult;
   readonly draft: DraftState;
   readonly selectedRound?: CupRound | "mvp" | null;
+  readonly onSelectRound?: (round: CupRound | "mvp") => void;
 }
 
-export function MatchHighlights({ cup, draft, selectedRound = null }: MatchHighlightsProps) {
+export function MatchHighlights({
+  cup,
+  draft,
+  selectedRound = null,
+  onSelectRound,
+}: MatchHighlightsProps) {
   const stars = useMemo(() => getAllMatchStars(cup, draft), [cup, draft]);
   const [activeIdx, setActiveIdx] = useState(0);
   const [striking, setStriking] = useState(false);
@@ -47,7 +53,7 @@ export function MatchHighlights({ cup, draft, selectedRound = null }: MatchHighl
     resetTimer.current = undefined;
   };
 
-  useEffect(() => cancelStrikeTimers, []);
+  useEffect(() => cancelStrikeTimers, [selectedRound]);
 
   if (stars.length === 0) return null;
 
@@ -61,6 +67,7 @@ export function MatchHighlights({ cup, draft, selectedRound = null }: MatchHighl
     setShowGoal(false);
     const target = stars[idx];
     if (target) {
+      onSelectRound?.(target.round);
       setAnnouncement(`Showing ${target.roundLabel}: Star player ${target.name}`);
     }
   };
@@ -76,7 +83,7 @@ export function MatchHighlights({ cup, draft, selectedRound = null }: MatchHighl
   const handleStrike = () => {
     if (striking) return;
     unlockAudio();
-    playGoalHorn();
+    if (currentStar.action === "attack") playGoalHorn();
     setStriking(true);
     setAnnouncement(
       `${currentStar.name} unleashed ${currentStar.kickMove} using ${currentStar.ability}!`,
@@ -84,7 +91,11 @@ export function MatchHighlights({ cup, draft, selectedRound = null }: MatchHighl
 
     goalTimer.current = setTimeout(() => {
       setShowGoal(true);
-      setAnnouncement(`GOAL! ${currentStar.name} scores with ${currentStar.kickMove}!`);
+      setAnnouncement(
+        currentStar.action === "defend"
+          ? `Defensive illustration: ${currentStar.name} blocks with ${currentStar.kickMove}.`
+          : `Goal illustration: ${currentStar.name} strikes with ${currentStar.kickMove}.`,
+      );
     }, 550);
 
     resetTimer.current = setTimeout(() => {
@@ -230,7 +241,8 @@ export function MatchHighlights({ cup, draft, selectedRound = null }: MatchHighl
               disabled={striking}
               data-testid="strike-btn"
             >
-              ⚽ Unleash {currentStar.kickMove}!
+              {currentStar.action === "defend" ? "Defensive drill: " : "⚽ Unleash "}
+              {currentStar.kickMove}!
             </button>
           </div>
         </div>
@@ -241,11 +253,16 @@ export function MatchHighlights({ cup, draft, selectedRound = null }: MatchHighl
             className={s.goalOverlay}
             data-testid="goal-overlay"
             role="status"
-            aria-label="Goal celebration"
+            aria-label={
+              currentStar.action === "defend" ? "Defensive illustration" : "Goal celebration"
+            }
           >
-            <div className={s.goalTitle}>⚽ GOAL!</div>
+            <div className={s.goalTitle}>
+              {currentStar.action === "defend" ? "BLOCK!" : "⚽ GOAL!"}
+            </div>
             <div className={s.goalSubtitle}>
-              {currentStar.name} strikes with {currentStar.kickMove}!
+              {currentStar.name} {currentStar.action === "defend" ? "blocks" : "strikes"} with{" "}
+              {currentStar.kickMove}!
             </div>
             <button type="button" className={s.goalResetBtn} onClick={handleReset}>
               Continue Dribbling
@@ -253,6 +270,9 @@ export function MatchHighlights({ cup, draft, selectedRound = null }: MatchHighl
           </div>
         ) : null}
       </div>
+      <p className="kicker">
+        Illustrated highlights. Actions do not change the recorded match result.
+      </p>
     </section>
   );
 }

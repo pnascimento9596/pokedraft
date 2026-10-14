@@ -32,9 +32,21 @@ describe("MatchHighlights", () => {
   it("shows a defensive illustration, not a fictional goal, for a scoreless match", () => {
     vi.useFakeTimers();
     const { draft, cup } = replay(FLAWLESS);
-    const defensive = { ...cup, matches: cup.matches.map((m) => m.status === "played" ? {
-      ...m, regulation: { user: 0, opp: 0 }, extraTime: null, shootout: null, goals: [], outcome: "D" as const,
-    } : m) };
+    const defensive = {
+      ...cup,
+      matches: cup.matches.map((m) =>
+        m.status === "played"
+          ? {
+              ...m,
+              regulation: { user: 0, opp: 0 },
+              extraTime: null,
+              shootout: null,
+              goals: [],
+              outcome: "D" as const,
+            }
+          : m,
+      ),
+    };
     render(<MatchHighlights cup={defensive} draft={draft} />);
     expect(screen.getByTestId("strike-btn").textContent).toContain("Defensive drill");
     fireEvent.click(screen.getByTestId("strike-btn"));

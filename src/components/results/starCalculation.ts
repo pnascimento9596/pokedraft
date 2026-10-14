@@ -21,6 +21,7 @@ export interface MatchStar {
   readonly abilityFlavor: string;
   readonly element: PokemonType;
   readonly kickMove: string;
+  readonly action: "attack" | "defend";
   readonly matchScore: string;
   readonly outcome: "W" | "D" | "L";
   readonly opponentName: string;
@@ -55,12 +56,12 @@ function pickSignatureMove(
   if (!moves || moves.length === 0) return fallback;
   const preferred = defensive
     ? (["reflex", "header", "kick"] as const)
-    : (["kick", "header", "reflex"] as const);
+    : (["kick", "header"] as const);
   for (const trait of preferred) {
     const match = moves.find((m) => (MOVE_TRAITS[m] ?? "kick") === trait);
     if (match) return capitalizeWords(match);
   }
-  return capitalizeWords(moves[0]!);
+  return fallback;
 }
 
 export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
@@ -128,7 +129,9 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
 
     const parts = [
       topStats.goals > 0 ? `${topStats.goals} ${topStats.goals === 1 ? "Goal" : "Goals"}` : null,
-      topStats.assists > 0 ? `${topStats.assists} ${topStats.assists === 1 ? "Assist" : "Assists"}` : null,
+      topStats.assists > 0
+        ? `${topStats.assists} ${topStats.assists === 1 ? "Assist" : "Assists"}`
+        : null,
     ].filter(Boolean);
     statSummary = parts.join(" • ") || "Dominant attacking display";
   } else if (match.shootout !== null && match.outcome === "W") {
@@ -172,6 +175,7 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
     abilityFlavor: abilityMeta.flavor,
     element: abilityMeta.element,
     kickMove,
+    action: isDefensiveStar ? "defend" : "attack",
     matchScore: scoreline,
     outcome: match.outcome,
     opponentName: match.opponent.name,
@@ -186,7 +190,12 @@ export function getTournamentMvp(cup: CupResult, draft: DraftState): MatchStar {
   const abilityName = dex?.abilities[0]?.name ?? "Mastery";
   const abilityId = dex?.abilities[0]?.id ?? "mastery";
   const primaryType = (dex?.types[0] ?? species.types[0] ?? "normal") as PokemonType;
-  const kickMove = pickSignatureMove(dex?.kickMoves, false, "Champion Strike");
+  const defensive = pot.goals === 0 && pot.assists === 0;
+  const kickMove = pickSignatureMove(
+    dex?.kickMoves,
+    defensive,
+    defensive ? "Reflex Save" : "Champion Strike",
+  );
   const abilityMeta = getAbilityMeta(abilityId, abilityName, primaryType);
 
   const statParts = [
@@ -208,6 +217,7 @@ export function getTournamentMvp(cup: CupResult, draft: DraftState): MatchStar {
     abilityFlavor: abilityMeta.flavor,
     element: abilityMeta.element,
     kickMove,
+    action: defensive ? "defend" : "attack",
     matchScore: `${cup.wins}-${cup.draws}-${cup.losses}`,
     outcome: cup.flawless ? "W" : cup.wins >= cup.losses ? "W" : "D",
     opponentName: "Silph Cup",

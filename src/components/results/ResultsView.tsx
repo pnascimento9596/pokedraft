@@ -32,6 +32,7 @@ import { ShareActions } from "./ShareActions";
 import s from "./ResultsView.module.css";
 import { ModuleCard, Pill, Table } from "@/components/ui/primitives";
 import { NavIcon, type NavFamily } from "@/components/ui/nav-icons";
+import { SoundToggle } from "@/components/wheel/SoundToggle";
 
 export interface ResultsViewProps {
   /** The run token: `encodeToken` output that `replay` accepts. */
@@ -122,6 +123,7 @@ export function ResultsView({
       {variant === "live" ? submit : null}
 
       <div className={s.actions}>
+        <SoundToggle />
         <button
           type="button"
           className="btn btn--ghost"
@@ -136,7 +138,12 @@ export function ResultsView({
         <MatchdayLive cup={cup} draft={draft} onClose={() => setShowMatchday(false)} />
       ) : null}
 
-      <MatchHighlights cup={cup} draft={draft} selectedRound={selectedHighlightRound} />
+      <MatchHighlights
+        cup={cup}
+        draft={draft}
+        selectedRound={selectedHighlightRound}
+        onSelectRound={setSelectedHighlightRound}
+      />
 
       <div className={s.columns}>
         <ModuleCard
