@@ -225,6 +225,14 @@ describe("ResultsView", () => {
     expect(broadcast.textContent).toContain("Group match 1");
   });
 
+  it("can reselect the same match list star after using the highlight navigation", () => {
+    view(FLAWLESS);
+    fireEvent.click(screen.getByTestId("match-star-G3"));
+    fireEvent.click(screen.getByTestId("highlight-chip-G2"));
+    fireEvent.click(screen.getByTestId("match-star-G3"));
+    expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
+  });
+
   it("offers Challenge this Seed, Open in Builder, and Play Exhibition vs Squad on shared runs", () => {
     const { draft: challenger } = replay(FLAWLESS);
     localStorage.setItem(
