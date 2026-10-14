@@ -1,8 +1,15 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { Picker } from "@/components/builder/Picker";
-import { createDraft, type DraftSettings, type Seed } from "@/engine";
+import {
+  applyAction,
+  createDraft,
+  type DraftSettings,
+  type Seed,
+  type SlotRef,
+  type SpeciesId,
+} from "@/engine";
 
 const ALL_GENS: DraftSettings = {
   mode: "builder",
@@ -27,6 +34,97 @@ afterEach(() => {
 });
 
 describe("Picker", () => {
+  it.each(["starter", "bench"] as const)(
+    "Scout compares the target %s occupant without replacing or clearing the placement",
+    (kind) => {
+      const slot: SlotRef = { kind, index: 0 };
+      const draft = applyAction(createDraft(ALL_GENS, "test" as Seed), {
+        type: "place",
+        slot,
+        species: 9 as SpeciesId,
+      });
+      const onPick = vi.fn();
+      const onClear = vi.fn();
+      const onClose = vi.fn();
+      render(
+        <Picker
+          state={draft}
+          slot={slot}
+          showRatings={true}
+          onPick={onPick}
+          onClear={onClear}
+          onClose={onClose}
+        />,
+      );
+      fireEvent.change(screen.getByRole("searchbox"), { target: { value: "Pikachu" } });
+      fireEvent.click(screen.getByRole("button", { name: "Scout Pikachu" }));
+      const dossier = screen.getByRole("dialog", { name: "Pikachu" });
+      expect(within(dossier).getByLabelText("Incumbent comparison").textContent).toContain(
+        "Blastoise",
+      );
+      expect(within(dossier).getByLabelText("PAC difference versus Blastoise").textContent).toBe(
+        "+7",
+      );
+      fireEvent.click(within(dossier).getByRole("button", { name: "Close" }));
+      fireEvent.change(screen.getByRole("searchbox"), { target: { value: "Blastoise" } });
+      const incumbent = screen.getByTestId("pick-9") as HTMLButtonElement;
+      expect(incumbent.disabled).toBe(true);
+      expect(incumbent.textContent).toContain("In this slot");
+      expect(onPick).toHaveBeenCalledTimes(0);
+      expect(onClear).toHaveBeenCalledTimes(0);
+      expect(onClose).toHaveBeenCalledTimes(0);
+    },
+  );
+
+  it("omits comparisons for an empty target and when scouting the incumbent itself", () => {
+    const slot: SlotRef = { kind: "starter", index: 0 };
+    const empty = createDraft(ALL_GENS, "test" as Seed);
+    const occupied = applyAction(empty, { type: "place", slot, species: 9 as SpeciesId });
+    const view = render(
+      <Picker
+        state={empty}
+        slot={slot}
+        showRatings={true}
+        onPick={vi.fn()}
+        onClear={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "Pikachu" } });
+    fireEvent.click(screen.getByRole("button", { name: "Scout Pikachu" }));
+    expect(screen.queryByLabelText("Incumbent comparison")).toBeNull();
+    fireEvent.click(
+      within(screen.getByRole("dialog", { name: "Pikachu" })).getByRole("button", {
+        name: "Close",
+      }),
+    );
+    view.rerender(
+      <Picker
+        state={occupied}
+        slot={slot}
+        showRatings={true}
+        onPick={vi.fn()}
+        onClear={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Scout Pikachu" }));
+    expect(screen.getByLabelText("Incumbent comparison").textContent).toContain("Blastoise");
+    fireEvent.click(
+      within(screen.getByRole("dialog", { name: "Pikachu" })).getByRole("button", {
+        name: "Close",
+      }),
+    );
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "Blastoise" } });
+    fireEvent.click(screen.getByRole("button", { name: "Scout Blastoise" }));
+    const self = screen.getByRole("dialog", { name: "Blastoise" });
+    expect(within(self).queryByLabelText("Incumbent comparison")).toBeNull();
+    expect(self.querySelectorAll("[data-delta]").length).toBe(0);
+    expect(
+      within(self).getByRole("img", { name: "Blastoise attribute radar" }).tagName.toLowerCase(),
+    ).toBe("svg");
+  });
+
   it("provides a Clear filters button when a search filter is active and resets it", () => {
     const draft = createDraft(ALL_GENS, "test" as Seed);
     render(

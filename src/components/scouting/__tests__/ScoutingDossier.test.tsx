@@ -4,7 +4,7 @@ import { StrictMode, useState } from "react";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { Picker } from "@/components/builder/Picker";
-import { createDraft, type Seed, type SpeciesId } from "@/engine";
+import { createDraft, speciesById, type Seed, type SpeciesId } from "@/engine";
 import { ScoutingDossier } from "../ScoutingDossier";
 
 const showModal = vi.fn(function (this: HTMLDialogElement) {
@@ -182,6 +182,84 @@ describe("ScoutingDossier modal lifecycle", () => {
 });
 
 describe("ScoutingDossier blind ratings and theme", () => {
+  it("plots actual six-axis attributes instead of fabricated category averages", () => {
+    render(<ScoutingDossier speciesId={25 as SpeciesId} showRatings={true} onClose={vi.fn()} />);
+    const radar = screen.getByRole("img", { name: "Pikachu attribute radar" });
+    expect(radar.tagName.toLowerCase()).toBe("svg");
+    expect(radar.querySelector("desc")?.textContent).toBe(
+      "Pikachu: PAC 79, SHO 47, PAS 43, DRI 89, DEF 31, PHY 30. Scale 0 to 99.",
+    );
+    expect([...radar.querySelectorAll("text")].map((label) => label.textContent)).toEqual([
+      "PAC",
+      "SHO",
+      "PAS",
+      "DRI",
+      "DEF",
+      "PHY",
+    ]);
+    expect(radar.querySelector('[data-player="candidate"]')?.getAttribute("points")).toBe(
+      "140.00,61.00 180.70,116.50 177.24,161.50 140.00,229.00 113.15,155.50 114.02,125.00",
+    );
+    expect(radar.hasAttribute("tabindex")).toBe(false);
+  });
+
+  it("compares literal attributes and displayed role ratings against the named incumbent", () => {
+    render(
+      <ScoutingDossier
+        speciesId={25 as SpeciesId}
+        compareTo={speciesById(9)}
+        showRatings={true}
+        onClose={vi.fn()}
+      />,
+    );
+    expect(screen.getByLabelText("Incumbent comparison").textContent).toContain(
+      "Compared with Blastoise in this slot",
+    );
+    const attrs = screen.getByRole("region", { name: "Soccer attributes" });
+    expect(attrs.querySelectorAll("[data-delta]").length).toBe(17);
+    expect(screen.getByLabelText("PAC difference versus Blastoise").textContent).toBe("+7");
+    expect(screen.getByLabelText("SHO difference versus Blastoise").textContent).toBe("-36");
+    expect(screen.getByLabelText("PAS difference versus Blastoise").textContent).toBe("-42");
+    expect(screen.getByLabelText("DRI difference versus Blastoise").textContent).toBe("+21");
+    expect(screen.getByLabelText("DEF difference versus Blastoise").textContent).toBe("-59");
+    expect(screen.getByLabelText("PHY difference versus Blastoise").textContent).toBe("-52");
+    const roles = screen.getByRole("region", { name: "Role suitability" });
+    expect(roles.querySelectorAll("[data-delta]").length).toBe(10);
+    expect(screen.getByLabelText("GK rating difference versus Blastoise").textContent).toBe("-74");
+    expect(screen.getByLabelText("W rating difference versus Blastoise").textContent).toBe("+12");
+    expect(screen.getByLabelText("ST rating difference versus Blastoise").textContent).toBe("-16");
+  });
+
+  it("removes the entire radar and comparison numbers when blind ratings are switched off", () => {
+    const view = render(
+      <ScoutingDossier
+        speciesId={25 as SpeciesId}
+        compareTo={speciesById(9)}
+        showRatings={true}
+        onClose={vi.fn()}
+      />,
+    );
+    expect(screen.getByRole("img", { name: "Pikachu attribute radar" }).tagName.toLowerCase()).toBe(
+      "svg",
+    );
+    expect(screen.getByLabelText("PAC difference versus Blastoise").textContent).toBe("+7");
+    view.rerender(
+      <ScoutingDossier
+        speciesId={25 as SpeciesId}
+        compareTo={speciesById(9)}
+        showRatings={false}
+        onClose={vi.fn()}
+      />,
+    );
+    const dialog = screen.getByRole("dialog", { name: "Pikachu" });
+    expect(dialog.querySelectorAll("svg, [data-delta]").length).toBe(0);
+    expect(screen.queryByRole("region", { name: "Attribute radar" })).toBeNull();
+    expect(screen.getByLabelText("Incumbent comparison").textContent).toContain("Blastoise");
+    expect(screen.getByRole("region", { name: "Soccer attributes" }).textContent).toContain(
+      "attributes are hidden",
+    );
+  });
+
   it("omits numeric attributes, bars and role ratings when ratings are hidden", () => {
     const view = render(
       <ScoutingDossier speciesId={25 as SpeciesId} showRatings={false} onClose={vi.fn()} />,
