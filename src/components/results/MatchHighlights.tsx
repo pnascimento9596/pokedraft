@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, type CSSProperties } from "react";
-import type { CupResult, DraftState } from "@/engine";
+import type { CupResult, CupRound, DraftState } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeIcon } from "@/components/TypeIcon";
+import { playGoalHorn, unlockAudio } from "@/components/wheel/sound";
 import { TYPE_PALETTE } from "@/design/stadium";
 import { getAllMatchStars, type MatchStar } from "./starCalculation";
 import { SoccerBall } from "./SoccerBall";
@@ -12,15 +13,29 @@ import s from "./MatchHighlights.module.css";
 export interface MatchHighlightsProps {
   readonly cup: CupResult;
   readonly draft: DraftState;
+  readonly selectedRound?: CupRound | "mvp" | null;
 }
 
-export function MatchHighlights({ cup, draft }: MatchHighlightsProps) {
+export function MatchHighlights({ cup, draft, selectedRound = null }: MatchHighlightsProps) {
   const stars = useMemo(() => getAllMatchStars(cup, draft), [cup, draft]);
   const [activeIdx, setActiveIdx] = useState(0);
   const [striking, setStriking] = useState(false);
   const [showGoal, setShowGoal] = useState(false);
   const [paused, setPaused] = useState(false);
   const [announcement, setAnnouncement] = useState("");
+  const [prevSelectedRound, setPrevSelectedRound] = useState<CupRound | "mvp" | null>(null);
+
+  if (selectedRound !== prevSelectedRound) {
+    setPrevSelectedRound(selectedRound);
+    if (selectedRound !== null) {
+      const idx = stars.findIndex((st) => st.round === selectedRound);
+      if (idx >= 0) {
+        setActiveIdx(idx);
+        setStriking(false);
+        setShowGoal(false);
+      }
+    }
+  }
 
   const goalTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const resetTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -60,6 +75,8 @@ export function MatchHighlights({ cup, draft }: MatchHighlightsProps) {
 
   const handleStrike = () => {
     if (striking) return;
+    unlockAudio();
+    playGoalHorn();
     setStriking(true);
     setAnnouncement(
       `${currentStar.name} unleashed ${currentStar.kickMove} using ${currentStar.ability}!`,

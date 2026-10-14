@@ -164,6 +164,21 @@
   grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
+.breakdownBar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.breakdownItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-soft);
+}
 .pitchCol {
   display: flex;
   flex-direction: column;

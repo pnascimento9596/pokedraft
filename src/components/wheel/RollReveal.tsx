@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { announce, type Stage } from "./reel";
-import { playTick } from "./sound";
+import { playReelSettle, playTick } from "./sound";
 import { Wheel, type WheelState } from "./Wheel";
 import s from "./RollReveal.module.css";
 
@@ -65,6 +65,7 @@ export function RollReveal({ stages, instant, onDone }: RollRevealProps) {
               onTick={playTick}
               onSettle={(reason) => {
                 if (i !== shown.index || shown.state !== "spinning") return;
+                playReelSettle();
                 setProgress({ index: reason === "skipped" ? last : i, state: "settled" });
               }}
             />

@@ -3,6 +3,7 @@ import { FORMATIONS } from "@/engine/formations";
 import { speciesById } from "@/engine/species";
 import { pokedexById } from "@/data/pokedex";
 import type { PokemonType } from "@/data/pokedex";
+import { MOVE_TRAITS } from "@/scouting/move-traits";
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import { finalScore, type PlayedMatch } from "./format";
 import { getAbilityMeta } from "./abilityEffects";
@@ -44,6 +45,22 @@ function capitalizeWords(str: string): string {
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+function pickSignatureMove(
+  moves: readonly string[] | undefined,
+  defensive: boolean,
+  fallback: string,
+): string {
+  if (!moves || moves.length === 0) return fallback;
+  const preferred = defensive
+    ? (["reflex", "header", "kick"] as const)
+    : (["kick", "header", "reflex"] as const);
+  for (const trait of preferred) {
+    const match = moves.find((m) => (MOVE_TRAITS[m] ?? "kick") === trait);
+    if (match) return capitalizeWords(match);
+  }
+  return capitalizeWords(moves[0]!);
 }
 
 export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
@@ -134,7 +151,12 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
   const abilityName = dex?.abilities[0]?.name ?? "Keen Eye";
   const abilityId = dex?.abilities[0]?.id ?? "keen-eye";
   const primaryType = (dex?.types[0] ?? species.types[0] ?? "normal") as PokemonType;
-  const kickMove = dex?.kickMoves[0] ? capitalizeWords(dex.kickMoves[0]) : "Power Volley";
+  const isDefensiveStar = userGoals.length === 0;
+  const kickMove = pickSignatureMove(
+    dex?.kickMoves,
+    isDefensiveStar,
+    isDefensiveStar ? "Reflex Save" : "Power Volley",
+  );
   const abilityMeta = getAbilityMeta(abilityId, abilityName, primaryType);
 
   return {
@@ -164,7 +186,7 @@ export function getTournamentMvp(cup: CupResult, draft: DraftState): MatchStar {
   const abilityName = dex?.abilities[0]?.name ?? "Mastery";
   const abilityId = dex?.abilities[0]?.id ?? "mastery";
   const primaryType = (dex?.types[0] ?? species.types[0] ?? "normal") as PokemonType;
-  const kickMove = dex?.kickMoves[0] ? capitalizeWords(dex.kickMoves[0]) : "Champion Strike";
+  const kickMove = pickSignatureMove(dex?.kickMoves, false, "Champion Strike");
   const abilityMeta = getAbilityMeta(abilityId, abilityName, primaryType);
 
   const statParts = [
