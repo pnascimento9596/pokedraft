@@ -74,6 +74,7 @@ describe("ScoutingDossier modal lifecycle", () => {
     const opener = openDossier(true);
     const dialog = screen.getByRole("dialog", { name: "Pikachu" });
     expect(dialog.tagName).toBe("DIALOG");
+    expect(showModal).toHaveBeenCalledTimes(2);
     fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(document.activeElement).toBe(opener);
@@ -105,7 +106,10 @@ describe("ScoutingDossier modal lifecycle", () => {
       expect(escape.defaultPrevented).toBe(false);
       expect(onWindowKey).toHaveBeenCalledTimes(0);
       expect(screen.getByRole("dialog", { name: "Pikachu" }).tagName).toBe("DIALOG");
-      fireEvent.cancel(screen.getByRole("dialog", { name: "Pikachu" }));
+      fireEvent(
+        screen.getByRole("dialog", { name: "Pikachu" }),
+        new Event("cancel", { cancelable: true }),
+      );
       expect(screen.queryByRole("dialog")).toBeNull();
     } finally {
       window.removeEventListener("keydown", onWindowKey);

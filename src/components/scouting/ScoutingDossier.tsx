@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId } from "react";
+import { useEffect, useId, useRef } from "react";
 import { pokedexById } from "@/data/pokedex";
 import { speciesById, type SpeciesId } from "@/engine";
 import { SCOUTING } from "@/scouting/scouting-data";
@@ -64,35 +64,53 @@ export function ScoutingDossier({
   readonly showRatings: boolean;
   readonly onClose: () => void;
 }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const active = useRef(false);
   const titleId = useId();
   const sp = speciesById(speciesId);
   const dex = pokedexById(speciesId);
   const scout = SCOUTING_BY_ID.get(speciesId);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-      }
+    const dialog = ref.current;
+    if (!dialog) return;
+    const opener = document.activeElement;
+    active.current = true;
+    if (!dialog.open) dialog.showModal();
+    closeRef.current?.focus();
+    return () => {
+      active.current = false;
+      if (dialog.open) dialog.close();
+      if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
     };
-    window.addEventListener("keydown", onKey, true);
-    return () => window.removeEventListener("keydown", onKey, true);
-  }, [onClose]);
+  }, []);
 
   const bestSet = new Set<Role>(sp.bestRoles);
   const worstSet = new Set<Role>(scout?.worstRoles ?? []);
 
   return (
-    <div
-      className={s.backdrop}
-      role="dialog"
-      aria-modal="true"
+    <dialog
+      ref={ref}
+      className={s.dialog}
       aria-labelledby={titleId}
       data-testid="scouting-dossier"
+      onClose={(e) => {
+        e.stopPropagation();
+        // Ignore cleanup and queued close events from StrictMode's previous mount.
+        if (active.current && !e.currentTarget.open) onClose();
+      }}
+      onCancel={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.currentTarget.close();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") e.stopPropagation();
+      }}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        e.stopPropagation();
+        if (e.target === e.currentTarget) e.currentTarget.close();
       }}
     >
       <div className={s.modal} style={typeFrame(sp.types[0])}>
@@ -126,10 +144,11 @@ export function ScoutingDossier({
             </div>
           </div>
           <button
+            ref={closeRef}
             type="button"
             className="btn btn--sm"
             data-testid="close-dossier"
-            onClick={onClose}
+            onClick={() => ref.current?.close()}
           >
             Close
           </button>
@@ -248,6 +267,6 @@ export function ScoutingDossier({
           </section>
         ) : null}
       </div>
-    </div>
+    </dialog>
   );
 }

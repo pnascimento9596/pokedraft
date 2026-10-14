@@ -1,24 +1,24 @@
-.backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  background: var(--overlay);
-  backdrop-filter: blur(4px);
-}
-
-.modal {
-  width: min(640px, 100%);
+.dialog {
+  width: min(640px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
   max-height: min(86dvh, 760px);
+  margin: auto;
+  padding: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--text);
   box-shadow: var(--shadow-raised);
+}
+
+.dialog::backdrop {
+  background: var(--overlay);
+  backdrop-filter: blur(4px);
+}
+
+.modal {
   padding: 20px;
   display: flex;
   flex-direction: column;
