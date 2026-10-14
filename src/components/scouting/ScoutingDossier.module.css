@@ -1,0 +1,267 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--overlay);
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  width: min(640px, 100%);
+  max-height: min(86dvh, 760px);
+  overflow-y: auto;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-raised);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 14px;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.artWrap {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  border: 2px solid var(--card-type, var(--border));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dex {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.subMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.specialBadge {
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  background: var(--warn-bg);
+  color: var(--viz-2);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.roleGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+@media (max-width: 480px) {
+  .roleGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.roleCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-soft);
+  font-size: 0.8rem;
+}
+
+.roleCell[data-tier="best"] {
+  border-color: var(--ok-border);
+  background: var(--ok-bg);
+}
+
+.roleCell[data-tier="worst"] {
+  border-color: var(--risk-mark);
+}
+
+.roleTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.roleSub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.attrGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+
+@media (max-width: 520px) {
+  .attrGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.attrItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.attrHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+}
+
+.attrCode {
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+.attrTrack {
+  height: 6px;
+  border-radius: var(--radius-xs);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+
+.attrFill {
+  height: 100%;
+  border-radius: var(--radius-xs);
+  background: var(--viz-1);
+}
+
+.attrFill[data-high="true"] {
+  background: var(--ok-text);
+}
+
+.attrFill[data-low="true"] {
+  background: var(--viz-2);
+}
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tagGood,
+.tagBad,
+.movePill {
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  font-weight: 600;
+}
+
+.tagGood {
+  background: var(--ok-bg);
+  color: var(--ok-text);
+  border: 1px solid var(--ok-border);
+}
+
+.tagBad {
+  background: var(--warn-bg);
+  color: var(--risk-text);
+  border: 1px solid var(--border);
+}
+
+.movePill {
+  background: var(--info-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.abilityList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.abilityCard {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-soft);
+  font-size: 0.84rem;
+}
+
+.abilityName {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.rationale {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-soft);
+}

@@ -32,7 +32,7 @@ describe("ratePartialLineup (live chemistry and legendary count during draft and
       {
         a: "4-3-3.LCB",
         b: "4-3-3.RCB",
-        reasons: ["sharedType", "evoLine", "sameGen"],
+        reasons: ["sharedType", "evoLine", "sameGen", "coverage"],
         value: 1,
       },
     ]);
@@ -78,7 +78,7 @@ describe("ratePartialLineup (live chemistry and legendary count during draft and
     expect(rcbLink).toEqual({
       a: "4-3-3.LCB",
       b: "4-3-3.RCB",
-      reasons: ["sharedType", "evoLine", "sameGen"],
+      reasons: ["sharedType", "evoLine", "sameGen", "coverage"],
       value: 1,
     });
   });

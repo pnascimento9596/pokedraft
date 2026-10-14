@@ -135,6 +135,10 @@ export function Builder({
   const animating = cascade !== null;
   const teamRating =
     desk.kind === "live" && full !== null && !animating ? desk.engine.rateTeam(full) : null;
+  const partialRating =
+    desk.kind === "live" && full === null && !animating
+      ? desk.engine.ratePartialLineup(lineup)
+      : null;
   const score = teamRating?.score ?? null;
   const shown = cascade === null ? lineup : cascadeFrame(cascade.target, cascade.pool, elapsed);
 
@@ -253,7 +257,7 @@ export function Builder({
         <div className={s.pitch} data-animating={animating || undefined}>
           <Pitch
             compactTags
-            edges={teamRating?.edges}
+            edges={teamRating?.edges ?? partialRating?.edges}
             formation={lineup.formation}
             lineup={shown}
             speciesOf={desk.kind === "live" ? desk.engine.speciesById : noSpecies}

@@ -191,9 +191,11 @@ export function HomeScreen() {
         stats={stats}
         filled={live === null ? 0 : filledCount(live.draft.lineup)}
         chemistry={
-          live !== null && fullLineup(live.draft.lineup) !== null
-            ? live.engine.rateTeam(fullLineup(live.draft.lineup)!).synergy
-            : null
+          live === null
+            ? null
+            : fullLineup(live.draft.lineup) !== null
+              ? live.engine.rateTeam(fullLineup(live.draft.lineup)!).synergy
+              : live.engine.ratePartialLineup(live.draft.lineup).synergy
         }
       />
       <Builder

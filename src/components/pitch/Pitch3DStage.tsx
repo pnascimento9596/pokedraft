@@ -7,11 +7,13 @@ import s from "./Pitch.module.css";
 export function Pitch3DStage({
   formation,
   edges,
+  previewEdges = [],
   label,
   children,
 }: {
   readonly formation: FormationId;
   readonly edges: readonly SynergyEdge[];
+  readonly previewEdges?: readonly SynergyEdge[];
   readonly label: string;
   readonly children: ReactNode;
 }) {
@@ -54,11 +56,31 @@ export function Pitch3DStage({
                 <line
                   key={`${edge.a}-${edge.b}`}
                   data-chemistry={`${edge.a}-${edge.b}`}
+                  data-chemistry-reasons={edge.reasons.join(",")}
+                  data-chemistry-tier={
+                    edge.value >= 0.75 ? "strong" : edge.value > 0 ? "active" : "none"
+                  }
                   x1={a.x}
                   y1={a.y}
                   x2={b.x}
                   y2={b.y}
                   style={{ strokeOpacity: 0.35 + 0.6 * Math.min(1, edge.value) }}
+                />
+              ) : null;
+            })}
+            {previewEdges.map((edge) => {
+              const a = at.get(edge.a);
+              const b = at.get(edge.b);
+              return a && b ? (
+                <line
+                  key={`preview-${edge.a}-${edge.b}`}
+                  className={s.previewEdge}
+                  data-chemistry-preview={`${edge.a}-${edge.b}`}
+                  data-chemistry-reasons={edge.reasons.join(",")}
+                  x1={a.x}
+                  y1={a.y}
+                  x2={b.x}
+                  y2={b.y}
                 />
               ) : null;
             })}
