@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { encodeToken } from "@/engine/token";
-import { toIsoDate } from "@/engine/rng";
+import { dailySeed, toIsoDate } from "@/engine/rng";
 import { dailySettings } from "@/leaderboard/daily";
 import { DEFAULT_PANEL } from "@/ui/settings";
 import { DailyScreen } from "../DailyScreen";
@@ -64,8 +64,9 @@ describe("Daily formation", () => {
     "restores the saved Daily formation from its %s instead of silently abandoning it for the home formation",
     async (source) => {
       const token = encodeToken({
+        v: 3,
         settings: dailySettings("5-3-2"),
-        seed: "pokedraft:daily:v1:c57ec62d9264c6789a96daa6e522615f",
+        seed: dailySeed(toIsoDate("2026-10-14")),
         actions: [],
       });
       const saved = JSON.stringify({ screen: "draft", token, daily: "2026-10-14" });

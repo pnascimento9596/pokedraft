@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { dailySeed } from "@/engine/rng";
 import { DRAFT_ROUNDS, type DraftSettings, type IsoDate } from "@/engine/types";
 import { longDate } from "@/components/leaderboard/format";
@@ -78,10 +78,12 @@ export function Challenge({
   settings,
   querySeed,
   daily,
+  renderSetup,
 }: {
   readonly settings: DraftSettings;
   readonly querySeed: string | null;
   readonly daily?: IsoDate;
+  readonly renderSetup?: (loading: boolean) => ReactNode;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -202,6 +204,7 @@ export function Challenge({
         data-testid={daily !== undefined ? "daily-kicker" : undefined}
       >
         <SettingsSummary items={settingsSummary(settings)} />
+        {renderSetup?.(loading)}
         <button
           type="button"
           className="btn btn--primary"
