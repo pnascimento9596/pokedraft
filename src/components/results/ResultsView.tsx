@@ -16,6 +16,7 @@ import {
 import { recordRun, toRecord } from "@/ui/runs";
 import { contributionLine } from "./format";
 import { FitReveal } from "./FitReveal";
+import { MatchHighlights } from "./MatchHighlights";
 import { MatchList } from "./MatchList";
 import { ShareActions } from "./ShareActions";
 import s from "./ResultsView.module.css";
@@ -105,6 +106,8 @@ export function ResultsView({
       <ShareActions token={token} variant={variant} onNewRun={onNewRun} />
       {variant === "live" ? submit : null}
 
+      <MatchHighlights cup={cup} draft={draft} />
+
       <div className={s.columns}>
         <ModuleCard
           className={s.block}
@@ -112,7 +115,7 @@ export function ResultsView({
           title="The cup"
           description="Every match, with the opponents from this run."
         >
-          <MatchList cup={cup} />
+          <MatchList cup={cup} draft={draft} />
         </ModuleCard>
 
         <div className={s.block}>

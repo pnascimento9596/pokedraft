@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { CupResult, MatchResult } from "@/engine";
+import type { CupResult, DraftState, MatchResult } from "@/engine";
 import { FINISH_LABEL, ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import {
   absenceLine,
@@ -9,6 +9,7 @@ import {
   shootoutLine,
   type PlayedMatch,
 } from "./format";
+import { getMatchStar } from "./starCalculation";
 import s from "./MatchList.module.css";
 
 const SCALE = 1000;
@@ -19,7 +20,7 @@ function bar(score: number): CSSProperties {
 
 const OUTCOME_LABEL = { W: "Win", D: "Draw", L: "Loss" } as const;
 
-export function MatchList({ cup }: { cup: CupResult }) {
+export function MatchList({ cup, draft }: { cup: CupResult; draft?: DraftState }) {
   const outIn = eliminatedIn(cup);
   return (
     <ol className={s.list}>
@@ -28,6 +29,7 @@ export function MatchList({ cup }: { cup: CupResult }) {
           {m.status === "played" ? (
             <Played
               m={m}
+              draft={draft}
               headline={cup.rating.score}
               outNote={outIn === m.round ? FINISH_LABEL[cup.finish] : null}
             />
@@ -42,10 +44,12 @@ export function MatchList({ cup }: { cup: CupResult }) {
 
 function Played({
   m,
+  draft,
   headline,
   outNote,
 }: {
   m: PlayedMatch;
+  draft?: DraftState;
   headline: number;
   outNote: string | null;
 }) {
@@ -53,6 +57,7 @@ function Played({
   const pens = shootoutLine(m);
   const user = m.goals.filter((g) => g.side === "user");
   const opp = m.goals.filter((g) => g.side === "opp");
+  const star = draft ? getMatchStar(m, draft) : null;
   return (
     <article className={s.card} data-outcome={m.outcome}>
       <div className={s.head}>
@@ -71,6 +76,15 @@ function Played({
         </span>
         <span className={`${s.side} ${s.oppName}`}>{m.opponent.name}</span>
       </div>
+      {star ? (
+        <div className={s.starBadge} data-testid={`match-star-${m.round}`}>
+          <span className={s.starIcon} aria-hidden="true">
+            ⭐
+          </span>
+          <span className={s.starName}>{star.name}</span>
+          <span className={s.starHeadline}>• {star.headline}</span>
+        </div>
+      ) : null}
       {m.extraTime !== null || pens !== null ? (
         <p className={s.extra}>
           {m.extraTime !== null ? "a.e.t." : null}
