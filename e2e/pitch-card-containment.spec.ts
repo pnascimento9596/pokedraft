@@ -25,7 +25,7 @@ for (const engine of ["chromium", "webkit"] as const) {
               }),
             );
           });
-          await page.goto(surface === "builder" ? "/" : PLAY_8_0);
+          await page.goto(surface === "builder" ? "/" : PLAY_8_0.replace("f=4-4-2", "f=4-3-3"));
           if (surface === "builder") {
             const randomize = page.getByRole("button", { name: "Randomize", exact: true });
             await ready(page, randomize);
@@ -39,6 +39,7 @@ for (const engine of ["chromium", "webkit"] as const) {
           }
           const cards = page.locator('[data-testid^="slot-"][data-filled="true"]');
           await expect(cards).toHaveCount(16);
+          await expect(cards.locator('[id$="-note-score"]')).toHaveCount(16);
           await page.waitForFunction(() => document.fonts.status === "loaded");
           const outside = await cards.evaluateAll((elements) =>
             elements.flatMap((card) => {
@@ -64,6 +65,24 @@ for (const engine of ["chromium", "webkit"] as const) {
             }),
           );
           expect(outside).toEqual([]);
+          const overlaps = await cards.evaluateAll((elements) => {
+            const hits: string[] = [];
+            for (const [index, card] of elements.entries()) {
+              const a = card.getBoundingClientRect();
+              for (const other of elements.slice(index + 1)) {
+                const b = other.getBoundingClientRect();
+                if (
+                  Math.min(a.right, b.right) - Math.max(a.left, b.left) > 0.5 &&
+                  Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 0.5
+                )
+                  hits.push(
+                    `${card.getAttribute("data-testid")} overlaps ${other.getAttribute("data-testid")}`,
+                  );
+              }
+            }
+            return hits;
+          });
+          expect(overlaps).toEqual([]);
         } finally {
           await context.close();
           await browser.close();
