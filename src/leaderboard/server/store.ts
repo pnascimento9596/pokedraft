@@ -58,7 +58,7 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
       const [row] = await getDb()
         .select()
         .from(t)
-        .where(sql`md5(${t.token}) = md5(${token})`)
+        .where(and(sql`md5(${t.token}) = md5(${token})`, eq(t.token, token)))
         .limit(1);
       return row ?? null;
     },

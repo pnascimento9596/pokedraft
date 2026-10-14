@@ -1,4 +1,4 @@
-import { and, eq, lt, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { rateLimitEvents } from "@/db/schema";
 import type { Db } from "@/db/types";
 
@@ -22,10 +22,11 @@ export function drizzleLimiter(getDb: () => Db): RateLimiter {
     async consume(scope, keyHash, now, rule) {
       const db = getDb();
       const since = new Date(now.getTime() - rule.windowMs);
-      await db
-        .delete(t)
-        .where(and(eq(t.scope, scope), eq(t.keyHash, keyHash), lt(t.createdAt, since)));
       const inserted = await db.execute(sql`
+        WITH pruned AS (
+          DELETE FROM ${t}
+          WHERE scope = ${scope} AND key_hash = ${keyHash} AND created_at < ${since.toISOString()}::timestamptz
+        )
         INSERT INTO ${t} (scope, key_hash, created_at)
         SELECT ${scope}, ${keyHash}, ${now.toISOString()}::timestamptz
         WHERE (

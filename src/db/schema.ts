@@ -42,6 +42,13 @@ export const leaderboardEntries = pgTable(
       t.teamScore.desc(),
       t.createdAt,
     ),
+    index("leaderboard_entries_alltime_idx").on(
+      t.mode,
+      t.wins.desc(),
+      t.draws.desc(),
+      t.teamScore.desc(),
+      t.createdAt,
+    ),
     index("leaderboard_entries_ip_recent_idx").on(t.ipHash, t.createdAt),
     check("leaderboard_entries_mode_chk", sql`${t.mode} IN ('cup8', 'kanto151')`),
     check(

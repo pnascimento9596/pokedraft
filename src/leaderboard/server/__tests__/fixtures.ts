@@ -21,11 +21,29 @@ import {
   type BenchIndex,
 } from "@/engine";
 
+let sharedInstance: Promise<{ db: Db; client: PGlite }> | null = null;
+
 export async function migratedDb(): Promise<{ db: Db; client: PGlite }> {
-  const client = await PGlite.create();
-  const db = drizzle({ client, schema });
-  await migrate(db, { migrationsFolder: path.resolve(import.meta.dirname, "../../../../drizzle") });
-  return { db: db as unknown as Db, client };
+  if (sharedInstance === null) {
+    sharedInstance = (async () => {
+      const realClient = await PGlite.create();
+      const db = drizzle({ client: realClient, schema }) as unknown as Db;
+      await migrate(db as unknown as ReturnType<typeof drizzle>, {
+        migrationsFolder: path.resolve(import.meta.dirname, "../../../../drizzle"),
+      });
+      const proxyClient = new Proxy(realClient, {
+        get(target, prop, receiver) {
+          if (prop === "close") return async () => {};
+          const val = Reflect.get(target, prop, receiver);
+          return typeof val === "function" ? val.bind(target) : val;
+        },
+      });
+      return { db, client: proxyClient };
+    })();
+  }
+  const inst = await sharedInstance;
+  await inst.client.exec("DELETE FROM leaderboard_entries; DELETE FROM rate_limit_events;");
+  return inst;
 }
 
 const SLOTS: SlotRef[] = [

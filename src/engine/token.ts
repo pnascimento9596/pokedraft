@@ -1,6 +1,5 @@
 import { z } from "zod";
-import { normalizeSettings } from "./draft";
-import { asSpeciesId } from "./species";
+import { asSpeciesId, normalizeSettings } from "./settings";
 import {
   DraftError,
   FORMATION_IDS,

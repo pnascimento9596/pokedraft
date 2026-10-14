@@ -11,7 +11,7 @@ import { A11Y_RUN_V1, GOLDEN_CUP8_V2 } from "../engine/versions/__tests__/fixtur
 
 function importClosure(entryRel: string): string[] {
   const root = path.resolve(import.meta.dirname, "../..");
-  const specRe = /(?:from|import)\s+"([^"]+)"/g;
+  const specRe = /^\s*(?:import|export)\s+(?!type\b)(?:[\s\S]*?from\s+)?"([^"]+)"/gm;
   const exts = ["", ".ts", ".tsx", ".json", "/index.ts"];
   const visited = new Set<string>();
   const queue = [path.join(root, entryRel)];
