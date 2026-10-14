@@ -45,6 +45,7 @@ scripts/data/.cache/
 scripts/calibration/out/
 
 # playwright
+/.playwright-cli/
 /test-results/
 /playwright-report/
 /blob-report/

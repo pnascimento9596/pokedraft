@@ -19,6 +19,7 @@ export function ExhibitionMatchModal({
   readonly onClose: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const active = useRef(false);
   const titleId = useId();
   const [rematch, setRematch] = useState(0);
   const [challenger] = useState(() => {
@@ -29,8 +30,11 @@ export function ExhibitionMatchModal({
   useEffect(() => {
     const element = dialog.current;
     const returnFocus = document.activeElement;
+    active.current = true;
     if (element && !element.open) element.showModal();
     return () => {
+      active.current = false;
+      if (element?.open) element.close();
       if (returnFocus instanceof HTMLElement && returnFocus.isConnected) {
         returnFocus.focus({ preventScroll: true });
       }
@@ -77,11 +81,13 @@ export function ExhibitionMatchModal({
       data-testid="exhibition-modal"
       onCancel={(event) => {
         event.preventDefault();
-        onClose();
+        event.currentTarget.close();
       }}
-      onClose={onClose}
+      onClose={(event) => {
+        if (active.current && !event.currentTarget.open) onClose();
+      }}
       onClick={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget) event.currentTarget.close();
       }}
     >
       <div className={s.content}>
@@ -90,7 +96,7 @@ export function ExhibitionMatchModal({
             <p className="kicker">Friendly / Not ranked</p>
             <h2 id={titleId}>Exhibition Match</h2>
           </div>
-          <button type="button" className="btn btn--sm" onClick={onClose}>
+          <button type="button" className="btn btn--sm" onClick={() => dialog.current?.close()}>
             Close
           </button>
         </header>
@@ -156,7 +162,7 @@ export function ExhibitionMatchModal({
               Save a complete squad in the Builder, including all five substitutes, before playing
               an exhibition.
             </p>
-            <Link href="/" className="btn btn--primary">
+            <Link href="/" className="btn btn--primary" onClick={() => dialog.current?.close()}>
               Build your squad
             </Link>
           </>
