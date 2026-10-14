@@ -473,6 +473,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
       {inspectId !== null ? (
         <ScoutingDossier
           speciesId={inspectId}
+          compareTo={current !== null && current !== inspectId ? speciesById(current) : undefined}
           showRatings={showRatings}
           onClose={() => setInspectId(null)}
         />

@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { pokedexById } from "@/data/pokedex";
-import { speciesById, type SpeciesId } from "@/engine";
+import { speciesById, type Species, type SpeciesId } from "@/engine";
 import { SCOUTING } from "@/scouting/scouting-data";
 import { MOVE_TRAITS } from "@/scouting/move-traits";
 import { ATTRS, ROLES, type Attr, type Role } from "@/scouting/types";
@@ -14,6 +14,15 @@ import { REGION_LABEL, tagLabel } from "@/ui/labels";
 import s from "./ScoutingDossier.module.css";
 
 const SCOUTING_BY_ID = new Map(SCOUTING.map((entry) => [entry.id, entry]));
+
+const RADAR_AXES = [
+  { attr: "PAC", x: 0, y: -1 },
+  { attr: "SHO", x: Math.sqrt(3) / 2, y: -0.5 },
+  { attr: "PAS", x: Math.sqrt(3) / 2, y: 0.5 },
+  { attr: "DRI", x: 0, y: 1 },
+  { attr: "DEF", x: -Math.sqrt(3) / 2, y: 0.5 },
+  { attr: "PHY", x: -Math.sqrt(3) / 2, y: -0.5 },
+] as const satisfies readonly { attr: Attr; x: number; y: number }[];
 
 const ROLE_NAME: Readonly<Record<Role, string>> = {
   GK: "Goalkeeper",
@@ -57,10 +66,12 @@ function formatMoveName(slug: string): string {
 
 export function ScoutingDossier({
   speciesId,
+  compareTo,
   showRatings,
   onClose,
 }: {
   readonly speciesId: SpeciesId;
+  readonly compareTo?: Species;
   readonly showRatings: boolean;
   readonly onClose: () => void;
 }) {
@@ -68,7 +79,9 @@ export function ScoutingDossier({
   const closeRef = useRef<HTMLButtonElement>(null);
   const active = useRef(false);
   const titleId = useId();
+  const radarId = useId();
   const sp = speciesById(speciesId);
+  const incumbent = compareTo?.id !== speciesId ? compareTo : undefined;
   const dex = pokedexById(speciesId);
   const scout = SCOUTING_BY_ID.get(speciesId);
 
@@ -88,6 +101,11 @@ export function ScoutingDossier({
 
   const bestSet = new Set<Role>(sp.bestRoles);
   const worstSet = new Set<Role>(scout?.worstRoles ?? []);
+  // One SVG unit per attribute point, with 99 as the outer ring.
+  const radarPoints = (values: readonly number[]) =>
+    RADAR_AXES.map(
+      ({ x, y }, i) => `${(140 + x * values[i]!).toFixed(2)},${(140 + y * values[i]!).toFixed(2)}`,
+    ).join(" ");
 
   return (
     <dialog
@@ -154,12 +172,93 @@ export function ScoutingDossier({
           </button>
         </header>
 
+        {incumbent ? (
+          <p className={s.comparison} role="note" aria-label="Incumbent comparison">
+            Compared with <strong>{incumbent.name}</strong> in this slot.{" "}
+            {showRatings
+              ? "Deltas are candidate minus incumbent."
+              : "Numeric comparisons are hidden."}
+          </p>
+        ) : null}
+
+        {showRatings ? (
+          <section className={s.section} aria-label="Attribute radar">
+            <h3 className={s.sectionTitle}>Attribute Profile</h3>
+            <svg
+              className={s.radar}
+              viewBox="0 0 280 280"
+              role="img"
+              aria-labelledby={`${radarId}-title`}
+              aria-describedby={`${radarId}-desc`}
+            >
+              <title id={`${radarId}-title`}>{sp.name} attribute radar</title>
+              <desc id={`${radarId}-desc`}>
+                {`${sp.name}: ${RADAR_AXES.map(({ attr }) => `${attr} ${sp.attrs[attr]}`).join(", ")}. Scale 0 to 99.`}
+                {incumbent
+                  ? ` ${incumbent.name}: ${RADAR_AXES.map(({ attr }) => `${attr} ${incumbent.attrs[attr]}`).join(", ")}. Dashed outline.`
+                  : ""}
+              </desc>
+              <g aria-hidden="true">
+                {[33, 66, 99].map((radius) => (
+                  <polygon
+                    key={radius}
+                    className={s.radarGrid}
+                    points={radarPoints(RADAR_AXES.map(() => radius))}
+                  />
+                ))}
+                {RADAR_AXES.map(({ attr, x, y }) => (
+                  <line
+                    key={attr}
+                    className={s.radarGrid}
+                    x1={140}
+                    y1={140}
+                    x2={140 + x * 99}
+                    y2={140 + y * 99}
+                  />
+                ))}
+                <polygon
+                  className={s.radarCandidate}
+                  data-player="candidate"
+                  points={radarPoints(RADAR_AXES.map(({ attr }) => sp.attrs[attr]))}
+                />
+                {incumbent ? (
+                  <polygon
+                    className={s.radarIncumbent}
+                    data-player="incumbent"
+                    points={radarPoints(RADAR_AXES.map(({ attr }) => incumbent.attrs[attr]))}
+                  />
+                ) : null}
+                {RADAR_AXES.map(({ attr, x, y }) => (
+                  <text
+                    key={attr}
+                    className={s.radarLabel}
+                    x={140 + x * 121}
+                    y={140 + y * 121}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    {attr}
+                  </text>
+                ))}
+              </g>
+            </svg>
+            <div className={s.radarLegend}>
+              <span className={s.candidateLegend}>{sp.name} (solid)</span>
+              {incumbent ? (
+                <span className={s.incumbentLegend}>{incumbent.name} (dashed)</span>
+              ) : null}
+              <span>Actual attributes, 0 to 99 scale</span>
+            </div>
+          </section>
+        ) : null}
+
         <section className={s.section} aria-label="Role suitability">
           <h3 className={s.sectionTitle}>Position Suitability & Role Fit</h3>
           <div className={s.roleGrid}>
             {ROLES.map((role) => {
               const tier = bestSet.has(role) ? "best" : worstSet.has(role) ? "worst" : "neutral";
               const quality = Math.round(sp.quality[role] * 100);
+              const delta = incumbent ? quality - Math.round(incumbent.quality[role] * 100) : null;
               return (
                 <div key={role} className={s.roleCell} data-tier={tier}>
                   <div className={s.roleTop}>
@@ -174,6 +273,16 @@ export function ScoutingDossier({
                     {ROLE_NAME[role]}
                     {showRatings ? ` · Fit ${sp.fits[role]}` : ""}
                   </span>
+                  {showRatings && delta !== null ? (
+                    <span
+                      className={s.delta}
+                      role="note"
+                      aria-label={`${role} rating difference versus ${incumbent!.name}`}
+                      data-delta={Math.sign(delta)}
+                    >
+                      {delta > 0 ? `+${delta}` : delta}
+                    </span>
+                  ) : null}
                 </div>
               );
             })}
@@ -186,6 +295,7 @@ export function ScoutingDossier({
             <div className={s.attrGrid}>
               {ATTRS.map((attr) => {
                 const val = sp.attrs[attr];
+                const delta = incumbent ? val - incumbent.attrs[attr] : null;
                 return (
                   <div key={attr} className={s.attrItem}>
                     <div className={s.attrHeader}>
@@ -202,6 +312,16 @@ export function ScoutingDossier({
                         style={{ width: `${val}%` }}
                       />
                     </div>
+                    {delta !== null ? (
+                      <span
+                        className={s.delta}
+                        role="note"
+                        aria-label={`${attr} difference versus ${incumbent!.name}`}
+                        data-delta={Math.sign(delta)}
+                      >
+                        {delta > 0 ? `+${delta}` : delta}
+                      </span>
+                    ) : null}
                   </div>
                 );
               })}

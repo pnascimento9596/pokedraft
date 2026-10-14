@@ -110,6 +110,84 @@
   color: var(--text-muted);
 }
 
+.comparison {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.radar {
+  display: block;
+  width: min(100%, 260px);
+  height: auto;
+  align-self: center;
+}
+
+.radarGrid {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.radarCandidate {
+  fill: color-mix(in srgb, var(--viz-1) 16%, transparent);
+  stroke: var(--viz-1);
+  stroke-width: 2.5;
+}
+
+.radarIncumbent {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.radarLabel {
+  fill: var(--text-soft);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.radarLegend {
+  display: flex;
+  justify-content: center;
+  gap: 6px 12px;
+  flex-wrap: wrap;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.candidateLegend {
+  color: var(--viz-1);
+}
+
+.incumbentLegend {
+  text-decoration: underline dashed;
+  text-underline-offset: 3px;
+}
+
+.delta {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.delta[data-delta="1"] {
+  color: var(--ok-text);
+}
+
+.delta[data-delta="-1"] {
+  color: var(--risk-text);
+}
+
 .roleGrid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -175,7 +253,12 @@
 .attrHeader {
   display: flex;
   justify-content: space-between;
+  gap: 6px;
   font-size: 0.78rem;
+}
+
+.attrHeader > .num {
+  flex-shrink: 0;
 }
 
 .attrCode {
