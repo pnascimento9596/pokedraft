@@ -167,11 +167,7 @@ export function MatchHighlights({ cup, draft }: MatchHighlightsProps) {
 
         {/* Player & Dribbling Ball Arena */}
         <div className={s.playerArea}>
-          <div
-            className={s.elementalAura}
-
-            aria-hidden="true"
-          />
+          <div className={s.elementalAura} aria-hidden="true" />
 
           <div className={s.spriteWrap} data-striking={striking}>
             <PlayerImage dexId={currentStar.speciesId} size={84} alt={currentStar.name} />
