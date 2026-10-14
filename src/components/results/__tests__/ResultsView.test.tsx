@@ -196,4 +196,21 @@ describe("ResultsView", () => {
     render(<ResultsView token={FLAWLESS} draft={draft} cup={cup} variant="shared" submit={slot} />);
     expect(screen.queryByTestId("submit-slot")).toBeNull();
   });
+
+  it("renders squad score breakdown, links match star badges to MatchHighlights, and opens Matchday Live broadcast", () => {
+    view(FLAWLESS);
+    const breakdown = screen.getByTestId("score-breakdown");
+    expect(breakdown.textContent).toContain("GK");
+    expect(breakdown.textContent).toContain("DEF");
+    expect(breakdown.textContent).toContain("MID");
+    expect(breakdown.textContent).toContain("ATT");
+    expect(breakdown.textContent).toContain("Synergy");
+
+    fireEvent.click(screen.getByTestId("match-star-G3"));
+    expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
+
+    fireEvent.click(screen.getByTestId("toggle-matchday"));
+    const broadcast = screen.getByTestId("matchday-live");
+    expect(broadcast.textContent).toContain("Group match 1");
+  });
 });
