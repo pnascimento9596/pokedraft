@@ -1,3 +1,4 @@
+import type { Shirt } from "@/engine";
 import { describe, expect, it } from "vitest";
 import { replayAnyVersion as replay } from "@/engine/versions";
 import { getAllMatchStars, getMatchStar, getTournamentMvp } from "../starCalculation";
@@ -9,6 +10,30 @@ const ELIMINATED =
   "pd1.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJjLTQiLFtbInAiLDgyOSwiczAiXSxbInAiLDIxMCwiczEiXSxbInAiLDUyOCwiczIiXSxbInAiLDE2NywiczMiXSxbInAiLDI4NCwiczQiXSxbInAiLDE5NSwiczUiXSxbInAiLDEzMSwiczYiXSxbInAiLDY5MSwiczciXSxbInAiLDMxNywiczgiXSxbInAiLDI5NSwiczkiXSxbInAiLDEwMTYsInMxMCJdLFsicCIsNjMyLCJiMCJdLFsicCIsMzg2LCJiMSJdLFsicCIsNDc4LCJiMiJdLFsicCIsMjMwLCJiMyJdLFsicCIsMzcsImI0Il1dXQ";
 
 describe("starCalculation", () => {
+  it("does not label the 10-minute opener an equalizer when the opponent scores at 80", () => {
+    const { draft, cup } = replay(FLAWLESS);
+    const match = cup.matches.find((m) => m.status === "played")!;
+    const scorer = draft.lineup.starters[1]!;
+    const star = getMatchStar(
+      {
+        ...match,
+        outcome: "D",
+        regulation: { user: 1, opp: 1 },
+        extraTime: null,
+        shootout: null,
+        goals: [
+          { side: "user", scorer, assist: null, minute: 10, penalty: false },
+          { side: "opp", minute: 80, scorer: 9 as Shirt, assist: null, penalty: false },
+        ],
+      },
+      draft,
+    );
+    expect(star.headline).toBe("⚽ Goal Scorer (10')");
+    expect(star.speciesId).toBe(scorer);
+    expect(star.statSummary).toBe("1 Goal");
+    expect(star.matchScore).toBe("1-1");
+  });
+
   it("computes match stars for all played matches in a flawless run", () => {
     const { draft, cup } = replay(FLAWLESS);
     const stars = getAllMatchStars(cup, draft);

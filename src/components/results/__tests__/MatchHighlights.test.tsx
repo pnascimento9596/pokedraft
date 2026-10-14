@@ -4,7 +4,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { replayAnyVersion as replay } from "@/engine/versions";
 import { MatchHighlights } from "../MatchHighlights";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
 
 const FLAWLESS =
   "pd1.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwic2VlZC05IixbWyJwIiw2MzAsInMwIl0sWyJwIiw4OTMsInMxIl0sWyJwIiw1NTgsInMyIl0sWyJwIiw2ODEsInMzIl0sWyJwIiw2NTIsInM0Il0sWyJwIiw0NjgsInM1Il0sWyJwIiwyMzMsInM2Il0sWyJwIiw3MTcsInM3Il0sWyJwIiw1NzMsInM4Il0sWyJwIiw2NjMsInM5Il0sWyJwIiw2OTcsInMxMCJdLFsicCIsMjAwLCJiMCJdLFsicCIsNDQ1LCJiMSJdLFsicCIsMjU3LCJiMiJdLFsicCIsNzI0LCJiMyJdLFsicCIsODY2LCJiNCJdXV0";
@@ -13,6 +16,52 @@ const ELIMINATED =
   "pd1.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJjLTQiLFtbInAiLDgyOSwiczAiXSxbInAiLDIxMCwiczEiXSxbInAiLDUyOCwiczIiXSxbInAiLDE2NywiczMiXSxbInAiLDI4NCwiczQiXSxbInAiLDE5NSwiczUiXSxbInAiLDEzMSwiczYiXSxbInAiLDY5MSwiczciXSxbInAiLDMxNywiczgiXSxbInAiLDI5NSwiczkiXSxbInAiLDEwMTYsInMxMCJdLFsicCIsNjMyLCJiMCJdLFsicCIsMzg2LCJiMSJdLFsicCIsNDc4LCJiMiJdLFsicCIsMjMwLCJiMyJdLFsicCIsMzcsImI0Il1dXQ";
 
 describe("MatchHighlights", () => {
+  it("does not celebrate an old strike after selecting another match", () => {
+    vi.useFakeTimers();
+    const { draft, cup } = replay(FLAWLESS);
+    render(<MatchHighlights cup={cup} draft={draft} />);
+    fireEvent.click(screen.getByTestId("strike-btn"));
+    act(() => vi.advanceTimersByTime(100));
+    fireEvent.click(screen.getByTestId("highlight-chip-G3"));
+    const announcement = screen
+      .getByTestId("match-highlights")
+      .querySelector("[aria-live]")!.textContent;
+    act(() => vi.advanceTimersByTime(500));
+    expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
+    expect(screen.queryByTestId("goal-overlay")).toBeNull();
+    expect(screen.getByTestId("match-highlights").querySelector("[aria-live]")!.textContent).toBe(
+      announcement,
+    );
+  });
+
+  it.each(["selection", "reset"])("an old %s reset cannot clear a later strike", (action) => {
+    vi.useFakeTimers();
+    const { draft, cup } = replay(FLAWLESS);
+    render(<MatchHighlights cup={cup} draft={draft} />);
+    fireEvent.click(screen.getByTestId("strike-btn"));
+    act(() => vi.advanceTimersByTime(600));
+    expect(screen.getByTestId("goal-overlay").textContent).toContain("GOAL!");
+    if (action === "selection") fireEvent.click(screen.getByTestId("highlight-chip-G3"));
+    else fireEvent.click(screen.getByRole("button", { name: "Continue Dribbling" }));
+    fireEvent.click(screen.getByTestId("strike-btn"));
+    act(() => vi.advanceTimersByTime(2200));
+    expect((screen.getByTestId("strike-btn") as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByTestId("goal-overlay").textContent).toContain("GOAL!");
+    act(() => vi.advanceTimersByTime(600));
+    expect((screen.getByTestId("strike-btn") as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.queryByTestId("goal-overlay")).toBeNull();
+  });
+
+  it("cancels pending strike callbacks on unmount", () => {
+    vi.useFakeTimers();
+    const { draft, cup } = replay(FLAWLESS);
+    const { unmount } = render(<MatchHighlights cup={cup} draft={draft} />);
+    fireEvent.click(screen.getByTestId("strike-btn"));
+    expect(vi.getTimerCount()).toBe(2);
+    unmount();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it("renders the interactive stadium stage with Star player, soccer ball, and ability activation", () => {
     const { draft, cup } = replay(FLAWLESS);
     render(<MatchHighlights cup={cup} draft={draft} />);
