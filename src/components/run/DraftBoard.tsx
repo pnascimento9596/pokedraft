@@ -22,7 +22,7 @@ import { TypeChip } from "@/components/TypeChip";
 import { RollReveal } from "@/components/wheel/RollReveal";
 import { SoundToggle } from "@/components/wheel/SoundToggle";
 import { announce as stageLine, dexLabel, stagesFor } from "@/components/wheel/reel";
-import { unlockAudio } from "@/components/wheel/sound";
+import { playSignCard, unlockAudio } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { REGION_LABEL } from "@/ui/labels";
 import { filledCount, refFromKey, sameRef, slotLabel, valueAt } from "@/ui/lineup";
@@ -189,8 +189,11 @@ function ActiveDraftBoard({
     focusBefore.current = null;
     if (was !== null && !was.isConnected) headingRef.current?.focus({ preventScroll: true });
     if (run.error !== null) announce(run.error);
-    else if (run.actions.length > before.actions.length)
-      announce(outcome(before.state, run.state, run.actions[run.actions.length - 1]!));
+    else if (run.actions.length > before.actions.length) {
+      const action = run.actions[run.actions.length - 1]!;
+      announce(outcome(before.state, run.state, action));
+      if (action.type === "pick") playSignCard();
+    }
   }, [run]);
 
   const roll = state.phase.kind === "choosing" ? state.phase.roll : null;
