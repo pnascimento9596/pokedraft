@@ -1,13 +1,23 @@
 import { useMemo, type CSSProperties } from "react";
 import { ENGINE_COEFFICIENTS } from "@/engine/coefficients";
 import { buildLadder } from "@/engine/opponents";
-import { CUP_ROUNDS, type Mode } from "@/engine/types";
+import { CUP_ROUNDS, type CupRound, type Mode } from "@/engine/types";
 
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import s from "./RoadStrip.module.css";
 import { ModuleCard, Tooltip } from "@/components/ui/primitives";
 
 const BIG_JUMP = new Set(["R32", "R16", "QF", "SF", "F"]);
+const ROUND_MICRO: Readonly<Record<CupRound, string>> = {
+  G1: "G1",
+  G2: "G2",
+  G3: "G3",
+  R32: "R32",
+  R16: "R16",
+  QF: "QF",
+  SF: "SF",
+  F: "Final",
+};
 // Before a seed exists the bars follow the shape of the coefficient table. No number is printed.
 const SHAPE = ENGINE_COEFFICIENTS.ladder.score;
 // A non-breaking space holds the value row open, so the strip is the same height with and
@@ -56,7 +66,12 @@ export function RoadStrip({
               </span>
               <span className={s.bar} aria-hidden="true" />
               <Tooltip
-                label={ROUND_SHORT[round]}
+                label={
+                  <>
+                    <span className={s.microLabel}>{ROUND_MICRO[round]}</span>
+                    <span className={s.shortLabel}>{ROUND_SHORT[round]}</span>
+                  </>
+                }
                 title={ROUND_LABEL[round]}
                 rows={
                   opponent === null

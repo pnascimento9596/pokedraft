@@ -96,7 +96,7 @@ export function Tooltip({
   rows,
   source,
 }: {
-  readonly label: string;
+  readonly label: ReactNode;
   readonly title: string;
   readonly rows: readonly { readonly key: string; readonly value: ReactNode }[];
   readonly source: string;

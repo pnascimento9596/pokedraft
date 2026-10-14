@@ -1,8 +1,8 @@
 import { Fragment, type ReactNode } from "react";
 import type { Species } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
+import { TypeIcon } from "@/components/TypeIcon";
 import { typeLabel } from "@/ui/labels";
-import { TYPE_PALETTE } from "@/design/stadium";
 import s from "./Pitch.module.css";
 
 export function PitchCard({
@@ -66,7 +66,8 @@ export function PitchCard({
           <span id={`${id}-types`} className={s.cardTypes}>
             {species.types.map((type) => (
               <Fragment key={type}>
-                <span style={{ borderColor: TYPE_PALETTE[type] }}>{typeLabel(type)}</span>{" "}
+                <TypeIcon type={type} size={15} decorative />
+                <span className="visually-hidden">{typeLabel(type)}</span>{" "}
               </Fragment>
             ))}
           </span>

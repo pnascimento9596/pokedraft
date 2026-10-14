@@ -77,11 +77,12 @@
   position: absolute;
   transform: translate(-50%, -50%) translateZ(40px) rotateX(-26deg);
   transform-origin: center center;
-  width: 64px;
-  height: 80px;
+  width: 68px;
+  height: 94px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   gap: 2px;
   padding: 3px;
   border: 2px solid var(--card-type, var(--stadium-empty));
@@ -105,8 +106,12 @@
 .token[data-filled="false"] .tokenSlot {
   position: static;
   margin-top: 0;
-  font-size: 12px;
-  line-height: 14px;
+  font-size: 11px;
+  line-height: 12px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 .token:disabled {
   cursor: default;
@@ -157,15 +162,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 12px;
+  min-height: 14px;
   font-size: 11px;
-  line-height: 12px;
+  line-height: 13px;
   font-weight: 800;
 }
 .cardRole {
-  background: rgba(0, 0, 0, 0.5);
-  padding: 0 2px;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 1px 3px;
   border-radius: 3px;
+  letter-spacing: 0.02em;
+  font-size: 10px;
+  line-height: 11px;
 }
 .tokenSlot {
   position: absolute;
@@ -173,25 +181,29 @@
   margin-top: 3px;
   font-size: 11px;
   line-height: 12px;
-  padding: 0 4px;
+  font-weight: 700;
+  padding: 1px 4px;
   border-radius: 4px;
   background: var(--stadium-card);
+  border: 1px solid var(--card-type, var(--stadium-line));
   color: var(--stadium-ink);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 .tokenImage {
   display: flex;
   align-items: center;
   justify-content: center;
-  container-type: size;
   width: 100%;
-  height: 42px;
+  height: 38px;
   flex: 1;
-  min-height: 0;
+  min-height: 26px;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
 }
 .tokenImage > :global([data-player-image]) {
-  width: min(48px, 100cqw, 100cqh) !important;
-  height: min(48px, 100cqw, 100cqh) !important;
+  width: 38px !important;
+  height: 38px !important;
 }
 .tokenImage img {
   max-width: 100%;
@@ -202,45 +214,49 @@
   transform: scaleX(-1);
 }
 .tokenEmpty {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--stadium-line);
+  border: 1.5px solid var(--stadium-line);
   border-radius: 50%;
   color: var(--stadium-line);
   box-shadow: 0 0 6px var(--stadium-line);
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1;
+  font-weight: 700;
 }
 .tokenName {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 11px;
-  line-height: 12px;
+  font-size: 12px;
+  line-height: 14px;
   font-weight: 700;
+  text-align: center;
 }
 .cardTypes {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   max-width: 100%;
-  font-size: 11px;
-  line-height: 12px;
+  min-height: 16px;
 }
 .cardTypes > span {
-  border: 1px solid;
-  border-radius: 3px;
-  padding: 0 1px;
-  background: rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
 }
 .emptyPrompt {
-  font-size: 11px;
-  line-height: 11px;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 700;
   color: var(--stadium-line);
+  text-align: center;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .tokenNote {
   display: flex;
@@ -258,7 +274,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px;
+  padding: 10px 8px 12px 8px;
   border-radius: 12px;
   background: var(--stadium-glass);
   border: 1px solid var(--stadium-border);
@@ -275,17 +291,20 @@
   top: auto;
   transform: none;
   flex: none;
+  width: calc((100% - 16px) / 5);
+  max-width: 80px;
+  min-width: 44px;
+  height: 88px;
 }
 .bench .tokenSlot {
   position: static;
   margin-top: 0;
   font-size: 11px;
   line-height: 12px;
-}
-.bench .token {
-  width: calc((100% - 16px) / 5);
-  max-width: 80px;
-  min-width: 44px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 .benchLabel {
   color: var(--text);
@@ -296,10 +315,10 @@
     height: 112px;
   }
   .tokenName {
-    font-size: 11px;
+    font-size: 12px;
   }
   .cardTypes {
-    font-size: 11px;
+    min-height: 18px;
   }
 }
 @container (max-width: 540px) {
@@ -311,20 +330,25 @@
     height: 450px;
   }
   .token {
-    width: 56px;
-    height: 84px;
+    width: 62px;
+    height: 90px;
     gap: 2px;
     padding: 2px;
   }
   .wrap[data-fit] .token {
-    height: 68px;
+    height: 90px;
   }
   .tokenImage {
-    height: 32px;
+    height: 38px;
+    min-height: 26px;
+  }
+  .tokenImage > :global([data-player-image]) {
+    width: 38px !important;
+    height: 38px !important;
   }
   .cardTypes {
-    font-size: 11px;
-    line-height: 12px;
+    min-height: 16px;
+    gap: 2px;
   }
   .tokenName {
     font-size: 12px;
@@ -333,10 +357,11 @@
   .cardHeader {
     font-size: 11px;
     line-height: 12px;
-    min-height: 10px;
+    min-height: 12px;
   }
   .emptyPrompt {
-    font-size: 11px;
+    font-size: 10px;
+    line-height: 12px;
   }
   .emptyPrompt[data-suitability="recommended"] {
     color: var(--stadium-suitability-best);
@@ -351,7 +376,10 @@
     font-weight: 700;
   }
   .bench {
-    padding: 10px 6px;
+    padding: 10px 6px 12px 6px;
+  }
+  .bench .token {
+    height: 88px;
   }
 }
 @media (hover: hover) {

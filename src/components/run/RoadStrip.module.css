@@ -72,6 +72,23 @@
   text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
 }
 
+.microLabel {
+  display: inline;
+}
+
+.shortLabel {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  .microLabel {
+    display: none;
+  }
+  .shortLabel {
+    display: inline;
+  }
+}
+
 .step :global(.theme-tooltip) {
   flex: none;
   position: static;
@@ -91,6 +108,8 @@
   font-weight: 700;
   letter-spacing: 0.01em;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: flex;
   align-items: center;
   justify-content: center;
