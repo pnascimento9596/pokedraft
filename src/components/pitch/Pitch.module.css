@@ -14,8 +14,8 @@
 .field {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 11;
-  max-height: 520px;
+  aspect-ratio: 4 / 3;
+  max-height: 580px;
   transform: rotateX(26deg);
   transform-origin: center bottom;
   transform-style: preserve-3d;
@@ -77,8 +77,8 @@
   position: absolute;
   transform: translate(-50%, -50%) translateZ(40px) rotateX(-26deg);
   transform-origin: center center;
-  width: 68px;
-  height: 94px;
+  width: 60px;
+  height: 78px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,8 +100,17 @@
   z-index: 1;
 }
 .token[data-filled="false"] {
+  width: 54px;
+  height: 58px;
+  min-width: 44px;
+  min-height: 44px;
   border-color: var(--stadium-ring);
   background: color-mix(in srgb, var(--stadium-card) 85%, transparent);
+  justify-content: center;
+  gap: 3px;
+}
+.token[data-filled="false"] .tokenImage {
+  display: none;
 }
 .token[data-filled="false"] .tokenSlot {
   position: static;
@@ -325,19 +334,25 @@
 @container (max-width: 540px) {
   .field {
     aspect-ratio: auto;
-    height: 480px;
+    height: 580px;
   }
   .wrap[data-fit] .field {
-    height: 450px;
+    height: 520px;
   }
   .token {
-    width: 62px;
-    height: 90px;
+    width: 56px;
+    height: 78px;
     gap: 1px;
     padding: 2px;
   }
+  .token[data-filled="false"] {
+    width: 52px;
+    height: 56px;
+    min-width: 44px;
+    min-height: 44px;
+  }
   .wrap[data-fit] .token {
-    height: 90px;
+    height: 68px;
   }
   .tokenImage {
     height: 30px;

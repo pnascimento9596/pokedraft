@@ -14,7 +14,7 @@
   grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 4px;
   align-items: end;
-  height: calc(var(--chart-h) + 48px);
+  height: calc(var(--chart-h) + 80px);
   overflow-x: auto;
   overscroll-behavior-x: contain;
 }
@@ -36,7 +36,7 @@
   font-size: 11px;
   line-height: 14px;
   font-weight: 800;
-  color: var(--stadium-ink);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -62,16 +62,6 @@
   box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
 }
 
-.step[data-big] .value {
-  color: rgb(191, 219, 254);
-  text-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
-}
-
-.step:last-child .value {
-  color: rgb(254, 240, 138);
-  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
-}
-
 .microLabel {
   display: inline;
 }
@@ -93,7 +83,7 @@
   flex: none;
   position: static;
   display: flex;
-  height: 28px;
+  height: 44px;
 }
 
 .step :global(.theme-tooltip__trigger) {
@@ -102,11 +92,11 @@
   border-radius: 6px;
   background: var(--surface-sunken);
   border: 1px solid var(--border-control);
-  padding: 0 2px;
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  padding: 0 1px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -120,13 +110,13 @@
 .step[data-big] :global(.theme-tooltip__trigger) {
   background: rgba(37, 99, 235, 0.15);
   border-color: rgba(96, 165, 250, 0.4);
-  color: rgb(147, 197, 253);
+  color: var(--text);
 }
 
 .step:last-child :global(.theme-tooltip__trigger) {
   background: rgba(245, 158, 11, 0.18);
   border-color: rgba(245, 158, 11, 0.5);
-  color: rgb(253, 230, 138);
+  color: var(--text);
   box-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
 }
 
@@ -157,19 +147,12 @@
 
 @media (max-width: 599px) {
   .steps {
-    gap: 2px;
-    height: calc(var(--chart-h) + 44px);
+    grid-template-columns: repeat(4, minmax(44px, 1fr));
+    gap: 16px 4px;
+    height: auto;
     overflow: visible;
   }
   .step {
-    height: 100%;
-  }
-  .step :global(.theme-tooltip) {
-    height: 24px;
-  }
-  .step :global(.theme-tooltip__trigger) {
-    font-size: 11px;
-    padding: 0 1px;
-    letter-spacing: -0.02em;
+    height: calc(var(--chart-h) + 80px);
   }
 }

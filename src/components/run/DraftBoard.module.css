@@ -340,6 +340,12 @@
   display: none;
 }
 @media (max-width: 959px) and (min-height: 500px) {
+  .board[data-choosing][data-drawer] .drawerToggle {
+    color: var(--stadium-ink);
+  }
+  .board[data-choosing][data-drawer] .candidates > :global(.kicker) {
+    color: var(--stadium-muted);
+  }
   .board[data-choosing][data-drawer] .drawerBackdrop {
     display: block;
     position: fixed;
@@ -418,8 +424,8 @@
   :global(html) {
     scroll-padding-top: 72px;
   }
-  :global(html):has(.board[data-drawer][data-revealed]) {
-    scroll-padding-bottom: min(280px, calc(100vh - 156px));
+  :global(html):has(.board[data-drawer][data-choosing]) {
+    scroll-padding-bottom: min(max(360px, calc(100dvh - 225px)), calc(100dvh - 156px));
   }
   .board {
     padding-bottom: 120px;

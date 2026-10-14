@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { ready } from "./mobile/scenes";
 
 test.use({ reducedMotion: "reduce" });
 
@@ -148,6 +149,8 @@ test("two tabs keep independent runs and New run clears only its own checkpoint"
   const firstSquad = await squad(first);
   const second = await context.newPage();
   await second.goto(OTHER);
+  await ready(second, second.getByTestId("run-start"));
+  await expect(second.getByTestId("run-start")).not.toHaveAttribute("aria-busy", "true");
   await second.getByTestId("run-start").click();
   await pick(second, 1, 1);
   const secondSquad = await squad(second);

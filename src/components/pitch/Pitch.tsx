@@ -133,7 +133,7 @@ export function Pitch({
         aria-labelledby={
           species === null
             ? `${labelId}-${key} ${labelId}-${key}-role ${labelId}-${key}-slot ${labelId}-${key}-prompt`
-            : `${labelId}-${key} ${labelId}-${key}-role${tokenNote ? ` ${labelId}-${key}-note-score` : ""} ${labelId}-${key}-slot ${labelId}-${key}-name ${labelId}-${key}-types`
+            : `${labelId}-${key} ${labelId}-${key}-role${tokenNote ? ` ${labelId}-${key}-note-score` : ""} ${labelId}-${key}-name ${labelId}-${key}-types`
         }
         aria-describedby={
           species !== null && tokenNote ? `${labelId}-${key}-note-label` : undefined

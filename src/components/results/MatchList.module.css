@@ -318,10 +318,10 @@
 
 .starName {
   font-weight: 700;
-  color: var(--stadium-ink);
+  color: var(--text);
 }
 
 .starHeadline {
-  color: var(--accent-light, rgb(56, 189, 248));
+  color: var(--text-muted);
   font-weight: 500;
 }
