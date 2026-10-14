@@ -1,4 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import { NextRequest } from "next/server";
 import { PASSCODE_COOKIE, isPublicPath, passcodeDigest, safeNext } from "../passcode";
 import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
@@ -6,6 +8,37 @@ import { config, proxy } from "../proxy";
 import { scriptedToken } from "../leaderboard/server/__tests__/fixtures";
 import { RUN_TOKEN_VERSION } from "../engine";
 import { A11Y_RUN_V1, GOLDEN_CUP8_V2 } from "../engine/versions/__tests__/fixtures";
+
+function importClosure(entryRel: string): string[] {
+  const root = path.resolve(import.meta.dirname, "../..");
+  const specRe = /(?:from|import)\s+"([^"]+)"/g;
+  const exts = ["", ".ts", ".tsx", ".json", "/index.ts"];
+  const visited = new Set<string>();
+  const queue = [path.join(root, entryRel)];
+  while (queue.length > 0) {
+    const file = queue.pop()!;
+    const rel = path.relative(root, file);
+    if (visited.has(rel)) continue;
+    visited.add(rel);
+    if (!/\.tsx?$/.test(file)) continue;
+    const text = readFileSync(file, "utf8");
+    for (const m of text.matchAll(specRe)) {
+      const spec = m[1]!;
+      let base: string | null = null;
+      if (spec.startsWith("@/")) base = path.join(root, "src", spec.slice(2));
+      else if (spec.startsWith(".")) base = path.resolve(path.dirname(file), spec);
+      if (base === null) continue;
+      for (const ext of exts) {
+        const candidate = base + ext;
+        if (existsSync(candidate) && (ext !== "" || path.extname(candidate) !== "")) {
+          queue.push(candidate);
+          break;
+        }
+      }
+    }
+  }
+  return [...visited].sort();
+}
 
 function req(path: string, cookie?: string): NextRequest {
   const headers = cookie ? { cookie: `${PASSCODE_COOKIE}=${cookie}` } : undefined;
@@ -181,5 +214,11 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     expect(safeNext("/\t/evil.test")).toBe("/");
     expect(safeNext("/\n/evil.test/x")).toBe("/");
     expect(safeNext("/leaderboard?mode=cup8#top")).toBe("/leaderboard?mode=cup8#top");
+  });
+
+  it("keeps pokedex.json and scouting.json out of the proxy and token import closure (SD-03: 1.33 MB data chunk in proxy)", () => {
+    const closure = importClosure("src/proxy.ts");
+    expect(closure).not.toContain("src/data/pokedex.json");
+    expect(closure).not.toContain("src/data/scouting.json");
   });
 });

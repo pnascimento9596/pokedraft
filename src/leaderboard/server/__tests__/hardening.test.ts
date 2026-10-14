@@ -96,6 +96,20 @@ describe("submit hardening", () => {
     expect(body.entry.rank).toBeNull();
     expect(await db.select().from(leaderboardEntries)).toHaveLength(1);
   });
+
+  it("prunes and records a rate-limit event in a single SQL round-trip and indexes all-time boards (SE-11)", async () => {
+    const execSpy = vi.spyOn(db, "execute");
+    const delSpy = vi.spyOn(db, "delete");
+    const limiter = drizzleLimiter(() => db);
+    const allowed = await limiter.consume("submit", "hash-1", NOW, { max: 10, windowMs: 3600_000 });
+    expect(allowed).toBe(true);
+    expect(delSpy).toHaveBeenCalledTimes(0);
+    expect(execSpy).toHaveBeenCalledTimes(1);
+    const idx = await client.query<{ indexname: string }>(
+      "SELECT indexname FROM pg_indexes WHERE tablename = 'leaderboard_entries' AND indexname = 'leaderboard_entries_alltime_idx'",
+    );
+    expect(idx.rows.map((r) => r.indexname)).toEqual(["leaderboard_entries_alltime_idx"]);
+  });
 });
 
 describe("server error logging (catches a 503 whose cause is lost, or a log that leaks personal data)", () => {
