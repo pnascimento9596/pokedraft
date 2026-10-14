@@ -112,7 +112,10 @@ for (const engine of ["chromium", "webkit"] as const) {
         await expect(page.getByTestId("soccer-ball")).toBeVisible();
         expect(await animationStates(page)).toEqual([]);
         await expect(page.locator("audio[autoplay], video[autoplay]")).toHaveCount(0);
+        await page.clock.install();
+        await page.clock.pauseAt(new Date(Date.now() + 1000));
         await page.getByTestId("strike-btn").click();
+        await page.clock.runFor(600);
         await expect(page.getByTestId("goal-overlay")).toBeAttached();
         expect(
           await page

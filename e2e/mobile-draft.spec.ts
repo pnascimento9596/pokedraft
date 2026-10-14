@@ -80,6 +80,12 @@ test.describe("draft layout while the wheel spins", () => {
     await tapNow(page, slot, "an empty slot");
     await expect(page.getByTestId("wheel").first()).toBeVisible();
     const spinning = await rect(field(page), true);
+    await page.getByTestId("draft-wheel").evaluate((el) => {
+      const skip = Array.from(el.querySelectorAll("button")).find(
+        (button) => button.textContent === "Tap to skip",
+      );
+      skip?.click();
+    });
     const candidate = page.locator('[data-testid^="candidate-"]').first();
     await expect(candidate).toBeVisible();
     await settle(page);

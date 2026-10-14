@@ -164,6 +164,12 @@ for (const engine of ["chromium", "webkit"] as const) {
       await expect(page.getByTestId("run-start")).not.toHaveAttribute("aria-busy", "true");
       await page.getByTestId("run-start").tap();
       await wheelVisible(page);
+      await page.getByTestId("draft-wheel").evaluate((el) => {
+        const skip = Array.from(el.querySelectorAll("button")).find(
+          (button) => button.textContent === "Tap to skip",
+        );
+        skip?.click();
+      });
       const picker = page.getByTestId("draft-drawer");
       await expect(page.locator('[data-testid^="candidate-"]')).toHaveCount(5);
       expect(
