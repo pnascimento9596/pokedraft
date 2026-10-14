@@ -41,6 +41,15 @@ function view(token: string, variant: "live" | "shared" = "shared", cupOverride?
 }
 
 describe("ResultsView", () => {
+  it("closes the native exhibition dialog when the results page is hidden or unmounted", () => {
+    const viewResult = view(ELIMINATED, "shared");
+    fireEvent.click(screen.getByTestId("play-exhibition"));
+    const dialog = screen.getByTestId("exhibition-modal") as HTMLDialogElement;
+    expect(dialog.open).toBe(true);
+    viewResult.unmount();
+    expect(dialog.open).toBe(false);
+  });
+
   it("shows the replayed record and Team Score, not a placeholder or a recomputed value", () => {
     view(FLAWLESS);
     expect(screen.getByTestId("results-record").textContent).toBe("8-0-0");
