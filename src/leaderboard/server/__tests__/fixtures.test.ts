@@ -10,7 +10,9 @@ it("gives each database fixture an independent client with real teardown", async
     await first.client.close();
     expect(first.client.closed).toBe(true);
     expect(second.client.closed).toBe(false);
-    const result = await second.client.query<{ total: number }>("SELECT count(*)::int AS total FROM leaderboard_entries");
+    const result = await second.client.query<{ total: number }>(
+      "SELECT count(*)::int AS total FROM leaderboard_entries",
+    );
     expect(result.rows).toEqual([{ total: 0 }]);
   } finally {
     if (!first.client.closed) await first.client.close();
