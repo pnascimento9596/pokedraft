@@ -70,6 +70,16 @@ it("shows authentic Bulbasaur types and Defender role inside its HTML card", () 
   expect(card.closest("foreignObject")).toBeNull();
   expect(within(card).queryByTestId("rating-note")).toBeNull();
 });
+it("filled cards keep the visible role and species contiguous in the accessible name", () => {
+  render(
+    <Pitch formation="4-3-3" lineup={filled.lineup} speciesOf={speciesById} onSlotTap={() => {}} />,
+  );
+  expect(
+    screen
+      .getByRole("button", { name: "LCB Bulbasaur DF Bulbasaur Grass Poison" })
+      .getAttribute("aria-label"),
+  ).toBe("LCB Bulbasaur");
+});
 it("empty slots invite drafting and bench count reflects actual filled substitutes", () => {
   render(
     <Pitch formation="4-3-3" lineup={draft.lineup} speciesOf={speciesById} onSlotTap={() => {}} />,

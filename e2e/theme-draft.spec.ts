@@ -1,5 +1,24 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { PLAY_8_0 } from "./mobile/scenes";
+
+for (const theme of ["light", "dark"] as const) {
+  test(`expanded phone drawer keeps its toggle and instruction readable in ${theme}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
+    await page.goto(PLAY_8_0);
+    await page.getByTestId("run-start").click();
+    await expect(page.locator('[data-testid^="candidate-"]').first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Minimize draft picker" })).toBeVisible();
+    const { violations } = await new AxeBuilder({ page })
+      .include('[data-testid="draft-drawer"]')
+      .withRules(["color-contrast"])
+      .analyze();
+    expect(violations.map((v) => `${v.id} x${v.nodes.length}`)).toEqual([]);
+  });
+}
 
 for (const width of [390, 1440]) {
   for (const theme of ["light", "dark"] as const) {
