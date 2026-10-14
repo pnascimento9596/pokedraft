@@ -7,6 +7,12 @@ import { dailySettings } from "@/leaderboard/daily";
 import { freshSeed } from "@/ui/settings";
 import { Challenge, PlayScreen } from "../PlayScreen";
 import { DAILY_2026_10_10_CUP8, GOLDEN_1_KANTO151 } from "./ladders";
+import { playSignCard } from "@/components/wheel/sound";
+
+vi.mock("@/components/wheel/sound", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/wheel/sound")>()),
+  playSignCard: vi.fn(),
+}));
 
 const query = { current: "" };
 const fresh = { seed: "golden-1" };
@@ -50,6 +56,19 @@ async function start(): Promise<void> {
 }
 
 describe("challenge run screen", () => {
+  it("plays one placement cue after a committed pick, not when choosing a candidate or swapping", async () => {
+    query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
+    render(<PlayScreen />);
+    await start();
+    fireEvent.click(screen.getByTestId("candidate-316"));
+    expect(playSignCard).toHaveBeenCalledTimes(0);
+    fireEvent.click(screen.getByTestId("slot-s9"));
+    expect(playSignCard).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByTestId("slot-s9"));
+    fireEvent.click(screen.getByTestId("slot-s8"));
+    expect(playSignCard).toHaveBeenCalledTimes(1);
+  });
+
   it("places the selected candidate into the tapped open slot and advances the round, so Squad First picks reach the engine", async () => {
     query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
     render(<PlayScreen />);
