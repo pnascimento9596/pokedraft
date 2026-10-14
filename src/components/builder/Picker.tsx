@@ -296,9 +296,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
               ) : (
                 <>
                   <span className={s.wideOnly}>Filter by type (18)</span>
-                  <span className={s.narrowOnly} aria-hidden="true">
-                    Type (18)
-                  </span>
+                  <span className={s.narrowOnly}>Type (18)</span>
                 </>
               )}
               <span aria-hidden="true">{typesExpanded ? " ▲" : " ▼"}</span>
@@ -310,12 +308,11 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   className={`btn btn--ghost btn--sm ${s.recToggle}`}
                   data-testid="picker-recommended"
                   aria-pressed={recommendedOnly}
+                  aria-label={`Best for ${role}`}
                   onClick={() => setRecommendedOnly((v) => !v)}
                 >
                   <span className={s.wideOnly}>★ Best for {role}</span>
-                  <span className={s.narrowOnly} aria-hidden="true">
-                    ★
-                  </span>
+                  <span className={s.narrowOnly}>★</span>
                 </button>
               ) : null}
               <label className={s.sortSelect}>
