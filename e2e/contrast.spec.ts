@@ -272,7 +272,7 @@ for (const colorScheme of ["dark", "light"] as const) {
       expect(await axeContrast(page)).toEqual([]);
 
       await visit(page, "/history");
-      await page.locator("footer").first().waitFor();
+      await page.locator("main").first().waitFor();
       expect(await axeContrast(page)).toEqual([]);
     });
 

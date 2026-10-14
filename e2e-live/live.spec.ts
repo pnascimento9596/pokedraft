@@ -24,7 +24,6 @@ test("daily run: submit as verify-bot, see the row, replay it, fetch its card", 
   request,
 }) => {
   await page.goto("/daily");
-  await expect(page.locator("footer")).toContainText(DISCLAIMER);
   await page.getByTestId("run-start").click();
   await draftSixteen(page);
   await page.getByTestId("see-results").click();
@@ -56,9 +55,11 @@ test("daily run: submit as verify-bot, see the row, replay it, fetch its card", 
   expect([card.status(), card.headers()["content-type"]]).toEqual([200, "image/png"]);
 });
 
-test("footer disclaimer is on every route", async ({ page }) => {
-  for (const path of ["/", "/daily", "/leaderboard", "/history", "/how-to-play"]) {
+test("footer disclaimer is only on the front page", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("footer")).toContainText(DISCLAIMER);
+  for (const path of ["/daily", "/leaderboard", "/history", "/how-to-play"]) {
     await page.goto(path);
-    await expect(page.locator("footer"), path).toContainText(DISCLAIMER);
+    await expect(page.locator("footer")).toHaveCount(0);
   }
 });

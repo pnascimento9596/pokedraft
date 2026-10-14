@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Inter } from "next/font/google";
 import { Announcer } from "@/components/Announcer";
 import { ImageSettings } from "@/components/ImageSettings";
-import { PackCredit } from "@/components/PackCredit";
 import { SiteNav } from "@/components/SiteNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NAV_ICONS, NavIcon, type NavFamily } from "@/components/ui/nav-icons";
@@ -62,14 +61,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </SiteNav>
         </header>
         {children}
-        <footer className="site-footer">
-          <p>
-            Fan project, not affiliated with Nintendo, Game Freak, or The Pokémon Company. Not
-            monetized. Data via PokéAPI.
-          </p>
-          <p>Soccer remix of the All-22 Pokémon Builder idea.</p>
-          <PackCredit />
-        </footer>
         <Announcer />
       </body>
     </html>
