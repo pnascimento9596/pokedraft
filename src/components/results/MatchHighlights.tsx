@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, type CSSProperties } from "react";
+import { useState, useMemo, useRef, useEffect, type CSSProperties } from "react";
 import type { CupResult, DraftState } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeIcon } from "@/components/TypeIcon";
@@ -22,12 +22,25 @@ export function MatchHighlights({ cup, draft }: MatchHighlightsProps) {
   const [paused, setPaused] = useState(false);
   const [announcement, setAnnouncement] = useState("");
 
+  const goalTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const resetTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const cancelStrikeTimers = () => {
+    clearTimeout(goalTimer.current);
+    clearTimeout(resetTimer.current);
+    goalTimer.current = undefined;
+    resetTimer.current = undefined;
+  };
+
+  useEffect(() => cancelStrikeTimers, []);
+
   if (stars.length === 0) return null;
 
   const currentStar: MatchStar = stars[activeIdx] ?? stars[0]!;
   const starColor = TYPE_PALETTE[currentStar.element] ?? TYPE_PALETTE.water;
 
   const handleSelect = (idx: number) => {
+    cancelStrikeTimers();
     setActiveIdx(idx);
     setStriking(false);
     setShowGoal(false);
@@ -52,18 +65,19 @@ export function MatchHighlights({ cup, draft }: MatchHighlightsProps) {
       `${currentStar.name} unleashed ${currentStar.kickMove} using ${currentStar.ability}!`,
     );
 
-    setTimeout(() => {
+    goalTimer.current = setTimeout(() => {
       setShowGoal(true);
       setAnnouncement(`GOAL! ${currentStar.name} scores with ${currentStar.kickMove}!`);
     }, 550);
 
-    setTimeout(() => {
+    resetTimer.current = setTimeout(() => {
       setStriking(false);
       setShowGoal(false);
     }, 2800);
   };
 
   const handleReset = () => {
+    cancelStrikeTimers();
     setStriking(false);
     setShowGoal(false);
   };
@@ -76,6 +90,7 @@ export function MatchHighlights({ cup, draft }: MatchHighlightsProps) {
     <section
       className={s.highlights}
       data-testid="match-highlights"
+      data-paused={paused}
       aria-label="Match Highlights and Star Performers"
       style={stageStyle}
     >
@@ -87,7 +102,9 @@ export function MatchHighlights({ cup, draft }: MatchHighlightsProps) {
         <div className={s.headlineGroup}>
           <span className={s.eyebrow}>Silph Stadium Highlights</span>
           <span className={s.matchTitle} data-testid="highlight-title">
-            {currentStar.isTournamentMvp ? "Tournament Recap" : `${currentStar.roundLabel} vs ${currentStar.opponentName}`}
+            {currentStar.isTournamentMvp
+              ? "Tournament Recap"
+              : `${currentStar.roundLabel} vs ${currentStar.opponentName}`}
             <span className={s.scorePill} data-outcome={currentStar.outcome}>
               {currentStar.matchScore}
             </span>
@@ -149,31 +166,16 @@ export function MatchHighlights({ cup, draft }: MatchHighlightsProps) {
         <div className={s.turfMarking} aria-hidden="true" />
 
         {/* Player & Dribbling Ball Arena */}
-        <div className={s.playerArea} style={paused ? { animationPlayState: "paused" } : undefined}>
-          <div
-            className={s.elementalAura}
-            style={paused ? { animationPlayState: "paused" } : undefined}
-            aria-hidden="true"
-          />
+        <div className={s.playerArea}>
+          <div className={s.elementalAura} aria-hidden="true" />
 
-          <div
-            className={s.spriteWrap}
-            data-striking={striking}
-            style={paused ? { animationPlayState: "paused" } : undefined}
-          >
+          <div className={s.spriteWrap} data-striking={striking}>
             <PlayerImage dexId={currentStar.speciesId} size={84} alt={currentStar.name} />
           </div>
 
           <div className={s.ballStage} aria-hidden="true">
-            <div
-              className={s.ballShadow}
-              data-striking={striking}
-              style={paused ? { animationPlayState: "paused" } : undefined}
-            />
-            <SoccerBall
-              size={26}
-              className={`${s.ball} ${striking ? s.striking : ""}`}
-            />
+            <div className={s.ballShadow} data-striking={striking} />
+            <SoccerBall size={26} className={s.ball} striking={striking} />
           </div>
         </div>
 
@@ -228,11 +230,7 @@ export function MatchHighlights({ cup, draft }: MatchHighlightsProps) {
             <div className={s.goalSubtitle}>
               {currentStar.name} strikes with {currentStar.kickMove}!
             </div>
-            <button
-              type="button"
-              className={s.goalResetBtn}
-              onClick={handleReset}
-            >
+            <button type="button" className={s.goalResetBtn} onClick={handleReset}>
               Continue Dribbling
             </button>
           </div>

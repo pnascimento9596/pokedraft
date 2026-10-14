@@ -192,6 +192,8 @@ test("grass swipes scroll the page and filled HTML cards still drag-swap", async
   await page.getByRole("button", { name: "Randomize", exact: true }).click();
   const a = page.getByTestId("slot-s6"),
     b = page.getByTestId("slot-s7");
+  await expect(a).toHaveAttribute("data-filled", "true");
+  await expect(b).toHaveAttribute("data-filled", "true");
   await a.scrollIntoViewIfNeeded();
   const names = [await a.getAttribute("aria-label"), await b.getAttribute("aria-label")];
   const ar = await a.boundingBox(),

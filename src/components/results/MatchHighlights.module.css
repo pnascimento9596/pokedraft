@@ -623,6 +623,13 @@
   }
 }
 
+/* Pause visual motion only. Strike timers and controls remain active. */
+.highlights[data-paused="true"] *,
+.highlights[data-paused="true"] *::before,
+.highlights[data-paused="true"] *::after {
+  animation-play-state: paused;
+}
+
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
   .elementalAura,

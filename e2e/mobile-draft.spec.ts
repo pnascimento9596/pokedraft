@@ -80,9 +80,12 @@ test.describe("draft layout while the wheel spins", () => {
     await tapNow(page, slot, "an empty slot");
     await expect(page.getByTestId("wheel").first()).toBeVisible();
     const spinning = await rect(field(page), true);
-    const skip = page.getByRole("button", { name: "Tap to skip" }).first();
-    await skip.scrollIntoViewIfNeeded();
-    await skip.click();
+    await page.getByTestId("draft-wheel").evaluate((el) => {
+      const skip = Array.from(el.querySelectorAll("button")).find(
+        (button) => button.textContent === "Tap to skip",
+      );
+      skip?.click();
+    });
     const candidate = page.locator('[data-testid^="candidate-"]').first();
     await expect(candidate).toBeVisible();
     await settle(page);
@@ -517,5 +520,3 @@ test("touch release over drawer does not place into occluded slots", async ({ pa
   // Round must NOT have advanced (remains Round 1)
   await expect(page.getByTestId("round-header")).toHaveText("Round 1 of 16");
 });
-
-

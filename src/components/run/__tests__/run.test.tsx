@@ -137,6 +137,7 @@ describe("challenge run screen", () => {
     query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=run-test";
     render(<PlayScreen />);
     await start();
+    await act(async () => {});
     const cands = screen.getAllByTestId(/^candidate-/);
     expect(cands).toHaveLength(3);
 
