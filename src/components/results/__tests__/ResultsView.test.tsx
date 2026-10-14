@@ -213,4 +213,19 @@ describe("ResultsView", () => {
     const broadcast = screen.getByTestId("matchday-live");
     expect(broadcast.textContent).toContain("Group match 1");
   });
+
+  it("offers Challenge this Seed, Open in Builder, and Play Exhibition vs Squad on shared runs", () => {
+    view(ELIMINATED, "shared");
+    const challengeLink = screen.getByTestId("challenge-seed");
+    expect(challengeLink.getAttribute("href")).toBe(
+      "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=c-4",
+    );
+    const builderLink = screen.getByTestId("open-in-builder");
+    expect(builderLink.getAttribute("href")).toMatch(/^\/\?b=pd\d+\./);
+
+    fireEvent.click(screen.getByTestId("play-exhibition"));
+    const modal = screen.getByTestId("exhibition-modal");
+    expect(modal.textContent).toContain("Exhibition Match");
+    expect(screen.getByTestId("exhibition-score").textContent).toMatch(/^\d+ - \d+$/);
+  });
 });
