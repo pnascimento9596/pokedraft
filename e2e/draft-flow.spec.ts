@@ -1,4 +1,5 @@
 import { expect, test, chromium, webkit, type Page } from "@playwright/test";
+import { ready } from "./mobile/scenes";
 
 const formations = ["4-3-3", "4-4-2", "4-2-3-1", "4-1-4-1", "3-5-2", "3-4-3", "3-4-2-1", "5-3-2"];
 
@@ -43,6 +44,8 @@ for (const engine of ["chromium", "webkit"] as const) {
       );
       await expect(page.getByTestId("run-start")).toBeVisible();
       await expect(page.getByTestId("draft-wheel")).toHaveCount(0);
+      await ready(page, page.getByTestId("run-start"));
+      await expect(page.getByTestId("run-start")).not.toHaveAttribute("aria-busy", "true");
       await page.getByTestId("run-start").tap();
       await wheelVisible(page);
       const scrolls = () =>
@@ -115,6 +118,8 @@ for (const engine of ["chromium", "webkit"] as const) {
         fullPage: true,
       });
       await page.goto("/play?mode=kanto151&f=4-3-3&order=positionFirst&seed=mobile-position");
+      await ready(page, page.getByTestId("run-start"));
+      await expect(page.getByTestId("run-start")).not.toHaveAttribute("aria-busy", "true");
       await page.getByTestId("run-start").tap();
       await expect(page.getByTestId("draft-wheel")).toHaveCount(0);
       await page.getByTestId("slot-s9").tap();
@@ -155,9 +160,10 @@ for (const engine of ["chromium", "webkit"] as const) {
       await page.goto(
         "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test",
       );
+      await ready(page, page.getByTestId("run-start"));
+      await expect(page.getByTestId("run-start")).not.toHaveAttribute("aria-busy", "true");
       await page.getByTestId("run-start").tap();
       await wheelVisible(page);
-      await page.getByRole("button", { name: "Tap to skip" }).first().tap();
       const picker = page.getByTestId("draft-drawer");
       await expect(page.locator('[data-testid^="candidate-"]')).toHaveCount(5);
       expect(
@@ -232,7 +238,10 @@ for (const engine of ["chromium", "webkit"] as const) {
         await page.goto(
           `/play?mode=kanto151&f=${formation}&order=squadFirst&seed=compact-${formation}`,
         );
-        await page.getByTestId("run-start").tap();
+        const start = page.getByTestId("run-start");
+        await ready(page, start);
+        await expect(start).not.toHaveAttribute("aria-busy", "true");
+        await start.tap();
         await page.locator('[data-testid^="candidate-"]').first().tap();
         const field = page.getByTestId("pitch-stage");
         expect(await field.evaluate((e) => getComputedStyle(e).height)).toBe("520px");
