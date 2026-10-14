@@ -291,7 +291,16 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
               aria-expanded={typesExpanded}
               onClick={() => setTypesExpanded((v) => !v)}
             >
-              {type !== null ? `Type: ${typeLabel(type)}` : "Filter by type (18)"}
+              {type !== null ? (
+                `Type: ${typeLabel(type)}`
+              ) : (
+                <>
+                  <span className={s.wideOnly}>Filter by type (18)</span>
+                  <span className={s.narrowOnly} aria-hidden="true">
+                    Type (18)
+                  </span>
+                </>
+              )}
               <span aria-hidden="true">{typesExpanded ? " ▲" : " ▼"}</span>
             </button>
             <div className={s.sortControls}>
@@ -303,7 +312,10 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   aria-pressed={recommendedOnly}
                   onClick={() => setRecommendedOnly((v) => !v)}
                 >
-                  ★ Best for {role}
+                  <span className={s.wideOnly}>★ Best for {role}</span>
+                  <span className={s.narrowOnly} aria-hidden="true">
+                    ★
+                  </span>
                 </button>
               ) : null}
               <label className={s.sortSelect}>

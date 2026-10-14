@@ -100,6 +100,23 @@
   gap: 6px;
 }
 
+.wideOnly {
+  display: inline;
+}
+
+.narrowOnly {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .wideOnly {
+    display: none;
+  }
+  .narrowOnly {
+    display: inline;
+  }
+}
+
 .sortControls {
   display: flex;
   align-items: center;
@@ -177,8 +194,9 @@
 .countBar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 8px;
+  gap: 4px 8px;
   padding: 4px var(--gutter) 8px;
 }
 
