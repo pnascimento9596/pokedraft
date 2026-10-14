@@ -16,6 +16,46 @@ const ELIMINATED =
   "pd1.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJjLTQiLFtbInAiLDgyOSwiczAiXSxbInAiLDIxMCwiczEiXSxbInAiLDUyOCwiczIiXSxbInAiLDE2NywiczMiXSxbInAiLDI4NCwiczQiXSxbInAiLDE5NSwiczUiXSxbInAiLDEzMSwiczYiXSxbInAiLDY5MSwiczciXSxbInAiLDMxNywiczgiXSxbInAiLDI5NSwiczkiXSxbInAiLDEwMTYsInMxMCJdLFsicCIsNjMyLCJiMCJdLFsicCIsMzg2LCJiMSJdLFsicCIsNDc4LCJiMiJdLFsicCIsMjMwLCJiMyJdLFsicCIsMzcsImI0Il1dXQ";
 
 describe("MatchHighlights", () => {
+  it("cancels the old strike when the match list changes selectedRound", () => {
+    vi.useFakeTimers();
+    const { draft, cup } = replay(FLAWLESS);
+    const view = render(<MatchHighlights cup={cup} draft={draft} selectedRound="G1" />);
+    fireEvent.click(screen.getByTestId("strike-btn"));
+    act(() => vi.advanceTimersByTime(100));
+    view.rerender(<MatchHighlights cup={cup} draft={draft} selectedRound="G3" />);
+    act(() => vi.advanceTimersByTime(500));
+    expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
+    expect(screen.queryByTestId("goal-overlay")).toBeNull();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("shows a defensive illustration, not a fictional goal, for a scoreless match", () => {
+    vi.useFakeTimers();
+    const { draft, cup } = replay(FLAWLESS);
+    const defensive = {
+      ...cup,
+      matches: cup.matches.map((m) =>
+        m.status === "played"
+          ? {
+              ...m,
+              regulation: { user: 0, opp: 0 },
+              extraTime: null,
+              shootout: null,
+              goals: [],
+              outcome: "D" as const,
+            }
+          : m,
+      ),
+    };
+    render(<MatchHighlights cup={defensive} draft={draft} />);
+    expect(screen.getByTestId("strike-btn").textContent).toContain("Defensive drill");
+    fireEvent.click(screen.getByTestId("strike-btn"));
+    act(() => vi.advanceTimersByTime(600));
+    expect(screen.queryByText("⚽ GOAL!")).toBeNull();
+    expect(screen.getByTestId("goal-overlay").textContent).toContain("BLOCK!");
+    expect(screen.getByTestId("match-highlights").textContent).toContain("Illustrated highlights");
+  });
+
   it("does not celebrate an old strike after selecting another match", () => {
     vi.useFakeTimers();
     const { draft, cup } = replay(FLAWLESS);

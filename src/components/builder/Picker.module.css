@@ -96,7 +96,68 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wideOnly {
+  display: inline;
+}
+
+.narrowOnly {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .wideOnly {
+    display: none;
+  }
+  .narrowOnly {
+    display: inline;
+  }
+}
+
+.sortControls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sortSelect select {
+  min-height: 44px;
+  height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.recToggle {
+  font-size: 13px;
+  line-height: 18px;
+  min-height: 44px;
+}
+
+.recToggle[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--selected);
+}
+
+.rowActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 2px 8px 6px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.scoutBtn {
+  min-height: 44px;
+  min-width: 44px;
+  font-size: 13px;
+  line-height: 18px;
 }
 
 .typesToggle,
@@ -133,8 +194,9 @@
 .countBar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 8px;
+  gap: 4px 8px;
   padding: 4px var(--gutter) 8px;
 }
 

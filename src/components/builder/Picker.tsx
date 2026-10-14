@@ -15,14 +15,18 @@ import {
   type SpeciesId,
 } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
+import { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
 import { TypeChip } from "@/components/TypeChip";
 import { genLabel, typeLabel } from "@/ui/labels";
 import { ALL_REFS, valueAt } from "@/ui/lineup";
 import { ratingFor } from "@/ui/rating";
+import { getSlotSuitability } from "@/ui/suitability";
 import { StatusNote } from "@/components/ui/primitives";
 import s from "./Picker.module.css";
 
 export const PICKER_LIMIT = 120;
+
+export type PickerSort = "dex" | "rating" | "fit" | "pac" | "sho" | "pas" | "def" | "phy";
 
 export interface PickerProps {
   readonly state: DraftState;
@@ -61,6 +65,9 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
   const [query, setQuery] = useState("");
   const [type, setType] = useState<PokemonType | null>(null);
   const [gen, setGen] = useState<Gen | null>(null);
+  const [sortBy, setSortBy] = useState<PickerSort>("dex");
+  const [recommendedOnly, setRecommendedOnly] = useState(false);
+  const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
 
   const { lineup, settings } = state;
   const formation = FORMATIONS[lineup.formation];
@@ -130,15 +137,48 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
     return (sp: Species) =>
       (q === "" || sp.name.toLowerCase().includes(q) || dex(sp.id).includes(q)) &&
       (type === null || (sp.types as readonly PokemonType[]).includes(type)) &&
-      (gen === null || sp.gen === gen);
-  }, [query, type, gen]);
-  const matches = useMemo(() => candidates.filter(filter), [candidates, filter]);
+      (gen === null || sp.gen === gen) &&
+      (!recommendedOnly ||
+        (role !== null
+          ? sp.bestRoles.includes(role)
+          : getSlotSuitability(sp, lineup.formation, slot) === "recommended"));
+  }, [query, type, gen, recommendedOnly, role, lineup.formation, slot]);
+  const matches = useMemo(() => {
+    const list = candidates.filter(filter);
+    if (sortBy === "dex") return list;
+    return [...list].sort((a, b) => {
+      switch (sortBy) {
+        case "rating": {
+          const scoreA = ratingFor(a, role, slotLabel).score;
+          const scoreB = ratingFor(b, role, slotLabel).score;
+          return scoreB - scoreA || a.id - b.id;
+        }
+        case "fit": {
+          const fitA =
+            role !== null ? a.fits[role] : Math.max(...a.bestRoles.map((r) => a.fits[r]));
+          const fitB =
+            role !== null ? b.fits[role] : Math.max(...b.bestRoles.map((r) => b.fits[r]));
+          return fitB - fitA || a.id - b.id;
+        }
+        case "pac":
+          return b.attrs.PAC - a.attrs.PAC || a.id - b.id;
+        case "sho":
+          return b.attrs.SHO - a.attrs.SHO || a.id - b.id;
+        case "pas":
+          return b.attrs.PAS - a.attrs.PAS || a.id - b.id;
+        case "def":
+          return b.attrs.DEF - a.attrs.DEF || a.id - b.id;
+        case "phy":
+          return b.attrs.PHY - a.attrs.PHY || a.id - b.id;
+      }
+    });
+  }, [candidates, filter, sortBy, role, slotLabel]);
   // The builder pool only drops species by generation or by the Legendaries switch.
   const hiddenBySettings = matches.length === 0 && SPECIES.some(filter);
 
   const [typesExpanded, setTypesExpanded] = useState(false);
   const [extraPages, setExtraPages] = useState(0);
-  const filterKey = `${query}|${type ?? ""}|${gen ?? ""}`;
+  const filterKey = `${query}|${type ?? ""}|${gen ?? ""}|${sortBy}|${recommendedOnly}`;
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
 
   if (prevFilterKey !== filterKey) {
@@ -251,18 +291,61 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
               aria-expanded={typesExpanded}
               onClick={() => setTypesExpanded((v) => !v)}
             >
-              {type !== null ? `Type: ${typeLabel(type)}` : "Filter by type (18)"}
+              {type !== null ? (
+                `Type: ${typeLabel(type)}`
+              ) : (
+                <>
+                  <span className={s.wideOnly}>Filter by type (18)</span>
+                  <span className={s.narrowOnly}>Type (18)</span>
+                </>
+              )}
               <span aria-hidden="true">{typesExpanded ? " ▲" : " ▼"}</span>
             </button>
-            {type !== null && (
-              <button
-                type="button"
-                className={`btn btn--ghost btn--sm ${s.clearType}`}
-                onClick={() => setType(null)}
-              >
-                Clear type
-              </button>
-            )}
+            <div className={s.sortControls}>
+              {role !== null ? (
+                <button
+                  type="button"
+                  className={`btn btn--ghost btn--sm ${s.recToggle}`}
+                  data-testid="picker-recommended"
+                  aria-pressed={recommendedOnly}
+                  aria-label={`Best for ${role}`}
+                  onClick={() => setRecommendedOnly((v) => !v)}
+                >
+                  <span className={s.wideOnly}>★ Best for {role}</span>
+                  <span className={s.narrowOnly}>★</span>
+                </button>
+              ) : null}
+              <label className={s.sortSelect}>
+                <span className="visually-hidden">Sort players</span>
+                <select
+                  data-testid="picker-sort"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as PickerSort)}
+                >
+                  <option value="dex">Sort: #Dex</option>
+                  {showRatings ? (
+                    <>
+                      <option value="rating">Sort: Role Rating</option>
+                      <option value="fit">Sort: Raw Fit</option>
+                      <option value="pac">Sort: Pace (PAC)</option>
+                      <option value="sho">Sort: Shooting (SHO)</option>
+                      <option value="pas">Sort: Passing (PAS)</option>
+                      <option value="def">Sort: Defense (DEF)</option>
+                      <option value="phy">Sort: Physical (PHY)</option>
+                    </>
+                  ) : null}
+                </select>
+              </label>
+              {type !== null && (
+                <button
+                  type="button"
+                  className={`btn btn--ghost btn--sm ${s.clearType}`}
+                  onClick={() => setType(null)}
+                >
+                  Clear type
+                </button>
+              )}
+            </div>
           </div>
           <div
             className={s.types}
@@ -300,7 +383,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                 ? `Showing ${displayLimit} of ${matches.length}.`
                 : `${matches.length} ${matches.length === 1 ? "match" : "matches"}`}
           </p>
-          {(query !== "" || type !== null || gen !== null) && (
+          {(query !== "" || type !== null || gen !== null || recommendedOnly) && (
             <button
               type="button"
               className={`btn btn--ghost btn--sm ${s.clearFilters}`}
@@ -308,6 +391,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                 setQuery("");
                 setType(null);
                 setGen(null);
+                setRecommendedOnly(false);
               }}
             >
               Clear filters
@@ -368,6 +452,17 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                     {rating.raw}
                   </span>
                 ) : null}
+                <div className={s.rowActions}>
+                  <button
+                    type="button"
+                    className={`btn btn--ghost btn--sm ${s.scoutBtn}`}
+                    data-testid={`inspect-${sp.id}`}
+                    aria-label={`Scout ${sp.name}`}
+                    onClick={() => setInspectId(sp.id)}
+                  >
+                    Scout {sp.name}
+                  </button>
+                </div>
               </li>
             );
           })}
@@ -384,6 +479,14 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           ) : null}
         </ul>
       </div>
+      {inspectId !== null ? (
+        <ScoutingDossier
+          speciesId={inspectId}
+          compareTo={current !== null && current !== inspectId ? speciesById(current) : undefined}
+          showRatings={showRatings}
+          onClose={() => setInspectId(null)}
+        />
+      ) : null}
     </dialog>
   );
 }

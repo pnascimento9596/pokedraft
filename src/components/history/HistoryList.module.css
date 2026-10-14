@@ -1,3 +1,53 @@
+.history {
+  display: grid;
+  gap: 16px;
+}
+.career h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  line-height: 22px;
+}
+.scope {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.metrics dt {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+.metrics dd {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filters button {
+  min-height: 44px;
+}
+@media (min-width: 800px) {
+  .metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .list {
   display: flex;
   flex-direction: column;

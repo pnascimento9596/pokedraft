@@ -20,7 +20,15 @@ function bar(score: number): CSSProperties {
 
 const OUTCOME_LABEL = { W: "Win", D: "Draw", L: "Loss" } as const;
 
-export function MatchList({ cup, draft }: { cup: CupResult; draft?: DraftState }) {
+export function MatchList({
+  cup,
+  draft,
+  onSelectStar,
+}: {
+  cup: CupResult;
+  draft?: DraftState;
+  onSelectStar?: (round: PlayedMatch["round"]) => void;
+}) {
   const outIn = eliminatedIn(cup);
   return (
     <ol className={s.list}>
@@ -32,6 +40,7 @@ export function MatchList({ cup, draft }: { cup: CupResult; draft?: DraftState }
               draft={draft}
               headline={cup.rating.score}
               outNote={outIn === m.round ? FINISH_LABEL[cup.finish] : null}
+              onSelectStar={onSelectStar}
             />
           ) : (
             <NotPlayed m={m} />
@@ -47,11 +56,13 @@ function Played({
   draft,
   headline,
   outNote,
+  onSelectStar,
 }: {
   m: PlayedMatch;
   draft?: DraftState;
   headline: number;
   outNote: string | null;
+  onSelectStar?: (round: PlayedMatch["round"]) => void;
 }) {
   const score = finalScore(m);
   const pens = shootoutLine(m);
@@ -77,13 +88,28 @@ function Played({
         <span className={`${s.side} ${s.oppName}`}>{m.opponent.name}</span>
       </div>
       {star ? (
-        <div className={s.starBadge} data-testid={`match-star-${m.round}`}>
-          <span className={s.starIcon} aria-hidden="true">
-            ⭐
-          </span>
-          <span className={s.starName}>{star.name}</span>
-          <span className={s.starHeadline}>• {star.headline}</span>
-        </div>
+        onSelectStar ? (
+          <button
+            type="button"
+            className={s.starBadge}
+            data-testid={`match-star-${m.round}`}
+            onClick={() => onSelectStar(m.round)}
+          >
+            <span className={s.starIcon} aria-hidden="true">
+              ⭐
+            </span>
+            <span className={s.starName}>{star.name}</span>
+            <span className={s.starHeadline}>• {star.headline}</span>
+          </button>
+        ) : (
+          <div className={s.starBadge} data-testid={`match-star-${m.round}`}>
+            <span className={s.starIcon} aria-hidden="true">
+              ⭐
+            </span>
+            <span className={s.starName}>{star.name}</span>
+            <span className={s.starHeadline}>• {star.headline}</span>
+          </div>
+        )
       ) : null}
       {m.extraTime !== null || pens !== null ? (
         <p className={s.extra}>

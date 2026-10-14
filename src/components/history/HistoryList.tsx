@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { StatusNote } from "@/components/ui/primitives";
 import { FINISH_LABEL, record } from "@/ui/labels";
-import { BUCKET_LABEL, loadHistory, type RunRecord } from "@/ui/runs";
+import { BUCKET_LABEL, HISTORY_LIMIT, loadHistory, type RunRecord } from "@/ui/runs";
 import s from "./HistoryList.module.css";
 
 function when(at: string): string {
@@ -33,6 +33,7 @@ function getSnapshot(): readonly RunRecord[] {
 
 export function HistoryList() {
   const runs = useSyncExternalStore(subscribe, getSnapshot, () => null);
+  const [filter, setFilter] = useState<"all" | "champions">("all");
 
   if (runs === null) return <p className="kicker">Loading your runs</p>;
   if (runs.length === 0) {
@@ -45,26 +46,79 @@ export function HistoryList() {
       </StatusNote>
     );
   }
+  const ranked = runs.filter((r) => !r.friendly && r.bucket !== "builder");
+  const bestScore = ranked.reduce<number | null>(
+    (best, r) => (best === null ? r.score : Math.max(best, r.score)),
+    null,
+  );
+  const metrics = [
+    { label: "Total ranked runs", value: ranked.length },
+    { label: "Ranked cups won", value: ranked.filter((r) => r.finish === "champion").length },
+    { label: "Ranked flawless finishes", value: ranked.filter((r) => r.flawless).length },
+    { label: "Best ranked Team Score", value: bestScore ?? "Not yet" },
+  ];
+  const visible = filter === "champions" ? runs.filter((r) => r.finish === "champion") : runs;
   return (
-    <ol className={s.list} data-testid="history-list">
-      {runs.map((r) => (
-        <li key={r.token} className={s.row} data-friendly={r.friendly || undefined}>
-          <Link href={`/r/${r.token}`} className={s.link}>
-            <span className={s.record}>{record(r.wins, r.draws, r.losses)}</span>
-            <span className={s.main}>
-              <span className={s.bucket}>{BUCKET_LABEL[r.bucket] ?? r.bucket}</span>
-              <span className={s.meta}>
-                {when(r.at)}, {r.formation}, {FINISH_LABEL[r.finish] ?? r.finish}
-                {r.flawless ? ", flawless" : ""}
-              </span>
-            </span>
-            <span className={s.score}>
-              <span className={s.scoreLabel}>Team Score</span>
-              <span className={s.scoreValue}>{r.score}</span>
-            </span>
-          </Link>
-        </li>
-      ))}
-    </ol>
+    <div className={s.history}>
+      <section aria-label="Career summary" className={s.career}>
+        <h3>Career summary</h3>
+        <p className={s.scope}>
+          Based only on stored history in this browser on this device, up to {HISTORY_LIMIT} runs.
+          Not a lifetime total. Friendlies are excluded from the summary.
+        </p>
+        <dl className={s.metrics}>
+          {metrics.map(({ label, value }) => (
+            <div key={label}>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+      <div className={s.filters} role="group" aria-label="Filter run history">
+        <button
+          type="button"
+          className="chip"
+          aria-pressed={filter === "all"}
+          onClick={() => setFilter("all")}
+        >
+          All runs
+        </button>
+        <button
+          type="button"
+          className="chip"
+          aria-pressed={filter === "champions"}
+          onClick={() => setFilter("champions")}
+        >
+          Champions only
+        </button>
+      </div>
+      {visible.length === 0 ? (
+        <StatusNote title="No champions in stored history yet.">
+          Choose All runs to see your other finishes.
+        </StatusNote>
+      ) : (
+        <ol className={s.list} data-testid="history-list">
+          {visible.map((r) => (
+            <li key={r.token} className={s.row} data-friendly={r.friendly || undefined}>
+              <Link href={`/r/${r.token}`} className={s.link}>
+                <span className={s.record}>{record(r.wins, r.draws, r.losses)}</span>
+                <span className={s.main}>
+                  <span className={s.bucket}>{BUCKET_LABEL[r.bucket] ?? r.bucket}</span>
+                  <span className={s.meta}>
+                    {when(r.at)}, {r.formation}, {FINISH_LABEL[r.finish] ?? r.finish}
+                    {r.flawless ? ", flawless" : ""}
+                  </span>
+                </span>
+                <span className={s.score}>
+                  <span className={s.scoreLabel}>Team Score</span>
+                  <span className={s.scoreValue}>{r.score}</span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
   );
 }

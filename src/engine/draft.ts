@@ -1,11 +1,10 @@
 import { TYPES } from "@/data/pokedex";
 import { createEngineRng, deriveSubseed, type EngineRng } from "./rng";
+import { normalizeSettings } from "./settings";
 import { SPECIES } from "./species";
 import {
   DRAFT_ROUNDS,
   DraftError,
-  FORMATION_IDS,
-  GENS,
   REGIONS,
   REROLLS,
   SPECIAL_CAP,
@@ -15,7 +14,6 @@ import {
   type DraftSettings,
   type DraftState,
   type FullLineup,
-  type Gen,
   type Lineup,
   type PokemonType,
   type Region,
@@ -27,6 +25,8 @@ import {
   type SpeciesId,
   type StarterIndex,
 } from "./types";
+
+export { normalizeSettings } from "./settings";
 
 export type RolledSettings = Exclude<DraftSettings, { readonly mode: "builder" }>;
 type ComboRoll = Extract<Roll, { readonly kind: "combo" }>;
@@ -66,59 +66,6 @@ const COMBO_SPECIES: Readonly<Record<Region, Readonly<Record<PokemonType, readon
   );
 
 const KANTO151_SPECIES: readonly Species[] = SPECIES.filter((s) => s.id <= KANTO151_MAX_ID);
-
-function invalidSettings(message: string): never {
-  throw new DraftError("invalidSettings", message);
-}
-
-function normalizeGens(gens: unknown): readonly Gen[] {
-  if (!Array.isArray(gens) || gens.length === 0) invalidSettings("gens must be a non-empty list");
-  const known: readonly number[] = GENS;
-  const out: Gen[] = [];
-  for (const g of gens) {
-    if (typeof g !== "number" || !known.includes(g)) invalidSettings(`unknown gen ${String(g)}`);
-    if (out.includes(g as Gen)) invalidSettings(`duplicate gen ${g}`);
-    out.push(g as Gen);
-  }
-  return out.sort((a, b) => a - b);
-}
-
-function oneOf<T extends string>(value: unknown, allowed: readonly T[], what: string): T {
-  if (typeof value !== "string" || !(allowed as readonly string[]).includes(value)) {
-    invalidSettings(`unknown ${what} ${String(value)}`);
-  }
-  return value as T;
-}
-
-export function normalizeSettings(settings: DraftSettings): DraftSettings {
-  const formation = oneOf(settings.formation, FORMATION_IDS, "formation");
-  switch (settings.mode) {
-    case "builder":
-      if (typeof settings.legendaries !== "boolean") invalidSettings("legendaries must be boolean");
-      return {
-        mode: "builder",
-        formation,
-        gens: normalizeGens(settings.gens),
-        legendaries: settings.legendaries,
-      };
-    case "cup8":
-      return {
-        mode: "cup8",
-        formation,
-        gens: normalizeGens(settings.gens),
-        style: oneOf(settings.style, ["open", "classic3"], "style"),
-        order: oneOf(settings.order, ["squadFirst", "positionFirst"], "order"),
-      };
-    case "kanto151":
-      return {
-        mode: "kanto151",
-        formation,
-        order: oneOf(settings.order, ["squadFirst", "positionFirst"], "order"),
-      };
-    default:
-      return invalidSettings(`unknown mode ${String((settings as { mode: unknown }).mode)}`);
-  }
-}
 
 function inPool(settings: DraftSettings, s: Species): boolean {
   return settings.mode === "kanto151" ? s.id <= KANTO151_MAX_ID : settings.gens.includes(s.gen);

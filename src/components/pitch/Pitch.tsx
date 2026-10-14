@@ -34,6 +34,7 @@ export interface PitchProps {
   readonly selected?: SlotRef | null;
   readonly isSlotDisabled?: (ref: SlotRef) => boolean;
   readonly edges?: readonly SynergyEdge[];
+  readonly previewEdges?: readonly SynergyEdge[];
   readonly weakest?: readonly SlotId[];
   readonly showBench?: boolean;
   readonly label?: string;
@@ -67,6 +68,7 @@ export function Pitch({
   selected,
   isSlotDisabled,
   edges = [],
+  previewEdges = [],
   weakest = [],
   showBench = true,
   label = "Pitch",
@@ -215,7 +217,7 @@ export function Pitch({
       data-fit={fit || undefined}
       data-compact-tags={compactTags || undefined}
     >
-      <Pitch3DStage formation={formation} edges={edges} label={label}>
+      <Pitch3DStage formation={formation} edges={edges} previewEdges={previewEdges} label={label}>
         {STARTER_REFS.map((ref, i) => {
           const sl = slots[i]!;
           const point = points[i];

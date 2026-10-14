@@ -37,7 +37,14 @@ const TARGET = CARD_PICTURE - 4;
 async function toPng(pack: ImagePack, bytes: Buffer): Promise<Buffer | null> {
   try {
     const { default: sharp } = await import("sharp");
-    const { data, info } = await sharp(bytes).trim().png().toBuffer({ resolveWithObject: true });
+    const { data, info } = await sharp(bytes)
+      .ensureAlpha()
+      .trim()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const rawOpts = {
+      raw: { width: info.width, height: info.height, channels: info.channels },
+    } as const;
     const pixel = pack.style === "pixel";
     const whole = Math.floor(TARGET / Math.max(info.width, info.height));
     const crisp = pixel && whole * Math.max(info.width, info.height) >= 0.8 * TARGET;
@@ -45,18 +52,29 @@ async function toPng(pack: ImagePack, bytes: Buffer): Promise<Buffer | null> {
     // then fitted down, which stays clean where a fractional nearest-neighbour step would not.
     const step = crisp ? whole : whole + 1;
     const enlarged = pixel
-      ? await sharp(data)
+      ? await sharp(data, rawOpts)
           .resize(info.width * step, info.height * step, { kernel: "nearest" })
-          .png()
-          .toBuffer()
-      : data;
+          .raw()
+          .toBuffer({ resolveWithObject: true })
+      : { data, info };
+    const enlargedOpts = {
+      raw: {
+        width: enlarged.info.width,
+        height: enlarged.info.height,
+        channels: enlarged.info.channels,
+      },
+    } as const;
     const drawn = await (
-      crisp ? sharp(enlarged) : sharp(enlarged).resize(TARGET, TARGET, { fit: "inside" })
+      crisp
+        ? sharp(enlarged.data, enlargedOpts)
+        : sharp(enlarged.data, enlargedOpts).resize(TARGET, TARGET, { fit: "inside" })
     )
-      .png()
+      .raw()
       .toBuffer({ resolveWithObject: true });
     const left = Math.floor((CARD_PICTURE - drawn.info.width) / 2);
-    return await sharp(drawn.data)
+    return await sharp(drawn.data, {
+      raw: { width: drawn.info.width, height: drawn.info.height, channels: drawn.info.channels },
+    })
       .extend({
         top: CARD_PICTURE - drawn.info.height,
         left,

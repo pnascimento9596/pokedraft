@@ -22,7 +22,7 @@ import { TypeChip } from "@/components/TypeChip";
 import { RollReveal } from "@/components/wheel/RollReveal";
 import { SoundToggle } from "@/components/wheel/SoundToggle";
 import { announce as stageLine, dexLabel, stagesFor } from "@/components/wheel/reel";
-import { unlockAudio } from "@/components/wheel/sound";
+import { playSignCard, unlockAudio } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { REGION_LABEL } from "@/ui/labels";
 import { filledCount, refFromKey, sameRef, slotLabel, valueAt } from "@/ui/lineup";
@@ -33,6 +33,8 @@ import { NavIcon } from "@/components/ui/nav-icons";
 import { candidatesFor, withHint, type Run } from "./runState";
 import { typeFrame } from "@/design/stadium";
 import { fullLineup } from "@/components/builder/model";
+import { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
+import { previewCandidateEdges, ratePartialLineup } from "@/ui/partial-rating";
 import { getSlotSuitability } from "@/ui/suitability";
 import s from "./DraftBoard.module.css";
 
@@ -124,6 +126,7 @@ function ActiveDraftBoard({
   const [revealedId, setRevealedId] = useState(-1);
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [hubOpen, setHubOpen] = useState(false);
+  const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
   const [selection, setSelection] = useState<Selection | null>(null);
   const [dragCandidate, setDragCandidate] = useState<{
     id: SpeciesId;
@@ -186,8 +189,11 @@ function ActiveDraftBoard({
     focusBefore.current = null;
     if (was !== null && !was.isConnected) headingRef.current?.focus({ preventScroll: true });
     if (run.error !== null) announce(run.error);
-    else if (run.actions.length > before.actions.length)
-      announce(outcome(before.state, run.state, run.actions[run.actions.length - 1]!));
+    else if (run.actions.length > before.actions.length) {
+      const action = run.actions[run.actions.length - 1]!;
+      announce(outcome(before.state, run.state, action));
+      if (action.type === "pick") playSignCard();
+    }
   }, [run]);
 
   const roll = state.phase.kind === "choosing" ? state.phase.roll : null;
@@ -418,6 +424,8 @@ function ActiveDraftBoard({
 
   const full = fullLineup(state.lineup);
   const teamRating = full === null ? null : rateTeam(full);
+  const partialRating = useMemo(() => ratePartialLineup(state.lineup), [state.lineup]);
+  const liveSynergy = teamRating?.synergy ?? partialRating.synergy;
   const armed = phase.kind === "awaitingSlot" || (committed === null && selected !== null);
   const message = failure ?? run.error ?? (pickedName === null ? null : swapPrompt(pickedName));
   const activeSpecies = useMemo(() => {
@@ -425,6 +433,10 @@ function ActiveDraftBoard({
     if (selected !== null) return speciesById(selected);
     return null;
   }, [dragCandidate, selected]);
+  const previewEdges = useMemo(
+    () => (activeSpecies === null ? [] : previewCandidateEdges(state.lineup, activeSpecies.id)),
+    [activeSpecies, state.lineup],
+  );
 
   return (
     <div
@@ -451,9 +463,10 @@ function ActiveDraftBoard({
         </button>
         <p>
           Draft: {filledCount(state.lineup)}/16 ·{" "}
-          {teamRating === null
+          {liveSynergy === null
             ? "Chemistry after draft"
-            : `${Math.round(teamRating.synergy * 100)}% Chem`}
+            : `${Math.round(liveSynergy * 100)}% Chem`}
+          {partialRating.specialCount > 0 ? ` · Legendaries: ${partialRating.specialCount}/3` : ""}
         </p>
       </div>
       <section className={s.side} aria-label="Draft">
@@ -624,6 +637,14 @@ function ActiveDraftBoard({
             </div>
             <button
               type="button"
+              className="btn btn--ghost btn--sm"
+              data-testid={`inspect-selected-${selected}`}
+              onClick={() => setInspectId(selected)}
+            >
+              Scout
+            </button>
+            <button
+              type="button"
               className={`btn btn--sm ${s.changePickBtn}`}
               onClick={() => {
                 setSelection(null);
@@ -645,7 +666,8 @@ function ActiveDraftBoard({
           selected={picked}
           label="Your formation"
           tokenNote={showRatings ? tokenNote : undefined}
-          edges={teamRating?.edges}
+          edges={teamRating?.edges ?? partialRating.edges}
+          previewEdges={previewEdges}
           suitabilityOf={
             activeSpecies !== null
               ? (ref) => getSlotSuitability(activeSpecies, settings.formation, ref)
@@ -655,6 +677,14 @@ function ActiveDraftBoard({
           fit
         />
       </section>
+
+      {inspectId !== null ? (
+        <ScoutingDossier
+          speciesId={inspectId}
+          showRatings={showRatings}
+          onClose={() => setInspectId(null)}
+        />
+      ) : null}
 
       {dragCandidate && dragCandidate.moved ? (
         <div

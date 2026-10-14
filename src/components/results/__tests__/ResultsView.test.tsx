@@ -5,9 +5,20 @@ import { ResultsView } from "@/components/results/ResultsView";
 import { type CupResult, type PenKick, type Shirt, type SpeciesId } from "@/engine";
 import { replayAnyVersion as replay } from "@/engine/versions";
 import { loadHistory } from "@/ui/runs";
+import { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
+import { BUILDER_URL_SEED } from "@/ui/lineup";
 
 afterEach(cleanup);
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  localStorage.clear();
+  HTMLDialogElement.prototype.showModal = function () {
+    this.open = true;
+  };
+  HTMLDialogElement.prototype.close = function () {
+    this.open = false;
+    this.dispatchEvent(new Event("close"));
+  };
+});
 
 // U+2013 and U+2014, spelled as code points so this file holds no dash itself.
 const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
@@ -30,6 +41,15 @@ function view(token: string, variant: "live" | "shared" = "shared", cupOverride?
 }
 
 describe("ResultsView", () => {
+  it("closes the native exhibition dialog when the results page is hidden or unmounted", () => {
+    const viewResult = view(ELIMINATED, "shared");
+    fireEvent.click(screen.getByTestId("play-exhibition"));
+    const dialog = screen.getByTestId("exhibition-modal") as HTMLDialogElement;
+    expect(dialog.open).toBe(true);
+    viewResult.unmount();
+    expect(dialog.open).toBe(false);
+  });
+
   it("shows the replayed record and Team Score, not a placeholder or a recomputed value", () => {
     view(FLAWLESS);
     expect(screen.getByTestId("results-record").textContent).toBe("8-0-0");
@@ -196,4 +216,79 @@ describe("ResultsView", () => {
     render(<ResultsView token={FLAWLESS} draft={draft} cup={cup} variant="shared" submit={slot} />);
     expect(screen.queryByTestId("submit-slot")).toBeNull();
   });
+
+  it("renders squad score breakdown, links match star badges to MatchHighlights, and opens Matchday Live broadcast", () => {
+    view(FLAWLESS);
+    const breakdown = screen.getByTestId("score-breakdown");
+    expect(breakdown.textContent).toContain("GK");
+    expect(breakdown.textContent).toContain("DEF");
+    expect(breakdown.textContent).toContain("MID");
+    expect(breakdown.textContent).toContain("ATT");
+    expect(breakdown.textContent).toContain("Synergy");
+
+    fireEvent.click(screen.getByTestId("match-star-G3"));
+    expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
+
+    fireEvent.click(screen.getByTestId("toggle-matchday"));
+    const broadcast = screen.getByTestId("matchday-live");
+    expect(broadcast.textContent).toContain("Group match 1");
+  });
+
+  it("can reselect the same match list star after using the highlight navigation", () => {
+    view(FLAWLESS);
+    fireEvent.click(screen.getByTestId("match-star-G3"));
+    fireEvent.click(screen.getByTestId("highlight-chip-G2"));
+    fireEvent.click(screen.getByTestId("match-star-G3"));
+    expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
+  });
+
+  it("offers Challenge this Seed, Open in Builder, and Play Exhibition vs Squad on shared runs", () => {
+    const { draft: challenger } = replay(FLAWLESS);
+    localStorage.setItem(
+      "pokedraft.builder",
+      JSON.stringify(
+        builderToken(
+          {
+            mode: "builder",
+            formation: challenger.lineup.formation,
+            gens: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            legendaries: true,
+          },
+          challenger.lineup,
+          BUILDER_URL_SEED,
+        ),
+      ),
+    );
+    view(ELIMINATED, "shared");
+    const challengeLink = screen.getByTestId("challenge-seed");
+    expect(challengeLink.getAttribute("href")).toBe(
+      "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=c-4",
+    );
+    const builderLink = screen.getByTestId("open-in-builder");
+    expect(builderLink.getAttribute("href")).toMatch(/^\/\?b=pd\d+\./);
+    const copied = draftFromBuilderToken(
+      new URL(builderLink.getAttribute("href")!, "https://example.test").searchParams.get("b")!,
+    );
+    expect(copied?.lineup).toEqual(replay(ELIMINATED).draft.lineup);
+
+    fireEvent.click(screen.getByTestId("play-exhibition"));
+    const modal = screen.getByTestId("exhibition-modal");
+    expect(modal.textContent).toContain("Exhibition Match");
+    expect(screen.getByTestId("exhibition-score").textContent).toMatch(/^\d+ - \d+$/);
+    expect(loadHistory()).toEqual([]);
+  });
+
+  it.each([null, "bad-token", JSON.stringify("bad-token")])(
+    "does not invent an exhibition challenger when the saved squad is missing or invalid (%s)",
+    (saved) => {
+      if (saved !== null) localStorage.setItem("pokedraft.builder", saved);
+      view(ELIMINATED, "shared");
+      fireEvent.click(screen.getByTestId("play-exhibition"));
+      expect(screen.getByTestId("exhibition-modal").textContent).toContain(
+        "Save a complete squad in the Builder",
+      );
+      expect(screen.queryByTestId("exhibition-score")).toBeNull();
+      expect(loadHistory()).toEqual([]);
+    },
+  );
 });

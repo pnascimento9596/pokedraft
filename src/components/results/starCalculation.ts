@@ -3,6 +3,7 @@ import { FORMATIONS } from "@/engine/formations";
 import { speciesById } from "@/engine/species";
 import { pokedexById } from "@/data/pokedex";
 import type { PokemonType } from "@/data/pokedex";
+import { MOVE_TRAITS } from "@/scouting/move-traits";
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import { finalScore, type PlayedMatch } from "./format";
 import { getAbilityMeta } from "./abilityEffects";
@@ -20,6 +21,7 @@ export interface MatchStar {
   readonly abilityFlavor: string;
   readonly element: PokemonType;
   readonly kickMove: string;
+  readonly action: "attack" | "defend";
   readonly matchScore: string;
   readonly outcome: "W" | "D" | "L";
   readonly opponentName: string;
@@ -44,6 +46,22 @@ function capitalizeWords(str: string): string {
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+function pickSignatureMove(
+  moves: readonly string[] | undefined,
+  defensive: boolean,
+  fallback: string,
+): string {
+  if (!moves || moves.length === 0) return fallback;
+  const preferred = defensive
+    ? (["reflex", "header", "kick"] as const)
+    : (["kick", "header"] as const);
+  for (const trait of preferred) {
+    const match = moves.find((m) => (MOVE_TRAITS[m] ?? "kick") === trait);
+    if (match) return capitalizeWords(match);
+  }
+  return fallback;
 }
 
 export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
@@ -111,7 +129,9 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
 
     const parts = [
       topStats.goals > 0 ? `${topStats.goals} ${topStats.goals === 1 ? "Goal" : "Goals"}` : null,
-      topStats.assists > 0 ? `${topStats.assists} ${topStats.assists === 1 ? "Assist" : "Assists"}` : null,
+      topStats.assists > 0
+        ? `${topStats.assists} ${topStats.assists === 1 ? "Assist" : "Assists"}`
+        : null,
     ].filter(Boolean);
     statSummary = parts.join(" • ") || "Dominant attacking display";
   } else if (match.shootout !== null && match.outcome === "W") {
@@ -134,7 +154,12 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
   const abilityName = dex?.abilities[0]?.name ?? "Keen Eye";
   const abilityId = dex?.abilities[0]?.id ?? "keen-eye";
   const primaryType = (dex?.types[0] ?? species.types[0] ?? "normal") as PokemonType;
-  const kickMove = dex?.kickMoves[0] ? capitalizeWords(dex.kickMoves[0]) : "Power Volley";
+  const isDefensiveStar = userGoals.length === 0;
+  const kickMove = pickSignatureMove(
+    dex?.kickMoves,
+    isDefensiveStar,
+    isDefensiveStar ? "Reflex Save" : "Power Volley",
+  );
   const abilityMeta = getAbilityMeta(abilityId, abilityName, primaryType);
 
   return {
@@ -150,6 +175,7 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
     abilityFlavor: abilityMeta.flavor,
     element: abilityMeta.element,
     kickMove,
+    action: isDefensiveStar ? "defend" : "attack",
     matchScore: scoreline,
     outcome: match.outcome,
     opponentName: match.opponent.name,
@@ -164,7 +190,12 @@ export function getTournamentMvp(cup: CupResult, draft: DraftState): MatchStar {
   const abilityName = dex?.abilities[0]?.name ?? "Mastery";
   const abilityId = dex?.abilities[0]?.id ?? "mastery";
   const primaryType = (dex?.types[0] ?? species.types[0] ?? "normal") as PokemonType;
-  const kickMove = dex?.kickMoves[0] ? capitalizeWords(dex.kickMoves[0]) : "Champion Strike";
+  const defensive = pot.goals === 0 && pot.assists === 0;
+  const kickMove = pickSignatureMove(
+    dex?.kickMoves,
+    defensive,
+    defensive ? "Reflex Save" : "Champion Strike",
+  );
   const abilityMeta = getAbilityMeta(abilityId, abilityName, primaryType);
 
   const statParts = [
@@ -186,6 +217,7 @@ export function getTournamentMvp(cup: CupResult, draft: DraftState): MatchStar {
     abilityFlavor: abilityMeta.flavor,
     element: abilityMeta.element,
     kickMove,
+    action: defensive ? "defend" : "attack",
     matchScore: `${cup.wins}-${cup.draws}-${cup.losses}`,
     outcome: cup.flawless ? "W" : cup.wins >= cup.losses ? "W" : "D",
     opponentName: "Silph Cup",

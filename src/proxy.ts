@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { decodeToken } from "./engine";
+import { decodeToken } from "./engine/token";
 import { RETAINED_TOKEN_VERSIONS } from "./engine/versions/label";
 import { PASSCODE_COOKIE, cookieMatches, isPublicPath } from "./passcode";
 import { runTokenFromUrl } from "./ui/run-link";

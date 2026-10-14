@@ -23,9 +23,11 @@ import {
 
 export async function migratedDb(): Promise<{ db: Db; client: PGlite }> {
   const client = await PGlite.create();
-  const db = drizzle({ client, schema });
-  await migrate(db, { migrationsFolder: path.resolve(import.meta.dirname, "../../../../drizzle") });
-  return { db: db as unknown as Db, client };
+  const db = drizzle({ client, schema }) as unknown as Db;
+  await migrate(db as unknown as ReturnType<typeof drizzle>, {
+    migrationsFolder: path.resolve(import.meta.dirname, "../../../../drizzle"),
+  });
+  return { db, client };
 }
 
 const SLOTS: SlotRef[] = [

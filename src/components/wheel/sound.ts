@@ -64,3 +64,50 @@ export function playTick(): void {
   osc.start(t);
   osc.stop(t + 0.035);
 }
+
+export function playReelSettle(): void {
+  if (ctx === null || !soundEnabled() || ctx.state !== "running") return;
+  const t = ctx.currentTime;
+  for (const [idx, freq] of [523.25, 659.25].entries()) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq, t + idx * 0.055);
+    gain.gain.setValueAtTime(0.07, t + idx * 0.055);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + idx * 0.055 + 0.14);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t + idx * 0.055);
+    osc.stop(t + idx * 0.055 + 0.15);
+  }
+}
+
+export function playSignCard(): void {
+  if (ctx === null || !soundEnabled() || ctx.state !== "running") return;
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(280, t);
+  osc.frequency.exponentialRampToValueAtTime(560, t + 0.06);
+  gain.gain.setValueAtTime(0.08, t);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + 0.075);
+}
+
+export function playGoalHorn(): void {
+  if (ctx === null || !soundEnabled() || ctx.state !== "running") return;
+  const t = ctx.currentTime;
+  for (const freq of [440, 554.37, 659.25]) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0.04, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.3);
+  }
+}

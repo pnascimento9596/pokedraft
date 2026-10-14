@@ -85,4 +85,24 @@ describe("starCalculation", () => {
     expect(star.roundShort).toBe("Game 1");
     expect(star.name).toBeTruthy();
   });
+
+  it("prioritizes offensive kick or header moves over reflex moves like Detect or Protect for goal scorers", () => {
+    const { draft, cup } = replay(FLAWLESS);
+    const match = cup.matches.find(
+      (m): m is Extract<typeof m, { status: "played" }> => m.status === "played",
+    )!;
+    // Pikachu (#25) has kickMoves: ["detect", "double-kick", "headbutt", "mega-kick", "protect", "skull-bash"]
+    const pikachu = 25 as typeof match.goals[number]["scorer"] & typeof draft.lineup.starters[0];
+    const star = getMatchStar(
+      {
+        ...match,
+        outcome: "W",
+        regulation: { user: 1, opp: 0 },
+        goals: [{ side: "user", scorer: pikachu, assist: null, minute: 22, penalty: false }],
+      },
+      draft,
+    );
+    expect(star.kickMove).not.toBe("Detect");
+    expect(["Double Kick", "Mega Kick", "Headbutt", "Skull Bash"]).toContain(star.kickMove);
+  });
 });

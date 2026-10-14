@@ -1,10 +1,19 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
-import type { Contribution, CupResult, DraftState, PlayerLine } from "@/engine";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import type {
+  Contribution,
+  CupResult,
+  CupRound,
+  DraftState,
+  PlayerLine,
+  SpeciesId,
+} from "@/engine";
 import { speciesById } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { Pitch } from "@/components/pitch/Pitch";
+import { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
+import { valueAt } from "@/ui/lineup";
 import {
   FINISH_LABEL,
   FRIENDLY_LABEL,
@@ -16,12 +25,14 @@ import {
 import { recordRun, toRecord } from "@/ui/runs";
 import { contributionLine } from "./format";
 import { FitReveal } from "./FitReveal";
+import { MatchdayLive } from "./MatchdayLive";
 import { MatchHighlights } from "./MatchHighlights";
 import { MatchList } from "./MatchList";
 import { ShareActions } from "./ShareActions";
 import s from "./ResultsView.module.css";
 import { ModuleCard, Pill, Table } from "@/components/ui/primitives";
 import { NavIcon, type NavFamily } from "@/components/ui/nav-icons";
+import { SoundToggle } from "@/components/wheel/SoundToggle";
 
 export interface ResultsViewProps {
   /** The run token: `encodeToken` output that `replay` accepts. */
@@ -62,6 +73,11 @@ export function ResultsView({
 
   const friendly = draft.settings.mode === "builder";
   const formation = draft.settings.formation;
+  const [selectedHighlightRound, setSelectedHighlightRound] = useState<CupRound | "mvp" | null>(
+    null,
+  );
+  const [showMatchday, setShowMatchday] = useState(false);
+  const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
 
   return (
     <section className={s.results} data-testid="results" aria-label="Run results">
@@ -103,10 +119,31 @@ export function ResultsView({
         ) : null}
       </ModuleCard>
 
-      <ShareActions token={token} variant={variant} onNewRun={onNewRun} />
+      <ShareActions token={token} draft={draft} variant={variant} onNewRun={onNewRun} />
       {variant === "live" ? submit : null}
 
-      <MatchHighlights cup={cup} draft={draft} />
+      <div className={s.actions}>
+        <SoundToggle />
+        <button
+          type="button"
+          className="btn btn--ghost"
+          data-testid="toggle-matchday"
+          aria-expanded={showMatchday}
+          onClick={() => setShowMatchday((v) => !v)}
+        >
+          {showMatchday ? "Hide Matchday Broadcast" : "▶ Watch Matchday Broadcast"}
+        </button>
+      </div>
+      {showMatchday ? (
+        <MatchdayLive cup={cup} draft={draft} onClose={() => setShowMatchday(false)} />
+      ) : null}
+
+      <MatchHighlights
+        cup={cup}
+        draft={draft}
+        selectedRound={selectedHighlightRound}
+        onSelectRound={setSelectedHighlightRound}
+      />
 
       <div className={s.columns}>
         <ModuleCard
@@ -115,7 +152,11 @@ export function ResultsView({
           title="The cup"
           description="Every match, with the opponents from this run."
         >
-          <MatchList cup={cup} draft={draft} />
+          <MatchList
+            cup={cup}
+            draft={draft}
+            onSelectStar={(round) => setSelectedHighlightRound(round)}
+          />
         </ModuleCard>
 
         <div className={s.block}>
@@ -204,6 +245,40 @@ export function ResultsView({
         title="How the eleven fit"
         description="Your lineup, Synergy links and ratings for each role."
       >
+        <div
+          className={s.breakdownBar}
+          data-testid="score-breakdown"
+          aria-label="Squad rating breakdown"
+        >
+          <div className={s.breakdownItem}>
+            <span className="kicker">GK</span>
+            <span className="num">{Math.round(cup.rating.lines.GK)}</span>
+          </div>
+          <div className={s.breakdownItem}>
+            <span className="kicker">DEF</span>
+            <span className="num">{Math.round(cup.rating.lines.DEF)}</span>
+          </div>
+          <div className={s.breakdownItem}>
+            <span className="kicker">MID</span>
+            <span className="num">{Math.round(cup.rating.lines.MID)}</span>
+          </div>
+          <div className={s.breakdownItem}>
+            <span className="kicker">ATT</span>
+            <span className="num">{Math.round(cup.rating.lines.ATT)}</span>
+          </div>
+          <div className={s.breakdownItem}>
+            <span className="kicker">Synergy</span>
+            <span className="num">{Math.round(cup.rating.synergy * 100)}%</span>
+          </div>
+          <div className={s.breakdownItem}>
+            <span className="kicker">Bench</span>
+            <span className="num">{Math.round(cup.rating.bench * 100)}</span>
+          </div>
+          <div className={s.breakdownItem}>
+            <span className="kicker">Weak-spot drag</span>
+            <span className="num">-{Math.round(cup.rating.drag * 100)}</span>
+          </div>
+        </div>
         <div className={s.fitGrid}>
           <div className={s.pitchCol}>
             <Pitch
@@ -213,6 +288,10 @@ export function ResultsView({
               edges={cup.rating.edges}
               weakest={cup.rating.weakest}
               label="Your lineup"
+              onSlotTap={(ref) => {
+                const id = valueAt(draft.lineup, ref);
+                if (id !== null) setInspectId(id);
+              }}
             />
             <ul className={s.legend} aria-label="Pitch legend">
               <li>
@@ -228,6 +307,14 @@ export function ResultsView({
           <FitReveal formation={formation} rating={cup.rating} />
         </div>
       </ModuleCard>
+
+      {inspectId !== null ? (
+        <ScoutingDossier
+          speciesId={inspectId}
+          showRatings={true}
+          onClose={() => setInspectId(null)}
+        />
+      ) : null}
 
       <details className={s.details}>
         <summary>Season details: how grading works</summary>

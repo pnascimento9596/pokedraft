@@ -1,6 +1,7 @@
 import { POKEDEX } from "@/data/pokedex";
 import { SCOUTING } from "@/scouting/scouting-data";
 import { ROLES } from "@/scouting/types";
+import { asSpeciesId } from "./settings";
 import {
   GENS,
   REGIONS,
@@ -9,20 +10,12 @@ import {
   type Region,
   type Role,
   type Species,
-  type SpeciesId,
 } from "./types";
 
-const MAX_SPECIES_ID = 1025;
 const MAX_FIT = 100;
 
 export { ROLE_LINE } from "./roles";
-
-export function asSpeciesId(n: number): SpeciesId {
-  if (!Number.isInteger(n) || n < 1 || n > MAX_SPECIES_ID) {
-    throw new RangeError(`species id must be an integer in 1..${MAX_SPECIES_ID}, got ${n}`);
-  }
-  return n as SpeciesId;
-}
+export { asSpeciesId } from "./settings";
 
 function buildQualityTables(): Record<Role, readonly Quality[]> {
   const total = SCOUTING.length;
