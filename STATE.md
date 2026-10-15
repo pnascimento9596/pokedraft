@@ -2,6 +2,10 @@
 
 Measured ground truth. Updated in the same PR as every merge.
 
+## October 15 engine release receipt
+
+PR [#51](https://github.com/pnascimento9596/pokedraft/pull/51) merged on October 15 at 18:07:36 UTC. The reviewed head is `4b7439c`; the squash is `6218750ea2c9896e469b1496d5d20691b4b78d6f`. Hosted checks passed with 1,003 unit tests and 732 browser tests plus 55 skips. Production health verification is pending confirmation from the landing owner. The platform experience candidate is rebased onto this squash and preserves the final engine browser fixture repairs.
+
 ## October 15 platform experience candidate
 
 The second dispatch completes draft/scouting feedback, filled tactical slot labels, chemistry reason filters, actual swap comparisons, all-squad scouting, local formation win rates and the 1,025-species Hall of Fame, known-squad social previews, and recorded exhibition highlights. Historical records without squad metadata remain explicitly unknown. Implementation gates pass with 1,037 unit tests in 117 files, lint, standalone typecheck, production build, 56 focused browser tests, a 14-test platform-only rerun (ten overlapping), and 249 mobile acceptance tests with 48 expected skips. Seam, mirror, and theme checks pass. Validation and limits are recorded in `docs/decisions/platform-experience-completion.md`. Independent review and deployment are pending for this candidate.
