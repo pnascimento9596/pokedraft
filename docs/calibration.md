@@ -252,3 +252,15 @@ Measured on engine-3, good bot on cup8-full, 5,000 drafts per formation. Team Sc
 Before PR 6B (engine-1): item 2 placed 24.0% at +30.1, item 5 10.2% at +27.8 (3-5-2 14.5% at +25.4).
 
 Δ score is the Team Score of the final lineup minus the score with the flagged species swapped for the good bot's best other option from the same pick. A positive Δ means the flagged species rates above the alternative.
+
+## Current engine v4 measurement, 2026-10-15
+
+The sections above retain historical engine-v3 evidence. The current engine is `pokedraft-engine-4`. The fresh final measurement on source `6b094332195f55d8b2c2deb5129fcd6f1643ec65` completed 90,000 cups with zero errors.
+
+The 840 bucket went flawless in 288 of 8,667 cups, 3.32% with a 95% Wilson interval of 2.97% to 3.72%, and averaged 6.08838 wins. The 900 bucket went flawless in 982 of 8,070 cups, 12.17% with an interval of 11.47% to 12.90%. The 950 bucket went flawless in 6,076 of 20,194 cups, 30.09% with an interval of 29.46% to 30.72%. Every original target probability lies within its interval. Careless kanto151 placement averages 3.054 wins.
+
+Final Boss score is 985. The maximum ladder step is 130, replacing the historical v3 maximum of 125. Attacking goal shares are 71.72% in 4-3-3, 78.82% in 4-2-3-1, and 73.87% in 3-4-3. The extra formation probes completed 15,000 cups each with zero errors.
+
+The builder-leg-off greedy-bot inversion remains, good 963 versus oracle 952. The score ceiling remains unproven by these bots. Golden Boot measurements completed 80,000 cups per mode with no measured defensive group above 10%, although combined maxima of 9.60% and 9.64% have intervals that cross 10%.
+
+The [v4 calibration report](reports/engine-v4-calibration.md) preserves commands, counts, coefficient alternatives, win curves, hashes, and limitations. The [v4 Golden Boot report](reports/engine-v4-boot.md) preserves all formation and bot counts.
