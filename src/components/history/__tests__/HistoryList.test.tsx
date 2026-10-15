@@ -132,3 +132,21 @@ describe("Stored career history", () => {
     expect(screen.queryByRole("button", { name: "Champions only" })).toBeNull();
   });
 });
+
+
+it("shows match win rate by formation and all species with honest missing-history coverage", () => {
+  localStorage.setItem("pokedraft:history:v1", JSON.stringify([
+    { ...runs[0], squadSpeciesIds: [1, 25, 1025] }, runs[2], runs[3],
+  ]));
+  render(<HistoryList />);
+  expect(screen.getByRole("region", { name: "Win rate by formation" }).textContent).toContain("4-3-3");
+  expect(screen.getByRole("region", { name: "Win rate by formation" }).textContent).toContain("100.0%");
+  expect(screen.getByText("Squad coverage: 1 of 2 ranked stored runs. Species from older runs without squad metadata are unknown.")).toBeTruthy();
+  expect(screen.getByRole("img", { name: "Squad species 25" })).toBeTruthy();
+  fireEvent.change(screen.getByRole("searchbox", { name: "Find a Hall of Fame species" }), { target: { value: "Pecharunt" } });
+  expect(screen.getByRole("region", { name: "Species Hall of Fame" }).textContent).toContain("Pecharunt");
+  expect(screen.getByRole("region", { name: "Species Hall of Fame" }).textContent).toContain("1 drafted squad");
+  expect(screen.getByRole("region", { name: "Species Hall of Fame" }).textContent).toContain("1 champion squad");
+  fireEvent.change(screen.getByRole("searchbox", { name: "Find a Hall of Fame species" }), { target: { value: "Ivysaur" } });
+  expect(screen.getByRole("region", { name: "Species Hall of Fame" }).textContent).toContain("No recorded squads");
+});
