@@ -64,6 +64,9 @@ for (const width of [1280, 320]) {
       await page.getByTestId("slot-s9").click();
       const picker = page.getByRole("dialog");
       await expect(picker).toBeVisible();
+      if (width === 320) {
+        await page.addStyleTag({ content: "dialog header button { font-size: 17px !important; }" });
+      }
       const ratio = await picker.evaluate((el) => {
         const list = el.querySelector('ul[aria-label="Species"]')!;
         return list.getBoundingClientRect().height / el.getBoundingClientRect().height;
