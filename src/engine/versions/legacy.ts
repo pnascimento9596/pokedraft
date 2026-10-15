@@ -31,7 +31,8 @@ export type LegacyOppKick = Omit<Extract<PenKick, { side: "opp" }>, "taker"> & {
 type LegacyShootout = Omit<Shootout, "decider" | "coinWinner" | "kicks"> & {
   readonly kicks: readonly (UserKick | LegacyOppKick)[];
 };
-type LegacyPlayed = Omit<LivePlayed, "shootout" | "goals"> & {
+type LegacyPlayed = Omit<LivePlayed, "shootout" | "goals" | "opponent"> & {
+  readonly opponent: Omit<Opponent, "roster">;
   readonly goals: readonly (UserGoal | LegacyOppGoal)[];
   readonly shootout: LegacyShootout | null;
 };
@@ -43,6 +44,14 @@ interface LegacyNotPlayed {
 export type LegacyCupResult = Omit<CupResult, "matches" | "awards"> & {
   readonly matches: readonly (LegacyPlayed | LegacyNotPlayed)[];
   readonly awards: Omit<CupResult["awards"], "potContribution">;
+};
+type LegacyV3Shootout = LegacyShootout & Pick<Shootout, "decider" | "coinWinner">;
+type LegacyV3Played = Omit<LegacyPlayed, "shootout"> & {
+  readonly shootout: LegacyV3Shootout | null;
+};
+export type LegacyV3CupResult = Omit<LegacyCupResult, "matches" | "awards"> & {
+  readonly matches: readonly (LegacyV3Played | LegacyNotPlayed)[];
+  readonly awards: CupResult["awards"];
 };
 export type LegacyLadder = (
   seed: Seed,
@@ -74,7 +83,8 @@ const legacyGoal = (g: UserGoal | LegacyOppGoal): GoalEvent =>
 const legacyKick = (k: UserKick | LegacyOppKick): PenKick =>
   k.side === "user" ? k : { ...k, taker: legacyRef(k.taker) };
 
-function legacyShootout(s: LegacyShootout): Shootout {
+function legacyShootout(s: LegacyShootout | LegacyV3Shootout, version: 1 | 2 | 3): Shootout {
+  if (version === 3 && "decider" in s) return { ...s, kicks: s.kicks.map(legacyKick) };
   const userKicks = s.kicks.filter((k) => k.side === "user").length;
   const decree = userKicks > LEGACY_REGULATION_KICKS + LEGACY_SUDDEN_DEATH_CAP;
   return {
@@ -87,13 +97,23 @@ function legacyShootout(s: LegacyShootout): Shootout {
 
 const legacyOpponent = (o: Omit<Opponent, "roster">): Opponent => ({ ...o, roster: SHIRT_ROSTER });
 
-export function fromLegacy(cup: LegacyCupResult, ladderOf: LegacyLadder): CupResult {
+export function fromLegacy(cup: LegacyCupResult, ladderOf: LegacyLadder): CupResult;
+export function fromLegacy(cup: LegacyV3CupResult, ladderOf: LegacyLadder, version: 3): CupResult;
+export function fromLegacy(
+  cup: LegacyCupResult | LegacyV3CupResult,
+  ladderOf: LegacyLadder,
+  version: 1 | 2 | 3 = 1,
+): CupResult {
   let ladder: Readonly<Record<CupRound, Omit<Opponent, "roster">>> | undefined;
   const opponent = (round: CupRound): Opponent =>
     legacyOpponent((ladder ??= ladderOf(cup.seed, cup.mode))[round]);
   return {
     ...cup,
-    awards: { ...cup.awards, potContribution: null },
+    awards: {
+      ...cup.awards,
+      potContribution:
+        version === 3 && "potContribution" in cup.awards ? cup.awards.potContribution : null,
+    },
     matches: cup.matches.map((m): MatchResult =>
       m.status === "notPlayed"
         ? { ...m, opponent: opponent(m.round) }
@@ -101,7 +121,7 @@ export function fromLegacy(cup: LegacyCupResult, ladderOf: LegacyLadder): CupRes
             ...m,
             opponent: legacyOpponent(m.opponent),
             goals: m.goals.map(legacyGoal),
-            shootout: m.shootout === null ? null : legacyShootout(m.shootout),
+            shootout: m.shootout === null ? null : legacyShootout(m.shootout, version),
           },
     ),
   };

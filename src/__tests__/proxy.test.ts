@@ -133,7 +133,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   it("rewrites an undecodable share link to the 404 route and passes a real token through", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "");
     const cur = `pd${RUN_TOKEN_VERSION}`;
-    for (const bad of ["garbage", `${cur}.%%%`, "pd99.abc", "pd0.abc", `${cur}.e30`]) {
+    for (const bad of ["garbage", `${cur}.%%%`, "pd99.abc", "pd0.abc", "pd01.e30", `${cur}.e30`]) {
       const res = proxy(req(`/r/${bad}`));
       expect(res.headers.get("x-middleware-rewrite")).toBe("https://pokedraft.test/run-not-found");
     }
@@ -233,5 +233,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     const closure = importClosure("src/proxy.ts");
     expect(closure).not.toContain("src/data/pokedex.json");
     expect(closure).not.toContain("src/data/scouting.json");
+    expect(closure.filter((file) => /(?:pokedex|scouting)\.json$/.test(file))).toEqual([]);
+    expect(closure.filter((file) => /\/species\.ts$/.test(file))).toEqual([]);
   });
 });

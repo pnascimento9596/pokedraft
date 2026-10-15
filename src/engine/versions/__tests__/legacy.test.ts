@@ -5,6 +5,7 @@ import {
   fromLegacy,
   LEGACY_SHIRT_ROSTER,
   type LegacyCupResult,
+  type LegacyV3CupResult,
   type LegacyLadder,
   type LegacyOppKick,
   type UserKick,
@@ -60,8 +61,36 @@ function withFinalShootout(
 
 describe("fromLegacy (engine-1 and engine-2 results in today's shape)", () => {
   it("wraps raw frozen v1 scorer, assist, and taker shirts exactly once", () => {
+    const eliminated = fromLegacy(
+      v1.replay(ELIMINATED_V1).cup as unknown as LegacyCupResult,
+      v1Ladder,
+    );
+    expect(
+      eliminated.matches
+        .flatMap((m) => (m.status === "played" ? m.goals : []))
+        .filter((g) => g.side === "opp"),
+    ).toEqual([
+      {
+        side: "opp",
+        minute: 49,
+        penalty: false,
+        scorer: { kind: "shirt", number: 9 },
+        assist: { kind: "shirt", number: 2 },
+      },
+      {
+        side: "opp",
+        minute: 75,
+        penalty: false,
+        scorer: { kind: "shirt", number: 6 },
+        assist: { kind: "shirt", number: 3 },
+      },
+    ]);
     const cup = fromLegacy(withFinalShootout(26, 25, kicks(25, true, false)), NO_LADDER);
-    expect(cup.matches.flatMap((m) => m.status === "played" ? m.goals : []).filter((g) => g.side === "opp")).toMatchObject([
+    expect(
+      cup.matches
+        .flatMap((m) => (m.status === "played" ? m.goals : []))
+        .filter((g) => g.side === "opp"),
+    ).toMatchObject([
       { scorer: { kind: "shirt", number: 8 }, assist: null },
       { scorer: { kind: "shirt", number: 10 }, assist: null },
     ]);
@@ -105,7 +134,6 @@ describe("fromLegacy (engine-1 and engine-2 results in today's shape)", () => {
   });
 });
 
-
 describe("retained v3 metadata", () => {
   it("keeps the actual v3 golden player contribution through the dispatcher", () => {
     expect(replayAnyVersion(GOLDEN_CUP8_V3).cup.awards.potContribution).toEqual({
@@ -119,36 +147,46 @@ describe("retained v3 metadata", () => {
     });
   });
 
-  it.each([["m-0", "opp"], ["m-2", "user"]] as const)("preserves a frozen v3 capped-coin result for %s", (seed, coinWinner) => {
+  it.each([
+    ["m-0", "opp"],
+    ["m-2", "user"],
+  ] as const)("preserves a frozen v3 capped-coin result for %s", (seed, coinWinner) => {
     const replay = v3.replay(GOLDEN_CUP8_V3);
     const raw = replay.cup;
     const lineup = v3Lineup(replay.draft);
     const formation = V3_FORMATIONS[lineup.formation];
-    const match = v3Match({
-      seed: seed as typeof raw.seed,
-      matchIndex: 7,
-      round: "F",
-      phase: "knockout",
-      rating: raw.rating.score,
-      userLines: v3Lines(raw.rating),
-      starters: lineup.starters.map((id, i) => ({
-        species: v3Species(id),
-        line: formation.slots[i]!.line,
-        role: formation.slots[i]!.role,
-      })),
-      keeper: v3Species(lineup.starters[0]),
-      opponent: v3Ladder(raw.seed, raw.mode).F,
-      absences: [],
-    }, {
-      ...V3_COEFFICIENTS,
-      match: {
-        ...V3_COEFFICIENTS.match,
-        chances: { ...V3_COEFFICIENTS.match.chances, maxGoalProb: 0 },
+    const match = v3Match(
+      {
+        seed: seed as typeof raw.seed,
+        matchIndex: 7,
+        round: "F",
+        phase: "knockout",
+        rating: raw.rating.score,
+        userLines: v3Lines(raw.rating),
+        starters: lineup.starters.map((id, i) => ({
+          species: v3Species(id),
+          line: formation.slots[i]!.line,
+          role: formation.slots[i]!.role,
+        })),
+        keeper: v3Species(lineup.starters[0]),
+        opponent: v3Ladder(raw.seed, raw.mode).F,
+        absences: [],
       },
-      shootout: { ...V3_COEFFICIENTS.shootout, base: 1, band: 0 },
-    });
-    expect(match.shootout).toMatchObject({ decider: "coin", coinWinner: coinWinner });
-    const cup = fromLegacy({ ...raw, matches: [match] } as unknown as LegacyCupResult, NO_LADDER, 3);
+      {
+        ...V3_COEFFICIENTS,
+        match: {
+          ...V3_COEFFICIENTS.match,
+          chances: { ...V3_COEFFICIENTS.match.chances, maxGoalProb: 0 },
+        },
+        shootout: { ...V3_COEFFICIENTS.shootout, base: 1, band: 0 },
+      },
+    );
+    expect(match.shootout).toMatchObject({ decider: "coin", coinWinner });
+    const cup = fromLegacy(
+      { ...raw, matches: [match] } as unknown as LegacyV3CupResult,
+      NO_LADDER,
+      3,
+    );
     const adapted = cup.matches[0]!;
     expect(adapted.status).toBe("played");
     if (adapted.status !== "played") throw new Error("expected a played final");
@@ -156,7 +194,7 @@ describe("retained v3 metadata", () => {
       user: 205,
       opp: 205,
       decider: "coin",
-      coinWinner: coinWinner,
+      coinWinner,
     });
     expect(adapted.shootout!.kicks).toHaveLength(410);
     expect(adapted.shootout!.kicks.slice(0, 2)).toEqual([

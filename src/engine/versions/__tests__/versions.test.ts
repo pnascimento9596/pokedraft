@@ -9,7 +9,7 @@ import { RETAINED_TOKEN_VERSIONS } from "../label";
 import * as v1 from "../v1";
 import * as v2 from "../v2";
 import * as v3 from "../v3";
-import { fromLegacy, type LegacyCupResult } from "../legacy";
+import { fromLegacy, type LegacyCupResult, type LegacyV3CupResult } from "../legacy";
 import { buildLadder as v1Ladder } from "../v1/src/engine/opponents";
 import { buildLadder as v2Ladder } from "../v2/src/engine/opponents";
 import { buildLadder as v3Ladder } from "../v3/src/engine/opponents";
@@ -151,7 +151,11 @@ describe("replayAnyVersion (routes a token to the engine that issued it)", () =>
       const raw = bundle.replay(token);
       expect([run.engine, run.bundle]).toEqual([engine, bundle.BUNDLE_MARKER]);
       expect(run.draft).toEqual(raw.draft);
-      expect(run.cup).toEqual(fromLegacy(raw.cup as unknown as LegacyCupResult, ladder));
+      expect(run.cup).toEqual(
+        bundle === v3
+          ? fromLegacy(raw.cup as unknown as LegacyV3CupResult, ladder, 3)
+          : fromLegacy(raw.cup as unknown as LegacyCupResult, ladder),
+      );
     }
     // The raw replays are still the dispatch 2 goldens byte for byte.
     expect(sha256(JSON.stringify(v1.replay(GOLDEN_CUP8_V1)))).toBe(

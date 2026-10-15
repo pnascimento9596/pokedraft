@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { decodeToken } from "./engine/token";
-import { RETAINED_TOKEN_VERSIONS } from "./engine/versions/label";
+import { decodeToken as decodeRetainedToken } from "./engine/versions/v3/src/engine/token";
 import { PASSCODE_COOKIE, cookieMatches, isPublicPath } from "./passcode";
 import { runTokenFromUrl } from "./ui/run-link";
 
@@ -8,14 +8,16 @@ const SHARE_PATH = /^\/r\/([^/]+)$/;
 
 // A page that streams has already sent 200, so an undecodable share link is answered here,
 // before the body starts. Tokens that decode but fail the replay keep the friendly 200 page.
-// Links from an older engine go through: only that engine's retained bundle can decode them,
-// and the page replays them there.
+// Versions 1 to 3 share the frozen v3 wire schema. Validate with that data-free codec while
+// leaving the original token intact for replay on its own retained engine.
 function brokenShareLink(token: string | null): boolean {
   if (token === null) return true;
   try {
-    const version = Number(/^pd(\d+)\./.exec(token)?.[1]);
-    if (RETAINED_TOKEN_VERSIONS.includes(version)) return false;
-    decodeToken(token);
+    if (/^pd[123]\./.test(token)) {
+      decodeRetainedToken(token.replace(/^pd\d+\./, "pd3."));
+    } else {
+      decodeToken(token);
+    }
     return false;
   } catch {
     return true;

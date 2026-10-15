@@ -128,10 +128,18 @@ function bossRoster(mode: Mode, seed: string, rungIndex: number): readonly Oppon
  * honestly instead of guessing.
  */
 export function bossStarters(opponent: Opponent): readonly MatchStarter[] {
+  if (opponent.roster.length !== ROSTER_SIZE) {
+    throw new RangeError(`opponent ${opponent.name} must field exactly ${ROSTER_SIZE} players`);
+  }
+  const seen = new Set<number>();
   return opponent.roster.map((ref, i) => {
     if (ref.kind !== "species") {
       throw new RangeError(`opponent ${opponent.name} has no Pokemon roster to field`);
     }
+    if (seen.has(ref.id)) {
+      throw new RangeError(`opponent ${opponent.name} fields duplicate Pokemon ${ref.id}`);
+    }
+    seen.add(ref.id);
     const slot = BOSS_FORMATION.slots[i]!;
     return { species: speciesById(ref.id), line: slot.line, role: slot.role };
   });
