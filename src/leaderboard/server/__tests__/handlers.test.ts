@@ -104,8 +104,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       variant: "classic3.squadFirst.g123456789",
       dailyDate: null,
       token,
-      wins: 5,
-      draws: 0,
+      wins: 4,
+      draws: 1,
       losses: 1,
       teamScore: 623,
     });
@@ -113,8 +113,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect(row).toMatchObject({
       nickname: "Ash",
       seed: "lb-cup8",
-      wins: 5,
-      draws: 0,
+      wins: 4,
+      draws: 1,
       losses: 1,
       teamScore: 623,
       engineVersion: "pokedraft-engine-4",
@@ -283,7 +283,7 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     const retry = await submit({ nickname: " Ash ", token });
     expect(retry.status).toBe(200);
     expect(retry.body.entry).toEqual(first.body.entry);
-    expect(retry.body.entry).toMatchObject({ rank: 1, nickname: "Ash", wins: 5, teamScore: 623 });
+    expect(retry.body.entry).toMatchObject({ rank: 1, nickname: "Ash", wins: 4, teamScore: 623 });
     expect(await rows()).toHaveLength(1);
     expect(await db.select().from(rateLimitEvents)).toHaveLength(1);
     expect(replays).toBe(1);
