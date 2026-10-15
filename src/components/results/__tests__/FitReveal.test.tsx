@@ -48,9 +48,24 @@ function show(lineup: FullLineup) {
 }
 
 describe("FitReveal", () => {
+  it("includes all five bench players with their actual best roles and individual Scout actions", () => {
+    const onScout = vi.fn();
+    render(<FitReveal formation={FINISH_2.formation} rating={rateTeam(FINISH_2)} bench={FINISH_2.bench} onScout={onScout} />);
+    const bench = screen.getByRole("list", { name: "Bench scouting" });
+    expect(within(bench).getAllByRole("listitem")).toHaveLength(5);
+    expect(within(bench).getAllByRole("button").map((button) => button.textContent)).toEqual([
+      "Scout Tandemaus", "Scout Tirtouga", "Scout Ferroseed", "Scout Kommo-o", "Scout Fuecoco",
+    ]);
+    expect(within(bench).getByText("Best roles: W, WM, WB")).toBeTruthy();
+    fireEvent.click(within(bench).getByRole("button", { name: "Scout Fuecoco" }));
+    expect(onScout).toHaveBeenCalledExactlyOnceWith(909);
+  });
+
   it("opens the selected starter dossier from its own Scout control", () => {
     const onScout = vi.fn();
-    render(<FitReveal formation={FINISH_2.formation} rating={rateTeam(FINISH_2)} onScout={onScout} />);
+    render(
+      <FitReveal formation={FINISH_2.formation} rating={rateTeam(FINISH_2)} onScout={onScout} />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Scout Rotom" }));
     expect(onScout).toHaveBeenCalledExactlyOnceWith(479);
     expect(screen.getAllByRole("button", { name: /^Scout / })).toHaveLength(11);
