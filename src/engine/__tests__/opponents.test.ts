@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { buildLadder } from "../opponents";
+import { bossStarters, buildLadder } from "../opponents";
 import { speciesById } from "../species";
-import { CUP_ROUNDS, type Species } from "../types";
+import { CUP_ROUNDS, type Opponent, type Shirt, type Species } from "../types";
 
 const members = (
   ladder: ReturnType<typeof buildLadder>,
@@ -59,5 +59,42 @@ describe("engine-4 themed Boss Club rosters (catches opponents without actual Po
 
   it("is deterministic for the same seed and mode", () => {
     expect(buildLadder("golden-177", "cup8")).toEqual(buildLadder("golden-177", "cup8"));
+  });
+
+  it("rejects incomplete, oversized, duplicate and retained-shirt XIs before fielding a club", () => {
+    const club = buildLadder("golden-1", "kanto151").G1;
+    const malformed: readonly Opponent[] = [
+      { ...club, roster: club.roster.slice(1) },
+      { ...club, roster: [...club.roster, club.roster[0]!] },
+      { ...club, roster: club.roster.map(() => club.roster[0]!) },
+      { ...club, roster: club.roster.map((_, i) => ({ kind: "shirt", number: (i + 1) as Shirt })) },
+    ];
+    for (const opponent of malformed) {
+      expect(() => bossStarters(opponent)).toThrow(RangeError);
+    }
+    expect(bossStarters(club).map((s) => s.role)).toEqual([
+      "GK", "FB", "CB", "CB", "FB", "DM", "CM", "CM", "W", "ST", "W",
+    ]);
+  });
+
+  it("fields complete eligible themed XIs across 24 seeds and all three modes", () => {
+    let checked = 0;
+    for (const mode of ["kanto151", "cup8", "builder"] as const) {
+      for (let seed = 0; seed < 24; seed++) {
+        const ladder = buildLadder(`roster-contract-${seed}`, mode);
+        for (const round of CUP_ROUNDS) {
+          const roster = members(ladder, round);
+          expect(roster).toHaveLength(11);
+          expect(new Set(roster.map((s) => s.id)).size).toBe(11);
+          expect(roster[0]!.types.some((type) => roster.every((s) =>
+            (s.types as readonly string[]).includes(type),
+          ))).toBe(true);
+          if (mode === "kanto151") expect(roster.every((s) => s.id <= 151)).toBe(true);
+          expect(bossStarters(ladder[round])[0]!.role).toBe("GK");
+          checked++;
+        }
+      }
+    }
+    expect(checked).toBe(576);
   });
 });
