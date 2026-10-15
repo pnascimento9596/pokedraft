@@ -158,6 +158,15 @@ describe("results format", () => {
     ).toBe("57' No. 9");
   });
 
+  it("preserves named Boss Club assists and retained shirt assists in results goal lines", () => {
+    expect(goalLine({ side: "opp", minute: 57, penalty: false,
+      scorer: { kind: "species", id: sp(6) }, assist: { kind: "species", id: sp(4) },
+    })).toBe("57' Charizard, assist Charmander");
+    expect(goalLine({ side: "opp", minute: 57, penalty: false,
+      scorer: { kind: "shirt", number: shirt(9) }, assist: { kind: "shirt", number: shirt(7) },
+    })).toBe("57' No. 9, assist No. 7");
+  });
+
   it("says who replaced an absent player", () => {
     expect(absenceLine({ slot: "s1" as never, out: sp(1), in: sp(43) })).toBe(
       "Bulbasaur missed this match; Oddish came in",

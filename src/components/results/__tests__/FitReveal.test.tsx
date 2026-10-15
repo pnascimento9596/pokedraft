@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { FORMATIONS, FORMATION_IDS, SPECIES, rateTeam, type FullLineup } from "@/engine";
 import { createRng } from "@/lib/rng";
 import { FitReveal } from "../FitReveal";
@@ -48,6 +48,14 @@ function show(lineup: FullLineup) {
 }
 
 describe("FitReveal", () => {
+  it("opens the selected starter dossier from its own Scout control", () => {
+    const onScout = vi.fn();
+    render(<FitReveal formation={FINISH_2.formation} rating={rateTeam(FINISH_2)} onScout={onScout} />);
+    fireEvent.click(screen.getByRole("button", { name: "Scout Rotom" }));
+    expect(onScout).toHaveBeenCalledExactlyOnceWith(479);
+    expect(screen.getAllByRole("button", { name: /^Scout / })).toHaveLength(11);
+  });
+
   it("prints each player's quality against the role, not the raw fit (catches the card showing a number the engine does not rank by)", () => {
     const rows = show(FINISH_2);
     expect(rows.map((r) => [r.label, r.number])).toEqual(
