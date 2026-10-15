@@ -2,7 +2,7 @@
 
 October 15, 2026. This is the second dispatch in the approved handoff roadmap.
 
-The candidate is rebased onto PR [#51](https://github.com/pnascimento9596/pokedraft/pull/51), merged at 18:07:36 UTC as `6218750ea2c9896e469b1496d5d20691b4b78d6f` from reviewed head `4b7439ca2cff41aa6211df9cd7a7a2fb565673d3`. Its hosted gates passed with 1,003 unit tests and 732 browser tests plus 55 skips. The landing owner confirmed cache-busted production health at 18:08:36 UTC with HTTP 200, no-store, exact squash identity, engine 4, and token versions 1 through 4. Vercel production deployment `dpl_GHSGZTdQ73mA2u7UiXDVGg1218yU` is READY. This receipt does not claim deployment of the experience candidate.
+The candidate is rebased onto PR [#51](https://github.com/pnascimento9596/pokedraft/pull/51), merged at 18:07:36 UTC as `6218750ea2c9896e469b1496d5d20691b4b78d6f` from reviewed head `4b7439ca2cff41aa6211df9cd7a7a2fb565673d3`. Its hosted gates passed with 1,003 unit tests and 732 browser tests plus 55 skips. The landing owner confirmed cache-busted production health at 18:08:36 UTC with HTTP 200, no-store, exact squash identity, engine 4, and token versions 1 through 4. Vercel production deployment `dpl_GHSGZTdQ73mA2u7UiXDVGg1218yU` is READY. The landing owner also completed 21 production browser checks, including current Boss XI/shootout identity, retained v1/v2/v3 outcomes, v3 contribution, malformed-link HTTP 404 contracts, and share/card/download behavior. This receipt does not claim deployment of the experience candidate.
 
 ## Scope
 
@@ -27,6 +27,8 @@ Architect skipped. The approved dispatch fixed the product design. Cursor-only h
 The final runtime candidate passed `pnpm lint`, standalone `pnpm typecheck`, 1,037 unit tests in 117 files, build-boundary validation of 1,025 Pokedex and 1,025 scouting rows, and `pnpm build`. Image seam, client bundle, mirror, theme color, contrast, and color-vision scripts passed. The client bundle contains no retained engine bundle.
 
 The combined production-build browser selection passed 56 tests. It covers data split and slow-loading behavior, dark/light axe scans, rating layouts, both Chromium and WebKit card containment, and the ten platform experience cases. Full mobile acceptance passed 249 tests with 48 expected skips across iPhone SE, iPhone 14, and Pixel 7 profiles. The final platform-only rerun passed 14 tests, overlapping ten cases in the 56-test selection. It additionally checks visible 44 px draft sound controls and known/unknown leaderboard squad previews at 1,280 and 320 px.
+
+After rebasing onto the shipped PR #51 squash, lint, standalone typecheck, all 1,037 unit tests in 117 files, production build, and all seam/mirror/theme checks passed again. A fresh production server passed 61 focused browser tests, adding health metadata to the complete 60-case UI/data/accessibility selection. Rebased logs are `/tmp/pokedraft-experience-rebased-browser.log` and `/tmp/pokedraft-experience-rebased-build.log`. The 249-pass mobile run above precedes this rebase; its runtime source is retained, while hosted CI provides the next full browser run. No physical-device proof is claimed.
 
 Logs remain local at `/tmp/pokedraft-experience-candidate-browser.log`, `/tmp/pokedraft-experience-mobile-final.log`, `/tmp/pokedraft-experience-extra-proof.log`, and `/tmp/pokedraft-experience-build.log`. These are implementation results. The implementer does not self-review. Landing requires independent review after the final commit and any rebase.
 
