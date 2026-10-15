@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { ENGINE_VERSION, RunTokenError } from "@/engine";
+import { ENGINE_VERSION } from "@/engine";
 import { scriptedToken } from "@/leaderboard/server/__tests__/fixtures";
 import { replayAnyVersion, retainedTokenVersions, tokenVersion } from "..";
 import { RETAINED_TOKEN_VERSIONS } from "../label";
@@ -36,16 +36,6 @@ function bundleDigest(dir: string): string {
       .update(readFileSync(path.join(dir, f)))
       .update("\0");
   return h.digest("hex");
-}
-
-function errorCode(fn: () => unknown): string {
-  try {
-    fn();
-  } catch (e) {
-    if (e instanceof RunTokenError) return e.code;
-    throw e;
-  }
-  throw new Error("expected a RunTokenError");
 }
 
 describe("retained engine-1 bundle (catches an old shared link replaying differently after the live engine moves)", () => {
@@ -101,8 +91,8 @@ describe("retained engine-2 bundle (catches a dispatch 6 PR 6B run replaying dif
     );
   });
 
-  it("routes pd2. tokens to the v2 bundle", () => {
-    const run = replayAnyVersion(GOLDEN_CUP8_V2);
+  it("routes pd2. tokens to the v2 bundle", async () => {
+    const run = await replayAnyVersion(GOLDEN_CUP8_V2);
     expect([run.engine, run.bundle]).toEqual(["pokedraft-engine-2", "retained-engine-bundle:v2"]);
   });
 
@@ -123,8 +113,8 @@ describe("retained engine-3 bundle (catches a platform-overhaul run replaying di
     );
   });
 
-  it("routes pd3. tokens to the v3 bundle, not the live engine", () => {
-    const run = replayAnyVersion(GOLDEN_CUP8_V3);
+  it("routes pd3. tokens to the v3 bundle, not the live engine", async () => {
+    const run = await replayAnyVersion(GOLDEN_CUP8_V3);
     expect([run.engine, run.bundle, run.current]).toEqual([
       "pokedraft-engine-3",
       "retained-engine-bundle:v3",
@@ -140,14 +130,14 @@ describe("retained engine-3 bundle (catches a platform-overhaul run replaying di
 });
 
 describe("replayAnyVersion (routes a token to the engine that issued it)", () => {
-  it("replays the goldens through the dispatcher: the bundle's own bytes, adapted to today's shape", () => {
+  it("replays the goldens through the dispatcher: the bundle's own bytes, adapted to today's shape", async () => {
     for (const [token, bundle, ladder, engine] of [
       [GOLDEN_CUP8_V1, v1, v1Ladder, "pokedraft-engine-1"],
       [GOLDEN_KANTO151_V1, v1, v1Ladder, "pokedraft-engine-1"],
       [GOLDEN_CUP8_V2, v2, v2Ladder, "pokedraft-engine-2"],
       [GOLDEN_CUP8_V3, v3, v3Ladder, "pokedraft-engine-3"],
     ] as const) {
-      const run = replayAnyVersion(token);
+      const run = await replayAnyVersion(token);
       const raw = bundle.replay(token);
       expect([run.engine, run.bundle]).toEqual([engine, bundle.BUNDLE_MARKER]);
       expect(run.draft).toEqual(raw.draft);
@@ -166,16 +156,16 @@ describe("replayAnyVersion (routes a token to the engine that issued it)", () =>
     );
   });
 
-  it("replays a real dispatch 5 era shared link as an older engine", () => {
-    const run = replayAnyVersion(A11Y_RUN_V1);
+  it("replays a real dispatch 5 era shared link as an older engine", async () => {
+    const run = await replayAnyVersion(A11Y_RUN_V1);
     expect([run.engine, run.current]).toEqual(["pokedraft-engine-1", false]);
     expect([run.cup.rating.score, run.cup.wins, run.cup.draws, run.cup.losses]).toEqual([
       845, 8, 0, 0,
     ]);
   });
 
-  it("replays a live-engine token on the live engine", () => {
-    const run = replayAnyVersion(
+  it("replays a live-engine token on the live engine", async () => {
+    const run = await replayAnyVersion(
       scriptedToken({ mode: "kanto151", formation: "4-4-2", order: "squadFirst" }, "live-seed"),
     );
     expect([run.engine, run.current, run.bundle]).toEqual([ENGINE_VERSION, true, null]);
@@ -190,12 +180,18 @@ describe("replayAnyVersion (routes a token to the engine that issued it)", () =>
     expect(tokenVersion("pd12.abc")).toBe(12);
   });
 
-  it("returns the typed unknownVersion error for a version no engine issued", () => {
-    expect(errorCode(() => replayAnyVersion("pd99.W1siYyJd"))).toBe("unknownVersion");
-    expect(errorCode(() => replayAnyVersion("pd0.W1siYyJd"))).toBe("unknownVersion");
+  it("returns the typed unknownVersion error for a version no engine issued", async () => {
+    await expect(replayAnyVersion("pd99.W1siYyJd")).rejects.toMatchObject({
+      code: "unknownVersion",
+    });
+    await expect(replayAnyVersion("pd0.W1siYyJd")).rejects.toMatchObject({
+      code: "unknownVersion",
+    });
   });
 
-  it("returns the typed malformed error for a token with no version prefix", () => {
-    expect(errorCode(() => replayAnyVersion("garbage-not-a-token"))).toBe("malformed");
+  it("returns the typed malformed error for a token with no version prefix", async () => {
+    await expect(replayAnyVersion("garbage-not-a-token")).rejects.toMatchObject({
+      code: "malformed",
+    });
   });
 });

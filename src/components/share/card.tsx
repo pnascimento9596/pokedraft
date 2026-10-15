@@ -69,13 +69,13 @@ export function runCardModel({ draft, cup }: ReplayedRun): CardModel {
   };
 }
 
-export function cardModel(
+export async function cardModel(
   source: CardSource,
-  replayRun: (token: string) => ReplayedRun,
-): CardModel | null {
+  replayRun: (token: string) => Promise<ReplayedRun>,
+): Promise<CardModel | null> {
   if ("t" in source) {
     try {
-      return runCardModel(replayRun(source.t));
+      return runCardModel(await replayRun(source.t));
     } catch {
       return null;
     }

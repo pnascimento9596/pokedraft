@@ -10,7 +10,7 @@ export async function GET(request: NextRequest): Promise<Response> {
   const t = q.get("t");
   const b = q.get("b");
   const source = t !== null ? { t } : b !== null ? { b } : null;
-  const model = source === null ? null : cardModel(source, replayAnyVersion);
+  const model = source === null ? null : await cardModel(source, replayAnyVersion);
   if (model === null) {
     return new Response("Bad or missing run token.", {
       status: 400,

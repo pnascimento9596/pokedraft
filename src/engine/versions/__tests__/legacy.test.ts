@@ -119,8 +119,8 @@ describe("fromLegacy (engine-1 and engine-2 results in today's shape)", () => {
     });
   });
 
-  it("names an old run's unplayed opponents from that engine's own ladder, as shirt-only clubs", () => {
-    const run = replayAnyVersion(ELIMINATED_V1);
+  it("names an old run's unplayed opponents from that engine's own ladder, as shirt-only clubs", async () => {
+    const run = await replayAnyVersion(ELIMINATED_V1);
     const ladder = v1Ladder(run.cup.seed, run.cup.mode);
     const unplayed = run.cup.matches.filter((m) => m.status === "notPlayed");
     expect(unplayed.map((m) => m.round)).toEqual(["SF", "F"]);
@@ -128,15 +128,15 @@ describe("fromLegacy (engine-1 and engine-2 results in today's shape)", () => {
       expect(m.opponent).toEqual({ ...ladder[m.round], roster: LEGACY_SHIRT_ROSTER });
   });
 
-  it("gives an old run no contribution breakdown rather than inventing one", () => {
-    const run = replayAnyVersion(ELIMINATED_V1);
+  it("gives an old run no contribution breakdown rather than inventing one", async () => {
+    const run = await replayAnyVersion(ELIMINATED_V1);
     expect(run.cup.awards.potContribution).toBeNull();
   });
 });
 
 describe("retained v3 metadata", () => {
-  it("keeps the actual v3 golden player contribution through the dispatcher", () => {
-    expect(replayAnyVersion(GOLDEN_CUP8_V3).cup.awards.potContribution).toEqual({
+  it("keeps the actual v3 golden player contribution through the dispatcher", async () => {
+    expect((await replayAnyVersion(GOLDEN_CUP8_V3)).cup.awards.potContribution).toEqual({
       species: 807,
       goals: 9,
       assists: 2,

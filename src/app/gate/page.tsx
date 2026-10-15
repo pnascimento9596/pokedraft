@@ -14,7 +14,7 @@ export async function generateMetadata({ searchParams }: PageProps<"/gate">): Pr
   const next = safeNext(firstParam((await searchParams).next));
   const token = runTokenFromUrl(new URL(next, "https://pokedraft.invalid"));
   if (token === null) return { title: "pokedraft" };
-  const title = runTitle(loadRun(token));
+  const title = runTitle(await loadRun(token));
   const image = `/r/${encodeURIComponent(token)}/opengraph-image`;
   return {
     title,

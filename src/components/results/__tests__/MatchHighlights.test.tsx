@@ -16,9 +16,9 @@ const ELIMINATED =
   "pd1.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJjLTQiLFtbInAiLDgyOSwiczAiXSxbInAiLDIxMCwiczEiXSxbInAiLDUyOCwiczIiXSxbInAiLDE2NywiczMiXSxbInAiLDI4NCwiczQiXSxbInAiLDE5NSwiczUiXSxbInAiLDEzMSwiczYiXSxbInAiLDY5MSwiczciXSxbInAiLDMxNywiczgiXSxbInAiLDI5NSwiczkiXSxbInAiLDEwMTYsInMxMCJdLFsicCIsNjMyLCJiMCJdLFsicCIsMzg2LCJiMSJdLFsicCIsNDc4LCJiMiJdLFsicCIsMjMwLCJiMyJdLFsicCIsMzcsImI0Il1dXQ";
 
 describe("MatchHighlights", () => {
-  it("cancels the old strike when the match list changes selectedRound", () => {
+  it("cancels the old strike when the match list changes selectedRound", async () => {
     vi.useFakeTimers();
-    const { draft, cup } = replay(FLAWLESS);
+    const { draft, cup } = await replay(FLAWLESS);
     const view = render(<MatchHighlights cup={cup} draft={draft} selectedRound="G1" />);
     fireEvent.click(screen.getByTestId("strike-btn"));
     act(() => vi.advanceTimersByTime(100));
@@ -29,9 +29,9 @@ describe("MatchHighlights", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it("shows a defensive illustration, not a fictional goal, for a scoreless match", () => {
+  it("shows a defensive illustration, not a fictional goal, for a scoreless match", async () => {
     vi.useFakeTimers();
-    const { draft, cup } = replay(FLAWLESS);
+    const { draft, cup } = await replay(FLAWLESS);
     const defensive = {
       ...cup,
       matches: cup.matches.map((m) =>
@@ -56,9 +56,9 @@ describe("MatchHighlights", () => {
     expect(screen.getByTestId("match-highlights").textContent).toContain("Illustrated highlights");
   });
 
-  it("does not celebrate an old strike after selecting another match", () => {
+  it("does not celebrate an old strike after selecting another match", async () => {
     vi.useFakeTimers();
-    const { draft, cup } = replay(FLAWLESS);
+    const { draft, cup } = await replay(FLAWLESS);
     render(<MatchHighlights cup={cup} draft={draft} />);
     fireEvent.click(screen.getByTestId("strike-btn"));
     act(() => vi.advanceTimersByTime(100));
@@ -74,9 +74,9 @@ describe("MatchHighlights", () => {
     );
   });
 
-  it.each(["selection", "reset"])("an old %s reset cannot clear a later strike", (action) => {
+  it.each(["selection", "reset"])("an old %s reset cannot clear a later strike", async (action) => {
     vi.useFakeTimers();
-    const { draft, cup } = replay(FLAWLESS);
+    const { draft, cup } = await replay(FLAWLESS);
     render(<MatchHighlights cup={cup} draft={draft} />);
     fireEvent.click(screen.getByTestId("strike-btn"));
     act(() => vi.advanceTimersByTime(600));
@@ -92,9 +92,9 @@ describe("MatchHighlights", () => {
     expect(screen.queryByTestId("goal-overlay")).toBeNull();
   });
 
-  it("cancels pending strike callbacks on unmount", () => {
+  it("cancels pending strike callbacks on unmount", async () => {
     vi.useFakeTimers();
-    const { draft, cup } = replay(FLAWLESS);
+    const { draft, cup } = await replay(FLAWLESS);
     const { unmount } = render(<MatchHighlights cup={cup} draft={draft} />);
     fireEvent.click(screen.getByTestId("strike-btn"));
     expect(vi.getTimerCount()).toBe(2);
@@ -102,8 +102,8 @@ describe("MatchHighlights", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it("renders the interactive stadium stage with Star player, soccer ball, and ability activation", () => {
-    const { draft, cup } = replay(FLAWLESS);
+  it("renders the interactive stadium stage with Star player, soccer ball, and ability activation", async () => {
+    const { draft, cup } = await replay(FLAWLESS);
     render(<MatchHighlights cup={cup} draft={draft} />);
 
     expect(screen.getByTestId("match-highlights")).toBeTruthy();
@@ -114,8 +114,8 @@ describe("MatchHighlights", () => {
     expect(screen.getByTestId("soccer-ball")).toBeTruthy();
   });
 
-  it("navigates through tournament matches and reveals match stars", () => {
-    const { draft, cup } = replay(FLAWLESS);
+  it("navigates through tournament matches and reveals match stars", async () => {
+    const { draft, cup } = await replay(FLAWLESS);
     render(<MatchHighlights cup={cup} draft={draft} />);
 
     const chipG2 = screen.getByTestId("highlight-chip-G2");
@@ -131,10 +131,10 @@ describe("MatchHighlights", () => {
     expect(screen.getByTestId("star-headline").textContent).toContain("Player of the Tournament");
   });
 
-  it("triggers strike animation and goal celebration overlay when clicking unleash strike", () => {
+  it("triggers strike animation and goal celebration overlay when clicking unleash strike", async () => {
     vi.useFakeTimers();
     try {
-      const { draft, cup } = replay(FLAWLESS);
+      const { draft, cup } = await replay(FLAWLESS);
       render(<MatchHighlights cup={cup} draft={draft} />);
 
       const strikeBtn = screen.getByTestId("strike-btn");
@@ -157,8 +157,8 @@ describe("MatchHighlights", () => {
     }
   });
 
-  it("toggles animation paused state", () => {
-    const { draft, cup } = replay(ELIMINATED);
+  it("toggles animation paused state", async () => {
+    const { draft, cup } = await replay(ELIMINATED);
     render(<MatchHighlights cup={cup} draft={draft} />);
 
     const toggle = screen.getByRole("button", { name: "⏸ Pause Motion" });

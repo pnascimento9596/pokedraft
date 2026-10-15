@@ -13,13 +13,6 @@ import {
   type LegacyV3CupResult,
   type LegacyLadder,
 } from "./legacy";
-import * as v1 from "./v1";
-import { buildLadder as v1Ladder } from "./v1/src/engine/opponents";
-import * as v2 from "./v2";
-import { buildLadder as v2Ladder } from "./v2/src/engine/opponents";
-import * as v3 from "./v3";
-import { buildLadder as v3Ladder } from "./v3/src/engine/opponents";
-
 export { engineLabel } from "./label";
 
 export interface ReplayedAnyRun {
@@ -47,10 +40,28 @@ const adaptV3 = (cup: unknown, ladder: LegacyLadder): CupResult =>
 
 // Keyed by the token's pd<N>. prefix. A retained bundle is the frozen copy of the engine that
 // issued those tokens, so it wins over the live engine even when the versions still match.
-const RETAINED: Readonly<Record<number, RetainedBundle>> = {
-  [v1.RUN_TOKEN_VERSION]: { ...v1, ladder: v1Ladder, adapt: adaptOld },
-  [v2.RUN_TOKEN_VERSION]: { ...v2, ladder: v2Ladder, adapt: adaptOld },
-  [v3.RUN_TOKEN_VERSION]: { ...v3, ladder: v3Ladder, adapt: adaptV3 },
+const RETAINED: Readonly<Record<number, () => Promise<RetainedBundle>>> = {
+  1: async () => {
+    const [bundle, { buildLadder }] = await Promise.all([
+      import("./v1"),
+      import("./v1/src/engine/opponents"),
+    ]);
+    return { ...bundle, ladder: buildLadder, adapt: adaptOld };
+  },
+  2: async () => {
+    const [bundle, { buildLadder }] = await Promise.all([
+      import("./v2"),
+      import("./v2/src/engine/opponents"),
+    ]);
+    return { ...bundle, ladder: buildLadder, adapt: adaptOld };
+  },
+  3: async () => {
+    const [bundle, { buildLadder }] = await Promise.all([
+      import("./v3"),
+      import("./v3/src/engine/opponents"),
+    ]);
+    return { ...bundle, ladder: buildLadder, adapt: adaptV3 };
+  },
 };
 
 const PREFIX = /^pd(\d+)\./;
@@ -65,11 +76,12 @@ export function tokenVersion(token: string): number {
   return Number(m[1]);
 }
 
-export function replayAnyVersion(token: string): ReplayedAnyRun {
+export async function replayAnyVersion(token: string): Promise<ReplayedAnyRun> {
   const version = tokenVersion(token);
   const current = version === RUN_TOKEN_VERSION;
-  const bundle = RETAINED[version];
-  if (bundle !== undefined) {
+  const loadBundle = RETAINED[version];
+  if (loadBundle !== undefined) {
+    const bundle = await loadBundle();
     const run = bundle.replay(token);
     // The bundle's output is byte-identical to its engine's (versions.test.ts pins it). The
     // casts only bridge the bundle's own copy of the branded types; fromLegacy makes every

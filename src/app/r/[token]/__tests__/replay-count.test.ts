@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { scriptedToken } from "@/leaderboard/server/__tests__/fixtures";
+import { GOLDEN_CUP8_V3 } from "@/engine/versions/__tests__/fixtures";
 
 const calls = vi.hoisted(() => ({ n: 0 }));
 
@@ -31,16 +31,7 @@ vi.mock("react", async (importOriginal) => {
   };
 });
 
-const TOKEN = scriptedToken(
-  {
-    mode: "cup8",
-    formation: "4-3-3",
-    gens: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    style: "classic3",
-    order: "squadFirst",
-  },
-  "lb-cup8",
-);
+const TOKEN = GOLDEN_CUP8_V3;
 const params = Promise.resolve({ token: TOKEN });
 
 beforeEach(() => {
@@ -49,17 +40,24 @@ beforeEach(() => {
 });
 
 describe("/r/[token] replay count (catches the dispatch 3 page that replayed a token three times per view)", () => {
+  it("returns and caches null when asynchronous retained replay rejects", async () => {
+    const { loadRun } = await import("../run");
+    expect(await loadRun("pd1.invalid")).toBeNull();
+    expect(await loadRun("pd1.invalid")).toBeNull();
+    expect(calls.n).toBe(1);
+  });
+
   it("replays once for the page and its metadata in one request", async () => {
     const page = await import("../page");
     const meta = await page.generateMetadata({ params } as never);
-    expect(meta.title).toBe("pokedraft run: 5-0-1, Team Score 623");
+    expect(meta.title).toBe("pokedraft run: 3-0-2, Team Score 593");
     const main = page.default({ params } as never) as {
       props: {
         children: { props: { children: Promise<{ props: { run: { cup: { wins: number } } } }> } };
       };
     };
     const shared = await main.props.children.props.children;
-    expect(shared.props.run.cup.wins).toBe(5);
+    expect(shared.props.run.cup.wins).toBe(3);
     expect(calls.n).toBe(1);
   });
 
