@@ -89,3 +89,15 @@ The measured local source is `0eeaccf4fec41f642978b997222b8a342c6cfdc8`. Lint, t
 Actual emitted-server checks again found three payloads totaling 2,088,694 bytes and all five retained replay hashes matched. Frozen version directories and current data have no diff against the PR #52 base. The fresh port 3416 server exposes the full measured source SHA through local health, with engine 4 and token versions 1 through 4. Logs are under `/tmp/pokedraft-platform-final-*.log`. Final integration onto the second dispatch's eventual squash and hosted review gates remain pending.
 
 The fresh Chromium browser selection passed all 31 cases in `data-split.spec.ts`, `engine-v4.spec.ts`, `share.spec.ts`, `health.spec.ts`, and `images.spec.ts`. This includes the first release's corrected health and image contracts, natural-motion drafting, post-action data loading, retained replay, current metadata, and real card image pixels. There were no skips, failures, or retries. The server remains available on port 3416 for coordinator inspection.
+
+## Reproducible release submission
+
+`scripts/audit/release-submission.mts` prints a daily submission payload and its locally replayed expected result. It performs no network request or database write. The coordinator supplies the date, an unused verification nickname, and a unique deterministic bot label. The generated token uses the real daily seed, Open settings, and sixteen legal actions from the existing random bot.
+
+```sh
+pnpm exec tsx scripts/audit/release-submission.mts --date 2026-10-15 --nickname verify-1015-proof --label cutover-fixture-1
+```
+
+Two runs produced byte-identical JSON. The generated token replayed with Team Score 512, record 4-0-1, and sixteen unique species. Focused ESLint and standalone TypeScript checks passed. Build the actual cutover fixture with its current New York date and an unused nickname; the example above does not authorize overwriting any existing entry. POST only the returned `payload` object. Compare the API response with `expected`, retry that same payload, and require 201 then 200 with one saved entry and one admission event. After verifying its exact identifier, remove only that task's daily nickname/date row through the existing `db:delete-entry` command. Preserve its rate-limit evidence.
+
+Build the Lever shaped this read-only generator so a reviewer can reproduce the verification input. Actual Preview and production HTTP submissions remain pending until the coordinator runs the reviewed deployment.
