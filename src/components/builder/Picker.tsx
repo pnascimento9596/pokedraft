@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 
 import { TYPES } from "@/data/pokedex";
 import {
   FORMATIONS,
+  applyAction,
   SPECIES,
   eligibleSpecies,
   speciesById,
@@ -409,6 +410,12 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
         <ul className={s.list} aria-label="Species">
           {shown.map((sp) => {
             const at = onField.get(sp.id);
+            const source =
+              at !== undefined ? ALL_REFS.find((ref) => valueAt(lineup, ref) === sp.id) : undefined;
+            const swapFit =
+              source && current !== null && current !== sp.id
+                ? `${sp.name} to ${slotLabel}: ${getSlotSuitability(sp, lineup.formation, slot)} fit. ${speciesById(current).name} to ${at}: ${getSlotSuitability(speciesById(current), lineup.formation, source)} fit.`
+                : null;
             const here = current === sp.id;
             const rating = showRatings ? ratingFor(sp, role, slotLabel) : null;
             return (
@@ -453,6 +460,11 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   </span>
                 ) : null}
                 <div className={s.rowActions}>
+                  {swapFit ? (
+                    <p className={s.swapFit} aria-label={`Swap suitability for ${sp.name}`}>
+                      {swapFit}
+                    </p>
+                  ) : null}
                   <button
                     type="button"
                     className={`btn btn--ghost btn--sm ${s.scoutBtn}`}
@@ -484,6 +496,11 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           speciesId={inspectId}
           compareTo={current !== null && current !== inspectId ? speciesById(current) : undefined}
           showRatings={showRatings}
+          slotContext={{
+            slot,
+            lineup,
+            candidateLineup: applyAction(state, { type: "place", species: inspectId, slot }).lineup,
+          }}
           onClose={() => setInspectId(null)}
         />
       ) : null}
