@@ -7,7 +7,7 @@ import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
 import { config, proxy } from "../proxy";
 import { scriptedToken } from "../leaderboard/server/__tests__/fixtures";
 import { RUN_TOKEN_VERSION } from "../engine";
-import { A11Y_RUN_V1, GOLDEN_CUP8_V2 } from "../engine/versions/__tests__/fixtures";
+import { A11Y_RUN_V1, GOLDEN_CUP8_V2, GOLDEN_CUP8_V3 } from "../engine/versions/__tests__/fixtures";
 
 function importClosure(entryRel: string): string[] {
   const root = path.resolve(import.meta.dirname, "../..");
@@ -166,7 +166,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
         "x-middleware-rewrite",
       ),
     ).toBe(`https://pokedraft.test/r/${real}?_rsc=123&source=chat`);
-    for (const token of [A11Y_RUN_V1, GOLDEN_CUP8_V2]) {
+    for (const token of [A11Y_RUN_V1, GOLDEN_CUP8_V2, GOLDEN_CUP8_V3]) {
       const [version, payload] = token.split(".");
       expect(proxy(req(`/r/${version}?t=${payload}`)).headers.get("x-middleware-rewrite")).toBe(
         `https://pokedraft.test/r/${token}`,
@@ -191,10 +191,19 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
         "https://pokedraft.test/run-not-found",
       );
     }
-    // A retained version's garbage payload goes to the page: only its bundle can judge it.
-    expect(proxy(req("/r/pd3?t=e30")).headers.get("x-middleware-rewrite")).toBe(
-      "https://pokedraft.test/r/pd3.e30",
-    );
+    for (const version of [1, 2, 3, 4]) {
+      for (const payload of [
+        "%%%",
+        "e30",
+        "W1siayIsIjQtNC0yIiwicyJdLCJzZWVkIixbWyJwIiwwLCJzMCJdXV0",
+      ]) {
+        for (const path of [`/r/pd${version}.${payload}`, `/r/pd${version}?t=${payload}`]) {
+          expect(proxy(req(path)).headers.get("x-middleware-rewrite"), path).toBe(
+            "https://pokedraft.test/run-not-found",
+          );
+        }
+      }
+    }
   });
 
   it("gates the complete query link before rewriting and lets an unlocked player replay it", () => {
