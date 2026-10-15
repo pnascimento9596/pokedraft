@@ -134,3 +134,14 @@ describe("squad chemistry inspector", () => {
     );
   });
 });
+
+it("mounts an empty chemistry status then announces an explicit reason filter", () => {
+  const view = mount();
+  expect(
+    [...view.container.querySelectorAll('[aria-live]:not([aria-live="off"])')].map(
+      (el) => el.textContent,
+    ),
+  ).toEqual([""]);
+  fireEvent.click(screen.getByRole("button", { name: "Evo Line", hidden: true }));
+  expect(screen.getByRole("status").textContent).toBe("Evo Line: 1 chemistry link.");
+});

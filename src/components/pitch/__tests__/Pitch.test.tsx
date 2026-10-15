@@ -203,3 +203,20 @@ describe("Pitch", () => {
     expect(screen.getByTestId("slot-s2").getAttribute("data-suitability")).toBe("ok");
   });
 });
+
+it("orders a visible rating before the tactical label in a filled card accessible name", () => {
+  render(
+    <Pitch
+      formation="4-3-3"
+      lineup={twoPlaced}
+      speciesOf={speciesById}
+      onSlotTap={() => {}}
+      tokenNote={(_ref, id) => <span id={`${id}-score`}>42</span>}
+    />,
+  );
+  expect(
+    screen
+      .getByRole("button", { name: "LCB Bulbasaur DF 42 LCB Bulbasaur Grass Poison" })
+      .getAttribute("data-testid"),
+  ).toBe("slot-s2");
+});
