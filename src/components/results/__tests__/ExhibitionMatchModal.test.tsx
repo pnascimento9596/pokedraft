@@ -7,8 +7,8 @@ import { ExhibitionMatchModal } from "../ExhibitionMatchModal";
 
 const lineup: Lineup = {
   formation: "4-3-3",
-  starters: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as SpeciesId[] as Lineup["starters"],
-  bench: [12, 13, 14, 15, 16] as SpeciesId[] as Lineup["bench"],
+  starters: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as unknown as Lineup["starters"],
+  bench: [12, 13, 14, 15, 16] as unknown as Lineup["bench"],
 };
 const settings = {
   mode: "builder",

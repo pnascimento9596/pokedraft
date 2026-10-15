@@ -75,7 +75,7 @@ describe("Picker", () => {
       [1, 8],
       [2, 25],
       [3, 7],
-    ]) {
+    ] as const) {
       draft = applyAction(draft, {
         type: "place",
         slot: { kind: "starter", index },

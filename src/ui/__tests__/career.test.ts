@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { expect, it } from "vitest";
 import { careerSummary } from "../career";
 import type { RunRecord } from "../runs";
 
