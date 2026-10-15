@@ -51,6 +51,13 @@ function kicks(pairs: number, finalUser: boolean, finalOpp: boolean): PenKick[] 
 }
 
 describe("results format", () => {
+  it("labels only goal kinds actually recorded by the live engine", () => {
+    const goal = { side: "user" as const, minute: 7, penalty: false, scorer: sp(6), assist: null };
+    expect(goalLine({ ...goal, kind: "header" })).toBe("7' Charizard (header)");
+    expect(goalLine({ ...goal, kind: "solo" })).toBe("7' Charizard (solo run)");
+    expect(goalLine({ ...goal, kind: "free-kick" })).toBe("7' Charizard (free kick)");
+    expect(goalLine(goal)).toBe("7' Charizard");
+  });
   it("shows the decree line, not '26-25 on pens', for an engine-1 or engine-2 capped shootout", () => {
     const m = knockout({
       shootout: {
@@ -159,12 +166,24 @@ describe("results format", () => {
   });
 
   it("preserves named Boss Club assists and retained shirt assists in results goal lines", () => {
-    expect(goalLine({ side: "opp", minute: 57, penalty: false,
-      scorer: { kind: "species", id: sp(6) }, assist: { kind: "species", id: sp(4) },
-    })).toBe("57' Charizard, assist Charmander");
-    expect(goalLine({ side: "opp", minute: 57, penalty: false,
-      scorer: { kind: "shirt", number: shirt(9) }, assist: { kind: "shirt", number: shirt(7) },
-    })).toBe("57' No. 9, assist No. 7");
+    expect(
+      goalLine({
+        side: "opp",
+        minute: 57,
+        penalty: false,
+        scorer: { kind: "species", id: sp(6) },
+        assist: { kind: "species", id: sp(4) },
+      }),
+    ).toBe("57' Charizard, assist Charmander");
+    expect(
+      goalLine({
+        side: "opp",
+        minute: 57,
+        penalty: false,
+        scorer: { kind: "shirt", number: shirt(9) },
+        assist: { kind: "shirt", number: shirt(7) },
+      }),
+    ).toBe("57' No. 9, assist No. 7");
   });
 
   it("says who replaced an absent player", () => {

@@ -7,9 +7,17 @@ import { BossRoster } from "../BossRoster";
 afterEach(cleanup);
 
 const boss: Opponent = {
-  id: "fire-club", name: "Fire Club", score: 500,
+  id: "fire-club",
+  name: "Fire Club",
+  score: 500,
+  formation: "4-3-3",
+  captain: { kind: "species", id: 6 as SpeciesId },
+  tacticalStyle: "direct",
   lines: { GK: 50, DEF: 50, MID: 50, ATT: 50 },
-  roster: [4, 5, 6, 37, 38, 58, 59, 77, 78, 126, 136].map((id) => ({ kind: "species", id: id as SpeciesId })),
+  roster: [4, 5, 6, 37, 38, 58, 59, 77, 78, 126, 136].map((id) => ({
+    kind: "species",
+    id: id as SpeciesId,
+  })),
 };
 
 describe("BossRoster", () => {
@@ -19,6 +27,8 @@ describe("BossRoster", () => {
     expect(summary.closest("details")).toBeTruthy();
     expect(screen.getByText("4-3-3")).toBeTruthy();
     expect(screen.getByText("Fire theme")).toBeTruthy();
+    expect(screen.getByText("Captain: Charizard")).toBeTruthy();
+    expect(screen.getByText("Direct style")).toBeTruthy();
     const roster = screen.getByRole("list", { name: "Fire Club starting eleven", hidden: true });
     expect(within(roster).getAllByRole("listitem", { hidden: true })).toHaveLength(11);
     expect(within(roster).getByText("Charmander")).toBeTruthy();
@@ -29,9 +39,23 @@ describe("BossRoster", () => {
   });
 
   it("labels retained opponents as shirt numbers without inventing species, theme or formation", () => {
-    render(<BossRoster opponent={{ ...boss, roster: Array.from({ length: 11 }, (_, i) => ({ kind: "shirt", number: (i + 1) as Shirt })) }} />);
+    render(
+      <BossRoster
+        opponent={{
+          ...boss,
+          roster: Array.from({ length: 11 }, (_, i) => ({
+            kind: "shirt",
+            number: (i + 1) as Shirt,
+          })),
+        }}
+      />,
+    );
     expect(screen.getByText("Opponent shirts")).toBeTruthy();
-    expect(screen.getByText("Retained run: this engine recorded shirt numbers, without Pokémon identities or a formation.")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Retained run: this engine recorded shirt numbers, without Pokémon identities or a formation.",
+      ),
+    ).toBeTruthy();
     expect(screen.getByText("No. 1")).toBeTruthy();
     expect(screen.getByText("No. 11")).toBeTruthy();
     expect(screen.queryByText("4-3-3")).toBeNull();
