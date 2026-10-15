@@ -117,8 +117,12 @@ describe("Board", () => {
       "/r/pd1.abc",
       "/r/pd1.def",
     ]);
-    expect(rows[0].textContent).toBe("1MistyOpen, Squad First, All regionsSquad preview unavailable.W-D-L8-0-0Team Score845");
-    expect(rows[1].textContent).toBe("2BrockPosition FirstSquad preview unavailable.W-D-L6-1-1Team Score790");
+    expect(rows[0].textContent).toBe(
+      "1MistyOpen, Squad First, All regionsSquad preview unavailable.W-D-L8-0-0Team Score845",
+    );
+    expect(rows[1].textContent).toBe(
+      "2BrockPosition FirstSquad preview unavailable.W-D-L6-1-1Team Score790",
+    );
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/leaderboard?mode=kanto151&scope=all",
       expect.anything(),
@@ -126,16 +130,32 @@ describe("Board", () => {
   });
 });
 
-
 it("renders server-provided squad species without replaying retained tokens in the browser", async () => {
-  vi.stubGlobal("fetch", vi.fn(async () => json(200, { entries: [{ ...ENTRY, squadSpeciesIds: [849, 315, 272, 691, 453, 754, 785, 175, 663, 188, 807, 784, 703, 942, 145, 884] }] })));
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () =>
+      json(200, {
+        entries: [
+          {
+            ...ENTRY,
+            squadSpeciesIds: [
+              849, 315, 272, 691, 453, 754, 785, 175, 663, 188, 807, 784, 703, 942, 145, 884,
+            ],
+          },
+        ],
+      }),
+    ),
+  );
   render(<Board view={DAILY} />);
   expect(await screen.findByRole("img", { name: "Squad species 807" })).toBeTruthy();
   expect(screen.getAllByRole("img")).toHaveLength(16);
 });
 
 it("rejects corrupt server preview metadata rather than drawing invented species", async () => {
-  vi.stubGlobal("fetch", vi.fn(async () => json(200, { entries: [{ ...ENTRY, squadSpeciesIds: [1026] }] })));
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => json(200, { entries: [{ ...ENTRY, squadSpeciesIds: [1026] }] })),
+  );
   render(<Board view={DAILY} />);
   expect(await screen.findByTestId("board-error")).toBeTruthy();
 });

@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
+import { POKEDEX } from "@/data/pokedex";
+import { challengeHref } from "@/ui/challenge-href";
+import { careerSummary } from "@/ui/career";
+import { PlayerImage } from "@/components/PlayerImage";
 import { StatusNote } from "@/components/ui/primitives";
 import { FINISH_LABEL, record } from "@/ui/labels";
 import { BUCKET_LABEL, HISTORY_LIMIT, loadHistory, type RunRecord } from "@/ui/runs";
@@ -33,6 +37,9 @@ function getSnapshot(): readonly RunRecord[] {
 
 export function HistoryList() {
   const runs = useSyncExternalStore(subscribe, getSnapshot, () => null);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [speciesFilter, setSpeciesFilter] = useState<"all" | "drafted" | "champions">("all");
   const [filter, setFilter] = useState<"all" | "champions">("all");
 
   if (runs === null) return <p className="kicker">Loading your runs</p>;
@@ -46,6 +53,17 @@ export function HistoryList() {
       </StatusNote>
     );
   }
+  const career = careerSummary(runs);
+  const matchingSpecies = POKEDEX.filter((pokemon) => {
+    const counts = career.species.get(pokemon.id);
+    return (
+      (pokemon.name.toLowerCase().includes(search.toLowerCase()) ||
+        String(pokemon.id) === search) &&
+      (speciesFilter === "all" ||
+        (speciesFilter === "drafted" ? (counts?.drafted ?? 0) > 0 : (counts?.champion ?? 0) > 0))
+    );
+  });
+  const speciesPage = matchingSpecies.slice(page * 30, (page + 1) * 30);
   const ranked = runs.filter((r) => !r.friendly && r.bucket !== "builder");
   const bestScore = ranked.reduce<number | null>(
     (best, r) => (best === null ? r.score : Math.max(best, r.score)),
@@ -74,6 +92,109 @@ export function HistoryList() {
             </div>
           ))}
         </dl>
+      </section>
+      <section aria-label="Win rate by formation" className={s.career}>
+        <h3>Win rate by formation</h3>
+        <p className={s.scope}>
+          Ranked match wins divided by all recorded matches, including draws and losses.
+        </p>
+        {career.formations.length === 0 ? (
+          <p>No ranked matches recorded.</p>
+        ) : (
+          <ul className={s.formationRates}>
+            {career.formations.map((entry) => (
+              <li key={entry.formation}>
+                <strong>{entry.formation}</strong>{" "}
+                <span>
+                  {entry.winRate === null ? "No matches" : `${(100 * entry.winRate).toFixed(1)}%`}
+                </span>
+                <span>
+                  {entry.wins} wins / {entry.matches} matches in {entry.runs} runs
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+      <section aria-label="Species Hall of Fame" className={s.career}>
+        <h3>Species Hall of Fame</h3>
+        <p className={s.scope}>
+          Browse all {POKEDEX.length.toLocaleString("en-US")} species. Counts cover ranked squads in
+          the stored history above, including the bench.
+        </p>
+        <p className={s.scope}>
+          Squad coverage: {career.coveredRuns} of {career.rankedRuns} ranked stored runs. Species
+          from older runs without squad metadata are unknown.
+        </p>
+        <div className={s.speciesControls}>
+          <input
+            type="search"
+            aria-label="Find a Hall of Fame species"
+            placeholder="Species name or number"
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(0);
+            }}
+          />
+          <select
+            aria-label="Filter Hall of Fame species"
+            value={speciesFilter}
+            onChange={(event) => {
+              setSpeciesFilter(event.target.value as typeof speciesFilter);
+              setPage(0);
+            }}
+          >
+            <option value="all">All species</option>
+            <option value="drafted">Drafted species</option>
+            <option value="champions">Champion species</option>
+          </select>
+        </div>
+        <ul className={s.speciesList}>
+          {speciesPage.map((pokemon) => {
+            const counts = career.species.get(pokemon.id);
+            return (
+              <li key={pokemon.id}>
+                <PlayerImage dexId={pokemon.id} size={32} alt="" />
+                <span>
+                  <strong>
+                    #{pokemon.id} {pokemon.name}
+                  </strong>
+                  <span className={s.scope}>
+                    {counts
+                      ? `${counts.drafted} drafted squad${counts.drafted === 1 ? "" : "s"}, ${counts.champion} champion squad${counts.champion === 1 ? "" : "s"}`
+                      : "No recorded squads"}
+                  </span>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+        {matchingSpecies.length === 0 ? (
+          <p>No species match these filters.</p>
+        ) : (
+          <div className={s.filters}>
+            <button
+              type="button"
+              className="btn"
+              disabled={page === 0}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous species
+            </button>
+            <span className={s.scope}>
+              Page {page + 1} of {Math.ceil(matchingSpecies.length / 30)}
+            </span>
+            <button
+              type="button"
+              className="btn"
+              disabled={(page + 1) * 30 >= matchingSpecies.length}
+              onClick={() => setPage(page + 1)}
+            >
+              Next species
+            </button>
+          </div>
+        )}
       </section>
       <div className={s.filters} role="group" aria-label="Filter run history">
         <button
@@ -109,12 +230,26 @@ export function HistoryList() {
                     {when(r.at)}, {r.formation}, {FINISH_LABEL[r.finish] ?? r.finish}
                     {r.flawless ? ", flawless" : ""}
                   </span>
+                  <span className={s.squad}>
+                    {r.squadSpeciesIds ? (
+                      r.squadSpeciesIds.map((id) => (
+                        <PlayerImage key={id} dexId={id} size={24} alt={`Squad species ${id}`} />
+                      ))
+                    ) : (
+                      <span className={s.scope}>Squad preview unavailable for this older run.</span>
+                    )}
+                  </span>
                 </span>
                 <span className={s.score}>
                   <span className={s.scoreLabel}>Team Score</span>
                   <span className={s.scoreValue}>{r.score}</span>
                 </span>
               </Link>
+              {challengeHref(r.token) !== null ? (
+                <Link className={`btn btn--ghost ${s.challenge}`} href={challengeHref(r.token)!}>
+                  Challenge this Seed
+                </Link>
+              ) : null}
             </li>
           ))}
         </ol>

@@ -46,6 +46,7 @@ export interface ApiError<C extends string> {
 }
 
 export interface BoardEntry {
+  readonly squadSpeciesIds?: readonly number[];
   readonly rank: number;
   readonly nickname: string;
   readonly mode: BoardMode;

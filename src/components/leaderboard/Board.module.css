@@ -110,3 +110,15 @@
 .separator {
   width: 0.46em;
 }
+
+.squad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+.challenge {
+  margin: 0 4px 10px;
+  min-height: 44px;
+}
