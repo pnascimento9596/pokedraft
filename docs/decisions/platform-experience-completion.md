@@ -34,6 +34,18 @@ Logs remain local at `/tmp/pokedraft-experience-candidate-browser.log`, `/tmp/po
 
 Executable browser coverage lives in `e2e/platform-experience.spec.ts`, `e2e/builder-ratings-layout.spec.ts`, `e2e/pitch-card-containment.spec.ts`, `e2e/data-split.spec.ts`, `e2e/a11y.spec.ts`, and the existing mobile acceptance suite. Screenshots and failure traces are under ignored `output/playwright/`.
 
+## Hosted CI repair and final local evidence
+
+PR #52 at `50af55aa40272ec37e2783be4e2f8b7375093f29` passed its source checks but failed hosted browser run `38783357453` with 716 passes, 30 failures, and 55 skips. Earlier review approvals apply only to that superseded head. They do not authorize this repaired candidate.
+
+The failures exposed 18 undersized tactical label checks, four visible-label accessible-name ordering checks, one populated live-region announcement, one unthemed history control contrast failure, four stale leaderboard accessible-name fixtures, one narrow Picker font-metric overflow, and one simulated grass swipe that Chrome adjusted onto a draggable card. Committed RED guards precede label, chemistry, history surface, Picker, and label/rating overlap fixes. Leaderboard fixtures now include the truthful unavailable-squad label. The swipe fixture selects grass at least 32 px from cards and retains actual touch scrolling and drag-swap assertions.
+
+Tactical labels use 12 px text. Narrow bench cards reserve a separate label row, and all eight formations are checked with ratings visible. History selects have an explicit 44 px height because WebKit rendered the styled native control at 25 px despite its minimum height. The phone Picker retains its accessible Clear slot name while showing compact Clear text, preserving both 44 px controls and more than half the sheet for the list under stressed font metrics.
+
+Final source gates passed with 1,039 unit tests in 117 files, lint, standalone typecheck, build, image seam and pack checks, client bundle, mirrors, and all three theme checks. A production build passed 85 focused browser cases, including Chromium and WebKit card containment, all platform experience cases, contrast, axe, chemistry announcement, and leaderboard font/CLS checks. The subsequent final build, adding only the WebKit select height correction, passed all 83 phone target and history control cases. These are separate selections with overlapping coverage, not 168 unique cases. Logs are `/tmp/pokedraft-experience-ci-repair-gates.log`, its `.json` exit-code receipt, `/tmp/pokedraft-experience-ci-repair-build4.log`, `/tmp/pokedraft-experience-ci-repair-browser3.log`, and `/tmp/pokedraft-experience-ci-repair-targets-final.log`.
+
+Fresh independent review and a new hosted full browser run remain required before landing. No production UI deployment is claimed by these local results.
+
 ## Limits and remaining dispatches
 
 NOT RUN on physical iPhone, Android, or audio hardware. Browser emulation cannot prove physical keyboard, speaker quality, or real iOS touch drag behavior. No production deployment or production database migration is part of this implementation receipt. Independent review and deployment identity are recorded by the landing owner.

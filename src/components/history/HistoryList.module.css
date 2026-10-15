@@ -162,6 +162,9 @@
 .speciesControls input {
   flex: 1 1 180px;
 }
+.speciesControls select {
+  height: 44px;
+}
 .speciesList {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
