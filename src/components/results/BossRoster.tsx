@@ -1,9 +1,11 @@
 import { FORMATIONS, speciesById, type Opponent } from "@/engine";
+import { clubRegion } from "@/ui/club-identity";
 import { PlayerImage } from "@/components/PlayerImage";
 import { opponentRefLabel } from "./format";
 import s from "./BossRoster.module.css";
 
 export function BossRoster({ opponent }: { opponent: Opponent }) {
+  const region = clubRegion(opponent.id);
   const pokemon = opponent.roster.flatMap((ref) =>
     ref.kind === "species" ? [speciesById(ref.id)] : [],
   );
@@ -15,6 +17,7 @@ export function BossRoster({ opponent }: { opponent: Opponent }) {
   return (
     <details className={s.roster}>
       <summary>{hasPokemonXI ? "Boss XI" : "Opponent shirts"}</summary>
+      {region !== undefined ? <p className={s.identity}>{region} region</p> : null}
       {hasPokemonXI ? (
         <p className={s.identity}>
           {formation !== undefined ? <span>{formation.id}</span> : null}
