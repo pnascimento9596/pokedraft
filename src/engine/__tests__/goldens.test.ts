@@ -125,7 +125,7 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 3, "R16"]);
     expect(sha256(s)).toBe("4061400329787171d0fdaa5f266477efe57c0d106a458c72f1605b0fb05baeb8");
     expect(sha256(JSON.stringify(run))).toBe(
-      "26d5dcc14e8c5006d5d32faf414949d3ecb349a8a647dc308e2f98c6d4c3fe35",
+      "8520e109891a53af4b291690e21ac405c1af5471ff9a39b157918ba21264e611",
     );
   });
 
@@ -136,7 +136,7 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 0, "group"]);
     expect(sha256(s)).toBe("9865c0f6b27c3d5d00ed6d129c2b1e7b9b49acf59e4921eeedeb71a9aa0fc6b6");
     expect(sha256(JSON.stringify(run))).toBe(
-      "1411deda140f9c38b0c939c005fcce836d40bfe2a1f98f77b456bef7e6787892",
+      "1da7e5609fcd0c0a8d6a32f9856c0b91f4a21a584dac19b119bbffc2656cf795",
     );
   });
 

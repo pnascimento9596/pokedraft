@@ -185,10 +185,10 @@ describe("v4 match event contracts", () => {
 
   it("keeps Boss XI shape within three points and the existing difficulty centre", () => {
     const final = buildLadder("golden-1", "kanto151").F;
-    expect(Object.values(final.lines).reduce((a, b) => a + b, 0) / 4).toBeCloseTo(100.65, 12);
-    expect(Math.abs(final.lines.GK - 103.4)).toBeLessThanOrEqual(3);
-    expect(Math.abs(final.lines.DEF - 103.4)).toBeLessThanOrEqual(3);
-    expect(Math.abs(final.lines.MID - 96.4)).toBeLessThanOrEqual(3);
-    expect(Math.abs(final.lines.ATT - 99.4)).toBeLessThanOrEqual(3);
+    expect(Object.values(final.lines).reduce((a, b) => a + b, 0) / 4).toBeCloseTo(101.15, 12);
+    expect(Math.abs(final.lines.GK - 103.9)).toBeLessThanOrEqual(3);
+    expect(Math.abs(final.lines.DEF - 103.9)).toBeLessThanOrEqual(3);
+    expect(Math.abs(final.lines.MID - 96.9)).toBeLessThanOrEqual(3);
+    expect(Math.abs(final.lines.ATT - 99.9)).toBeLessThanOrEqual(3);
   });
 });

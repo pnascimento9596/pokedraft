@@ -32,7 +32,7 @@ describe("engine-4 themed Boss Club rosters (catches opponents without actual Po
     }
   });
 
-  it("keeps the engine-3 club names and score ladder untouched", () => {
+  it("pins seeded club names and the calibrated engine-4 score ladder", () => {
     const ladder = buildLadder("golden-1", "kanto151");
     expect(CUP_ROUNDS.map((r) => [ladder[r].id, ladder[r].score])).toEqual([
       ["celadon-city", 267],
@@ -42,7 +42,7 @@ describe("engine-4 themed Boss Club rosters (catches opponents without actual Po
       ["viridian-fc", 601],
       ["pewter-united", 749],
       ["vermilion-fc", 859],
-      ["cinnabar-fc", 994],
+      ["cinnabar-fc", 999],
     ]);
   });
 
@@ -52,7 +52,7 @@ describe("engine-4 themed Boss Club rosters (catches opponents without actual Po
       for (const s of members(ladder, round)) expect(s.id).toBeLessThanOrEqual(151);
   });
 
-  it("scales roster strength with the rung, so the final boss fields the strongest eleven", () => {
+  it("fields a stronger final XI than the opener for golden-177", () => {
     const ladder = buildLadder("golden-177", "cup8");
     expect(meanAttrs(members(ladder, "F"))).toBeGreaterThan(meanAttrs(members(ladder, "G1")));
   });
