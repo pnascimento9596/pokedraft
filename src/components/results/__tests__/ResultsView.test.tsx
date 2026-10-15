@@ -41,6 +41,13 @@ function view(token: string, variant: "live" | "shared" = "shared", cupOverride?
 }
 
 describe("ResultsView", () => {
+  it("lets a player scout every starter and all five bench members from the scouting rows", () => {
+    view(FLAWLESS);
+    const scout = screen.getAllByRole("button", { name: /^Scout / });
+    expect(scout).toHaveLength(16);
+    fireEvent.click(screen.getByRole("button", { name: "Scout Misdreavus" }));
+    expect(screen.getByRole("dialog").textContent).toContain("Misdreavus");
+  });
   it("closes the native exhibition dialog when the results page is hidden or unmounted", () => {
     const viewResult = view(ELIMINATED, "shared");
     fireEvent.click(screen.getByTestId("play-exhibition"));
