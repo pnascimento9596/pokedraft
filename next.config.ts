@@ -31,7 +31,15 @@ const SECURITY_HEADERS = [
 ];
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  turbopack: {
+    rules: {
+      "*.json": {
+        condition: { path: /(?:^|\/)src\/engine\/versions\/v[123]\/src\/data\/(pokedex|scouting)\.json$/ },
+        loaders: ["./scripts/build/retained-json-loader.cjs"],
+        as: "*.js",
+      },
+    },
+  },
   cacheComponents: true,
   partialPrefetching: true,
   // The card renderers read the creature files from disk (src/components/share/card-images.ts),

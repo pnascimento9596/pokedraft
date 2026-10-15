@@ -35,6 +35,10 @@ describe("retained JSON build deduplication", () => {
       'export { default } from "../../../../../data/pokedex.json";\n',
     );
     expect(context.dependencies).toEqual([path.join(context.rootContext, "src/data/pokedex.json")]);
+    writeFileSync(path.join(context.rootContext, "src/data/pokedex.json"), '[{"id":2}]');
+    const afterLiveChange = load(context, '[{"id":1}]');
+    expect(afterLiveChange).not.toContain("from ");
+    expect(runInNewContext(afterLiveChange.replace("export default ", ""))).toEqual([{ id: 1 }]);
   });
 
   it("preserves distinct retained data when the live artifact changes", () => {
