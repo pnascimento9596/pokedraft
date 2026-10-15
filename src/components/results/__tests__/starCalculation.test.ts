@@ -10,8 +10,8 @@ const ELIMINATED =
   "pd1.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJjLTQiLFtbInAiLDgyOSwiczAiXSxbInAiLDIxMCwiczEiXSxbInAiLDUyOCwiczIiXSxbInAiLDE2NywiczMiXSxbInAiLDI4NCwiczQiXSxbInAiLDE5NSwiczUiXSxbInAiLDEzMSwiczYiXSxbInAiLDY5MSwiczciXSxbInAiLDMxNywiczgiXSxbInAiLDI5NSwiczkiXSxbInAiLDEwMTYsInMxMCJdLFsicCIsNjMyLCJiMCJdLFsicCIsMzg2LCJiMSJdLFsicCIsNDc4LCJiMiJdLFsicCIsMjMwLCJiMyJdLFsicCIsMzcsImI0Il1dXQ";
 
 describe("starCalculation", () => {
-  it("does not label the 10-minute opener an equalizer when the opponent scores at 80", () => {
-    const { draft, cup } = replay(FLAWLESS);
+  it("does not label the 10-minute opener an equalizer when the opponent scores at 80", async () => {
+    const { draft, cup } = await replay(FLAWLESS);
     const match = cup.matches.find((m) => m.status === "played")!;
     const scorer = draft.lineup.starters[1]!;
     const star = getMatchStar(
@@ -23,7 +23,13 @@ describe("starCalculation", () => {
         shootout: null,
         goals: [
           { side: "user", scorer, assist: null, minute: 10, penalty: false },
-          { side: "opp", minute: 80, scorer: 9 as Shirt, assist: null, penalty: false },
+          {
+            side: "opp",
+            minute: 80,
+            scorer: { kind: "shirt", number: 9 as Shirt },
+            assist: null,
+            penalty: false,
+          },
         ],
       },
       draft,
@@ -34,8 +40,8 @@ describe("starCalculation", () => {
     expect(star.matchScore).toBe("1-1");
   });
 
-  it("computes match stars for all played matches in a flawless run", () => {
-    const { draft, cup } = replay(FLAWLESS);
+  it("computes match stars for all played matches in a flawless run", async () => {
+    const { draft, cup } = await replay(FLAWLESS);
     const stars = getAllMatchStars(cup, draft);
 
     // Flawless run has 8 played matches + 1 tournament MVP = 9 stars
@@ -55,8 +61,8 @@ describe("starCalculation", () => {
     expect(mvp.headline).toContain("Player of the Tournament");
   });
 
-  it("computes stars for played games up to elimination", () => {
-    const { draft, cup } = replay(ELIMINATED);
+  it("computes stars for played games up to elimination", async () => {
+    const { draft, cup } = await replay(ELIMINATED);
     const stars = getAllMatchStars(cup, draft);
 
     // Eliminated in QF: 3 group + R32 + R16 + QF = 6 played matches + 1 tournament MVP = 7 stars
@@ -66,8 +72,8 @@ describe("starCalculation", () => {
     expect(qfStar?.roundShort).toBe("Quarter");
   });
 
-  it("extracts Tournament MVP directly with getTournamentMvp", () => {
-    const { draft, cup } = replay(FLAWLESS);
+  it("extracts Tournament MVP directly with getTournamentMvp", async () => {
+    const { draft, cup } = await replay(FLAWLESS);
     const mvp = getTournamentMvp(cup, draft);
 
     expect(mvp.speciesId).toBe(cup.awards.playerOfTournament.species);
@@ -75,8 +81,8 @@ describe("starCalculation", () => {
     expect(mvp.statSummary).toContain("Goals");
   });
 
-  it("computes single match star with getMatchStar", () => {
-    const { draft, cup } = replay(FLAWLESS);
+  it("computes single match star with getMatchStar", async () => {
+    const { draft, cup } = await replay(FLAWLESS);
     const playedMatch = cup.matches.find(
       (m): m is Extract<typeof m, { status: "played" }> => m.status === "played",
     )!;
@@ -86,13 +92,14 @@ describe("starCalculation", () => {
     expect(star.name).toBeTruthy();
   });
 
-  it("prioritizes offensive kick or header moves over reflex moves like Detect or Protect for goal scorers", () => {
-    const { draft, cup } = replay(FLAWLESS);
+  it("prioritizes offensive kick or header moves over reflex moves like Detect or Protect for goal scorers", async () => {
+    const { draft, cup } = await replay(FLAWLESS);
     const match = cup.matches.find(
       (m): m is Extract<typeof m, { status: "played" }> => m.status === "played",
     )!;
     // Pikachu (#25) has kickMoves: ["detect", "double-kick", "headbutt", "mega-kick", "protect", "skull-bash"]
-    const pikachu = 25 as typeof match.goals[number]["scorer"] & typeof draft.lineup.starters[0];
+    const pikachu = 25 as (typeof match.goals)[number]["scorer"] &
+      (typeof draft.lineup.starters)[0];
     const star = getMatchStar(
       {
         ...match,

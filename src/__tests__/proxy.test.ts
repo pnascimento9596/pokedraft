@@ -7,7 +7,7 @@ import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
 import { config, proxy } from "../proxy";
 import { scriptedToken } from "../leaderboard/server/__tests__/fixtures";
 import { RUN_TOKEN_VERSION } from "../engine";
-import { A11Y_RUN_V1, GOLDEN_CUP8_V2 } from "../engine/versions/__tests__/fixtures";
+import { A11Y_RUN_V1, GOLDEN_CUP8_V2, GOLDEN_CUP8_V3 } from "../engine/versions/__tests__/fixtures";
 
 function importClosure(entryRel: string): string[] {
   const root = path.resolve(import.meta.dirname, "../..");
@@ -133,7 +133,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   it("rewrites an undecodable share link to the 404 route and passes a real token through", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "");
     const cur = `pd${RUN_TOKEN_VERSION}`;
-    for (const bad of ["garbage", `${cur}.%%%`, "pd99.abc", "pd0.abc", `${cur}.e30`]) {
+    for (const bad of ["garbage", `${cur}.%%%`, "pd99.abc", "pd0.abc", "pd01.e30", `${cur}.e30`]) {
       const res = proxy(req(`/r/${bad}`));
       expect(res.headers.get("x-middleware-rewrite")).toBe("https://pokedraft.test/run-not-found");
     }
@@ -159,14 +159,14 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       { mode: "kanto151", formation: "4-4-2", order: "squadFirst" },
       "proxy-seed",
     );
-    const res = proxy(req(`/r/pd3?t=${real.slice(4)}`));
+    const res = proxy(req(`/r/pd4?t=${real.slice(4)}`));
     expect(res.headers.get("x-middleware-rewrite")).toBe(`https://pokedraft.test/r/${real}`);
     expect(
-      proxy(req(`/r/pd3?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
+      proxy(req(`/r/pd4?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
         "x-middleware-rewrite",
       ),
     ).toBe(`https://pokedraft.test/r/${real}?_rsc=123&source=chat`);
-    for (const token of [A11Y_RUN_V1, GOLDEN_CUP8_V2]) {
+    for (const token of [A11Y_RUN_V1, GOLDEN_CUP8_V2, GOLDEN_CUP8_V3]) {
       const [version, payload] = token.split(".");
       expect(proxy(req(`/r/${version}?t=${payload}`)).headers.get("x-middleware-rewrite")).toBe(
         `https://pokedraft.test/r/${token}`,
@@ -177,19 +177,32 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   it("keeps missing, malformed and unsupported query payloads on the real 404 route", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "");
     for (const path of [
-      "/r/pd3",
-      "/r/pd3?t=",
-      "/r/pd3?t=%%%",
-      "/r/pd3?t=e30",
+      "/r/pd4",
+      "/r/pd4?t=",
+      "/r/pd4?t=%%%",
+      "/r/pd4?t=e30",
       "/r/pd99?t=abc",
       "/r/pd0?t=abc",
       "/r/pd1?t=abc/def",
       "/r/pd2?t=abc.def",
-      "/r/pd3?t=abc&t=def",
+      "/r/pd4?t=abc&t=def",
     ]) {
       expect(proxy(req(path)).headers.get("x-middleware-rewrite")).toBe(
         "https://pokedraft.test/run-not-found",
       );
+    }
+    for (const version of [1, 2, 3, 4]) {
+      for (const payload of [
+        "%%%",
+        "e30",
+        "W1siayIsIjQtNC0yIiwicyJdLCJzZWVkIixbWyJwIiwwLCJzMCJdXV0",
+      ]) {
+        for (const path of [`/r/pd${version}.${payload}`, `/r/pd${version}?t=${payload}`]) {
+          expect(proxy(req(path)).headers.get("x-middleware-rewrite"), path).toBe(
+            "https://pokedraft.test/run-not-found",
+          );
+        }
+      }
     }
   });
 
@@ -220,5 +233,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     const closure = importClosure("src/proxy.ts");
     expect(closure).not.toContain("src/data/pokedex.json");
     expect(closure).not.toContain("src/data/scouting.json");
+    expect(closure.filter((file) => /(?:pokedex|scouting)\.json$/.test(file))).toEqual([]);
+    expect(closure.filter((file) => /\/species\.ts$/.test(file))).toEqual([]);
   });
 });

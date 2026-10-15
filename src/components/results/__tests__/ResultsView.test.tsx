@@ -33,16 +33,23 @@ const ELIMINATED =
 const FRIENDLY =
   "pd1.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiZnJpZW5kbHktMSIsW1sibCIsNjMwLCJzMCJdLFsibCIsODkzLCJzMSJdLFsibCIsNTU4LCJzMiJdLFsibCIsNjgxLCJzMyJdLFsibCIsNjUyLCJzNCJdLFsibCIsNDY4LCJzNSJdLFsibCIsMjMzLCJzNiJdLFsibCIsNzE3LCJzNyJdLFsibCIsNTczLCJzOCJdLFsibCIsNjYzLCJzOSJdLFsibCIsNjk3LCJzMTAiXSxbImwiLDIwMCwiYjAiXSxbImwiLDQ0NSwiYjEiXSxbImwiLDI1NywiYjIiXSxbImwiLDcyNCwiYjMiXSxbImwiLDg2NiwiYjQiXV1d";
 
-function view(token: string, variant: "live" | "shared" = "shared", cupOverride?: CupResult) {
-  const { draft, cup } = replay(token);
+async function view(token: string, variant: "live" | "shared" = "shared", cupOverride?: CupResult) {
+  const { draft, cup } = await replay(token);
   return render(
     <ResultsView token={token} draft={draft} cup={cupOverride ?? cup} variant={variant} />,
   );
 }
 
 describe("ResultsView", () => {
-  it("closes the native exhibition dialog when the results page is hidden or unmounted", () => {
-    const viewResult = view(ELIMINATED, "shared");
+  it("lets a player scout every starter and all five bench members from the scouting rows", async () => {
+    await view(FLAWLESS);
+    const scout = screen.getAllByRole("button", { name: /^Scout / });
+    expect(scout).toHaveLength(16);
+    fireEvent.click(screen.getByRole("button", { name: "Scout Misdreavus" }));
+    expect(screen.getByRole("dialog").textContent).toContain("Misdreavus");
+  });
+  it("closes the native exhibition dialog when the results page is hidden or unmounted", async () => {
+    const viewResult = await view(ELIMINATED, "shared");
     fireEvent.click(screen.getByTestId("play-exhibition"));
     const dialog = screen.getByTestId("exhibition-modal") as HTMLDialogElement;
     expect(dialog.open).toBe(true);
@@ -50,22 +57,22 @@ describe("ResultsView", () => {
     expect(dialog.open).toBe(false);
   });
 
-  it("shows the replayed record and Team Score, not a placeholder or a recomputed value", () => {
-    view(FLAWLESS);
+  it("shows the replayed record and Team Score, not a placeholder or a recomputed value", async () => {
+    await view(FLAWLESS);
     expect(screen.getByTestId("results-record").textContent).toBe("8-0-0");
     expect(screen.getByTestId("results-score").textContent).toBe("845");
     expect(screen.getByText("Champions")).toBeTruthy();
     expect(screen.queryByText("Friendly (not ranked)")).toBeNull();
   });
 
-  it("badges a builder-mode token as a friendly so it never reads as a ranked run", () => {
-    view(FRIENDLY);
+  it("badges a builder-mode token as a friendly so it never reads as a ranked run", async () => {
+    await view(FRIENDLY);
     expect(screen.getByText("Friendly (not ranked)")).toBeTruthy();
     expect(screen.getByTestId("results-record").textContent).toBe("7-0-1");
   });
 
-  it("lists the games after elimination as Not played with the run's own opponent and rating", () => {
-    view(ELIMINATED);
+  it("lists the games after elimination as Not played with the run's own opponent and rating", async () => {
+    await view(ELIMINATED);
     expect(screen.getByTestId("results-record").textContent).toBe("5-0-1");
     const sf = screen.getByTestId("match-SF");
     const final = screen.getByTestId("match-F");
@@ -80,15 +87,15 @@ describe("ResultsView", () => {
     ).toBeTruthy();
   });
 
-  it("shows the decree line for an engine-1 final awarded after the sudden-death cap", () => {
-    const { cup } = replay(FLAWLESS);
+  it("shows the decree line for an engine-1 final awarded after the sudden-death cap", async () => {
+    const { cup } = await replay(FLAWLESS);
     const kicks: PenKick[] = [];
     for (let i = 0; i < 25; i++) {
       kicks.push({ side: "user", taker: 1 as SpeciesId, scored: true });
-      kicks.push({ side: "opp", taker: 9 as Shirt, scored: true });
+      kicks.push({ side: "opp", taker: { kind: "shirt", number: 9 as Shirt }, scored: true });
     }
     kicks.push({ side: "user", taker: 1 as SpeciesId, scored: true });
-    kicks.push({ side: "opp", taker: 9 as Shirt, scored: false });
+    kicks.push({ side: "opp", taker: { kind: "shirt", number: 9 as Shirt }, scored: false });
     const matches = cup.matches.map((m) =>
       m.status === "played" && m.round === "F"
         ? {
@@ -107,14 +114,14 @@ describe("ResultsView", () => {
           }
         : m,
     );
-    view(FLAWLESS, "shared", { ...cup, matches });
+    await view(FLAWLESS, "shared", { ...cup, matches });
     const final = screen.getByTestId("match-F");
     expect(within(final).getByText(/Won on penalties \(decided after 20 rounds\)/)).toBeTruthy();
     expect(within(final).queryByText(/26-25 on pens/)).toBeNull();
   });
 
-  it("rates an old-engine run's eleven by quality, and a tie in the shown number keeps the engine's order (Swoobat at LCB and Swalot at CAM both show 39, only the LCB is flagged)", () => {
-    view(ELIMINATED);
+  it("rates an old-engine run's eleven by quality, and a tie in the shown number keeps the engine's order (Swoobat at LCB and Swalot at CAM both show 39, only the LCB is flagged)", async () => {
+    await view(ELIMINATED);
     const slots = ["GK", "LB", "LCB", "RCB", "RB", "LDM", "RDM", "LAM", "CAM", "RAM", "ST"];
     const rows = slots.map((slot) => screen.getByTestId(`fit-4-2-3-1.${slot}`));
     expect(rows.map((row) => within(row).getByText(/^\d+$/).textContent)).toEqual([
@@ -137,8 +144,8 @@ describe("ResultsView", () => {
     ]);
   });
 
-  it("describes the number on the cards: the pitch legend and the season details talk about ratings, 0 to 100 and the three lowest", () => {
-    view(FLAWLESS);
+  it("describes the number on the cards: the pitch legend and the season details talk about ratings, 0 to 100 and the three lowest", async () => {
+    await view(FLAWLESS);
     const legend = screen.getByRole("list", { name: "Pitch legend" });
     expect(within(legend).getByText("Weak spot: one of the 3 lowest ratings")).toBeTruthy();
     expect(within(legend).queryByText(/weakest spots/)).toBeNull();
@@ -152,8 +159,8 @@ describe("ResultsView", () => {
     ).toBeTruthy();
   });
 
-  it("the season details describe the engine 3 ladder, not the old cliff from the quarter-final", () => {
-    view(FLAWLESS);
+  it("the season details describe the engine 3 ladder, not the old cliff from the quarter-final", async () => {
+    await view(FLAWLESS);
     const details = screen.getByText("Season details: how grading works").closest("details")!;
     expect(
       within(details).getByText(
@@ -163,9 +170,9 @@ describe("ResultsView", () => {
     expect(details.textContent).not.toMatch(/hard from the quarter-final/);
   });
 
-  it("shows the player of the tournament's point breakdown, and none for an old-engine run", () => {
-    const { cup } = replay(FLAWLESS);
-    view(FLAWLESS);
+  it("shows the player of the tournament's point breakdown, and none for an old-engine run", async () => {
+    const { cup } = await replay(FLAWLESS);
+    await view(FLAWLESS);
     expect(screen.queryByTestId("pot-contribution")).toBeNull();
     cleanup();
     const potContribution = {
@@ -177,29 +184,29 @@ describe("ResultsView", () => {
       points: { goals: 12, assists: 2, cleanSheets: 0, minutes: 4 },
       total: 18,
     };
-    view(FLAWLESS, "shared", { ...cup, awards: { ...cup.awards, potContribution } });
+    await view(FLAWLESS, "shared", { ...cup, awards: { ...cup.awards, potContribution } });
     expect(screen.getByTestId("pot-contribution").textContent).toBe(
       "18 pts: goals 12, assists 2, clean sheets 0, minutes 4",
     );
   });
 
-  it("records a live run in local history exactly once and never records a shared view", () => {
-    const first = view(FLAWLESS, "live");
+  it("records a live run in local history exactly once and never records a shared view", async () => {
+    const first = await view(FLAWLESS, "live");
     first.unmount();
-    view(FLAWLESS, "live");
+    await view(FLAWLESS, "live");
     expect(loadHistory().map((r) => [r.token === FLAWLESS, r.score, r.wins, r.finish])).toEqual([
       [true, 845, 8, "champion"],
     ]);
     cleanup();
     localStorage.clear();
-    view(ELIMINATED, "shared");
+    await view(ELIMINATED, "shared");
     expect(loadHistory()).toEqual([]);
   });
 
   it("copies a query-format /r/ link so message apps keep the payload, and offers Play your own instead of New run when shared", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
-    view(ELIMINATED);
+    await view(ELIMINATED);
     expect(screen.queryByRole("button", { name: "New run" })).toBeNull();
     expect(screen.getByRole("link", { name: "Play your own" }).getAttribute("href")).toBe("/");
     fireEvent.click(screen.getByRole("button", { name: "Share" }));
@@ -207,8 +214,8 @@ describe("ResultsView", () => {
     expect(writeText.mock.calls).toEqual([[`${location.origin}/r/pd1?t=${ELIMINATED.slice(4)}`]]);
   });
 
-  it("renders the submit slot on a live run and never on a shared view", () => {
-    const { draft, cup } = replay(FLAWLESS);
+  it("renders the submit slot on a live run and never on a shared view", async () => {
+    const { draft, cup } = await replay(FLAWLESS);
     const slot = <p data-testid="submit-slot">submit here</p>;
     render(<ResultsView token={FLAWLESS} draft={draft} cup={cup} variant="live" submit={slot} />);
     expect(screen.getByTestId("submit-slot").textContent).toBe("submit here");
@@ -217,8 +224,8 @@ describe("ResultsView", () => {
     expect(screen.queryByTestId("submit-slot")).toBeNull();
   });
 
-  it("renders squad score breakdown, links match star badges to MatchHighlights, and opens Matchday Live broadcast", () => {
-    view(FLAWLESS);
+  it("renders squad score breakdown, links match star badges to MatchHighlights, and opens Matchday Live broadcast", async () => {
+    await view(FLAWLESS);
     const breakdown = screen.getByTestId("score-breakdown");
     expect(breakdown.textContent).toContain("GK");
     expect(breakdown.textContent).toContain("DEF");
@@ -234,16 +241,16 @@ describe("ResultsView", () => {
     expect(broadcast.textContent).toContain("Group match 1");
   });
 
-  it("can reselect the same match list star after using the highlight navigation", () => {
-    view(FLAWLESS);
+  it("can reselect the same match list star after using the highlight navigation", async () => {
+    await view(FLAWLESS);
     fireEvent.click(screen.getByTestId("match-star-G3"));
     fireEvent.click(screen.getByTestId("highlight-chip-G2"));
     fireEvent.click(screen.getByTestId("match-star-G3"));
     expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
   });
 
-  it("offers Challenge this Seed, Open in Builder, and Play Exhibition vs Squad on shared runs", () => {
-    const { draft: challenger } = replay(FLAWLESS);
+  it("offers Challenge this Seed, Open in Builder, and Play Exhibition vs Squad on shared runs", async () => {
+    const { draft: challenger } = await replay(FLAWLESS);
     localStorage.setItem(
       "pokedraft.builder",
       JSON.stringify(
@@ -259,7 +266,7 @@ describe("ResultsView", () => {
         ),
       ),
     );
-    view(ELIMINATED, "shared");
+    await view(ELIMINATED, "shared");
     const challengeLink = screen.getByTestId("challenge-seed");
     expect(challengeLink.getAttribute("href")).toBe(
       "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=c-4",
@@ -269,7 +276,7 @@ describe("ResultsView", () => {
     const copied = draftFromBuilderToken(
       new URL(builderLink.getAttribute("href")!, "https://example.test").searchParams.get("b")!,
     );
-    expect(copied?.lineup).toEqual(replay(ELIMINATED).draft.lineup);
+    expect(copied?.lineup).toEqual((await replay(ELIMINATED)).draft.lineup);
 
     fireEvent.click(screen.getByTestId("play-exhibition"));
     const modal = screen.getByTestId("exhibition-modal");
@@ -280,9 +287,9 @@ describe("ResultsView", () => {
 
   it.each([null, "bad-token", JSON.stringify("bad-token")])(
     "does not invent an exhibition challenger when the saved squad is missing or invalid (%s)",
-    (saved) => {
+    async (saved) => {
       if (saved !== null) localStorage.setItem("pokedraft.builder", saved);
-      view(ELIMINATED, "shared");
+      await view(ELIMINATED, "shared");
       fireEvent.click(screen.getByTestId("play-exhibition"));
       expect(screen.getByTestId("exhibition-modal").textContent).toContain(
         "Save a complete squad in the Builder",

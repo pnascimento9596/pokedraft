@@ -65,7 +65,7 @@ const KANTO: DraftSettings = { mode: "kanto151", formation: "3-5-2", order: "pos
 function token(settings: DraftSettings, seed: Seed): RunToken {
   const actions =
     settings.mode === "kanto151" ? kantoActions(settings, seed) : cup8Actions(settings, seed);
-  return { v: 3, settings, seed, actions };
+  return { v: 4, settings, seed, actions };
 }
 
 const CUP8_TOKEN = token(CUP8, "golden-cup8" as Seed);
@@ -73,7 +73,49 @@ const KANTO_TOKEN = token(KANTO, "golden-kanto151" as Seed);
 
 describe("engine goldens (any byte of drift in draft, rating, match or cup output moves a hash)", () => {
   it("pins the engine version these goldens were cut against", () => {
-    expect(ENGINE_VERSION).toBe("pokedraft-engine-3");
+    expect(ENGINE_VERSION).toBe("pokedraft-engine-4");
+  });
+
+  it("pins v4 simulation outcomes while draft Team Scores remain stable", () => {
+    const run = replay(encodeToken(CUP8_TOKEN));
+    expect([
+      run.cup.rating.score,
+      run.cup.wins,
+      run.cup.draws,
+      run.cup.losses,
+      run.cup.finish,
+    ]).toEqual([593, 3, 0, 2, "R16"]);
+    const kanto = replay(encodeToken(KANTO_TOKEN));
+    expect([
+      kanto.cup.rating.score,
+      kanto.cup.wins,
+      kanto.cup.draws,
+      kanto.cup.losses,
+      kanto.cup.finish,
+    ]).toEqual([480, 0, 3, 0, "group"]);
+  });
+
+  it("attributes every opponent goal and shootout kick to a Boss Club roster member", () => {
+    const run = replay(encodeToken(CUP8_TOKEN));
+    for (const m of run.cup.matches) {
+      if (m.status !== "played") continue;
+      const roster = new Set(
+        m.opponent.roster.filter((r) => r.kind === "species").map((r) => r.id),
+      );
+      for (const g of m.goals) {
+        if (g.side !== "opp") continue;
+        expect(g.scorer.kind).toBe("species");
+        if (g.scorer.kind === "species") expect(roster.has(g.scorer.id)).toBe(true);
+        if (g.assist !== null && g.assist.kind === "species")
+          expect(roster.has(g.assist.id)).toBe(true);
+      }
+      if (m.shootout !== null)
+        for (const k of m.shootout.kicks) {
+          if (k.side !== "opp") continue;
+          expect(k.taker.kind).toBe("species");
+          if (k.taker.kind === "species") expect(roster.has(k.taker.id)).toBe(true);
+        }
+    }
   });
 
   it("byte-pins a full cup8 classic3 run", () => {
@@ -81,9 +123,9 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const run = replay(s);
     expect(CUP8_TOKEN.actions).toHaveLength(18);
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 3, "R16"]);
-    expect(sha256(s)).toBe("8b62814e23eb70225707d31c2dfcb6118ce067e537d65652376487c5d6f24d54");
+    expect(sha256(s)).toBe("4061400329787171d0fdaa5f266477efe57c0d106a458c72f1605b0fb05baeb8");
     expect(sha256(JSON.stringify(run))).toBe(
-      "07bfee8296298a5c0d7b7878e813811548b1e8a3a74b1cfd899f0680f0d5db95",
+      "8520e109891a53af4b291690e21ac405c1af5471ff9a39b157918ba21264e611",
     );
   });
 
@@ -91,10 +133,10 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const s = encodeToken(KANTO_TOKEN);
     const run = replay(s);
     expect(KANTO_TOKEN.actions).toHaveLength(36);
-    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 2, "R16"]);
-    expect(sha256(s)).toBe("4afcfd2e3e9f32caf89d04288066a009b6ea1a12a6df447c99ff5c8fdf3e06d7");
+    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 0, "group"]);
+    expect(sha256(s)).toBe("9865c0f6b27c3d5d00ed6d129c2b1e7b9b49acf59e4921eeedeb71a9aa0fc6b6");
     expect(sha256(JSON.stringify(run))).toBe(
-      "750da9c3ba726d5438a7457799b770b358e41551bca8cd58cad5bcb8f6c7e1a9",
+      "1da7e5609fcd0c0a8d6a32f9856c0b91f4a21a584dac19b119bbffc2656cf795",
     );
   });
 

@@ -13,7 +13,7 @@ export type Seed = Brand<string, "Seed">;
 export type IsoDate = Brand<string, "IsoDate">;
 export type Quality = Brand<number, "Quality">;
 
-export const ENGINE_VERSION = "pokedraft-engine-3" as const;
+export const ENGINE_VERSION = "pokedraft-engine-4" as const;
 
 export const GENS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 export type Gen = (typeof GENS)[number];
@@ -237,17 +237,34 @@ export interface Opponent {
   readonly id: string;
   readonly name: string;
   readonly score: number;
+  readonly formation?: FormationId;
+  readonly tacticalStyle?: "balanced" | "pressing" | "possession" | "direct";
+  readonly captain?: OpponentPlayerRef;
+  readonly theme?: Species["types"][number];
   readonly lines: LineStrength;
+  /**
+   * The Boss Club's eleven, lineup order (index 0 is the goalkeeper). Engine 4 and later field
+   * actual Pokemon; retained runs hold shirt refs for the unnamed opponents their engine rolled.
+   */
+  readonly roster: readonly OpponentPlayerRef[];
 }
 
 export type Side = "user" | "opp";
 export type Shirt = Brand<number, "Shirt">;
+
+/** Who an opponent goal, assist or penalty belongs to: a Pokemon, or a legacy shirt number. */
+export type OpponentPlayerRef =
+  | { readonly kind: "species"; readonly id: SpeciesId }
+  | { readonly kind: "shirt"; readonly number: Shirt };
+
+export type GoalKind = "open-play" | "header" | "solo" | "free-kick" | "penalty";
 
 export type GoalEvent =
   | {
       readonly side: "user";
       readonly minute: number;
       readonly penalty: boolean;
+      readonly kind?: GoalKind;
       readonly scorer: SpeciesId;
       readonly assist: SpeciesId | null;
     }
@@ -255,13 +272,14 @@ export type GoalEvent =
       readonly side: "opp";
       readonly minute: number;
       readonly penalty: boolean;
-      readonly scorer: Shirt;
-      readonly assist: Shirt | null;
+      readonly kind?: GoalKind;
+      readonly scorer: OpponentPlayerRef;
+      readonly assist: OpponentPlayerRef | null;
     };
 
 export type PenKick =
   | { readonly side: "user"; readonly taker: SpeciesId; readonly scored: boolean }
-  | { readonly side: "opp"; readonly taker: Shirt; readonly scored: boolean };
+  | { readonly side: "opp"; readonly taker: OpponentPlayerRef; readonly scored: boolean };
 
 export interface Shootout {
   readonly user: number;
@@ -357,6 +375,14 @@ export interface Awards {
   readonly potContribution: Contribution | null;
 }
 
+export interface GroupFixture {
+  readonly round: "G1" | "G2" | "G3";
+  readonly a: string;
+  readonly b: string;
+  readonly aGoals: number;
+  readonly bGoals: number;
+}
+
 export interface CupResult {
   /** The engine that produced this result; older than ENGINE_VERSION for a retained run. */
   readonly engine: `pokedraft-engine-${number}`;
@@ -364,6 +390,7 @@ export interface CupResult {
   readonly mode: Mode;
   readonly rating: TeamRating;
   readonly group: readonly GroupRow[];
+  readonly groupFixtures?: readonly GroupFixture[];
   readonly matches: readonly MatchResult[];
   readonly wins: number;
   readonly draws: number;
@@ -374,7 +401,7 @@ export interface CupResult {
   readonly awards: Awards;
 }
 
-export const RUN_TOKEN_VERSION = 3 as const;
+export const RUN_TOKEN_VERSION = 4 as const;
 
 export interface RunToken {
   readonly v: typeof RUN_TOKEN_VERSION;

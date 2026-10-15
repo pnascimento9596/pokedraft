@@ -9,6 +9,7 @@ import {
   shootoutLine,
   type PlayedMatch,
 } from "./format";
+import { BossRoster } from "./BossRoster";
 import { getMatchStar } from "./starCalculation";
 import s from "./MatchList.module.css";
 
@@ -165,6 +166,7 @@ function Played({
           ))}
         </div>
       ) : null}
+      <BossRoster opponent={m.opponent} />
       {outNote !== null ? <p className={s.out}>{outNote}</p> : null}
     </article>
   );
@@ -186,6 +188,7 @@ function NotPlayed({ m }: { m: Extract<MatchResult, { status: "notPlayed" }> }) 
         </span>
         <span className={s.meterValue}>{m.opponent.score}</span>
       </div>
+      <BossRoster opponent={m.opponent} />
     </article>
   );
 }

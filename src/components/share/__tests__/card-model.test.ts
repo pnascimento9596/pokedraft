@@ -8,8 +8,15 @@ const PARTIAL_BUILDER =
   "pd1.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiYnVpbGRlciIsW1sibCIsNjMwLCJzMCJdLFsibCIsODkzLCJzMSJdLFsibCIsNTU4LCJzMiJdLFsibCIsNjgxLCJzMyJdLFsibCIsNjUyLCJzNCJdLFsibCIsNDY4LCJzNSJdLFsibCIsMjMzLCJzNiJdLFsibCIsNzE3LCJzNyJdLFsibCIsNTczLCJzOCJdLFsibCIsNjYzLCJzOSJdLFsibCIsNjk3LCJzMTAiXV1d";
 
 describe("cardModel run headline", () => {
-  it("carries wins, draws and losses as numbers so the card can draw W/D/L tiles instead of parsing '8-0-0'", () => {
-    const model = cardModel({ t: FLAWLESS }, replayAnyVersion);
+  it("returns no model when asynchronous retained replay rejects", async () => {
+    const model = await cardModel({ t: "pd1.invalid" }, async () => {
+      throw new Error("invalid retained token");
+    });
+    expect(model).toBeNull();
+  });
+
+  it("carries wins, draws and losses as numbers so the card can draw W/D/L tiles instead of parsing '8-0-0'", async () => {
+    const model = await cardModel({ t: FLAWLESS }, replayAnyVersion);
     expect(model?.headline).toMatchObject({
       kind: "run",
       wins: 8,
@@ -19,8 +26,8 @@ describe("cardModel run headline", () => {
     });
   });
 
-  it("gives a builder lineup no record", () => {
-    const model = cardModel({ b: PARTIAL_BUILDER }, replayAnyVersion);
+  it("gives a builder lineup no record", async () => {
+    const model = await cardModel({ b: PARTIAL_BUILDER }, replayAnyVersion);
     expect(model?.headline).toEqual({ kind: "lineup", score: null });
   });
 });

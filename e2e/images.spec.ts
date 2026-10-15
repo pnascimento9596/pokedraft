@@ -10,8 +10,13 @@ const BLANK = { r: 128, g: 140, b: 132, a: 0.16 };
 
 /** Every creature picture inside `scope` has loaded real pixels (no blank fallback). */
 async function expectLoadedImages(page: Page, scope: string, atLeast: number) {
-  const imgs = page.locator(`${scope} [data-testid="player-image"] img`);
+  const imgs = page.locator(`${scope} [data-testid="player-image"] img:visible`);
   await expect.poll(async () => imgs.count()).toBeGreaterThanOrEqual(atLeast);
+  for (const image of await imgs.all()) {
+    if (!(await image.evaluate((el) => (el as HTMLImageElement).complete))) {
+      await image.scrollIntoViewIfNeeded();
+    }
+  }
   await expect
     .poll(() =>
       imgs.evaluateAll((els) =>

@@ -25,7 +25,7 @@ test.describe("challenge drafts", () => {
     }
     await expect(header).toHaveText("Draft complete");
     await page.getByTestId("see-results").click();
-    await shareAndReplay(page, "1-2-1");
+    await shareAndReplay(page, "0-3-0");
   });
 
   test("8-0 rerolls share one count of 3 across type and region", async ({ page }) => {

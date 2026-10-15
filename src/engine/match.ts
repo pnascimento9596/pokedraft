@@ -5,6 +5,7 @@ import type {
   Absence,
   CupRound,
   GoalEvent,
+  GoalKind,
   Line,
   LineStrength,
   MatchResult,
@@ -13,10 +14,8 @@ import type {
   Role,
   Score,
   Seed,
-  Shirt,
   Shootout,
   Species,
-  SpeciesId,
 } from "./types";
 
 export type Phase = "group" | "knockout";
@@ -37,6 +36,8 @@ export interface MatchInput {
   readonly starters: readonly MatchStarter[];
   readonly keeper: Species;
   readonly opponent: Opponent;
+  /** The Boss Club's own eleven, in lineup order; the live engine always fields species. */
+  readonly opponentStarters: readonly MatchStarter[];
   readonly absences: readonly Absence[];
 }
 
@@ -53,9 +54,6 @@ interface Period {
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
-const SHIRTS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as Shirt[];
-const KEEPER_SHIRT = 1;
-const OPP_SHOOTOUT_ORDER = [9, 10, 11, 8, 7, 6, 5, 4, 3, 2, 1] as Shirt[];
 const REGULATION_MINUTES = 90;
 const EXTRA_TIME_LAST_MINUTE = 120;
 const PERCENT = 100;
@@ -157,53 +155,84 @@ function chances(
   return goals;
 }
 
-function userAttribution(
+export function assistWeight(
+  starter: MatchStarter,
+  c: EngineCoefficients = ENGINE_COEFFICIENTS,
+): number {
+  const a = starter.species.attrs;
+  return (0.5 * a.PAS + 0.35 * a.VIS + 0.15 * a.DRI) * c.match.assistRoleFactor[starter.role];
+}
+
+export function extraTimeFactor(starters: readonly MatchStarter[]): number {
+  const stamina = starters.reduce((sum, s) => sum + s.species.attrs.STA, 0) / starters.length;
+  return clamp(0.9 + stamina / 500, 0.9, 1.1);
+}
+
+export function penaltyEdge(taker: Species, keeper: Species): number {
+  return (
+    0.75 * taker.attrs.SHO +
+    0.25 * taker.attrs.TEC -
+    (keeper.attrs.REF + keeper.attrs.DIV + keeper.attrs.HAN + keeper.attrs.GKP) / 4
+  );
+}
+
+function attribution(
+  side: "user" | "opp",
   starters: readonly MatchStarter[],
   rng: EngineRng,
   c: EngineCoefficients,
 ): (minute: number, penalty: boolean) => GoalEvent {
-  const byId = (s: MatchStarter): number => s.species.id;
-  // A zero role factor (GK) never scores from open play.
   const shooters = starters.filter((s) => c.match.roleFactor[s.role] > 0);
   const [penaltyTaker] = canonicalSortBy(starters, (s) => [-s.species.attrs.SHO, s.species.id]);
   return (minute, penalty) => {
-    if (penalty) {
-      return { side: "user", minute, penalty, scorer: penaltyTaker!.species.id, assist: null };
-    }
-    const scorer = weightedPick(
-      shooters,
-      byId,
-      (s) => s.species.attrs.SHO * c.match.roleFactor[s.role],
-      rng,
-    );
-    let assist: SpeciesId | null = null;
-    if (rng.next() < c.match.assistProb) {
-      const creators = starters.filter((s) => s !== scorer);
-      assist = weightedPick(
-        creators,
-        byId,
-        (s) => s.species.attrs.PAS * c.match.roleFactor[s.role],
-        rng,
-      ).species.id;
-    }
-    return { side: "user", minute, penalty, scorer: scorer.species.id, assist };
-  };
-}
-
-function oppAttribution(
-  rng: EngineRng,
-  c: EngineCoefficients,
-): (minute: number, penalty: boolean) => GoalEvent {
-  const weight = (shirt: Shirt): number => c.match.oppScorerWeights[shirt - 1]!;
-  const [penaltyTaker] = canonicalSortBy(SHIRTS, (shirt) => [-weight(shirt), shirt]);
-  return (minute, penalty) => {
-    if (penalty) return { side: "opp", minute, penalty, scorer: penaltyTaker!, assist: null };
-    const scorer = weightedPick(SHIRTS, Number, weight, rng);
-    let assist: Shirt | null = null;
-    if (rng.next() < c.match.assistProb) {
-      assist = rng.pick(SHIRTS.filter((s) => s !== KEEPER_SHIRT && s !== scorer));
-    }
-    return { side: "opp", minute, penalty, scorer, assist };
+    const roll = penalty ? 1 : rng.next();
+    const kind: GoalKind = penalty
+      ? "penalty"
+      : roll < 0.12
+        ? "header"
+        : roll < 0.2
+          ? "free-kick"
+          : roll < 0.38
+            ? "solo"
+            : "open-play";
+    const scorer = penalty
+      ? penaltyTaker!
+      : weightedPick(
+          shooters,
+          (s) => s.species.id,
+          (s) => {
+            const a = s.species.attrs;
+            const skill =
+              kind === "header"
+                ? 0.5 * a.SHO + 0.35 * a.AER + 0.15 * a.PHY
+                : kind === "solo"
+                  ? 0.5 * a.SHO + 0.35 * a.DRI + 0.15 * a.ACC
+                  : kind === "free-kick"
+                    ? 0.6 * a.SHO + 0.4 * a.TEC
+                    : a.SHO;
+            return Math.max(1, skill) * c.match.roleFactor[s.role];
+          },
+          rng,
+        );
+    const assisted = (kind === "open-play" || kind === "header") && rng.next() < c.match.assistProb;
+    const assist = assisted
+      ? weightedPick(
+          starters.filter((s) => s !== scorer && c.match.assistRoleFactor[s.role] > 0),
+          (s) => s.species.id,
+          (s) => Math.max(1, assistWeight(s, c)),
+          rng,
+        ).species.id
+      : null;
+    return side === "user"
+      ? { side, minute, penalty, kind, scorer: scorer.species.id, assist }
+      : {
+          side,
+          minute,
+          penalty,
+          kind,
+          scorer: { kind: "species", id: scorer.species.id },
+          assist: assist === null ? null : { kind: "species", id: assist },
+        };
   };
 }
 
@@ -214,10 +243,12 @@ function convertProb(edge: number, c: EngineCoefficients): number {
 
 function shootout(input: MatchInput, rng: EngineRng, c: EngineCoefficients): Shootout {
   const userTakers = canonicalSortBy(input.starters, (s) => [-s.species.attrs.SHO, s.species.id]);
-  const pOpp = convertProb(
-    input.opponent.lines.ATT - (input.keeper.attrs.REF + input.keeper.attrs.DIV) / 2,
-    c,
-  );
+  const oppTakers = canonicalSortBy(input.opponentStarters, (s) => [
+    -s.species.attrs.SHO,
+    s.species.id,
+  ]);
+  const opponentKeeper = input.opponentStarters.find((s) => s.role === "GK")?.species;
+  if (!opponentKeeper) throw new RangeError("opponent must field a goalkeeper");
   const kicks: PenKick[] = [];
   let user = 0;
   let opp = 0;
@@ -226,17 +257,17 @@ function shootout(input: MatchInput, rng: EngineRng, c: EngineCoefficients): Sho
 
   const kickUser = (): void => {
     const taker = userTakers[userKicks % userTakers.length]!.species;
-    const scored = rng.next() < convertProb(taker.attrs.SHO - input.opponent.lines.GK, c);
+    const scored = rng.next() < convertProb(penaltyEdge(taker, opponentKeeper), c);
     if (scored) user++;
     userKicks++;
     kicks.push({ side: "user", taker: taker.id, scored });
   };
   const kickOpp = (): void => {
-    const taker = OPP_SHOOTOUT_ORDER[oppKicks % OPP_SHOOTOUT_ORDER.length]!;
-    const scored = rng.next() < pOpp;
+    const taker = oppTakers[oppKicks % oppTakers.length]!;
+    const scored = rng.next() < convertProb(penaltyEdge(taker.species, input.keeper), c);
     if (scored) opp++;
     oppKicks++;
-    kicks.push({ side: "opp", taker, scored });
+    kicks.push({ side: "opp", taker: { kind: "species", id: taker.species.id }, scored });
   };
 
   const regulation = c.shootout.kicks;
@@ -269,6 +300,11 @@ function count(goals: readonly GoalEvent[]): Score {
   };
 }
 
+function goalTieKey(g: GoalEvent): readonly [number, number] {
+  if (g.side === "user") return [0, g.scorer];
+  return g.scorer.kind === "species" ? [0, g.scorer.id] : [1, g.scorer.number];
+}
+
 function outcomeOf(score: Score): "W" | "D" | "L" {
   if (score.user > score.opp) return "W";
   if (score.user < score.opp) return "L";
@@ -291,8 +327,8 @@ export function simulateMatch(
     rngs.struct,
     c,
   );
-  const scoreUser = userAttribution(input.starters, rngs.event, c);
-  const scoreOpp = oppAttribution(rngs.event, c);
+  const scoreUser = attribution("user", input.starters, rngs.event, c);
+  const scoreOpp = attribution("opp", input.opponentStarters, rngs.event, c);
 
   const full: Period = { first: 1, last: REGULATION_MINUTES, chances: c.match.chances.regulation };
   const goals = [
@@ -311,8 +347,20 @@ export function simulateMatch(
       chances: c.match.chances.extraTime,
     };
     const etGoals = [
-      ...chances(lambdaUser * c.match.extraTimeFraction, extra, rngs, c, scoreUser),
-      ...chances(lambdaOpp * c.match.extraTimeFraction, extra, rngs, c, scoreOpp),
+      ...chances(
+        lambdaUser * c.match.extraTimeFraction * extraTimeFactor(input.starters),
+        extra,
+        rngs,
+        c,
+        scoreUser,
+      ),
+      ...chances(
+        lambdaOpp * c.match.extraTimeFraction * extraTimeFactor(input.opponentStarters),
+        extra,
+        rngs,
+        c,
+        scoreOpp,
+      ),
     ];
     goals.push(...etGoals);
     extraTime = count(etGoals);
@@ -332,7 +380,8 @@ export function simulateMatch(
     (a, b) =>
       a.minute - b.minute ||
       (a.side === b.side ? 0 : a.side === "user" ? -1 : 1) ||
-      a.scorer - b.scorer,
+      goalTieKey(a)[0] - goalTieKey(b)[0] ||
+      goalTieKey(a)[1] - goalTieKey(b)[1],
   );
 
   return {

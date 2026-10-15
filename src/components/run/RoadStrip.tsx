@@ -1,6 +1,6 @@
 import { useMemo, type CSSProperties } from "react";
 import { ENGINE_COEFFICIENTS } from "@/engine/coefficients";
-import { buildLadder } from "@/engine/opponents";
+import { buildOpponentSchedule } from "@/engine/opponent-schedule";
 import { CUP_ROUNDS, type CupRound, type Mode } from "@/engine/types";
 
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
@@ -33,7 +33,10 @@ export function RoadStrip({
   readonly mode: Mode;
   readonly compact?: boolean;
 }) {
-  const ladder = useMemo(() => (seed === null ? null : buildLadder(seed, mode)), [seed, mode]);
+  const ladder = useMemo(
+    () => (seed === null ? null : buildOpponentSchedule(seed, mode)),
+    [seed, mode],
+  );
   const heights = CUP_ROUNDS.map((round) => ladder?.[round].score ?? SHAPE[round]);
   const top = Math.max(...heights);
   return (

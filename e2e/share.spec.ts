@@ -80,8 +80,21 @@ test("the passcode gate previews a query destination with its canonical public c
   expect(image.headers()["content-type"]).toContain("image/png");
 });
 
-for (const path of ["/r/pd3", "/r/pd3?t=e30"]) {
-  test(`an incomplete query share link ${path} answers HTTP 404`, async ({ page }) => {
+for (const path of [
+  "/r/pd1",
+  "/r/pd1?t=e30",
+  "/r/pd1.e30",
+  "/r/pd2",
+  "/r/pd2?t=e30",
+  "/r/pd2.e30",
+  "/r/pd3",
+  "/r/pd3?t=e30",
+  "/r/pd3.e30",
+  "/r/pd4",
+  "/r/pd4?t=e30",
+  "/r/pd4.e30",
+]) {
+  test(`a malformed current or retained share link ${path} answers HTTP 404`, async ({ page }) => {
     expect((await page.goto(path))?.status()).toBe(404);
     await expect(page.getByTestId("run-error")).toContainText("Run not found");
   });

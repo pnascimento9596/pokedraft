@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { recapLines, type RecapInput } from "../recap";
-import type { GoalEvent, Opponent, PenKick, Shirt, SpeciesId } from "../types";
+import type { GoalEvent, Opponent, OpponentPlayerRef, PenKick, Shirt, SpeciesId } from "../types";
 
 const OPPONENT: Opponent = {
   id: "lumiose-fc",
   name: "Lumiose FC",
   score: 800,
   lines: { GK: 80, DEF: 80, MID: 80, ATT: 80 },
+  roster: Array.from({ length: 11 }, (_, i): OpponentPlayerRef => ({
+    kind: "shirt",
+    number: (i + 1) as Shirt,
+  })),
 };
 
 const user = (
@@ -25,7 +29,7 @@ const opp = (minute: number): GoalEvent => ({
   side: "opp",
   minute,
   penalty: false,
-  scorer: 9 as Shirt,
+  scorer: { kind: "shirt", number: 9 as Shirt },
   assist: null,
 });
 
@@ -54,7 +58,9 @@ const KNOCKOUT: RecapInput = {
 };
 
 const kick = (side: PenKick["side"], scored: boolean): PenKick =>
-  side === "user" ? { side, taker: 1 as SpeciesId, scored } : { side, taker: 9 as Shirt, scored };
+  side === "user"
+    ? { side, taker: 1 as SpeciesId, scored }
+    : { side, taker: { kind: "shirt", number: 9 as Shirt }, scored };
 
 // Pairs in which both sides score.
 const levelPairs = (n: number): PenKick[] =>

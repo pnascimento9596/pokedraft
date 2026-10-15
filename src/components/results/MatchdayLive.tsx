@@ -4,8 +4,17 @@ import { useEffect, useState } from "react";
 import { speciesById, type CupResult, type DraftState } from "@/engine";
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import { playGoalHorn, unlockAudio } from "@/components/wheel/sound";
-import { absenceLine, finalScore, goalLine, shootoutLine, type PlayedMatch } from "./format";
+import {
+  absenceLine,
+  finalScore,
+  goalLine,
+  opponentRefLabel,
+  shootoutLine,
+  type PlayedMatch,
+} from "./format";
 import s from "./MatchdayLive.module.css";
+import { BossRoster } from "./BossRoster";
+import { broadcastTable } from "./broadcast-table";
 
 export function MatchdayLive({
   cup,
@@ -53,6 +62,7 @@ export function MatchdayLive({
   const shootout = match.shootout;
   const visibleKicks = shootout?.kicks.slice(0, kickCount ?? shootout.kicks.length) ?? [];
   const shootoutComplete = visibleKicks.length === shootout?.kicks.length;
+  const standings = broadcastTable(cup, match.round, minute, { user: userGoals, opp: oppGoals });
 
   const selectRound = (idx: number) => {
     const target = played[idx];
@@ -103,6 +113,35 @@ export function MatchdayLive({
           </button>
         ))}
       </div>
+
+      <BossRoster opponent={match.opponent} />
+
+      {standings !== null && standings.length > 0 ? (
+        <details className={s.standings}>
+          <summary>Group standings during this replay</summary>
+          <p>Provisional during play. Other group results are added at full time.</p>
+          <table aria-label="Broadcast group standings">
+            <thead>
+              <tr>
+                <th scope="col">Team</th>
+                <th scope="col">P</th>
+                <th scope="col">GD</th>
+                <th scope="col">Pts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {standings.map((row) => (
+                <tr key={row.team}>
+                  <th scope="row">{row.team === "user" ? "Your team" : row.name}</th>
+                  <td>{row.played}</td>
+                  <td>{row.goalsFor - row.goalsAgainst}</td>
+                  <td>{row.points}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
+      ) : null}
 
       <div className={s.scoreboard}>
         <div className={s.teamSide}>
@@ -236,7 +275,10 @@ export function MatchdayLive({
             {visibleKicks.map((k, idx) => (
               <li key={idx} className={s.kickItem}>
                 <span>
-                  {idx + 1}. {k.side === "user" ? speciesById(k.taker).name : `Opp No. ${k.taker}`}
+                  {idx + 1}.{" "}
+                  {k.side === "user"
+                    ? speciesById(k.taker).name
+                    : `Opp ${opponentRefLabel(k.taker)}`}
                 </span>
                 <span>{k.scored ? "Scored" : "Not scored"}</span>
               </li>

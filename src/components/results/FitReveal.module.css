@@ -171,3 +171,43 @@
   color: var(--risk-text);
   background: color-mix(in srgb, var(--risk-mark) 14%, var(--surface));
 }
+
+.scout {
+  align-self: flex-start;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 20px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bench {
+  margin-top: 16px;
+  min-width: 0;
+}
+
+.bench h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.benchPlayer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.bestRoles {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 18px;
+}

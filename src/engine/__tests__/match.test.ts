@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ENGINE_COEFFICIENTS } from "../coefficients";
 import { FORMATIONS } from "../formations";
 import { simulateMatch, type MatchInput, type Phase } from "../match";
-import { buildLadder } from "../opponents";
+import { buildLadder, bossStarters } from "../opponents";
 import { speciesById } from "../species";
 import { matchLines, rateTeam } from "../team";
 import type { CupRound, FullLineup, Seed } from "../types";
@@ -31,6 +31,7 @@ function input(seed: string, matchIndex: number, round: CupRound, phase: Phase):
     starters: STARTERS,
     keeper: speciesById(9),
     opponent: LADDER[round],
+    opponentStarters: bossStarters(LADDER[round]),
     absences: [],
   };
 }
@@ -94,39 +95,103 @@ describe("simulateMatch", () => {
   it("pins a group match scoreline, scorers and recap", () => {
     const m = simulateMatch(input("m-25", 2, "G3", "group"));
     expect([m.regulation, m.extraTime, m.shootout, m.outcome, m.rating]).toEqual([
-      { user: 9, opp: 1 },
+      { user: 8, opp: 1 },
       null,
       null,
       "W",
       943,
     ]);
     expect(m.goals).toEqual([
-      { side: "user", minute: 6, penalty: false, scorer: 80, assist: 26 },
-      { side: "user", minute: 35, penalty: false, scorer: 26, assist: 85 },
-      { side: "user", minute: 52, penalty: false, scorer: 149, assist: 26 },
-      { side: "user", minute: 60, penalty: false, scorer: 26, assist: 6 },
-      { side: "user", minute: 62, penalty: false, scorer: 26, assist: 85 },
-      { side: "user", minute: 64, penalty: false, scorer: 85, assist: null },
-      { side: "user", minute: 71, penalty: false, scorer: 85, assist: 6 },
-      { side: "user", minute: 80, penalty: true, scorer: 149, assist: null },
-      { side: "opp", minute: 81, penalty: false, scorer: 10, assist: null },
-      { side: "user", minute: 90, penalty: false, scorer: 135, assist: 26 },
+      {
+        side: "user",
+        minute: 6,
+        penalty: false,
+        kind: "open-play",
+        scorer: 85,
+        assist: 149,
+      },
+      {
+        side: "user",
+        minute: 34,
+        penalty: false,
+        kind: "open-play",
+        scorer: 80,
+        assist: 55,
+      },
+      {
+        side: "user",
+        minute: 53,
+        penalty: false,
+        kind: "solo",
+        scorer: 59,
+        assist: null,
+      },
+      {
+        side: "user",
+        minute: 62,
+        penalty: false,
+        kind: "header",
+        scorer: 6,
+        assist: 80,
+      },
+      {
+        side: "user",
+        minute: 62,
+        penalty: false,
+        kind: "open-play",
+        scorer: 80,
+        assist: null,
+      },
+      {
+        side: "user",
+        minute: 64,
+        penalty: false,
+        kind: "open-play",
+        scorer: 26,
+        assist: 6,
+      },
+      {
+        side: "user",
+        minute: 71,
+        penalty: false,
+        kind: "solo",
+        scorer: 135,
+        assist: null,
+      },
+      {
+        side: "opp",
+        minute: 80,
+        penalty: false,
+        kind: "open-play",
+        scorer: {
+          kind: "species",
+          id: 84,
+        },
+        assist: null,
+      },
+      {
+        side: "user",
+        minute: 90,
+        penalty: true,
+        kind: "penalty",
+        scorer: 149,
+        assist: null,
+      },
     ]);
     expect(m.recap).toEqual([
-      "Beat Pallet Town 9-1.",
-      "Slowbro finishes in the 6th minute after a pass from Raichu.",
-      "Raichu scores in the 35th minute, set up by Dodrio.",
-      "Raichu sets up Dragonite in the 52nd minute.",
-      "Raichu finishes in the 60th minute after a pass from Charizard.",
-      "Raichu scores in the 62nd minute, set up by Dodrio.",
-      "Dodrio finds the net in the 64th minute.",
-      "Dodrio finishes in the 71st minute after a pass from Charizard.",
-      "Dragonite scores from the spot in the 80th minute.",
-      "Raichu sets up Jolteon in the 90th minute.",
+      "Beat Pallet Town 8-1.",
+      "Dodrio finishes in the 6th minute after a pass from Dragonite.",
+      "Slowbro scores in the 34th minute, set up by Golduck.",
+      "Arcanine scores after a solo run in the 53rd minute.",
+      "Charizard heads home in the 62nd minute, set up by Slowbro.",
+      "Slowbro scores in the 62nd minute.",
+      "Charizard sets up Raichu in the 64th minute.",
+      "Jolteon scores after a solo run in the 71st minute.",
+      "Dragonite scores from the spot in the 90th minute.",
     ]);
   });
 
-  it("pins a final that goes to a shootout with SHO-ordered user takers and the fixed opp order", () => {
+  it("pins a final that goes to a shootout with SHO-ordered takers on both sides", () => {
     const m = simulateMatch(input("m-0", 7, "F", "knockout"));
     expect([m.regulation, m.extraTime, m.outcome]).toEqual([
       { user: 0, opp: 0 },
@@ -139,19 +204,19 @@ describe("simulateMatch", () => {
       keeper: 9,
       kicks: [
         { side: "user", taker: 149, scored: false },
-        { side: "opp", taker: 9, scored: true },
+        { side: "opp", taker: { kind: "species", id: 149 }, scored: true },
         { side: "user", taker: 59, scored: true },
-        { side: "opp", taker: 10, scored: true },
+        { side: "opp", taker: { kind: "species", id: 85 }, scored: true },
         { side: "user", taker: 85, scored: true },
-        { side: "opp", taker: 11, scored: true },
+        { side: "opp", taker: { kind: "species", id: 6 }, scored: true },
         { side: "user", taker: 6, scored: true },
-        { side: "opp", taker: 8, scored: false },
+        { side: "opp", taker: { kind: "species", id: 146 }, scored: false },
         { side: "user", taker: 26, scored: true },
-        { side: "opp", taker: 7, scored: true },
+        { side: "opp", taker: { kind: "species", id: 145 }, scored: true },
         { side: "user", taker: 9, scored: true },
-        { side: "opp", taker: 6, scored: true },
+        { side: "opp", taker: { kind: "species", id: 123 }, scored: true },
         { side: "user", taker: 55, scored: true },
-        { side: "opp", taker: 5, scored: false },
+        { side: "opp", taker: { kind: "species", id: 142 }, scored: false },
       ],
       decider: "kicks",
       coinWinner: null,

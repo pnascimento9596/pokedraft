@@ -1,0 +1,57 @@
+{
+  "token": "pd4.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwidjQtYnJvd3Nlci0wIixbWyJsIiw5LCJzMCJdLFsibCIsNTksInMxIl0sWyJsIiwxNDksInMyIl0sWyJsIiwxMzAsInMzIl0sWyJsIiwzLCJzNCJdLFsibCIsODAsInM1Il0sWyJsIiw2LCJzNiJdLFsibCIsNTUsInM3Il0sWyJsIiwyNiwiczgiXSxbImwiLDg1LCJzOSJdLFsibCIsMTM1LCJzMTAiXSxbImwiLDI1LCJiMCJdLFsibCIsOTQsImIxIl0sWyJsIiw2NSwiYjIiXSxbImwiLDY4LCJiMyJdLFsibCIsMTQzLCJiNCJdXV0",
+  "record": "5-0-1",
+  "score": 943,
+  "round": "QF",
+  "kicks": 10,
+  "firstOpponentTaker": {
+    "kind": "species",
+    "id": 809
+  },
+  "opponentRoster": [
+    {
+      "kind": "species",
+      "id": 379
+    },
+    {
+      "kind": "species",
+      "id": 959
+    },
+    {
+      "kind": "species",
+      "id": 983
+    },
+    {
+      "kind": "species",
+      "id": 809
+    },
+    {
+      "kind": "species",
+      "id": 601
+    },
+    {
+      "kind": "species",
+      "id": 462
+    },
+    {
+      "kind": "species",
+      "id": 884
+    },
+    {
+      "kind": "species",
+      "id": 530
+    },
+    {
+      "kind": "species",
+      "id": 966
+    },
+    {
+      "kind": "species",
+      "id": 625
+    },
+    {
+      "kind": "species",
+      "id": 212
+    }
+  ]
+}

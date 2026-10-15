@@ -11,7 +11,7 @@ afterEach(cleanup);
 // Squad First, seed "road-5". Observed 4-0-1, out in the Round of 16, so three of its eight
 // matches are Not played and still name their opponent.
 const ROAD_5 =
-  "pd3.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwicm9hZC01IixbWyJwIiw3NzYsInMwIl0sWyJwIiw5NzQsInMxIl0sWyJwIiwzNjEsInMyIl0sWyJwIiw0OTUsInMzIl0sWyJwIiwzOTUsInM0Il0sWyJwIiwyMDUsInM1Il0sWyJwIiwyNywiczYiXSxbInAiLDcyMiwiczciXSxbInAiLDkzMSwiczgiXSxbInAiLDE2LCJzOSJdLFsicCIsNzY1LCJzMTAiXSxbInAiLDQzMCwiYjAiXSxbInAiLDkyLCJiMSJdLFsicCIsNjkxLCJiMiJdLFsicCIsNjU1LCJiMyJdLFsicCIsMTcsImI0Il1dXQ";
+  "pd4.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwicm9hZC01IixbWyJwIiw3NzYsInMwIl0sWyJwIiw5NzQsInMxIl0sWyJwIiwzNjEsInMyIl0sWyJwIiw0OTUsInMzIl0sWyJwIiwzOTUsInM0Il0sWyJwIiwyMDUsInM1Il0sWyJwIiwyNywiczYiXSxbInAiLDcyMiwiczciXSxbInAiLDkzMSwiczgiXSxbInAiLDE2LCJzOSJdLFsicCIsNzY1LCJzMTAiXSxbInAiLDQzMCwiYjAiXSxbInAiLDkyLCJiMSJdLFsicCIsNjkxLCJiMiJdLFsicCIsNjU1LCJiMyJdLFsicCIsMTcsImI0Il1dXQ";
 
 const ratings = () => screen.queryAllByText(/, rating \d+$/).map((el) => el.textContent);
 
@@ -33,19 +33,19 @@ describe("RoadStrip", () => {
       "601",
       "749",
       "859",
-      "994",
+      "999",
     ]);
     const heights = screen
       .getAllByRole("listitem")
       .map((li) => Number(li.style.getPropertyValue("--h")).toFixed(3));
     expect(heights).toEqual([
-      "0.269",
-      "0.304",
-      "0.348",
-      "0.492",
-      "0.605",
-      "0.754",
-      "0.864",
+      "0.267",
+      "0.302",
+      "0.346",
+      "0.489",
+      "0.602",
+      "0.750",
+      "0.860",
       "1.000",
     ]);
   });
@@ -106,6 +106,6 @@ describe("RoadStrip", () => {
     const shown = ratings().map((line) => line!.split(", ").slice(1).join(", "));
     expect(shown).toEqual(cup.matches.map((m) => `${m.opponent.name}, rating ${m.opponent.score}`));
     expect(ratings()[4]).toBe("Round of 16, Wyndon FC, rating 600");
-    expect(ratings()[7]).toBe("Final, Konikoni Athletic, rating 969");
+    expect(ratings()[7]).toBe("Final, Konikoni Athletic, rating 974");
   });
 });

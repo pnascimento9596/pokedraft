@@ -10,7 +10,7 @@ export const GOLDEN_1_KANTO151 = [
   "Round of 16, Viridian FC, rating 601",
   "Quarter-final, Pewter United, rating 749",
   "Semi-final, Vermilion FC, rating 859",
-  "Final, Cinnabar FC, rating 994",
+  "Final, Cinnabar FC, rating 999",
 ] as const;
 
 // buildLadder(dailySeed("2026-10-10"), "cup8"), cut with a scratch script.
@@ -22,5 +22,5 @@ export const DAILY_2026_10_10_CUP8 = [
   "Round of 16, Slateport United, rating 612",
   "Quarter-final, Shalour City, rating 720",
   "Semi-final, Opelucid Rovers, rating 840",
-  "Final, Lumiose FC, rating 967",
+  "Final, Lumiose FC, rating 972",
 ] as const;

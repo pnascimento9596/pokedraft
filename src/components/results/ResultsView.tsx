@@ -304,7 +304,12 @@ export function ResultsView({
               </li>
             </ul>
           </div>
-          <FitReveal formation={formation} rating={cup.rating} />
+          <FitReveal
+            formation={formation}
+            rating={cup.rating}
+            bench={draft.lineup.bench.filter((id): id is SpeciesId => id !== null)}
+            onScout={setInspectId}
+          />
         </div>
       </ModuleCard>
 

@@ -11,7 +11,7 @@ export const contentType = "image/png";
 
 export default async function Image({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const run = loadRun(token);
+  const run = await loadRun(token);
   if (run === null) {
     return new ImageResponse(
       <div

@@ -81,7 +81,7 @@ describe("runCup", () => {
       );
       if (r.flawless) flawless++;
     }
-    expect(flawless).toBe(49);
+    expect(flawless).toBe(48);
   });
 
   it("replays identically from the same lineup and seed", () => {
@@ -91,35 +91,48 @@ describe("runCup", () => {
   });
 
   it("pins a cup run where the group is decided past points, GD and GF", () => {
-    // golden-177 pinned this until the dispatch 6 ladder; golden-622 ties the user and Jubilife
-    // on 4 points, 2-3. Its player of the tournament is the DM, credited a clean sheet.
-    const r = runCup(WEAK, "golden-622" as Seed, "cup8");
+    const r = runCup(WEAK, "golden-24" as Seed, "cup8");
     expect([r.rating.score, r.wins, r.draws, r.losses, r.finish, r.flawless]).toEqual([
       220,
       1,
-      1,
+      0,
       2,
-      "R32",
+      "group",
       false,
     ]);
     expect(r.group.map((g) => [g.team, g.points, g.goalsFor, g.goalsAgainst])).toEqual([
-      ["vermilion-athletic", 6, 4, 1],
-      ["user", 4, 2, 3],
-      ["jubilife-fc", 4, 2, 3],
-      ["slateport-united", 3, 2, 3],
+      ["levincia-city", 6, 4, 1],
+      ["olivine-rovers", 6, 4, 3],
+      ["ecruteak-town", 3, 2, 4],
+      ["user", 3, 2, 4],
     ]);
     expect(r.awards).toEqual({
-      goldenBoot: { species: 43, goals: 1, assists: 0, appearances: 1 },
-      topAssister: { species: 27, goals: 0, assists: 1, appearances: 4 },
-      playerOfTournament: { species: 19, goals: 1, assists: 0, appearances: 4 },
-      potContribution: {
-        species: 19,
-        goals: 1,
+      goldenBoot: {
+        species: 27,
+        goals: 2,
         assists: 0,
-        cleanSheets: 1,
-        minutes: 360,
-        points: { goals: 3, assists: 0, cleanSheets: 1, minutes: 2 },
-        total: 6,
+        appearances: 3,
+      },
+      topAssister: null,
+      playerOfTournament: {
+        species: 27,
+        goals: 2,
+        assists: 0,
+        appearances: 3,
+      },
+      potContribution: {
+        species: 27,
+        goals: 2,
+        assists: 0,
+        cleanSheets: 0,
+        minutes: 270,
+        points: {
+          goals: 6,
+          assists: 0,
+          cleanSheets: 0,
+          minutes: 1.5,
+        },
+        total: 7.5,
       },
     });
   });
@@ -128,10 +141,10 @@ describe("runCup", () => {
     const r = runCup(P75, "golden-4" as Seed, "cup8");
     expect([r.wins, r.draws, r.losses, r.finish]).toEqual([5, 0, 1, "QF"]);
     const absences = r.matches.flatMap((m) => (m.status === "played" ? m.absences : []));
-    expect(absences).toEqual([{ slot: "4-3-3.LW", out: 25, in: 4 }]);
+    expect(absences).toEqual([{ slot: "4-3-3.LCM", out: 59, in: 4 }]);
     const appearances = Object.fromEntries(r.players.map((p) => [p.species, p.appearances]));
-    expect([appearances[25], appearances[4], appearances[1]]).toEqual([5, 1, 0]);
-    expect(r.awards.goldenBoot).toEqual({ species: 38, goals: 5, assists: 2, appearances: 6 });
+    expect([appearances[59], appearances[4], appearances[1]]).toEqual([5, 1, 0]);
+    expect(r.awards.goldenBoot).toEqual({ species: 38, goals: 6, assists: 1, appearances: 6 });
   });
 });
 
@@ -146,9 +159,14 @@ describe("buildLadder", () => {
       ["viridian-fc", 601],
       ["pewter-united", 749],
       ["vermilion-fc", 859],
-      ["cinnabar-fc", 994],
+      ["cinnabar-fc", 999],
     ]);
-    expect(ladder.F.lines).toEqual({ GK: 103.4, DEF: 103.4, MID: 96.4, ATT: 99.4 });
+    expect(ladder.F.lines).toEqual({
+      GK: 100.9,
+      DEF: 104.99807355516639,
+      MID: 97.80893169877409,
+      ATT: 100.89299474605956,
+    });
   });
 });
 
@@ -161,7 +179,7 @@ describe("exact ladder (catches the UI showing a nominal ladder or a nameless un
     const r = runCup(WEAK, "golden-177" as Seed, "cup8");
     const ladder = buildLadder("golden-177", "cup8");
     const unplayed = r.matches.filter((m) => m.status === "notPlayed");
-    expect(unplayed.map((m) => m.round)).toEqual(["R32", "R16", "QF", "SF", "F"]);
+    expect(unplayed.map((m) => m.round)).toEqual(["R16", "QF", "SF", "F"]);
     for (const m of unplayed) expect(m.opponent).toEqual(ladder[m.round]);
   });
 });

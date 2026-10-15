@@ -14,7 +14,7 @@ describe("the pinned share link", () => {
   it("hashes to the golden digest of the engine tests", () => {
     expect(sha256(goldenCup8Token())).toBe(GOLDEN_CUP8_TOKEN_SHA256);
     expect(GOLDEN_CUP8_TOKEN_SHA256).toBe(
-      "8b62814e23eb70225707d31c2dfcb6118ce067e537d65652376487c5d6f24d54",
+      "4061400329787171d0fdaa5f266477efe57c0d106a458c72f1605b0fb05baeb8",
     );
   });
 
@@ -22,11 +22,16 @@ describe("the pinned share link", () => {
     expect(describeRun(goldenCup8Token())).toEqual({ score: 593, record: "3-0-2", finish: "R16" });
   });
 
-  it("is the token stored in fixtures.json", () => {
+  it("is the engine-3 share link still stored in fixtures.json, with the same record", () => {
     const fixtures = JSON.parse(readFileSync(new URL("./fixtures.json", import.meta.url), "utf8"));
-    expect(fixtures.shareRun.token).toBe(goldenCup8Token());
-    expect(fixtures.shareRun.tokenSha256).toBe(GOLDEN_CUP8_TOKEN_SHA256);
+    // The fixture is the deployed pd3 link; it replays through the retained v3 bundle.
+    expect(fixtures.shareRun.token).toMatch(/^pd3\./);
+    expect(fixtures.shareRun.tokenSha256).toBe(
+      "8b62814e23eb70225707d31c2dfcb6118ce067e537d65652376487c5d6f24d54",
+    );
     expect(fixtures.shareRun.expected).toEqual({ score: 593, record: "3-0-2", finish: "R16" });
+    // The same draft, cut by the current engine, replays to the identical record.
+    expect(describeRun(goldenCup8Token())).toEqual(fixtures.shareRun.expected);
   });
 });
 
