@@ -237,9 +237,11 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
               <button
                 type="button"
                 className="btn btn--ghost btn--sm"
+                aria-label="Clear slot"
                 onClick={() => leave(onClear)}
               >
-                Clear slot
+                <span className={s.wideOnly}>Clear slot</span>
+                <span className={s.narrowOnly}>Clear</span>
               </button>
             ) : null}
             <button
