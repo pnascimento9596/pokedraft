@@ -297,6 +297,7 @@ export function Builder({
           <SquadFeedback
             lineup={lineup}
             speciesOf={desk.engine.speciesById}
+            edges={teamRating?.edges ?? partialRating?.edges ?? []}
             lines={showRatings ? desk.engine.ratePartialLines(lineup) : undefined}
             onScout={setInspectId}
           />

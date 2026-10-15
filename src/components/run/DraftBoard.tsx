@@ -688,6 +688,7 @@ function ActiveDraftBoard({
         <SquadFeedback
           lineup={state.lineup}
           speciesOf={speciesById}
+          edges={partialRating.edges}
           lines={showRatings ? ratePartialLines(state.lineup) : undefined}
           onScout={setInspectId}
         />

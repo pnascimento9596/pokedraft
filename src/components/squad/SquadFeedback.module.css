@@ -29,3 +29,33 @@
   white-space: normal;
   text-align: left;
 }
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.filters button {
+  min-height: 44px;
+  white-space: normal;
+}
+.filters button[aria-pressed="true"] {
+  background: var(--bg-raised);
+  border-color: var(--text-muted);
+}
+.links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+}
+.links li {
+  display: grid;
+  gap: 4px;
+  padding-block: 8px;
+  overflow-wrap: anywhere;
+}
+.reasons {
+  color: var(--text-muted);
+  font-size: 12px;
+}

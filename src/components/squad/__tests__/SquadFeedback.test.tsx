@@ -10,7 +10,19 @@ import { emptyLineup } from "@/ui/lineup";
 const slots = FORMATIONS["4-3-3"].slots;
 const lineup: Lineup = {
   ...emptyLineup("4-3-3"),
-  starters: [1, 2, 4, null, null, null, null, null, null, null, null] as Lineup["starters"],
+  starters: [
+    1 as SpeciesId,
+    2 as SpeciesId,
+    4 as SpeciesId,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+  ],
 };
 const edges: readonly SynergyEdge[] = [
   { a: slots[0].id, b: slots[1].id, reasons: ["sharedType", "evoLine", "sameGen"], value: 0.875 },
@@ -18,7 +30,14 @@ const edges: readonly SynergyEdge[] = [
 ];
 
 function mount(current = lineup, currentEdges = edges) {
-  return render(<SquadFeedback lineup={current} edges={currentEdges} speciesOf={speciesById} onScout={() => {}} />);
+  return render(
+    <SquadFeedback
+      lineup={current}
+      edges={currentEdges}
+      speciesOf={speciesById}
+      onScout={() => {}}
+    />,
+  );
 }
 
 afterEach(cleanup);
@@ -30,15 +49,23 @@ describe("squad chemistry inspector", () => {
     expect(summary.closest("details")?.open).toBe(false);
     fireEvent.click(summary);
     const inspector = summary.closest("details")!;
-    expect(within(inspector).getAllByRole("listitem").map((row) => row.textContent)).toEqual([
+    expect(
+      within(inspector)
+        .getAllByRole("listitem")
+        .map((row) => row.textContent),
+    ).toEqual([
       "Bulbasaur (GK) + Ivysaur (LB)Shared Type · Evo Line · Same Region",
       "Ivysaur (LB) + Charmander (LCB)Type Cover",
     ]);
     fireEvent.click(within(inspector).getByRole("button", { name: "Evo Line" }));
     expect(within(inspector).getAllByRole("listitem")).toHaveLength(1);
-    expect(within(inspector).getByRole("button", { name: "Evo Line" }).getAttribute("aria-pressed")).toBe("true");
+    expect(
+      within(inspector).getByRole("button", { name: "Evo Line" }).getAttribute("aria-pressed"),
+    ).toBe("true");
     fireEvent.click(within(inspector).getByRole("button", { name: "Type Cover" }));
-    expect(within(inspector).getAllByRole("listitem")[0]?.textContent).toBe("Ivysaur (LB) + Charmander (LCB)Type Cover");
+    expect(within(inspector).getAllByRole("listitem")[0]?.textContent).toBe(
+      "Ivysaur (LB) + Charmander (LCB)Type Cover",
+    );
     fireEvent.click(within(inspector).getByRole("button", { name: "All links" }));
     expect(within(inspector).getAllByRole("listitem")).toHaveLength(2);
     expect(inspector.textContent).not.toContain("0.875");
@@ -47,20 +74,63 @@ describe("squad chemistry inspector", () => {
 
   it("honestly reports no occupied adjacent links and links with no bonus reasons", () => {
     const { rerender } = mount(emptyLineup("4-3-3"), []);
-    expect(screen.getByText("No adjacent starters yet. Place players in connected positions to inspect their links.").textContent).toContain("No adjacent starters yet.");
-    rerender(<SquadFeedback lineup={lineup} edges={[{ ...edges[0]!, reasons: [], value: 0 }]} speciesOf={speciesById} onScout={() => {}} />);
+    expect(
+      screen.getByText(
+        "No adjacent starters yet. Place players in connected positions to inspect their links.",
+      ).textContent,
+    ).toContain("No adjacent starters yet.");
+    rerender(
+      <SquadFeedback
+        lineup={lineup}
+        edges={[{ ...edges[0]!, reasons: [], value: 0 }]}
+        speciesOf={speciesById}
+        onScout={() => {}}
+      />,
+    );
     expect(screen.getByText("No chemistry bonus").textContent).toBe("No chemistry bonus");
-    expect(screen.getByText("Bulbasaur (GK) + Ivysaur (LB)").textContent).toBe("Bulbasaur (GK) + Ivysaur (LB)");
+    expect(screen.getByText("Bulbasaur (GK) + Ivysaur (LB)").textContent).toBe(
+      "Bulbasaur (GK) + Ivysaur (LB)",
+    );
   });
 
   it("replaces player names after the lineup changes and keeps stale filters honest", () => {
     const { rerender } = mount();
     fireEvent.click(screen.getByRole("button", { name: "Evo Line", hidden: true }));
-    const next: Lineup = { ...lineup, starters: [7 as SpeciesId, ...lineup.starters.slice(1)] as Lineup["starters"] };
-    rerender(<SquadFeedback lineup={next} edges={[edges[1]!]} speciesOf={speciesById} onScout={() => {}} />);
-    expect(screen.getByText("No current links match this reason.").textContent).toBe("No current links match this reason.");
+    const next: Lineup = {
+      ...lineup,
+      starters: [
+        7 as SpeciesId,
+        2 as SpeciesId,
+        4 as SpeciesId,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ],
+    };
+    rerender(
+      <SquadFeedback
+        lineup={next}
+        edges={[edges[1]!]}
+        speciesOf={speciesById}
+        onScout={() => {}}
+      />,
+    );
+    expect(screen.getByText("No current links match this reason.").textContent).toBe(
+      "No current links match this reason.",
+    );
     fireEvent.click(screen.getByRole("button", { name: "All links", hidden: true }));
     expect(screen.getByText("Ivysaur (LB) + Charmander (LCB)").textContent).toContain("Charmander");
     expect(screen.queryByText("Bulbasaur (GK) + Ivysaur (LB)")).toBeNull();
+    rerender(
+      <SquadFeedback lineup={next} edges={edges} speciesOf={speciesById} onScout={() => {}} />,
+    );
+    expect(screen.getByText("Squirtle (GK) + Ivysaur (LB)").textContent).toBe(
+      "Squirtle (GK) + Ivysaur (LB)",
+    );
   });
 });
