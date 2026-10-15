@@ -39,7 +39,7 @@ The final review packet must replace or supplement these results after rebasing 
 Migration 0003 creates and backfills `rate_limit_buckets`. The old application writes only event history. The new application writes buckets and events. Prevent old and new writers from serving requests concurrently during cutover.
 
 1. Record the exact current production deployment and the reviewed candidate SHA. Confirm the selected connection host and database branch without printing credentials.
-2. Pause external POST admission to both `/api/leaderboard` and the gate unlock endpoint `/api/unlock`. Wait for in-flight requests to finish. Keep reads available if the hosting control supports it.
+2. Pause external POST admission to both `/api/leaderboard` and the gate unlock endpoint `/gate/unlock`. Wait for in-flight requests to finish. Keep reads available if the hosting control supports it.
 3. Apply `pnpm db:migrate` against the intended production branch through the approved environment. Verify migration 0003 appears in `drizzle.__drizzle_migrations` and that the derived table exists.
 4. Promote the exact reviewed application deployment while POST admission remains paused. Confirm cache-busted `/api/health` returns that deployment SHA. Confirm every application instance serving admission uses the new code.
 5. Run a controlled smoke request and confirm valid admission, duplicate retry behavior, and preserved event history. Record and remove any test leaderboard rows through the existing deletion command with exact identifiers. Do not delete rate-limit evidence.
