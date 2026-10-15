@@ -2,7 +2,7 @@
 
 October 15, 2026. This is the second dispatch in the approved handoff roadmap.
 
-The candidate is rebased onto PR [#51](https://github.com/pnascimento9596/pokedraft/pull/51), merged at 18:07:36 UTC as `6218750ea2c9896e469b1496d5d20691b4b78d6f` from reviewed head `4b7439c`. Its hosted gates passed with 1,003 unit tests and 732 browser tests plus 55 skips. The landing owner is verifying production health separately.
+The candidate is rebased onto PR [#51](https://github.com/pnascimento9596/pokedraft/pull/51), merged at 18:07:36 UTC as `6218750ea2c9896e469b1496d5d20691b4b78d6f` from reviewed head `4b7439ca2cff41aa6211df9cd7a7a2fb565673d3`. Its hosted gates passed with 1,003 unit tests and 732 browser tests plus 55 skips. The landing owner is verifying production health separately.
 
 ## Scope
 
