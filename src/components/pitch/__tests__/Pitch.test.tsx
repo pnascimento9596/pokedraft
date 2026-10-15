@@ -68,6 +68,13 @@ describe("Pitch", () => {
     expect(card.querySelector('[id$="-slot"]')?.textContent).toBe("LCB");
   });
 
+  it("includes visible filled tactical labels in the accessible name on scoutable results", () => {
+    render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSlotTap={() => {}} />);
+    const card = screen.getByTestId("slot-s2");
+    const label = card.querySelector('[id$="-slot"]')!;
+    expect(card.getAttribute("aria-labelledby")?.split(" ")).toContain(label.id);
+  });
+
   it("labels every starter and bench slot so taps reach the right SlotRef", () => {
     const onSlotTap = vi.fn();
     render(
