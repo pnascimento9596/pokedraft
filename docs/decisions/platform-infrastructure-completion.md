@@ -49,4 +49,16 @@ If the deployment fails, keep POST admission paused. Restore the recorded previo
 
 If the platform cannot pause admissions or exclude old instances, hold production promotion until that cutover control exists. A schema migration followed by a rolling application replacement alone does not prove correct concurrent admission.
 
-Production migration, preview database verification, production smoke, independent review, CI, merge, and production health verification are NOT RUN by this acceptance lane. The coordinator owns those steps and their receipts.
+Production migration, preview application HTTP verification, production smoke, independent review, CI, merge, and production health verification are NOT RUN by this acceptance lane. The coordinator owns those steps and their receipts.
+
+## Preview database receipt
+
+Source head `aa6715b` was verified on the existing Neon preview branch on October 15. The project is `summer-lab-87419384`, branch `br-rough-bird-b79ahwsx`, branch name `preview`, database `neondb`. Live metadata confirmed that the branch is neither primary nor default. The direct endpoint is `ep-small-breeze-b7nhwrer.c-13.us-east-1.aws.neon.tech`. Credentials were captured inside a subprocess and were never printed or written into the repository.
+
+The existing `pnpm db:migrate` runner completed twice against that endpoint. The second run succeeded without adding another migration row. Readback found four migration rows, latest `created_at` value `1792066817368`, and `public.rate_limit_buckets`. Leaderboard entries, events, and buckets each contained zero rows before the admission proof.
+
+The preview proof compiled the current `admissionCtes` through Drizzle's `PgDialect` and executed six admissions inside one PostgreSQL transaction. The rule allowed two attempts per 1,000 milliseconds for one task-specific key. Its literal outcomes were first `true`, second `true`, immediate third `false`, inclusive cutoff at +1,000 ms `false`, expiry at +1,001 ms `true`, and separate gate scope `true`. SQL assertions confirmed four retained admission events and one active timestamp in the expired submit bucket. Two task buckets existed before rollback.
+
+The transaction ended with `ROLLBACK`. A separate connection then confirmed zero leaderboard entries, zero event rows, zero buckets, and the same four migration rows. The task-specific fixture therefore persisted no rows. No broad nickname deletion, production connection, production migration, or firewall change occurred. The temporary proof generator was removed. This proves the migrated preview database and production admission SQL. It does not replace an exact deployment's HTTP acceptance or the earlier independent concurrency proof.
+
+Commands used `neonctl branches get` and `neonctl connection-string` with explicit project and preview branch identifiers, the unchanged `pnpm db:migrate` runner twice, and PostgreSQL 16 `psql -X -A -t -v ON_ERROR_STOP=1` with the compiled statements supplied through stdin. Connection values remained in child-process environment fields. An initial readback attempt used a connection URL as `PGDATABASE`, which libpq treated as a literal database name and rejected. The verification used parsed connection fields afterward and all database assertions passed.
