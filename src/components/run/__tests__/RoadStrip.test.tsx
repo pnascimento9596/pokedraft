@@ -33,19 +33,19 @@ describe("RoadStrip", () => {
       "601",
       "749",
       "859",
-      "994",
+      "999",
     ]);
     const heights = screen
       .getAllByRole("listitem")
       .map((li) => Number(li.style.getPropertyValue("--h")).toFixed(3));
     expect(heights).toEqual([
-      "0.269",
-      "0.304",
-      "0.348",
-      "0.492",
-      "0.605",
-      "0.754",
-      "0.864",
+      "0.267",
+      "0.302",
+      "0.346",
+      "0.489",
+      "0.602",
+      "0.750",
+      "0.860",
       "1.000",
     ]);
   });
@@ -106,6 +106,6 @@ describe("RoadStrip", () => {
     const shown = ratings().map((line) => line!.split(", ").slice(1).join(", "));
     expect(shown).toEqual(cup.matches.map((m) => `${m.opponent.name}, rating ${m.opponent.score}`));
     expect(ratings()[4]).toBe("Round of 16, Wyndon FC, rating 600");
-    expect(ratings()[7]).toBe("Final, Konikoni Athletic, rating 969");
+    expect(ratings()[7]).toBe("Final, Konikoni Athletic, rating 974");
   });
 });

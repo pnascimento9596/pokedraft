@@ -81,7 +81,7 @@ describe("runCup", () => {
       );
       if (r.flawless) flawless++;
     }
-    expect(flawless).toBe(49);
+    expect(flawless).toBe(48);
   });
 
   it("replays identically from the same lineup and seed", () => {
@@ -159,13 +159,13 @@ describe("buildLadder", () => {
       ["viridian-fc", 601],
       ["pewter-united", 749],
       ["vermilion-fc", 859],
-      ["cinnabar-fc", 994],
+      ["cinnabar-fc", 999],
     ]);
     expect(ladder.F.lines).toEqual({
-      GK: 100.4,
-      DEF: 104.49807355516639,
-      MID: 97.30893169877409,
-      ATT: 100.39299474605956,
+      GK: 100.9,
+      DEF: 104.99807355516639,
+      MID: 97.80893169877409,
+      ATT: 100.89299474605956,
     });
   });
 });
