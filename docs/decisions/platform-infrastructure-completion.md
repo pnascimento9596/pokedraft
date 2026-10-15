@@ -101,3 +101,12 @@ pnpm exec tsx scripts/audit/release-submission.mts --date 2026-10-15 --nickname 
 Two runs produced byte-identical JSON. The generated token replayed with Team Score 512, record 4-0-1, and sixteen unique species. Focused ESLint and standalone TypeScript checks passed. Build the actual cutover fixture with its current New York date and an unused nickname; the example above does not authorize overwriting any existing entry. POST only the returned `payload` object. Compare the API response with `expected`, retry that same payload, and require 201 then 200 with one saved entry and one admission event. After verifying its exact identifier, remove only that task's daily nickname/date row through the existing `db:delete-entry` command. Preserve its rate-limit evidence.
 
 Build the Lever shaped this read-only generator so a reviewer can reproduce the verification input. Actual Preview and production HTTP submissions remain pending until the coordinator runs the reviewed deployment.
+
+
+## Integration of the hosted UI repairs
+
+The infrastructure branch now includes UI PR #52 repair head `40723142cd9bdea99b16bbc4ece93de407a2f2c0`. The measured infrastructure source is `47e24a107568ad2ceafaa50840975216699d2a41`. This remains a local stack, pending the UI squash and final rebase onto main.
+
+All 1,048 unit tests in 119 files passed with four workers and no simultaneous browser or build process. Lint, standalone typecheck, production build, image seam and packs, client bundle, mirrors, all three theme scripts, and migration generation passed. Generation reported no schema change. The actual emitted server payloads remain three copies totaling 2,088,694 bytes, and all five retained replay goldens passed. Command exit codes and logs are in `/tmp/pokedraft-platform-ui-repair-gates.json` and `.log`. No production migration, firewall publication, or threshold change has begun.
+
+Read-only Vercel recon again found no custom firewall rules or pending draft. Fluid compute remains enabled, Skew Protection maximum age is 43,200 seconds, the fixed threshold is null, and no rolling release is configured. These values must be rechecked immediately before cutover. No credentials were printed.
