@@ -54,8 +54,19 @@ export function opponentRefLabel(ref: OpponentPlayerRef): string {
 }
 
 export function goalLine(g: GoalEvent): string {
-  const pen = g.penalty ? " (pen)" : "";
-  if (g.side === "opp") return `${g.minute}' ${opponentRefLabel(g.scorer)}${pen}`;
+  const pen = g.penalty
+    ? " (pen)"
+    : g.kind === "header"
+      ? " (header)"
+      : g.kind === "solo"
+        ? " (solo run)"
+        : g.kind === "free-kick"
+          ? " (free kick)"
+          : "";
+  if (g.side === "opp") {
+    const assist = g.assist === null ? "" : `, assist ${opponentRefLabel(g.assist)}`;
+    return `${g.minute}' ${opponentRefLabel(g.scorer)}${pen}${assist}`;
+  }
   const assist = g.assist === null ? "" : `, assist ${speciesById(g.assist).name}`;
   return `${g.minute}' ${speciesById(g.scorer).name}${pen}${assist}`;
 }

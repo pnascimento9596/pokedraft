@@ -12,6 +12,30 @@
   overflow-wrap: anywhere;
 }
 
+.standings summary {
+  min-height: 44px;
+  padding-block: 12px;
+  cursor: pointer;
+}
+.standings p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.standings table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.standings th,
+.standings td {
+  padding: 6px;
+  text-align: right;
+}
+.standings th:first-child {
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
 .header {
   display: flex;
   align-items: center;
