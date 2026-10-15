@@ -23,7 +23,9 @@ This maps the five approved waves and the starting handoff's remaining-work matr
 
 ## Boundaries and remaining audit queue
 
-The handoff mentions an optional two-leg exhibition format. The implemented exhibition contract is one 90-minute unranked match. Opponents use a deterministic type theme and explicit 4-3-3. Real city names do not establish canonical Pokémon regions. Named save events are not claimed. These are possible extensions rather than evidence of implemented behavior.
+The handoff explicitly labels the two-leg exhibition format optional. The implemented exhibition contract is one 90-minute unranked match. Club-specific region identity and named opponent save/highlight events appear separately in the handoff's unfinished approved-work matrix without that optional marker. They remain required follow-up work. No user cancellation has been established. The broad keeper/event wave is implemented, but that does not establish these narrower items.
+
+Opponents use a deterministic type theme and explicit 4-3-3. The club names refer to Pokémon cities. A verified presentation registry can supply club regions without changing shipped v4 simulation. Current matches record goals and penalty nonconversions, not named saves; a failed penalty cannot be relabeled a save. Adding recorded save events requires freezing the shipped v4 contract before advancing the current engine. The remaining follow-up must preserve all existing v4 replay output and receive its own review and release gates.
 
 The older scouting queue remains open. Fresh source inspection confirms `review-rules.test.ts` still has the positive-KIC predicate without a synthetic positive control and no lowest-blend GK rule. Historical Jigglypuff/Wigglytuff findings therefore cannot be declared fixed. The queue requires a separately measured Red scouting lane before changing data. It predates this platform roadmap and is retained explicitly, not silently removed. Current and frozen scouting bytes were preserved throughout these three dispatches.
 
