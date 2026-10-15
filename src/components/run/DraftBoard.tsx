@@ -15,6 +15,7 @@ import {
   type SpeciesId,
 } from "@/engine";
 import { announce } from "@/components/Announcer";
+import { SquadFeedback } from "@/components/squad/SquadFeedback";
 import { Pitch } from "@/components/pitch/Pitch";
 import { RatingNote } from "@/components/pitch/RatingNote";
 import { PlayerImage } from "@/components/PlayerImage";
@@ -22,7 +23,7 @@ import { TypeChip } from "@/components/TypeChip";
 import { RollReveal } from "@/components/wheel/RollReveal";
 import { SoundToggle } from "@/components/wheel/SoundToggle";
 import { announce as stageLine, dexLabel, stagesFor } from "@/components/wheel/reel";
-import { playSignCard, unlockAudio } from "@/components/wheel/sound";
+import { playSignCard, playSpecialReveal, unlockAudio } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { REGION_LABEL } from "@/ui/labels";
 import { filledCount, refFromKey, sameRef, slotLabel, valueAt } from "@/ui/lineup";
@@ -34,7 +35,7 @@ import { candidatesFor, withHint, type Run } from "./runState";
 import { typeFrame } from "@/design/stadium";
 import { fullLineup } from "@/components/builder/model";
 import { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
-import { previewCandidateEdges, ratePartialLineup } from "@/ui/partial-rating";
+import { previewCandidateEdges, ratePartialLineup, ratePartialLines } from "@/ui/partial-rating";
 import { getSlotSuitability } from "@/ui/suitability";
 import s from "./DraftBoard.module.css";
 
@@ -146,6 +147,7 @@ function ActiveDraftBoard({
   const focusBefore = useRef<Element | null>(null);
   const runBefore = useRef(run);
   const spokenRoll = useRef(-1);
+  const specialRevealRoll = useRef(-1);
   const wheelRef = useRef<HTMLDivElement>(null);
   const scrolledRoll = useRef<number | null>(null);
 
@@ -213,6 +215,11 @@ function ActiveDraftBoard({
   const choosing = phase.kind === "choosing" ? phase : null;
   const revealed = choosing !== null && (reduced || revealedId === rollId);
   const candidates = useMemo(() => (revealed ? candidatesFor(state) : []), [revealed, state]);
+  useEffect(() => {
+    if (!revealed || specialRevealRoll.current === rollId) return;
+    specialRevealRoll.current = rollId;
+    if (candidates.some((id) => speciesById(id).special)) playSpecialReveal();
+  }, [revealed, rollId, candidates]);
   const single = candidates.length === 1 ? candidates[0]! : null;
   const selected =
     selection !== null && selection.rollId === rollId && candidates.includes(selection.species)
@@ -453,14 +460,17 @@ function ActiveDraftBoard({
         <div className={s.drawerBackdrop} aria-hidden="true" />
       ) : null}
       <div className={s.hub}>
-        <button
-          type="button"
-          className="btn btn--ghost"
-          aria-expanded={hubOpen}
-          onClick={() => setHubOpen(!hubOpen)}
-        >
-          Challenge Hub · {title}
-        </button>
+        <div className={s.hubControls}>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            aria-expanded={hubOpen}
+            onClick={() => setHubOpen(!hubOpen)}
+          >
+            Challenge Hub · {title}
+          </button>
+          <SoundToggle />
+        </div>
         <p>
           Draft: {filledCount(state.lineup)}/16 ·{" "}
           {liveSynergy === null
@@ -476,7 +486,6 @@ function ActiveDraftBoard({
               <NavIcon family={navFamily} />
               {title}
             </span>
-            <SoundToggle />
           </div>
           <h1 ref={headingRef} className={s.round} data-testid="round-header" tabIndex={-1}>
             {phase.kind === "complete" ? "Draft complete" : `Round ${round} of ${DRAFT_ROUNDS}`}
@@ -676,6 +685,12 @@ function ActiveDraftBoard({
           dropTarget={dropSlot}
           fit
         />
+        <SquadFeedback
+          lineup={state.lineup}
+          speciesOf={speciesById}
+          lines={showRatings ? ratePartialLines(state.lineup) : undefined}
+          onScout={setInspectId}
+        />
       </section>
 
       {inspectId !== null ? (
@@ -750,6 +765,7 @@ function Candidates({
                   <PlayerImage dexId={id} size={isCompact ? 72 : 88} alt={sp.name} />
                 </div>
                 <span className={s.candName}>{sp.name}</span>
+                {sp.special ? <span className={s.candSpecial}>Legendary / Mythical</span> : null}
                 <span className={`num ${s.candDex}`}>{dexLabel(id)}</span>
                 <span className={s.candTypes}>
                   {sp.types.map((t) => (

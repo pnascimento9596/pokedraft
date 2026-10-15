@@ -228,7 +228,7 @@
     grid-template-areas: "hub pitch" "side pitch" "road pitch";
     align-items: start;
   }
-  .hub button {
+  .hubControls > button:first-child {
     display: none;
   }
   .hub::before {
@@ -446,4 +446,17 @@
   .card {
     transition: none;
   }
+}
+
+.hubControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.candSpecial {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--stadium-ink);
 }

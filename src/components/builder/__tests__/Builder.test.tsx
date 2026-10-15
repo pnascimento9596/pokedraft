@@ -662,15 +662,15 @@ describe("builder Download image feedback (SA-20, SB-05)", () => {
   });
 });
 
-
 describe("placed squad scouting and live lines", () => {
   it("offers scouting for placed starters and bench with blind numerical gating", async () => {
     openWithBenchToo();
-    await screen.findByRole("button", { name: "Scout SUB 1 Pikachu" }, { timeout: 10_000 });
-    fireEvent.click(screen.getByRole("button", { name: "Scout SUB 1 Pikachu" }));
+    await screen.findByText("Scout squad (3)", {}, { timeout: 10_000 });
+    fireEvent.click(screen.getByText("Scout squad (3)"));
+    fireEvent.click(screen.getByRole("button", { name: "Scout Pikachu at SUB 1" }));
     const dossier = screen.getByRole("dialog");
     expect(within(dossier).getByRole("heading", { name: "Pikachu" }).textContent).toBe("Pikachu");
-    expect(within(dossier).queryByTestId("scouting-radar")).toBeNull();
+    expect(within(dossier).queryByRole("region", { name: "Attribute radar" })).toBeNull();
     expect(screen.queryByTestId("live-lines")).toBeNull();
   });
 

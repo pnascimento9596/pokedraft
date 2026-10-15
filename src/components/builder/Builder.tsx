@@ -12,6 +12,7 @@ import type {
   Species,
   SpeciesId,
 } from "@/engine/types";
+import { SquadFeedback } from "@/components/squad/SquadFeedback";
 import { Pitch } from "@/components/pitch/Pitch";
 import { RatingNote } from "@/components/pitch/RatingNote";
 import { announce } from "@/components/Announcer";
@@ -85,6 +86,7 @@ export function Builder({
   onReset,
   onFriendly,
 }: BuilderProps) {
+  const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
   const [picking, setPicking] = useState<SlotRef | null>(null);
   const [cascade, setCascade] = useState<Cascade | null>(null);
   const [elapsed, setElapsed] = useState(0);
@@ -291,6 +293,15 @@ export function Builder({
           </div>
         </div>
 
+        {desk.kind === "live" && !animating ? (
+          <SquadFeedback
+            lineup={lineup}
+            speciesOf={desk.engine.speciesById}
+            lines={showRatings ? desk.engine.ratePartialLines(lineup) : undefined}
+            onScout={setInspectId}
+          />
+        ) : null}
+
         <div className={s.tools} role="toolbar" aria-label="Builder actions">
           <button
             type="button"
@@ -359,6 +370,13 @@ export function Builder({
         </div>
       </ModuleCard>
 
+      {inspectId !== null && desk.kind === "live" ? (
+        <desk.engine.ScoutingDossier
+          speciesId={inspectId}
+          showRatings={showRatings}
+          onClose={() => setInspectId(null)}
+        />
+      ) : null}
       {picking !== null && desk.kind === "live" ? (
         <desk.engine.Picker
           key={`${picking.kind}${picking.index}`}

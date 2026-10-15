@@ -2,6 +2,7 @@ import { ENGINE_COEFFICIENTS } from "@/engine/coefficients";
 import { FORMATIONS } from "@/engine/formations";
 import { speciesById } from "@/engine/species";
 import { covers } from "@/engine/type-chart";
+import { LINES, type Line } from "@/engine/types";
 import type {
   Lineup,
   SlotId,
@@ -113,4 +114,32 @@ export function previewCandidateEdges(
     }
   }
   return previews;
+}
+
+export interface PartialLineRating {
+  readonly line: Line;
+  readonly filled: number;
+  readonly total: number;
+  readonly strength: number | null;
+}
+
+export function ratePartialLines(lineup: Lineup): readonly PartialLineRating[] {
+  const slots = FORMATIONS[lineup.formation].slots;
+  return LINES.map((line) => {
+    const inLine = slots.flatMap((slot, index) =>
+      slot.line === line ? [{ slot, id: lineup.starters[index] }] : [],
+    );
+    const qualities = inLine.flatMap(({ slot, id }) =>
+      id == null ? [] : [speciesById(id).quality[slot.role]],
+    );
+    return {
+      line,
+      filled: qualities.length,
+      total: inLine.length,
+      strength:
+        qualities.length === 0
+          ? null
+          : (100 * qualities.reduce((sum, quality) => sum + quality, 0)) / qualities.length,
+    };
+  });
 }

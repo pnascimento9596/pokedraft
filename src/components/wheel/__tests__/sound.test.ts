@@ -1,7 +1,11 @@
 // @vitest-environment jsdom
 import { afterEach, expect, it, vi } from "vitest";
 
- afterEach(() => { vi.unstubAllGlobals(); localStorage.clear(); vi.resetModules(); });
+afterEach(() => {
+  vi.unstubAllGlobals();
+  localStorage.clear();
+  vi.resetModules();
+});
 
 it("special reveal plays a distinct rising three-note cue only after sound is enabled", async () => {
   const frequencies: number[] = [];
@@ -10,7 +14,13 @@ it("special reveal plays a distinct rising three-note cue only after sound is en
     currentTime = 0;
     destination = {};
     createOscillator() {
-      return { type: "", frequency: { setValueAtTime: (value: number) => frequencies.push(value) }, connect: () => ({ connect: () => {} }), start: () => {}, stop: () => {} };
+      return {
+        type: "",
+        frequency: { setValueAtTime: (value: number) => frequencies.push(value) },
+        connect: () => ({ connect: () => {} }),
+        start: () => {},
+        stop: () => {},
+      };
     }
     createGain() {
       return { gain: { setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {} } };

@@ -438,3 +438,22 @@
     transition: none;
   }
 }
+
+.filledSlot {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1px 3px;
+  border-radius: 3px;
+  background: var(--stadium-card);
+  color: var(--stadium-ink);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 11px;
+  white-space: nowrap;
+}
+.bench .filledSlot {
+  position: static;
+  transform: none;
+}

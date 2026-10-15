@@ -15,7 +15,7 @@ import { ALL_REFS, valueAt } from "@/ui/lineup";
 // import() on first use, so its first load draws the empty pitch without the data.
 export { applyAction, createDraft, eligibleSpecies, rateTeam, replay, speciesById } from "@/engine";
 export { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
-export { previewCandidateEdges, ratePartialLineup } from "@/ui/partial-rating";
+export { previewCandidateEdges, ratePartialLineup, ratePartialLines } from "@/ui/partial-rating";
 export { swapMessage } from "@/ui/swap-message";
 export { ResultsView } from "@/components/results/ResultsView";
 export { Picker } from "./Picker";
@@ -46,3 +46,5 @@ export function randomDraft(settings: DraftSettings, seed: DraftState["seed"], r
   }
   return state;
 }
+
+export { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
