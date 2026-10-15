@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Lineup, Seed, SpeciesId } from "@/engine";
+import type { Lineup, Seed } from "@/engine";
 import { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
 import { ExhibitionMatchModal } from "../ExhibitionMatchModal";
 

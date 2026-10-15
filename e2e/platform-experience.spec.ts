@@ -53,6 +53,141 @@ for (const width of [1280, 320]) {
       });
     });
 
+    test("picker preserves list space and compares an actual bench swap in the dossier", async ({
+      page,
+    }) => {
+      await page.addInitScript(() =>
+        localStorage.setItem("pokedraft:panel", JSON.stringify({ showRatings: true })),
+      );
+      await page.goto(`/?b=${squad()}`);
+      await expect(page.getByTestId("live-lines")).toContainText("GK 1/1");
+      await page.getByTestId("slot-s9").click();
+      const picker = page.getByRole("dialog");
+      await expect(picker).toBeVisible();
+      const ratio = await picker.evaluate((el) => {
+        const list = el.querySelector('ul[aria-label="Species"]')!;
+        return list.getBoundingClientRect().height / el.getBoundingClientRect().height;
+      });
+      if (width === 320) expect(ratio).toBeGreaterThan(0.5);
+      await picker.getByRole("searchbox").fill("Butterfree");
+      await expect(page.getByTestId("pick-12")).toContainText("Swap with SUB 1");
+      await page.getByRole("button", { name: "Scout Butterfree", exact: true }).click();
+      const dossier = page.getByRole("dialog").last();
+      await expect(dossier.getByRole("region", { name: "Slot comparison" })).toContainText(
+        "ROLE RATING",
+      );
+      await expect(dossier.getByRole("region", { name: "Slot comparison" })).toContainText(
+        "actual placement or swap",
+      );
+      await expect(dossier.getByRole("region", { name: "Role fit mini pitch" })).toBeVisible();
+      await noOverflow(page);
+      await page.screenshot({
+        path: `output/playwright/experience-swap-${width}.png`,
+        fullPage: true,
+      });
+    });
+
+    test("exhibition replays genuine recorded goals without writing ranked history", async ({
+      page,
+    }) => {
+      await page.addInitScript(
+        (token) => localStorage.setItem("pokedraft.builder", JSON.stringify(token)),
+        squad(),
+      );
+      await page.goto(`/r/${GOLDEN_CUP8_V3}`);
+      const history = await page.evaluate(() => localStorage.getItem("pokedraft:history:v1"));
+      await page.getByTestId("play-exhibition").click();
+      const modal = page.getByTestId("exhibition-modal");
+      const final = await modal.getByTestId("exhibition-score").textContent();
+      const goals = await modal.getByRole("list", { name: "Exhibition goals" }).textContent();
+      await modal.getByRole("button", { name: "Replay highlights" }).click();
+      await expect(modal.getByTestId("exhibition-score")).toHaveText("0 - 0");
+      await modal.getByRole("button", { name: "Show full time" }).click();
+      await expect(modal.getByTestId("exhibition-score")).toHaveText(final!);
+      await expect(modal.getByRole("list", { name: "Exhibition goals" })).toHaveText(goals!);
+      expect(await page.evaluate(() => localStorage.getItem("pokedraft:history:v1"))).toBe(history);
+      await noOverflow(page);
+      await page.screenshot({
+        path: `output/playwright/experience-exhibition-${width}.png`,
+        fullPage: true,
+      });
+    });
+
+    test("draft sound stays visible with a 44px target and blind numerical gating", async ({
+      page,
+    }) => {
+      await page.goto(
+        "/play?mode=cup8&f=4-4-2&order=squadFirst&g=123456789&style=classic3&seed=experience-sound",
+      );
+      await page.getByTestId("run-start").click();
+      await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
+      const sound = page.getByRole("button", { name: "Sound off", exact: true });
+      await expect(sound).toBeInViewport();
+      const bounds = await sound.boundingBox();
+      expect(bounds!.width).toBeGreaterThanOrEqual(44);
+      expect(bounds!.height).toBeGreaterThanOrEqual(44);
+      await sound.click();
+      await expect(page.getByRole("button", { name: "Sound on", exact: true })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
+      await expect(page.getByTestId("live-lines")).toHaveCount(0);
+      await noOverflow(page);
+    });
+
+    test("leaderboard shows source squad sprites and a seeded challenge beside honest missing previews", async ({
+      page,
+    }) => {
+      await page.route("**/api/leaderboard?**", (route) =>
+        route.fulfill({
+          json: {
+            mode: "cup8",
+            scope: "all",
+            entries: [
+              {
+                rank: 1,
+                nickname: "Known squad",
+                mode: "cup8",
+                variant: "open.squadFirst.g123456789",
+                dailyDate: null,
+                token: GOLDEN_CUP8_V3,
+                teamScore: 593,
+                wins: 3,
+                draws: 0,
+                losses: 2,
+                createdAt: "2026-10-15T00:00:00Z",
+                squadSpeciesIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1025],
+              },
+              {
+                rank: 2,
+                nickname: "Older squad",
+                mode: "cup8",
+                variant: "open.squadFirst.g123456789",
+                dailyDate: null,
+                token: "pd1.unavailable",
+                teamScore: 500,
+                wins: 2,
+                draws: 0,
+                losses: 3,
+                createdAt: "2026-10-14T00:00:00Z",
+              },
+            ],
+          },
+        }),
+      );
+      await page.goto("/leaderboard?mode=cup8&scope=all");
+      await expect(page.getByTestId("board-row")).toHaveCount(2);
+      await expect(page.getByAltText("Squad species 1025")).toBeVisible();
+      await expect(page.getByText("Squad preview unavailable.", { exact: true })).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: "Challenge this Seed", exact: true }),
+      ).toHaveAttribute(
+        "href",
+        "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=golden-cup8",
+      );
+      await noOverflow(page);
+    });
+
     test("chemistry reasons filter actual adjacent links and blind drafting hides line ratings", async ({
       page,
     }) => {

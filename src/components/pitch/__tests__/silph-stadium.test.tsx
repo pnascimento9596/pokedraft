@@ -76,7 +76,7 @@ it("filled cards keep the visible role and species contiguous in the accessible 
   );
   expect(
     screen
-      .getByRole("button", { name: "LCB Bulbasaur DF Bulbasaur Grass Poison" })
+      .getByRole("button", { name: "LCB Bulbasaur DF LCB Bulbasaur Grass Poison" })
       .getAttribute("aria-label"),
   ).toBe("LCB Bulbasaur");
 });

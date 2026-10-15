@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FORMATIONS } from "@/engine/formations";
-import { SYNERGY_REASON_LABEL } from "@/ui/partial-rating";
+import { SYNERGY_REASON_LABEL } from "@/ui/chemistry-labels";
 import type { Lineup, Species, SpeciesId, SynergyEdge, SynergyReason } from "@/engine/types";
 import type { PartialLineRating } from "@/ui/partial-rating";
 import { ALL_REFS, refKey, slotLabel, valueAt } from "@/ui/lineup";

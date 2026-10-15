@@ -3,24 +3,30 @@ import { expect, test, type Page } from "@playwright/test";
 // The species data (pokedex.json and scouting.json, about 1.3 MB raw) is only needed once a
 // draft starts or the builder is used. A script that inlines either file carries their field
 // names, so a JS response holding `"kickMoves"` (pokedex only) or `"baseline"` (scouting only)
-// is the data chunk, whatever its hashed file name.
+// contains species data, whatever its hashed file name.
 const DATA_MARKERS = ['"kickMoves"', '"baseline"'];
 
-function watchDataChunk(page: Page): { readonly requested: () => Promise<string[]> } {
-  const hits: Promise<string | null>[] = [];
+function watchDataChunk(page: Page): {
+  readonly requested: () => Promise<string[]>;
+  readonly loadedMarkers: () => Promise<string[]>;
+} {
+  const hits: Promise<{ path: string; markers: string[] } | null>[] = [];
   page.on("response", (res) => {
     if (res.request().resourceType() !== "script") return;
     hits.push(
       res
         .text()
-        .then((body) =>
-          DATA_MARKERS.some((m) => body.includes(m)) ? new URL(res.url()).pathname : null,
-        )
+        .then((body) => {
+          const markers = DATA_MARKERS.filter((marker) => body.includes(marker));
+          return markers.length === 0 ? null : { path: new URL(res.url()).pathname, markers };
+        })
         .catch(() => null),
     );
   });
   return {
-    requested: async () => (await Promise.all(hits)).filter((u): u is string => u !== null),
+    requested: async () => (await Promise.all(hits)).flatMap((hit) => (hit ? [hit.path] : [])),
+    loadedMarkers: async () =>
+      [...new Set((await Promise.all(hits)).flatMap((hit) => hit?.markers ?? []))].sort(),
   };
 }
 
@@ -58,7 +64,7 @@ test("the builder home does not download the species data during load, and the p
 
   await page.getByTestId("slot-s0").click();
   await expect(page.getByRole("dialog")).toBeVisible();
-  expect(await data.requested()).toHaveLength(1);
+  expect(await data.loadedMarkers()).toEqual(['"baseline"', '"kickMoves"']);
 });
 
 test("the challenge start panel does not download the species data during load, and Start gets it", async ({
@@ -71,7 +77,7 @@ test("the challenge start panel does not download the species data during load, 
 
   await page.getByTestId("run-start").click();
   await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
-  expect(await data.requested()).toHaveLength(1);
+  expect(await data.loadedMarkers()).toEqual(['"baseline"', '"kickMoves"']);
 });
 
 test("a broken challenge link does not download the species data during load", async ({ page }) => {
@@ -93,7 +99,7 @@ test("the daily start panel does not download the species data during load, and 
 
   await page.getByTestId("run-start").click();
   await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
-  expect(await data.requested()).toHaveLength(1);
+  expect(await data.loadedMarkers()).toEqual(['"baseline"', '"kickMoves"']);
 });
 
 // Holds every data chunk response for 3 s and reports when the first one is asked for. The idle
@@ -137,9 +143,7 @@ test("on a slow connection the first slot tap says the players are loading, then
   await page.getByTestId("slot-s0").click();
   // The builder toolbar has its own status line; the page's announcer region is a second
   // role=status since theme 7F, so scope to the toolbar.
-  const builderStatus = page
-    .getByRole("toolbar", { name: "Builder actions" })
-    .getByRole("status");
+  const builderStatus = page.getByRole("toolbar", { name: "Builder actions" }).getByRole("status");
   await expect(builderStatus).toHaveText("Loading the players");
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(builderStatus).toHaveText("");

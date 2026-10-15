@@ -293,16 +293,6 @@ export function Builder({
           </div>
         </div>
 
-        {desk.kind === "live" && !animating ? (
-          <SquadFeedback
-            lineup={lineup}
-            speciesOf={desk.engine.speciesById}
-            edges={teamRating?.edges ?? partialRating?.edges ?? []}
-            lines={showRatings ? desk.engine.ratePartialLines(lineup) : undefined}
-            onScout={setInspectId}
-          />
-        ) : null}
-
         <div className={s.tools} role="toolbar" aria-label="Builder actions">
           <button
             type="button"
@@ -357,6 +347,16 @@ export function Builder({
             <span role="alert">{card.state.kind === "failed" ? DOWNLOAD_FAILED : ""}</span>
           </p>
         </div>
+
+        {desk.kind === "live" && !animating ? (
+          <SquadFeedback
+            lineup={lineup}
+            speciesOf={desk.engine.speciesById}
+            edges={teamRating?.edges ?? partialRating?.edges ?? []}
+            lines={showRatings ? desk.engine.ratePartialLines(lineup) : undefined}
+            onScout={setInspectId}
+          />
+        ) : null}
 
         <div className={s.friendly}>
           <button

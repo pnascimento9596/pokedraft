@@ -109,6 +109,21 @@
 }
 
 @media (max-width: 480px) {
+  .headActions {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    gap: 4px;
+  }
+
+  .headActions button {
+    padding-inline: 8px;
+  }
+
+  .sortSelect select {
+    width: 122px;
+    padding-inline: 8px;
+  }
+
   .wideOnly {
     display: none;
   }

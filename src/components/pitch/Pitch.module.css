@@ -441,9 +441,8 @@
 
 .filledSlot {
   position: absolute;
-  top: -13px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 3px;
+  left: 3px;
   padding: 1px 3px;
   border-radius: 3px;
   background: var(--stadium-card);
@@ -453,7 +452,7 @@
   line-height: 11px;
   white-space: nowrap;
 }
-.bench .filledSlot {
-  position: static;
-  transform: none;
+
+.token[data-filled="true"] .cardRole {
+  visibility: hidden;
 }

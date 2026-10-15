@@ -12,12 +12,7 @@ import type {
   SynergyReason,
 } from "@/engine/types";
 
-export const SYNERGY_REASON_LABEL: Readonly<Record<SynergyReason, string>> = {
-  sharedType: "Shared Type",
-  evoLine: "Evo Line",
-  sameGen: "Same Region",
-  coverage: "Type Cover",
-};
+export { SYNERGY_REASON_LABEL } from "./chemistry-labels";
 
 export interface PartialLineupRating {
   readonly edges: readonly SynergyEdge[];

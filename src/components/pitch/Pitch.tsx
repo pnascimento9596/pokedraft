@@ -104,7 +104,7 @@ export function Pitch({
     const weak = slotId !== null && weakest.includes(slotId);
     const dragging = drag !== null && sameRef(drag.from, ref) && drag.moved;
     const draggable = onSwap !== undefined && species !== null && !disabled;
-    const suitability = species === null ? suitabilityOf?.(ref) ?? null : null;
+    const suitability = species === null ? (suitabilityOf?.(ref) ?? null) : null;
     const isDropTarget = dropKey === key || sameRef(dropTarget, ref);
     const name =
       species === null
@@ -135,7 +135,7 @@ export function Pitch({
         aria-labelledby={
           species === null
             ? `${labelId}-${key} ${labelId}-${key}-role ${labelId}-${key}-slot ${labelId}-${key}-prompt`
-            : `${labelId}-${key} ${labelId}-${key}-role${tokenNote ? ` ${labelId}-${key}-note-score` : ""} ${labelId}-${key}-name ${labelId}-${key}-types`
+            : `${labelId}-${key} ${labelId}-${key}-role ${labelId}-${key}-slot${tokenNote ? ` ${labelId}-${key}-note-score` : ""} ${labelId}-${key}-name ${labelId}-${key}-types`
         }
         aria-describedby={
           species !== null && tokenNote ? `${labelId}-${key}-note-label` : undefined
