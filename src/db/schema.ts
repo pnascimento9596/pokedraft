@@ -5,6 +5,7 @@ import {
   index,
   integer,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -79,5 +80,18 @@ export const rateLimitEvents = pgTable(
   (t) => [
     index("rate_limit_events_lookup_idx").on(t.scope, t.keyHash, t.createdAt),
     check("rate_limit_events_scope_chk", sql`${t.scope} IN ('submit', 'gate')`),
+  ],
+);
+
+export const rateLimitBuckets = pgTable(
+  "rate_limit_buckets",
+  {
+    scope: text("scope", { enum: ["submit", "gate"] }).notNull(),
+    keyHash: text("key_hash").notNull(),
+    attempts: timestamp("attempts", { withTimezone: true, mode: "date" }).array().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.scope, t.keyHash] }),
+    check("rate_limit_buckets_scope_chk", sql`${t.scope} IN ('submit', 'gate')`),
   ],
 );

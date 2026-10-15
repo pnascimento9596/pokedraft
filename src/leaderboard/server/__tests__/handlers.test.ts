@@ -405,7 +405,14 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     let left = misses;
     return {
       ...store,
-      byToken: (token) => (left-- > 0 ? Promise.resolve(null) : store.byToken(token)),
+      admitSubmission: async (...args) => {
+        const admission = await store.admitSubmission(...args);
+        return left-- > 0 &&
+          (admission.kind === "retry" ||
+            (admission.kind === "conflict" && admission.conflict === "token"))
+          ? { kind: "admitted" }
+          : admission;
+      },
     };
   }
 

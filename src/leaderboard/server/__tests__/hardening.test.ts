@@ -97,7 +97,7 @@ describe("submit hardening", () => {
     expect(await db.select().from(leaderboardEntries)).toHaveLength(1);
   });
 
-  it("prunes and records a rate-limit event in a single SQL round-trip and indexes all-time boards (SE-11)", async () => {
+  it("serializes and records a rate-limit event in a single SQL round-trip and indexes all-time boards (SE-11)", async () => {
     const execSpy = vi.spyOn(db, "execute");
     const delSpy = vi.spyOn(db, "delete");
     const limiter = drizzleLimiter(() => db);
@@ -134,7 +134,10 @@ describe("server error logging (catches a 503 whose cause is lost, or a log that
   it("logs one JSON line with the request id and SQLSTATE, and returns the id in x-request-id", async () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     const token = scriptedToken(CUP8, "lb-cup8");
-    const broken: LeaderboardStore = { ...store, byToken: () => Promise.reject(driverError()) };
+    const broken: LeaderboardStore = {
+      ...store,
+      admitSubmission: () => Promise.reject(driverError()),
+    };
     const res = await handleSubmit(
       post({ nickname: NICK, token }, { "x-real-ip": IP, "x-vercel-id": RID }),
       { store: broken, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW },
@@ -143,7 +146,7 @@ describe("server error logging (catches a 503 whose cause is lost, or a log that
     expect(logged(spy)).toEqual([
       {
         level: "error",
-        where: "submit.probe",
+        where: "submit.admission",
         requestId: RID,
         name: "DrizzleQueryError",
         sqlstate: "08006",

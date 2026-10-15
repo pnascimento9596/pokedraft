@@ -1,6 +1,7 @@
 import { and, asc, count, desc, eq, gt, lt, or, sql, type SQL } from "drizzle-orm";
 import { leaderboardEntries, type LeaderboardRow, type NewLeaderboardRow } from "@/db/schema";
 import type { Db } from "@/db/types";
+import { admissionCtes, type RateLimitRule } from "@/ratelimit/store";
 import { squadPreview } from "./squad-preview";
 import { BOARD_LIMIT, type BoardEntry, type BoardMode } from "../contract";
 
@@ -12,7 +13,21 @@ export type InsertResult =
   | { readonly ok: true; readonly row: LeaderboardRow }
   | { readonly ok: false; readonly conflict: Conflict };
 
+export type SubmissionAdmission =
+  | { readonly kind: "retry"; readonly row: LeaderboardRow }
+  | { readonly kind: "limited" }
+  | { readonly kind: "conflict"; readonly conflict: Conflict }
+  | { readonly kind: "admitted" };
+
 export interface LeaderboardStore {
+  admitSubmission(
+    token: string,
+    nickname: string,
+    board: Board,
+    keyHash: string,
+    now: Date,
+    rule: RateLimitRule,
+  ): Promise<SubmissionAdmission>;
   byToken(token: string): Promise<LeaderboardRow | null>;
   dailyTaken(nickname: string, board: Board): Promise<boolean>;
   insert(row: NewLeaderboardRow): Promise<InsertResult>;
@@ -55,6 +70,53 @@ function uniqueViolation(e: unknown): string | null {
 
 export function drizzleStore(getDb: () => Db): LeaderboardStore {
   return {
+    async admitSubmission(token, nickname, board, keyHash, now, rule) {
+      const result = await getDb().execute(sql`
+        WITH existing AS MATERIALIZED (
+          SELECT * FROM ${t}
+          WHERE md5(token) = md5(${token}) AND token = ${token}
+          LIMIT 1
+        ), ${admissionCtes("submit", keyHash, now, rule, sql`NOT EXISTS (SELECT 1 FROM existing WHERE nickname = ${nickname})`)}
+        SELECT
+          (SELECT row_to_json(existing) FROM existing) AS existing,
+          EXISTS(SELECT 1 FROM admitted) AS allowed,
+          EXISTS(SELECT 1 FROM ${t} WHERE nickname = ${nickname}
+            AND mode = ${board.mode} AND daily_date = ${board.dailyDate}::date) AS daily_taken
+      `);
+      const [out] = (
+        result as unknown as {
+          rows: {
+            existing: Record<string, unknown> | null;
+            allowed: boolean;
+            daily_taken: boolean;
+          }[];
+        }
+      ).rows;
+      const existing = out!.existing;
+      if (existing?.nickname === nickname) {
+        const row: LeaderboardRow = {
+          id: existing.id as string,
+          nickname: existing.nickname as string,
+          mode: existing.mode as LeaderboardRow["mode"],
+          variant: existing.variant as string,
+          dailyDate: existing.daily_date as string | null,
+          seed: existing.seed as string,
+          token: existing.token as string,
+          teamScore: existing.team_score as number,
+          wins: existing.wins as number,
+          draws: existing.draws as number,
+          losses: existing.losses as number,
+          engineVersion: existing.engine_version as string,
+          ipHash: existing.ip_hash as string,
+          createdAt: new Date(existing.created_at as string),
+        };
+        return { kind: "retry", row };
+      }
+      if (!out!.allowed) return { kind: "limited" };
+      if (existing) return { kind: "conflict", conflict: "token" };
+      if (out!.daily_taken) return { kind: "conflict", conflict: "daily" };
+      return { kind: "admitted" };
+    },
     async byToken(token) {
       const [row] = await getDb()
         .select()
