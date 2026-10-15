@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { applyAction, createDraft, type Seed, type SpeciesId } from "@/engine";
-import { previewCandidateEdges, ratePartialLineup } from "../partial-rating";
+import { previewCandidateEdges, ratePartialLineup, ratePartialLines } from "../partial-rating";
 
 describe("ratePartialLineup (live chemistry and legendary count during draft and builder)", () => {
   it("computes active synergy edges and live chemistry as soon as two adjacent starters are placed", () => {
@@ -82,4 +82,20 @@ describe("ratePartialLineup (live chemistry and legendary count during draft and
       value: 1,
     });
   });
+});
+
+
+it("live lines count occupied starters and leave empty lines unrated, excluding the bench", () => {
+  let draft = createDraft({ mode: "builder", formation: "4-3-3", gens: [1], legendaries: false }, "lines" as Seed);
+  draft = applyAction(draft, { type: "place", species: 1 as SpeciesId, slot: { kind: "starter", index: 2 } });
+  draft = applyAction(draft, { type: "place", species: 25 as SpeciesId, slot: { kind: "bench", index: 0 } });
+  const lines = ratePartialLines(draft.lineup);
+  expect(lines.map(({ line, filled, total }) => ({ line, filled, total }))).toEqual([
+    { line: "GK", filled: 0, total: 1 },
+    { line: "DEF", filled: 1, total: 4 },
+    { line: "MID", filled: 0, total: 3 },
+    { line: "ATT", filled: 0, total: 3 },
+  ]);
+  expect(lines[0].strength).toBeNull();
+  expect(lines[1].strength).toBeCloseTo(22.78048780487805, 3);
 });

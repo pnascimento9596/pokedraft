@@ -661,3 +661,25 @@ describe("builder Download image feedback (SA-20, SB-05)", () => {
     vi.unstubAllGlobals();
   });
 });
+
+
+describe("placed squad scouting and live lines", () => {
+  it("offers scouting for placed starters and bench with blind numerical gating", async () => {
+    openWithBenchToo();
+    await screen.findByRole("button", { name: "Scout SUB 1 Pikachu" }, { timeout: 10_000 });
+    fireEvent.click(screen.getByRole("button", { name: "Scout SUB 1 Pikachu" }));
+    const dossier = screen.getByRole("dialog");
+    expect(within(dossier).getByRole("heading", { name: "Pikachu" }).textContent).toBe("Pikachu");
+    expect(within(dossier).queryByTestId("scouting-radar")).toBeNull();
+    expect(screen.queryByTestId("live-lines")).toBeNull();
+  });
+
+  it("shows filled counts and current line strength only when ratings are enabled", async () => {
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
+    showRatings();
+    expect(screen.getByTestId("live-lines").textContent).toContain("DEF 1/4");
+    expect(screen.getByTestId("live-lines").textContent).toContain("ATT 1/3");
+    expect(screen.getByTestId("live-lines").textContent).toContain("GK 0/1");
+  });
+});

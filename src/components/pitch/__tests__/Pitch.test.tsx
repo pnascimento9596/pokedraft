@@ -61,6 +61,13 @@ function tap(el: HTMLElement) {
 }
 
 describe("Pitch", () => {
+  it("keeps filled tactical slot labels visible instead of hiding LCB behind a generic DF label", () => {
+    render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} />);
+    const card = screen.getByTestId("slot-s2");
+    expect(card.querySelector('[id$="-slot"]')?.className).not.toContain("visually-hidden");
+    expect(card.querySelector('[id$="-slot"]')?.textContent).toBe("LCB");
+  });
+
   it("labels every starter and bench slot so taps reach the right SlotRef", () => {
     const onSlotTap = vi.fn();
     render(
