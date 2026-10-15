@@ -12,7 +12,7 @@ The migration backfills buckets from existing events. `rate_limit_events` remain
 
 ## RED and GREEN
 
-Commit `17a30ae` contains the failing guards before production changes. The tests measured four actual PGlite client queries for an all-time submission and five for a daily submission, against the literal target of three. The history guard expected three admitted events after expiry and found one.
+Commit `c043e3a` contains the failing guards before production changes. The tests measured four actual PGlite client queries for an all-time submission and five for a daily submission, against the literal target of three. The history guard expected three admitted events after expiry and found one.
 
 After implementation, `platform-admission.test.ts` measures three actual queries for fresh submissions on both board paths and two for retries. The history and exact window boundary guards pass.
 
@@ -72,8 +72,16 @@ pnpm exec tsx scripts/audit/benchmark-platform-fixtures.mts
 
 ## Deployment and rollback
 
-Apply migration 0003 before the application uses the new buckets. Roll back the application before applying `drizzle/rollback/0003_serialized_rate_limit.down.sql`. The down migration drops the derived buckets and preserves event history. Schema creation and metadata generation were local. Production migration, preview verification, production verification, full build, and independent dispatch review were NOT RUN by this implementation lane.
+See [the cutover protocol](../decisions/platform-infrastructure-completion.md#deployment-and-rollback) before migration 0003 or application promotion. Old and new writers must not overlap. The down migration drops derived buckets and preserves event history. Production migration, preview verification, production verification, and independent dispatch review were NOT RUN by this implementation lane. The coordinator records those receipts separately.
 
 ## Decisions
 
 Model the Domain shaped the admission result as a discriminated union and the shared limiter state as one row per key and scope. Explain the Number and the benchmark checklist required alternating runs, correctness assertions, real teardown, and a separate CPU profile before adopting the fixture snapshot. Architect was skipped because the parent dispatch fixed the design. The coordinator owns the independent review and shipping gates.
+
+## October 15 acceptance refresh
+
+On the combined dispatch checkout, the focused backend and loader selection passed 67 tests in eight files. The full suite passed 1,044 tests in 119 files. Typecheck, lint, production build, image seam and pack checks, all three theme checks, and mirror checks passed. `pnpm db:generate` reported no changes. These local checks precede the final rebase and independent review.
+
+The PostgreSQL proof was rerun against a new task-owned PostgreSQL 16 cluster on loopback port 55484. All four rounds again used 24 distinct backend PIDs and admitted 10, 0, 10, and 1 attempts. The cluster stopped cleanly afterward. No production endpoint was involved.
+
+Valid submissions enter through `store.admitSubmission`, which owns the atomic saved-token probe and admission. `deps.limiter` handles parse rejections. These injected responsibilities are distinct. A replacement store must implement admission semantics; replacing only the limiter does not replace valid-submission admission. The production route connects both implementations to the same database.

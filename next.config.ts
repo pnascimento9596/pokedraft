@@ -34,7 +34,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     rules: {
       "*.json": {
-        condition: { path: /(?:^|\/)src\/engine\/versions\/v[123]\/src\/data\/(pokedex|scouting)\.json$/ },
+        condition: {
+          all: [
+            { not: "browser" },
+            { path: /(?:^|\/)src\/engine\/versions\/v[123]\/src\/data\/(pokedex|scouting)\.json$/ },
+          ],
+        },
         loaders: ["./scripts/build/retained-json-loader.cjs"],
         as: "*.js",
       },

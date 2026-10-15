@@ -178,3 +178,13 @@ Engine, data, scoring, storage, draft actions, leaderboard, database, API, and r
 ## Results interaction repair candidate
 
 The ball now receives the existing striking state through its CSS attribute. Pause Motion covers every descendant animation while logical timers continue. Selection, reset, and unmount cancel pending strike callbacks. Single-goal headlines use neutral scorer copy rather than inferring equalizers from final scores. RED guards preceded the fixes. Local focused units passed 13 tests and fresh-build Chromium/WebKit proof passed 6 browser checks on port 3481. Lint, typecheck, and build exited 0. Full units passed 882 and failed 4 untouched Builder/run card-text assertions; an exact-base archive reproduced those four failures. Independent review, full browser sweep, CI, PR, merge, and production verification remain NOT RUN. See `docs/decisions/results-interactions.md`.
+
+## Platform infrastructure acceptance candidate
+
+Fresh leaderboard submissions use three database queries on daily and all-time boards. Saved retries use two and consume no slot. Atomic bucket upserts serialize admission per scope and hashed IP. Migration 0003 backfills existing events; new admissions retain append-only event evidence. Event and inactive-key retention remain explicit operational carryovers. Saved responses still survive rank lookup failure.
+
+A server-only Turbopack loader aliases byte-identical retained JSON modules and tracks live artifact dependency changes. Actual emitted server payloads measure three copies and 2,088,694 JSON bytes, compared with the earlier measured eight copies and 5,144,396 bytes. All five actual emitted retained replay hashes match. Frozen source data is unchanged.
+
+Local focused tests passed 67 in eight files. Full units passed 1,044 in 119 files. Lint, typecheck, build, mirrors, image seams and packs, client bundle, theme contrast, colors, CVD, and migration generation passed. A new isolated PostgreSQL 16 cluster passed four races of 24 independent backend processes, admitting 10, zero, 10, and one attempts. It stopped cleanly. Browser Share and engine checks passed 23 cases, while three unchanged data-split guards exposed an eager species import through the UI chemistry label registry. The UI dispatch owns that correction. Final rebase and complete exact-head gates remain pending.
+
+Independent review, CI, merge, production migration, and production verification are NOT RUN by this acceptance lane. Migration and deployment require paused gate and leaderboard admission so old and new writers cannot overlap. See `docs/decisions/platform-infrastructure-completion.md`.

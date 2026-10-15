@@ -67,8 +67,8 @@ export const leaderboardEntries = pgTable(
 export type LeaderboardRow = typeof leaderboardEntries.$inferSelect;
 export type NewLeaderboardRow = typeof leaderboardEntries.$inferInsert;
 
-// One row per throttled request (submit or gate attempt), whatever its outcome. The key is the
-// keyed IP hash, so no raw address is stored.
+// One row per admitted submit or gate attempt, including attempts rejected by later validation.
+// Refusals and saved-run retries add no event. The key is a keyed hash, never a raw address.
 export const rateLimitEvents = pgTable(
   "rate_limit_events",
   {
