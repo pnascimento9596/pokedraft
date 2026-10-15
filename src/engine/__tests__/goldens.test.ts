@@ -76,7 +76,7 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     expect(ENGINE_VERSION).toBe("pokedraft-engine-4");
   });
 
-  it("keeps the engine-3 outcomes byte for byte: same scores, records and finishes", () => {
+  it("pins v4 simulation outcomes while draft Team Scores remain stable", () => {
     const run = replay(encodeToken(CUP8_TOKEN));
     expect([
       run.cup.rating.score,
@@ -92,7 +92,7 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
       kanto.cup.draws,
       kanto.cup.losses,
       kanto.cup.finish,
-    ]).toEqual([480, 2, 2, 1, "R16"]);
+    ]).toEqual([480, 0, 3, 0, "group"]);
   });
 
   it("attributes every opponent goal and shootout kick to a Boss Club roster member", () => {
@@ -125,7 +125,7 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 3, "R16"]);
     expect(sha256(s)).toBe("4061400329787171d0fdaa5f266477efe57c0d106a458c72f1605b0fb05baeb8");
     expect(sha256(JSON.stringify(run))).toBe(
-      "191fc94815ebb16192f8bc07529222076491192d831b8cf67d142adfbcee09bf",
+      "26d5dcc14e8c5006d5d32faf414949d3ecb349a8a647dc308e2f98c6d4c3fe35",
     );
   });
 
@@ -133,10 +133,10 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const s = encodeToken(KANTO_TOKEN);
     const run = replay(s);
     expect(KANTO_TOKEN.actions).toHaveLength(36);
-    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 2, "R16"]);
+    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 0, "group"]);
     expect(sha256(s)).toBe("9865c0f6b27c3d5d00ed6d129c2b1e7b9b49acf59e4921eeedeb71a9aa0fc6b6");
     expect(sha256(JSON.stringify(run))).toBe(
-      "11a292ead1ca86bed1fa1e807c4b92957429908df7d061c33392abbf3fe342af",
+      "1411deda140f9c38b0c939c005fcce836d40bfe2a1f98f77b456bef7e6787892",
     );
   });
 

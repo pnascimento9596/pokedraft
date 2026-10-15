@@ -237,6 +237,10 @@ export interface Opponent {
   readonly id: string;
   readonly name: string;
   readonly score: number;
+  readonly formation?: FormationId;
+  readonly tacticalStyle?: "balanced" | "pressing" | "possession" | "direct";
+  readonly captain?: OpponentPlayerRef;
+  readonly theme?: Species["types"][number];
   readonly lines: LineStrength;
   /**
    * The Boss Club's eleven, lineup order (index 0 is the goalkeeper). Engine 4 and later field
@@ -253,11 +257,14 @@ export type OpponentPlayerRef =
   | { readonly kind: "species"; readonly id: SpeciesId }
   | { readonly kind: "shirt"; readonly number: Shirt };
 
+export type GoalKind = "open-play" | "header" | "solo" | "free-kick" | "penalty";
+
 export type GoalEvent =
   | {
       readonly side: "user";
       readonly minute: number;
       readonly penalty: boolean;
+      readonly kind?: GoalKind;
       readonly scorer: SpeciesId;
       readonly assist: SpeciesId | null;
     }
@@ -265,6 +272,7 @@ export type GoalEvent =
       readonly side: "opp";
       readonly minute: number;
       readonly penalty: boolean;
+      readonly kind?: GoalKind;
       readonly scorer: OpponentPlayerRef;
       readonly assist: OpponentPlayerRef | null;
     };
@@ -367,6 +375,14 @@ export interface Awards {
   readonly potContribution: Contribution | null;
 }
 
+export interface GroupFixture {
+  readonly round: "G1" | "G2" | "G3";
+  readonly a: string;
+  readonly b: string;
+  readonly aGoals: number;
+  readonly bGoals: number;
+}
+
 export interface CupResult {
   /** The engine that produced this result; older than ENGINE_VERSION for a retained run. */
   readonly engine: `pokedraft-engine-${number}`;
@@ -374,6 +390,7 @@ export interface CupResult {
   readonly mode: Mode;
   readonly rating: TeamRating;
   readonly group: readonly GroupRow[];
+  readonly groupFixtures?: readonly GroupFixture[];
   readonly matches: readonly MatchResult[];
   readonly wins: number;
   readonly draws: number;

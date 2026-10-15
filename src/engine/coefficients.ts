@@ -38,8 +38,9 @@ export interface EngineCoefficients {
     };
     penaltyShare: number;
     assistProb: number;
-    // Open-play scorer weight is SHO times the slot's role factor; assist weight is PAS times it.
+    // Scorers and creators use separate tactical role weights.
     roleFactor: Record<Role, number>;
+    assistRoleFactor: Record<Role, number>;
     oppScorerWeights: readonly number[];
   };
   shootout: { kicks: number; maxSuddenDeath: number; base: number; band: number };
@@ -110,6 +111,18 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
       FB: 0.08,
       CB: 0.08,
       GK: 0,
+    },
+    assistRoleFactor: {
+      GK: 0,
+      CB: 0.12,
+      FB: 0.55,
+      WB: 0.7,
+      DM: 0.65,
+      CM: 1,
+      AM: 1.1,
+      WM: 1,
+      W: 0.9,
+      ST: 0.45,
     },
     oppScorerWeights: [0, 1, 1, 1, 1, 3, 3, 3, 6, 8, 6],
   },

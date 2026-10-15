@@ -19,7 +19,16 @@ export function matchLineup(
   const rng = createEngineRng(deriveSubseed(seed, "availability", `match:${matchIndex}`));
   if (rng.next() >= c.availability.eventProb) return { lineup, absence: null };
 
-  const index = rng.int(STARTERS);
+  const risks = lineup.starters.map((id) => 1.5 - speciesById(id).attrs.STA / 100);
+  let roll = rng.next() * risks.reduce((sum, risk) => sum + risk, 0);
+  let index = STARTERS - 1;
+  for (let i = 0; i < risks.length; i++) {
+    roll -= risks[i]!;
+    if (roll < 0) {
+      index = i;
+      break;
+    }
+  }
   const slot = FORMATIONS[lineup.formation].slots[index]!;
   const bench = lineup.bench.map((id, benchIndex) => ({ species: speciesById(id), benchIndex }));
   const cover = bench.filter(

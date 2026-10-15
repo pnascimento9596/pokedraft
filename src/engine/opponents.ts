@@ -72,7 +72,7 @@ const SCORE_MAX = 1000;
 const SCORE_PER_LINE = 10;
 const KANTO151_MAX_ID = 151;
 const ROSTER_SIZE = 11;
-// Boss Clubs play a fixed 4-3-3; the roles only label the roster for scorer weighting.
+// Boss Clubs field a 4-3-3; roster fit shapes matchups around the ladder difficulty.
 const BOSS_FORMATION = FORMATIONS["4-3-3"];
 
 function slug(name: string): string {
@@ -91,23 +91,31 @@ const meanAttrs = (s: Species): number => {
   return values.reduce((a, b) => a + b, 0) / values.length;
 };
 
+function themedPools(mode: Mode) {
+  const pool = bossPool(mode);
+  return TYPES.map((theme) => ({
+    theme,
+    members: canonicalSortBy(
+      pool.filter((s) => (s.types as readonly PokemonType[]).includes(theme)),
+      (s) => [-meanAttrs(s), s.id],
+    ),
+  })).filter(({ members }) => members.length >= ROSTER_SIZE);
+}
+
+const THEMED_POOLS = { kanto151: themedPools("kanto151"), open: themedPools("cup8") };
+
 /**
  * A themed eleven for one rung: every member shares the drawn type, the window slides up the
  * themed pool's strength order as the rung rating rises, and each formation slot takes the
  * best remaining fit (the goalkeeper lands first).
  */
-function bossRoster(mode: Mode, seed: string, rungIndex: number): readonly OpponentPlayerRef[] {
+function bossRoster(
+  mode: Mode,
+  seed: string,
+  rungIndex: number,
+): readonly Extract<OpponentPlayerRef, { kind: "species" }>[] {
   const rng = createEngineRng(deriveSubseed(seed, "opponent_roster", `${rungIndex}`));
-  const pool = bossPool(mode);
-  const themes = TYPES.filter(
-    (t) =>
-      pool.filter((s) => (s.types as readonly PokemonType[]).includes(t)).length >= ROSTER_SIZE,
-  );
-  const theme = rng.pick(themes as readonly PokemonType[]);
-  const themed = canonicalSortBy(
-    pool.filter((s) => (s.types as readonly PokemonType[]).includes(theme)),
-    (s) => [-meanAttrs(s), s.id],
-  );
+  const themed = rng.pick(THEMED_POOLS[mode === "kanto151" ? "kanto151" : "open"]).members;
   const lastRung = CUP_ROUNDS.length - 1;
   const start = Math.round(((themed.length - ROSTER_SIZE) * (lastRung - rungIndex)) / lastRung);
   const window = themed.slice(start, start + ROSTER_SIZE);
@@ -119,7 +127,7 @@ function bossRoster(mode: Mode, seed: string, rungIndex: number): readonly Oppon
     );
     roster.push(best!);
   }
-  return roster.map((s) => ({ kind: "species", id: s.id }) as OpponentPlayerRef);
+  return roster.map((s) => ({ kind: "species", id: s.id }));
 }
 
 /**
@@ -165,7 +173,43 @@ export function buildLadder(
       ATT: score / SCORE_PER_LINE + tilt.ATT!,
     };
     const name = names[i]!;
-    ladder[round] = { id: slug(name), name, score, lines, roster: bossRoster(mode, seed, i) };
+    const roster = bossRoster(mode, seed, i);
+    const players = roster.map((ref) => speciesById(ref.id));
+    const fit = Object.fromEntries(
+      LINE_DRAW_ORDER.map((line) => {
+        const members = BOSS_FORMATION.slots.flatMap((slot, index) =>
+          slot.line === line ? [players[index]!.fits[slot.role]] : [],
+        );
+        return [line, members.reduce((sum, value) => sum + value, 0) / members.length];
+      }),
+    ) as Record<keyof LineStrength, number>;
+    const centre =
+      LINE_DRAW_ORDER.reduce((sum, line) => sum + fit[line], 0) / LINE_DRAW_ORDER.length;
+    const scale = Math.max(1, ...LINE_DRAW_ORDER.map((line) => Math.abs(fit[line] - centre)));
+    const shaped = Object.fromEntries(
+      LINE_DRAW_ORDER.map((line) => [line, lines[line] + (3 * (fit[line] - centre)) / scale]),
+    ) as unknown as LineStrength;
+    const [captain] = canonicalSortBy(players, (s) => [-meanAttrs(s), s.id]);
+    const theme = TYPES.find((type) =>
+      players.every((s) => (s.types as readonly PokemonType[]).includes(type)),
+    )!;
+    const tacticalStyle =
+      fit.ATT >= fit.MID && fit.ATT >= fit.DEF
+        ? "direct"
+        : fit.MID >= fit.DEF
+          ? "possession"
+          : "pressing";
+    ladder[round] = {
+      id: slug(name),
+      name,
+      score,
+      lines: shaped,
+      roster,
+      formation: "4-3-3",
+      captain: { kind: "species", id: captain!.id },
+      theme,
+      tacticalStyle,
+    };
   });
   return ladder;
 }

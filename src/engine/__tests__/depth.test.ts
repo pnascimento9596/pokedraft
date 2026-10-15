@@ -118,9 +118,38 @@ describe("v4 match event contracts", () => {
 
   it("lets the highest-SHO goalkeeper take regulation penalties on either side", () => {
     const boss = buildLadder("depth-keeper-penalty", "cup8").F;
-    const starters = bossStarters(boss).map((s) => ({ ...s, species: { ...s.species, attrs: { ...s.species.attrs, SHO: s.role === "GK" ? 100 : 1 } } }));
-    const m = simulateMatch({ seed: "depth-keeper-penalty" as Seed, matchIndex: 0, round: "G1", phase: "group", rating: 700, userLines: boss.lines, starters, keeper: starters[0]!.species, opponent: boss, opponentStarters: starters, absences: [] }, { ...ENGINE_COEFFICIENTS, match: { ...ENGINE_COEFFICIENTS.match, penaltyShare: 1, chances: { regulation: 1, extraTime: 1, maxGoalProb: 1 } } });
-    expect(m.goals.map((g) => g.side === "user" ? g.scorer : g.scorer.kind === "species" ? g.scorer.id : -1)).toEqual([starters[0]!.species.id, starters[0]!.species.id]);
+    const starters = bossStarters(boss).map((s) => ({
+      ...s,
+      species: { ...s.species, attrs: { ...s.species.attrs, SHO: s.role === "GK" ? 100 : 1 } },
+    }));
+    const m = simulateMatch(
+      {
+        seed: "depth-keeper-penalty" as Seed,
+        matchIndex: 0,
+        round: "G1",
+        phase: "group",
+        rating: 700,
+        userLines: boss.lines,
+        starters,
+        keeper: starters[0]!.species,
+        opponent: boss,
+        opponentStarters: starters,
+        absences: [],
+      },
+      {
+        ...ENGINE_COEFFICIENTS,
+        match: {
+          ...ENGINE_COEFFICIENTS.match,
+          penaltyShare: 1,
+          chances: { regulation: 1, extraTime: 1, maxGoalProb: 1 },
+        },
+      },
+    );
+    expect(
+      m.goals.map((g) =>
+        g.side === "user" ? g.scorer : g.scorer.kind === "species" ? g.scorer.id : -1,
+      ),
+    ).toEqual([starters[0]!.species.id, starters[0]!.species.id]);
     expect(m.goals.map((g) => g.penalty)).toEqual([true, true]);
   });
 

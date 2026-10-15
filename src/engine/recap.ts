@@ -61,6 +61,10 @@ function goalLine(goal: UserGoal, variant: number): string {
   const scorer = speciesById(goal.scorer).name;
   const minute = ordinal(goal.minute);
   if (goal.penalty) return PENALTY[variant % PENALTY.length]!(scorer, minute, "");
+  if (goal.kind === "header")
+    return `${scorer} heads home in the ${minute} minute${goal.assist === null ? "." : `, set up by ${speciesById(goal.assist).name}.`}`;
+  if (goal.kind === "solo") return `${scorer} scores after a solo run in the ${minute} minute.`;
+  if (goal.kind === "free-kick") return `${scorer} scores a free kick in the ${minute} minute.`;
   if (goal.assist === null) return SOLO[variant % SOLO.length]!(scorer, minute, "");
   return ASSISTED[variant % ASSISTED.length]!(scorer, minute, speciesById(goal.assist).name);
 }

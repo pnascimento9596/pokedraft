@@ -16,6 +16,7 @@ import {
   type CupRound,
   type FullLineup,
   type GroupRow,
+  type GroupFixture,
   type MatchResult,
   type Mode,
   type Opponent,
@@ -201,9 +202,10 @@ export function runCup(
   };
 
   const matches: MatchResult[] = GROUP_ROUNDS.map((round, i) => play(i, round, ladder[round]));
-  const fixtures: Fixture[] = matches.map((m, i) => {
+  const fixtures: GroupFixture[] = matches.map((m, i) => {
     const played = m as PlayedMatch;
     return {
+      round: GROUP_ROUNDS[i]!,
       a: USER,
       b: ladder[GROUP_ROUNDS[i]!].id,
       aGoals: played.regulation.user,
@@ -218,7 +220,13 @@ export function runCup(
       `group-other:${k}`,
       c,
     );
-    fixtures.push({ a: ladder[ra].id, b: ladder[rb].id, aGoals, bGoals });
+    fixtures.push({
+      round: GROUP_ROUNDS[2 - k]!,
+      a: ladder[ra].id,
+      b: ladder[rb].id,
+      aGoals,
+      bGoals,
+    });
   });
   const group = groupTable(
     seed,
@@ -257,6 +265,7 @@ export function runCup(
     mode,
     rating,
     group,
+    groupFixtures: fixtures,
     matches,
     wins,
     draws,
