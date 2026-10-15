@@ -2,6 +2,7 @@ import { TYPES, type PokemonType } from "@/data/pokedex";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
 import { FORMATIONS } from "./formations";
 import type { MatchStarter } from "./match";
+import { buildOpponentSchedule } from "./opponent-schedule";
 import { canonicalSortBy, createEngineRng, deriveSubseed } from "./rng";
 import { SPECIES, speciesById } from "./species";
 import {
@@ -14,73 +15,11 @@ import {
   type Species,
 } from "./types";
 
-const OPEN_CLUBS = [
-  "Viridian FC",
-  "Cerulean City",
-  "Vermilion Athletic",
-  "Goldenrod United",
-  "Ecruteak Town",
-  "Olivine Rovers",
-  "Mahogany FC",
-  "Lilycove Athletic",
-  "Slateport United",
-  "Mauville City",
-  "Fortree Rovers",
-  "Hearthome City",
-  "Jubilife FC",
-  "Veilstone United",
-  "Canalave Athletic",
-  "Castelia City",
-  "Nimbasa United",
-  "Driftveil FC",
-  "Opelucid Rovers",
-  "Lumiose FC",
-  "Santalune Town",
-  "Shalour City",
-  "Coumarine United",
-  "Hau'oli City",
-  "Konikoni Athletic",
-  "Hammerlocke Rovers",
-  "Motostoke United",
-  "Wyndon FC",
-  "Mesagoza FC",
-  "Levincia City",
-] as const;
-
-const KANTO_CLUBS = [
-  "Pallet Town",
-  "Viridian FC",
-  "Pewter United",
-  "Cerulean City",
-  "Vermilion FC",
-  "Lavender Town",
-  "Celadon City",
-  "Fuchsia United",
-  "Saffron City",
-  "Cinnabar FC",
-  "Indigo Plateau United",
-] as const;
-
-const CLUBS: Readonly<Record<Mode, readonly string[]>> = {
-  builder: OPEN_CLUBS,
-  cup8: OPEN_CLUBS,
-  kanto151: KANTO_CLUBS,
-};
-
 const LINE_DRAW_ORDER = ["ATT", "DEF", "MID", "GK"] as const;
-const SCORE_MAX = 1000;
-const SCORE_PER_LINE = 10;
 const KANTO151_MAX_ID = 151;
 const ROSTER_SIZE = 11;
 // Boss Clubs field a 4-3-3; roster fit shapes matchups around the ladder difficulty.
 const BOSS_FORMATION = FORMATIONS["4-3-3"];
-
-function slug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
 
 function bossPool(mode: Mode): readonly Species[] {
   return mode === "kanto151" ? SPECIES.filter((s) => s.id <= KANTO151_MAX_ID) : SPECIES;
@@ -158,21 +97,10 @@ export function buildLadder(
   mode: Mode,
   c: EngineCoefficients = ENGINE_COEFFICIENTS,
 ): Record<CupRound, Opponent> {
-  const rng = createEngineRng(deriveSubseed(seed, "opponent_selection"));
-  const signed = (half: number): number => rng.int(2 * half + 1) - half;
-  const pool = canonicalSortBy(CLUBS[mode], (name) => [name]);
-  const names = rng.sample(pool, CUP_ROUNDS.length);
+  const schedule = buildOpponentSchedule(seed, mode, c);
   const ladder = {} as Record<CupRound, Opponent>;
   CUP_ROUNDS.forEach((round, i) => {
-    const score = Math.max(0, Math.min(SCORE_MAX, c.ladder.score[round] + signed(c.ladder.jitter)));
-    const tilt = Object.fromEntries(LINE_DRAW_ORDER.map((l) => [l, signed(c.ladder.tilt)]));
-    const lines: LineStrength = {
-      GK: score / SCORE_PER_LINE + tilt.GK!,
-      DEF: score / SCORE_PER_LINE + tilt.DEF!,
-      MID: score / SCORE_PER_LINE + tilt.MID!,
-      ATT: score / SCORE_PER_LINE + tilt.ATT!,
-    };
-    const name = names[i]!;
+    const { name, score, lines } = schedule[round];
     const roster = bossRoster(mode, seed, i);
     const players = roster.map((ref) => speciesById(ref.id));
     const fit = Object.fromEntries(
@@ -200,7 +128,7 @@ export function buildLadder(
           ? "possession"
           : "pressing";
     ladder[round] = {
-      id: slug(name),
+      id: schedule[round].id,
       name,
       score,
       lines: shaped,
