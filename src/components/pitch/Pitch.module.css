@@ -447,9 +447,9 @@
   border-radius: 3px;
   background: var(--stadium-card);
   color: var(--stadium-ink);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
-  line-height: 11px;
+  line-height: 13px;
   white-space: nowrap;
 }
 

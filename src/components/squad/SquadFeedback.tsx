@@ -20,6 +20,7 @@ export function SquadFeedback({
   readonly onScout: (id: SpeciesId) => void;
 }) {
   const [reason, setReason] = useState<SynergyReason | null>(null);
+  const [announcement, setAnnouncement] = useState("");
   const slots = FORMATIONS[lineup.formation].slots;
   const starters = new Map(
     slots.flatMap((slot, index) => {
@@ -33,6 +34,13 @@ export function SquadFeedback({
     return a && b ? [{ edge, a, b }] : [];
   });
   const visibleLinks = links.filter(({ edge }) => reason === null || edge.reasons.includes(reason));
+  const filterLinks = (next: SynergyReason | null) => {
+    setReason(next);
+    const count = links.filter(({ edge }) => next === null || edge.reasons.includes(next)).length;
+    setAnnouncement(
+      `${next === null ? "All links" : SYNERGY_REASON_LABEL[next]}: ${count} chemistry ${count === 1 ? "link" : "links"}.`,
+    );
+  };
   const reasons = Object.keys(SYNERGY_REASON_LABEL) as SynergyReason[];
   const occupied = ALL_REFS.flatMap((ref) => {
     const id = valueAt(lineup, ref);
@@ -40,6 +48,9 @@ export function SquadFeedback({
   });
   return (
     <div className={s.feedback}>
+      <span className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </span>
       {lines ? (
         <div data-testid="live-lines" aria-label="Current line strength">
           <p className={s.lines}>
@@ -70,7 +81,7 @@ export function SquadFeedback({
                 type="button"
                 className="btn btn--ghost btn--sm"
                 aria-pressed={reason === null}
-                onClick={() => setReason(null)}
+                onClick={() => filterLinks(null)}
               >
                 All links
               </button>
@@ -80,13 +91,13 @@ export function SquadFeedback({
                   type="button"
                   className="btn btn--ghost btn--sm"
                   aria-pressed={reason === item}
-                  onClick={() => setReason(item)}
+                  onClick={() => filterLinks(item)}
                 >
                   {SYNERGY_REASON_LABEL[item]}
                 </button>
               ))}
             </div>
-            <div aria-live="polite" aria-atomic="true">
+            <div>
               {visibleLinks.length === 0 ? (
                 <p className={s.note}>No current links match this reason.</p>
               ) : (

@@ -572,13 +572,19 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
       fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
     });
     expect(writeText.mock.calls).toEqual([[`http://localhost:3000/?b=${TWO_PLACED_TOKEN}`]]);
-    expect(screen.getByRole("status").textContent).toBe("Link copied");
+    expect(
+      within(screen.getByRole("toolbar", { name: "Builder actions" })).getByRole("status")
+        .textContent,
+    ).toBe("Link copied");
 
     writeText.mockRejectedValueOnce(new Error("denied"));
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
     });
-    expect(screen.getByRole("status").textContent).toBe("Could not copy the link");
+    expect(
+      within(screen.getByRole("toolbar", { name: "Builder actions" })).getByRole("status")
+        .textContent,
+    ).toBe("Could not copy the link");
   });
 
   it("Download image requests the builder card and saves it as pokedraft-lineup.png", async () => {
