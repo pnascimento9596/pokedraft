@@ -683,3 +683,10 @@ describe("placed squad scouting and live lines", () => {
     expect(screen.getByTestId("live-lines").textContent).toContain("GK 0/1");
   });
 });
+
+it("keeps Builder actions above feedback that appears after the engine loads", async () => {
+  openWithTwoPlaced();
+  const toolbar = screen.getByRole("toolbar", { name: "Builder actions" });
+  const feedback = await screen.findByText(/^Chemistry links \(/);
+  expect(Boolean(toolbar.compareDocumentPosition(feedback) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
+});
