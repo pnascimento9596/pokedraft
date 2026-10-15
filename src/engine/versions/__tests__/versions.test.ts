@@ -8,13 +8,16 @@ import { replayAnyVersion, retainedTokenVersions, tokenVersion } from "..";
 import { RETAINED_TOKEN_VERSIONS } from "../label";
 import * as v1 from "../v1";
 import * as v2 from "../v2";
+import * as v3 from "../v3";
 import { fromLegacy, type LegacyCupResult } from "../legacy";
 import { buildLadder as v1Ladder } from "../v1/src/engine/opponents";
 import { buildLadder as v2Ladder } from "../v2/src/engine/opponents";
+import { buildLadder as v3Ladder } from "../v3/src/engine/opponents";
 import {
   A11Y_RUN_V1,
   GOLDEN_CUP8_V1,
   GOLDEN_CUP8_V2,
+  GOLDEN_CUP8_V3,
   GOLDEN_KANTO151_V1,
   GOLDEN_KANTO151_V2,
 } from "./fixtures";
@@ -106,6 +109,29 @@ describe("retained engine-2 bundle (catches a dispatch 6 PR 6B run replaying dif
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v2"))).toBe(
       "00c62f652808895871ea37e9306401f92ab14d38f999c4774876325783dbcd96",
+    );
+  });
+});
+
+describe("retained engine-3 bundle (catches a platform-overhaul run replaying differently after engine 4 moves in)", () => {
+  it("replays the engine-3 golden cup8 run with its exact scores and record", () => {
+    const run = v3.replay(GOLDEN_CUP8_V3);
+    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 3, "R16"]);
+    expect([run.cup.wins, run.cup.draws, run.cup.losses]).toEqual([3, 0, 2]);
+  });
+
+  it("routes pd3. tokens to the v3 bundle, not the live engine", () => {
+    const run = replayAnyVersion(GOLDEN_CUP8_V3);
+    expect([run.engine, run.bundle, run.current]).toEqual([
+      "pokedraft-engine-3",
+      "retained-engine-bundle:v3",
+      false,
+    ]);
+  });
+
+  it("is frozen: no byte of the bundle changes", () => {
+    expect(bundleDigest(path.join(import.meta.dirname, "../v3"))).toBe(
+      "78d81201170bb56551c56c6486dca4ec4eca8fdd65261530b5155e2d8398f009",
     );
   });
 });
