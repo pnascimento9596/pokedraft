@@ -153,6 +153,11 @@
   min-width: 0;
   max-width: 100%;
   font-size: 16px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
 }
 .speciesControls input {
   flex: 1 1 180px;
