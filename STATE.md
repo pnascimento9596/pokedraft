@@ -4,7 +4,7 @@ Measured ground truth. Updated in the same PR as every merge.
 
 ## October 15 engine release receipt
 
-PR [#51](https://github.com/pnascimento9596/pokedraft/pull/51) merged on October 15 at 18:07:36 UTC. The reviewed head is `4b7439ca2cff41aa6211df9cd7a7a2fb565673d3`; the squash is `6218750ea2c9896e469b1496d5d20691b4b78d6f`. Hosted checks passed with 1,003 unit tests and 732 browser tests plus 55 skips. Production health verification is pending confirmation from the landing owner. The platform experience candidate is rebased onto this squash and preserves the final engine browser fixture repairs.
+PR [#51](https://github.com/pnascimento9596/pokedraft/pull/51) merged on October 15 at 18:07:36 UTC. The reviewed head is `4b7439ca2cff41aa6211df9cd7a7a2fb565673d3`; the squash is `6218750ea2c9896e469b1496d5d20691b4b78d6f`. Hosted checks passed with 1,003 unit tests and 732 browser tests plus 55 skips. Cache-busted production health verified this exact squash at 18:08:36 UTC with HTTP 200, `Cache-Control: no-store`, engine 4, and token versions 1 through 4. Vercel deployment `dpl_GHSGZTdQ73mA2u7UiXDVGg1218yU` is READY in production. The platform experience candidate is rebased onto this squash and preserves the final engine browser fixture repairs.
 
 ## October 15 platform experience candidate
 
