@@ -123,9 +123,9 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const run = replay(s);
     expect(CUP8_TOKEN.actions).toHaveLength(18);
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 3, "R16"]);
-    expect(sha256(s)).toBe("8b62814e23eb70225707d31c2dfcb6118ce067e537d65652376487c5d6f24d54");
+    expect(sha256(s)).toBe("4061400329787171d0fdaa5f266477efe57c0d106a458c72f1605b0fb05baeb8");
     expect(sha256(JSON.stringify(run))).toBe(
-      "07bfee8296298a5c0d7b7878e813811548b1e8a3a74b1cfd899f0680f0d5db95",
+      "191fc94815ebb16192f8bc07529222076491192d831b8cf67d142adfbcee09bf",
     );
   });
 
@@ -134,9 +134,9 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const run = replay(s);
     expect(KANTO_TOKEN.actions).toHaveLength(36);
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 2, "R16"]);
-    expect(sha256(s)).toBe("4afcfd2e3e9f32caf89d04288066a009b6ea1a12a6df447c99ff5c8fdf3e06d7");
+    expect(sha256(s)).toBe("9865c0f6b27c3d5d00ed6d129c2b1e7b9b49acf59e4921eeedeb71a9aa0fc6b6");
     expect(sha256(JSON.stringify(run))).toBe(
-      "750da9c3ba726d5438a7457799b770b358e41551bca8cd58cad5bcb8f6c7e1a9",
+      "11a292ead1ca86bed1fa1e807c4b92957429908df7d061c33392abbf3fe342af",
     );
   });
 

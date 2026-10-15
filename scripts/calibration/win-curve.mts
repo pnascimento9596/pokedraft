@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "@/engine/coefficients";
 import { simulateMatch, type MatchStarter } from "@/engine/match";
 import { FORMATIONS } from "@/engine/formations";
+import { bossStarters, buildLadder } from "@/engine/opponents";
 import { speciesById } from "@/engine/species";
 import type { LineStrength, Opponent, Seed } from "@/engine/types";
 
@@ -43,8 +44,16 @@ const flat = (score: number): LineStrength => ({
 console.log(`| gap | group W | group D | KO W |`);
 console.log(`|---|---|---|---|`);
 const step = Number(arg("step") ?? 50);
+// A real Boss Club XI for the probe's identity; the probe's synthetic lines still drive the math.
+const probeLadder = buildLadder("probe", "cup8");
 for (let gap = Number(arg("from") ?? -300); gap <= Number(arg("to") ?? 500); gap += step) {
-  const opponent: Opponent = { id: "probe", name: "Probe FC", score: base - gap, lines: flat(base - gap) };
+  const opponent: Opponent = {
+    id: "probe",
+    name: "Probe FC",
+    score: base - gap,
+    lines: flat(base - gap),
+    roster: probeLadder.G1.roster,
+  };
   let gw = 0;
   let gd = 0;
   let kw = 0;
@@ -61,6 +70,7 @@ for (let gap = Number(arg("from") ?? -300); gap <= Number(arg("to") ?? 500); gap
           starters,
           keeper: starters[0]!.species,
           opponent,
+          opponentStarters: bossStarters(opponent),
           absences: [],
         },
         c,
@@ -71,5 +81,7 @@ for (let gap = Number(arg("from") ?? -300); gap <= Number(arg("to") ?? 500); gap
       } else if (m.outcome === "W") kw++;
     }
   }
-  console.log(`| ${gap} | ${(gw / n).toFixed(3)} | ${(gd / n).toFixed(3)} | ${(kw / n).toFixed(3)} |`);
+  console.log(
+    `| ${gap} | ${(gw / n).toFixed(3)} | ${(gd / n).toFixed(3)} | ${(kw / n).toFixed(3)} |`,
+  );
 }

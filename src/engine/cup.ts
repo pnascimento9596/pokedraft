@@ -7,6 +7,7 @@ import { canonicalSortBy, createEngineRng, deriveSubseed } from "./rng";
 import { speciesById } from "./species";
 import { awards, type PlayerTally } from "./stats";
 import { benchQuality, matchLines, rateTeam } from "./team";
+import { bossStarters } from "./opponents";
 import {
   CUP_ROUNDS,
   ENGINE_VERSION,
@@ -175,6 +176,7 @@ export function runCup(
         starters,
         keeper: starters.find((s) => s.line === "GK")!.species,
         opponent,
+        opponentStarters: bossStarters(opponent),
         absences: absence === null ? [] : [absence],
       },
       c,

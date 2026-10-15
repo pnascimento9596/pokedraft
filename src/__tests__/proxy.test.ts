@@ -159,10 +159,10 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       { mode: "kanto151", formation: "4-4-2", order: "squadFirst" },
       "proxy-seed",
     );
-    const res = proxy(req(`/r/pd3?t=${real.slice(4)}`));
+    const res = proxy(req(`/r/pd4?t=${real.slice(4)}`));
     expect(res.headers.get("x-middleware-rewrite")).toBe(`https://pokedraft.test/r/${real}`);
     expect(
-      proxy(req(`/r/pd3?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
+      proxy(req(`/r/pd4?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
         "x-middleware-rewrite",
       ),
     ).toBe(`https://pokedraft.test/r/${real}?_rsc=123&source=chat`);
@@ -177,20 +177,24 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   it("keeps missing, malformed and unsupported query payloads on the real 404 route", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "");
     for (const path of [
-      "/r/pd3",
-      "/r/pd3?t=",
-      "/r/pd3?t=%%%",
-      "/r/pd3?t=e30",
+      "/r/pd4",
+      "/r/pd4?t=",
+      "/r/pd4?t=%%%",
+      "/r/pd4?t=e30",
       "/r/pd99?t=abc",
       "/r/pd0?t=abc",
       "/r/pd1?t=abc/def",
       "/r/pd2?t=abc.def",
-      "/r/pd3?t=abc&t=def",
+      "/r/pd4?t=abc&t=def",
     ]) {
       expect(proxy(req(path)).headers.get("x-middleware-rewrite")).toBe(
         "https://pokedraft.test/run-not-found",
       );
     }
+    // A retained version's garbage payload goes to the page: only its bundle can judge it.
+    expect(proxy(req("/r/pd3?t=e30")).headers.get("x-middleware-rewrite")).toBe(
+      "https://pokedraft.test/r/pd3.e30",
+    );
   });
 
   it("gates the complete query link before rewriting and lets an unlocked player replay it", () => {

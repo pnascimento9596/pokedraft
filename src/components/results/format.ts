@@ -7,6 +7,7 @@ import {
   type CupRound,
   type GoalEvent,
   type MatchResult,
+  type OpponentPlayerRef,
   type Score,
 } from "@/engine";
 
@@ -47,9 +48,14 @@ export function contributionLine(c: Contribution): string {
   return `${c.total} pts: goals ${p.goals}, assists ${p.assists}, clean sheets ${p.cleanSheets}, minutes ${p.minutes}`;
 }
 
+// An opponent identity: a Boss Club Pokemon by name, or the shirt number a retained engine rolled.
+export function opponentRefLabel(ref: OpponentPlayerRef): string {
+  return ref.kind === "species" ? speciesById(ref.id).name : `No. ${ref.number}`;
+}
+
 export function goalLine(g: GoalEvent): string {
   const pen = g.penalty ? " (pen)" : "";
-  if (g.side === "opp") return `${g.minute}' No. ${g.scorer}${pen}`;
+  if (g.side === "opp") return `${g.minute}' ${opponentRefLabel(g.scorer)}${pen}`;
   const assist = g.assist === null ? "" : `, assist ${speciesById(g.assist).name}`;
   return `${g.minute}' ${speciesById(g.scorer).name}${pen}${assist}`;
 }

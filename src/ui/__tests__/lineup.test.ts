@@ -8,13 +8,20 @@ import { swapMessage } from "../swap-message";
 const BUILDER_V1 =
   "pd1.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiYnVpbGRlciIsW1sibCIsNjMwLCJzMCJdLFsibCIsODkzLCJzMSJdLFsibCIsNTU4LCJzMiJdLFsibCIsNjgxLCJzMyJdLFsibCIsNjUyLCJzNCJdLFsibCIsNDY4LCJzNSJdLFsibCIsMjMzLCJzNiJdLFsibCIsNzE3LCJzNyJdLFsibCIsNTczLCJzOCJdLFsibCIsNjYzLCJzOSJdLFsibCIsNjk3LCJzMTAiXV1d";
 
+// The same idea shared under engine-3: Bulbasaur at LCB, Charmander at ST.
+const BUILDER_V3 =
+  "pd3.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDEsInMyIl0sWyJsIiw0LCJzOSJdXV0";
+
 describe("draftFromBuilderToken (catches old shared builder links opening an empty builder)", () => {
-  it("reads a builder lineup shared under a retained engine version", () => {
+  it.each([
+    ["pd1", BUILDER_V1, 11],
+    ["pd3", BUILDER_V3, 2],
+  ])("reads a builder lineup shared under the retained %s engine", (_label, token, placed) => {
     expect(RUN_TOKEN_VERSION).not.toBe(1);
-    const draft = draftFromBuilderToken(BUILDER_V1);
+    const draft = draftFromBuilderToken(token);
     expect(draft === null ? null : [draft.settings.mode, filledCount(draft.lineup)]).toEqual([
       "builder",
-      11,
+      placed,
     ]);
   });
 

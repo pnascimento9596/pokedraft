@@ -24,7 +24,7 @@ import {
 import { BOTS, type BotName } from "../calibration/bots";
 
 export const GOLDEN_CUP8_TOKEN_SHA256 =
-  "8b62814e23eb70225707d31c2dfcb6118ce067e537d65652376487c5d6f24d54";
+  "4061400329787171d0fdaa5f266477efe57c0d106a458c72f1605b0fb05baeb8";
 
 const GOLDEN_SETTINGS: DraftSettings = {
   mode: "cup8",

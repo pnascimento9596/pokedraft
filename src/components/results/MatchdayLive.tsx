@@ -4,7 +4,14 @@ import { useEffect, useState } from "react";
 import { speciesById, type CupResult, type DraftState } from "@/engine";
 import { ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import { playGoalHorn, unlockAudio } from "@/components/wheel/sound";
-import { absenceLine, finalScore, goalLine, shootoutLine, type PlayedMatch } from "./format";
+import {
+  absenceLine,
+  finalScore,
+  goalLine,
+  opponentRefLabel,
+  shootoutLine,
+  type PlayedMatch,
+} from "./format";
 import s from "./MatchdayLive.module.css";
 
 export function MatchdayLive({
@@ -236,7 +243,10 @@ export function MatchdayLive({
             {visibleKicks.map((k, idx) => (
               <li key={idx} className={s.kickItem}>
                 <span>
-                  {idx + 1}. {k.side === "user" ? speciesById(k.taker).name : `Opp No. ${k.taker}`}
+                  {idx + 1}.{" "}
+                  {k.side === "user"
+                    ? speciesById(k.taker).name
+                    : `Opp ${opponentRefLabel(k.taker)}`}
                 </span>
                 <span>{k.scored ? "Scored" : "Not scored"}</span>
               </li>

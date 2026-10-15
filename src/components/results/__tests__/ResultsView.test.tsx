@@ -85,10 +85,10 @@ describe("ResultsView", () => {
     const kicks: PenKick[] = [];
     for (let i = 0; i < 25; i++) {
       kicks.push({ side: "user", taker: 1 as SpeciesId, scored: true });
-      kicks.push({ side: "opp", taker: 9 as Shirt, scored: true });
+      kicks.push({ side: "opp", taker: { kind: "shirt", number: 9 as Shirt }, scored: true });
     }
     kicks.push({ side: "user", taker: 1 as SpeciesId, scored: true });
-    kicks.push({ side: "opp", taker: 9 as Shirt, scored: false });
+    kicks.push({ side: "opp", taker: { kind: "shirt", number: 9 as Shirt }, scored: false });
     const matches = cup.matches.map((m) =>
       m.status === "played" && m.round === "F"
         ? {

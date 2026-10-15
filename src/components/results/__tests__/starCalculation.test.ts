@@ -23,7 +23,13 @@ describe("starCalculation", () => {
         shootout: null,
         goals: [
           { side: "user", scorer, assist: null, minute: 10, penalty: false },
-          { side: "opp", minute: 80, scorer: 9 as Shirt, assist: null, penalty: false },
+          {
+            side: "opp",
+            minute: 80,
+            scorer: { kind: "shirt", number: 9 as Shirt },
+            assist: null,
+            penalty: false,
+          },
         ],
       },
       draft,
@@ -92,7 +98,8 @@ describe("starCalculation", () => {
       (m): m is Extract<typeof m, { status: "played" }> => m.status === "played",
     )!;
     // Pikachu (#25) has kickMoves: ["detect", "double-kick", "headbutt", "mega-kick", "protect", "skull-bash"]
-    const pikachu = 25 as typeof match.goals[number]["scorer"] & typeof draft.lineup.starters[0];
+    const pikachu = 25 as (typeof match.goals)[number]["scorer"] &
+      (typeof draft.lineup.starters)[0];
     const star = getMatchStar(
       {
         ...match,

@@ -12,6 +12,8 @@ import * as v1 from "./v1";
 import { buildLadder as v1Ladder } from "./v1/src/engine/opponents";
 import * as v2 from "./v2";
 import { buildLadder as v2Ladder } from "./v2/src/engine/opponents";
+import * as v3 from "./v3";
+import { buildLadder as v3Ladder } from "./v3/src/engine/opponents";
 
 export { engineLabel } from "./label";
 
@@ -37,6 +39,7 @@ interface RetainedBundle {
 const RETAINED: Readonly<Record<number, RetainedBundle>> = {
   [v1.RUN_TOKEN_VERSION]: { ...v1, ladder: v1Ladder },
   [v2.RUN_TOKEN_VERSION]: { ...v2, ladder: v2Ladder },
+  [v3.RUN_TOKEN_VERSION]: { ...v3, ladder: v3Ladder },
 };
 
 const PREFIX = /^pd(\d+)\./;

@@ -272,7 +272,9 @@ describe("builder picker", () => {
 describe("builder pitch token notes", () => {
   it("show no rating on any token with Show ratings off", async () => {
     openWithBenchToo();
-    expect((await screen.findByTestId("slot-s2")).textContent).toBe("DF  LCB  Bulbasaur Grass Poison ");
+    expect((await screen.findByTestId("slot-s2")).textContent).toBe(
+      "DF  LCB  Bulbasaur Grass Poison ",
+    );
     expect(screen.getByTestId("slot-s9").textContent).toBe("FW  ST  Charmander Fire ");
     expect(screen.getByTestId("slot-b0").textContent).toBe("SUB  SUB 1  Pikachu Electric ");
   });
@@ -311,17 +313,17 @@ describe("builder pitch token notes", () => {
 // The ?b= token of openWithTwoPlaced() under engine 3. It decodes to
 // [["b","4-3-3","1",0],"builder",[["l",1,"s2"],["l",4,"s9"]]]: Bulbasaur at LCB, Charmander at ST.
 const TWO_PLACED_TOKEN =
-  "pd3.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDEsInMyIl0sWyJsIiw0LCJzOSJdXV0";
+  "pd4.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDEsInMyIl0sWyJsIiw0LCJzOSJdXV0";
 
 function filledSlots() {
   return document.querySelectorAll('[data-testid^="slot-"][data-filled="true"]').length;
 }
 
-const OWN_BUILDER_TOKEN = "pd3.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDI1LCJzMiJdXV0";
+const OWN_BUILDER_TOKEN = "pd4.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDI1LCJzMiJdXV0";
 const EDITED_BUILDER_TOKEN =
-  "pd3.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDI1LCJzMiJdLFsibCIsNCwiczkiXV1d";
+  "pd4.W1siYiIsIjQtMy0zIiwiMSIsMF0sImJ1aWxkZXIiLFtbImwiLDI1LCJzMiJdLFsibCIsNCwiczkiXV1d";
 const POOL_BUILDER_TOKEN =
-  "pd3.W1siYiIsIjMtNS0yIiwiMTIiLDFdLCJidWlsZGVyIixbWyJsIiwyNSwiczIiXSxbImwiLDQsImIwIl1dXQ";
+  "pd4.W1siYiIsIjMtNS0yIiwiMTIiLDFdLCJidWlsZGVyIixbWyJsIiwyNSwiczIiXSxbImwiLDQsImIwIl1dXQ";
 
 async function replaceBulbasaurWithPikachu() {
   const dialog = await openPicker("LCB Bulbasaur");

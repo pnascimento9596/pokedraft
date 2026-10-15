@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
-import type { CupRound, Opponent, PenKick, Shirt, SpeciesId } from "@/engine";
+import type { Shirt, SpeciesId } from "@/engine";
 import { replayAnyVersion } from "..";
-import { fromLegacy, type LegacyCupResult } from "../legacy";
+import {
+  fromLegacy,
+  LEGACY_SHIRT_ROSTER,
+  type LegacyCupResult,
+  type LegacyLadder,
+  type LegacyOppKick,
+  type UserKick,
+} from "../legacy";
 import { buildLadder as v1Ladder } from "../v1/src/engine/opponents";
 import { A11Y_RUN_V1 } from "./fixtures";
 
@@ -9,8 +16,9 @@ import { A11Y_RUN_V1 } from "./fixtures";
 const ELIMINATED_V1 =
   "pd1.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJjLTQiLFtbInAiLDgyOSwiczAiXSxbInAiLDIxMCwiczEiXSxbInAiLDUyOCwiczIiXSxbInAiLDE2NywiczMiXSxbInAiLDI4NCwiczQiXSxbInAiLDE5NSwiczUiXSxbInAiLDEzMSwiczYiXSxbInAiLDY5MSwiczciXSxbInAiLDMxNywiczgiXSxbInAiLDI5NSwiczkiXSxbInAiLDEwMTYsInMxMCJdLFsicCIsNjMyLCJiMCJdLFsicCIsMzg2LCJiMSJdLFsicCIsNDc4LCJiMiJdLFsicCIsMjMwLCJiMyJdLFsicCIsMzcsImI0Il1dXQ";
 
-function kicks(pairs: number, lastUser: boolean, lastOpp: boolean): PenKick[] {
-  const out: PenKick[] = [];
+// The old engines' shootout kicks name shirt numbers; fromLegacy carries them as shirt refs.
+function kicks(pairs: number, lastUser: boolean, lastOpp: boolean): (UserKick | LegacyOppKick)[] {
+  const out: (UserKick | LegacyOppKick)[] = [];
   for (let i = 0; i < pairs; i++) {
     out.push({ side: "user", taker: 1 as SpeciesId, scored: true });
     out.push({ side: "opp", taker: 9 as Shirt, scored: true });
@@ -20,11 +28,15 @@ function kicks(pairs: number, lastUser: boolean, lastOpp: boolean): PenKick[] {
   return out;
 }
 
-const NO_LADDER = (): Readonly<Record<CupRound, Opponent>> => {
+const NO_LADDER: LegacyLadder = () => {
   throw new Error("this run has no unplayed match");
 };
 
-function withFinalShootout(user: number, opp: number, k: PenKick[]): LegacyCupResult {
+function withFinalShootout(
+  user: number,
+  opp: number,
+  k: readonly (UserKick | LegacyOppKick)[],
+): LegacyCupResult {
   const run = replayAnyVersion(A11Y_RUN_V1);
   const legacy = run.cup as unknown as LegacyCupResult;
   return {
@@ -56,12 +68,13 @@ describe("fromLegacy (engine-1 and engine-2 results in today's shape)", () => {
     });
   });
 
-  it("names an old run's unplayed opponents from that engine's own ladder", () => {
+  it("names an old run's unplayed opponents from that engine's own ladder, as shirt-only clubs", () => {
     const run = replayAnyVersion(ELIMINATED_V1);
     const ladder = v1Ladder(run.cup.seed, run.cup.mode);
     const unplayed = run.cup.matches.filter((m) => m.status === "notPlayed");
     expect(unplayed.map((m) => m.round)).toEqual(["SF", "F"]);
-    for (const m of unplayed) expect(m.opponent).toEqual(ladder[m.round]);
+    for (const m of unplayed)
+      expect(m.opponent).toEqual({ ...ladder[m.round], roster: LEGACY_SHIRT_ROSTER });
   });
 
   it("gives an old run no contribution breakdown rather than inventing one", () => {

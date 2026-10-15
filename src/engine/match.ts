@@ -9,11 +9,11 @@ import type {
   LineStrength,
   MatchResult,
   Opponent,
+  OpponentPlayerRef,
   PenKick,
   Role,
   Score,
   Seed,
-  Shirt,
   Shootout,
   Species,
   SpeciesId,
@@ -37,6 +37,8 @@ export interface MatchInput {
   readonly starters: readonly MatchStarter[];
   readonly keeper: Species;
   readonly opponent: Opponent;
+  /** The Boss Club's own eleven, in lineup order; the live engine always fields species. */
+  readonly opponentStarters: readonly MatchStarter[];
   readonly absences: readonly Absence[];
 }
 
@@ -53,9 +55,6 @@ interface Period {
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
-const SHIRTS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as Shirt[];
-const KEEPER_SHIRT = 1;
-const OPP_SHOOTOUT_ORDER = [9, 10, 11, 8, 7, 6, 5, 4, 3, 2, 1] as Shirt[];
 const REGULATION_MINUTES = 90;
 const EXTRA_TIME_LAST_MINUTE = 120;
 const PERCENT = 100;
@@ -191,19 +190,43 @@ function userAttribution(
 }
 
 function oppAttribution(
+  roster: readonly MatchStarter[],
   rng: EngineRng,
   c: EngineCoefficients,
 ): (minute: number, penalty: boolean) => GoalEvent {
-  const weight = (shirt: Shirt): number => c.match.oppScorerWeights[shirt - 1]!;
-  const [penaltyTaker] = canonicalSortBy(SHIRTS, (shirt) => [-weight(shirt), shirt]);
+  const byId = (s: MatchStarter): number => s.species.id;
+  const shooters = roster.filter((s) => c.match.roleFactor[s.role] > 0);
+  const [penaltyTaker] = canonicalSortBy(roster, (s) => [-s.species.attrs.SHO, s.species.id]);
   return (minute, penalty) => {
-    if (penalty) return { side: "opp", minute, penalty, scorer: penaltyTaker!, assist: null };
-    const scorer = weightedPick(SHIRTS, Number, weight, rng);
-    let assist: Shirt | null = null;
-    if (rng.next() < c.match.assistProb) {
-      assist = rng.pick(SHIRTS.filter((s) => s !== KEEPER_SHIRT && s !== scorer));
+    if (penalty) {
+      return {
+        side: "opp",
+        minute,
+        penalty,
+        scorer: { kind: "species", id: penaltyTaker!.species.id },
+        assist: null,
+      };
     }
-    return { side: "opp", minute, penalty, scorer, assist };
+    const scorer = weightedPick(
+      shooters,
+      byId,
+      (s) => s.species.attrs.SHO * c.match.roleFactor[s.role],
+      rng,
+    );
+    let assist: OpponentPlayerRef | null = null;
+    if (rng.next() < c.match.assistProb) {
+      assist = {
+        kind: "species",
+        id: rng.pick(roster.filter((s) => s !== scorer && s !== roster[0])).species.id,
+      };
+    }
+    return {
+      side: "opp",
+      minute,
+      penalty,
+      scorer: { kind: "species", id: scorer.species.id },
+      assist,
+    };
   };
 }
 
@@ -214,6 +237,10 @@ function convertProb(edge: number, c: EngineCoefficients): number {
 
 function shootout(input: MatchInput, rng: EngineRng, c: EngineCoefficients): Shootout {
   const userTakers = canonicalSortBy(input.starters, (s) => [-s.species.attrs.SHO, s.species.id]);
+  const oppTakers = canonicalSortBy(input.opponentStarters, (s) => [
+    -s.species.attrs.SHO,
+    s.species.id,
+  ]);
   const pOpp = convertProb(
     input.opponent.lines.ATT - (input.keeper.attrs.REF + input.keeper.attrs.DIV) / 2,
     c,
@@ -232,11 +259,11 @@ function shootout(input: MatchInput, rng: EngineRng, c: EngineCoefficients): Sho
     kicks.push({ side: "user", taker: taker.id, scored });
   };
   const kickOpp = (): void => {
-    const taker = OPP_SHOOTOUT_ORDER[oppKicks % OPP_SHOOTOUT_ORDER.length]!;
+    const taker = oppTakers[oppKicks % oppTakers.length]!;
     const scored = rng.next() < pOpp;
     if (scored) opp++;
     oppKicks++;
-    kicks.push({ side: "opp", taker, scored });
+    kicks.push({ side: "opp", taker: { kind: "species", id: taker.species.id }, scored });
   };
 
   const regulation = c.shootout.kicks;
@@ -269,6 +296,13 @@ function count(goals: readonly GoalEvent[]): Score {
   };
 }
 
+// Same-minute same-side ties keep a stable order: user species ids, then opponent refs (a
+// species id, or 1000+ a legacy shirt number so a shirt can never interleave with species ids).
+function goalTieKey(g: GoalEvent): number {
+  if (g.side === "user") return g.scorer;
+  return g.scorer.kind === "species" ? g.scorer.id : 1000 + g.scorer.number;
+}
+
 function outcomeOf(score: Score): "W" | "D" | "L" {
   if (score.user > score.opp) return "W";
   if (score.user < score.opp) return "L";
@@ -292,7 +326,7 @@ export function simulateMatch(
     c,
   );
   const scoreUser = userAttribution(input.starters, rngs.event, c);
-  const scoreOpp = oppAttribution(rngs.event, c);
+  const scoreOpp = oppAttribution(input.opponentStarters, rngs.event, c);
 
   const full: Period = { first: 1, last: REGULATION_MINUTES, chances: c.match.chances.regulation };
   const goals = [
@@ -332,7 +366,7 @@ export function simulateMatch(
     (a, b) =>
       a.minute - b.minute ||
       (a.side === b.side ? 0 : a.side === "user" ? -1 : 1) ||
-      a.scorer - b.scorer,
+      goalTieKey(a) - goalTieKey(b),
   );
 
   return {

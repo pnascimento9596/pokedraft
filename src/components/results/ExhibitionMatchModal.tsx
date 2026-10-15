@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
-import { FORMATIONS, speciesById, type DraftState, type Seed } from "@/engine";
+import {
+  FORMATIONS,
+  speciesById,
+  type DraftState,
+  type OpponentPlayerRef,
+  type Seed,
+} from "@/engine";
 import { simulateMatch, type MatchStarter } from "@/engine/match";
 import { matchLines, rateTeam } from "@/engine/team";
 import { fullLineup } from "@/components/builder/model";
@@ -48,10 +54,16 @@ export function ExhibitionMatchModal({
     const rating = rateTeam(own);
     const opposition = rateTeam(other);
     const formation = FORMATIONS[own.formation];
+    const otherFormation = FORMATIONS[other.formation];
     const starters = own.starters.map((id, i): MatchStarter => ({
       species: speciesById(id),
       line: formation.slots[i]!.line,
       role: formation.slots[i]!.role,
+    }));
+    const otherStarters = other.starters.map((id, i): MatchStarter => ({
+      species: speciesById(id),
+      line: otherFormation.slots[i]!.line,
+      role: otherFormation.slots[i]!.role,
     }));
     match = simulateMatch({
       matchIndex: 0,
@@ -67,7 +79,9 @@ export function ExhibitionMatchModal({
         name: "Shared squad",
         score: opposition.score,
         lines: matchLines(opposition),
+        roster: other.starters.map((id) => ({ kind: "species", id }) as OpponentPlayerRef),
       },
+      opponentStarters: otherStarters,
       absences: [],
     });
   }
@@ -138,16 +152,11 @@ export function ExhibitionMatchModal({
               {match.goals.map((goal, i) => (
                 <li key={i} data-side={goal.side}>
                   <span>{goal.side === "user" ? "Your squad" : "Shared squad"}</span>
-                  <span>
-                    {goal.side === "user"
-                      ? goalLine(goal)
-                      : `${goal.minute}' No. ${goal.scorer}${goal.penalty ? " (pen)" : ""}`}
-                  </span>
+                  <span>{goalLine(goal)}</span>
                 </li>
               ))}
             </ul>
             {match.goals.length === 0 ? <p>No goals in this match.</p> : null}
-            <p className={s.note}>Opponent events use shirt numbers in this engine version.</p>
             <button
               type="button"
               className="btn btn--primary"

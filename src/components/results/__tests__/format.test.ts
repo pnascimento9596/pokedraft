@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { PenKick, Shirt, SpeciesId } from "@/engine";
+import type { OpponentPlayerRef, PenKick, Shirt, SpeciesId } from "@/engine";
 import { recapLines } from "@/engine/recap";
 import {
   absenceLine,
@@ -17,7 +17,16 @@ function knockout(over: Partial<PlayedMatch>): PlayedMatch {
   return {
     status: "played",
     round: "QF",
-    opponent: { id: "o", name: "Rival FC", score: 760, lines: { GK: 1, DEF: 1, MID: 1, ATT: 1 } },
+    opponent: {
+      id: "o",
+      name: "Rival FC",
+      score: 760,
+      lines: { GK: 1, DEF: 1, MID: 1, ATT: 1 },
+      roster: Array.from({ length: 11 }, (_, i): OpponentPlayerRef => ({
+        kind: "shirt",
+        number: shirt(i + 1),
+      })),
+    },
     regulation: { user: 1, opp: 1 },
     extraTime: { user: 0, opp: 0 },
     shootout: null,
@@ -34,10 +43,10 @@ function kicks(pairs: number, finalUser: boolean, finalOpp: boolean): PenKick[] 
   const out: PenKick[] = [];
   for (let i = 0; i < pairs; i++) {
     out.push({ side: "user", taker: sp(1), scored: true });
-    out.push({ side: "opp", taker: shirt(9), scored: true });
+    out.push({ side: "opp", taker: { kind: "shirt", number: shirt(9) }, scored: true });
   }
   out.push({ side: "user", taker: sp(1), scored: finalUser });
-  out.push({ side: "opp", taker: shirt(9), scored: finalOpp });
+  out.push({ side: "opp", taker: { kind: "shirt", number: shirt(9) }, scored: finalOpp });
   return out;
 }
 
@@ -122,7 +131,7 @@ describe("results format", () => {
     expect(finalScore(m)).toEqual({ user: 3, opp: 2 });
   });
 
-  it("names user scorers and assisters but only shirt numbers for opponents", () => {
+  it("names user scorers and assisters, Boss Club Pokemon for engine 4, shirt numbers for legacy runs", () => {
     expect(
       goalLine({ side: "user", minute: 23, penalty: false, scorer: sp(1), assist: sp(43) }),
     ).toBe("23' Bulbasaur, assist Oddish");
@@ -130,7 +139,22 @@ describe("results format", () => {
       "88' Bulbasaur (pen)",
     );
     expect(
-      goalLine({ side: "opp", minute: 57, penalty: false, scorer: shirt(9), assist: null }),
+      goalLine({
+        side: "opp",
+        minute: 57,
+        penalty: false,
+        scorer: { kind: "species", id: sp(6) },
+        assist: null,
+      }),
+    ).toBe("57' Charizard");
+    expect(
+      goalLine({
+        side: "opp",
+        minute: 57,
+        penalty: false,
+        scorer: { kind: "shirt", number: shirt(9) },
+        assist: null,
+      }),
     ).toBe("57' No. 9");
   });
 

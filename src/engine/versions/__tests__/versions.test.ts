@@ -118,6 +118,9 @@ describe("retained engine-3 bundle (catches a platform-overhaul run replaying di
     const run = v3.replay(GOLDEN_CUP8_V3);
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 3, "R16"]);
     expect([run.cup.wins, run.cup.draws, run.cup.losses]).toEqual([3, 0, 2]);
+    expect(sha256(JSON.stringify(run))).toBe(
+      "07bfee8296298a5c0d7b7878e813811548b1e8a3a74b1cfd899f0680f0d5db95",
+    );
   });
 
   it("routes pd3. tokens to the v3 bundle, not the live engine", () => {
@@ -142,6 +145,7 @@ describe("replayAnyVersion (routes a token to the engine that issued it)", () =>
       [GOLDEN_CUP8_V1, v1, v1Ladder, "pokedraft-engine-1"],
       [GOLDEN_KANTO151_V1, v1, v1Ladder, "pokedraft-engine-1"],
       [GOLDEN_CUP8_V2, v2, v2Ladder, "pokedraft-engine-2"],
+      [GOLDEN_CUP8_V3, v3, v3Ladder, "pokedraft-engine-3"],
     ] as const) {
       const run = replayAnyVersion(token);
       const raw = bundle.replay(token);

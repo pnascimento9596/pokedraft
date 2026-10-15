@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ENGINE_COEFFICIENTS } from "../coefficients";
 import { FORMATIONS } from "../formations";
 import { simulateMatch, type MatchInput, type Phase } from "../match";
-import { buildLadder } from "../opponents";
+import { buildLadder, bossStarters } from "../opponents";
 import { speciesById } from "../species";
 import { matchLines, rateTeam } from "../team";
 import type { CupRound, FullLineup, Seed } from "../types";
@@ -31,6 +31,7 @@ function input(seed: string, matchIndex: number, round: CupRound, phase: Phase):
     starters: STARTERS,
     keeper: speciesById(9),
     opponent: LADDER[round],
+    opponentStarters: bossStarters(LADDER[round]),
     absences: [],
   };
 }
@@ -109,7 +110,13 @@ describe("simulateMatch", () => {
       { side: "user", minute: 64, penalty: false, scorer: 85, assist: null },
       { side: "user", minute: 71, penalty: false, scorer: 85, assist: 6 },
       { side: "user", minute: 80, penalty: true, scorer: 149, assist: null },
-      { side: "opp", minute: 81, penalty: false, scorer: 10, assist: null },
+      {
+        side: "opp",
+        minute: 81,
+        penalty: false,
+        scorer: { kind: "species", id: 84 },
+        assist: null,
+      },
       { side: "user", minute: 90, penalty: false, scorer: 135, assist: 26 },
     ]);
     expect(m.recap).toEqual([
@@ -126,7 +133,7 @@ describe("simulateMatch", () => {
     ]);
   });
 
-  it("pins a final that goes to a shootout with SHO-ordered user takers and the fixed opp order", () => {
+  it("pins a final that goes to a shootout with SHO-ordered takers on both sides", () => {
     const m = simulateMatch(input("m-0", 7, "F", "knockout"));
     expect([m.regulation, m.extraTime, m.outcome]).toEqual([
       { user: 0, opp: 0 },
@@ -139,19 +146,19 @@ describe("simulateMatch", () => {
       keeper: 9,
       kicks: [
         { side: "user", taker: 149, scored: false },
-        { side: "opp", taker: 9, scored: true },
+        { side: "opp", taker: { kind: "species", id: 149 }, scored: true },
         { side: "user", taker: 59, scored: true },
-        { side: "opp", taker: 10, scored: true },
+        { side: "opp", taker: { kind: "species", id: 85 }, scored: true },
         { side: "user", taker: 85, scored: true },
-        { side: "opp", taker: 11, scored: true },
+        { side: "opp", taker: { kind: "species", id: 6 }, scored: true },
         { side: "user", taker: 6, scored: true },
-        { side: "opp", taker: 8, scored: false },
+        { side: "opp", taker: { kind: "species", id: 146 }, scored: false },
         { side: "user", taker: 26, scored: true },
-        { side: "opp", taker: 7, scored: true },
+        { side: "opp", taker: { kind: "species", id: 145 }, scored: true },
         { side: "user", taker: 9, scored: true },
-        { side: "opp", taker: 6, scored: true },
+        { side: "opp", taker: { kind: "species", id: 123 }, scored: true },
         { side: "user", taker: 55, scored: true },
-        { side: "opp", taker: 5, scored: false },
+        { side: "opp", taker: { kind: "species", id: 142 }, scored: false },
       ],
       decider: "kicks",
       coinWinner: null,

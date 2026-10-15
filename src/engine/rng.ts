@@ -59,6 +59,7 @@ export const SUBSTREAMS = [
   "match_sim",
   "event_gen",
   "opponent_selection",
+  "opponent_roster",
   "availability",
   "group_table",
 ] as const;

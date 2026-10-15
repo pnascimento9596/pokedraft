@@ -2,7 +2,15 @@
 import { StrictMode } from "react";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { CupResult, PenKick, Seed, Shirt, SpeciesId, TeamRating } from "@/engine";
+import type {
+  CupResult,
+  OpponentPlayerRef,
+  PenKick,
+  Seed,
+  Shirt,
+  SpeciesId,
+  TeamRating,
+} from "@/engine";
 import { MatchdayLive } from "../MatchdayLive";
 import type { PlayedMatch } from "../format";
 
@@ -20,6 +28,10 @@ const match: PlayedMatch = {
     name: "Test Rovers",
     score: 700,
     lines: { GK: 70, DEF: 70, MID: 70, ATT: 70 },
+    roster: Array.from({ length: 11 }, (_, i): OpponentPlayerRef => ({
+      kind: "shirt",
+      number: (i + 1) as Shirt,
+    })),
   },
   regulation: { user: 2, opp: 0 },
   extraTime: null,
@@ -40,7 +52,7 @@ const match: PlayedMatch = {
 function cup(matches: readonly PlayedMatch[] = [match]): CupResult {
   const player = { species: 1 as SpeciesId, goals: 2, assists: 0, appearances: 1 };
   return {
-    engine: "pokedraft-engine-3",
+    engine: "pokedraft-engine-4",
     seed: "broadcast-test" as Seed,
     mode: "cup8",
     rating: { score: 800 } as TeamRating,
@@ -66,7 +78,11 @@ function penalties(decider: "kicks" | "coin" | "decree" = "kicks"): PlayedMatch 
   const kicks: PenKick[] = [];
   for (let i = 0; i < pairs; i++) {
     kicks.push({ side: "user", taker: 1 as SpeciesId, scored: true });
-    kicks.push({ side: "opp", taker: 9 as Shirt, scored: decider === "coin" || i < pairs - 1 });
+    kicks.push({
+      side: "opp",
+      taker: { kind: "shirt", number: 9 as Shirt },
+      scored: decider === "coin" || i < pairs - 1,
+    });
   }
   return {
     ...match,
