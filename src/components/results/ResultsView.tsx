@@ -22,7 +22,8 @@ import {
   STYLE_LABEL,
   record,
 } from "@/ui/labels";
-import { recordRun, toRecord } from "@/ui/runs";
+import { recordCompletedRun } from "@/ui/lifetime";
+import { toRecord } from "@/ui/runs";
 import { contributionLine } from "./format";
 import { FitReveal } from "./FitReveal";
 import { MatchdayLive } from "./MatchdayLive";
@@ -68,7 +69,9 @@ export function ResultsView({
   useEffect(() => {
     if (variant !== "live" || recorded.current) return;
     recorded.current = true;
-    recordRun(toRecord(token, draft.settings, cup, new Date().toISOString(), draft.lineup));
+    recordCompletedRun(
+      toRecord(token, draft.settings, cup, new Date().toISOString(), draft.lineup),
+    );
   }, [variant, token, draft.settings, draft.lineup, cup]);
 
   const friendly = draft.settings.mode === "builder";
