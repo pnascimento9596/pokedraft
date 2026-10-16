@@ -8,11 +8,13 @@ Not merged at the time of writing. Branch `feat/manager-mode-broadcast`, which m
 
 The engine 6 submit guard that refused coached tokens is removed with the marker. RED commit for that: the handler test that ranks a coached token (422 before the removal).
 
-Local gates at `bd96931` (the commit after it changes only this file):
+The board coach filter runs in SQL. RED commit: `c22bc59` (an Uncoached view cut short by 51 coached rows above it, `coachedSql` vs `isCoached` equivalence, and the manager token version list).
+
+Local gates at `4c63850` (the commit after it changes only this file):
 
 - Lint, typecheck, build, format check, mirrors, image seam, image packs, theme contrast, theme colors, theme CVD and client bundle all exited 0.
-- Unit tests: 1,277 passed of 1,277, in 139 files.
-- Playwright on a fresh build with `PLAYWRIGHT_PORT=3471 CI=1`: 791 passed, 0 failed, 61 skipped. By project: chromium 342 passed and 1 skipped, iphone-se 135 and 29, iphone-14 173 and 3, pixel-7 141 and 28. The manager-mode spec passed 5 of 5 on chromium and 5 of 5 on pixel-7.
+- Unit tests: 1,283 passed of 1,283, in 139 files.
+- Playwright on a fresh build with `PLAYWRIGHT_PORT=3471 CI=1`: 792 passed, 0 failed, 61 skipped. By project: chromium 343 passed and 1 skipped, iphone-se 135 and 29, iphone-14 173 and 3, pixel-7 141 and 28. The manager-mode spec passed 5 of 5 on chromium and 5 of 5 on pixel-7.
 - Hosted CI, the independent review and the webkit projects: NOT RUN.
 
 ## Engine 6: manager mode engine candidate
