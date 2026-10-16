@@ -80,6 +80,10 @@ first page load nor the quick view carries the artifact.
 - `BoardEntry.coached` is derived in `toBoardEntry` from the stored token (pd6 prefix, decodes, and
   at least one manager action). There is no column and no migration. The client schema requires
   the field, so a board reply without it is shown as an error, not read as uncoached.
+- Engine 6 shipped a temporary guard that refused coached tokens at submit, so no coached run could
+  rank unmarked. This dispatch ships the marker, so the guard is gone. A handler test pins that a
+  coached token gets 201 with `coached: true` and an uncoached one `coached: false`, and its RED
+  run (422 from the guard) was committed first.
 - Rows carry a "Coached" chip. The All / Uncoached / Coached filter is client side: it narrows the
   50 rows the server already ranked together and keeps their board ranks. It is not a separate top
   50 of coached or uncoached runs. If the group wants that, it is a read-side query change.
