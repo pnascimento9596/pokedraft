@@ -4,8 +4,10 @@ Usage:
     python3 -I tools/review/strip-verdict.py <raw reply> <packet meta.json> [--out CLEAN]
 
 Strips ANSI escapes and the braille spinner ollama prints, then requires the canary and the
-full head SHA from the meta file and exactly one verdict word. Exit 0 for APPROVE, 2 for
-REQUEST_CHANGES, 1 when the reply does not count.
+full head SHA from the meta file and exactly one verdict. A verdict is a line that holds only the
+word, optionally labelled `Verdict` and wrapped in Markdown (`**APPROVE**`, `# APPROVE`,
+`| Verdict | **APPROVE** |`), so prose that quotes "APPROVE or REQUEST_CHANGES" does not count.
+Exit 0 for APPROVE, 2 for REQUEST_CHANGES, 1 when the reply does not count.
 """
 
 import argparse
@@ -14,9 +16,11 @@ import pathlib
 import re
 import sys
 
-ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)")
 BRAILLE = re.compile(r"[⠀-⣿]\s*")
-VERDICT = re.compile(r"\b(APPROVE|REQUEST_CHANGES)\b")
+VERDICT = re.compile(
+    r"^[\s#*|>`_]*(?:(?i:verdict)[\s*|`_:]*)?(APPROVE|REQUEST_CHANGES)[\s*|`_.]*$", re.MULTILINE
+)
 
 
 def main() -> None:
@@ -38,7 +42,7 @@ def main() -> None:
         problems.append(f"head SHA {meta['sha']} not echoed in full")
     verdicts = sorted(set(VERDICT.findall(text)))
     if len(verdicts) != 1:
-        problems.append(f"expected exactly one verdict word, found {verdicts or 'none'}")
+        problems.append(f"expected exactly one verdict line value, found {verdicts or 'none'}")
 
     report = {"sha": meta["sha"], "canary": meta["canary"], "verdicts": verdicts}
     if problems:

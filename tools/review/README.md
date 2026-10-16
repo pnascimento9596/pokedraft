@@ -55,10 +55,13 @@ python3 -I tools/review/strip-verdict.py <dir>/reply.raw <dir>/pokedraft-<name>-
   --out <dir>/reply.txt
 ```
 
-It removes `\x1b[...]` sequences and `re.sub(r'[⠀-⣿]\s*', '', text)`, then requires the canary,
-the full 40-character head SHA and exactly one of `APPROVE` or `REQUEST_CHANGES`. Exit 0 is
-APPROVE, 2 is REQUEST_CHANGES, 1 means the reply does not count (missing canary, missing or short
-SHA, no verdict, or both words). A reply that does not count is not a receipt. Rerun the review.
+It removes `\x1b[...]` and `\x1b]...` sequences and `re.sub(r'[⠀-⣿]\s*', '', text)`, then
+requires the canary, the full 40-character head SHA and exactly one verdict. A verdict is a line
+holding only `APPROVE` or `REQUEST_CHANGES`, optionally labelled `Verdict` and wrapped in Markdown
+(`**APPROVE**`, `# APPROVE`, `| Verdict | **APPROVE** |`). GLM replies quote the prompt's "APPROVE
+or REQUEST_CHANGES" in prose, so a bare word search would reject real receipts. Exit 0 is APPROVE,
+2 is REQUEST_CHANGES, 1 means the reply does not count (missing canary, missing or short SHA, no
+verdict line, or verdict lines that disagree). A reply that does not count is not a receipt. Rerun the review.
 
 Any commit after an APPROVE voids it. Re-review the new head.
 

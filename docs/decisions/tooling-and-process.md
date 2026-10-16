@@ -40,7 +40,7 @@ Section D of the hand-off, verbatim:
 # Decisions and evidence
 
 Branch `chore/tooling-and-process` off `origin/main` at `648cf2f`. Items 14 to 19. Item 20 is out
-of scope for this lane: no worktree was removed or touched. No file under `src/` changed, so the
+of scope for this lane: the implementer removed no worktree (the coordinator did later, see item 20). No file under `src/` changed, so the
 app, engine, data and goldens are as on main.
 
 ## 14. Review packet builder
@@ -240,6 +240,16 @@ engine change.
 
 The header now says each PR's STATE section cites its reviewed head and the squash SHA is recorded
 in the next PR's STATE update, which is what #61, #62 and #63 did.
+
+## Coordinator fix round: strip-verdict on real replies
+
+GLM approved `7095144` in round 1, but `strip-verdict.py` called that real reply "does not count":
+it found both verdict words, because GLM quoted the prompt's "APPROVE or REQUEST_CHANGES" in prose.
+The script now reads only verdict lines (a line holding just the word, optionally labelled
+`Verdict` and wrapped in Markdown) and also strips OSC escapes. Checked on the three real GLM
+replies of this hand-off (PRs #64, #65 and #66 round 1): all three now count as APPROVE with exit 0,
+where #66 exited 1 before. Synthetic replies: a `**Verdict: REQUEST_CHANGES**` line after an OSC
+title and a prose echo exits 2; prose only exits 1; `# APPROVE` plus `## REQUEST_CHANGES` exits 1.
 
 ## 20. Worktree sprawl
 
