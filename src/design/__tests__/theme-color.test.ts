@@ -9,7 +9,9 @@ describe("theme-color tokens match tokens.css --canvas", () => {
     const css = readFileSync(tokensPath, "utf-8");
 
     const lightCanvasMatch = css.match(/:root\s*\{[^}]*--canvas:\s*(#[0-9A-Fa-f]{6});/);
-    const darkCanvasMatch = css.match(/:root\[data-theme="dark"\]\s*\{[^}]*--canvas:\s*(#[0-9A-Fa-f]{6});/);
+    const darkCanvasMatch = css.match(
+      /:root\[data-theme="dark"\]\s*\{[^}]*--canvas:\s*(#[0-9A-Fa-f]{6});/,
+    );
 
     expect(lightCanvasMatch).not.toBeNull();
     expect(darkCanvasMatch).not.toBeNull();

@@ -87,7 +87,10 @@ for (const engine of ["chromium", "webkit"] as const) {
         const states = await animationStates(page);
         expect(states.some((a) => a.name.includes("ballStrikeShot"))).toBe(true);
         expect(states.some((a) => a.name.includes("goalPop"))).toBe(true);
-        expect(states.every((a) => a.state === "paused"), JSON.stringify(states)).toBe(true);
+        expect(
+          states.every((a) => a.state === "paused"),
+          JSON.stringify(states),
+        ).toBe(true);
         await testInfo.attach(`${engine}-paused`, {
           body: JSON.stringify(states),
           contentType: "application/json",

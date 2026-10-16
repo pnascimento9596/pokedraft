@@ -12,6 +12,7 @@ import {
   GOLDEN_CUP8_V2,
   GOLDEN_CUP8_V3,
   GOLDEN_CUP8_V4,
+  GOLDEN_CUP8_V5,
 } from "../engine/versions/__tests__/fixtures";
 
 function importClosure(entryRel: string): string[] {
@@ -164,19 +165,30 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       { mode: "kanto151", formation: "4-4-2", order: "squadFirst" },
       "proxy-seed",
     );
-    const res = proxy(req(`/r/pd5?t=${real.slice(4)}`));
+    const res = proxy(req(`/r/pd6?t=${real.slice(4)}`));
     expect(res.headers.get("x-middleware-rewrite")).toBe(`https://pokedraft.test/r/${real}`);
     expect(
-      proxy(req(`/r/pd5?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
+      proxy(req(`/r/pd6?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
         "x-middleware-rewrite",
       ),
     ).toBe(`https://pokedraft.test/r/${real}?_rsc=123&source=chat`);
-    for (const token of [A11Y_RUN_V1, GOLDEN_CUP8_V2, GOLDEN_CUP8_V3, GOLDEN_CUP8_V4]) {
+    for (const token of [
+      A11Y_RUN_V1,
+      GOLDEN_CUP8_V2,
+      GOLDEN_CUP8_V3,
+      GOLDEN_CUP8_V4,
+      GOLDEN_CUP8_V5,
+    ]) {
       const [version, payload] = token.split(".");
       expect(proxy(req(`/r/${version}?t=${payload}`)).headers.get("x-middleware-rewrite")).toBe(
         `https://pokedraft.test/r/${token}`,
       );
     }
+  });
+
+  it("keeps a shipped engine-5 share link on its page once engine 6 is live (catches pd5 links 404ing)", () => {
+    vi.stubEnv("FRIENDS_PASSCODE", "");
+    expect(proxy(req(`/r/${GOLDEN_CUP8_V5}`)).headers.get("x-middleware-rewrite")).toBeNull();
   });
 
   it("keeps missing, malformed and unsupported query payloads on the real 404 route", () => {

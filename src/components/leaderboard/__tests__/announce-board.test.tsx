@@ -113,6 +113,44 @@ describe("Board", () => {
     await screen.findAllByTestId("board-row");
     await waitFor(() => expect(document.activeElement).toBe(screen.getByTestId("board")));
   });
+
+  it("Try again clicked before the error's effects run still focuses the board (catches the stale error result consuming the retry)", async () => {
+    let fail!: (e: Error) => void;
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockImplementationOnce(() => new Promise((_, reject) => (fail = reject)))
+        .mockResolvedValueOnce(board([ENTRY])),
+    );
+    render(
+      <>
+        <Board view={DAILY} />
+        <Announcer />
+      </>,
+    );
+    const actEnv = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean };
+    actEnv.IS_REACT_ACT_ENVIRONMENT = false;
+    try {
+      const clicked = new Promise<void>((resolve) => {
+        const watch = new MutationObserver(() => {
+          const retry = screen.queryByRole("button", { name: "Try again" });
+          if (retry === null) return;
+          watch.disconnect();
+          retry.focus();
+          fireEvent.click(retry);
+          resolve();
+        });
+        watch.observe(document.body, { childList: true, subtree: true });
+      });
+      fail(new TypeError("Failed to fetch"));
+      await clicked;
+      await screen.findAllByTestId("board-row");
+      await waitFor(() => expect(document.activeElement).toBe(screen.getByTestId("board")));
+    } finally {
+      actEnv.IS_REACT_ACT_ENVIRONMENT = true;
+    }
+  });
 });
 
 describe("SubmitPanel", () => {

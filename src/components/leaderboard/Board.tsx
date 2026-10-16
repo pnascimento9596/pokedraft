@@ -53,8 +53,9 @@ export function Board({ view }: { readonly view: BoardView }) {
   }, [key]);
 
   const result = loaded?.key === key ? loaded.result : null;
-  // Try again unmounts itself, so the next board, empty state or error takes focus.
-  const retried = useRef(false);
+  // Try again unmounts itself, so the next board, empty state or error takes focus. The attempt
+  // number keeps the error's own effect, if it runs after the click, from taking that focus.
+  const focusAttempt = useRef<number | null>(null);
   const focusTarget = useRef<HTMLElement | null>(null);
   const target = (el: HTMLElement | null) => {
     focusTarget.current = el;
@@ -67,11 +68,11 @@ export function Board({ view }: { readonly view: BoardView }) {
       const n = result.entries.length;
       announce(n === 0 ? "No entries yet." : n === 1 ? "1 entry." : `${n} entries.`);
     }
-    if (retried.current) {
-      retried.current = false;
+    if (focusAttempt.current === attempt) {
+      focusAttempt.current = null;
       focusTarget.current?.focus({ preventScroll: true });
     }
-  }, [result]);
+  }, [result, attempt]);
 
   if (result === null) {
     return <p className={`kicker ${s.loading}`}>Loading the board</p>;
@@ -91,8 +92,8 @@ export function Board({ view }: { readonly view: BoardView }) {
           type="button"
           className="btn"
           onClick={() => {
-            retried.current = true;
-            setAttempt((n) => n + 1);
+            focusAttempt.current = attempt + 1;
+            setAttempt(attempt + 1);
           }}
         >
           Try again

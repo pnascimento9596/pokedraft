@@ -114,11 +114,20 @@ export async function resizeTo(page: Page, size: Size): Promise<void> {
   await settle(page);
 }
 
+// Hydration is a precondition, not a measurement. A browser launched cold inside a test, next to
+// three other CPU-bound workers, has needed more than expect.poll's 5 s default (hosted runs
+// 38783031946, 38825262768, 38841517775 and 38918007179), so wait for the event itself.
+const HYDRATION_TIMEOUT_MS = 30_000;
+
 /** A server-rendered element is only live once React has attached its props to it. */
 export async function waitForHydration(locator: Locator): Promise<void> {
   await expect
-    .poll(() =>
-      locator.first().evaluate((el) => Object.keys(el).some((k) => k.startsWith("__reactProps$"))),
+    .poll(
+      () =>
+        locator
+          .first()
+          .evaluate((el) => Object.keys(el).some((k) => k.startsWith("__reactProps$"))),
+      { message: "React did not hydrate the element", timeout: HYDRATION_TIMEOUT_MS },
     )
     .toBe(true);
 }

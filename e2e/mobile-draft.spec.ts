@@ -473,14 +473,18 @@ test("pointer drag from candidate card directly drops onto empty slot", async ({
   // Drag from center of candidate card to center of empty slot
   await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2);
   await page.mouse.down();
-  await page.mouse.move(slotBox.x + slotBox.width / 2, slotBox.y + slotBox.height / 2, { steps: 5 });
+  await page.mouse.move(slotBox.x + slotBox.width / 2, slotBox.y + slotBox.height / 2, {
+    steps: 5,
+  });
   await page.mouse.up();
 
   // Verify placement advances round
   await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
 });
 
-test("desktop candidate selection is cleared on reroll without leaving stale suitability", async ({ page }) => {
+test("desktop candidate selection is cleared on reroll without leaving stale suitability", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto(PLAY_8_0);
   await page.getByTestId("run-start").click();
@@ -514,7 +518,9 @@ test("touch release over drawer does not place into occluded slots", async ({ pa
   // Drag down slightly within drawer (e.g. 20px) and release still over drawer
   await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2);
   await page.mouse.down();
-  await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2 + 25, { steps: 5 });
+  await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2 + 25, {
+    steps: 5,
+  });
   await page.mouse.up();
 
   // Round must NOT have advanced (remains Round 1)

@@ -2,6 +2,16 @@
 @import "../design/stadium.css";
 @import "../components/ui/primitives.css";
 
+/* The metric-matched Arial that next/font/google generated for Inter, kept byte for byte. */
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial");
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+  size-adjust: 107.12%;
+}
+
 *,
 *::before,
 *::after {

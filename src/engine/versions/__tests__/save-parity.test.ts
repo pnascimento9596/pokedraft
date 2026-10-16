@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { replay } from "@/engine/replay";
 import type { CupResult, DraftSettings } from "@/engine/types";
 import { scriptedToken } from "@/leaderboard/server/__tests__/fixtures";
 import * as v4 from "../v4";
+import * as v5 from "../v5";
 
 const PANEL: readonly DraftSettings[] = [
   {
@@ -19,6 +19,7 @@ const PANEL: readonly DraftSettings[] = [
 ];
 
 // Engine 5 only appends saves and its version string, so removing both must leave engine 4 exactly.
+// Both sides are the frozen bundles: the live engine is engine 6 now.
 function withoutSaves(cup: CupResult): unknown {
   return {
     ...cup,
@@ -36,8 +37,9 @@ describe("engine 5 against engine 4 (catches save recording that moves any score
     for (const [i, settings] of PANEL.entries()) {
       for (let k = 0; k < 8; k++) {
         const live = scriptedToken(settings, `parity-${i}-${k}`);
-        const old = v4.replay(`pd4.${live.slice(live.indexOf(".") + 1)}`);
-        const run = replay(live);
+        const payload = live.slice(live.indexOf(".") + 1);
+        const old = v4.replay(`pd4.${payload}`);
+        const run = v5.replay(`pd5.${payload}`) as unknown as { draft: unknown; cup: CupResult };
         expect(run.draft).toEqual(old.draft);
         expect(withoutSaves(run.cup)).toEqual(old.cup);
         for (const m of run.cup.matches) if (m.status === "played") saves += m.saves!.length;

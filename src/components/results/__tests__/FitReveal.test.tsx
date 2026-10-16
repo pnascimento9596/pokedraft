@@ -17,9 +17,10 @@ const FINISH_2 = {
 } as unknown as FullLineup;
 
 // [slot label, number shown, raw fit] per slot. The number is round(100 * quality), both read off
-// the same script output (fit=29 q=0.40487804878048783 for the keeper, and so on).
+// the same script output (fit=29 q=0.4068292682926829 for the keeper, and so on). The keeper moved from 40 to 41 when
+// Jigglypuff and Wigglytuff lost GK as a best role: its fit is unchanged, fewer keepers outrank it.
 const FINISH_2_ROWS = [
-  ["GK", 40, 29],
+  ["GK", 41, 29],
   ["LB", 84, 71],
   ["LCB", 92, 85],
   ["RCB", 12, 32],
@@ -104,14 +105,14 @@ describe("FitReveal", () => {
     ]);
     expect(Math.min(...rows.filter((r) => !r.weak).map((r) => r.number))).toBe(31);
     const gk = rows[0]!;
-    expect([gk.label, gk.number, gk.weak]).toEqual(["GK", 40, false]);
+    expect([gk.label, gk.number, gk.weak]).toEqual(["GK", 41, false]);
   });
 
   it("labels the number with who it is compared to, and reads the same quantity to a screen reader", () => {
     const rows = show(FINISH_2);
     expect(within(rows[0]!.row).getByText("vs other keepers")).toBeTruthy();
     expect(
-      within(rows[0]!.row).getByText("Quality 40, better than about 40 of every 100 other keepers"),
+      within(rows[0]!.row).getByText("Quality 41, better than about 41 of every 100 other keepers"),
     ).toBeTruthy();
     expect(within(rows[3]!.row).getByText("vs other CBs")).toBeTruthy();
     expect(

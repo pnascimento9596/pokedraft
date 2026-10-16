@@ -9,12 +9,21 @@
     "blaze-kick": { "trait": "kick", "reason": "Fiery kick. Seeded by dispatch." },
     "triple-kick": { "trait": "kick", "reason": "Three kicks in a row. Seeded by dispatch." },
     "trop-kick": { "trait": "kick", "reason": "Kick from the legs. Seeded by dispatch." },
-    "pyro-ball": { "trait": "kick", "reason": "Kicks a fireball made from a pebble, the closest move to a shot. Seeded by dispatch." },
+    "pyro-ball": {
+      "trait": "kick",
+      "reason": "Kicks a fireball made from a pebble, the closest move to a shot. Seeded by dispatch."
+    },
     "thunderous-kick": { "trait": "kick", "reason": "Lightning-fast kick. Seeded by dispatch." },
     "axe-kick": { "trait": "kick", "reason": "Raised heel brought down. Seeded by dispatch." },
     "triple-axel": { "trait": "kick", "reason": "Three spinning kicks. Seeded by dispatch." },
-    "mega-kick": { "trait": "kick", "reason": "Added. A full-power kick, the most direct kicking move in the games." },
-    "low-sweep": { "trait": "kick", "reason": "Added. A swift low sweep at the legs, a sliding-tackle analogue." },
+    "mega-kick": {
+      "trait": "kick",
+      "reason": "Added. A full-power kick, the most direct kicking move in the games."
+    },
+    "low-sweep": {
+      "trait": "kick",
+      "reason": "Added. A swift low sweep at the legs, a sliding-tackle analogue."
+    },
     "protect": { "trait": "reflex", "reason": "Blocks an incoming attack. Seeded by dispatch." },
     "detect": { "trait": "reflex", "reason": "Reads and evades an attack. Seeded by dispatch." },
     "quick-guard": { "trait": "reflex", "reason": "Blocks priority attacks. Seeded by dispatch." },
@@ -22,11 +31,26 @@
     "kings-shield": { "trait": "reflex", "reason": "Shield block. Seeded by dispatch." },
     "spiky-shield": { "trait": "reflex", "reason": "Spiked block. Seeded by dispatch." },
     "baneful-bunker": { "trait": "reflex", "reason": "Poisoned block. Seeded by dispatch." },
-    "obstruct": { "trait": "reflex", "reason": "Added. A blocking stance from the same Protect family." },
-    "silk-trap": { "trait": "reflex", "reason": "Added. A silk net block from the same Protect family." },
-    "burning-bulwark": { "trait": "reflex", "reason": "Added. A fiery shield block from the same Protect family." },
-    "mat-block": { "trait": "reflex", "reason": "Added. Lifts a mat to block attacks, a first-touch save." },
-    "crafty-shield": { "trait": "reflex", "reason": "Added. Shields the team from status moves, a team block." },
+    "obstruct": {
+      "trait": "reflex",
+      "reason": "Added. A blocking stance from the same Protect family."
+    },
+    "silk-trap": {
+      "trait": "reflex",
+      "reason": "Added. A silk net block from the same Protect family."
+    },
+    "burning-bulwark": {
+      "trait": "reflex",
+      "reason": "Added. A fiery shield block from the same Protect family."
+    },
+    "mat-block": {
+      "trait": "reflex",
+      "reason": "Added. Lifts a mat to block attacks, a first-touch save."
+    },
+    "crafty-shield": {
+      "trait": "reflex",
+      "reason": "Added. Shields the team from status moves, a team block."
+    },
     "headbutt": { "trait": "header", "reason": "Added. Rams with the head, the simplest header." },
     "zen-headbutt": { "trait": "header", "reason": "Added. Head strike." },
     "iron-head": { "trait": "header", "reason": "Added. Head strike." },
