@@ -81,10 +81,7 @@ test.describe("UI foundation", () => {
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
     const hydrationErrors = consoleErrors.filter(
-      (err) =>
-        err.includes("Hydration") ||
-        err.includes("hydrat") ||
-        err.includes("did not match"),
+      (err) => err.includes("Hydration") || err.includes("hydrat") || err.includes("did not match"),
     );
     expect(hydrationErrors).toEqual([]);
   });

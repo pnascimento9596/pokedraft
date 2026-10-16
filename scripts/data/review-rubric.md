@@ -83,9 +83,16 @@ intimidation, unpredictability, limb-reach.
 {
   "gen": 1,
   "entries": [
-    { "id": 1, "name": "Bulbasaur", "adjustments": { "DRI": -3 }, "bestRoles": ["DM", "CB", "CM"],
-      "worstRoles": ["W", "GK"], "strengths": ["stamina", "positioning"],
-      "weaknesses": ["pace", "footwork"], "rationale": "..." }
+    {
+      "id": 1,
+      "name": "Bulbasaur",
+      "adjustments": { "DRI": -3 },
+      "bestRoles": ["DM", "CB", "CM"],
+      "worstRoles": ["W", "GK"],
+      "strengths": ["stamina", "positioning"],
+      "weaknesses": ["pace", "footwork"],
+      "rationale": "..."
+    }
   ]
 }
 ```

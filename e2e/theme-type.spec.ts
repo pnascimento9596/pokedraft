@@ -44,12 +44,10 @@ for (const width of [390, 1440])
         16,
         "700",
       );
-      const headline = await page
-        .getByTestId("round-header")
-        .evaluate((el) => ({
-          size: parseFloat(getComputedStyle(el).fontSize),
-          weight: getComputedStyle(el).fontWeight,
-        }));
+      const headline = await page.getByTestId("round-header").evaluate((el) => ({
+        size: parseFloat(getComputedStyle(el).fontSize),
+        weight: getComputedStyle(el).fontWeight,
+      }));
       expect(headline).toEqual({ size: width === 390 ? 20.8 : 28.8, weight: "600" });
       await type(page.locator("main .btn--sm"), 15, 20, "600");
       await page.goto(`/r/${fixture.shareRun.token}`);

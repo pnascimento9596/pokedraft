@@ -84,7 +84,9 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
         ) : null}
         {view.scope === "daily" ? (
           <label className={s.date}>
-            <span id={dateLabelId} className="kicker">Date</span>
+            <span id={dateLabelId} className="kicker">
+              Date
+            </span>
             <span className={s.dateField} data-font-ready={dateFontReady}>
               <span className={s.dateLoading} aria-hidden="true">
                 Loading date
