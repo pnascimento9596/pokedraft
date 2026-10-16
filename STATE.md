@@ -2,6 +2,27 @@
 
 Measured ground truth. Updated in the same PR as every merge.
 
+## Matchday robustness (dispatch B)
+
+Not merged at the time of writing. Branch `feat/matchday-robustness` off `648cf2f`. No file under `src/engine` changed.
+
+- A reload during the matchday now comes back at the same match with every touchline decision kept. The run snapshot gains a `matchday` screen whose token carries the decisions so far. This replaces the earlier "returns to the finished draft" behaviour.
+- Each played match on the results page has Watch live. It lazy-loads the Live match broadcast for that match, and a pd5 link reaches the goals-only fallback.
+- The start screen's manager mode and match view follow a change made in another tab.
+- One formatter, `incidentText` in `src/ui/matchday/copy.ts`, serves both the ticker and the results. An opponent tactic at minute 0 reads "Kick off: Opp play Counter".
+- A touchline decision costs a median 27.7 ms at a 4x CPU throttle in Chromium (15 samples, range 24.3 to 33.6 ms, worst cold decision 42.4 ms). That is under the 100 ms bar, so the synchronous replay stays.
+
+RED commits: `223d3f6` (savedRun matchday restore), `b17be61` (opponent kickoff copy), `f8383bb` (cross-tab settings) and `08897fb` (Watch live browser test).
+
+Local gates at `6866dc4` (the commits after it change only docs):
+
+- Lint, typecheck, build, format check, image seam and client bundle all exited 0.
+- Unit tests: 1,289 passed in 140 files.
+- Playwright with `PLAYWRIGHT_PORT=3482 CI=1`: 811 passed, 0 failed, 61 skipped. By project: chromium 348 and 1, iphone-se 135 and 29, webkit-wheel 6 and 0, webkit-progress 6 and 0, iphone-14 173 and 3, pixel-7 143 and 28.
+- Hosted CI, the independent review and a physical phone: NOT RUN.
+
+Measurements, decisions and failing output for each RED are in `docs/decisions/matchday-robustness.md`.
+
 ## Manager mode UI and the Live match broadcast
 
 Merged as PR #62 (squash `35b99cf`, reviewed head `c75187e`, GLM APPROVE in round 2 after the Coached filter moved server-side; hosted check and e2e green on that head). Production after the deploy: health serves `35b99cf` on engine 6; `/api/leaderboard` returns `coach` all, uncoached and coached views and 400 for an unknown value; `e2e/manager-mode.spec.ts` against the production URL passed 10 of 10 on chromium and pixel-7. Branch `feat/manager-mode-broadcast`, which merged `origin/main` at `6915a84` (engine 6). No file under `src/engine` changed. Two panel settings, `managerMode` (default off) and `matchView` (`quick` or `live`, default `quick`), sit on the home panel and on the `/play` and `/daily` start screens. With both at their defaults, See results goes straight to the results as before. Otherwise the cup plays match by match after the draft. In manager mode the touchline stops at kickoff, half time, the break before extra time and each user injury. Every decision is checked and then replayed through `runCup` (about 174 ms per call in node), and the finished token carries the manager list and replays from the share link. Live match is a lazy-loaded top-down broadcast with `PlayerImage` sprites and canon move callouts. Movesets load by dynamic import, and the choreography is seeded from `src/lib/rng.ts`. Results list match incidents. Leaderboard rows carry `coached`, derived at read time from the token with no column. Board rows show a Coached chip and an All / Uncoached / Coached filter that runs in SQL (`coach=` on `GET /api/leaderboard`, `coachedSql` mirrors `isCoached` over `MANAGER_TOKEN_VERSIONS`), so each view is its own top 50 ranked 1..n; the submit rank stays the overall board rank. A reload during the matchday returns to the finished draft. Decisions and limits are in `docs/decisions/manager-mode-broadcast.md`, and browser screenshots and a GIF are in `docs/reports/manager-mode/`. RED commit: `385bc84` (savedRun coached restore).
