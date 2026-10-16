@@ -13,3 +13,9 @@ src/engine/versions/v2
 src/engine/versions/v3
 src/engine/versions/v4
 src/engine/versions/v5
+
+# drizzle-kit writes these snapshots and the journal; db:generate would undo a reformat
+drizzle/meta
+
+# Prettier lowercases hex; theme audits and the theme-color meta read these values literally
+src/design/tokens.css

@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import { careerSummary } from "../career";
+import { countRun, emptyLifetime } from "../lifetime";
 import type { RunRecord } from "../runs";
 
 const base: RunRecord = {
@@ -49,4 +50,21 @@ it("keeps the win rate unknown for a formation with no recorded matches", () => 
   expect(
     careerSummary([{ ...base, wins: 0, draws: 0, losses: 0 }]).formations[0]?.winRate,
   ).toBeNull();
+});
+
+it("reads formation win rates from lifetime totals that outlive the 50 retained runs", () => {
+  const lifetime = Array.from({ length: 60 }, (_, i) => ({
+    ...base,
+    token: `life-${i}`,
+    formation: "3-5-2" as const,
+    wins: 2,
+    draws: 1,
+    losses: 1,
+  })).reduce(countRun, emptyLifetime());
+  const career = careerSummary([base], lifetime);
+  expect(career.formationSource).toBe("lifetime");
+  expect(career.formations).toEqual([
+    { formation: "3-5-2", runs: 60, wins: 120, matches: 240, winRate: 0.5 },
+  ]);
+  expect(career.rankedRuns).toBe(1);
 });

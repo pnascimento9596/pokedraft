@@ -51,11 +51,11 @@ Work under the `pokedraft-mode` skill: `tools/pstack-core/skills/pokedraft-mode/
 
 ## Risk tiers
 
-| Tier   | Scope                                                     | Gate                                                                                         |
-| ------ | --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| Red    | engine, data, scouting, leaderboard, deploy/env           | independent reviewer re-executes the gates on the exact head; fix forward to PASS; SHA-pinned squash |
-| Yellow | UI, display-only, no engine/data/scouting semantics       | same reviewer flow, lighter scope (diff plus lint, typecheck, build, browser proof)           |
-| Green  | docs and mechanical chores with no runtime change         | CI green plus reviewer receipt                                                                |
+| Tier   | Scope                                               | Gate                                                                                                 |
+| ------ | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Red    | engine, data, scouting, leaderboard, deploy/env     | independent reviewer re-executes the gates on the exact head; fix forward to PASS; SHA-pinned squash |
+| Yellow | UI, display-only, no engine/data/scouting semantics | same reviewer flow, lighter scope (diff plus lint, typecheck, build, browser proof)                  |
+| Green  | docs and mechanical chores with no runtime change   | CI green plus reviewer receipt                                                                       |
 
 A commit after PASS voids the receipt. Two review rounds per head, three fix rounds max, then stop
 and report.

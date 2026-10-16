@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { Inter } from "next/font/google";
 import { Announcer } from "@/components/Announcer";
 import { ImageSettings } from "@/components/ImageSettings";
 import { SiteNav } from "@/components/SiteNav";
@@ -8,15 +7,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { NAV_ICONS, NavIcon, type NavFamily } from "@/components/ui/nav-icons";
 import { THEME_COLOR_DARK, THEME_COLOR_LIGHT } from "@/design/theme-color";
 import { THEME_BOOT_SCRIPT } from "@/ui/theme";
+import { Inter } from "@/design/fonts/inter";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-inter",
-  display: "swap",
-  adjustFontFallback: true,
-});
 
 const SITE_HOST = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
@@ -40,7 +32,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={Inter.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>

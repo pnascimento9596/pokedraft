@@ -10,7 +10,7 @@ import {
   type DraftSettings,
   type RunToken,
 } from "@/engine";
-import { leaderboardEntries, rateLimitEvents } from "@/db/schema";
+import { leaderboardEntries, rateLimitBuckets, rateLimitEvents } from "@/db/schema";
 import type { Db } from "@/db/types";
 import type { BoardEntry } from "../../contract";
 import { dailySettings } from "../../daily";
@@ -356,9 +356,13 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     );
     expect(daily.body.error.code).toBe("DAILY_ALREADY_SUBMITTED");
     expect(await db.select().from(rateLimitEvents)).toHaveLength(2);
+    const buckets = await db.select().from(rateLimitBuckets);
+    expect(buckets.map((b) => [b.scope, b.keyHash, b.attempts.length])).toEqual([
+      ["submit", hashIp(ip, SECRET), 2],
+    ]);
   });
 
-  it("answers a conflict with its own code even when the hour's attempts are used up", async () => {
+  it("answers a conflict with its own code even when the hour's attempts are used up (catches a 429 hiding that the run is already listed)", async () => {
     const token = scriptedToken(CUP8, "lb-cup8");
     expect((await submit({ nickname: "Ash", token }, "198.51.100.4")).status).toBe(201);
     await db.insert(rateLimitEvents).values(
@@ -555,6 +559,24 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     ]);
     expect(race.inserts.slice(2).sort()).toEqual(["conflict:token", "saved"]);
     expect(await rows()).toHaveLength(1);
+  });
+
+  it("spends exactly one attempt for the IP whose admitted insert loses the race (catches a lost race going unrecorded or counted twice)", async () => {
+    const race = raceStore();
+    const token = scriptedToken(dailySettings("4-3-3"), dailySeed(TODAY));
+    const both = await Promise.all([
+      submit({ nickname: "Ash", token }, "198.51.100.21", race),
+      submit({ nickname: "Misty", token }, "198.51.100.22", race),
+    ]);
+    expect(both.map((r) => [r.status, r.body.error?.code ?? null]).sort()).toEqual([
+      [201, null],
+      [409, "DUPLICATE_TOKEN"],
+    ]);
+    expect(race.inserts.slice(2).sort()).toEqual(["conflict:token", "saved"]);
+    const loserIp = both[0]!.status === 409 ? "198.51.100.21" : "198.51.100.22";
+    const events = await db.select().from(rateLimitEvents);
+    expect(events.filter((e) => e.keyHash === hashIp(loserIp, SECRET))).toHaveLength(1);
+    expect(events).toHaveLength(2);
   });
 
   it.each([

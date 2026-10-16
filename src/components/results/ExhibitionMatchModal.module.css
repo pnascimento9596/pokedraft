@@ -84,3 +84,28 @@
 .controls button {
   min-height: 44px;
 }
+
+.format {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.leg {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.leg h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.aggregate {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+.aggregate p {
+  margin: 0;
+}

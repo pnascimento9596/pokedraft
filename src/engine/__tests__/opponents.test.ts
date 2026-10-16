@@ -73,7 +73,17 @@ describe("engine-4 themed Boss Club rosters (catches opponents without actual Po
       expect(() => bossStarters(opponent)).toThrow(RangeError);
     }
     expect(bossStarters(club).map((s) => s.role)).toEqual([
-      "GK", "FB", "CB", "CB", "FB", "DM", "CM", "CM", "W", "ST", "W",
+      "GK",
+      "FB",
+      "CB",
+      "CB",
+      "FB",
+      "DM",
+      "CM",
+      "CM",
+      "W",
+      "ST",
+      "W",
     ]);
   });
 
@@ -86,9 +96,11 @@ describe("engine-4 themed Boss Club rosters (catches opponents without actual Po
           const roster = members(ladder, round);
           expect(roster).toHaveLength(11);
           expect(new Set(roster.map((s) => s.id)).size).toBe(11);
-          expect(roster[0]!.types.some((type) => roster.every((s) =>
-            (s.types as readonly string[]).includes(type),
-          ))).toBe(true);
+          expect(
+            roster[0]!.types.some((type) =>
+              roster.every((s) => (s.types as readonly string[]).includes(type)),
+            ),
+          ).toBe(true);
           if (mode === "kanto151") expect(roster.every((s) => s.id <= 151)).toBe(true);
           expect(bossStarters(ladder[round])[0]!.role).toBe("GK");
           checked++;

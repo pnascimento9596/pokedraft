@@ -209,7 +209,9 @@ describe("Show ratings (challenges) on the draft screen", () => {
     await start();
     fireEvent.click(screen.getByTestId("candidate-316"));
     fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
-    expect(screen.getByTestId("slot-s9").textContent).toBe("FW 5 vs other strikers ST  Gulpin Poison ");
+    expect(screen.getByTestId("slot-s9").textContent).toBe(
+      "FW 5 vs other strikers ST  Gulpin Poison ",
+    );
   });
 
   it("rates every offered player at the committed slot's role in Position First, with no Best label (ST: Roselia 52, Gulpin 5, Seviper 71)", async () => {

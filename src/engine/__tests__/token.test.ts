@@ -121,7 +121,8 @@ describe("run token errors (catches decoding untrusted input into an invalid run
   it.each([
     ["a future version", "pd7.W10", "unknownVersion"],
     ["a retired version, replayed only by its retained bundle", "pd1.W10", "unknownVersion"],
-    ["the newest retired version", "pd3.W10", "unknownVersion"],
+    ["the newest retired version, engine 4", "pd4.W10", "unknownVersion"],
+    ["an older retired version", "pd3.W10", "unknownVersion"],
     ["the other retired version", "pd2.W10", "unknownVersion"],
     ["no prefix", "hello", "malformed"],
     ["bad base64url characters", "pd6.!!!!", "malformed"],

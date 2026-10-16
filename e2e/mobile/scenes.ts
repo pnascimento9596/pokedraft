@@ -122,6 +122,19 @@ export const HISTORY = Array.from({ length: 12 }, (_, i) => ({
   at: `2026-10-0${(i % 9) + 1}T1${i % 10}:30:00.000Z`,
 }));
 
+// A complete saved Builder squad (Pokedex 1 to 16), the one the exhibition plays with.
+export const BUILDER_SQUAD = `pd5.${Buffer.from(
+  JSON.stringify([
+    ["b", "4-3-3", "123456789", 1],
+    "experience-proof",
+    Array.from({ length: 16 }, (_, index) => [
+      "l",
+      index + 1,
+      index < 11 ? `s${index}` : `b${index - 11}`,
+    ]),
+  ]),
+).toString("base64url")}`;
+
 export const STATS = {
   "cup8:open": { runs: 12, bestScore: 845, bestRecord: { wins: 8, draws: 0, losses: 0 } },
   "cup8:classic3": { runs: 31, bestScore: 1002, bestRecord: { wins: 7, draws: 1, losses: 0 } },
@@ -451,6 +464,23 @@ export const SCENES: readonly Scene[] = [
       await expect(page.getByTestId("results-record")).toBeVisible();
     },
     primary: (page) => page.getByRole("button", { name: "Share", exact: true }),
+  },
+  {
+    id: "two-leg exhibition",
+    route: "/r/<token> exhibition",
+    modal: true,
+    open: async (page) => {
+      await seedStorage(page, { "pokedraft.builder": BUILDER_SQUAD });
+      await page.goto(`/r/${SHARED_RUN}`);
+      await ready(page, page.getByTestId("play-exhibition"));
+      await page.getByTestId("play-exhibition").click();
+      const modal = page.getByTestId("exhibition-modal");
+      await modal.getByRole("button", { name: "Two legs" }).click();
+      await expect(modal.getByTestId("exhibition-aggregate")).toBeVisible();
+      await settle(page);
+    },
+    primary: (page) =>
+      page.getByTestId("exhibition-modal").getByRole("button", { name: "Play rematch" }),
   },
   {
     id: "broken run link",
