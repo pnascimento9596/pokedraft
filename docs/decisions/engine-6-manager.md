@@ -23,10 +23,11 @@ coached is derived at read time from its stored token (`manager` actions present
 migration is needed, and splitting into separate boards later is a read-side change that also
 covers every row already submitted.
 
-Until that marker ships, the submit handler rejects any token with coach decisions
-(`ILLEGAL_ACTION`, "Coached runs are not ranked yet.") before replaying it, so no coached run can
-rank unmarked in the window between this engine and the manager UI. The guard is removed in the
-same PR that adds the marker.
+Until that marker shipped, the submit handler rejected any token with coach decisions
+(`ILLEGAL_ACTION`, "Coached runs are not ranked yet.") before replaying it, so no coached run could
+rank unmarked in the window between this engine and the manager UI. The guard was removed when the
+marker shipped, in the manager mode UI dispatch (`docs/decisions/manager-mode-broadcast.md`), and
+a handler test now pins that a coached token ranks and comes back with `coached: true`.
 
 Principles: keep the board honest and visible rather than fragmenting a small group's daily; prefer
 the reversible read-time choice; record the measured advantage so the default can be revisited.
