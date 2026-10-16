@@ -31,9 +31,9 @@ export function admissionCtes(
   rule: RateLimitRule,
   needed: SQL = sql`true`,
 ): SQL {
-  if (rule.windowMs > EVENT_RETENTION_MS) {
+  if (rule.windowMs > BUCKET_IDLE_MS) {
     throw new RangeError(
-      `rate-limit window ${rule.windowMs} ms exceeds event retention ${EVENT_RETENTION_MS} ms`,
+      `rate-limit window ${rule.windowMs} ms exceeds bucket idle cutoff ${BUCKET_IDLE_MS} ms`,
     );
   }
   const since = new Date(now.getTime() - rule.windowMs).toISOString();
