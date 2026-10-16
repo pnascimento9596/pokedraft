@@ -53,7 +53,8 @@ not a relabeled goal or penalty kick. Retained engines show no save list instead
 Fix Root Causes replaced the every-trial attribution with an explicit on-target gate instead of
 capping the displayed list. Test Behavior, Not Implementation led to literal recorded events and
 a paired comparison against the frozen bundle, not a structural presence check. Sequence Work into
-Verifiable Units kept the committed RED guards (`306771f`, `e9291aa`) ahead of each fix.
+Verifiable Units kept the committed RED guards ("test(engine): expose missing recorded goalkeeper
+saves" and "test: guard verified club region identity display") ahead of each fix.
 
 ## Risks and carryovers
 
