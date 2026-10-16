@@ -13,8 +13,10 @@ import {
 } from "@/ui/settings";
 import s from "./MatchdaySettings.module.css";
 
-function subscribe(): () => void {
-  return () => {};
+// Another tab saving the panel fires a storage event here; this tab's own saves do not.
+function subscribe(onChange: () => void): () => void {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
 }
 
 // A primitive snapshot, so the store read stays stable between renders.
@@ -30,17 +32,25 @@ function stored(): string {
 export function MatchdaySettings() {
   const labelId = useId();
   const snapshot = useSyncExternalStore(subscribe, stored, () => null);
-  const [local, setLocal] = useState<{ managerMode: boolean; matchView: MatchView } | null>(null);
+  // A choice made here holds only while the stored panel is the one it was made over, so it covers
+  // blocked storage but gives way once another tab saves.
+  const [local, setLocal] = useState<{
+    over: string | null;
+    value: { managerMode: boolean; matchView: MatchView };
+  } | null>(null);
   // The server and the first client render draw the defaults, so nothing moves once the stored
   // choice is read: only the switch and the pressed segment change.
   const [mm, mv] = (
     snapshot ?? `${DEFAULT_PANEL.managerMode ? "1" : "0"}|${DEFAULT_PANEL.matchView}`
   ).split("|") as [string, MatchView];
-  const value = local ?? { managerMode: mm === "1", matchView: mv };
+  const value =
+    local !== null && local.over === snapshot
+      ? local.value
+      : { managerMode: mm === "1", matchView: mv };
   const set = (patch: Partial<typeof value>) => {
     const next = { ...value, ...patch };
     savePanel({ ...loadPanel(), ...next });
-    setLocal(next);
+    setLocal({ over: stored(), value: next });
   };
   return (
     <div className={s.settings} data-testid="matchday-settings">

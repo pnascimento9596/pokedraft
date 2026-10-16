@@ -127,6 +127,23 @@ test.describe("manager mode", () => {
     );
   });
 
+  test("a start screen follows manager mode and the match view changed in another tab", async ({
+    page,
+    context,
+  }) => {
+    await page.goto(PLAY);
+    await expect(page.getByTestId("manager-mode")).toHaveAttribute("aria-checked", "false");
+    const other = await context.newPage();
+    await other.goto(PLAY);
+    await other.getByTestId("manager-mode").click();
+    await other.getByTestId("match-view-live").click();
+    await expect(other.getByTestId("manager-mode")).toHaveAttribute("aria-checked", "true");
+
+    await expect(page.getByTestId("manager-mode")).toHaveAttribute("aria-checked", "true");
+    await expect(page.getByTestId("match-view-live")).toHaveAttribute("aria-pressed", "true");
+    await other.close();
+  });
+
   test("with manager mode off and the quick view, See results goes straight to the results", async ({
     page,
   }) => {
