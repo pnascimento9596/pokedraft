@@ -193,7 +193,13 @@ for (const colorScheme of ["dark", "light"] as const) {
     test.beforeEach(async ({ page }) => {
       await page.route("**/api/leaderboard?**", (route) =>
         route.fulfill({
-          json: { mode: "cup8", scope: "daily", date: "2026-10-09", entries: [ENTRY] },
+          json: {
+            mode: "cup8",
+            scope: "daily",
+            date: "2026-10-09",
+            coach: "all",
+            entries: [ENTRY],
+          },
         }),
       );
       await page.route("**/api/leaderboard", (route) =>

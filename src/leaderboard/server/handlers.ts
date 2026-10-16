@@ -281,18 +281,25 @@ export async function handleBoard(
     mode: q.get("mode") ?? undefined,
     scope: q.get("scope") ?? undefined,
     date: q.get("date") ?? undefined,
+    coach: q.get("coach") ?? undefined,
   });
   if (!parsed.success) {
     return boardError(
       "INVALID_QUERY",
-      "Expected mode=cup8|kanto151 and scope=daily&date= or scope=all.",
+      "Expected mode=cup8|kanto151 and scope=daily&date= or scope=all, with optional coach=all|uncoached|coached.",
     );
   }
-  const { mode, scope } = parsed.data;
+  const { mode, scope, coach } = parsed.data;
   const date = parsed.data.scope === "daily" ? parsed.data.date : null;
   try {
-    const rows = await store.top({ mode, dailyDate: date });
-    const ok: BoardOk = { mode, scope, date, entries: rows.map((r, i) => toBoardEntry(r, i + 1)) };
+    const rows = await store.top({ mode, dailyDate: date }, coach);
+    const ok: BoardOk = {
+      mode,
+      scope,
+      date,
+      coach,
+      entries: rows.map((r, i) => toBoardEntry(r, i + 1)),
+    };
     return json(ok, 200);
   } catch (e) {
     logServerError("board.read", requestId, e);

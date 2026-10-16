@@ -1,3 +1,4 @@
+import type { CoachFilter } from "@/leaderboard/contract";
 import { GENS, type DraftOrder, type DraftStyle } from "@/engine/types";
 import { ORDER_LABEL, STYLE_LABEL } from "@/ui/labels";
 
@@ -35,23 +36,9 @@ export function longDate(date: string): string {
   });
 }
 
-export const COACH_FILTERS = ["all", "uncoached", "coached"] as const;
-export type CoachFilter = (typeof COACH_FILTERS)[number];
+export { COACH_FILTERS, type CoachFilter } from "@/leaderboard/contract";
 export const COACH_FILTER_LABEL: Readonly<Record<CoachFilter, string>> = {
   all: "All",
   uncoached: "Uncoached",
   coached: "Coached",
 };
-
-/**
- * Narrows the board rows already fetched. The server ranks every run together and sends its top
- * rows, so this filters that page; it does not fetch a separate coached or uncoached top list.
- */
-export function filterCoached<T extends { readonly coached: boolean }>(
-  entries: readonly T[],
-  filter: CoachFilter,
-): readonly T[] {
-  if (filter === "all") return entries;
-  const want = filter === "coached";
-  return entries.filter((e) => e.coached === want);
-}

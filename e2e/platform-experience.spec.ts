@@ -146,6 +146,7 @@ for (const width of [1280, 320]) {
           json: {
             mode: "cup8",
             scope: "all",
+            coach: "all",
             entries: [
               {
                 rank: 1,

@@ -56,7 +56,13 @@ describe("Board", () => {
       .fn()
       .mockRejectedValueOnce(new TypeError("Failed to fetch"))
       .mockResolvedValueOnce(
-        json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", entries: [ENTRY] }),
+        json(200, {
+          mode: "cup8",
+          scope: "daily",
+          date: "2026-10-09",
+          coach: "all",
+          entries: [ENTRY],
+        }),
       );
     vi.stubGlobal("fetch", fetchMock);
     render(<Board view={DAILY} />);
@@ -82,7 +88,7 @@ describe("Board", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () =>
-        json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", entries: [] }),
+        json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", coach: "all", entries: [] }),
       ),
     );
     render(<Board view={DAILY} />);
@@ -109,7 +115,13 @@ describe("Board", () => {
       dailyDate: null,
     };
     const fetchMock = vi.fn(async () =>
-      json(200, { mode: "kanto151", scope: "all", date: null, entries: [ENTRY, second] }),
+      json(200, {
+        mode: "kanto151",
+        scope: "all",
+        date: null,
+        coach: "all",
+        entries: [ENTRY, second],
+      }),
     );
     vi.stubGlobal("fetch", fetchMock);
     render(<Board view={{ mode: "kanto151", scope: "all", date: "2026-10-09" }} />);
@@ -129,32 +141,88 @@ describe("Board", () => {
       expect.anything(),
     );
   });
-  it("marks coached runs with a chip and filters the fetched rows without re-ranking them (catches a filter that refetches or renumbers)", async () => {
-    const fetchMock = vi.fn(async () =>
-      json(200, {
-        mode: "cup8",
-        scope: "daily",
-        date: "2026-10-09",
-        entries: [
-          { ...ENTRY, rank: 1, token: "pd6.a", nickname: "Coach", coached: true },
-          { ...ENTRY, rank: 2, token: "pd6.b", nickname: "Plain", coached: false },
-        ],
-      }),
-    );
+  it("asks the server for each coach view and shows its rows and ranks as sent (catches a client-side filter over the All top 50)", async () => {
+    const reply = (coach: string, entries: BoardEntry[]) =>
+      json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", coach, entries });
+    let release: () => void = () => {};
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        reply("all", [{ ...ENTRY, rank: 1, token: "pd6.a", nickname: "Coach", coached: true }]),
+      )
+      .mockImplementationOnce(
+        () =>
+          new Promise<Response>((resolve) => {
+            release = () =>
+              resolve(
+                reply("uncoached", [
+                  { ...ENTRY, rank: 1, token: "pd6.b", nickname: "Plain", coached: false },
+                ]),
+              );
+          }),
+      )
+      .mockResolvedValueOnce(reply("coached", []));
     vi.stubGlobal("fetch", fetchMock);
     render(<Board view={DAILY} />);
-    expect((await screen.findAllByTestId("board-row")).length).toBe(2);
+    expect((await screen.findAllByTestId("board-row")).length).toBe(1);
     expect(screen.getAllByTestId("coached-chip").map((c) => c.textContent)).toEqual(["Coached"]);
 
-    fireEvent.click(screen.getByTestId("coach-filter-coached"));
-    const coached = screen.getAllByTestId("board-row");
-    expect(coached.map((r) => r.textContent?.startsWith("1Coach"))).toEqual([true]);
-
     fireEvent.click(screen.getByTestId("coach-filter-uncoached"));
-    const plain = screen.getAllByTestId("board-row");
-    expect(plain.map((r) => r.textContent?.startsWith("2Plain"))).toEqual([true]);
+    // The chips stay mounted while the filtered view loads.
+    expect(screen.getByTestId("coach-filter")).toBeTruthy();
+    expect(screen.queryByTestId("board")).toBeNull();
+    release();
+    const plain = await screen.findAllByTestId("board-row");
+    expect(plain.map((r) => r.textContent?.startsWith("1Plain"))).toEqual([true]);
     expect(screen.getByTestId("coach-filter-uncoached").getAttribute("aria-pressed")).toBe("true");
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByTestId("coach-filter-coached"));
+    expect((await screen.findByTestId("coach-filter-empty")).textContent).toBe(
+      "No coached runs on this board yet.",
+    );
+    expect(screen.getByTestId("coach-filter")).toBeTruthy();
+    expect(screen.queryByTestId("board-empty")).toBeNull();
+
+    expect(fetchMock.mock.calls.map((c) => c[0])).toEqual([
+      "/api/leaderboard?mode=cup8&scope=daily&date=2026-10-09",
+      "/api/leaderboard?mode=cup8&scope=daily&date=2026-10-09&coach=uncoached",
+      "/api/leaderboard?mode=cup8&scope=daily&date=2026-10-09&coach=coached",
+    ]);
+  });
+
+  it("names an empty uncoached view and keeps the chips (catches a filtered view falling into the All empty state)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValueOnce(
+          json(200, { ...DAILY, coach: "all", entries: [{ ...ENTRY, coached: true }] }),
+        )
+        .mockResolvedValueOnce(json(200, { ...DAILY, coach: "uncoached", entries: [] })),
+    );
+    render(<Board view={DAILY} />);
+    await screen.findAllByTestId("board-row");
+    fireEvent.click(screen.getByTestId("coach-filter-uncoached"));
+    expect((await screen.findByTestId("coach-filter-empty")).textContent).toBe(
+      "No uncoached runs on this board yet.",
+    );
+    expect(screen.getByTestId("coach-filter")).toBeTruthy();
+  });
+
+  it("rejects a board reply without a coach or for another coach view (catches rows of one view shown as another)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json(200, { ...DAILY, entries: [ENTRY] })),
+    );
+    render(<Board view={DAILY} />);
+    expect(await screen.findByTestId("board-error")).toBeTruthy();
+    cleanup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json(200, { ...DAILY, coach: "coached", entries: [ENTRY] })),
+    );
+    render(<Board view={DAILY} />);
+    expect(await screen.findByTestId("board-error")).toBeTruthy();
   });
 
   it("rejects a board reply whose rows lack the coached flag (catches a contract drift read as uncoached)", async () => {
@@ -163,7 +231,13 @@ describe("Board", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () =>
-        json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", entries: [legacy] }),
+        json(200, {
+          mode: "cup8",
+          scope: "daily",
+          date: "2026-10-09",
+          coach: "all",
+          entries: [legacy],
+        }),
       ),
     );
     render(<Board view={DAILY} />);
@@ -176,6 +250,7 @@ it("renders server-provided squad species without replaying retained tokens in t
     "fetch",
     vi.fn(async () =>
       json(200, {
+        coach: "all",
         entries: [
           {
             ...ENTRY,
@@ -195,7 +270,9 @@ it("renders server-provided squad species without replaying retained tokens in t
 it("rejects corrupt server preview metadata rather than drawing invented species", async () => {
   vi.stubGlobal(
     "fetch",
-    vi.fn(async () => json(200, { entries: [{ ...ENTRY, squadSpeciesIds: [1026] }] })),
+    vi.fn(async () =>
+      json(200, { coach: "all", entries: [{ ...ENTRY, squadSpeciesIds: [1026] }] }),
+    ),
   );
   render(<Board view={DAILY} />);
   expect(await screen.findByTestId("board-error")).toBeTruthy();

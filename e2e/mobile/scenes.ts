@@ -60,11 +60,14 @@ export function boardRow(rank: number): BoardRow {
   };
 }
 
-export const BOARD_EMPTY: BoardReply = { status: 200, body: { entries: [] } };
-export const BOARD_ONE: BoardReply = { status: 200, body: { entries: [boardRow(1)] } };
+export const BOARD_EMPTY: BoardReply = { status: 200, body: { coach: "all", entries: [] } };
+export const BOARD_ONE: BoardReply = {
+  status: 200,
+  body: { coach: "all", entries: [boardRow(1)] },
+};
 export const BOARD_FIFTY: BoardReply = {
   status: 200,
-  body: { entries: Array.from({ length: 50 }, (_, i) => boardRow(i + 1)) },
+  body: { coach: "all", entries: Array.from({ length: 50 }, (_, i) => boardRow(i + 1)) },
 };
 export const BOARD_DOWN: BoardReply = {
   status: 503,

@@ -10,6 +10,7 @@ const BOARD = {
   mode: "cup8",
   scope: "daily",
   date: "2026-10-09",
+  coach: "all",
   entries: [
     {
       rank: 1,

@@ -40,7 +40,7 @@ function json(status: number, body: unknown): Response {
 }
 
 const board = (entries: BoardEntry[]) =>
-  json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", entries });
+  json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", coach: "all", entries });
 
 const said = () => screen.getByTestId("announcer").textContent;
 
