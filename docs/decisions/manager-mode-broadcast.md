@@ -77,16 +77,49 @@ first page load nor the quick view carries the artifact.
 
 - Results list each match's incidents (`MatchIncidents`, copy from `format.ts`), and the existing
   results broadcast feed (`MatchdayLive`) interleaves them with goals and saves.
-- `BoardEntry.coached` is derived in `toBoardEntry` from the stored token (pd6 prefix, decodes, and
-  at least one manager action). There is no column and no migration. The client schema requires
-  the field, so a board reply without it is shown as an error, not read as uncoached.
+- `BoardEntry.coached` is derived in `toBoardEntry` from the stored token by `isCoached`. There is
+  no column and no migration. The client schema requires the field, so a board reply without it is
+  shown as an error, not read as uncoached.
+- The rule: a token whose version is in `MANAGER_TOKEN_VERSIONS` (`[6]` today, in
+  `src/ui/manager/coached.ts`) and whose base64url JSON payload has more than three elements. The
+  payload is `[compactSettings, seed, actions, manager?]`, and `encodeToken` writes `manager` only
+  when it is non-empty. `isCoached` parses the JSON itself and does not call the live decoder, so a
+  coached pd6 run keeps its marker once pd6 is a retained version. A future token version with the
+  same layout is appended to the list; one with another layout needs its own rule.
 - Engine 6 shipped a temporary guard that refused coached tokens at submit, so no coached run could
   rank unmarked. This dispatch ships the marker, so the guard is gone. A handler test pins that a
   coached token gets 201 with `coached: true` and an uncoached one `coached: false`, and its RED
   run (422 from the guard) was committed first.
-- Rows carry a "Coached" chip. The All / Uncoached / Coached filter is client side: it narrows the
-  50 rows the server already ranked together and keeps their board ranks. It is not a separate top
-  50 of coached or uncoached runs. If the group wants that, it is a read-side query change.
+- Rows carry a "Coached" chip. The All / Uncoached / Coached filter is server side. `GET
+  /api/leaderboard` takes `coach=all|uncoached|coached` (default `all`, any other value is 400
+  `INVALID_QUERY`) and echoes it as `BoardOk.coach`. Each view is its own top 50 in board order,
+  ranked 1..n inside the view. The first cut filtered the fetched All top 50 in the browser, so a
+  board whose top 50 were all coached showed an empty Uncoached view while uncoached runs existed
+  below it. A PGlite test pins the fix: 51 coached rows above 1 uncoached row give Uncoached exactly
+  that row at rank 1, Coached ranks 1 to 50, and All 50 rows without it. Its RED run was committed
+  before the fix.
+- The filter runs in SQL as `coachedSql` in `src/leaderboard/server/store.ts`, built from the same
+  version list: for each version, `CASE WHEN token LIKE 'pd<v>.%' THEN
+  jsonb_array_length(convert_from(decode(rpad(translate(substr(token, n + 1), '-_', '+/'),
+  ((length(token) - n + 3) / 4) * 4, '='), 'base64'), 'UTF8')::jsonb) > 3 ... ELSE false END`,
+  where `n` is the length of `pd<v>.`, computed from the version string. A PGlite test selects the
+  predicate over stored tokens (pd6 coached once and twice, pd6 uncoached, a coached pd6 builder
+  run, pd5, pd3 and a pd1 golden) and asserts it equals `isCoached` row by row as literal booleans,
+  so the SQL and TypeScript rules cannot drift apart unseen.
+- Cost: the predicate decodes the token of each row it reads. The query keeps the board order and
+  the limit, so the scan reads rows in board order until 50 match. On a board where one view is
+  rare it may read the whole board, which is small for one friend group. If boards grow, the fix is
+  a stored `coached` column written at submit, with a migration.
+- Postgres `decode` and the jsonb cast throw on malformed input. Stored tokens are canonical (the
+  submit handler re-encodes every run with `encodeToken`), so this cannot happen for an admitted
+  row; a hand-inserted bad token would make the filtered query fail with a 503, not mislabel rows.
+- The submit reply's rank is still the overall board rank (`rankOf` ignores the coach filter).
+- The board client sends `coach` only for a filtered view, so the default request URL is
+  unchanged. The coach view is part of the request key and refetches on change, and a reply for
+  another view, or without `coach`, is shown as an error. Once the board has shown rows, the chip
+  row stays mounted through filtered loads, errors and empty views, which say "No coached runs on
+  this board yet." or "No uncoached runs on this board yet." An empty All board keeps the existing
+  empty state with no chips.
 
 ## Carryovers and limits
 
