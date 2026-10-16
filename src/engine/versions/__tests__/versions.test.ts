@@ -10,6 +10,7 @@ import * as v1 from "../v1";
 import * as v2 from "../v2";
 import * as v3 from "../v3";
 import * as v4 from "../v4";
+import * as v5 from "../v5";
 import { fromLegacy, type LegacyCupResult, type LegacyV3CupResult } from "../legacy";
 import { buildLadder as v1Ladder } from "../v1/src/engine/opponents";
 import { buildLadder as v2Ladder } from "../v2/src/engine/opponents";
@@ -23,6 +24,8 @@ import {
   GOLDEN_KANTO151_V1,
   GOLDEN_KANTO151_V2,
   GOLDEN_KANTO151_V4,
+  GOLDEN_CUP8_V5,
+  GOLDEN_KANTO151_V5,
 } from "./fixtures";
 
 const sha256 = (s: string | Buffer): string => createHash("sha256").update(s).digest("hex");
@@ -168,6 +171,47 @@ describe("retained engine-4 bundle (catches a pre-save run replaying differently
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v4"))).toBe(
       "dc448ff8df08e3f122b52c9ec1289c3dbdb5ff21d5535e08eb5f4e8ef21abbfb",
+    );
+  });
+});
+
+describe("retained engine-5 bundle (catches a pre-manager run replaying differently after engine 6 moves in)", () => {
+  it("replays the engine-5 goldens byte-identical to the engine-5 live goldens at 6053928", () => {
+    expect(sha256(GOLDEN_CUP8_V5)).toBe(
+      "d3a15998448b19a8e7f8489363d4514de2547a1bdac4a1891524de09f3253b25",
+    );
+    const cup8 = v5.replay(GOLDEN_CUP8_V5);
+    expect([cup8.cup.rating.score, cup8.cup.wins, cup8.cup.finish]).toEqual([593, 3, "R16"]);
+    expect(sha256(JSON.stringify(cup8))).toBe(
+      "d3f3598c4ed414bad106ecec4efe543774be9988718833f9172542cff9fdbd5a",
+    );
+    expect(sha256(GOLDEN_KANTO151_V5)).toBe(
+      "a4a679846ef8515ef6c0e2d0a001e324e080a33db0e0d0a9ff5cb4559bf50fbe",
+    );
+    const kanto = v5.replay(GOLDEN_KANTO151_V5);
+    expect([kanto.cup.rating.score, kanto.cup.wins, kanto.cup.finish]).toEqual([480, 0, "group"]);
+    expect(sha256(JSON.stringify(kanto))).toBe(
+      "d4d1db9bd84cbd39eae072a86791a76864a16f96db5844c5be67df7c1ab2a95a",
+    );
+  });
+
+  it("routes pd5. tokens to the v5 bundle with saves and no manager incidents", async () => {
+    const run = await replayAnyVersion(GOLDEN_CUP8_V5);
+    expect([run.engine, run.bundle, run.current]).toEqual([
+      "pokedraft-engine-5",
+      "retained-engine-bundle:v5",
+      false,
+    ]);
+    expect(run.cup).toEqual(v5.replay(GOLDEN_CUP8_V5).cup);
+    expect(run.cup.matches.filter((m) => "incidents" in m)).toEqual([]);
+    expect(run.cup.matches.some((m) => m.status === "played" && (m.saves?.length ?? 0) > 0)).toBe(
+      true,
+    );
+  });
+
+  it("is frozen: no byte of the bundle changes", () => {
+    expect(bundleDigest(path.join(import.meta.dirname, "../v5"))).toBe(
+      "cd69715e61910e64474cb5efd64b888974234b6837b2ac5bc8a6aae8d0084ede",
     );
   });
 });

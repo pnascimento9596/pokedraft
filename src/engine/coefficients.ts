@@ -1,4 +1,4 @@
-import type { CupRound, Line, Role } from "./types";
+import type { CupRound, Line, Role, Tactic } from "./types";
 
 export interface EngineCoefficients {
   team: {
@@ -55,6 +55,36 @@ export interface EngineCoefficients {
     score: Record<CupRound, number>;
     jitter: number;
     tilt: number;
+  };
+  // Engine 6: the touchline. Design parameters for a fun game, not a real-world calibration.
+  manager: {
+    windowMinutes: number;
+    maxSubs: number;
+    /** [own goal-rate multiplier, multiplier on the other side's goal rate]. */
+    tactics: Record<Tactic, readonly [number, number]>;
+    /** Replaces `tactics` for the user's choice against an opponent of this tactical style. */
+    styleEdges: Record<
+      "pressing" | "possession" | "direct",
+      Partial<Record<Tactic, readonly [number, number]>>
+    >;
+    /** Energy lost per minute is drain * (1.4 - STA / 100), times pressDrain when pressing. */
+    drain: number;
+    pressDrain: number;
+    /** A player's line contribution is scaled by tiredFloor + (1 - tiredFloor) * energy / 100. */
+    tiredFloor: number;
+    /** Each empty slot (red card, injury with no sub left) scales [own, other side's] rate. */
+    vacancy: readonly [number, number];
+    injuriesPerMatch: number;
+    yellowsPerMatch: number;
+    redsPerMatch: number;
+    /** Card and injury hazard multiplier while pressing. */
+    pressHazard: number;
+    /** A booked player eases off: their yellow hazard is scaled by this for the rest of the match. */
+    bookedCaution: number;
+    cardLineWeight: Record<Line, number>;
+    /** The auto coach brings on fresh legs once a starter's energy falls below this. */
+    autoSubEnergy: number;
+    autoSubMinutes: readonly number[];
   };
 }
 
@@ -133,5 +163,36 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     score: { G1: 280, G2: 300, G3: 355, R32: 480, R16: 605, QF: 730, SF: 855, F: 985 },
     jitter: 20,
     tilt: 5,
+  },
+  manager: {
+    windowMinutes: 5,
+    maxSubs: 5,
+    tactics: {
+      balanced: [1, 1],
+      attack: [1.25, 1.3],
+      defend: [0.65, 0.7],
+      press: [1.1, 1.02],
+      counter: [0.85, 0.85],
+    },
+    styleEdges: {
+      // A pressing side leaves space behind it: counters bite, a slugfest favours nobody.
+      pressing: { counter: [0.95, 0.85], attack: [1.3, 1.35] },
+      // A possession side is hurt by a press and by counters that skip its build-up.
+      possession: { press: [1.18, 0.98], counter: [0.92, 0.82] },
+      // A direct side punishes a high line and struggles to break down a low block.
+      direct: { defend: [0.65, 0.62], press: [1.05, 1.12] },
+    },
+    drain: 0.3,
+    pressDrain: 1.4,
+    tiredFloor: 0.8,
+    vacancy: [0.82, 1.18],
+    injuriesPerMatch: 0.3,
+    yellowsPerMatch: 1.6,
+    redsPerMatch: 0.04,
+    pressHazard: 1.3,
+    bookedCaution: 0.25,
+    cardLineWeight: { GK: 0, DEF: 1.3, MID: 1.1, ATT: 0.6 },
+    autoSubEnergy: 82,
+    autoSubMinutes: [60, 75],
   },
 };

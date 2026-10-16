@@ -11,6 +11,8 @@ import {
   type DraftSettings,
   type DraftStyle,
   type Gen,
+  type ManagerAction,
+  type Tactic,
   type RerollTarget,
   type RunToken,
   type Seed,
@@ -81,6 +83,13 @@ const ORDER_CODES = { squadFirst: "s", positionFirst: "p" } as const satisfies R
   DraftOrder,
   string
 >;
+const TACTIC_CODES = {
+  balanced: "b",
+  attack: "a",
+  defend: "d",
+  press: "p",
+  counter: "k",
+} as const satisfies Record<Tactic, string>;
 const TARGET_CODES = { type: "t", region: "r", species: "s" } as const satisfies Record<
   RerollTarget,
   string
@@ -92,6 +101,7 @@ function invert<K extends string, V extends string>(table: Record<K, V>): Record
 const STYLES = invert(STYLE_CODES);
 const ORDERS = invert(ORDER_CODES);
 const TARGETS = invert(TARGET_CODES);
+const TACTIC_BY_CODE = invert(TACTIC_CODES);
 
 const formation = z.enum(FORMATION_IDS);
 const gens = z.string().regex(/^[1-9]+$/);
@@ -114,14 +124,51 @@ const actionSchema = z.union([
   z.tuple([z.literal("w"), slot, slot]),
 ]);
 
-const payloadSchema = z.tuple([
-  z.unknown(),
-  z.string().refine((s) => s.trim().length > 0),
-  z.array(z.unknown()),
+const cupMatch = z.number().int().min(0).max(7);
+const matchMinute = z.number().int().min(0).max(120);
+const managerSchema = z.union([
+  z.tuple([z.literal("t"), cupMatch, matchMinute, z.enum(["b", "a", "d", "p", "k"])]),
+  z.tuple([
+    z.literal("u"),
+    cupMatch,
+    matchMinute,
+    z.number().int().min(0).max(10),
+    z.number().int().min(0).max(4),
+  ]),
+]);
+
+// Engine 6 appends the coach's decisions as a fourth element, left out when there are none.
+const payloadSchema = z.union([
+  z.tuple([z.unknown(), z.string().refine((s) => s.trim().length > 0), z.array(z.unknown())]),
+  z.tuple([
+    z.unknown(),
+    z.string().refine((s) => s.trim().length > 0),
+    z.array(z.unknown()),
+    z.array(z.unknown()),
+  ]),
 ]);
 
 type CompactSettings = z.infer<typeof settingsSchema>;
 type CompactAction = z.infer<typeof actionSchema>;
+type CompactManager = z.infer<typeof managerSchema>;
+
+function compactManager(a: ManagerAction): CompactManager {
+  return a.type === "tactic"
+    ? ["t", a.match, a.minute, TACTIC_CODES[a.tactic]]
+    : ["u", a.match, a.minute, a.slot, a.bench];
+}
+
+function expandManager(c: CompactManager): ManagerAction {
+  return c[0] === "t"
+    ? { type: "tactic", match: c[1], minute: c[2], tactic: TACTIC_BY_CODE[c[3]] }
+    : {
+        type: "sub",
+        match: c[1],
+        minute: c[2],
+        slot: c[3] as StarterIndex,
+        bench: c[4] as BenchIndex,
+      };
+}
 
 function gensCode(list: readonly Gen[]): string {
   return list.join("");
@@ -199,7 +246,8 @@ function expandAction(c: CompactAction): DraftAction {
 }
 
 export function encodeToken(t: RunToken): string {
-  const payload = [compactSettings(t.settings), t.seed, t.actions.map(compactAction)];
+  const payload: unknown[] = [compactSettings(t.settings), t.seed, t.actions.map(compactAction)];
+  if (t.manager !== undefined && t.manager.length > 0) payload.push(t.manager.map(compactManager));
   return `pd${RUN_TOKEN_VERSION}.${toBase64Url(new TextEncoder().encode(JSON.stringify(payload)))}`;
 }
 
@@ -222,6 +270,13 @@ function decodeSettings(raw: unknown): DraftSettings {
   }
 }
 
+function decodeManager(raw: unknown, index: number): ManagerAction {
+  const parsed = managerSchema.safeParse(raw);
+  if (!parsed.success)
+    throw new RunTokenError("invalidAction", `manager action ${index} is invalid`);
+  return expandManager(parsed.data);
+}
+
 function decodeAction(raw: unknown, index: number): DraftAction {
   const parsed = actionSchema.safeParse(raw);
   if (!parsed.success) throw new RunTokenError("invalidAction", `action ${index} is invalid`);
@@ -236,11 +291,14 @@ export function decodeToken(s: string): RunToken {
   }
   const payload = payloadSchema.safeParse(parseJson(fromBase64Url(m[2]!)));
   if (!payload.success) malformed("token body has the wrong shape");
-  const [rawSettings, seed, rawActions] = payload.data;
-  return {
+  const [rawSettings, seed, rawActions, rawManager] = payload.data;
+  const run: RunToken = {
     v: RUN_TOKEN_VERSION,
     settings: decodeSettings(rawSettings),
     seed: seed as Seed,
     actions: rawActions.map(decodeAction),
   };
+  return rawManager === undefined || rawManager.length === 0
+    ? run
+    : { ...run, manager: rawManager.map(decodeManager) };
 }

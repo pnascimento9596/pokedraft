@@ -63,6 +63,8 @@ export const SUBSTREAMS = [
   "opponent_roster",
   "availability",
   "group_table",
+  "match_timing",
+  "match_incidents",
 ] as const;
 export type Substream = (typeof SUBSTREAMS)[number];
 

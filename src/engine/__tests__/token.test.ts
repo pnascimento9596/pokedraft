@@ -21,7 +21,7 @@ function codeOf(fn: () => unknown): RunTokenErrorCode | "no error" {
 }
 
 const GOLDEN: RunToken = {
-  v: 5,
+  v: 6,
   settings: {
     mode: "cup8",
     formation: "4-2-3-1",
@@ -55,7 +55,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
   const cases: readonly RunToken[] = [
     GOLDEN,
     {
-      v: 5,
+      v: 6,
       settings: { mode: "builder", formation: "5-3-2", gens: [2, 9], legendaries: true },
       seed: "builder seed é" as Seed,
       actions: [
@@ -66,7 +66,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
       ],
     },
     {
-      v: 5,
+      v: 6,
       settings: { mode: "kanto151", formation: "3-4-3", order: "squadFirst" },
       seed: "k" as Seed,
       actions: [
@@ -102,7 +102,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
       slot: b(i),
     }));
     const full: RunToken = {
-      v: 5,
+      v: 6,
       settings: {
         mode: "cup8",
         formation: "4-3-3",

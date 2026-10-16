@@ -23,6 +23,10 @@ beforeEach(() => {
     loaded.push("v4");
     return bundle(4);
   });
+  vi.doMock("../v5", () => {
+    loaded.push("v5");
+    return bundle(5);
+  });
   vi.doMock("../v3", () => {
     loaded.push("v3");
     return bundle(3);
@@ -46,7 +50,7 @@ beforeEach(() => {
 describe("retained replay loads only the requested engine", () => {
   it("loads no retained bundle for registry queries, invalid links, or a live replay", async () => {
     const dispatcher = await import("..");
-    expect(dispatcher.retainedTokenVersions()).toEqual([1, 2, 3, 4]);
+    expect(dispatcher.retainedTokenVersions()).toEqual([1, 2, 3, 4, 5]);
     expect(loaded).toEqual([]);
     await expect(
       Promise.resolve().then(() => dispatcher.replayAnyVersion("pd99.invalid")),
@@ -66,10 +70,10 @@ describe("retained replay loads only the requested engine", () => {
     expect(loaded.sort()).toEqual([`ladder${version}`, `v${version}`]);
   });
 
-  it("initializes only v4, which needs no legacy ladder", async () => {
+  it.each([4, 5])("initializes only v%i, which needs no legacy ladder", async (version) => {
     const dispatcher = await import("..");
-    const run = await dispatcher.replayAnyVersion("pd4.retained");
-    expect(run.engine).toBe("pokedraft-engine-4");
-    expect(loaded).toEqual(["v4"]);
+    const run = await dispatcher.replayAnyVersion(`pd${version}.retained`);
+    expect(run.engine).toBe(`pokedraft-engine-${version}`);
+    expect(loaded).toEqual([`v${version}`]);
   });
 });
