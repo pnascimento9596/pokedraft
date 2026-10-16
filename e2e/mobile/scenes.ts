@@ -9,7 +9,7 @@ export const PLAY_8_0 =
   "/play?mode=cup8&f=4-4-2&order=squadFirst&g=123456789&style=classic3&seed=e2e-80";
 export const PLAY_151 = "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151";
 export const DAILY = "/daily";
-export const RECORD_8_0 = "2-1-1";
+export const RECORD_8_0 = "1-2-1";
 export const RECORD_151 = "3-0-2";
 
 // The real engine-1 share link e2e/a11y.spec.ts and e2e/old-links.spec.ts open.

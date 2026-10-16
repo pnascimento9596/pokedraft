@@ -28,7 +28,7 @@ test("a whole 151 draft by keyboard alone", async ({ page }) => {
   await expect(header).toHaveText("Draft complete");
   await tabTo(page, page.getByTestId("see-results"), "Shift+Tab");
   await page.keyboard.press("Enter");
-  await expect(page.getByTestId("results-record")).toHaveText("5-0-1");
+  await expect(page.getByTestId("results-record")).toHaveText("4-0-1");
 });
 
 test("the picker opens by keyboard, keeps focus inside and closes on Escape", async ({ page }) => {

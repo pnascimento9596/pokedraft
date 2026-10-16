@@ -17,26 +17,64 @@ deterministic daily locally, gets:
 | random bot | 2.85, 0%                         | 3.44, 0%                              |
 
 A single honest playthrough gains far less, but the ceiling is real: about half a win, which is
-the first ranking key. So the board does not reward coaching quietly. Every coached row carries a
-"Coached" marker and the board has an All / Uncoached / Coached filter. Whether a run was coached
-is derived at read time from its stored token (`manager` actions present), so no column or
+the first ranking key. So the board does not reward coaching quietly. The manager UI dispatch adds
+a "Coached" marker on every coached row and an All / Uncoached / Coached filter. Whether a run was
+coached is derived at read time from its stored token (`manager` actions present), so no column or
 migration is needed, and splitting into separate boards later is a read-side change that also
 covers every row already submitted.
+
+Until that marker ships, the submit handler rejects any token with coach decisions
+(`ILLEGAL_ACTION`, "Coached runs are not ranked yet.") before replaying it, so no coached run can
+rank unmarked in the window between this engine and the manager UI. The guard is removed in the
+same PR that adds the marker.
 
 Principles: keep the board honest and visible rather than fragmenting a small group's daily; prefer
 the reversible read-time choice; record the measured advantage so the default can be revisited.
 
 ## Calibration (auto coach vs frozen engine 5, same bot-drafted squads)
 
-`pnpm exec tsx scripts/calibration/engine6-compare.mts --n 2000` (cup8) and `--n 600 --mode kanto151`:
-
-| cup8, 1000 runs each | win rate v5 / v6 | goals for per match v5 / v6 | goals against v5 / v6 |
-| -------------------- | ---------------- | --------------------------- | --------------------- |
-| good bot             | 0.850 / 0.850    | 2.945 / 2.986               | 0.397 / 0.387         |
-| random bot           | 0.647 / 0.651    | 1.752 / 1.778               | 0.701 / 0.703         |
+`pnpm exec tsx scripts/calibration/engine6-compare.mts --n 2000` (cup8) and `--n 600 --mode kanto151`.
+The final numbers are in the table below; they are the output of the current coefficients.
 
 Engine 6 per match (both sides, cup8): about 3.3 yellows, 0.17 reds, 0.23 to 0.26 injuries (user
 side only) and the same number of injury substitutions, and 1.8 to 2.0 tactic changes. The first
 cut produced 0.39 reds per match, almost all second yellows, because a booked player kept the full
 yellow hazard. `manager.bookedCaution = 0.25` scales a booked player's yellow hazard, which brought
 reds to 0.17, near real football.
+
+The first cut also never made a fatigue substitution: by 75' the most tired starter sat near 74
+energy against `autoSubEnergy` 72. It is now 82, so the auto coach makes one rotation at each of
+60' and 75' when someone qualifies. A Boss Club has no named bench, so at the same checks it
+refreshes its most tired outfield player (no incident row); it fires about 1.2 times a match.
+
+Final numbers (cup8, 1000 runs per bot; kanto151, 300 runs per bot):
+
+| squads             | win rate v5 / v6 | group exits v5 / v6 | subs per match (v6) |
+| ------------------ | ---------------- | ------------------- | ------------------- |
+| cup8 good bot      | 0.850 / 0.852    | 0 / 0               | 1.11                |
+| cup8 random bot    | 0.647 / 0.682    | 0.052 / 0.034       | 2.12                |
+| kanto151 good bot  | 0.800 / 0.803    | 0 / 0               | 1.99                |
+| kanto151 random bot| 0.669 / 0.700    | 0.047 / 0.007       | 2.26                |
+
+Strong squads are unchanged. Weak squads gain about 3 points of win rate because the auto coach
+swaps in bench players who fit the role better than a randomly placed starter. That is the coach
+doing its job, so it stays.
+
+## Retained links
+
+Engine 6 found two places that only knew token versions 1 to 4: the proxy's link check (which
+would have sent every pd5 share link to "run not found" once pd6 went live) and the Challenge
+button plus board squad preview (already missing for pd5 runs in production since #52). Both now
+read `RETAINED_TOKEN_VERSIONS` plus the live version.
+
+## Scouting queue items closed here
+
+- Item 6: Jigglypuff (39) and Wigglytuff (40) no longer list GK as a best role; GK was their
+  lowest raw role blend (33 and 49). The new rule test found Wigglytuff, which the queue missed.
+- Item 10: `review-rules.test.ts` rejects GK as a best role at the species' lowest raw blend,
+  with a synthetic positive control. The blend is read before familiarity, since fits already
+  carry the best-role boost.
+- KIC rule (SF-20): a synthetic positive control so the rule can fail.
+- Item 11: Serperior and Onix rationales no longer read serpent height as reach (Serperior also
+  drops its `reach` strength tag).
+- Items 7, 8, 9, 12 and 13 stay queued.
