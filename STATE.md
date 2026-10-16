@@ -2,6 +2,19 @@
 
 Measured ground truth. Updated in the same PR as every merge.
 
+## Manager mode UI and the Live match broadcast
+
+Not merged at the time of writing. Branch `feat/manager-mode-broadcast`, which merges `feat/engine-6-manager` at `9797c7f`. No file under `src/engine` changed. Two panel settings, `managerMode` (default off) and `matchView` (`quick` or `live`, default `quick`), sit on the home panel and on the `/play` and `/daily` start screens. With both at their defaults, See results goes straight to the results as before. Otherwise the cup plays match by match after the draft. In manager mode the touchline stops at kickoff, half time, the break before extra time and each user injury. Every decision is checked and then replayed through `runCup` (about 174 ms per call in node), and the finished token carries the manager list and replays from the share link. Live match is a lazy-loaded top-down broadcast with `PlayerImage` sprites and canon move callouts. Movesets load by dynamic import, and the choreography is seeded from `src/lib/rng.ts`. Results list match incidents. Leaderboard rows carry `coached`, derived at read time from the token with no column. Board rows show a Coached chip and a client-side All / Uncoached / Coached filter over the fetched top 50. A reload during the matchday returns to the finished draft. Decisions and limits are in `docs/decisions/manager-mode-broadcast.md`, and browser screenshots and a GIF are in `docs/reports/manager-mode/`. RED commit: `385bc84` (savedRun coached restore).
+
+Local gates at `ba215ee`:
+
+- Lint, typecheck, build, format check, mirrors, image seam, image packs, theme contrast, theme colors, theme CVD and client bundle all exited 0.
+- Unit tests: 1,265 passed and 10 failed of 1,275, in 139 files. The 10 failures are in `exhibition.test.ts` and `ExhibitionMatchModal.test.tsx`. The same 10 fail on `feat/engine-6-manager` at `9797c7f`, because those engine 5 pins are not yet re-pinned.
+- Playwright chromium: 334 passed, 8 failed, 1 skipped. Every failure is an engine 5 pin not yet re-pinned on engine 6: the `pd5` share-link regex, the `pokedraft-engine-5` version and the fixed-seed records and exhibition scores.
+- Playwright iphone-se, iphone-14 and pixel-7: 446 passed, 3 failed, 60 skipped. The failures are the pinned 8-0 record `2-1-1` on each phone (engine 6 gives `1-2-1`).
+- The manager-mode spec passed 5 of 5 on chromium and 5 of 5 on pixel-7.
+- Hosted CI, the independent review and the webkit projects: NOT RUN.
+
 ## Cleanup and debt dispatch
 
 Rate-limit tables are now bounded. Each admission statement also deletes up to 50 `rate_limit_events` rows older than 7 days and up to 50 `rate_limit_buckets` rows idle for more than 1 day, never the key it admits. It stays one statement and one round trip. The candidate selects use `FOR UPDATE SKIP LOCKED`. On a scratch PostgreSQL 16 cluster, 240 concurrent statements had 0 deadlocks, against 130 for the unlocked shape. Rule windows longer than the 1-day idle cutoff throw. The announce-board focus flake was a stale error effect consuming the retry flag; it is fixed with a deterministic guard. Inter is self-hosted through `next/font/local` with Google's exact 7 subset files, unicode ranges and fallback metrics, so the build no longer fetches fonts. The WebKit cold-start flakes were all `waitForHydration` hitting `expect.poll`'s default 5 s; that wait now has a 30 s deadline. `pnpm format:check` passes. `drizzle/meta` and `src/design/tokens.css` are ignored, not reformatted. Local gates at `8ad5b24`: lint, typecheck, 1,122 unit tests in 124 files, build, format check, mirrors, and the Chromium e2e project (333 passed, 1 skipped). Merged through PR #60 after GLM APPROVE on head `61a3ad1` (hosted check and e2e green there) and a round-2 review of the merge-from-main head. See `docs/decisions/cleanup-debt.md`.
