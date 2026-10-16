@@ -21,13 +21,30 @@ import {
   type BenchIndex,
 } from "@/engine";
 
-export async function migratedDb(): Promise<{ db: Db; client: PGlite }> {
+export async function freshlyMigratedDb(): Promise<{ db: Db; client: PGlite }> {
   const client = await PGlite.create();
   const db = drizzle({ client, schema }) as unknown as Db;
   await migrate(db as unknown as ReturnType<typeof drizzle>, {
     migrationsFolder: path.resolve(import.meta.dirname, "../../../../drizzle"),
   });
   return { db, client };
+}
+
+let emptySnapshot: Promise<Blob> | undefined;
+
+async function snapshot(): Promise<Blob> {
+  const { client } = await freshlyMigratedDb();
+  try {
+    return await client.dumpDataDir("none");
+  } finally {
+    await client.close();
+  }
+}
+
+export async function migratedDb(): Promise<{ db: Db; client: PGlite }> {
+  emptySnapshot ??= snapshot();
+  const client = await PGlite.create({ loadDataDir: await emptySnapshot });
+  return { db: drizzle({ client, schema }) as unknown as Db, client };
 }
 
 const SLOTS: SlotRef[] = [

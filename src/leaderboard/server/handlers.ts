@@ -213,33 +213,33 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
   const ipHash = hashIp(clientIp(req), deps.ipHashSecret);
   const parsed = await parseSubmission(req, now);
 
-  // The token probe runs before the limiter so a retry after a lost response costs no attempt.
-  let existing: LeaderboardRow | null = null;
-  if (parsed.ok) {
+  const limited = () =>
+    submitError("RATE_LIMITED", "Ten submissions per hour. Try again later.", {
+      "retry-after": "3600",
+    });
+  if (!parsed.ok) {
     try {
-      existing = await deps.store.byToken(parsed.sub.token);
+      if (!(await deps.limiter.consume("submit", ipHash, now, RATE_LIMIT))) return limited();
     } catch (e) {
-      return unavailable("submit.probe", rid, e);
+      return unavailable("submit.limiter", rid, e);
     }
-    if (existing?.nickname === parsed.sub.nickname) return savedEntry(existing, deps.store, rid);
+    return parsed.res;
   }
-
-  try {
-    if (!(await deps.limiter.consume("submit", ipHash, now, RATE_LIMIT))) {
-      return submitError("RATE_LIMITED", "Ten submissions per hour. Try again later.", {
-        "retry-after": "3600",
-      });
-    }
-  } catch (e) {
-    return unavailable("submit.limiter", rid, e);
-  }
-  if (!parsed.ok) return parsed.res;
   const { nickname, run, token, board } = parsed.sub;
-  if (existing !== null) return conflictError("token");
   try {
-    if (await deps.store.dailyTaken(nickname, board)) return conflictError("daily");
+    const admission = await deps.store.admitSubmission(
+      token,
+      nickname,
+      board,
+      ipHash,
+      now,
+      RATE_LIMIT,
+    );
+    if (admission.kind === "retry") return savedEntry(admission.row, deps.store, rid);
+    if (admission.kind === "limited") return limited();
+    if (admission.kind === "conflict") return conflictError(admission.conflict);
   } catch (e) {
-    return unavailable("submit.daily", rid, e);
+    return unavailable("submit.admission", rid, e);
   }
 
   let result: ReturnType<typeof engineReplay>;
