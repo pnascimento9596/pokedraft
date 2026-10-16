@@ -16,5 +16,8 @@ export function replay(token: string | RunToken): { draft: DraftState; cup: CupR
   if (!isComplete(draft)) {
     throw new RunTokenError("invalidAction", "the actions do not complete the draft");
   }
-  return { draft, cup: runCup(toFullLineup(draft), run.seed, draft.settings.mode) };
+  return {
+    draft,
+    cup: runCup(toFullLineup(draft), run.seed, draft.settings.mode, undefined, run.manager ?? []),
+  };
 }

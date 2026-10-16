@@ -13,7 +13,7 @@ export type Seed = Brand<string, "Seed">;
 export type IsoDate = Brand<string, "IsoDate">;
 export type Quality = Brand<number, "Quality">;
 
-export const ENGINE_VERSION = "pokedraft-engine-5" as const;
+export const ENGINE_VERSION = "pokedraft-engine-6" as const;
 
 export const GENS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 export type Gen = (typeof GENS)[number];
@@ -316,6 +316,78 @@ export interface Absence {
   readonly in: SpeciesId | null;
 }
 
+/** A touchline instruction. Each changes how much a side attacks and how much it gives away. */
+export const TACTICS = ["balanced", "attack", "defend", "press", "counter"] as const;
+export type Tactic = (typeof TACTICS)[number];
+
+/**
+ * A coach decision recorded in the run token. `match` is the cup match index (0 to 7) and
+ * `minute` is the match minute after which the decision applies (0 means before kickoff). A sub
+ * replaces whoever plays in formation slot `slot` with bench player `bench`.
+ */
+export type ManagerAction =
+  | {
+      readonly type: "tactic";
+      readonly match: number;
+      readonly minute: number;
+      readonly tactic: Tactic;
+    }
+  | {
+      readonly type: "sub";
+      readonly match: number;
+      readonly minute: number;
+      readonly slot: StarterIndex;
+      readonly bench: BenchIndex;
+    };
+
+/** Something that happened on the pitch besides a goal or a save. `slot` is a formation slot. */
+export type Incident =
+  | {
+      readonly kind: "injury";
+      readonly side: "user";
+      readonly minute: number;
+      readonly slot: StarterIndex;
+      readonly player: SpeciesId;
+    }
+  | {
+      readonly kind: "sub";
+      readonly side: "user";
+      readonly minute: number;
+      readonly slot: StarterIndex;
+      readonly out: SpeciesId;
+      readonly in: SpeciesId;
+      readonly reason: "injury" | "tactical" | "fatigue";
+      readonly by: "manager" | "auto";
+    }
+  | {
+      readonly kind: "yellow" | "red";
+      readonly side: Side;
+      readonly minute: number;
+      readonly slot: StarterIndex;
+      readonly player: SpeciesId;
+      /** True when a second yellow produced this red card. */
+      readonly secondYellow: boolean;
+    }
+  | {
+      readonly kind: "tactic";
+      readonly side: Side;
+      readonly minute: number;
+      readonly tactic: Tactic;
+      readonly by: "manager" | "auto";
+    };
+
+/** The state at the end of one five-minute window, for the touchline and the broadcast. */
+export interface WindowSnapshot {
+  /** The window's last minute (5, 10, ... 90, then 95 ... 120 in extra time). */
+  readonly minute: number;
+  readonly score: Score;
+  readonly tactic: { readonly user: Tactic; readonly opp: Tactic };
+  /** Energy 0 to 100 of the user's eleven slots, in formation order; null for an empty slot. */
+  readonly energy: readonly (number | null)[];
+  /** Who plays in each of the user's eleven slots; null after a red card or an unreplaced injury. */
+  readonly onPitch: readonly (SpeciesId | null)[];
+}
+
 export type MatchResult =
   | {
       readonly status: "played";
@@ -328,6 +400,10 @@ export type MatchResult =
       readonly goals: readonly GoalEvent[];
       /** Absent on retained engines that did not record saves. */
       readonly saves?: readonly SaveEvent[];
+      /** Engine 6 and later: injuries, substitutions, cards and tactic changes, in minute order. */
+      readonly incidents?: readonly Incident[];
+      /** Engine 6 and later: one snapshot per five-minute window played. */
+      readonly windows?: readonly WindowSnapshot[];
       readonly absences: readonly Absence[];
       readonly rating: number;
       readonly recap: readonly string[];
@@ -412,13 +488,15 @@ export interface CupResult {
   readonly awards: Awards;
 }
 
-export const RUN_TOKEN_VERSION = 5 as const;
+export const RUN_TOKEN_VERSION = 6 as const;
 
 export interface RunToken {
   readonly v: typeof RUN_TOKEN_VERSION;
   readonly settings: DraftSettings;
   readonly seed: Seed;
   readonly actions: readonly DraftAction[];
+  /** Coach decisions for the cup, in match then minute order. Empty when nobody managed. */
+  readonly manager?: readonly ManagerAction[];
 }
 
 export type RunTokenErrorCode =

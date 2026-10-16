@@ -24,13 +24,16 @@ const fixture = exhibitionFixture(own, other)!;
 const scope = (rematch: number) => ({ seed: opponent.seed, own, other, rematch });
 
 describe("one-match exhibition", () => {
-  it("keeps the original scope, so the same squads replay the same 0 - 2 result", () => {
+  it("keeps the original scope, so the same squads replay the same 4 - 1 result", () => {
     const match = playSingle(fixture, scope(0));
-    expect(finalScore(match)).toEqual({ user: 0, opp: 2 });
+    expect(finalScore(match)).toEqual({ user: 4, opp: 1 });
     expect(match.extraTime).toBeNull();
     expect(match.goals.map(goalLine)).toEqual([
-      "75' Blastoise, assist Caterpie",
-      "83' Wartortle, assist Metapod",
+      "23' Charizard (solo run)",
+      "37' Caterpie, assist Charmeleon",
+      "44' Venusaur",
+      "78' Blastoise",
+      "85' Charizard (pen)",
     ]);
   });
 
@@ -48,18 +51,18 @@ describe("two-leg exhibition", () => {
   it("plays each leg in its own scope instead of replaying the one-match result as leg 1", () => {
     const tie = playTwoLegs(fixture, scope(0));
     expect(tie.legs.map((leg) => leg.regulation)).toEqual([
-      { user: 0, opp: 0 },
-      { user: 1, opp: 1 },
+      { user: 2, opp: 2 },
+      { user: 2, opp: 1 },
     ]);
   });
 
   it("decides a won aggregate after 90 minutes of leg 2 with no extra time", () => {
-    const tie = playTwoLegs(fixture, scope(2));
+    const tie = playTwoLegs(fixture, scope(6));
     expect(tie.legs.map((leg) => leg.regulation)).toEqual([
       { user: 0, opp: 0 },
-      { user: 1, opp: 0 },
+      { user: 2, opp: 0 },
     ]);
-    expect(tie.aggregate).toEqual({ user: 1, opp: 0 });
+    expect(tie.aggregate).toEqual({ user: 2, opp: 0 });
     expect(tie.decidedBy).toBe("aggregate");
     expect(tie.winner).toBe("user");
     expect(tie.leg2.extraTime).toBe(false);
@@ -67,54 +70,51 @@ describe("two-leg exhibition", () => {
   });
 
   it("does not send a drawn leg 2 to extra time when the aggregate is already decided", () => {
-    const tie = playTwoLegs(fixture, scope(3));
+    const tie = playTwoLegs(fixture, scope(20));
     expect(tie.legs.map((leg) => leg.regulation)).toEqual([
-      { user: 0, opp: 1 },
+      { user: 1, opp: 0 },
       { user: 1, opp: 1 },
     ]);
     expect(tie.leg2.score).toEqual({ user: 1, opp: 1 });
     expect(tie.leg2.extraTime).toBe(false);
-    expect(tie.aggregate).toEqual({ user: 1, opp: 2 });
+    expect(tie.aggregate).toEqual({ user: 2, opp: 1 });
     expect(tie.decidedBy).toBe("aggregate");
-    expect(tie.winner).toBe("opp");
+    expect(tie.winner).toBe("user");
   });
 
   it("sends a level aggregate to extra time even when leg 2 alone was won", () => {
-    const tie = playTwoLegs(fixture, scope(7));
+    const tie = playTwoLegs(fixture, scope(1));
     expect(tie.legs.map((leg) => leg.regulation)).toEqual([
-      { user: 1, opp: 0 },
-      { user: 0, opp: 1 },
+      { user: 0, opp: 2 },
+      { user: 2, opp: 0 },
     ]);
     expect(tie.leg2.extraTime).toBe(true);
-    expect(tie.aggregate).toEqual({ user: 1, opp: 1 });
+    expect(tie.aggregate).toEqual({ user: 2, opp: 2 });
     expect(tie.decidedBy).toBe("penalties");
     expect(shootoutLine(tie.decider!)).toBe("4-5 on pens");
     expect(tie.winner).toBe("opp");
   });
 
   it("adds extra-time goals to leg 2 and the aggregate when extra time settles the tie", () => {
-    const tie = playTwoLegs(fixture, scope(5));
+    const tie = playTwoLegs(fixture, scope(24));
     expect(tie.legs.map((leg) => leg.regulation)).toEqual([
-      { user: 0, opp: 0 },
-      { user: 0, opp: 0 },
+      { user: 0, opp: 1 },
+      { user: 1, opp: 0 },
     ]);
     expect(tie.leg2.score).toEqual({ user: 2, opp: 0 });
-    expect(tie.leg2.goals.map(goalLine)).toEqual([
-      "98' Charizard (pen)",
-      "111' Blastoise, assist Charmeleon",
-    ]);
-    expect(tie.aggregate).toEqual({ user: 2, opp: 0 });
+    expect(tie.leg2.goals.map(goalLine)).toEqual(["29' Metapod, assist Charizard", "91' Caterpie"]);
+    expect(tie.aggregate).toEqual({ user: 2, opp: 1 });
     expect(tie.decidedBy).toBe("extra-time");
     expect(tie.leg2.shootout).toBeNull();
     expect(tie.winner).toBe("user");
   });
 
   it("goes to penalties when extra time leaves the aggregate level", () => {
-    const tie = playTwoLegs(fixture, scope(0));
-    expect(tie.leg2.score).toEqual({ user: 1, opp: 1 });
-    expect(tie.aggregate).toEqual({ user: 1, opp: 1 });
+    const tie = playTwoLegs(fixture, scope(7));
+    expect(tie.leg2.score).toEqual({ user: 2, opp: 2 });
+    expect(tie.aggregate).toEqual({ user: 2, opp: 2 });
     expect(tie.decidedBy).toBe("penalties");
-    expect(shootoutLine(tie.decider!)).toBe("6-7 on pens");
+    expect(shootoutLine(tie.decider!)).toBe("2-4 on pens");
     expect(tie.winner).toBe("opp");
   });
 

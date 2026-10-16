@@ -65,7 +65,7 @@ const KANTO: DraftSettings = { mode: "kanto151", formation: "3-5-2", order: "pos
 function token(settings: DraftSettings, seed: Seed): RunToken {
   const actions =
     settings.mode === "kanto151" ? kantoActions(settings, seed) : cup8Actions(settings, seed);
-  return { v: 5, settings, seed, actions };
+  return { v: 6, settings, seed, actions };
 }
 
 const CUP8_TOKEN = token(CUP8, "golden-cup8" as Seed);
@@ -73,10 +73,10 @@ const KANTO_TOKEN = token(KANTO, "golden-kanto151" as Seed);
 
 describe("engine goldens (any byte of drift in draft, rating, match or cup output moves a hash)", () => {
   it("pins the engine version these goldens were cut against", () => {
-    expect(ENGINE_VERSION).toBe("pokedraft-engine-5");
+    expect(ENGINE_VERSION).toBe("pokedraft-engine-6");
   });
 
-  it("keeps the engine-4 simulation outcomes and draft Team Scores", () => {
+  it("keeps the engine-6 simulation outcomes and draft Team Scores", () => {
     const run = replay(encodeToken(CUP8_TOKEN));
     expect([
       run.cup.rating.score,
@@ -84,7 +84,7 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
       run.cup.draws,
       run.cup.losses,
       run.cup.finish,
-    ]).toEqual([593, 3, 0, 2, "R16"]);
+    ]).toEqual([593, 5, 0, 1, "QF"]);
     const kanto = replay(encodeToken(KANTO_TOKEN));
     expect([
       kanto.cup.rating.score,
@@ -92,7 +92,7 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
       kanto.cup.draws,
       kanto.cup.losses,
       kanto.cup.finish,
-    ]).toEqual([480, 0, 3, 0, "group"]);
+    ]).toEqual([480, 3, 0, 1, "R32"]);
   });
 
   it("attributes every opponent goal and shootout kick to a Boss Club roster member", () => {
@@ -122,10 +122,10 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const s = encodeToken(CUP8_TOKEN);
     const run = replay(s);
     expect(CUP8_TOKEN.actions).toHaveLength(18);
-    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 3, "R16"]);
-    expect(sha256(s)).toBe("d3a15998448b19a8e7f8489363d4514de2547a1bdac4a1891524de09f3253b25");
+    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 5, "QF"]);
+    expect(sha256(s)).toBe("91d7a44a3e489b6740655ea38cf75d4ad83d2399b7cd53d706229ac8cebb30a4");
     expect(sha256(JSON.stringify(run))).toBe(
-      "d3f3598c4ed414bad106ecec4efe543774be9988718833f9172542cff9fdbd5a",
+      "2b26ee82cbf26da1d64e1c4978b25e846537085747d3845d78b555cb7d8f7e05",
     );
   });
 
@@ -133,10 +133,10 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const s = encodeToken(KANTO_TOKEN);
     const run = replay(s);
     expect(KANTO_TOKEN.actions).toHaveLength(36);
-    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 0, "group"]);
-    expect(sha256(s)).toBe("a4a679846ef8515ef6c0e2d0a001e324e080a33db0e0d0a9ff5cb4559bf50fbe");
+    expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 3, "R32"]);
+    expect(sha256(s)).toBe("6b4f9d46c3b88d5dab4135b91913e37ba1b909b41e9efd227fd9bd217b935c14");
     expect(sha256(JSON.stringify(run))).toBe(
-      "d4d1db9bd84cbd39eae072a86791a76864a16f96db5844c5be67df7c1ab2a95a",
+      "eb3664642c3c0bd9ee50cb4382182c73e070dad7896e620492d5b0e5b8b12747",
     );
   });
 
@@ -153,9 +153,11 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
       const settings = i < 10 ? CUP8 : KANTO;
       return replay(token(settings, `panel-${i}` as Seed)).cup.rating.score;
     });
+    // Engine 6 moved four scores through the scouting fix: panel-10 and panel-19 start Wigglytuff
+    // (600 to 590, 489 to 484), and panel-0 and panel-8 move by one from the GK percentile shift.
     expect(scores).toEqual([
-      361, 473, 487, 521, 428, 437, 376, 592, 392, 498, 600, 502, 497, 432, 563, 398, 491, 555, 456,
-      489,
+      362, 473, 487, 521, 428, 437, 376, 592, 391, 498, 590, 502, 497, 432, 563, 398, 491, 555, 456,
+      484,
     ]);
   });
 });

@@ -28,10 +28,10 @@ describe("rateTeam", () => {
   it("pins the p75 lineup's components so a formula change shows up as a diff", () => {
     const rating = rateTeam(P75);
     expect(rating.score).toBe(786);
-    expect(rating.core).toBeCloseTo(0.746630894308943, 12);
-    expect(rating.drag).toBeCloseTo(0.005218033998521758, 12);
+    expect(rating.core).toBeCloseTo(0.7467479674796748, 12);
+    expect(rating.drag).toBeCloseTo(0.0050997782705100025, 12);
     expect(rating.synergy).toBeCloseTo(0.7196969696969696, 12);
-    expect(rating.bench).toBeCloseTo(0.2854634146341464, 12);
+    expect(rating.bench).toBeCloseTo(0.2853658536585366, 12);
     expect(rating.weakest).toEqual(["4-3-3.GK", "4-3-3.LB", "4-3-3.RB"]);
     expect(rating.edges).toHaveLength(33);
     expect(rating.slots[1]).toEqual({
@@ -73,7 +73,7 @@ describe("rateTeam", () => {
   it("bends the blend with x + k·x·(1 − x), so curve 0 is the raw blend and the curve lifts mid scores", () => {
     const flat = { ...ENGINE_COEFFICIENTS, team: { ...ENGINE_COEFFICIENTS.team, curve: 0 } };
     expect(ENGINE_COEFFICIENTS.team.curve).toBe(0.4);
-    expect(rateTeam(P75, flat).score).toBe(702);
+    expect(rateTeam(P75, flat).score).toBe(703);
     expect(rateTeam(P75).score).toBe(786);
   });
 });
@@ -81,10 +81,10 @@ describe("rateTeam", () => {
 describe("matchLines", () => {
   it("centres the line shape on score / 10 so equal scores mean equal average strength", () => {
     const lines = matchLines(rateTeam(P75));
-    expect(lines.GK).toBeCloseTo(78.0471544715447, 10);
-    expect(lines.DEF).toBeCloseTo(78.58373983739837, 10);
-    expect(lines.MID).toBeCloseTo(78.9821138211382, 10);
-    expect(lines.ATT).toBeCloseTo(78.7869918699187, 10);
+    expect(lines.GK).toBeCloseTo(78.08373983739837, 10);
+    expect(lines.DEF).toBeCloseTo(78.57154471544715, 10);
+    expect(lines.MID).toBeCloseTo(78.96991869918699, 10);
+    expect(lines.ATT).toBeCloseTo(78.77479674796747, 10);
     expect((lines.GK + lines.DEF + lines.MID + lines.ATT) / 4).toBeCloseTo(78.6, 10);
   });
 });

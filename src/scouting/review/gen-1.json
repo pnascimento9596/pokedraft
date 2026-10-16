@@ -957,11 +957,11 @@
       "bestRoles": [
         "CM",
         "DM",
-        "GK"
+        "WM"
       ],
       "worstRoles": [
-        "ST",
-        "CB"
+        "GK",
+        "W"
       ],
       "strengths": [
         "stamina",
@@ -982,12 +982,12 @@
       },
       "bestRoles": [
         "CM",
-        "DM",
-        "GK"
+        "AM",
+        "WM"
       ],
       "worstRoles": [
-        "W",
-        "CB"
+        "GK",
+        "W"
       ],
       "strengths": [
         "stamina",
@@ -2371,7 +2371,7 @@
         "kicking-technique",
         "acceleration"
       ],
-      "rationale": "Height 88 and weight 2100, a rock snake long enough to fill a goal mouth, so keeper positioning rises, while height already carries its aerial reach. Squiggle shape with no limbs rightly leaves its technique near the floor."
+      "rationale": "Height 88 and weight 2100, a rock snake long enough to fill a goal mouth, so keeper positioning rises; as a serpent its height is body length, so it earns no extra aerial reach. Squiggle shape with no limbs rightly leaves its technique near the floor."
     },
     {
       "id": 96,

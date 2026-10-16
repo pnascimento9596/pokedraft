@@ -18,8 +18,10 @@ import {
   type GroupRow,
   type GroupFixture,
   type MatchResult,
+  type ManagerAction,
   type Mode,
   type Opponent,
+  RunTokenError,
   type Seed,
   type SpeciesId,
 } from "./types";
@@ -105,12 +107,61 @@ function groupTable(
   return canonicalSortBy(rows, (r) => [...triple(r), -headToHead(r), lots.indexOf(r.team)]);
 }
 
+interface Stint {
+  readonly species: SpeciesId;
+  readonly slot: number;
+  readonly from: number;
+  to: number | null;
+}
+
+// Who stood in each slot and for how long, rebuilt from the starting eleven and the incidents.
+function stints(
+  starters: readonly SpeciesId[],
+  match: PlayedMatch,
+  fullTime: number,
+): readonly Stint[] {
+  const all: Stint[] = starters.map((species, slot) => ({ species, slot, from: 0, to: null }));
+  const open = new Map<number, Stint>(all.map((s) => [s.slot, s]));
+  const close = (slot: number, minute: number): void => {
+    const s = open.get(slot);
+    if (s !== undefined) s.to = minute;
+    open.delete(slot);
+  };
+  for (const i of match.incidents ?? []) {
+    if (i.side !== "user") continue;
+    if (i.kind === "red" || i.kind === "injury") close(i.slot, i.minute);
+    if (i.kind === "sub") {
+      close(i.slot, i.minute);
+      const s: Stint = { species: i.in, slot: i.slot, from: i.minute, to: null };
+      all.push(s);
+      open.set(i.slot, s);
+    }
+  }
+  for (const s of all) if (s.to === null) s.to = fullTime;
+  return all;
+}
+
+// Coach decisions must come in match then minute order; anything else is a forged token.
+function managerByMatch(manager: readonly ManagerAction[]): Map<number, ManagerAction[]> {
+  const out = new Map<number, ManagerAction[]>();
+  manager.forEach((a, i) => {
+    const prev = manager[i - 1];
+    if (prev && (a.match < prev.match || (a.match === prev.match && a.minute < prev.minute))) {
+      throw new RunTokenError("invalidAction", `manager action ${i} is out of order`);
+    }
+    out.set(a.match, [...(out.get(a.match) ?? []), a]);
+  });
+  return out;
+}
+
 export function runCup(
   lineup: FullLineup,
   seed: Seed,
   mode: Mode,
   c: EngineCoefficients = ENGINE_COEFFICIENTS,
+  manager: readonly ManagerAction[] = [],
 ): CupResult {
+  const decisions = managerByMatch(manager);
   const formation = FORMATIONS[lineup.formation];
   const ladder = buildLadder(seed, mode, c);
   const rating = rateTeam(lineup, c);
@@ -179,19 +230,29 @@ export function runCup(
         opponent,
         opponentStarters: bossStarters(opponent),
         absences: absence === null ? [] : [absence],
+        lineup: fielded,
+        unavailable: absence === null ? [] : [absence.out],
+        manager: decisions.get(matchIndex) ?? [],
       },
       c,
     );
+    decisions.delete(matchIndex);
     const conceded = match.regulation.opp + (match.extraTime?.opp ?? 0);
     const minutes = match.extraTime === null ? REGULATION_MINUTES : EXTRA_TIME_MINUTES;
-    for (const s of starters) {
-      const sheet = conceded === 0 ? c.awards.cleanSheet[s.role] : undefined;
-      bump(s.species.id, {
-        appearances: 1,
+    const seen = new Set<SpeciesId>();
+    for (const st of stints(fielded.starters, match, minutes)) {
+      const played = st.to! - st.from;
+      const role = formation.slots[st.slot]!.role;
+      // A clean sheet belongs to a defender or keeper who played at least half of it.
+      const sheet =
+        conceded === 0 && played * 2 >= REGULATION_MINUTES ? c.awards.cleanSheet[role] : undefined;
+      bump(st.species, {
+        appearances: seen.has(st.species) ? 0 : 1,
         cleanSheets: sheet === undefined ? 0 : 1,
         cleanSheetPoints: sheet ?? 0,
-        minutes,
+        minutes: played,
       });
+      seen.add(st.species);
     }
     for (const g of match.goals) {
       if (g.side !== "user") continue;
@@ -253,6 +314,9 @@ export function runCup(
     }
   });
 
+  if (decisions.size > 0) {
+    throw new RunTokenError("invalidAction", "a coach decision names a match the run never played");
+  }
   const played = matches.filter((m): m is PlayedMatch => m.status === "played");
   const wins = played.filter((m) => m.outcome === "W").length;
   const draws = played.filter((m) => m.outcome === "D").length;

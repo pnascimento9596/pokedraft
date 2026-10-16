@@ -58,7 +58,7 @@ describe("SubmitPanel", () => {
     expect(JSON.parse(init.body as string)).toEqual({
       nickname: "Misty",
       token: "pd1.abc",
-      engineVersion: "pokedraft-engine-5",
+      engineVersion: "pokedraft-engine-6",
     });
     expect(localStorage.getItem("pokedraft:nickname")).toBe('"Misty"');
 

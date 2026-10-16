@@ -11,7 +11,7 @@ afterEach(cleanup);
 // Squad First, seed "road-5". Observed 4-0-1, out in the Round of 16, so three of its eight
 // matches are Not played and still name their opponent.
 const ROAD_5 =
-  "pd5.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwicm9hZC01IixbWyJwIiw3NzYsInMwIl0sWyJwIiw5NzQsInMxIl0sWyJwIiwzNjEsInMyIl0sWyJwIiw0OTUsInMzIl0sWyJwIiwzOTUsInM0Il0sWyJwIiwyMDUsInM1Il0sWyJwIiwyNywiczYiXSxbInAiLDcyMiwiczciXSxbInAiLDkzMSwiczgiXSxbInAiLDE2LCJzOSJdLFsicCIsNzY1LCJzMTAiXSxbInAiLDQzMCwiYjAiXSxbInAiLDkyLCJiMSJdLFsicCIsNjkxLCJiMiJdLFsicCIsNjU1LCJiMyJdLFsicCIsMTcsImI0Il1dXQ";
+  "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwicm9hZC01IixbWyJwIiw3NzYsInMwIl0sWyJwIiw5NzQsInMxIl0sWyJwIiwzNjEsInMyIl0sWyJwIiw0OTUsInMzIl0sWyJwIiwzOTUsInM0Il0sWyJwIiwyMDUsInM1Il0sWyJwIiwyNywiczYiXSxbInAiLDcyMiwiczciXSxbInAiLDkzMSwiczgiXSxbInAiLDE2LCJzOSJdLFsicCIsNzY1LCJzMTAiXSxbInAiLDQzMCwiYjAiXSxbInAiLDkyLCJiMSJdLFsicCIsNjkxLCJiMiJdLFsicCIsNjU1LCJiMyJdLFsicCIsMTcsImI0Il1dXQ";
 
 const ratings = () => screen.queryAllByText(/, rating \d+$/).map((el) => el.textContent);
 

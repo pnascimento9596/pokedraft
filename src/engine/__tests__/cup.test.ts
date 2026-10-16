@@ -81,7 +81,7 @@ describe("runCup", () => {
       );
       if (r.flawless) flawless++;
     }
-    expect(flawless).toBe(48);
+    expect(flawless).toBe(47);
   });
 
   it("replays identically from the same lineup and seed", () => {
@@ -91,7 +91,9 @@ describe("runCup", () => {
   });
 
   it("pins a cup run where the group is decided past points, GD and GF", () => {
-    const r = runCup(WEAK, "golden-24" as Seed, "cup8");
+    // Engine 6: golden-54 leaves the user level with Hearthome City on 3 points, 2 for and 4
+    // against, so the order between them comes from the tiebreaks past points, GD and GF.
+    const r = runCup(WEAK, "golden-54" as Seed, "cup8");
     expect([r.rating.score, r.wins, r.draws, r.losses, r.finish, r.flawless]).toEqual([
       220,
       1,
@@ -101,50 +103,39 @@ describe("runCup", () => {
       false,
     ]);
     expect(r.group.map((g) => [g.team, g.points, g.goalsFor, g.goalsAgainst])).toEqual([
-      ["levincia-city", 6, 4, 1],
-      ["olivine-rovers", 6, 4, 3],
-      ["ecruteak-town", 3, 2, 4],
+      ["shalour-city", 9, 5, 0],
+      ["motostoke-united", 3, 2, 3],
       ["user", 3, 2, 4],
+      ["hearthome-city", 3, 2, 4],
     ]);
     expect(r.awards).toEqual({
-      goldenBoot: {
-        species: 27,
-        goals: 2,
-        assists: 0,
-        appearances: 3,
-      },
-      topAssister: null,
-      playerOfTournament: {
-        species: 27,
-        goals: 2,
-        assists: 0,
-        appearances: 3,
-      },
+      goldenBoot: { species: 21, goals: 1, assists: 0, appearances: 3 },
+      topAssister: { species: 14, goals: 0, assists: 1, appearances: 3 },
+      playerOfTournament: { species: 27, goals: 1, assists: 0, appearances: 3 },
       potContribution: {
         species: 27,
-        goals: 2,
+        goals: 1,
         assists: 0,
         cleanSheets: 0,
         minutes: 270,
-        points: {
-          goals: 6,
-          assists: 0,
-          cleanSheets: 0,
-          minutes: 1.5,
-        },
-        total: 7.5,
+        points: { goals: 3, assists: 0, cleanSheets: 0, minutes: 1.5 },
+        total: 4.5,
       },
     });
   });
 
   it("pins a run with an absence and counts the replacement's appearance, not the absentee's", () => {
     const r = runCup(P75, "golden-4" as Seed, "cup8");
-    expect([r.wins, r.draws, r.losses, r.finish]).toEqual([5, 0, 1, "QF"]);
+    expect([r.wins, r.draws, r.losses, r.finish]).toEqual([4, 0, 1, "R16"]);
     const absences = r.matches.flatMap((m) => (m.status === "played" ? m.absences : []));
     expect(absences).toEqual([{ slot: "4-3-3.LCM", out: 59, in: 4 }]);
+    const absentIn = r.matches.findIndex((m) => m.status === "played" && m.absences.length > 0);
+    expect(absentIn).toBe(4);
     const appearances = Object.fromEntries(r.players.map((p) => [p.species, p.appearances]));
-    expect([appearances[59], appearances[4], appearances[1]]).toEqual([5, 1, 0]);
-    expect(r.awards.goldenBoot).toEqual({ species: 38, goals: 6, assists: 1, appearances: 6 });
+    // 59 misses match 4 only. Bench 4 starts match 4 in its place and comes on at 60' in the other
+    // four, so it appears in all five; bench 10 is never used.
+    expect([appearances[59], appearances[4], appearances[10]]).toEqual([4, 5, 0]);
+    expect(r.awards.goldenBoot).toEqual({ species: 136, goals: 5, assists: 1, appearances: 5 });
   });
 });
 
@@ -179,7 +170,7 @@ describe("exact ladder (catches the UI showing a nominal ladder or a nameless un
     const r = runCup(WEAK, "golden-177" as Seed, "cup8");
     const ladder = buildLadder("golden-177", "cup8");
     const unplayed = r.matches.filter((m) => m.status === "notPlayed");
-    expect(unplayed.map((m) => m.round)).toEqual(["R16", "QF", "SF", "F"]);
+    expect(unplayed.map((m) => m.round)).toEqual(["R32", "R16", "QF", "SF", "F"]);
     for (const m of unplayed) expect(m.opponent).toEqual(ladder[m.round]);
   });
 });
@@ -207,46 +198,52 @@ const attackingShare = (byRole: Partial<Record<Role, number>>): number => {
   return ((byRole.ST ?? 0) + (byRole.W ?? 0) + (byRole.AM ?? 0)) / total;
 };
 
-describe("scorer roles (catches defenders and holding midfielders scoring like forwards)", () => {
-  // Three hand squads in two formations, pooled: one squad alone swings with who takes its
-  // penalties (KANTO's CB Dragonite, SHO 99, takes all of them). The line factors this replaced
-  // pool to 53.0%.
-  const squads = [P75, KANTO, MIDDLING].flatMap((l) =>
-    (["4-3-3", "4-2-3-1"] as const).map((formation) => ({ ...l, formation }) as FullLineup),
-  );
+// Engine 6 plays 5-minute windows, so 6 squads x SEEDS cups exceed the 15 s default on a 4-worker
+// hosted runner (timed out at 82c4467). Same budget as the other statistical suites.
+describe(
+  "scorer roles (catches defenders and holding midfielders scoring like forwards)",
+  { timeout: 60_000 },
+  () => {
+    // Three hand squads in two formations, pooled: one squad alone swings with who takes its
+    // penalties (KANTO's CB Dragonite, SHO 99, takes all of them). The line factors this replaced
+    // pool to 53.0%.
+    const squads = [P75, KANTO, MIDDLING].flatMap((l) =>
+      (["4-3-3", "4-2-3-1"] as const).map((formation) => ({ ...l, formation }) as FullLineup),
+    );
 
-  it("gives ST, W and AM 70 to 80% of user goals", () => {
-    const pooled: Partial<Record<Role, number>> = {};
-    for (const l of squads) {
-      const byRole = goalRoles(
-        l,
-        SEEDS.map((seed) => runCup(l, seed, "cup8")),
-      );
-      for (const [r, n] of Object.entries(byRole) as [Role, number][]) {
-        pooled[r] = (pooled[r] ?? 0) + n;
+    it("gives ST, W and AM 70 to 80% of user goals", () => {
+      const pooled: Partial<Record<Role, number>> = {};
+      for (const l of squads) {
+        const byRole = goalRoles(
+          l,
+          SEEDS.map((seed) => runCup(l, seed, "cup8")),
+        );
+        for (const [r, n] of Object.entries(byRole) as [Role, number][]) {
+          pooled[r] = (pooled[r] ?? 0) + n;
+        }
       }
-    }
-    const share = attackingShare(pooled);
-    expect(share >= 0.7 && share <= 0.8).toBe(true);
-  });
+      const share = attackingShare(pooled);
+      expect(share >= 0.7 && share <= 0.8).toBe(true);
+    });
 
-  it("never lets the goalkeeper score from open play", () => {
-    for (const l of squads) {
-      const keeper = l.starters[0];
-      const goals = SEEDS.slice(0, 50)
-        .map((seed) => runCup(l, seed, "cup8"))
-        .flatMap((r) => r.matches)
-        .flatMap((m) => (m.status === "played" ? m.goals : []))
-        .filter((g) => g.side === "user" && !g.penalty && g.scorer === keeper);
-      expect(goals).toEqual([]);
-    }
-  });
-});
+    it("never lets the goalkeeper score from open play", () => {
+      for (const l of squads) {
+        const keeper = l.starters[0];
+        const goals = SEEDS.slice(0, 50)
+          .map((seed) => runCup(l, seed, "cup8"))
+          .flatMap((r) => r.matches)
+          .flatMap((m) => (m.status === "played" ? m.goals : []))
+          .filter((g) => g.side === "user" && !g.penalty && g.scorer === keeper);
+        expect(goals).toEqual([]);
+      }
+    });
+  },
+);
 
 describe("player of the tournament contribution (catches an opaque or role-blind award)", () => {
   // Independent recompute: goals 3, assists 2, a clean sheet 2 in goal and 1 at CB, FB or DM
-  // (by the slot filled that match, so a WB or CM earns none), and 1 point per 180 minutes
-  // (90 a match, 120 after extra time).
+  // (by the slot filled, so a WB or CM earns none, and only for half a match or more there), and
+  // 1 point per 180 minutes actually on the pitch.
   const SHEET: Partial<Record<Role, number>> = { GK: 2, CB: 1, FB: 1, DM: 1 };
   const round2 = (x: number) => Math.round(x * 100) / 100;
 
@@ -262,20 +259,39 @@ describe("player of the tournament contribution (catches an opaque or role-blind
     };
     for (const m of r.matches) {
       if (m.status !== "played") continue;
-      const role = new Map<number, Role>(l.starters.map((id, i) => [id, slots[i]!.role]));
-      for (const a of m.absences) {
-        role.delete(a.out);
-        if (a.in !== null) role.set(a.in, slots.find((s) => s.id === a.slot)!.role);
-      }
+      // Engine 6: a player earns the minutes they were on the pitch. A substitution, an injury or
+      // a red card ends a stint, and a clean sheet needs half the match in a sheet-earning slot.
+      const fullTime = m.extraTime === null ? 90 : 120;
       const conceded = m.goals.filter((g) => g.side === "opp").length;
-      for (const [id, rl] of role) {
-        const p = get(id);
-        p.min += m.extraTime === null ? 90 : 120;
-        if (conceded === 0 && SHEET[rl] !== undefined) {
+      const onPitch = new Map<number, { id: number; from: number }>();
+      l.starters.forEach((id, i) => onPitch.set(i, { id, from: 0 }));
+      for (const a of m.absences) {
+        const i = slots.findIndex((s) => s.id === a.slot);
+        if (a.in === null) onPitch.delete(i);
+        else onPitch.set(i, { id: a.in, from: 0 });
+      }
+      const leave = (slot: number, minute: number) => {
+        const st = onPitch.get(slot);
+        if (st === undefined) return;
+        onPitch.delete(slot);
+        const p = get(st.id);
+        const played = minute - st.from;
+        p.min += played;
+        const sheet = SHEET[slots[slot]!.role];
+        if (conceded === 0 && sheet !== undefined && played * 2 >= 90) {
           p.cs += 1;
-          p.csPts += SHEET[rl]!;
+          p.csPts += sheet;
+        }
+      };
+      for (const i of m.incidents ?? []) {
+        if (i.side !== "user") continue;
+        if (i.kind === "red" || i.kind === "injury") leave(i.slot, i.minute);
+        if (i.kind === "sub") {
+          leave(i.slot, i.minute);
+          onPitch.set(i.slot, { id: i.in, from: i.minute });
         }
       }
+      for (const slot of [...onPitch.keys()]) leave(slot, fullTime);
       for (const g of m.goals) {
         if (g.side !== "user") continue;
         get(g.scorer).goals += 1;
