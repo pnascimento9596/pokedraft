@@ -26,6 +26,12 @@ harness loads them through `tools/pstack-core/skills/pokedraft-mode/SKILL.md`.
      the PR number, and the head SHA. It checks out that head in a clean clone,
      re-executes every gate command, applies the `interrogate` rubric, and
      returns PASS or FAIL with findings. A diff read alone does not qualify.
+- `tools/review/` builds the GLM packet and checks the reply. Its README has the commands.
+- A Sol (`gpt-5.6-sol`) review through `codex exec` is an optional cross-vendor lane, never the
+  gate. It needs a Codex login whose account has the model, and today's ChatGPT login refuses it.
+  When it does not run, record it as NOT RUN. GLM 5.3 Flash stays the gate.
+- Never swap a reviewer's model silently. If the named model does not run, stop that lane, say
+  so, and move to the next reviewer in the order above.
 - Record which reviewer ran.
 - At most 2 review rounds per head. Fix forward and re-review. After 3 fix
   rounds without PASS, stop and report.
