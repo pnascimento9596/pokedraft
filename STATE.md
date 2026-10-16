@@ -2,6 +2,10 @@
 
 Measured ground truth. Updated in the same PR as every merge.
 
+## Canon movesets artifact
+
+`src/data/movesets.json` holds up to 4 canon signature moves and a `keeperMove` for each of the 1,025 species, built by `pnpm data:movesets` from the pinned PokéAPI CSVs (three new inputs pinned in `src/data/movesets.sources.json`). It is presentation-only for the future match broadcast: nothing in `src/engine` or `src/scouting` reads it, and `pokedex.json` and `scouting.json` rebuild unchanged. `movesetFor(speciesId)` in `src/data/movesets.ts` is the accessor. The file is 138,526 bytes (18,641 gzip) and no client component imports it yet. The selection rule, hashes and spot checks are in `docs/decisions/canon-movesets.md`. Not merged at the time of writing.
+
 ## Submission attempts correction
 
 Rejected leaderboard submissions no longer spend one of the 10 hourly attempts per IP. Only a submission admitted to the server replay counts, including one whose replay fails. This deliberately reverses the Dispatch 5 rule that every attempt counts; the reasoning and the full table are in `docs/decisions/submission-attempts.md`. Players with a page open across an engine release now get the reload prompt without losing an attempt. Before this change, 4 empty-body production probes during the engine 5 release each recorded a `submit` event.
