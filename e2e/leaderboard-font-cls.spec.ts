@@ -51,3 +51,33 @@ for (const width of [360, 412])
         ).toEqual([]);
       }
     });
+
+// Fonts with different metrics wrap the middle column onto a different number of lines. On the
+// Linux CI fallback, "Squad preview unavailable." fits one line and Inter needs two, so a centred
+// row moved its figures 9px when Inter arrived. Growing that column directly reproduces the same
+// shift on every platform, independent of which fonts the runner has.
+for (const width of [360, 412, 1280])
+  test(`rank, record and Team Score stay put when the middle column grows at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 823 });
+    await stubLeaderboard(page, BOARD_ONE);
+    await page.goto("/leaderboard");
+    const row = page.getByTestId("board-row").first();
+    await expect(row.getByRole("link")).toBeVisible();
+    const tops = () =>
+      row.evaluate((el) =>
+        ["rank", "recordCol", "scoreCol"].map(
+          (name) => el.querySelector(`[class*="${name}"]`)!.getBoundingClientRect().top,
+        ),
+      );
+    const before = await tops();
+    await row.evaluate((el) => {
+      const extra = document.createElement("span");
+      extra.textContent = "extra line";
+      extra.style.display = "block";
+      extra.style.lineHeight = "18px";
+      el.querySelector('[class*="squad"]')!.after(extra);
+    });
+    expect(await tops()).toEqual(before);
+  });
