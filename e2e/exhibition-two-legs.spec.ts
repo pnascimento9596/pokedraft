@@ -31,7 +31,7 @@ for (const width of [1280, 360]) {
         "aria-pressed",
         "true",
       );
-      await expect(modal.getByTestId("exhibition-score")).toHaveText("0 - 0");
+      await expect(modal.getByTestId("exhibition-score")).toHaveText("1 - 3");
       for (const button of await format.getByRole("button").all()) {
         const box = await button.boundingBox();
         expect(box!.height).toBeGreaterThanOrEqual(44);
@@ -39,14 +39,16 @@ for (const width of [1280, 360]) {
       }
 
       await format.getByRole("button", { name: "Two legs" }).click();
-      await expect(modal.getByTestId("exhibition-leg-1-score")).toHaveText("0 - 3");
-      await expect(modal.getByTestId("exhibition-leg-2-score")).toHaveText("4 - 0");
-      await expect(modal.getByTestId("exhibition-aggregate")).toHaveText("4 - 3");
+      // Under engine 6 the first tie of this mirror that reaches extra time is rematch 1.
+      await modal.getByRole("button", { name: "Play rematch" }).click();
+      await expect(modal.getByTestId("exhibition-leg-1-score")).toHaveText("0 - 1");
+      await expect(modal.getByTestId("exhibition-leg-2-score")).toHaveText("5 - 6");
+      await expect(modal.getByTestId("exhibition-aggregate")).toHaveText("5 - 7");
       await expect(modal.getByTestId("exhibition-decided")).toHaveText("After extra time");
       const leg2 = modal.getByRole("region", { name: "Leg 2" });
       await expect(leg2.getByRole("status")).toHaveText("Leg 2 after extra time.");
       await expect(leg2.getByRole("list", { name: "Leg 2 goals" })).toContainText(
-        "118' Zeraora (header), assist Talonflame",
+        "117' Talonflame (solo run)",
       );
 
       await leg2.getByRole("button", { name: "Replay highlights" }).click();
@@ -56,15 +58,15 @@ for (const width of [1280, 360]) {
       );
       await expect(leg2.getByRole("status")).toContainText("/ 120' Replay of recorded goals.");
       await leg2.getByRole("button", { name: "Show full time" }).click();
-      await expect(modal.getByTestId("exhibition-aggregate")).toHaveText("4 - 3");
+      await expect(modal.getByTestId("exhibition-aggregate")).toHaveText("5 - 7");
       await noOverflow(page);
       await page.screenshot({ path: `output/playwright/two-leg-exhibition-${width}.png` });
 
       await format.getByRole("button", { name: "One match" }).click();
-      await expect(modal.getByTestId("exhibition-score")).toHaveText("0 - 0");
+      await expect(modal.getByTestId("exhibition-score")).toHaveText("3 - 1");
       await format.getByRole("button", { name: "Two legs" }).click();
       await modal.getByRole("button", { name: "Play rematch" }).click();
-      await expect(modal.getByTestId("exhibition-aggregate")).toHaveText("3 - 7");
+      await expect(modal.getByTestId("exhibition-aggregate")).toHaveText("5 - 10");
       await expect(modal.getByTestId("exhibition-decided")).toHaveText("On aggregate");
 
       expect(await page.evaluate(() => localStorage.getItem("pokedraft:history:v1"))).toBe(history);

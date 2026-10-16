@@ -7,7 +7,7 @@ test("health serves dynamic deployment metadata without requiring a database", a
   expect(response.status()).toBe(200);
   expect(response.headers()["cache-control"]).toBe("no-store");
   expect(await response.json()).toMatchObject({
-    engine: "pokedraft-engine-5",
-    tokenVersions: [1, 2, 3, 4, 5],
+    engine: "pokedraft-engine-6",
+    tokenVersions: [1, 2, 3, 4, 5, 6],
   });
 });

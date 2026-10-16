@@ -25,7 +25,7 @@ export async function shareAndReplay(page: Page, record: string): Promise<void> 
   await expect(page.getByTestId("results-record")).toHaveText(record);
   await page.getByRole("button", { name: "Share" }).click();
   const link = await page.evaluate(() => navigator.clipboard.readText());
-  expect(link).toMatch(/\/r\/pd5\?t=[A-Za-z0-9_-]+$/);
+  expect(link).toMatch(/\/r\/pd6\?t=[A-Za-z0-9_-]+$/);
 
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download image" }).click();
