@@ -51,4 +51,3 @@ export function emptyLineup(formation: FormationId): Lineup {
     bench: BENCH_REFS.map(() => null) as unknown as Lineup["bench"],
   };
 }
-

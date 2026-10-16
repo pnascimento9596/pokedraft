@@ -11,13 +11,7 @@ interface TypeIconProps {
   readonly decorative?: boolean;
 }
 
-export function TypeIcon({
-  type,
-  size = 16,
-  className,
-  style,
-  decorative = false,
-}: TypeIconProps) {
+export function TypeIcon({ type, size = 16, className, style, decorative = false }: TypeIconProps) {
   const color = TYPE_PALETTE[type] ?? TYPE_PALETTE.normal;
   const label = typeLabel(type);
 
@@ -79,12 +73,7 @@ function renderTypePath(type: PokemonType, color: string) {
         />
       );
     case "electric":
-      return (
-        <path
-          d="M13.5 2L4.5 13H11.5L9.5 22L19.5 10H12.5L13.5 2Z"
-          strokeWidth="0"
-        />
-      );
+      return <path d="M13.5 2L4.5 13H11.5L9.5 22L19.5 10H12.5L13.5 2Z" strokeWidth="0" />;
     case "grass":
       return (
         <path

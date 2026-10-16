@@ -2,9 +2,13 @@
 
 Measured ground truth. Updated in the same PR as every merge.
 
+## Cleanup and debt dispatch
+
+Rate-limit tables are now bounded. Each admission statement also deletes up to 50 `rate_limit_events` rows older than 7 days and up to 50 `rate_limit_buckets` rows idle for more than 1 day, never the key it admits. It stays one statement and one round trip. The candidate selects use `FOR UPDATE SKIP LOCKED`. On a scratch PostgreSQL 16 cluster, 240 concurrent statements had 0 deadlocks, against 130 for the unlocked shape. Rule windows longer than the 1-day idle cutoff throw. The announce-board focus flake was a stale error effect consuming the retry flag; it is fixed with a deterministic guard. Inter is self-hosted through `next/font/local` with Google's exact 7 subset files, unicode ranges and fallback metrics, so the build no longer fetches fonts. The WebKit cold-start flakes were all `waitForHydration` hitting `expect.poll`'s default 5 s; that wait now has a 30 s deadline. `pnpm format:check` passes. `drizzle/meta` and `src/design/tokens.css` are ignored, not reformatted. Local gates at `8ad5b24`: lint, typecheck, 1,122 unit tests in 124 files, build, format check, mirrors, and the Chromium e2e project (333 passed, 1 skipped). Merged through PR #60 after GLM APPROVE on head `61a3ad1` (hosted check and e2e green there) and a round-2 review of the merge-from-main head. See `docs/decisions/cleanup-debt.md`.
+
 ## Canon movesets artifact
 
-`src/data/movesets.json` holds up to 4 canon signature moves and a `keeperMove` for each of the 1,025 species, built by `pnpm data:movesets` from the pinned PokéAPI CSVs (three new inputs pinned in `src/data/movesets.sources.json`). It is presentation-only for the future match broadcast: nothing in `src/engine` or `src/scouting` reads it, and `pokedex.json` and `scouting.json` rebuild unchanged. Moves come first from each species' debut level-up set (Charizard gets Flamethrower, Blastoise gets Water Gun and Hydro Pump). `keeperMove` prefers the debut group too, and Protect is still 889 of 1,025 species. `movesetFor(speciesId)` in `src/data/movesets.ts` is the accessor. The file is 139,510 bytes (19,043 gzip) and no client component imports it yet. The selection rule, hashes and spot checks are in `docs/decisions/canon-movesets.md`. Merged through PR #58 after GLM APPROVE on head `5da68c3` and green hosted CI; this line was written at the merge-from-main commit.
+`src/data/movesets.json` holds up to 4 canon signature moves and a `keeperMove` for each of the 1,025 species, built by `pnpm data:movesets` from the pinned PokéAPI CSVs (three new inputs pinned in `src/data/movesets.sources.json`). It is presentation-only for the future match broadcast: nothing in `src/engine` or `src/scouting` reads it, and `pokedex.json` and `scouting.json` rebuild unchanged. Moves come first from each species' debut level-up set (Charizard gets Flamethrower, Blastoise gets Water Gun and Hydro Pump). `keeperMove` prefers the debut group too, and Protect is still 889 of 1,025 species. `movesetFor(speciesId)` in `src/data/movesets.ts` is the accessor. The file is 139,510 bytes (19,043 gzip) and no client component imports it yet. The selection rule, hashes and spot checks are in `docs/decisions/canon-movesets.md`. Merged as PR #58 (squash `1306dc9`, reviewed head `1547c9a`, GLM APPROVE in round 2; hosted check and e2e green).
 
 ## Two-leg exhibitions and lifetime history
 
@@ -13,6 +17,8 @@ Merged as PR #59 (squash `5e5920f`, reviewed head `9aa8f6e`, GLM APPROVE in roun
 ## Submission attempts correction
 
 Rejected leaderboard submissions no longer spend one of the 10 hourly attempts per IP. Only a submission admitted to the server replay counts, including one whose replay fails. This deliberately reverses the Dispatch 5 rule that every attempt counts; the reasoning and the full table are in `docs/decisions/submission-attempts.md`. Players with a page open across an engine release now get the reload prompt without losing an attempt. Before this change, 4 empty-body production probes during the engine 5 release each recorded a `submit` event.
+
+Submission attempts correction receipt. PR [#57](https://github.com/pnascimento9596/pokedraft/pull/57) merged at 2026-10-16T15:08:33Z. The reviewed head is `30c3db03ce35401a1ba6e15e04d547d1684ad5f0` and the squash is `6053928df8e5b1b4f6b39bbb861cb9684175dbe7`. GLM 5.3 Flash approved with canary `attempts-6e626796dbf07cfa4b944f7a6d40f55c`. Hosted run 38918007179 was green. Production health showed `6053928` at 15:09:12Z. In the production probe, `submit` events stayed at 8 before and after an empty body (400), a malformed token (422) and a stale engine version (409).
 
 ## October 16 engine 5 release receipt
 
