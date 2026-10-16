@@ -158,6 +158,11 @@ async function parseSubmission(
       submitError("BUILDER_NOT_RANKED", "Builder squads are friendlies and are never ranked."),
     );
   }
+  // Coached runs share the boards only once each row can show a Coached marker. Until the
+  // manager UI ships that marker, a coached token is not ranked. Remove with the marker.
+  if (run.manager !== undefined && run.manager.length > 0) {
+    return reject(submitError("ILLEGAL_ACTION", "Coached runs are not ranked yet."));
+  }
   const dailyDate = dailyDateForSeed(run.seed, now);
   if (dailyDate !== null && !isDailySettings(run.settings)) {
     return reject(

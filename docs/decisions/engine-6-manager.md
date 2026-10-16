@@ -17,23 +17,24 @@ deterministic daily locally, gets:
 | random bot | 2.85, 0%                         | 3.44, 0%                              |
 
 A single honest playthrough gains far less, but the ceiling is real: about half a win, which is
-the first ranking key. So the board does not reward coaching quietly. Every coached row carries a
-"Coached" marker and the board has an All / Uncoached / Coached filter. Whether a run was coached
-is derived at read time from its stored token (`manager` actions present), so no column or
+the first ranking key. So the board does not reward coaching quietly. The manager UI dispatch adds
+a "Coached" marker on every coached row and an All / Uncoached / Coached filter. Whether a run was
+coached is derived at read time from its stored token (`manager` actions present), so no column or
 migration is needed, and splitting into separate boards later is a read-side change that also
 covers every row already submitted.
+
+Until that marker ships, the submit handler rejects any token with coach decisions
+(`ILLEGAL_ACTION`, "Coached runs are not ranked yet.") before replaying it, so no coached run can
+rank unmarked in the window between this engine and the manager UI. The guard is removed in the
+same PR that adds the marker.
 
 Principles: keep the board honest and visible rather than fragmenting a small group's daily; prefer
 the reversible read-time choice; record the measured advantage so the default can be revisited.
 
 ## Calibration (auto coach vs frozen engine 5, same bot-drafted squads)
 
-`pnpm exec tsx scripts/calibration/engine6-compare.mts --n 2000` (cup8) and `--n 600 --mode kanto151`:
-
-| cup8, 1000 runs each | win rate v5 / v6 | goals for per match v5 / v6 | goals against v5 / v6 |
-| -------------------- | ---------------- | --------------------------- | --------------------- |
-| good bot             | 0.850 / 0.850    | 2.945 / 2.986               | 0.397 / 0.387         |
-| random bot           | 0.647 / 0.651    | 1.752 / 1.778               | 0.701 / 0.703         |
+`pnpm exec tsx scripts/calibration/engine6-compare.mts --n 2000` (cup8) and `--n 600 --mode kanto151`.
+The final numbers are in the table below; they are the output of the current coefficients.
 
 Engine 6 per match (both sides, cup8): about 3.3 yellows, 0.17 reds, 0.23 to 0.26 injuries (user
 side only) and the same number of injury substitutions, and 1.8 to 2.0 tactic changes. The first
