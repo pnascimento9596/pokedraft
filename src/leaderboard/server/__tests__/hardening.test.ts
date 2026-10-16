@@ -59,23 +59,34 @@ describe("IP hash (catches an unkeyed hash that anyone can brute-force from the 
 });
 
 describe("submit hardening", () => {
-  it("counts rejected submissions toward the per-IP limit (catches 422s that never throttle)", async () => {
+  it("spends no attempt on submissions rejected before the replay (catches a typo or a stale page burning one of ten)", async () => {
     const headers = { "x-real-ip": "198.51.100.1", "x-forwarded-for": "198.51.100.1" };
-    for (let i = 0; i < 10; i++) {
-      const res = await handleSubmit(post({ nickname: "Ash", token: "not-a-token" }, headers), {
-        store,
-        limiter: drizzleLimiter(() => db),
-        ipHashSecret: SECRET,
-        now: () => NOW,
-      });
+    const deps = { store, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW };
+    const token = scriptedToken(CUP8, "lb-cup8");
+    for (let i = 0; i < 12; i++) {
+      const res = await handleSubmit(
+        post({ nickname: "Ash", token: "not-a-token" }, headers),
+        deps,
+      );
       expect(res.status).toBe(422);
     }
-    const res = await handleSubmit(
-      post({ nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") }, headers),
-      { store, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW },
+    const stale = await handleSubmit(
+      post({ nickname: "Ash", token, engineVersion: "pokedraft-engine-4" }, headers),
+      deps,
     );
-    expect(res.status).toBe(429);
-    expect(await db.select().from(leaderboardEntries)).toHaveLength(0);
+    expect(stale.status).toBe(409);
+    const badNick = await handleSubmit(post({ nickname: "", token }, headers), deps);
+    expect(badNick.status).toBe(422);
+    const events = await client.query<{ n: number }>(
+      "SELECT count(*)::int AS n FROM rate_limit_events",
+    );
+    const buckets = await client.query<{ n: number }>(
+      "SELECT count(*)::int AS n FROM rate_limit_buckets",
+    );
+    expect([events.rows[0]!.n, buckets.rows[0]!.n]).toEqual([0, 0]);
+    const res = await handleSubmit(post({ nickname: "Ash", token }, headers), deps);
+    expect(res.status).toBe(201);
+    expect(await db.select().from(leaderboardEntries)).toHaveLength(1);
   });
 
   it("returns 201 with rank null when the rank lookup fails after the insert (catches a 503 for a saved run)", async () => {

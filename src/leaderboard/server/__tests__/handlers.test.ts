@@ -337,6 +337,56 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect(replays).toBe(2);
   });
 
+  it("spends no attempt on a resubmitted token or a taken daily nickname (catches a name clash burning one of ten)", async () => {
+    const ip = "198.51.100.3";
+    const token = scriptedToken(CUP8, "lb-cup8");
+    expect((await submit({ nickname: "Ash", token }, ip)).status).toBe(201);
+    const seed = dailySeed(TODAY);
+    expect(
+      (await submit({ nickname: "Ash", token: scriptedToken(dailySettings("4-3-3"), seed) }, ip))
+        .status,
+    ).toBe(201);
+    for (const nickname of ["Misty", "Brock", "Gary", "Oak"]) {
+      expect((await submit({ nickname, token }, ip)).body.error.code).toBe("DUPLICATE_TOKEN");
+    }
+    const daily = await submit(
+      { nickname: "Ash", token: scriptedToken(dailySettings("4-4-2"), seed) },
+      ip,
+    );
+    expect(daily.body.error.code).toBe("DAILY_ALREADY_SUBMITTED");
+    expect(await db.select().from(rateLimitEvents)).toHaveLength(2);
+  });
+
+  it("answers a conflict with its own code even when the hour's attempts are used up", async () => {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    expect((await submit({ nickname: "Ash", token }, "198.51.100.4")).status).toBe(201);
+    await db.insert(rateLimitEvents).values(
+      Array.from({ length: RATE_LIMIT.max }, () => ({
+        scope: "submit" as const,
+        keyHash: hashIp("198.51.100.5", SECRET),
+        createdAt: NOW,
+      })),
+    );
+    const clash = await submit({ nickname: "Misty", token }, "198.51.100.5");
+    expect([clash.status, clash.body.error.code]).toEqual([409, "DUPLICATE_TOKEN"]);
+    const fresh = await submit(
+      { nickname: "Misty", token: scriptedToken(KANTO, "lb-kanto") },
+      "198.51.100.5",
+    );
+    expect([fresh.status, fresh.body.error.code]).toEqual([429, "RATE_LIMITED"]);
+    expect(replays).toBe(1);
+  });
+
+  it("still spends an attempt on a run that fails the replay (catches tampered tokens replaying for free)", async () => {
+    const run = decodeToken(scriptedToken(CUP8, "lb-cup8"));
+    const res = await submit(
+      { nickname: "Gary", token: encodeToken({ ...run, actions: run.actions.slice(0, 10) }) },
+      "198.51.100.6",
+    );
+    expect(res.body.error.code).toBe("ILLEGAL_ACTION");
+    expect(await db.select().from(rateLimitEvents)).toHaveLength(1);
+  });
+
   it("allows 10 attempts per IP per hour, counted in rate_limit_events, then 429", async () => {
     const keyHash = hashIp("198.51.100.1", SECRET);
     await db.insert(rateLimitEvents).values(
@@ -385,7 +435,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     const broken: LeaderboardStore = drizzleStore(() => {
       throw new Error("DATABASE_URL is not set");
     });
-    const res = await handleSubmit(post({ nickname: "Ash", token: "x" }), {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    const res = await handleSubmit(post({ nickname: "Ash", token }), {
       store: broken,
       limiter: drizzleLimiter(() => {
         throw new Error("DATABASE_URL is not set");
