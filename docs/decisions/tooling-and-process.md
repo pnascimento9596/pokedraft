@@ -241,6 +241,36 @@ engine change.
 The header now says each PR's STATE section cites its reviewed head and the squash SHA is recorded
 in the next PR's STATE update, which is what #61, #62 and #63 did.
 
+## 20. Worktree sprawl
+
+The owner pre-approved removal on 2026-10-16. The coordinator removed a worktree only when its
+branch's PR was MERGED and `git status --porcelain` (untracked files included) was empty, with plain
+`git worktree remove` (no `--force`, so git refuses a dirty tree). Branches were kept. 23 worktrees
+were removed and 32 became 9. Kept: the main checkout; the open lanes of this hand-off;
+`dispatch-8/worktrees/daily-board` (merged but 3 uncommitted changes); and four worktrees whose
+branches never had a PR (`pokedraft-club-regions`, `pokedraft-draft-exp`, `pokedraft-retained-json`,
+and `pokedraft-platform-overhaul`, which also has 2 uncommitted changes). Those five need a human
+look before anything else is removed.
+
+# Section E product calls
+
+The owner delegated items 21 to 24 to the coordinator on 2026-10-16. No code changes for any of
+them.
+
+- **21. Replay coaching advantage.** Keep the current rule: coached runs are marked and filterable,
+  and the board defaults to All. Making Uncoached the default would hide the runs of the players who
+  use the newest feature, which punishes the feature rather than the replay trick. Separate boards
+  split an already small group. Revisit if anyone in the group says coached boards feel unfair; the
+  cheapest change is then the default view, which is read-side only now that the filter runs in SQL.
+- **22. Calibration drift.** Accepted as recorded. Section A (PR #64) changed comments and added a
+  test only, so `scripts/calibration/engine6-compare.mts` has nothing new to measure.
+- **23. Movesets.** Keep the canon rule (debut-generation level-up learnsets, and Protect as the
+  usual keeper move). It is presentation-only, it follows the no-fabricated-data invariant, and a
+  hand-picked "better" move list would be an editorial layer nobody can audit. Pikachu without
+  Thunderbolt is surprising but true to its debut learnset.
+- **24. Physical device check.** Still NOT RUN. An agent cannot hold a phone. The owner checks
+  manager mode and Live match on one real phone after these PRs deploy.
+
 ## Gates
 
 Run at `180bfe0` with only `STATE.md` and this file uncommitted (docs only):
