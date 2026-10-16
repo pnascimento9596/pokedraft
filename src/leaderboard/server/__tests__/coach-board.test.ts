@@ -171,6 +171,7 @@ const MALFORMED: [string, string, boolean][] = [
     true,
   ],
   ["pd6 numeric overflow", pd6("[1e1000000]"), false],
+  ["pd6 leading byte order mark", pd6("\uFEFF[\"c\",\"s\",[],[[\"t\"]]]"), false],
 ];
 
 describe("coachedSql is total on malformed pd6 tokens (catches a tampered row turning the filtered boards into 503s)", () => {
