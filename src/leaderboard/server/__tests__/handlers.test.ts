@@ -135,18 +135,35 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
 
   // Bug: engine 6 accepts coached tokens before boards can mark them Coached, so a hand-made
   // replay coach would rank unmarked. Remove this guard with the manager UI and board marker.
-  it("rejects a coached token with 422 ILLEGAL_ACTION before replaying until boards mark coached runs", async () => {
-    const run = decodeToken(scriptedToken(CUP8, "lb-cup8"));
+  it("ranks a coached token and marks it Coached on the board, next to an uncoached one (catches coached runs refused or shown unmarked)", async () => {
+    const plain = scriptedToken(CUP8, "lb-cup8");
     const coached = encodeToken({
-      ...run,
+      ...decodeToken(plain),
       manager: [{ type: "tactic", match: 0, minute: 30, tactic: "attack" }],
     });
     const res = await submit({ nickname: "Giovanni", token: coached });
-    expect(res.status).toBe(422);
-    expect(res.body.error.code).toBe("ILLEGAL_ACTION");
-    expect(res.body.error.message).toBe("Coached runs are not ranked yet.");
-    expect(replays).toBe(0);
-    expect(await rows()).toHaveLength(0);
+    expect(res.status).toBe(201);
+    expect(res.body.entry.token).toBe(coached);
+    expect(res.body.entry.coached).toBe(true);
+    expect(replays).toBe(1);
+
+    const other = await submit({ nickname: "Ash", token: plain });
+    expect(other.status).toBe(201);
+    expect(other.body.entry.coached).toBe(false);
+
+    const board = await handleBoard(
+      new URL("http://local/api/leaderboard?mode=cup8&scope=all"),
+      store,
+    );
+    const { entries } = (await board.json()) as Body;
+    expect(
+      entries
+        .map((e) => [e.nickname, e.coached])
+        .sort(([a], [b]) => String(a).localeCompare(String(b))),
+    ).toEqual([
+      ["Ash", false],
+      ["Giovanni", true],
+    ]);
   });
 
   it("rejects an action the seed never offered with 422 ILLEGAL_ACTION", async () => {
