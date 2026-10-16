@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { HistoryList } from "@/components/history/HistoryList";
+import { LifetimePanel } from "@/components/history/LifetimePanel";
 import { ModuleCard } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./page.module.css";
@@ -18,6 +19,13 @@ export default function HistoryPage() {
         description="Completed runs saved in this browser."
         icon={<NavIcon family="history" />}
       />
+      <ModuleCard
+        eyebrow="Lifetime"
+        title="Lifetime record"
+        description="Totals that keep counting past the last 50 runs, and a backup file."
+      >
+        <LifetimePanel />
+      </ModuleCard>
       <ModuleCard
         eyebrow="Saved runs"
         title="Run history"
