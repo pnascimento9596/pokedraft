@@ -133,6 +133,22 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect(await rows()).toHaveLength(0);
   });
 
+  // Bug: engine 6 accepts coached tokens before boards can mark them Coached, so a hand-made
+  // replay coach would rank unmarked. Remove this guard with the manager UI and board marker.
+  it("rejects a coached token with 422 ILLEGAL_ACTION before replaying until boards mark coached runs", async () => {
+    const run = decodeToken(scriptedToken(CUP8, "lb-cup8"));
+    const coached = encodeToken({
+      ...run,
+      manager: [{ type: "tactic", match: 0, minute: 30, tactic: "attack" }],
+    });
+    const res = await submit({ nickname: "Giovanni", token: coached });
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe("ILLEGAL_ACTION");
+    expect(res.body.error.message).toBe("Coached runs are not ranked yet.");
+    expect(replays).toBe(0);
+    expect(await rows()).toHaveLength(0);
+  });
+
   it("rejects an action the seed never offered with 422 ILLEGAL_ACTION", async () => {
     const run = decodeToken(scriptedToken(CUP8, "lb-cup8"));
     const actions = [...run.actions];
