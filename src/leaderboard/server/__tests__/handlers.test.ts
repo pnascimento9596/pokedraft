@@ -117,7 +117,7 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       draws: 1,
       losses: 1,
       teamScore: 623,
-      engineVersion: "pokedraft-engine-4",
+      engineVersion: "pokedraft-engine-5",
       ipHash: hashIp("203.0.113.7", SECRET),
     });
   });
@@ -171,7 +171,7 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect((await submit({ nickname: "Gary", token: "not-a-token" })).body.error.code).toBe(
       "TOKEN_MALFORMED",
     );
-    const future = scriptedToken(CUP8, "lb-cup8").replace(/^pd4\./, "pd5.");
+    const future = scriptedToken(CUP8, "lb-cup8").replace(/^pd5\./, "pd6.");
     const res = await submit({ nickname: "Gary", token: future });
     expect(res.status).toBe(409);
     expect(res.body.error.code).toBe("ENGINE_VERSION_MISMATCH");
@@ -243,8 +243,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
 
   it("rejects a re-encoded copy of a listed run with 409 DUPLICATE_TOKEN (catches one run listed under many names)", async () => {
     const token = scriptedToken(CUP8, "lb-cup8");
-    const json = Buffer.from(token.slice("pd4.".length), "base64url").toString("utf8");
-    const reencode = (text: string) => `pd4.${Buffer.from(text, "utf8").toString("base64url")}`;
+    const json = Buffer.from(token.slice("pd5.".length), "base64url").toString("utf8");
+    const reencode = (text: string) => `pd5.${Buffer.from(text, "utf8").toString("base64url")}`;
     const spaced = reencode(JSON.stringify(JSON.parse(json), null, 1));
     const gensShuffled = reencode(json.replace('"123456789"', '"213456789"'));
     const floatSpecies = reencode(json.replace(/\["p",(\d+),/, '["p",$1.0,'));
@@ -268,8 +268,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
 
   it("stores the canonical token when a run arrives in a non-canonical encoding", async () => {
     const token = scriptedToken(CUP8, "lb-cup8");
-    const json = Buffer.from(token.slice("pd4.".length), "base64url").toString("utf8");
-    const spaced = `pd4.${Buffer.from(JSON.stringify(JSON.parse(json), null, 1)).toString("base64url")}`;
+    const json = Buffer.from(token.slice("pd5.".length), "base64url").toString("utf8");
+    const spaced = `pd5.${Buffer.from(JSON.stringify(JSON.parse(json), null, 1)).toString("base64url")}`;
     const res = await submit({ nickname: "Ash", token: spaced });
     expect(res.status).toBe(201);
     expect(res.body.entry.token).toBe(token);

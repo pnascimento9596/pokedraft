@@ -8,6 +8,7 @@ import {
   absenceLine,
   finalScore,
   goalLine,
+  saveLine,
   opponentRefLabel,
   shootoutLine,
   type PlayedMatch,
@@ -48,6 +49,12 @@ export function MatchdayLive({
   if (!match) return null;
 
   const visibleGoals = match.goals.filter((g) => g.minute <= minute);
+  const visibleEvents = [
+    ...visibleGoals.map((event) => ({ kind: "goal" as const, event })),
+    ...(match.saves ?? [])
+      .filter((event) => event.minute <= minute)
+      .map((event) => ({ kind: "save" as const, event })),
+  ].sort((a, b) => a.event.minute - b.event.minute);
   const recordedScore = finalScore(match);
   const hasGoalTimeline =
     match.goals.filter((g) => g.side === "user").length === recordedScore.user &&
@@ -211,17 +218,28 @@ export function MatchdayLive({
           <div className={s.eventRow}>
             <span>Goal timeline unavailable for this recorded match.</span>
           </div>
-        ) : visibleGoals.length === 0 ? (
+        ) : visibleEvents.length === 0 ? (
           <div className={s.eventRow}>
             <span>
               {minute < maxMinute ? "Match underway on the pitch..." : "No goals before full time."}
             </span>
           </div>
         ) : (
-          visibleGoals.map((g, i) => (
-            <div key={i} className={s.eventRow} data-side={g.side}>
-              <span>{g.side === "user" ? "⚽ Goal for Your XI" : `⚽ ${match.opponent.name}`}</span>
-              <span>{goalLine(g)}</span>
+          visibleEvents.map((item, i) => (
+            <div
+              key={i}
+              className={s.eventRow}
+              data-side={item.event.side}
+              data-testid={item.kind === "save" ? "broadcast-save" : undefined}
+            >
+              <span>
+                {item.kind === "save"
+                  ? `Save for ${item.event.side === "user" ? "Your XI" : match.opponent.name}`
+                  : item.event.side === "user"
+                    ? "⚽ Goal for Your XI"
+                    : `⚽ ${match.opponent.name}`}
+              </span>
+              <span>{item.kind === "save" ? saveLine(item.event) : goalLine(item.event)}</span>
             </div>
           ))
         )}

@@ -7,12 +7,7 @@ import {
   type CupResult,
   type DraftState,
 } from "../types";
-import {
-  fromLegacy,
-  type LegacyCupResult,
-  type LegacyV3CupResult,
-  type LegacyLadder,
-} from "./legacy";
+import { fromLegacy, type LegacyCupResult, type LegacyV3CupResult } from "./legacy";
 export { engineLabel } from "./label";
 
 export interface ReplayedAnyRun {
@@ -28,15 +23,9 @@ interface RetainedBundle {
   readonly ENGINE_VERSION: string;
   readonly BUNDLE_MARKER: string;
   replay(token: string): { readonly draft: unknown; readonly cup: unknown };
-  /** The bundle's own opponent ladder, for the opponents its unplayed matches never named. */
-  readonly ladder: LegacyLadder;
-  readonly adapt: (cup: unknown, ladder: LegacyLadder) => CupResult;
+  /** Converts the bundle's own result to today's type, with whatever ladder that needs. */
+  readonly adapt: (cup: unknown) => CupResult;
 }
-
-const adaptOld = (cup: unknown, ladder: LegacyLadder): CupResult =>
-  fromLegacy(cup as LegacyCupResult, ladder);
-const adaptV3 = (cup: unknown, ladder: LegacyLadder): CupResult =>
-  fromLegacy(cup as LegacyV3CupResult, ladder, 3);
 
 // Keyed by the token's pd<N>. prefix. A retained bundle is the frozen copy of the engine that
 // issued those tokens, so it wins over the live engine even when the versions still match.
@@ -46,22 +35,24 @@ const RETAINED: Readonly<Record<number, () => Promise<RetainedBundle>>> = {
       import("./v1"),
       import("./v1/src/engine/opponents"),
     ]);
-    return { ...bundle, ladder: buildLadder, adapt: adaptOld };
+    return { ...bundle, adapt: (cup) => fromLegacy(cup as LegacyCupResult, buildLadder) };
   },
   2: async () => {
     const [bundle, { buildLadder }] = await Promise.all([
       import("./v2"),
       import("./v2/src/engine/opponents"),
     ]);
-    return { ...bundle, ladder: buildLadder, adapt: adaptOld };
+    return { ...bundle, adapt: (cup) => fromLegacy(cup as LegacyCupResult, buildLadder) };
   },
   3: async () => {
     const [bundle, { buildLadder }] = await Promise.all([
       import("./v3"),
       import("./v3/src/engine/opponents"),
     ]);
-    return { ...bundle, ladder: buildLadder, adapt: adaptV3 };
+    return { ...bundle, adapt: (cup) => fromLegacy(cup as LegacyV3CupResult, buildLadder, 3) };
   },
+  // Engine 5 only added the optional saves list, so an engine-4 result is already today's shape.
+  4: async () => ({ ...(await import("./v4")), adapt: (cup) => cup as CupResult }),
 };
 
 const PREFIX = /^pd(\d+)\./;
@@ -91,7 +82,7 @@ export async function replayAnyVersion(token: string): Promise<ReplayedAnyRun> {
       current,
       bundle: bundle.BUNDLE_MARKER,
       draft: run.draft as DraftState,
-      cup: bundle.adapt(run.cup, bundle.ladder),
+      cup: bundle.adapt(run.cup),
     };
   }
   if (!current) throw new RunTokenError("unknownVersion", `unknown token version ${version}`);

@@ -3,7 +3,7 @@ import { FORMATION_IDS } from "../src/engine/types";
 import { GOLDEN_CUP8_V3 } from "../src/engine/versions/__tests__/fixtures";
 
 function squad(formation = "4-3-3") {
-  return `pd4.${Buffer.from(
+  return `pd5.${Buffer.from(
     JSON.stringify([
       ["b", formation, "123456789", 1],
       "experience-proof",

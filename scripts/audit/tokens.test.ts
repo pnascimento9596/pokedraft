@@ -14,7 +14,7 @@ describe("the pinned share link", () => {
   it("hashes to the golden digest of the engine tests", () => {
     expect(sha256(goldenCup8Token())).toBe(GOLDEN_CUP8_TOKEN_SHA256);
     expect(GOLDEN_CUP8_TOKEN_SHA256).toBe(
-      "4061400329787171d0fdaa5f266477efe57c0d106a458c72f1605b0fb05baeb8",
+      "d3a15998448b19a8e7f8489363d4514de2547a1bdac4a1891524de09f3253b25",
     );
   });
 

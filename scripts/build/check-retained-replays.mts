@@ -9,6 +9,8 @@ import {
   GOLDEN_CUP8_V2,
   GOLDEN_KANTO151_V2,
   GOLDEN_CUP8_V3,
+  GOLDEN_CUP8_V4,
+  GOLDEN_KANTO151_V4,
 } from "../../src/engine/versions/__tests__/fixtures";
 
 const require = createRequire(import.meta.url);
@@ -26,7 +28,7 @@ for (const file of readdirSync(chunks).filter(
   for (let index = 1; index < modules.length; index++) {
     const factory = modules[index];
     if (typeof factory !== "function") continue;
-    const version = factory.toString().match(/retained-engine-bundle:v([123])/);
+    const version = factory.toString().match(/retained-engine-bundle:v([1234])/);
     if (version) ids.set(Number(version[1]), Number(modules[index - 1]));
   }
 }
@@ -35,9 +37,11 @@ const cases = [
   [1, GOLDEN_KANTO151_V1, "2e6121c2a610b7af8145f50be16c4277864da14bd91743a979fdfd33e0264489"],
   [2, GOLDEN_CUP8_V2, "20e343f8bc4ac7414f1edfc9b56901533b84a27b1ae4deba5989824a9f0b684b"],
   [2, GOLDEN_KANTO151_V2, "f050e3ff1848e655cc534d6d7c78015370b7ed7d21c00fe6878c66c3744ccf47"],
+  [4, GOLDEN_CUP8_V4, "8520e109891a53af4b291690e21ac405c1af5471ff9a39b157918ba21264e611"],
+  [4, GOLDEN_KANTO151_V4, "1da7e5609fcd0c0a8d6a32f9856c0b91f4a21a584dac19b119bbffc2656cf795"],
   [3, GOLDEN_CUP8_V3, "07bfee8296298a5c0d7b7878e813811548b1e8a3a74b1cfd899f0680f0d5db95"],
 ] as const;
-assert.equal(ids.size, 3, "all retained engines must exist in the actual emitted server build");
+assert.equal(ids.size, 4, "all retained engines must exist in the actual emitted server build");
 for (const [version, token, expected] of cases) {
   const bundle = runtime.m(ids.get(version)).exports;
   assert.equal(bundle.BUNDLE_MARKER, `retained-engine-bundle:v${version}`);

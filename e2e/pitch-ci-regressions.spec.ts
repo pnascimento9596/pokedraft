@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { FORMATION_IDS, type FormationId } from "../src/engine/types";
 
 const lineup = (formation: FormationId) =>
-  `pd4.${Buffer.from(
+  `pd5.${Buffer.from(
     JSON.stringify([
       ["b", formation, "123456789", 1],
       "pitch-ci-labels",

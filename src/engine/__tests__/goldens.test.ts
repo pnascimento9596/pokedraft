@@ -65,7 +65,7 @@ const KANTO: DraftSettings = { mode: "kanto151", formation: "3-5-2", order: "pos
 function token(settings: DraftSettings, seed: Seed): RunToken {
   const actions =
     settings.mode === "kanto151" ? kantoActions(settings, seed) : cup8Actions(settings, seed);
-  return { v: 4, settings, seed, actions };
+  return { v: 5, settings, seed, actions };
 }
 
 const CUP8_TOKEN = token(CUP8, "golden-cup8" as Seed);
@@ -73,10 +73,10 @@ const KANTO_TOKEN = token(KANTO, "golden-kanto151" as Seed);
 
 describe("engine goldens (any byte of drift in draft, rating, match or cup output moves a hash)", () => {
   it("pins the engine version these goldens were cut against", () => {
-    expect(ENGINE_VERSION).toBe("pokedraft-engine-4");
+    expect(ENGINE_VERSION).toBe("pokedraft-engine-5");
   });
 
-  it("pins v4 simulation outcomes while draft Team Scores remain stable", () => {
+  it("keeps the engine-4 simulation outcomes and draft Team Scores", () => {
     const run = replay(encodeToken(CUP8_TOKEN));
     expect([
       run.cup.rating.score,
@@ -123,9 +123,9 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const run = replay(s);
     expect(CUP8_TOKEN.actions).toHaveLength(18);
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([593, 3, "R16"]);
-    expect(sha256(s)).toBe("4061400329787171d0fdaa5f266477efe57c0d106a458c72f1605b0fb05baeb8");
+    expect(sha256(s)).toBe("d3a15998448b19a8e7f8489363d4514de2547a1bdac4a1891524de09f3253b25");
     expect(sha256(JSON.stringify(run))).toBe(
-      "8520e109891a53af4b291690e21ac405c1af5471ff9a39b157918ba21264e611",
+      "d3f3598c4ed414bad106ecec4efe543774be9988718833f9172542cff9fdbd5a",
     );
   });
 
@@ -134,9 +134,9 @@ describe("engine goldens (any byte of drift in draft, rating, match or cup outpu
     const run = replay(s);
     expect(KANTO_TOKEN.actions).toHaveLength(36);
     expect([run.cup.rating.score, run.cup.wins, run.cup.finish]).toEqual([480, 0, "group"]);
-    expect(sha256(s)).toBe("9865c0f6b27c3d5d00ed6d129c2b1e7b9b49acf59e4921eeedeb71a9aa0fc6b6");
+    expect(sha256(s)).toBe("a4a679846ef8515ef6c0e2d0a001e324e080a33db0e0d0a9ff5cb4559bf50fbe");
     expect(sha256(JSON.stringify(run))).toBe(
-      "1da7e5609fcd0c0a8d6a32f9856c0b91f4a21a584dac19b119bbffc2656cf795",
+      "d4d1db9bd84cbd39eae072a86791a76864a16f96db5844c5be67df7c1ab2a95a",
     );
   });
 

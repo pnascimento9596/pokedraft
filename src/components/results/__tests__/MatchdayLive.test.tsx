@@ -134,6 +134,33 @@ describe("MatchdayLive regression guards", () => {
     },
   );
 
+  it("shows a recorded save in the feed once the clock reaches its minute, with no goal horn", () => {
+    const saved: PlayedMatch = {
+      ...match,
+      saves: [
+        {
+          kind: "save",
+          side: "user",
+          minute: 4,
+          attacker: 25 as SpeciesId,
+          keeper: 7 as SpeciesId,
+        },
+      ],
+    };
+    render(<MatchdayLive cup={cup([saved])} onClose={() => {}} />);
+    expect(screen.getByTestId("broadcast-save").textContent).toBe(
+      "Save for Your XI4' Squirtle saves Pikachu's shot",
+    );
+    fireEvent.click(screen.getByTestId("broadcast-replay-btn"));
+    tick();
+    expect(screen.queryByTestId("broadcast-save")).toBeNull();
+    tick();
+    expect(screen.getByTestId("broadcast-save").textContent).toBe(
+      "Save for Your XI4' Squirtle saves Pikachu's shot",
+    );
+    expect(audio.events).toEqual(["unlock", "goal", "goal"]);
+  });
+
   it("unlocks audio in the replay click before a timer can play the first horn", () => {
     render(<MatchdayLive cup={cup()} onClose={() => {}} />);
     expect(screen.getByTestId("broadcast-score").textContent).toBe("2 - 0");

@@ -13,7 +13,7 @@ export type Seed = Brand<string, "Seed">;
 export type IsoDate = Brand<string, "IsoDate">;
 export type Quality = Brand<number, "Quality">;
 
-export const ENGINE_VERSION = "pokedraft-engine-4" as const;
+export const ENGINE_VERSION = "pokedraft-engine-5" as const;
 
 export const GENS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 export type Gen = (typeof GENS)[number];
@@ -277,6 +277,15 @@ export type GoalEvent =
       readonly assist: OpponentPlayerRef | null;
     };
 
+/** A saved on-target attempt during regulation or extra time. Side identifies the keeper's team. */
+export interface SaveEvent {
+  readonly kind: "save";
+  readonly side: Side;
+  readonly minute: number;
+  readonly attacker: SpeciesId;
+  readonly keeper: SpeciesId;
+}
+
 export type PenKick =
   | { readonly side: "user"; readonly taker: SpeciesId; readonly scored: boolean }
   | { readonly side: "opp"; readonly taker: OpponentPlayerRef; readonly scored: boolean };
@@ -317,6 +326,8 @@ export type MatchResult =
       readonly shootout: Shootout | null;
       readonly outcome: "W" | "D" | "L";
       readonly goals: readonly GoalEvent[];
+      /** Absent on retained engines that did not record saves. */
+      readonly saves?: readonly SaveEvent[];
       readonly absences: readonly Absence[];
       readonly rating: number;
       readonly recap: readonly string[];
@@ -401,7 +412,7 @@ export interface CupResult {
   readonly awards: Awards;
 }
 
-export const RUN_TOKEN_VERSION = 4 as const;
+export const RUN_TOKEN_VERSION = 5 as const;
 
 export interface RunToken {
   readonly v: typeof RUN_TOKEN_VERSION;

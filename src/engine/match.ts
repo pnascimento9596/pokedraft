@@ -13,6 +13,7 @@ import type {
   PenKick,
   Role,
   Score,
+  SaveEvent,
   Seed,
   Shootout,
   Species,
@@ -136,6 +137,7 @@ function chances(
   rngs: Streams,
   c: EngineCoefficients,
   attribute: (minute: number, penalty: boolean) => GoalEvent,
+  nonGoal: (minute: number) => void,
 ): GoalEvent[] {
   const goals: GoalEvent[] = [];
   const span = period.last - period.first + 1;
@@ -150,9 +152,47 @@ function chances(
     if (rngs.struct.next() < p) {
       const penalty = rngs.event.next() < c.match.penaltyShare;
       goals.push(attribute(minute, penalty));
+    } else {
+      nonGoal(minute);
     }
   }
   return goals;
+}
+
+// Keeper strength already lowers the goal rate through the GK line in expectedGoals. A save
+// classifies a chance trial that did not score; it never prevents a goal. A trial is a slice of
+// the goal rate, not a shot, so only this design share of non-goal trials is an on-target attempt.
+// The share sets save volume and is not a real-world calibration.
+export const ON_TARGET_SHARE = 0.15;
+
+// Probability that a non-goal chance trial is recorded as this keeper saving this shooter.
+export function saveProbability(attacker: Species, keeper: Species): number {
+  const a = keeper.attrs;
+  const handling = 0.35 * a.REF + 0.3 * a.DIV + 0.2 * a.HAN + 0.15 * a.GKP;
+  return ON_TARGET_SHARE * clamp(0.35 + (handling - attacker.attrs.SHO) / 250, 0.1, 0.7);
+}
+
+function saveAttribution(
+  side: "user" | "opp",
+  attackers: readonly MatchStarter[],
+  keeper: Species,
+  rng: EngineRng,
+  c: EngineCoefficients,
+  saves: SaveEvent[],
+): (minute: number) => void {
+  const shooters = attackers.filter((s) => c.match.roleFactor[s.role] > 0);
+  if (shooters.length === 0) throw new RangeError("save attribution needs eligible shooters");
+  return (minute) => {
+    const attacker = weightedPick(
+      shooters,
+      (s) => s.species.id,
+      (s) => Math.max(1, s.species.attrs.SHO) * c.match.roleFactor[s.role],
+      rng,
+    ).species;
+    if (rng.next() < saveProbability(attacker, keeper)) {
+      saves.push({ kind: "save", side, minute, attacker: attacker.id, keeper: keeper.id });
+    }
+  };
 }
 
 export function assistWeight(
@@ -327,13 +367,28 @@ export function simulateMatch(
     rngs.struct,
     c,
   );
+  const saves: SaveEvent[] = [];
+  const opponentKeeper = input.opponentStarters.find((s) => s.role === "GK")?.species;
+  if (!opponentKeeper) throw new RangeError("opponent must field a goalkeeper");
+  // Each keeper draws from its own stream, so one side's chance count never shifts the other's saves.
+  const saveRng = (side: "user" | "opp") =>
+    createEngineRng(deriveSubseed(input.seed, "save_events", `${scope}:${side}`));
+  const saveUser = saveAttribution(
+    "user",
+    input.opponentStarters,
+    input.keeper,
+    saveRng("user"),
+    c,
+    saves,
+  );
+  const saveOpp = saveAttribution("opp", input.starters, opponentKeeper, saveRng("opp"), c, saves);
   const scoreUser = attribution("user", input.starters, rngs.event, c);
   const scoreOpp = attribution("opp", input.opponentStarters, rngs.event, c);
 
   const full: Period = { first: 1, last: REGULATION_MINUTES, chances: c.match.chances.regulation };
   const goals = [
-    ...chances(lambdaUser, full, rngs, c, scoreUser),
-    ...chances(lambdaOpp, full, rngs, c, scoreOpp),
+    ...chances(lambdaUser, full, rngs, c, scoreUser, saveOpp),
+    ...chances(lambdaOpp, full, rngs, c, scoreOpp, saveUser),
   ];
   const regulation = count(goals);
 
@@ -353,6 +408,7 @@ export function simulateMatch(
         rngs,
         c,
         scoreUser,
+        saveOpp,
       ),
       ...chances(
         lambdaOpp * c.match.extraTimeFraction * extraTimeFactor(input.opponentStarters),
@@ -360,6 +416,7 @@ export function simulateMatch(
         rngs,
         c,
         scoreOpp,
+        saveUser,
       ),
     ];
     goals.push(...etGoals);
@@ -393,6 +450,12 @@ export function simulateMatch(
     shootout: penalties,
     outcome,
     goals: ordered,
+    saves: canonicalSortBy(saves, (s) => [
+      s.minute,
+      s.side === "user" ? 0 : 1,
+      s.keeper,
+      s.attacker,
+    ]),
     absences: input.absences,
     rating: input.rating,
     recap: recapLines({
