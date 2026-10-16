@@ -49,6 +49,11 @@ const t = leaderboardEntries;
  * interpolated text is those constant versions.
  */
 export function coachedSqlFor(versions: readonly number[]): SQL<boolean> {
+  for (const v of versions) {
+    if (!Number.isSafeInteger(v) || v <= 0) {
+      throw new Error(`coachedSql token versions must be positive integers, got ${String(v)}`);
+    }
+  }
   return sql<boolean>`(CASE ${sql.join(
     versions.map((v) => {
       const prefix = `pd${v}.`;
