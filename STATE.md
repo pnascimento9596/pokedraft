@@ -2,6 +2,10 @@
 
 Measured ground truth. Updated in the same PR as every merge.
 
+## Leaderboard row alignment correction
+
+Hosted e2e failed `leaderboard-font-cls` at 412px in both themes on PR #53 (run 38830215286, twice) and earlier on `50af55a`. Main `88dcbae` fails the same 2 of 4 cases in the `mcr.microsoft.com/playwright:v1.64.0-noble` image. There, "Squad preview unavailable." fits one line in the Liberation Sans fallback and needs two in Inter, so the vertically centred rank, record and Team Score dropped 9px (layout shift 0.000208) when Inter arrived. macOS fallback metrics wrap like Inter, so local runs passed. Hosted passes depended on whether Inter loaded before the row painted. The board row now top-aligns its columns. A RED guard that grows the middle column failed at 360, 412 and 1280px before the fix. After it, the Linux image passed `leaderboard-font-cls` plus `leaderboard-cls` 13 of 13 in three consecutive runs, and local Chromium passed 328 browser tests with 1 skip, 1,039 unit tests, lint, typecheck, build, theme colors and mirrors. WebKit locally: NOT RUN; hosted CI covers it.
+
 ## October 15 engine release receipt
 
 PR [#51](https://github.com/pnascimento9596/pokedraft/pull/51) merged on October 15 at 18:07:36 UTC. The reviewed head is `4b7439ca2cff41aa6211df9cd7a7a2fb565673d3`; the squash is `6218750ea2c9896e469b1496d5d20691b4b78d6f`. Hosted checks passed with 1,003 unit tests and 732 browser tests plus 55 skips. Cache-busted production health verified this exact squash at 18:08:36 UTC with HTTP 200, `Cache-Control: no-store`, engine 4, and token versions 1 through 4. Vercel deployment `dpl_GHSGZTdQ73mA2u7UiXDVGg1218yU` is READY in production. The landing owner completed 21 production browser checks against this exact squash, including retained/current replay and malformed-link contracts. The platform experience candidate is rebased onto this squash and preserves the final engine browser fixture repairs.

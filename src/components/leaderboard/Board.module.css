@@ -18,7 +18,8 @@
 .link {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) 52px 72px;
-  align-items: center;
+  /* Top-aligned so a middle column that wraps differently per font cannot move the figures. */
+  align-items: start;
   gap: 8px;
   padding: 10px 4px;
   min-height: 44px;
