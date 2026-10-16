@@ -23,7 +23,6 @@ import {
 import { dailyDateForSeed, isDailySettings } from "../daily";
 import { parseNickname } from "../nickname";
 import { logServerError, requestIdOf } from "@/observability/log";
-import type { RateLimiter } from "@/ratelimit/store";
 import type { LeaderboardRow } from "@/db/schema";
 import { toBoardEntry, type Board, type Conflict, type LeaderboardStore } from "./store";
 
@@ -33,7 +32,6 @@ const MAX_BODY_BYTES = 16 * 1024;
 
 export interface SubmitDeps {
   readonly store: LeaderboardStore;
-  readonly limiter: RateLimiter;
   readonly ipHashSecret: string | undefined;
   readonly now: () => Date;
   readonly replay?: (token: RunToken) => ReturnType<typeof engineReplay>;
@@ -119,8 +117,8 @@ interface Submission {
   readonly board: Board;
 }
 
-// Everything that can be checked without the database. A rejection is returned, not sent, so the
-// caller can count the attempt first.
+// Everything that can be checked without the database. These rejections spend no attempt and
+// never reach the database, so a typo or a stale page does not cost one of the hour's ten.
 async function parseSubmission(
   req: Request,
   now: Date,
@@ -217,14 +215,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     submitError("RATE_LIMITED", "Ten submissions per hour. Try again later.", {
       "retry-after": "3600",
     });
-  if (!parsed.ok) {
-    try {
-      if (!(await deps.limiter.consume("submit", ipHash, now, RATE_LIMIT))) return limited();
-    } catch (e) {
-      return unavailable("submit.limiter", rid, e);
-    }
-    return parsed.res;
-  }
+  if (!parsed.ok) return parsed.res;
   const { nickname, run, token, board } = parsed.sub;
   try {
     const admission = await deps.store.admitSubmission(
