@@ -33,6 +33,19 @@ real-world calibration. A 400-match probe measured a mean of 2.71 saves per keep
 with a maximum of 11, and 84 of 800 keeper-matches had none. Substreams are keyed by name, so
 adding `save_events` shifts no other stream.
 
+## What a recorded save means
+
+The engine does not simulate shots. Each chance trial only decides goal or no goal, and keeper
+strength already lowers that goal rate through the GK line (`wGk × GK` in `expectedGoals`). A
+recorded save is the engine's classification of a trial that did not score. It is drawn during
+the same chance loop, at that trial's minute, from the save stream. It never prevents a goal and
+never changes a score. Better keepers record more saves because the save draw uses their handling
+attributes. The results UI states this beside every save list.
+
+A model in which saves stop goals was considered and rejected for this dispatch. It would change
+scoring, break the requested v4/v5 outcome parity, and invalidate the 120,000-cup difficulty
+calibration. That would need its own Red engine dispatch with fresh calibration and new goldens.
+
 ## Decisions
 
 Model the Domain kept saves as their own typed event (`SaveEvent`, optional on played matches),

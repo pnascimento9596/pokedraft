@@ -18,6 +18,9 @@ export function RecordedSaves({
   return (
     <details className={s.saves} data-testid="recorded-saves">
       <summary>Recorded saves ({saves.length})</summary>
+      <p className={s.note}>
+        Recorded from chances that did not score. Saves never change the result.
+      </p>
       {saves.length === 0 ? (
         <p>No saved attempts recorded in this match.</p>
       ) : (

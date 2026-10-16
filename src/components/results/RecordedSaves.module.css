@@ -33,3 +33,9 @@
 .illustration figcaption {
   flex-basis: 100%;
 }
+
+.note {
+  margin-block: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}

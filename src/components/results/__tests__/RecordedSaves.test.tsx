@@ -27,6 +27,9 @@ describe("RecordedSaves (catches invented saves on old replays and misnamed keep
     render(<RecordedSaves saves={saves} />);
     expect(screen.getByText("Recorded saves (2)").textContent).toBe("Recorded saves (2)");
     expect(
+      screen.getByText("Recorded from chances that did not score. Saves never change the result."),
+    ).toBeTruthy();
+    expect(
       screen.getAllByRole("listitem").map((li) => [li.getAttribute("data-side"), li.textContent]),
     ).toEqual([
       ["user", "Your XI: 12' Squirtle saves Charmander's shot"],

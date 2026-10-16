@@ -159,8 +159,10 @@ function chances(
   return goals;
 }
 
-// A chance trial is a slice of the goal rate, not a shot, so only this design share of the
-// non-goal trials becomes an on-target attempt. It sets save volume and never changes scoring.
+// Keeper strength already lowers the goal rate through the GK line in expectedGoals. A save
+// classifies a chance trial that did not score; it never prevents a goal. A trial is a slice of
+// the goal rate, not a shot, so only this design share of non-goal trials is an on-target attempt.
+// The share sets save volume and is not a real-world calibration.
 export const ON_TARGET_SHARE = 0.15;
 
 // Probability that a non-goal chance trial is recorded as this keeper saving this shooter.
