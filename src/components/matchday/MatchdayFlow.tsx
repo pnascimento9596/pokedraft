@@ -146,6 +146,7 @@ function PreMatch({
 }) {
   const fielded = fieldedFor(lineup, match);
   const slots = FORMATIONS[lineup.formation].slots;
+  // At most one absence per match is pinned in src/engine/__tests__/cup.test.ts.
   const absence = match.absences[0];
   return (
     <div className={s.pre} data-testid="prematch">
