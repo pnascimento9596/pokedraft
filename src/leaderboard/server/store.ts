@@ -48,14 +48,18 @@ const t = leaderboardEntries;
  * fail rather than mislabel it. The prefix lengths come from the version strings, and the only
  * interpolated text is those constant versions.
  */
-export const coachedSql: SQL<boolean> = sql<boolean>`(CASE ${sql.join(
-  MANAGER_TOKEN_VERSIONS.map((v) => {
-    const prefix = `pd${v}.`;
-    const n = prefix.length;
-    return sql`WHEN ${t.token} LIKE ${sql.raw(`'${prefix}%'`)} THEN jsonb_array_length(convert_from(decode(rpad(translate(substr(${t.token}, ${sql.raw(String(n + 1))}), '-_', '+/'), ((length(${t.token}) - ${sql.raw(String(n))} + 3) / 4) * 4, '='), 'base64'), 'UTF8')::jsonb) > 3`;
-  }),
-  sql.raw(" "),
-)} ELSE false END)`;
+export function coachedSqlFor(versions: readonly number[]): SQL<boolean> {
+  return sql<boolean>`(CASE ${sql.join(
+    versions.map((v) => {
+      const prefix = `pd${v}.`;
+      const n = prefix.length;
+      return sql`WHEN ${t.token} LIKE ${sql.raw(`'${prefix}%'`)} THEN jsonb_array_length(convert_from(decode(rpad(translate(substr(${t.token}, ${sql.raw(String(n + 1))}), '-_', '+/'), ((length(${t.token}) - ${sql.raw(String(n))} + 3) / 4) * 4, '='), 'base64'), 'UTF8')::jsonb) > 3`;
+    }),
+    sql.raw(" "),
+  )} ELSE false END)`;
+}
+
+export const coachedSql: SQL<boolean> = coachedSqlFor(MANAGER_TOKEN_VERSIONS);
 
 function coachFilter(coach: CoachFilter): SQL | undefined {
   if (coach === "coached") return coachedSql;
