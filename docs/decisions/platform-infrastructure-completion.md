@@ -110,3 +110,11 @@ The infrastructure branch now includes UI PR #52 repair head `40723142cd9bdea99b
 All 1,048 unit tests in 119 files passed with four workers and no simultaneous browser or build process. Lint, standalone typecheck, production build, image seam and packs, client bundle, mirrors, all three theme scripts, and migration generation passed. Generation reported no schema change. The actual emitted server payloads remain three copies totaling 2,088,694 bytes, and all five retained replay goldens passed. Command exit codes and logs are in `/tmp/pokedraft-platform-ui-repair-gates.json` and `.log`. No production migration, firewall publication, or threshold change has begun.
 
 Read-only Vercel recon again found no custom firewall rules or pending draft. Fluid compute remains enabled, Skew Protection maximum age is 43,200 seconds, the fixed threshold is null, and no rolling release is configured. These values must be rechecked immediately before cutover. No credentials were printed.
+
+## Final rebase onto the UI release
+
+PR #52 shipped as squash `88dcbaef39b0aebc0f917f5127b666d711b657ce`. The branch was rebased with `git rebase --onto origin/main 40723142cd9bdea99b16bbc4ece93de407a2f2c0`, which applied all fifteen commits without conflicts. `git diff` of the old stack against its UI base is byte-identical to the rebased branch against main, so no runtime byte changed in the rebase.
+
+Gates on rebased head `6b9e9e4118d0f20c93692b76fc55b69c60e56de8` ran serially with no concurrent browser or build work. Mirrors, image seam and packs, three theme scripts, lint, typecheck, 1,048 unit tests in 119 files, build, client bundle, and migration generation exited 0. Data regeneration produced no `src/data` diff and the move citation check passed after regeneration populated its CSV cache; its first run failed only because that cache was absent, which CI avoids by regenerating first. Forty-two Chromium cases passed. Emitted retained payloads remain three copies and 2,088,694 bytes with all five replay hashes passing. `prettier --check` is not a CI gate; it flags the same 23 files as main plus the generated `drizzle/meta/0003_snapshot.json`, which stays as drizzle-kit wrote it.
+
+Sequence Work into Verifiable Units kept this a pure rebase plus receipts, so review covers exactly the runtime diff that was locally proven before.
