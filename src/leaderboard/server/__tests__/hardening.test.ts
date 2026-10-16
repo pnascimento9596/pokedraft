@@ -61,7 +61,7 @@ describe("IP hash (catches an unkeyed hash that anyone can brute-force from the 
 describe("submit hardening", () => {
   it("spends no attempt on submissions rejected before the replay (catches a typo or a stale page burning one of ten)", async () => {
     const headers = { "x-real-ip": "198.51.100.1", "x-forwarded-for": "198.51.100.1" };
-    const deps = { store, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW };
+    const deps = { store, ipHashSecret: SECRET, now: () => NOW };
     const token = scriptedToken(CUP8, "lb-cup8");
     for (let i = 0; i < 12; i++) {
       const res = await handleSubmit(
@@ -99,7 +99,7 @@ describe("submit hardening", () => {
         { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
         { "x-real-ip": "198.51.100.2" },
       ),
-      { store: flaky, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW },
+      { store: flaky, ipHashSecret: SECRET, now: () => NOW },
     );
     expect(res.status).toBe(201);
     const body = (await res.json()) as { entry: { rank: number | null; nickname: string } };
@@ -151,7 +151,7 @@ describe("server error logging (catches a 503 whose cause is lost, or a log that
     };
     const res = await handleSubmit(
       post({ nickname: NICK, token }, { "x-real-ip": IP, "x-vercel-id": RID }),
-      { store: broken, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW },
+      { store: broken, ipHashSecret: SECRET, now: () => NOW },
     );
     expect([res.status, res.headers.get("x-request-id")]).toEqual([503, RID]);
     expect(logged(spy)).toEqual([
@@ -175,7 +175,7 @@ describe("server error logging (catches a 503 whose cause is lost, or a log that
     const flaky: LeaderboardStore = { ...store, rankOf: () => Promise.reject(driverError()) };
     const res = await handleSubmit(
       post({ nickname: NICK, token: scriptedToken(CUP8, "lb-cup8") }, { "x-vercel-id": RID }),
-      { store: flaky, limiter: drizzleLimiter(() => db), ipHashSecret: SECRET, now: () => NOW },
+      { store: flaky, ipHashSecret: SECRET, now: () => NOW },
     );
     expect(res.status).toBe(201);
     expect(logged(spy)).toEqual([

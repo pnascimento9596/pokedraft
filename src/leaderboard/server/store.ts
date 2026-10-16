@@ -71,17 +71,20 @@ function uniqueViolation(e: unknown): string | null {
 export function drizzleStore(getDb: () => Db): LeaderboardStore {
   return {
     async admitSubmission(token, nickname, board, keyHash, now, rule) {
+      // A retry or a conflict is answered without spending an attempt, so only a run that goes on
+      // to the replay is counted.
+      const dailyTaken = sql`EXISTS(SELECT 1 FROM ${t} WHERE nickname = ${nickname}
+        AND mode = ${board.mode} AND daily_date = ${board.dailyDate}::date)`;
       const result = await getDb().execute(sql`
         WITH existing AS MATERIALIZED (
           SELECT * FROM ${t}
           WHERE md5(token) = md5(${token}) AND token = ${token}
           LIMIT 1
-        ), ${admissionCtes("submit", keyHash, now, rule, sql`NOT EXISTS (SELECT 1 FROM existing WHERE nickname = ${nickname})`)}
+        ), ${admissionCtes("submit", keyHash, now, rule, sql`NOT EXISTS (SELECT 1 FROM existing) AND NOT ${dailyTaken}`)}
         SELECT
           (SELECT row_to_json(existing) FROM existing) AS existing,
           EXISTS(SELECT 1 FROM admitted) AS allowed,
-          EXISTS(SELECT 1 FROM ${t} WHERE nickname = ${nickname}
-            AND mode = ${board.mode} AND daily_date = ${board.dailyDate}::date) AS daily_taken
+          ${dailyTaken} AS daily_taken
       `);
       const [out] = (
         result as unknown as {
@@ -112,9 +115,9 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
         };
         return { kind: "retry", row };
       }
-      if (!out!.allowed) return { kind: "limited" };
       if (existing) return { kind: "conflict", conflict: "token" };
       if (out!.daily_taken) return { kind: "conflict", conflict: "daily" };
+      if (!out!.allowed) return { kind: "limited" };
       return { kind: "admitted" };
     },
     async byToken(token) {

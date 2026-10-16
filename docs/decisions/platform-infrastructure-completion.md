@@ -2,7 +2,7 @@
 
 ## Outcome and scope
 
-Fresh ranked submissions use three database queries for admission, insertion, and rank. Accepted retries use two queries and consume no admission slot. Invalid attempts, token conflicts, and daily nickname conflicts consume an admitted slot before rejection. Rank failure returns the saved entry with a null rank. Concurrent insert conflicts still resolve through the authoritative unique indexes.
+Fresh ranked submissions use three database queries for admission, insertion, and rank. Accepted retries use two queries and consume no admission slot. Invalid attempts, token conflicts, and daily nickname conflicts consume an admitted slot before rejection. (Superseded on October 16: none of these spend a slot now; see `submission-attempts.md`.) Rank failure returns the saved entry with a null rank. Concurrent insert conflicts still resolve through the authoritative unique indexes.
 
 The shared limiter stores active timestamps in one row per scope and hashed IP. An upsert locks that row and rechecks its current timestamp array. Successful admission appends an event in the same statement. The exact sliding-window cutoff remains inclusive. Refused attempts do not extend lockout. Gate and submit scopes remain separate.
 

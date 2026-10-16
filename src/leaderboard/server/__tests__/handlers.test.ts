@@ -16,7 +16,6 @@ import type { BoardEntry } from "../../contract";
 import { dailySettings } from "../../daily";
 import { RATE_LIMIT, handleBoard, handleSubmit, hashIp } from "../handlers";
 import { drizzleStore, type LeaderboardStore } from "../store";
-import { drizzleLimiter } from "@/ratelimit/store";
 import { migratedDb, scriptedToken } from "./fixtures";
 import { A11Y_RUN_V1 } from "@/engine/versions/__tests__/fixtures";
 
@@ -65,7 +64,6 @@ function post(body: unknown, ip = "203.0.113.7"): Request {
 async function submit(body: unknown, ip?: string, using: LeaderboardStore = store) {
   const res = await handleSubmit(post(body, ip), {
     store: using,
-    limiter: drizzleLimiter(() => db),
     ipHashSecret: SECRET,
     now: () => NOW,
     replay: countingReplay,
@@ -314,7 +312,10 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     );
     const retry = await submit({ nickname: "Ash", token }, "198.51.100.1");
     expect([retry.status, retry.body.entry.nickname]).toEqual([200, "Ash"]);
-    const other = await submit({ nickname: "Misty", token }, "198.51.100.1");
+    const other = await submit(
+      { nickname: "Misty", token: scriptedToken(KANTO, "lb-kanto") },
+      "198.51.100.1",
+    );
     expect([other.status, other.body.error.code]).toEqual([429, "RATE_LIMITED"]);
   });
 
@@ -422,7 +423,6 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     for (const ipHashSecret of [undefined, "short"]) {
       const res = await handleSubmit(post({ nickname: "Ash", token: "x" }), {
         store,
-        limiter: drizzleLimiter(() => db),
         ipHashSecret,
         now: () => NOW,
       });
@@ -438,9 +438,6 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     const token = scriptedToken(CUP8, "lb-cup8");
     const res = await handleSubmit(post({ nickname: "Ash", token }), {
       store: broken,
-      limiter: drizzleLimiter(() => {
-        throw new Error("DATABASE_URL is not set");
-      }),
       ipHashSecret: SECRET,
       now: () => NOW,
     });
