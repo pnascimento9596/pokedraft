@@ -152,3 +152,106 @@ describe("coachedSql equals isCoached row by row (catches the SQL and the TypeSc
     );
   });
 });
+
+const pd6 = (payload: string | Uint8Array) => `pd6.${Buffer.from(payload).toString("base64url")}`;
+
+const MALFORMED: [string, string, boolean][] = [
+  ["pd6 bad charset", "pd6.not base64!", false],
+  ["pd6 empty body", "pd6.", false],
+  ["pd6 base64 length 1 mod 4", "pd6.AAAAA", false],
+  ["pd6 not json", pd6("not json at all"), false],
+  ["pd6 truncated json", pd6('["c","s",[],[["t"'), false],
+  ["pd6 json object", pd6("{}"), false],
+  ["pd6 json scalar", pd6("7"), false],
+  ["pd6 nul byte", pd6(new Uint8Array([...Buffer.from("[1,2,3,4]"), 0])), false],
+  ["pd6 invalid utf8 outside a string", pd6(new Uint8Array([0x5b, 0xff, 0x5d])), false],
+  [
+    "pd6 invalid utf8 inside a string",
+    pd6(new Uint8Array([...Buffer.from('["'), 0xff, ...Buffer.from('",1,2,3]')])),
+    true,
+  ],
+  ["pd6 numeric overflow", pd6("[1e1000000]"), false],
+  ["pd6 leading byte order mark", pd6('\uFEFF["c","s",[],[["t"]]]'), false],
+];
+
+describe("coachedSql is total on malformed pd6 tokens (catches a tampered row turning the filtered boards into 503s)", () => {
+  it("agrees with isCoached on every malformed token instead of throwing", async () => {
+    await db
+      .insert(leaderboardEntries)
+      .values(MALFORMED.map(([, tok], i) => row(`Bad ${i}`, tok, 1, i)));
+    const result = await db.execute(
+      sql`SELECT nickname, ${coachedSql} AS coached FROM ${leaderboardEntries}`,
+    );
+    const fromSql = Object.fromEntries(
+      (result as unknown as { rows: { nickname: string; coached: boolean }[] }).rows.map((r) => [
+        r.nickname,
+        r.coached,
+      ]),
+    );
+    expect(MALFORMED.map(([name], i) => [name, fromSql[`Bad ${i}`]])).toEqual(
+      MALFORMED.map(([name, , want]) => [name, want]),
+    );
+    expect(MALFORMED.map(([name, tok]) => [name, isCoached(tok)])).toEqual(
+      MALFORMED.map(([name, , want]) => [name, want]),
+    );
+  });
+
+  it("pins the tampered-only payloads PostgreSQL jsonb rejects and JSON.parse accepts", async () => {
+    const divergent: [string, string][] = [
+      ["pd6 nul escape", pd6('["\\u0000",1,2,3]')],
+      ["pd6 lone surrogate", pd6('["\\ud800",1,2,3]')],
+      ["pd6 overflow x4", pd6("[1e1000000,1,2,3]")],
+    ];
+    await db
+      .insert(leaderboardEntries)
+      .values(divergent.map(([name, tok], i) => row(name, tok, 1, i)));
+    const result = await db.execute(
+      sql`SELECT nickname, ${coachedSql} AS coached FROM ${leaderboardEntries}`,
+    );
+    const fromSql = Object.fromEntries(
+      (result as unknown as { rows: { nickname: string; coached: boolean }[] }).rows.map((r) => [
+        r.nickname,
+        r.coached,
+      ]),
+    );
+    expect(divergent.map(([name, tok]) => [name, fromSql[name], isCoached(tok)])).toEqual([
+      ["pd6 nul escape", false, true],
+      ["pd6 lone surrogate", false, true],
+      ["pd6 overflow x4", false, true],
+    ]);
+  });
+
+  it("keeps every coach view at 200 with a malformed row on the board", async () => {
+    await db
+      .insert(leaderboardEntries)
+      .values([
+        row("Coach", token("tamper-1", [tactic(0)]), 5, 500),
+        row("Plain", token("tamper-2"), 4, 400),
+        row("Tampered", pd6("{}"), 3, 300),
+      ]);
+    const views = await Promise.all(["all", "uncoached", "coached"].map((c) => board(c)));
+    expect(
+      views.map((v) => [
+        v.status,
+        v.body.entries?.map((e) => [e.nickname, e.coached]) ?? v.body.error?.code,
+      ]),
+    ).toEqual([
+      [
+        200,
+        [
+          ["Coach", true],
+          ["Plain", false],
+          ["Tampered", false],
+        ],
+      ],
+      [
+        200,
+        [
+          ["Plain", false],
+          ["Tampered", false],
+        ],
+      ],
+      [200, [["Coach", true]]],
+    ]);
+  });
+});
