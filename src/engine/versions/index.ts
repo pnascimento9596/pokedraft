@@ -7,11 +7,7 @@ import {
   type CupResult,
   type DraftState,
 } from "../types";
-import {
-  fromLegacy,
-  type LegacyCupResult,
-  type LegacyV3CupResult,
-} from "./legacy";
+import { fromLegacy, type LegacyCupResult, type LegacyV3CupResult } from "./legacy";
 export { engineLabel } from "./label";
 
 export interface ReplayedAnyRun {

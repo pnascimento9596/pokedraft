@@ -25,9 +25,7 @@ function withoutSaves(cup: CupResult): unknown {
     engine: "pokedraft-engine-4",
     matches: cup.matches.map((m) => {
       if (m.status !== "played") return m;
-      const rest: Partial<typeof m> = { ...m };
-      delete rest.saves;
-      return rest;
+      return Object.fromEntries(Object.entries(m).filter(([key]) => key !== "saves"));
     }),
   };
 }

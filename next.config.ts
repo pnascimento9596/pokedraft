@@ -37,7 +37,9 @@ const nextConfig: NextConfig = {
         condition: {
           all: [
             { not: "browser" },
-            { path: /(?:^|\/)src\/engine\/versions\/v[1234]\/src\/data\/(pokedex|scouting)\.json$/ },
+            {
+              path: /(?:^|\/)src\/engine\/versions\/v[1234]\/src\/data\/(pokedex|scouting)\.json$/,
+            },
           ],
         },
         loaders: ["./scripts/build/retained-json-loader.cjs"],

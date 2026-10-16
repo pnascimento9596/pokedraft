@@ -11,3 +11,4 @@ scripts/data/.cache
 src/engine/versions/v1
 src/engine/versions/v2
 src/engine/versions/v3
+src/engine/versions/v4
