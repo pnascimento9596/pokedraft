@@ -21,6 +21,11 @@ export interface BoardView {
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 const entrySchema = z.object({
+  squadSpeciesIds: z
+    .array(z.number().int().min(1).max(1025))
+    .length(16)
+    .refine((ids) => new Set(ids).size === 16)
+    .optional(),
   rank: z.number(),
   nickname: z.string(),
   mode: z.enum(BOARD_MODES),

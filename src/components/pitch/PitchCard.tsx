@@ -32,7 +32,7 @@ export function PitchCard({
           </span>
         ) : null}
       </span>{" "}
-      <span id={`${id}-slot`} className={species === null ? s.tokenSlot : "visually-hidden"}>
+      <span id={`${id}-slot`} className={species === null ? s.tokenSlot : s.filledSlot}>
         {slotLabel}
       </span>{" "}
       <span className={s.tokenImage}>

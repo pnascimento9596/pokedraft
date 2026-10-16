@@ -2,8 +2,15 @@
 
 import { useEffect, useId, useRef } from "react";
 import { pokedexById } from "@/data/pokedex";
-import { speciesById, type Species, type SpeciesId } from "@/engine";
-import { SCOUTING } from "@/scouting/scouting-data";
+import {
+  FORMATIONS,
+  speciesById,
+  type Lineup,
+  type SlotRef,
+  type Species,
+  type SpeciesId,
+} from "@/engine";
+import { SCOUTING_BY_ID } from "@/scouting/scouting-data";
 import { MOVE_TRAITS } from "@/scouting/move-traits";
 import { ATTRS, ROLES, type Attr, type Role } from "@/scouting/types";
 import { PlayerImage } from "@/components/PlayerImage";
@@ -11,9 +18,9 @@ import { TypeChip } from "@/components/TypeChip";
 import { getAbilityMeta } from "@/components/results/abilityEffects";
 import { typeFrame } from "@/design/stadium";
 import { REGION_LABEL, tagLabel } from "@/ui/labels";
+import { ratingFor } from "@/ui/rating";
+import { ratePartialLineup } from "@/ui/partial-rating";
 import s from "./ScoutingDossier.module.css";
-
-const SCOUTING_BY_ID = new Map(SCOUTING.map((entry) => [entry.id, entry]));
 
 const RADAR_AXES = [
   { attr: "PAC", x: 0, y: -1 },
@@ -68,11 +75,17 @@ export function ScoutingDossier({
   speciesId,
   compareTo,
   showRatings,
+  slotContext,
   onClose,
 }: {
   readonly speciesId: SpeciesId;
   readonly compareTo?: Species;
   readonly showRatings: boolean;
+  readonly slotContext?: {
+    readonly slot: SlotRef;
+    readonly lineup: Lineup;
+    readonly candidateLineup: Lineup;
+  };
   readonly onClose: () => void;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -84,6 +97,22 @@ export function ScoutingDossier({
   const incumbent = compareTo?.id !== speciesId ? compareTo : undefined;
   const dex = pokedexById(speciesId);
   const scout = SCOUTING_BY_ID.get(speciesId);
+  const target =
+    slotContext?.slot.kind === "starter"
+      ? FORMATIONS[slotContext.lineup.formation].slots[slotContext.slot.index]
+      : null;
+  const candidateRating = slotContext
+    ? ratingFor(sp, target?.role ?? null, target?.label ?? "Bench")
+    : null;
+  const incumbentRating =
+    slotContext && incumbent
+      ? ratingFor(incumbent, target?.role ?? null, target?.label ?? "Bench")
+      : null;
+  const beforeChemistry = slotContext ? ratePartialLineup(slotContext.lineup).synergy : null;
+  const afterChemistry = slotContext
+    ? ratePartialLineup(slotContext.candidateLineup).synergy
+    : null;
+  const signed = (value: number) => (value > 0 ? `+${value}` : `${value}`);
 
   useEffect(() => {
     const dialog = ref.current;
@@ -180,6 +209,63 @@ export function ScoutingDossier({
               : "Numeric comparisons are hidden."}
           </p>
         ) : null}
+
+        {showRatings && candidateRating && incumbentRating ? (
+          <section className={s.section} aria-label="Slot comparison">
+            <p className={s.comparison} aria-label="Slot role rating comparison">
+              {target?.role ?? `Best role (${candidateRating.role} vs ${incumbentRating.role})`}{" "}
+              ROLE RATING {candidateRating.score} vs {incumbentRating.score} (
+              {signed(candidateRating.score - incumbentRating.score)})
+            </p>
+            <p className={s.comparison} aria-label="Chemistry comparison">
+              {beforeChemistry !== null && afterChemistry !== null
+                ? `Chemistry ${(afterChemistry * 100).toFixed(1)}% vs ${(beforeChemistry * 100).toFixed(1)}% (${signed(Number(((afterChemistry - beforeChemistry) * 100).toFixed(1)))} percentage points).`
+                : "Chemistry unavailable until a starter link is filled."}
+            </p>
+            <p className={s.roleSub}>
+              Candidate minus incumbent. Chemistry uses the actual placement or swap and currently
+              filled starter links.
+            </p>
+          </section>
+        ) : null}
+
+        <section className={s.section} aria-label="Role fit mini pitch">
+          <h3 className={s.sectionTitle}>Role Fit on the Pitch</h3>
+          <div className={s.miniPitch}>
+            {([["W", "ST"], ["WM", "AM"], ["WB", "CM", "DM"], ["FB", "CB"], ["GK"]] as const).map(
+              (roles, index) => (
+                <div className={s.miniLine} key={index}>
+                  {roles.map((role) => (
+                    <span
+                      key={role}
+                      className={s.miniRole}
+                      data-tier={
+                        bestSet.has(role) ? "best" : worstSet.has(role) ? "worst" : "neutral"
+                      }
+                    >
+                      <strong>{role}</strong>{" "}
+                      {showRatings ? (
+                        <span className="num">{Math.round(sp.quality[role] * 100)}</span>
+                      ) : bestSet.has(role) ? (
+                        "Best"
+                      ) : worstSet.has(role) ? (
+                        "Poor"
+                      ) : (
+                        "OK"
+                      )}
+                    </span>
+                  ))}
+                </div>
+              ),
+            )}
+          </div>
+          <p className={s.roleSub}>
+            Attacking roles at the top, goalkeeper at the bottom.{" "}
+            {showRatings
+              ? "Numbers are role ratings."
+              : "Best, OK and Poor are qualitative role fits."}
+          </p>
+        </section>
 
         {showRatings ? (
           <section className={s.section} aria-label="Attribute radar">

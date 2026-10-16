@@ -1,6 +1,7 @@
 import { and, asc, count, desc, eq, gt, lt, or, sql, type SQL } from "drizzle-orm";
 import { leaderboardEntries, type LeaderboardRow, type NewLeaderboardRow } from "@/db/schema";
 import type { Db } from "@/db/types";
+import { squadPreview } from "./squad-preview";
 import { BOARD_LIMIT, type BoardEntry, type BoardMode } from "../contract";
 
 export type Board = { readonly mode: BoardMode; readonly dailyDate: string | null };
@@ -108,6 +109,7 @@ export function toBoardEntry<R extends number | null>(
 ): Omit<BoardEntry, "rank"> & { readonly rank: R } {
   return {
     rank,
+    squadSpeciesIds: squadPreview(row.token),
     nickname: row.nickname,
     mode: row.mode,
     variant: row.variant,

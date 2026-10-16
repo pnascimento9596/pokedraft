@@ -1,10 +1,8 @@
 import { FORMATIONS } from "@/engine/formations";
 import type { FormationId, Role, SlotRef, Species } from "@/engine/types";
-import { SCOUTING } from "@/scouting/scouting-data";
+import { SCOUTING_BY_ID } from "@/scouting/scouting-data";
 
 export type PositionSuitability = "recommended" | "ok" | "bad";
-
-const SCOUTING_BY_ID = new Map(SCOUTING.map((s) => [s.id, s]));
 
 /**
  * Evaluates how well a Pokémon fits a given position on the pitch.
@@ -33,7 +31,8 @@ export function getSlotSuitability(
 
   // Check for "bad" positions first
   const isWorstRole = worstRoles.includes(role);
-  const isKeeperDisaster = role === "GK" && !species.bestRoles.includes("GK") && species.fits.GK < 40;
+  const isKeeperDisaster =
+    role === "GK" && !species.bestRoles.includes("GK") && species.fits.GK < 40;
   const isLowQuality = species.quality[role] < 0.22;
   const isLowFit = species.fits[role] < 34;
 
@@ -43,7 +42,8 @@ export function getSlotSuitability(
 
   // Check for "recommended" positions
   const isPrimaryBest = species.bestRoles[0] === role;
-  const isTopBestInFormation = species.bestRoles.includes(role) && species.fits[role] >= maxFormationFit - 2;
+  const isTopBestInFormation =
+    species.bestRoles.includes(role) && species.fits[role] >= maxFormationFit - 2;
   const isHighestFit = species.fits[role] === maxFormationFit && maxFormationFit >= 40;
 
   if (isPrimaryBest || isTopBestInFormation || isHighestFit) {

@@ -74,3 +74,21 @@ describe("settings module", () => {
     expect("challengeSettings" in settings).toBe(false);
   });
 });
+
+describe("optional squad history metadata", () => {
+  it("keeps older runs without inventing species and validates new squad IDs", () => {
+    window.localStorage.setItem(
+      HISTORY_KEY,
+      JSON.stringify([
+        GOOD_RUN,
+        { ...GOOD_RUN, token: "known", squadSpeciesIds: [1, 25, 1025] },
+        { ...GOOD_RUN, token: "invalid", squadSpeciesIds: [0, 1026] },
+        { ...GOOD_RUN, token: "duplicate", squadSpeciesIds: [25, 25] },
+      ]),
+    );
+    expect(loadHistory()).toEqual([
+      GOOD_RUN,
+      { ...GOOD_RUN, token: "known", squadSpeciesIds: [1, 25, 1025] },
+    ]);
+  });
+});

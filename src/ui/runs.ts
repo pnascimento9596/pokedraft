@@ -5,6 +5,7 @@ import {
   type CupResult,
   type DraftSettings,
   type FormationId,
+  type Lineup,
 } from "@/engine/types";
 import { MODE_LABEL, STYLE_LABEL } from "./labels";
 import { readJson, writeJson } from "./storage";
@@ -26,6 +27,7 @@ export function bucketOf(settings: DraftSettings): StatBucket {
 }
 
 export interface RunRecord {
+  readonly squadSpeciesIds?: readonly number[];
   readonly token: string;
   readonly bucket: StatBucket;
   readonly friendly: boolean;
@@ -52,7 +54,13 @@ export interface BucketStats {
 // Saved data comes from a browser that may hold older or damaged values, so every read is
 // validated and anything that does not fit is dropped instead of reaching the screen.
 const Count = z.number().int().nonnegative();
+const SquadSpeciesIds = z
+  .array(z.number().int().min(1).max(1025))
+  .min(1)
+  .max(16)
+  .refine((ids) => new Set(ids).size === ids.length);
 const RunRecordSchema = z.object({
+  squadSpeciesIds: SquadSpeciesIds.optional(),
   token: z.string().min(1),
   bucket: z.enum(STAT_BUCKETS),
   friendly: z.boolean(),
@@ -88,9 +96,17 @@ export function toRecord(
   settings: DraftSettings,
   cup: CupResult,
   at: string,
+  lineup?: Lineup,
 ): RunRecord {
   return {
     token,
+    ...(lineup
+      ? {
+          squadSpeciesIds: [...lineup.starters, ...lineup.bench].filter(
+            (id): id is NonNullable<typeof id> => id !== null,
+          ),
+        }
+      : {}),
     bucket: bucketOf(settings),
     friendly: settings.mode === "builder",
     formation: settings.formation,

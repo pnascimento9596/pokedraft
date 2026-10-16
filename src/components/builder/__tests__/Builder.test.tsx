@@ -572,13 +572,19 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
       fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
     });
     expect(writeText.mock.calls).toEqual([[`http://localhost:3000/?b=${TWO_PLACED_TOKEN}`]]);
-    expect(screen.getByRole("status").textContent).toBe("Link copied");
+    expect(
+      within(screen.getByRole("toolbar", { name: "Builder actions" })).getByRole("status")
+        .textContent,
+    ).toBe("Link copied");
 
     writeText.mockRejectedValueOnce(new Error("denied"));
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
     });
-    expect(screen.getByRole("status").textContent).toBe("Could not copy the link");
+    expect(
+      within(screen.getByRole("toolbar", { name: "Builder actions" })).getByRole("status")
+        .textContent,
+    ).toBe("Could not copy the link");
   });
 
   it("Download image requests the builder card and saves it as pokedraft-lineup.png", async () => {
@@ -660,4 +666,35 @@ describe("builder Download image feedback (SA-20, SB-05)", () => {
     expect(created).toHaveBeenCalledTimes(1);
     vi.unstubAllGlobals();
   });
+});
+
+describe("placed squad scouting and live lines", () => {
+  it("offers scouting for placed starters and bench with blind numerical gating", async () => {
+    openWithBenchToo();
+    await screen.findByText("Scout squad (3)", {}, { timeout: 10_000 });
+    fireEvent.click(screen.getByText("Scout squad (3)"));
+    fireEvent.click(screen.getByRole("button", { name: "Scout Pikachu at SUB 1" }));
+    const dossier = screen.getByRole("dialog");
+    expect(within(dossier).getByRole("heading", { name: "Pikachu" }).textContent).toBe("Pikachu");
+    expect(within(dossier).queryByRole("region", { name: "Attribute radar" })).toBeNull();
+    expect(screen.queryByTestId("live-lines")).toBeNull();
+  });
+
+  it("shows filled counts and current line strength only when ratings are enabled", async () => {
+    openWithTwoPlaced();
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
+    showRatings();
+    expect(screen.getByTestId("live-lines").textContent).toContain("DEF 1/4");
+    expect(screen.getByTestId("live-lines").textContent).toContain("ATT 1/3");
+    expect(screen.getByTestId("live-lines").textContent).toContain("GK 0/1");
+  });
+});
+
+it("keeps Builder actions above feedback that appears after the engine loads", async () => {
+  openWithTwoPlaced();
+  const toolbar = screen.getByRole("toolbar", { name: "Builder actions" });
+  const feedback = await screen.findByText(/^Chemistry links \(/);
+  expect(
+    Boolean(toolbar.compareDocumentPosition(feedback) & Node.DOCUMENT_POSITION_FOLLOWING),
+  ).toBe(true);
 });

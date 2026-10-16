@@ -426,6 +426,16 @@
   .bench .token {
     height: 90px;
   }
+
+  .wrap .bench .token[data-filled="true"] {
+    height: 105px;
+    padding-top: 17px;
+  }
+
+  .bench .filledSlot {
+    left: 50%;
+    translate: -50% 0;
+  }
 }
 @media (hover: hover) {
   .token:not(:disabled):hover {
@@ -437,4 +447,22 @@
   .token {
     transition: none;
   }
+}
+
+.filledSlot {
+  position: absolute;
+  top: 3px;
+  left: 2px;
+  padding: 1px 0;
+  border-radius: 3px;
+  background: var(--stadium-card);
+  color: var(--stadium-ink);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 13px;
+  white-space: nowrap;
+}
+
+.token[data-filled="true"] .cardRole {
+  visibility: hidden;
 }

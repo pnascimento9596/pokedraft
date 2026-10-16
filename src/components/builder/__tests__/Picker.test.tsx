@@ -34,6 +34,106 @@ afterEach(() => {
 });
 
 describe("Picker", () => {
+  it("shows exact target role and chemistry deltas when scouting a replacement", () => {
+    const slot: SlotRef = { kind: "starter", index: 0 };
+    let draft = applyAction(createDraft(ALL_GENS, "test" as Seed), {
+      type: "place",
+      slot,
+      species: 9 as SpeciesId,
+    });
+    draft = applyAction(draft, {
+      type: "place",
+      slot: { kind: "starter", index: 1 },
+      species: 8 as SpeciesId,
+    });
+    render(
+      <Picker
+        state={draft}
+        slot={slot}
+        showRatings={true}
+        onPick={vi.fn()}
+        onClear={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "Pikachu" } });
+    fireEvent.click(screen.getByRole("button", { name: "Scout Pikachu" }));
+    expect(screen.getByLabelText("Slot role rating comparison").textContent).toBe(
+      "GK ROLE RATING 24 vs 98 (-74)",
+    );
+    expect(screen.getByLabelText("Chemistry comparison").textContent).toBe(
+      "Chemistry 1.9% vs 3.8% (-1.9 percentage points).",
+    );
+    expect(screen.getByRole("region", { name: "Role fit mini pitch" }).textContent).toContain("W");
+  });
+
+  it("previews both sides of an existing starter swap rather than duplicating the candidate", () => {
+    const slot: SlotRef = { kind: "starter", index: 0 };
+    let draft = createDraft(ALL_GENS, "test" as Seed);
+    for (const [index, species] of [
+      [0, 9],
+      [1, 8],
+      [2, 25],
+      [3, 7],
+    ] as const) {
+      draft = applyAction(draft, {
+        type: "place",
+        slot: { kind: "starter", index },
+        species: species as SpeciesId,
+      });
+    }
+    render(
+      <Picker
+        state={draft}
+        slot={slot}
+        showRatings={true}
+        onPick={vi.fn()}
+        onClear={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "Pikachu" } });
+    fireEvent.click(screen.getByRole("button", { name: "Scout Pikachu" }));
+    expect(screen.getByLabelText("Chemistry comparison").textContent).toBe(
+      "Chemistry 13.3% vs 13.3% (0 percentage points).",
+    );
+    expect(draft.lineup.starters.slice(0, 4)).toEqual([9, 8, 25, 7]);
+  });
+
+  it("keeps swap suitability qualitative and hides comparison numbers with ratings off", () => {
+    const slot: SlotRef = { kind: "starter", index: 0 };
+    let draft = applyAction(createDraft(ALL_GENS, "test" as Seed), {
+      type: "place",
+      slot,
+      species: 9 as SpeciesId,
+    });
+    draft = applyAction(draft, {
+      type: "place",
+      slot: { kind: "bench", index: 0 },
+      species: 25 as SpeciesId,
+    });
+    render(
+      <Picker
+        state={draft}
+        slot={slot}
+        showRatings={false}
+        onPick={vi.fn()}
+        onClear={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "Pikachu" } });
+    expect(screen.getByLabelText("Swap suitability for Pikachu").textContent).toBe(
+      "Pikachu to GK: bad fit. Blastoise to SUB 1: ok fit.",
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Scout Pikachu" }));
+    expect(screen.queryByLabelText("Slot role rating comparison")).toBeNull();
+    expect(screen.queryByLabelText("Chemistry comparison")).toBeNull();
+    expect(
+      screen.getByRole("region", { name: "Role fit mini pitch" }).querySelectorAll(".num"),
+    ).toHaveLength(0);
+  });
+
   it.each(["starter", "bench"] as const)(
     "Scout compares the target %s occupant without replacing or clearing the placement",
     (kind) => {

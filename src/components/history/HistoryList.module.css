@@ -124,3 +124,70 @@
 .empty :global(.btn) {
   margin-top: 12px;
 }
+
+.formationRates,
+.speciesList {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+}
+.formationRates li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 8px 0;
+}
+.formationRates li > span:last-child {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.speciesControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.speciesControls input,
+.speciesControls select {
+  min-height: 44px;
+  min-width: 0;
+  max-width: 100%;
+  font-size: 16px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+}
+.speciesControls input {
+  flex: 1 1 180px;
+}
+.speciesControls select {
+  height: 44px;
+}
+.speciesList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 12px;
+}
+.speciesList li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+}
+.speciesList li > span {
+  display: flex;
+  flex-direction: column;
+}
+.squad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+.challenge {
+  margin: 0 4px 10px;
+  min-height: 44px;
+}

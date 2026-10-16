@@ -61,6 +61,22 @@ function tap(el: HTMLElement) {
 }
 
 describe("Pitch", () => {
+  it("keeps filled tactical slot labels visible instead of hiding LCB behind a generic DF label", () => {
+    render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} />);
+    const card = screen.getByTestId("slot-s2");
+    expect(card.querySelector('[id$="-slot"]')?.className).not.toContain("visually-hidden");
+    expect(card.querySelector('[id$="-slot"]')?.textContent).toBe("LCB");
+  });
+
+  it("includes visible filled tactical labels in the accessible name on scoutable results", () => {
+    render(
+      <Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSlotTap={() => {}} />,
+    );
+    const card = screen.getByTestId("slot-s2");
+    const label = card.querySelector('[id$="-slot"]')!;
+    expect(card.getAttribute("aria-labelledby")?.split(" ")).toContain(label.id);
+  });
+
   it("labels every starter and bench slot so taps reach the right SlotRef", () => {
     const onSlotTap = vi.fn();
     render(
@@ -186,4 +202,21 @@ describe("Pitch", () => {
     expect(screen.getByTestId("slot-s0").getAttribute("data-suitability")).toBe("bad");
     expect(screen.getByTestId("slot-s2").getAttribute("data-suitability")).toBe("ok");
   });
+});
+
+it("orders a visible rating before the tactical label in a filled card accessible name", () => {
+  render(
+    <Pitch
+      formation="4-3-3"
+      lineup={twoPlaced}
+      speciesOf={speciesById}
+      onSlotTap={() => {}}
+      tokenNote={(_ref, id) => <span id={`${id}-score`}>42</span>}
+    />,
+  );
+  expect(
+    screen
+      .getByRole("button", { name: "LCB Bulbasaur DF 42 LCB Bulbasaur Grass Poison" })
+      .getAttribute("data-testid"),
+  ).toBe("slot-s2");
 });

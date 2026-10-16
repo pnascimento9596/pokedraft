@@ -111,3 +111,20 @@ export function playGoalHorn(): void {
     osc.stop(t + 0.3);
   }
 }
+
+export function playSpecialReveal(): void {
+  if (ctx === null || !soundEnabled() || ctx.state !== "running") return;
+  const t = ctx.currentTime;
+  for (const [index, frequency] of [523.25, 659.25, 1046.5].entries()) {
+    const start = t + index * 0.09;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(frequency, start);
+    gain.gain.setValueAtTime(0.07, start);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.22);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + 0.23);
+  }
+}

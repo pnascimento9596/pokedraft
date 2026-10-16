@@ -68,8 +68,8 @@ export function ResultsView({
   useEffect(() => {
     if (variant !== "live" || recorded.current) return;
     recorded.current = true;
-    recordRun(toRecord(token, draft.settings, cup, new Date().toISOString()));
-  }, [variant, token, draft.settings, cup]);
+    recordRun(toRecord(token, draft.settings, cup, new Date().toISOString(), draft.lineup));
+  }, [variant, token, draft.settings, draft.lineup, cup]);
 
   const friendly = draft.settings.mode === "builder";
   const formation = draft.settings.formation;

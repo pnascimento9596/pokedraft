@@ -109,6 +109,21 @@
 }
 
 @media (max-width: 480px) {
+  .headActions {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    gap: 4px;
+  }
+
+  .headActions button {
+    padding-inline: 8px;
+  }
+
+  .sortSelect select {
+    width: 122px;
+    padding-inline: 8px;
+  }
+
   .wideOnly {
     display: none;
   }
@@ -509,4 +524,14 @@
   font-size: 15px;
   line-height: 20px;
   font-weight: 600;
+}
+
+.swapFit {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
 }

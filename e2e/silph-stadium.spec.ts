@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { touchScroll } from "./mobile/helpers";
 
 const formations = ["4-3-3", "4-4-2", "4-2-3-1", "4-1-4-1", "3-5-2", "3-4-3", "3-4-2-1", "5-3-2"];
 for (const width of [375, 390, 1280]) {
@@ -206,12 +207,20 @@ test("grass swipes scroll the page and filled HTML cards still drag-swap", async
   await expect(b).toHaveAttribute("aria-label", names[0]!.replace("LCM ", "RCM "));
   const point = await page.evaluate(() => {
     const stage = document.querySelector('[data-testid="pitch-stage"]')!.getBoundingClientRect();
-    for (const x of [stage.x + 30, stage.x + stage.width / 2, stage.right - 30]) {
-      for (const y of [400, 500, 600]) {
+    const cards = [...document.querySelectorAll('[data-testid^="slot-"]')].map((el) =>
+      el.getBoundingClientRect(),
+    );
+    for (
+      let y = Math.max(180, stage.top + 40);
+      y < Math.min(innerHeight - 40, stage.bottom - 40);
+      y += 10
+    ) {
+      for (let x = stage.left + 16; x < stage.right - 16; x += 10) {
         if (
-          y > stage.top &&
-          y < stage.bottom &&
-          !document.elementFromPoint(x, y)?.closest("button")
+          !document.elementFromPoint(x, y)?.closest("button") &&
+          cards.every(
+            (r) => x < r.left - 32 || x > r.right + 32 || y < r.top - 32 || y > r.bottom + 32,
+          )
         )
           return { x, y };
       }
@@ -220,14 +229,7 @@ test("grass swipes scroll the page and filled HTML cards still drag-swap", async
   });
   expect(point).not.toBeNull();
   const before = await page.evaluate(() => scrollY);
-  const session = await context.newCDPSession(page);
-  await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [point!] });
-  for (let step = 1; step <= 8; step++)
-    await session.send("Input.dispatchTouchEvent", {
-      type: "touchMove",
-      touchPoints: [{ x: point!.x, y: point!.y - step * 20 }],
-    });
-  await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  await touchScroll(page, point!, 160);
   await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(before);
   await context.close();
 });

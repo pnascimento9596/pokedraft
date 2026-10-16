@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { challengeHref } from "@/ui/challenge-href";
+import { PlayerImage } from "@/components/PlayerImage";
 import { StatusNote } from "@/components/ui/primitives";
 import { announce } from "@/components/Announcer";
 import { record } from "@/ui/labels";
@@ -121,6 +123,15 @@ export function Board({ view }: { readonly view: BoardView }) {
             <span className={s.main}>
               <span className={s.nick}>{e.nickname}</span>
               <span className={s.meta}>{variantLabel(e.variant)}</span>
+              <span className={s.squad}>
+                {e.squadSpeciesIds ? (
+                  e.squadSpeciesIds.map((id) => (
+                    <PlayerImage key={id} dexId={id} size={24} alt={`Squad species ${id}`} />
+                  ))
+                ) : (
+                  <span className={s.meta}>Squad preview unavailable.</span>
+                )}
+              </span>
             </span>
             <span className={s.recordCol}>
               <span className={s.label}>W-D-L</span>
@@ -135,6 +146,11 @@ export function Board({ view }: { readonly view: BoardView }) {
               </span>
             </span>
           </Link>
+          {challengeHref(e.token) !== null ? (
+            <Link className={`btn btn--ghost ${s.challenge}`} href={challengeHref(e.token)!}>
+              Challenge this Seed
+            </Link>
+          ) : null}
         </li>
       ))}
     </ol>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   FORMATIONS,
   speciesById,
@@ -28,6 +28,7 @@ export function ExhibitionMatchModal({
   const active = useRef(false);
   const titleId = useId();
   const [rematch, setRematch] = useState(0);
+  const [replay, setReplay] = useState({ minute: 90, running: false });
   const [challenger] = useState(() => {
     const token = readJson<unknown>("pokedraft.builder", null);
     return typeof token === "string" ? draftFromBuilderToken(token) : null;
@@ -47,10 +48,13 @@ export function ExhibitionMatchModal({
     };
   }, []);
 
-  const own = challenger === null ? null : fullLineup(challenger.lineup);
-  const other = fullLineup(opponent.lineup);
-  let match = null;
-  if (own !== null && other !== null) {
+  const own = useMemo(
+    () => (challenger === null ? null : fullLineup(challenger.lineup)),
+    [challenger],
+  );
+  const other = useMemo(() => fullLineup(opponent.lineup), [opponent]);
+  const match = useMemo(() => {
+    if (own === null || other === null) return null;
     const rating = rateTeam(own);
     const opposition = rateTeam(other);
     const formation = FORMATIONS[own.formation];
@@ -65,7 +69,9 @@ export function ExhibitionMatchModal({
       line: otherFormation.slots[i]!.line,
       role: otherFormation.slots[i]!.role,
     }));
-    match = simulateMatch({
+    const keeper = starters.find((player) => player.line === "GK");
+    if (keeper === undefined) return null;
+    return simulateMatch({
       matchIndex: 0,
       round: "F",
       phase: "group",
@@ -73,7 +79,7 @@ export function ExhibitionMatchModal({
       rating: rating.score,
       userLines: matchLines(rating),
       starters,
-      keeper: starters.find((player) => player.line === "GK")!.species,
+      keeper: keeper.species,
       opponent: {
         id: "shared-squad",
         name: "Shared squad",
@@ -84,8 +90,30 @@ export function ExhibitionMatchModal({
       opponentStarters: otherStarters,
       absences: [],
     });
-  }
-  const score = match === null ? null : finalScore(match);
+  }, [own, other, opponent.seed, rematch]);
+
+  useEffect(() => {
+    if (!replay.running || replay.minute >= 90) return;
+    const timer = setTimeout(() => {
+      setReplay((current) => {
+        const minute = Math.min(90, current.minute + 3);
+        return { minute, running: minute < 90 };
+      });
+    }, 80);
+    return () => clearTimeout(timer);
+  }, [replay]);
+
+  const atFullTime = replay.minute >= 90;
+  const goals = match?.goals.filter((goal) => goal.minute <= replay.minute) ?? [];
+  const score =
+    match === null
+      ? null
+      : atFullTime
+        ? finalScore(match)
+        : {
+            user: goals.filter((goal) => goal.side === "user").length,
+            opp: goals.filter((goal) => goal.side === "opp").length,
+          };
 
   return (
     <dialog
@@ -98,7 +126,10 @@ export function ExhibitionMatchModal({
         event.currentTarget.close();
       }}
       onClose={(event) => {
-        if (active.current && !event.currentTarget.open) onClose();
+        if (active.current && !event.currentTarget.open) {
+          setReplay((current) => ({ ...current, running: false }));
+          onClose();
+        }
       }}
       onClick={(event) => {
         if (event.target === event.currentTarget) event.currentTarget.close();
@@ -121,7 +152,10 @@ export function ExhibitionMatchModal({
         </p>
         {match !== null && score !== null ? (
           <>
-            <div className={s.scoreboard} aria-label="Exhibition final score">
+            <div
+              className={s.scoreboard}
+              aria-label={atFullTime ? "Exhibition final score" : "Exhibition replay score"}
+            >
               <span>
                 Your squad
                 <br />
@@ -141,26 +175,64 @@ export function ExhibitionMatchModal({
               </span>
             </div>
             <p role="status">
-              Full time.{" "}
-              {match.outcome === "W"
-                ? "Your squad wins."
-                : match.outcome === "L"
-                  ? "Shared squad wins."
-                  : "Honours even."}
+              {atFullTime ? (
+                <>
+                  Full time.{" "}
+                  {match.outcome === "W"
+                    ? "Your squad wins."
+                    : match.outcome === "L"
+                      ? "Shared squad wins."
+                      : "Honours even."}
+                </>
+              ) : (
+                `${replay.minute}' / 90' Replay of recorded goals.`
+              )}
             </p>
+            <div className={s.controls} role="group" aria-label="Exhibition highlights">
+              <button
+                type="button"
+                className="btn"
+                onClick={() =>
+                  setReplay((current) => ({
+                    minute: current.minute >= 90 ? 0 : current.minute,
+                    running: !current.running,
+                  }))
+                }
+              >
+                {replay.running
+                  ? "Pause highlights"
+                  : atFullTime
+                    ? "Replay highlights"
+                    : "Resume highlights"}
+              </button>
+              {!atFullTime ? (
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => setReplay({ minute: 90, running: false })}
+                >
+                  Show full time
+                </button>
+              ) : null}
+            </div>
             <ul className={s.goals} aria-label="Exhibition goals">
-              {match.goals.map((goal, i) => (
+              {goals.map((goal, i) => (
                 <li key={i} data-side={goal.side}>
                   <span>{goal.side === "user" ? "Your squad" : "Shared squad"}</span>
                   <span>{goalLine(goal)}</span>
                 </li>
               ))}
             </ul>
-            {match.goals.length === 0 ? <p>No goals in this match.</p> : null}
+            {goals.length === 0 ? (
+              <p>{atFullTime ? "No goals in this match." : "No goals yet in this replay."}</p>
+            ) : null}
             <button
               type="button"
               className="btn btn--primary"
-              onClick={() => setRematch((n) => n + 1)}
+              onClick={() => {
+                setReplay({ minute: 90, running: false });
+                setRematch((n) => n + 1);
+              }}
             >
               Play rematch
             </button>

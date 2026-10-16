@@ -75,3 +75,12 @@
 .goals li[data-side="opp"] {
   border-color: var(--viz-2);
 }
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.controls button {
+  min-height: 44px;
+}

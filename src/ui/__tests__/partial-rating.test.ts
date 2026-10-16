@@ -1,6 +1,15 @@
+import { fullLineup } from "@/components/builder/model";
+import { ALL_REFS } from "@/ui/lineup";
 import { describe, expect, it } from "vitest";
-import { applyAction, createDraft, type Seed, type SpeciesId } from "@/engine";
-import { previewCandidateEdges, ratePartialLineup } from "../partial-rating";
+import {
+  applyAction,
+  createDraft,
+  rateTeam,
+  FORMATION_IDS,
+  type Seed,
+  type SpeciesId,
+} from "@/engine";
+import { previewCandidateEdges, ratePartialLineup, ratePartialLines } from "../partial-rating";
 
 describe("ratePartialLineup (live chemistry and legendary count during draft and builder)", () => {
   it("computes active synergy edges and live chemistry as soon as two adjacent starters are placed", () => {
@@ -82,4 +91,52 @@ describe("ratePartialLineup (live chemistry and legendary count during draft and
       value: 1,
     });
   });
+});
+
+it("live lines count occupied starters and leave empty lines unrated, excluding the bench", () => {
+  let draft = createDraft(
+    { mode: "builder", formation: "4-3-3", gens: [1], legendaries: false },
+    "lines" as Seed,
+  );
+  draft = applyAction(draft, {
+    type: "place",
+    species: 1 as SpeciesId,
+    slot: { kind: "starter", index: 2 },
+  });
+  draft = applyAction(draft, {
+    type: "place",
+    species: 25 as SpeciesId,
+    slot: { kind: "bench", index: 0 },
+  });
+  const lines = ratePartialLines(draft.lineup);
+  expect(lines.map(({ line, filled, total }) => ({ line, filled, total }))).toEqual([
+    { line: "GK", filled: 0, total: 1 },
+    { line: "DEF", filled: 1, total: 4 },
+    { line: "MID", filled: 0, total: 3 },
+    { line: "ATT", filled: 0, total: 3 },
+  ]);
+  expect(lines[0].strength).toBeNull();
+  expect(lines[1].strength).toBeCloseTo(22.78048780487805, 3);
+});
+
+it("full partial-line scores and chemistry exactly match the engine across all formations", () => {
+  for (const formation of FORMATION_IDS) {
+    let draft = createDraft(
+      { mode: "builder", formation, gens: [1], legendaries: false },
+      "full-parity" as Seed,
+    );
+    for (const [index, slot] of ALL_REFS.entries()) {
+      draft = applyAction(draft, { type: "place", species: (index + 1) as SpeciesId, slot });
+    }
+    const full = fullLineup(draft.lineup)!;
+    const rated = rateTeam(full);
+    const partial = ratePartialLineup(draft.lineup);
+    expect(partial.filledStarters).toBe(11);
+    expect(partial.edges).toEqual(rated.edges);
+    expect(partial.synergy).toBe(rated.synergy);
+    for (const line of ratePartialLines(draft.lineup)) {
+      expect(line.filled).toBe(line.total);
+      expect(line.strength).toBeCloseTo(rated.lines[line.line], 12);
+    }
+  }
 });
