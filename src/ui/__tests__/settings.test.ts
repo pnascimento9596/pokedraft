@@ -4,6 +4,7 @@ import {
   loadPanel,
   parsePlayQuery,
   playHref,
+  playsMatchday,
   savePanel,
   type PanelSettings,
 } from "../settings";
@@ -134,5 +135,43 @@ describe("showChallengeRatings (catches a saved panel that turns challenge ratin
       showRatings: false,
     });
     expect(loadPanel().showChallengeRatings).toBe(true);
+  });
+});
+
+describe("managerMode and matchView (catches a saved panel that silently turns on the matchday or keeps an unknown view)", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("defaults to the quick results with no touchline, so an old player sees no change", () => {
+    storedPanel('{"formation":"4-4-2"}');
+    expect(loadPanel()).toMatchObject({ managerMode: false, matchView: "quick" });
+    expect(playsMatchday(loadPanel())).toBe(false);
+  });
+
+  it("loads stored values and drops ones of the wrong type", () => {
+    storedPanel('{"managerMode":true,"matchView":"live"}');
+    expect(loadPanel()).toMatchObject({ managerMode: true, matchView: "live" });
+    for (const [manager, view] of [
+      ['"true"', '"Live"'],
+      ["1", "null"],
+      ["null", '"broadcast"'],
+    ]) {
+      storedPanel(`{"managerMode":${manager},"matchView":${view}}`);
+      expect(loadPanel()).toMatchObject({ managerMode: false, matchView: "quick" });
+    }
+  });
+
+  it("plays the matchday when either the touchline or the live view is on", () => {
+    expect(playsMatchday({ managerMode: true, matchView: "quick" })).toBe(true);
+    expect(playsMatchday({ managerMode: false, matchView: "live" })).toBe(true);
+    expect(playsMatchday({ managerMode: false, matchView: "quick" })).toBe(false);
+  });
+
+  it("round-trips through savePanel", () => {
+    const store = storedPanel(null);
+    savePanel({ ...DEFAULT_PANEL, managerMode: true, matchView: "live" });
+    expect(JSON.parse(store.get("pokedraft:panel")!)).toMatchObject({
+      managerMode: true,
+      matchView: "live",
+    });
   });
 });

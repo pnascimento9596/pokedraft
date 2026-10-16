@@ -15,6 +15,7 @@ const ENTRY = {
   draws: 0,
   losses: 0,
   createdAt: "2026-10-09T12:00:00.000Z",
+  coached: false,
 };
 
 const SECOND = {
@@ -73,6 +74,7 @@ test("/leaderboard renders the stubbed rows and each links to its /r/ replay", a
     mode: "cup8",
     scope: "daily",
     date: "2026-10-09",
+    coach: "all",
     entries: [ENTRY, SECOND],
   });
   await page.goto("/leaderboard?mode=cup8&scope=daily&date=2026-10-09");
@@ -89,6 +91,36 @@ test("/leaderboard renders the stubbed rows and each links to its /r/ replay", a
   await page.getByRole("radio", { name: "151 Challenge" }).click();
   await expect(page).toHaveURL(/\/leaderboard\?mode=kanto151&scope=all$/);
   await expect.poll(() => seen).toContain("?mode=kanto151&scope=all");
+});
+
+test("pressing Uncoached asks the server for coach=uncoached and shows the rows it sends", async ({
+  page,
+}) => {
+  const seen: string[] = [];
+  await page.route("**/api/leaderboard?**", (route) => {
+    const url = new URL(route.request().url());
+    seen.push(url.search);
+    const coach = url.searchParams.get("coach") ?? "all";
+    const entries =
+      coach === "uncoached"
+        ? [{ ...SECOND, rank: 1, nickname: "Plain", token: "pd1.e2e-plain" }]
+        : [{ ...ENTRY, coached: true }];
+    return route.fulfill({
+      json: { mode: "cup8", scope: "all", date: null, coach, entries },
+    });
+  });
+  await page.goto("/leaderboard?mode=cup8&scope=all");
+  await expect(page.getByTestId("board-row")).toHaveCount(1);
+  await expect(page.getByTestId("coached-chip")).toHaveCount(1);
+
+  await page.getByTestId("coach-filter-uncoached").click();
+  const rows = page.getByTestId("board-row");
+  await expect(rows).toHaveCount(1);
+  await expect(rows.nth(0)).toContainText("Plain");
+  await expect(rows.nth(0).getByRole("link")).toHaveAttribute("href", "/r/pd1.e2e-plain");
+  await expect(page.getByTestId("coached-chip")).toHaveCount(0);
+  await expect(page.getByTestId("coach-filter-uncoached")).toHaveAttribute("aria-pressed", "true");
+  expect(seen).toEqual(["?mode=cup8&scope=all", "?mode=cup8&scope=all&coach=uncoached"]);
 });
 
 test("a 503 from the board API shows the error state, never an empty board", async ({ page }) => {
@@ -118,6 +150,7 @@ for (const width of [390, 1440]) {
       mode: "cup8",
       scope: "daily",
       date: "2026-10-09",
+      coach: "all",
       entries: [ENTRY, SECOND],
     });
 

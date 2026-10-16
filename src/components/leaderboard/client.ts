@@ -3,10 +3,12 @@ import { ENGINE_VERSION } from "@/engine";
 import {
   BOARD_MODES,
   BOARD_SCOPES,
+  COACH_FILTERS,
   SUBMIT_ERROR_STATUS,
   type BoardEntry,
   type BoardMode,
   type BoardScope,
+  type CoachFilter,
   type SubmitEntry,
   type SubmitErrorCode,
 } from "@/leaderboard/contract";
@@ -37,9 +39,10 @@ const entrySchema = z.object({
   draws: z.number(),
   losses: z.number(),
   createdAt: z.string(),
+  coached: z.boolean(),
 }) satisfies z.ZodType<BoardEntry>;
 
-const boardOkSchema = z.object({ entries: z.array(entrySchema) });
+const boardOkSchema = z.object({ coach: z.enum(COACH_FILTERS), entries: z.array(entrySchema) });
 const submitEntrySchema = entrySchema.extend({
   rank: z.number().nullable(),
 }) satisfies z.ZodType<SubmitEntry>;
@@ -67,9 +70,11 @@ export function boardHref(view: { mode: BoardMode; scope: BoardScope; date?: str
   return `/leaderboard?${q.toString()}`;
 }
 
-function apiQuery(view: BoardView): string {
+// `coach` is sent only for a filtered view, so the default All request is unchanged.
+function apiQuery(view: BoardView, coach: CoachFilter): string {
   const q = new URLSearchParams({ mode: view.mode, scope: view.scope });
   if (view.scope === "daily") q.set("date", view.date);
+  if (coach !== "all") q.set("coach", coach);
   return `/api/leaderboard?${q.toString()}`;
 }
 
@@ -77,11 +82,16 @@ export type BoardResult =
   | { readonly kind: "ok"; readonly entries: readonly BoardEntry[] }
   | { readonly kind: "error"; readonly reason: "offline" | "network" | "unexpected" };
 
-// Any reply that is not a well-formed BoardOk is an error, never an empty board.
-export async function fetchBoard(view: BoardView, signal?: AbortSignal): Promise<BoardResult> {
+// Any reply that is not a well-formed BoardOk for the requested coach view is an error, never an
+// empty board or another view's rows.
+export async function fetchBoard(
+  view: BoardView,
+  coach: CoachFilter,
+  signal?: AbortSignal,
+): Promise<BoardResult> {
   let res: Response;
   try {
-    res = await fetch(apiQuery(view), { signal, cache: "no-store" });
+    res = await fetch(apiQuery(view, coach), { signal, cache: "no-store" });
   } catch {
     return { kind: "error", reason: "network" };
   }
@@ -97,7 +107,7 @@ export async function fetchBoard(view: BoardView, signal?: AbortSignal): Promise
     return { kind: "error", reason: offline || res.status === 503 ? "offline" : "unexpected" };
   }
   const ok = boardOkSchema.safeParse(body);
-  return ok.success
+  return ok.success && ok.data.coach === coach
     ? { kind: "ok", entries: ok.data.entries }
     : { kind: "error", reason: "unexpected" };
 }

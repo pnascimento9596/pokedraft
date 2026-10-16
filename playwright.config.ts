@@ -54,7 +54,8 @@ export default defineConfig({
     {
       name: "pixel-7",
       use: { ...devices["Pixel 7"] },
-      testMatch: /mobile-(acceptance|targets|draft)\.spec\.ts/,
+      // Manager mode reads the share link from the clipboard, which WebKit cannot grant.
+      testMatch: /(mobile-(acceptance|targets|draft)|manager-mode)\.spec\.ts/,
     },
   ],
   webServer: BASE_URL

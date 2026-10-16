@@ -23,6 +23,7 @@ import {
   record,
 } from "@/ui/labels";
 import { recordCompletedRun } from "@/ui/lifetime";
+import { isCoached } from "@/ui/manager/coached";
 import { toRecord } from "@/ui/runs";
 import { contributionLine } from "./format";
 import { FitReveal } from "./FitReveal";
@@ -111,6 +112,11 @@ export function ResultsView({
         <div className={s.heroTop}>
           <Pill className={s.formation}>{formation}</Pill>
           {friendly ? <Pill tone="info">{FRIENDLY_LABEL}</Pill> : null}
+          {isCoached(token) ? (
+            <Pill tone="info" data-testid="coached-pill">
+              Coached
+            </Pill>
+          ) : null}
           <span className={s.finish} data-finish={cup.finish}>
             {FINISH_LABEL[cup.finish]}
           </span>

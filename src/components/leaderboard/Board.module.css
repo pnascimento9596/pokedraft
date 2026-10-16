@@ -123,3 +123,31 @@
   margin: 0 4px 10px;
   min-height: 44px;
 }
+/* Fixed columns: the chips keep their boxes when a late web font changes the label widths. */
+.coachFilter {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 7.5rem));
+  gap: 6px;
+  margin: 0 0 8px;
+}
+.coachFilter :global(.chip) {
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+}
+.filterEmpty {
+  margin: 0 0 8px;
+  color: var(--text-muted);
+}
+.coached {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 0 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  color: var(--text-muted);
+  vertical-align: 1px;
+}

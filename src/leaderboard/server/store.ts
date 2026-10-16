@@ -2,8 +2,9 @@ import { and, asc, count, desc, eq, gt, lt, or, sql, type SQL } from "drizzle-or
 import { leaderboardEntries, type LeaderboardRow, type NewLeaderboardRow } from "@/db/schema";
 import type { Db } from "@/db/types";
 import { admissionCtes, type RateLimitRule } from "@/ratelimit/store";
+import { isCoached, MANAGER_TOKEN_VERSIONS } from "@/ui/manager/coached";
 import { squadPreview } from "./squad-preview";
-import { BOARD_LIMIT, type BoardEntry, type BoardMode } from "../contract";
+import { BOARD_LIMIT, type BoardEntry, type BoardMode, type CoachFilter } from "../contract";
 
 export type Board = { readonly mode: BoardMode; readonly dailyDate: string | null };
 
@@ -31,11 +32,36 @@ export interface LeaderboardStore {
   byToken(token: string): Promise<LeaderboardRow | null>;
   dailyTaken(nickname: string, board: Board): Promise<boolean>;
   insert(row: NewLeaderboardRow): Promise<InsertResult>;
+  /** Overall board rank, whatever the coach filter: the rank a submit reply reports. */
   rankOf(row: LeaderboardRow, board: Board): Promise<number>;
-  top(board: Board): Promise<readonly LeaderboardRow[]>;
+  /** The top `BOARD_LIMIT` rows of one coach view, in board order; ranks are 1..n in the view. */
+  top(board: Board, coach: CoachFilter): Promise<readonly LeaderboardRow[]>;
 }
 
 const t = leaderboardEntries;
+
+/**
+ * `isCoached` in SQL: for a token of a version in `MANAGER_TOKEN_VERSIONS`, base64url-decode the
+ * payload after the `pd<v>.` prefix and test that the JSON array has more than three elements.
+ * Every other token is uncoached. Stored tokens are canonical re-encodes (`encodeToken` on submit),
+ * so `decode` and the jsonb cast never see malformed input; a malformed row would make the query
+ * fail rather than mislabel it. The prefix lengths come from the version strings, and the only
+ * interpolated text is those constant versions.
+ */
+export const coachedSql: SQL<boolean> = sql<boolean>`(CASE ${sql.join(
+  MANAGER_TOKEN_VERSIONS.map((v) => {
+    const prefix = `pd${v}.`;
+    const n = prefix.length;
+    return sql`WHEN ${t.token} LIKE ${sql.raw(`'${prefix}%'`)} THEN jsonb_array_length(convert_from(decode(rpad(translate(substr(${t.token}, ${sql.raw(String(n + 1))}), '-_', '+/'), ((length(${t.token}) - ${sql.raw(String(n))} + 3) / 4) * 4, '='), 'base64'), 'UTF8')::jsonb) > 3`;
+  }),
+  sql.raw(" "),
+)} ELSE false END)`;
+
+function coachFilter(coach: CoachFilter): SQL | undefined {
+  if (coach === "coached") return coachedSql;
+  if (coach === "uncoached") return sql`NOT ${coachedSql}`;
+  return undefined;
+}
 
 function boardFilter(board: Board): SQL {
   return board.dailyDate === null
@@ -157,11 +183,11 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
         .where(and(boardFilter(board), aheadOf(row)));
       return (r?.n ?? 0) + 1;
     },
-    async top(board) {
+    async top(board, coach) {
       return getDb()
         .select()
         .from(t)
-        .where(boardFilter(board))
+        .where(and(boardFilter(board), coachFilter(coach)))
         .orderBy(...ORDER)
         .limit(BOARD_LIMIT);
     },
@@ -175,6 +201,7 @@ export function toBoardEntry<R extends number | null>(
   return {
     rank,
     squadSpeciesIds: squadPreview(row.token),
+    coached: isCoached(row.token),
     nickname: row.nickname,
     mode: row.mode,
     variant: row.variant,

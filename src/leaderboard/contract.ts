@@ -7,6 +7,13 @@ export type BoardMode = (typeof BOARD_MODES)[number];
 export const BOARD_SCOPES = ["daily", "all"] as const;
 export type BoardScope = (typeof BOARD_SCOPES)[number];
 
+/**
+ * Board views by coaching. Each is its own top `BOARD_LIMIT`, filtered in SQL before the limit,
+ * with ranks 1..n inside the view.
+ */
+export const COACH_FILTERS = ["all", "uncoached", "coached"] as const;
+export type CoachFilter = (typeof COACH_FILTERS)[number];
+
 export const BOARD_LIMIT = 50;
 export const NICKNAME_MIN = 2;
 export const NICKNAME_MAX = 20;
@@ -58,6 +65,8 @@ export interface BoardEntry {
   readonly draws: number;
   readonly losses: number;
   readonly createdAt: string;
+  /** The run's token carries touchline decisions. Derived from the token when the board is read. */
+  readonly coached: boolean;
 }
 
 // The run is saved before its rank is looked up, so a failed lookup leaves rank null.
@@ -75,6 +84,7 @@ export interface BoardOk {
   readonly mode: BoardMode;
   readonly scope: BoardScope;
   readonly date: string | null;
+  readonly coach: CoachFilter;
   readonly entries: readonly BoardEntry[];
 }
 
@@ -90,7 +100,13 @@ export const boardQuerySchema = z.discriminatedUnion("scope", [
         return false;
       }
     }),
+    coach: z.enum(COACH_FILTERS).default("all"),
   }),
-  z.object({ mode: z.enum(BOARD_MODES), scope: z.literal("all"), date: z.undefined() }),
+  z.object({
+    mode: z.enum(BOARD_MODES),
+    scope: z.literal("all"),
+    date: z.undefined(),
+    coach: z.enum(COACH_FILTERS).default("all"),
+  }),
 ]);
 export type BoardQuery = z.infer<typeof boardQuerySchema>;

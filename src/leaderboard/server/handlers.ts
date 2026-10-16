@@ -158,11 +158,6 @@ async function parseSubmission(
       submitError("BUILDER_NOT_RANKED", "Builder squads are friendlies and are never ranked."),
     );
   }
-  // Coached runs share the boards only once each row can show a Coached marker. Until the
-  // manager UI ships that marker, a coached token is not ranked. Remove with the marker.
-  if (run.manager !== undefined && run.manager.length > 0) {
-    return reject(submitError("ILLEGAL_ACTION", "Coached runs are not ranked yet."));
-  }
   const dailyDate = dailyDateForSeed(run.seed, now);
   if (dailyDate !== null && !isDailySettings(run.settings)) {
     return reject(
@@ -286,18 +281,25 @@ export async function handleBoard(
     mode: q.get("mode") ?? undefined,
     scope: q.get("scope") ?? undefined,
     date: q.get("date") ?? undefined,
+    coach: q.get("coach") ?? undefined,
   });
   if (!parsed.success) {
     return boardError(
       "INVALID_QUERY",
-      "Expected mode=cup8|kanto151 and scope=daily&date= or scope=all.",
+      "Expected mode=cup8|kanto151 and scope=daily&date= or scope=all, with optional coach=all|uncoached|coached.",
     );
   }
-  const { mode, scope } = parsed.data;
+  const { mode, scope, coach } = parsed.data;
   const date = parsed.data.scope === "daily" ? parsed.data.date : null;
   try {
-    const rows = await store.top({ mode, dailyDate: date });
-    const ok: BoardOk = { mode, scope, date, entries: rows.map((r, i) => toBoardEntry(r, i + 1)) };
+    const rows = await store.top({ mode, dailyDate: date }, coach);
+    const ok: BoardOk = {
+      mode,
+      scope,
+      date,
+      coach,
+      entries: rows.map((r, i) => toBoardEntry(r, i + 1)),
+    };
     return json(ok, 200);
   } catch (e) {
     logServerError("board.read", requestId, e);

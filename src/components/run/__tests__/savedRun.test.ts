@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { DraftSettings, IsoDate } from "@/engine";
+import { decodeToken, encodeToken, type DraftSettings, type IsoDate } from "@/engine";
+import { slotRefs } from "@/engine/draft";
 import { forgetRun, restoreRun, saveRun, type RunSlot } from "../savedRun";
-import { runToken } from "../runState";
+import { runToken, startRun, step, type Run } from "../runState";
 
 const SETTINGS: DraftSettings = {
   mode: "cup8",
@@ -134,5 +135,54 @@ describe("browser checkpoints with per-tab authority", () => {
     // Simulate a new tab opening without session snapshot:
     sessionStorage.clear();
     expect(restoreRun(unseededSlot)).toBeNull();
+  });
+});
+
+describe("coached runs (catches a results page that drops a run once it carries touchline decisions)", () => {
+  const COACHED: DraftSettings = { ...SETTINGS, formation: "4-2-3-1", style: "classic3" };
+  const slot: RunSlot = { settings: COACHED, seed: "coach-save" as RunSlot["seed"], daily: null };
+
+  function completeRun(): Run {
+    let run = startRun(COACHED, "coach-save");
+    for (const ref of slotRefs()) {
+      const roll = run.state.phase.kind === "choosing" ? run.state.phase.roll : null;
+      if (roll === null) throw new Error("expected a roll");
+      const species = roll.kind === "species" ? roll.species : roll.offers![0]!;
+      run = step(run, { type: "pick", species, slot: ref });
+    }
+    return run;
+  }
+
+  it("restores the results of a run whose token carries a kickoff tactic", () => {
+    const run = completeRun();
+    const token = encodeToken({
+      ...decodeToken(runToken(run)),
+      manager: [{ type: "tactic", match: 0, minute: 0, tactic: "attack" }],
+    });
+    saveRun(slot, "results", token);
+
+    const restored = restoreRun(slot);
+    expect(restored?.kind).toBe("results");
+    if (restored?.kind !== "results") throw new Error("results not restored");
+    expect(restored.token).toBe(token);
+    const first = restored.cup.matches[0];
+    if (first?.status !== "played") throw new Error("first match not played");
+    expect(first.incidents?.[0]).toEqual({
+      kind: "tactic",
+      side: "user",
+      minute: 0,
+      tactic: "attack",
+      by: "manager",
+    });
+  });
+
+  it("still refuses a coached token whose draft belongs to other settings", () => {
+    const run = completeRun();
+    const token = encodeToken({
+      ...decodeToken(runToken(run)),
+      manager: [{ type: "tactic", match: 0, minute: 0, tactic: "attack" }],
+    });
+    saveRun(slot, "results", token);
+    expect(restoreRun({ ...slot, settings: { ...COACHED, formation: "4-3-3" } })).toBeNull();
   });
 });

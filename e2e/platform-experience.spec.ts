@@ -146,6 +146,7 @@ for (const width of [1280, 320]) {
           json: {
             mode: "cup8",
             scope: "all",
+            coach: "all",
             entries: [
               {
                 rank: 1,
@@ -159,6 +160,7 @@ for (const width of [1280, 320]) {
                 draws: 0,
                 losses: 2,
                 createdAt: "2026-10-15T00:00:00Z",
+                coached: false,
                 squadSpeciesIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1025],
               },
               {
@@ -173,6 +175,7 @@ for (const width of [1280, 320]) {
                 draws: 0,
                 losses: 3,
                 createdAt: "2026-10-14T00:00:00Z",
+                coached: false,
               },
             ],
           },

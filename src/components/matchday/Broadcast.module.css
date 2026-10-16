@@ -1,0 +1,382 @@
+.broadcast {
+  position: relative;
+  container-type: inline-size;
+  width: 100%;
+  min-width: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bc-turf-a);
+}
+
+.pitch {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 100 / 64;
+  --sprite: 0.48;
+}
+
+@container (min-width: 520px) {
+  .pitch {
+    --sprite: 0.7;
+  }
+}
+
+@container (min-width: 820px) {
+  .pitch {
+    --sprite: 0.9;
+  }
+}
+
+.lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.stripeA {
+  fill: var(--bc-turf-a);
+}
+
+.stripeB {
+  fill: var(--bc-turf-b);
+}
+
+.mark {
+  fill: none;
+  stroke: var(--bc-line);
+  stroke-width: 0.35;
+  vector-effect: non-scaling-stroke;
+}
+
+.goal {
+  fill: var(--bc-net);
+  stroke: var(--bc-line);
+  stroke-width: 0.3;
+  vector-effect: non-scaling-stroke;
+}
+
+.player {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  transform: translate(-50%, -70%) scale(var(--sprite));
+  transition:
+    left 0.25s linear,
+    top 0.25s linear;
+}
+
+/* A team-coloured ring at the player's feet; the sprite stands on it. */
+.player::before {
+  content: "";
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bc-shade);
+  box-shadow: 0 0 0 2px var(--bc-user);
+}
+
+.player[data-side="opp"]::before {
+  box-shadow: 0 0 0 2px var(--bc-opp);
+}
+
+.player > * {
+  position: relative;
+}
+
+.player[data-hot] {
+  z-index: 2;
+}
+
+.player[data-hot]::before {
+  box-shadow:
+    0 0 0 3px var(--bc-ink),
+    0 0 14px 6px var(--bc-user);
+}
+
+.player[data-side="opp"][data-hot]::before {
+  box-shadow:
+    0 0 0 3px var(--bc-ink),
+    0 0 14px 6px var(--bc-opp);
+}
+
+.shirt {
+  color: var(--bc-ink);
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.ball {
+  position: absolute;
+  z-index: 3;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bc-ball);
+  box-shadow: 0 0 0 1.5px var(--bc-ball-ink);
+}
+
+.effect {
+  --fx: var(--fx-impact);
+  --fx-core: var(--fx-impact-core);
+  position: absolute;
+  z-index: 2;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--fx-core) 0 18%, var(--fx) 40%, transparent 70%);
+  animation: burst 0.8s ease-out both;
+  pointer-events: none;
+}
+
+.effect[data-effect="fire"] {
+  --fx: var(--fx-fire);
+  --fx-core: var(--fx-fire-core);
+}
+.effect[data-effect="water"] {
+  --fx: var(--fx-water);
+  --fx-core: var(--fx-water-core);
+}
+.effect[data-effect="electric"] {
+  --fx: var(--fx-electric);
+  --fx-core: var(--fx-electric-core);
+  border-radius: 20%;
+  rotate: 45deg;
+}
+.effect[data-effect="grass"] {
+  --fx: var(--fx-grass);
+  --fx-core: var(--fx-grass-core);
+}
+.effect[data-effect="ice"] {
+  --fx: var(--fx-ice);
+  --fx-core: var(--fx-ice-core);
+}
+.effect[data-effect="psychic"] {
+  --fx: var(--fx-psychic);
+  --fx-core: var(--fx-psychic-core);
+}
+.effect[data-effect="shield"] {
+  --fx: var(--fx-shield);
+  --fx-core: var(--fx-shield-core);
+  width: 9%;
+  aspect-ratio: 1 / 2.4;
+  border-radius: 40%;
+  background: radial-gradient(ellipse, var(--fx-core) 0 25%, var(--fx) 55%, transparent 75%);
+}
+.effect[data-effect="dive"] {
+  width: 12%;
+  aspect-ratio: 2.4 / 1;
+  border-radius: 40%;
+}
+
+@keyframes burst {
+  from {
+    opacity: 0;
+    scale: 0.3;
+  }
+  30% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.85;
+    scale: 1;
+  }
+}
+
+.flash {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  color: var(--bc-ink);
+  font-size: clamp(28px, 12cqi, 88px);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  background: radial-gradient(circle, transparent 30%, var(--bc-shade) 100%);
+  text-shadow: 0 2px 0 var(--bc-ball-ink);
+  animation: flash 0.5s ease-out both;
+}
+
+.flash[data-side="user"] {
+  color: var(--bc-user);
+}
+
+@keyframes flash {
+  from {
+    opacity: 0;
+    scale: 1.3;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 5;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 8px;
+  pointer-events: none;
+}
+
+.callout,
+.banner {
+  margin: 0;
+  max-width: 100%;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bc-shade);
+  color: var(--bc-ink);
+  font-size: clamp(13px, 3.4cqi, 18px);
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.callout {
+  border-left: 4px solid var(--fx-impact-core);
+}
+.callout[data-effect="fire"] {
+  border-left-color: var(--fx-fire);
+}
+.callout[data-effect="water"] {
+  border-left-color: var(--fx-water);
+}
+.callout[data-effect="electric"] {
+  border-left-color: var(--fx-electric);
+}
+.callout[data-effect="grass"] {
+  border-left-color: var(--fx-grass);
+}
+.callout[data-effect="ice"] {
+  border-left-color: var(--fx-ice);
+}
+.callout[data-effect="psychic"] {
+  border-left-color: var(--fx-psychic);
+}
+.callout[data-effect="shield"] {
+  border-left-color: var(--fx-shield);
+}
+
+.banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card {
+  display: inline-block;
+  width: 12px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--card-yellow);
+}
+
+.card[data-color="red"] {
+  background: var(--card-red);
+}
+
+.medic {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+
+.medic::before,
+.medic::after {
+  content: "";
+  position: absolute;
+  background: var(--bc-medic);
+}
+
+.medic::before {
+  inset: 5px 0;
+}
+
+.medic::after {
+  inset: 0 5px;
+}
+
+.board {
+  display: inline-grid;
+  gap: 2px;
+}
+
+.board [data-dir="on"]::before {
+  content: "On: ";
+  color: var(--fx-grass);
+}
+
+.board [data-dir="off"]::before {
+  content: "Off: ";
+  color: var(--bc-medic);
+}
+
+.kicks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 6px 10px;
+  list-style: none;
+  border-radius: var(--radius-sm);
+  background: var(--bc-shade);
+}
+
+.kicks li {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--bc-user);
+}
+
+.kicks li[data-side="opp"] {
+  border-color: var(--bc-opp);
+}
+
+.kicks li[data-state="scored"] {
+  background: var(--bc-ink);
+}
+
+.kicks li[data-state="missed"] {
+  background: var(--bc-medic);
+}
+
+.note {
+  margin: 0;
+  padding: 6px 10px;
+  background: var(--bc-shade);
+  color: var(--bc-ink);
+  font-size: 12px;
+}
+
+.broadcast[data-motion="off"] .player,
+.broadcast[data-motion="off"] .effect,
+.broadcast[data-motion="off"] .flash {
+  transition: none;
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player,
+  .effect,
+  .flash {
+    transition: none;
+    animation: none;
+  }
+}

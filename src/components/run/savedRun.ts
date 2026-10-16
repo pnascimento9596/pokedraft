@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { decodeToken, replay, type CupResult, type DraftState } from "@/engine";
+import { decodeToken, encodeToken, replay, type CupResult, type DraftState } from "@/engine";
 import {
   forgetRunSnapshot,
   readRunCheckpoint,
@@ -61,10 +61,14 @@ function parse(raw: string): Saved | null {
 // which proves the settings, the seed and every action match; anything else is not this page's run.
 function rebuild(slot: RunSlot, saved: Saved): Run | null {
   try {
-    const { seed, actions } = decodeToken(saved.token);
+    const decoded = decodeToken(saved.token);
+    const { seed, actions } = decoded;
     if (slot.seed !== null && seed !== slot.seed) return null;
     const run = actions.reduce(step, startRun(slot.settings, seed));
-    return runToken(run) === saved.token ? run : null;
+    // A coached run carries its touchline decisions after the draft; the draft part must still
+    // rebuild exactly, and the whole token must be in the form this build writes.
+    if (runToken(run) !== encodeToken({ ...decoded, manager: [] })) return null;
+    return encodeToken(decoded) === saved.token ? run : null;
   } catch {
     return null;
   }

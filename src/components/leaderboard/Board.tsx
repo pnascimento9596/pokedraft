@@ -8,8 +8,14 @@ import { StatusNote } from "@/components/ui/primitives";
 import { announce } from "@/components/Announcer";
 import { record } from "@/ui/labels";
 import { fetchBoard, type BoardResult, type BoardView } from "./client";
-import { variantLabel } from "./format";
+import { COACH_FILTERS, type CoachFilter } from "@/leaderboard/contract";
+import { COACH_FILTER_LABEL, variantLabel } from "./format";
 import s from "./Board.module.css";
+
+const FILTER_EMPTY: Readonly<Record<Exclude<CoachFilter, "all">, string>> = {
+  coached: "No coached runs on this board yet.",
+  uncoached: "No uncoached runs on this board yet.",
+};
 
 const ERROR_COPY: Readonly<Record<Extract<BoardResult, { kind: "error" }>["reason"], string>> = {
   offline: "The leaderboard is offline right now.",
@@ -32,20 +38,30 @@ function Figure({ value }: { readonly value: string | number }) {
 
 export function Board({ view }: { readonly view: BoardView }) {
   const [attempt, setAttempt] = useState(0);
-  const key = `${view.mode}|${view.scope}|${view.scope === "daily" ? view.date : ""}|${attempt}`;
+  const [coach, setCoach] = useState<CoachFilter>("all");
+  const board = `${view.mode}|${view.scope}|${view.scope === "daily" ? view.date : ""}`;
+  const key = `${board}|${coach}|${attempt}`;
   const [loaded, setLoaded] = useState<{ key: string; result: BoardResult } | null>(null);
+  // The board this player has seen rows on. Once it has, the chips stay mounted through every
+  // filtered load, empty view or error, so switching views never moves the page.
+  const [filtered, setFiltered] = useState<string | null>(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
-    fetchBoard(view, ctrl.signal).then((result) => {
-      if (!ctrl.signal.aborted) setLoaded({ key, result });
+    fetchBoard(view, coach, ctrl.signal).then((result) => {
+      if (ctrl.signal.aborted) return;
+      setLoaded({ key, result });
+      if (result.kind === "ok" && result.entries.length > 0) setFiltered(board);
     });
     return () => ctrl.abort();
-    // `key` covers every field of `view` that changes the request.
+    // `key` covers every field of `view` and the coach filter that changes the request.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   const result = loaded?.key === key ? loaded.result : null;
+  const hasRows = result?.kind === "ok" && result.entries.length > 0;
+  const showChips = hasRows || coach !== "all" || filtered === board;
+
   // Try again unmounts itself, so the next board, empty state or error takes focus. The attempt
   // number keeps the error's own effect, if it runs after the click, from taking that focus.
   const focusAttempt = useRef<number | null>(null);
@@ -59,39 +75,88 @@ export function Board({ view }: { readonly view: BoardView }) {
     // An error is a role="alert" and speaks for itself.
     if (result.kind === "ok") {
       const n = result.entries.length;
-      announce(n === 0 ? "No entries yet." : n === 1 ? "1 entry." : `${n} entries.`);
+      announce(
+        n > 0
+          ? n === 1
+            ? "1 entry."
+            : `${n} entries.`
+          : coach === "all"
+            ? "No entries yet."
+            : FILTER_EMPTY[coach],
+      );
     }
     if (focusAttempt.current === attempt) {
       focusAttempt.current = null;
       focusTarget.current?.focus({ preventScroll: true });
     }
-  }, [result, attempt]);
+  }, [result, attempt, coach]);
+
+  const chips = showChips ? (
+    <div
+      className={s.coachFilter}
+      role="group"
+      aria-label="Coached runs"
+      data-testid="coach-filter"
+    >
+      {COACH_FILTERS.map((f) => (
+        <button
+          key={f}
+          type="button"
+          className="chip"
+          aria-pressed={coach === f}
+          data-testid={`coach-filter-${f}`}
+          onClick={() => setCoach(f)}
+        >
+          {COACH_FILTER_LABEL[f]}
+        </button>
+      ))}
+    </div>
+  ) : null;
 
   if (result === null) {
-    return <p className={`kicker ${s.loading}`}>Loading the board</p>;
+    return (
+      <>
+        {chips}
+        <p className={`kicker ${s.loading}`}>Loading the board</p>
+      </>
+    );
   }
 
   if (result.kind === "error") {
     return (
-      <StatusNote
-        className={s.error}
-        title="Board unavailable"
-        data-testid="board-error"
-        role="alert"
-      >
-        <span>{ERROR_COPY[result.reason]} The board could not be loaded.</span>
-        <button
-          ref={target}
-          type="button"
-          className="btn"
-          onClick={() => {
-            focusAttempt.current = attempt + 1;
-            setAttempt(attempt + 1);
-          }}
+      <>
+        {chips}
+        <StatusNote
+          className={s.error}
+          title="Board unavailable"
+          data-testid="board-error"
+          role="alert"
         >
-          Try again
-        </button>
-      </StatusNote>
+          <span>{ERROR_COPY[result.reason]} The board could not be loaded.</span>
+          <button
+            ref={target}
+            type="button"
+            className="btn"
+            onClick={() => {
+              focusAttempt.current = attempt + 1;
+              setAttempt(attempt + 1);
+            }}
+          >
+            Try again
+          </button>
+        </StatusNote>
+      </>
+    );
+  }
+
+  if (result.entries.length === 0 && coach !== "all") {
+    return (
+      <>
+        {chips}
+        <p ref={target} className={s.filterEmpty} data-testid="coach-filter-empty" tabIndex={-1}>
+          {FILTER_EMPTY[coach]}
+        </p>
+      </>
     );
   }
 
@@ -111,49 +176,65 @@ export function Board({ view }: { readonly view: BoardView }) {
   }
 
   return (
-    <ol ref={target} className={s.list} data-testid="board" aria-label="Leaderboard" tabIndex={-1}>
-      {result.entries.map((e) => (
-        <li
-          key={e.token}
-          className={s.row}
-          data-testid="board-row"
-          data-top={e.rank <= 3 || undefined}
-        >
-          <Link href={`/r/${e.token}`} className={s.link}>
-            <span className={s.rank}>{e.rank}</span>
-            <span className={s.main}>
-              <span className={s.nick}>{e.nickname}</span>
-              <span className={s.meta}>{variantLabel(e.variant)}</span>
-              <span className={s.squad}>
-                {e.squadSpeciesIds ? (
-                  e.squadSpeciesIds.map((id) => (
-                    <PlayerImage key={id} dexId={id} size={24} alt={`Squad species ${id}`} />
-                  ))
-                ) : (
-                  <span className={s.meta}>Squad preview unavailable.</span>
-                )}
+    <>
+      {chips}
+      <ol
+        ref={target}
+        className={s.list}
+        data-testid="board"
+        aria-label="Leaderboard"
+        tabIndex={-1}
+      >
+        {result.entries.map((e) => (
+          <li
+            key={e.token}
+            className={s.row}
+            data-testid="board-row"
+            data-top={e.rank <= 3 || undefined}
+          >
+            <Link href={`/r/${e.token}`} className={s.link}>
+              <span className={s.rank}>{e.rank}</span>
+              <span className={s.main}>
+                <span className={s.nick}>
+                  {e.nickname}
+                  {e.coached ? (
+                    <span className={s.coached} data-testid="coached-chip">
+                      Coached
+                    </span>
+                  ) : null}
+                </span>
+                <span className={s.meta}>{variantLabel(e.variant)}</span>
+                <span className={s.squad}>
+                  {e.squadSpeciesIds ? (
+                    e.squadSpeciesIds.map((id) => (
+                      <PlayerImage key={id} dexId={id} size={24} alt={`Squad species ${id}`} />
+                    ))
+                  ) : (
+                    <span className={s.meta}>Squad preview unavailable.</span>
+                  )}
+                </span>
               </span>
-            </span>
-            <span className={s.recordCol}>
-              <span className={s.label}>W-D-L</span>
-              <span className={s.record}>
-                <Figure value={record(e.wins, e.draws, e.losses)} />
+              <span className={s.recordCol}>
+                <span className={s.label}>W-D-L</span>
+                <span className={s.record}>
+                  <Figure value={record(e.wins, e.draws, e.losses)} />
+                </span>
               </span>
-            </span>
-            <span className={s.scoreCol}>
-              <span className={s.label}>Team Score</span>
-              <span className={s.score}>
-                <Figure value={e.teamScore} />
+              <span className={s.scoreCol}>
+                <span className={s.label}>Team Score</span>
+                <span className={s.score}>
+                  <Figure value={e.teamScore} />
+                </span>
               </span>
-            </span>
-          </Link>
-          {challengeHref(e.token) !== null ? (
-            <Link className={`btn btn--ghost ${s.challenge}`} href={challengeHref(e.token)!}>
-              Challenge this Seed
             </Link>
-          ) : null}
-        </li>
-      ))}
-    </ol>
+            {challengeHref(e.token) !== null ? (
+              <Link className={`btn btn--ghost ${s.challenge}`} href={challengeHref(e.token)!}>
+                Challenge this Seed
+              </Link>
+            ) : null}
+          </li>
+        ))}
+      </ol>
+    </>
   );
 }
