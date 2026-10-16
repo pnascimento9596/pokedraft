@@ -49,7 +49,9 @@ describe("role-relative quality (GK fits must not make every keeper the weakest 
   it("puts the GK median fit (32) and the CB median fit (56) within 0.05 of each other", () => {
     const gk = qualityOf("GK", 32);
     const cb = qualityOf("CB", 56);
-    expect(gk).toBeCloseTo(0.4917073170731707, 12);
+    // Jigglypuff and Wigglytuff dropped out of the GK pool above fit 32, so the median keeper ranks a
+    // little higher; the medians themselves are unchanged.
+    expect(gk).toBeCloseTo(0.49365853658536585, 12);
     expect(cb).toBeCloseTo(0.49658536585365853, 12);
     expect(Math.abs(gk - cb)).toBeLessThan(0.05);
   });

@@ -49,7 +49,7 @@ describe("simulateMatch", () => {
   it("keys its streams on the match index (shared streams would replay one match eight times)", () => {
     const a = simulateMatch(input("m-25", 0, "G1", "group"));
     const b = simulateMatch(input("m-25", 1, "G1", "group"));
-    expect(a.goals).toHaveLength(7);
+    expect(a.goals).toHaveLength(3);
     expect(b.goals).not.toEqual(a.goals);
   });
 
@@ -92,102 +92,40 @@ describe("simulateMatch", () => {
     expect(scorers.size).toBe(10);
   });
 
-  it("pins a group match scoreline, scorers and recap", () => {
+  it("pins a group match scoreline, scorers, recap and incidents", () => {
     const m = simulateMatch(input("m-25", 2, "G3", "group"));
     expect([m.regulation, m.extraTime, m.shootout, m.outcome, m.rating]).toEqual([
-      { user: 8, opp: 1 },
+      { user: 6, opp: 0 },
       null,
       null,
       "W",
       943,
     ]);
     expect(m.goals).toEqual([
-      {
-        side: "user",
-        minute: 6,
-        penalty: false,
-        kind: "open-play",
-        scorer: 85,
-        assist: 149,
-      },
-      {
-        side: "user",
-        minute: 34,
-        penalty: false,
-        kind: "open-play",
-        scorer: 80,
-        assist: 55,
-      },
-      {
-        side: "user",
-        minute: 53,
-        penalty: false,
-        kind: "solo",
-        scorer: 59,
-        assist: null,
-      },
-      {
-        side: "user",
-        minute: 62,
-        penalty: false,
-        kind: "header",
-        scorer: 6,
-        assist: 80,
-      },
-      {
-        side: "user",
-        minute: 62,
-        penalty: false,
-        kind: "open-play",
-        scorer: 80,
-        assist: null,
-      },
-      {
-        side: "user",
-        minute: 64,
-        penalty: false,
-        kind: "open-play",
-        scorer: 26,
-        assist: 6,
-      },
-      {
-        side: "user",
-        minute: 71,
-        penalty: false,
-        kind: "solo",
-        scorer: 135,
-        assist: null,
-      },
-      {
-        side: "opp",
-        minute: 80,
-        penalty: false,
-        kind: "open-play",
-        scorer: {
-          kind: "species",
-          id: 84,
-        },
-        assist: null,
-      },
-      {
-        side: "user",
-        minute: 90,
-        penalty: true,
-        kind: "penalty",
-        scorer: 149,
-        assist: null,
-      },
+      { side: "user", minute: 4, penalty: false, kind: "solo", scorer: 135, assist: null },
+      { side: "user", minute: 7, penalty: false, kind: "open-play", scorer: 85, assist: 26 },
+      { side: "user", minute: 11, penalty: false, kind: "open-play", scorer: 80, assist: null },
+      { side: "user", minute: 22, penalty: false, kind: "open-play", scorer: 6, assist: 59 },
+      { side: "user", minute: 45, penalty: false, kind: "open-play", scorer: 6, assist: 135 },
+      { side: "user", minute: 52, penalty: false, kind: "header", scorer: 80, assist: null },
     ]);
     expect(m.recap).toEqual([
-      "Beat Pallet Town 8-1.",
-      "Dodrio finishes in the 6th minute after a pass from Dragonite.",
-      "Slowbro scores in the 34th minute, set up by Golduck.",
-      "Arcanine scores after a solo run in the 53rd minute.",
-      "Charizard heads home in the 62nd minute, set up by Slowbro.",
-      "Slowbro scores in the 62nd minute.",
-      "Charizard sets up Raichu in the 64th minute.",
-      "Jolteon scores after a solo run in the 71st minute.",
-      "Dragonite scores from the spot in the 90th minute.",
+      "Beat Pallet Town 6-0.",
+      "Jolteon scores after a solo run in the 4th minute.",
+      "Dodrio scores in the 7th minute, set up by Raichu.",
+      "Slowbro scores in the 11th minute.",
+      "Charizard finishes in the 22nd minute after a pass from Arcanine.",
+      "Charizard scores in the 45th minute, set up by Jolteon.",
+      "Slowbro heads home in the 52nd minute.",
+    ]);
+    expect(m.incidents).toEqual([
+      { kind: "yellow", side: "user", minute: 1, slot: 4, player: 3, secondYellow: false },
+      { kind: "yellow", side: "user", minute: 10, slot: 3, player: 130, secondYellow: false },
+      { kind: "yellow", side: "user", minute: 38, slot: 6, player: 6, secondYellow: false },
+      { kind: "tactic", side: "opp", minute: 45, tactic: "attack", by: "auto" },
+      { kind: "tactic", side: "user", minute: 75, tactic: "defend", by: "auto" },
+      { kind: "yellow", side: "opp", minute: 78, slot: 3, player: 42, secondYellow: false },
+      { kind: "yellow", side: "user", minute: 88, slot: 1, player: 59, secondYellow: false },
     ]);
   });
 
@@ -196,34 +134,38 @@ describe("simulateMatch", () => {
     expect([m.regulation, m.extraTime, m.outcome]).toEqual([
       { user: 0, opp: 0 },
       { user: 0, opp: 0 },
-      "W",
+      "L",
     ]);
     expect(m.shootout).toEqual({
-      user: 6,
-      opp: 5,
+      user: 7,
+      opp: 8,
       keeper: 9,
       kicks: [
-        { side: "user", taker: 149, scored: false },
+        { side: "user", taker: 149, scored: true },
         { side: "opp", taker: { kind: "species", id: 149 }, scored: true },
         { side: "user", taker: 59, scored: true },
-        { side: "opp", taker: { kind: "species", id: 85 }, scored: true },
+        { side: "opp", taker: { kind: "species", id: 85 }, scored: false },
         { side: "user", taker: 85, scored: true },
         { side: "opp", taker: { kind: "species", id: 6 }, scored: true },
         { side: "user", taker: 6, scored: true },
-        { side: "opp", taker: { kind: "species", id: 146 }, scored: false },
-        { side: "user", taker: 26, scored: true },
+        { side: "opp", taker: { kind: "species", id: 146 }, scored: true },
+        { side: "user", taker: 26, scored: false },
         { side: "opp", taker: { kind: "species", id: 145 }, scored: true },
         { side: "user", taker: 9, scored: true },
         { side: "opp", taker: { kind: "species", id: 123 }, scored: true },
         { side: "user", taker: 55, scored: true },
-        { side: "opp", taker: { kind: "species", id: 142 }, scored: false },
+        { side: "opp", taker: { kind: "species", id: 142 }, scored: true },
+        { side: "user", taker: 3, scored: true },
+        { side: "opp", taker: { kind: "species", id: 144 }, scored: true },
+        { side: "user", taker: 130, scored: false },
+        { side: "opp", taker: { kind: "species", id: 130 }, scored: true },
       ],
       decider: "kicks",
       coinWinner: null,
     });
     expect(m.recap).toEqual([
       "A 0-0 draw against Cinnabar FC after extra time.",
-      "Won the shootout 6-5.",
+      "Lost the shootout 8-7.",
     ]);
   });
 });

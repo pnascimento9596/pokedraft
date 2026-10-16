@@ -141,16 +141,19 @@ describe("v4 match event contracts", () => {
         match: {
           ...ENGINE_COEFFICIENTS.match,
           penaltyShare: 1,
-          chances: { regulation: 1, extraTime: 1, maxGoalProb: 1 },
+          // One chance per five-minute window: engine 6 tactics and fatigue can hold a single
+          // chance under certainty, so both sides get enough to score.
+          chances: { regulation: 18, extraTime: 6, maxGoalProb: 1 },
         },
       },
     );
-    expect(
-      m.goals.map((g) =>
-        g.side === "user" ? g.scorer : g.scorer.kind === "species" ? g.scorer.id : -1,
-      ),
-    ).toEqual([starters[0]!.species.id, starters[0]!.species.id]);
-    expect(m.goals.map((g) => g.penalty)).toEqual([true, true]);
+    const keeper = starters[0]!.species.id;
+    const scorers = m.goals.map((g) =>
+      g.side === "user" ? g.scorer : g.scorer.kind === "species" ? g.scorer.id : -1,
+    );
+    expect(new Set(m.goals.map((g) => g.side))).toEqual(new Set(["user", "opp"]));
+    expect(new Set(scorers)).toEqual(new Set([keeper]));
+    expect(m.goals.every((g) => g.penalty)).toBe(true);
   });
 
   it("reports six actual group fixtures with one match per team in every round", () => {
