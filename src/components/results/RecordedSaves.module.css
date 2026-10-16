@@ -1,0 +1,35 @@
+.saves {
+  margin-block: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+
+.saves summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.list {
+  display: grid;
+  gap: 0.75rem;
+  padding-inline-start: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+.list li > span {
+  display: block;
+  margin-block-end: 0.25rem;
+}
+
+.illustration {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+}
+
+.illustration figcaption {
+  flex-basis: 100%;
+}

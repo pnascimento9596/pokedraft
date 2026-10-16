@@ -58,6 +58,7 @@ export const SUBSTREAMS = [
   "daily",
   "match_sim",
   "event_gen",
+  "save_events",
   "opponent_selection",
   "opponent_roster",
   "availability",

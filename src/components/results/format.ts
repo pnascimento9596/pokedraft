@@ -9,6 +9,7 @@ import {
   type MatchResult,
   type OpponentPlayerRef,
   type Score,
+  type SaveEvent,
 } from "@/engine";
 
 export type PlayedMatch = Extract<MatchResult, { status: "played" }>;
@@ -69,6 +70,10 @@ export function goalLine(g: GoalEvent): string {
   }
   const assist = g.assist === null ? "" : `, assist ${speciesById(g.assist).name}`;
   return `${g.minute}' ${speciesById(g.scorer).name}${pen}${assist}`;
+}
+
+export function saveLine(event: SaveEvent): string {
+  return `${event.minute}' ${speciesById(event.keeper).name} saves ${speciesById(event.attacker).name}'s shot`;
 }
 
 export function absenceLine(a: Absence): string {

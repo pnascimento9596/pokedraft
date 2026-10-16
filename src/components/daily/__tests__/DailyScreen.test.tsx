@@ -64,7 +64,7 @@ describe("Daily formation", () => {
     "restores the saved Daily formation from its %s instead of silently abandoning it for the home formation",
     async (source) => {
       const token = encodeToken({
-        v: 4,
+        v: 5,
         settings: dailySettings("5-3-2"),
         seed: dailySeed(toIsoDate("2026-10-14")),
         actions: [],

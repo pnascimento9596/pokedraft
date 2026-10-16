@@ -19,6 +19,10 @@ beforeEach(() => {
     loaded.push("v2");
     return bundle(2);
   });
+  vi.doMock("../v4", () => {
+    loaded.push("v4");
+    return bundle(4);
+  });
   vi.doMock("../v3", () => {
     loaded.push("v3");
     return bundle(3);
@@ -42,7 +46,7 @@ beforeEach(() => {
 describe("retained replay loads only the requested engine", () => {
   it("loads no retained bundle for registry queries, invalid links, or a live replay", async () => {
     const dispatcher = await import("..");
-    expect(dispatcher.retainedTokenVersions()).toEqual([1, 2, 3]);
+    expect(dispatcher.retainedTokenVersions()).toEqual([1, 2, 3, 4]);
     expect(loaded).toEqual([]);
     await expect(
       Promise.resolve().then(() => dispatcher.replayAnyVersion("pd99.invalid")),
@@ -60,5 +64,12 @@ describe("retained replay loads only the requested engine", () => {
     const run = await dispatcher.replayAnyVersion(`pd${version}.retained`);
     expect(run.engine).toBe(`pokedraft-engine-${version}`);
     expect(loaded.sort()).toEqual([`ladder${version}`, `v${version}`]);
+  });
+
+  it("initializes only v4, which needs no legacy ladder", async () => {
+    const dispatcher = await import("..");
+    const run = await dispatcher.replayAnyVersion("pd4.retained");
+    expect(run.engine).toBe("pokedraft-engine-4");
+    expect(loaded).toEqual(["v4"]);
   });
 });

@@ -9,6 +9,7 @@ import {
   shootoutLine,
   type PlayedMatch,
 } from "./format";
+import { RecordedSaves } from "./RecordedSaves";
 import { BossRoster } from "./BossRoster";
 import { getMatchStar } from "./starCalculation";
 import s from "./MatchList.module.css";
@@ -154,6 +155,7 @@ function Played({
           </ul>
         </div>
       ) : null}
+      <RecordedSaves saves={m.saves} />
       {m.absences.map((a) => (
         <p key={a.slot} className={s.absence}>
           {absenceLine(a)}

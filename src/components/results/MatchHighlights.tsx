@@ -7,6 +7,7 @@ import { TypeIcon } from "@/components/TypeIcon";
 import { playGoalHorn, unlockAudio } from "@/components/wheel/sound";
 import { TYPE_PALETTE } from "@/design/stadium";
 import { getAllMatchStars, type MatchStar } from "./starCalculation";
+import { RecordedSaves } from "./RecordedSaves";
 import { SoccerBall } from "./SoccerBall";
 import s from "./MatchHighlights.module.css";
 
@@ -270,6 +271,11 @@ export function MatchHighlights({
           </div>
         ) : null}
       </div>
+      {cup.matches
+        .filter((m) => m.status === "played" && m.round === currentStar.round)
+        .map((m) =>
+          m.status === "played" ? <RecordedSaves key={m.round} saves={m.saves} illustrate /> : null,
+        )}
       <p className="kicker">
         Illustrated highlights. Actions do not change the recorded match result.
       </p>

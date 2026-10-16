@@ -14,8 +14,8 @@ const SETTINGS: DraftSettings = {
 const SLOT: RunSlot = { settings: SETTINGS, seed: null, daily: null };
 const KEY = "pokedraft.run.cup8";
 const PICKED =
-  "pd4.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwicnVuLXRlc3QiLFtbInAiLDMxNiwiczkiXV1d";
-const OTHER = "pd4.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwib3RoZXItc2VlZCIsW11d";
+  "pd5.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwicnVuLXRlc3QiLFtbInAiLDMxNiwiczkiXV1d";
+const OTHER = "pd5.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwib3RoZXItc2VlZCIsW11d";
 const CHECKPOINT = JSON.stringify({ screen: "draft", token: PICKED, daily: null });
 const OTHER_CHECKPOINT = JSON.stringify({ screen: "draft", token: OTHER, daily: null });
 

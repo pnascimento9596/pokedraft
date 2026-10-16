@@ -8,12 +8,12 @@ const SHARE_PATH = /^\/r\/([^/]+)$/;
 
 // A page that streams has already sent 200, so an undecodable share link is answered here,
 // before the body starts. Tokens that decode but fail the replay keep the friendly 200 page.
-// Versions 1 to 3 share the frozen v3 wire schema. Validate with that data-free codec while
+// Versions 1 to 4 share the frozen v3 wire schema. Validate with that data-free codec while
 // leaving the original token intact for replay on its own retained engine.
 function brokenShareLink(token: string | null): boolean {
   if (token === null) return true;
   try {
-    if (/^pd[123]\./.test(token)) {
+    if (/^pd[1234]\./.test(token)) {
       decodeRetainedToken(token.replace(/^pd\d+\./, "pd3."));
     } else {
       decodeToken(token);

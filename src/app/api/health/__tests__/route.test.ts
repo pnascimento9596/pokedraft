@@ -32,8 +32,8 @@ describe("health endpoint deployment proof", () => {
       sha: "0123456789abcdef0123456789abcdef01234567",
       env: "production",
       region: "iad1",
-      engine: "pokedraft-engine-4",
-      tokenVersions: [1, 2, 3, 4],
+      engine: "pokedraft-engine-5",
+      tokenVersions: [1, 2, 3, 4, 5],
     });
     expect(mocks.connection).toHaveBeenCalledExactlyOnceWith();
     expect(mocks.getDb).not.toHaveBeenCalled();
@@ -53,8 +53,8 @@ describe("health endpoint deployment proof", () => {
       sha: null,
       env: null,
       region: null,
-      engine: "pokedraft-engine-4",
-      tokenVersions: [1, 2, 3, 4],
+      engine: "pokedraft-engine-5",
+      tokenVersions: [1, 2, 3, 4, 5],
     });
   });
 

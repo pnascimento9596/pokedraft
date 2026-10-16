@@ -9,6 +9,7 @@ import { RETAINED_TOKEN_VERSIONS } from "../label";
 import * as v1 from "../v1";
 import * as v2 from "../v2";
 import * as v3 from "../v3";
+import * as v4 from "../v4";
 import { fromLegacy, type LegacyCupResult, type LegacyV3CupResult } from "../legacy";
 import { buildLadder as v1Ladder } from "../v1/src/engine/opponents";
 import { buildLadder as v2Ladder } from "../v2/src/engine/opponents";
@@ -18,8 +19,10 @@ import {
   GOLDEN_CUP8_V1,
   GOLDEN_CUP8_V2,
   GOLDEN_CUP8_V3,
+  GOLDEN_CUP8_V4,
   GOLDEN_KANTO151_V1,
   GOLDEN_KANTO151_V2,
+  GOLDEN_KANTO151_V4,
 } from "./fixtures";
 
 const sha256 = (s: string | Buffer): string => createHash("sha256").update(s).digest("hex");
@@ -125,6 +128,46 @@ describe("retained engine-3 bundle (catches a platform-overhaul run replaying di
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v3"))).toBe(
       "78d81201170bb56551c56c6486dca4ec4eca8fdd65261530b5155e2d8398f009",
+    );
+  });
+});
+
+describe("retained engine-4 bundle (catches a pre-save run replaying differently after engine 5 moves in)", () => {
+  it("replays the engine-4 goldens byte-identical to the engine-4 live goldens at bb2fd16", () => {
+    expect(sha256(GOLDEN_CUP8_V4)).toBe(
+      "4061400329787171d0fdaa5f266477efe57c0d106a458c72f1605b0fb05baeb8",
+    );
+    const cup8 = v4.replay(GOLDEN_CUP8_V4);
+    expect([cup8.cup.rating.score, cup8.cup.wins, cup8.cup.draws, cup8.cup.losses]).toEqual([
+      593, 3, 0, 2,
+    ]);
+    expect(sha256(JSON.stringify(cup8))).toBe(
+      "8520e109891a53af4b291690e21ac405c1af5471ff9a39b157918ba21264e611",
+    );
+    expect(sha256(GOLDEN_KANTO151_V4)).toBe(
+      "9865c0f6b27c3d5d00ed6d129c2b1e7b9b49acf59e4921eeedeb71a9aa0fc6b6",
+    );
+    const kanto = v4.replay(GOLDEN_KANTO151_V4);
+    expect([kanto.cup.rating.score, kanto.cup.wins, kanto.cup.finish]).toEqual([480, 0, "group"]);
+    expect(sha256(JSON.stringify(kanto))).toBe(
+      "1da7e5609fcd0c0a8d6a32f9856c0b91f4a21a584dac19b119bbffc2656cf795",
+    );
+  });
+
+  it("routes pd4. tokens to the v4 bundle with no recorded saves", async () => {
+    const run = await replayAnyVersion(GOLDEN_CUP8_V4);
+    expect([run.engine, run.bundle, run.current]).toEqual([
+      "pokedraft-engine-4",
+      "retained-engine-bundle:v4",
+      false,
+    ]);
+    expect(run.cup).toEqual(v4.replay(GOLDEN_CUP8_V4).cup);
+    expect(run.cup.matches.filter((m) => "saves" in m)).toEqual([]);
+  });
+
+  it("is frozen: no byte of the bundle changes", () => {
+    expect(bundleDigest(path.join(import.meta.dirname, "../v4"))).toBe(
+      "dc448ff8df08e3f122b52c9ec1289c3dbdb5ff21d5535e08eb5f4e8ef21abbfb",
     );
   });
 });

@@ -1,0 +1,137 @@
+import type { CupRound, Line, Role } from "./types";
+
+export interface EngineCoefficients {
+  team: {
+    lineWeights: Record<Line, number>;
+    coreWeight: number;
+    synergyWeight: number;
+    benchWeight: number;
+    curve: number;
+    dragCount: number;
+    dragWeight: number;
+    synergy: {
+      sharedType: number;
+      evoLine: number;
+      sameGen: number;
+      coverage: number;
+      edgeCap: number;
+      fullAt: number;
+    };
+  };
+  match: {
+    shape: number;
+    base: number;
+    spread: number;
+    minLambda: number;
+    maxLambda: number;
+    wDef: number;
+    wGk: number;
+    gammaMid: number;
+    controlLo: number;
+    controlHi: number;
+    knockoutFactor: number;
+    extraTimeFraction: number;
+    chances: { regulation: number; extraTime: number; maxGoalProb: number };
+    dispersion: {
+      group: { outer: number; amplitude: number };
+      knockout: { outer: number; amplitude: number };
+    };
+    penaltyShare: number;
+    assistProb: number;
+    // Scorers and creators use separate tactical role weights.
+    roleFactor: Record<Role, number>;
+    assistRoleFactor: Record<Role, number>;
+    oppScorerWeights: readonly number[];
+  };
+  shootout: { kicks: number; maxSuddenDeath: number; base: number; band: number };
+  availability: { eventProb: number; familiarityFloor: number };
+  awards: {
+    goal: number;
+    assist: number;
+    cleanSheet: Partial<Record<Role, number>>;
+    minutesPerPoint: number;
+  };
+  ladder: {
+    score: Record<CupRound, number>;
+    jitter: number;
+    tilt: number;
+  };
+}
+
+export const ENGINE_COEFFICIENTS: EngineCoefficients = {
+  team: {
+    lineWeights: { GK: 0.12, DEF: 0.3, MID: 0.3, ATT: 0.28 },
+    coreWeight: 0.8,
+    synergyWeight: 0.12,
+    benchWeight: 0.08,
+    curve: 0.4,
+    dragCount: 3,
+    dragWeight: 0.5,
+    synergy: {
+      sharedType: 0.5,
+      evoLine: 1,
+      sameGen: 0.25,
+      coverage: 0.25,
+      edgeCap: 1,
+      fullAt: 0.8,
+    },
+  },
+  match: {
+    shape: 0.5,
+    base: 1.1,
+    spread: 5,
+    minLambda: 0.1,
+    maxLambda: 5,
+    wDef: 0.7,
+    wGk: 0.3,
+    gammaMid: 1,
+    controlLo: 0.85,
+    controlHi: 1.15,
+    knockoutFactor: 1,
+    extraTimeFraction: 1 / 3,
+    chances: { regulation: 50, extraTime: 17, maxGoalProb: 0.6 },
+    dispersion: {
+      group: { outer: 0.14, amplitude: 0.2 },
+      knockout: { outer: 0.2, amplitude: 0.3 },
+    },
+    penaltyShare: 0.06,
+    assistProb: 0.62,
+    // Tuned from the dispatch 6 starting table so ST, W and AM score 70 to 80% of user goals
+    // in 4-3-3, 4-2-3-1 and 3-4-3 (docs/decisions/dispatch-6.md).
+    // docs/calibration.md has the measured shares per formation under "Goals by role (dispatch 6)"
+    // and the start and tuned values in the `match.roleFactor` row of "The coefficients and why".
+    roleFactor: {
+      ST: 1,
+      W: 0.85,
+      AM: 0.6,
+      WM: 0.45,
+      CM: 0.22,
+      DM: 0.2,
+      WB: 0.1,
+      FB: 0.08,
+      CB: 0.08,
+      GK: 0,
+    },
+    assistRoleFactor: {
+      GK: 0,
+      CB: 0.12,
+      FB: 0.55,
+      WB: 0.7,
+      DM: 0.65,
+      CM: 1,
+      AM: 1.1,
+      WM: 1,
+      W: 0.9,
+      ST: 0.45,
+    },
+    oppScorerWeights: [0, 1, 1, 1, 1, 3, 3, 3, 6, 8, 6],
+  },
+  shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.1 },
+  availability: { eventProb: 0.125, familiarityFloor: 0.85 },
+  awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, CB: 1, FB: 1, DM: 1 }, minutesPerPoint: 180 },
+  ladder: {
+    score: { G1: 280, G2: 300, G3: 355, R32: 480, R16: 605, QF: 730, SF: 855, F: 985 },
+    jitter: 20,
+    tilt: 5,
+  },
+};
