@@ -1,10 +1,34 @@
 # STATE
 
-Measured ground truth. Updated in the same PR as every merge.
+Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
+and its squash SHA are recorded in the next PR's STATE update.
+
+## Tooling and process dispatch
+
+Branch `chore/tooling-and-process`, not merged at the time of writing. No file under `src/`
+changed. `tools/review/review-packet.py` builds the GLM packet (`--out-dir`, repeatable
+`--exclude`, clean-tree check) and `tools/review/strip-verdict.py` checks the reply for the
+canary, the full head SHA and one verdict word. The overrides record Sol as an optional lane, GLM
+5.3 Flash as the gate, and no silent model swaps. Playwright now picks a port from the checkout
+path when `PLAYWRIGHT_PORT` is unset, the server it starts reports `git rev-parse HEAD` as its
+health sha, and global setup fails when a reused server reports another commit (skipped in CI and
+for deployments, warned when the server has no sha). Live-engine e2e pins (seeded records, the
+mirror exhibition, the live token prefix, share-link regex and engine version) are generated into
+`e2e/pins.ts` by `pnpm e2e:pins`, and a vitest guard fails when that file is stale. The hosted
+timing audit of statistical suites found no test above 40% of its budget without a 60 s timeout,
+so no timeout changed. Decisions, the timing table and the proof runs are in
+`docs/decisions/tooling-and-process.md`.
+
+Gates at `180bfe0` (later commits change only docs): lint, typecheck, build and mirrors exit
+0; unit tests 1,287 of 1,287 in 141 files. Playwright on a fresh build with
+`PLAYWRIGHT_PORT=3484 CI=1`, before and after the pin migration: 804 passed, 0 failed, 61 skipped
+both times (chromium 343 and 1, iphone-se 135 and 29, iphone-14 173 and 3, pixel-7 141 and 28,
+webkit-wheel 6, webkit-progress 6). Hosted CI and the independent review: NOT RUN at the time of
+writing.
 
 ## Coached SQL hardening
 
-Not merged at the time of writing. Branch `fix/coached-sql-hardening` off `648cf2f`, dispatch C items 11 and 12; item 13 (a stored `coached` column) is deferred until a filtered view is measurably slow. `coachedSqlFor(versions)` builds the board's coached rule and throws at module load on any version that is not a positive integer, and `MANAGER_TOKEN_VERSIONS` is typed so such a value does not compile. `coachedSql` is now total: a hand-edited `pd6.` row reads uncoached instead of turning the Uncoached and Coached views into 503s. It screens the base64url alphabet and length, reads the bytes as LATIN1, and checks the JSON with `pg_input_is_valid` (PostgreSQL 16+; Neon reports 17) and `jsonb_typeof` before counting. `isCoached` now keeps a leading byte order mark so both rules reject it. Three tamper-only payloads (`\u0000` escape, lone surrogate, numeric overflow) still differ, without throwing, and a test pins them. Canonical tokens keep their verdict. RED commits: `04b6312` (version guard, 6 failing), `d51dab7` (malformed rows, 2 failing: a base64 error and two 503 views), `ce96eef` (BOM, 1 failing). Decisions and verbatim RED output are in `docs/decisions/coached-sql-hardening.md`.
+Merged as PR #65 (squash `e251199`, reviewed head `ad90c82`, GLM 5.3 Flash APPROVE in round 1 with the canary echoed; hosted check and e2e green on that head). Branch `fix/coached-sql-hardening` off `648cf2f`, dispatch C items 11 and 12; item 13 (a stored `coached` column) is deferred until a filtered view is measurably slow. `coachedSqlFor(versions)` builds the board's coached rule and throws at module load on any version that is not a positive integer, and `MANAGER_TOKEN_VERSIONS` is typed so such a value does not compile. `coachedSql` is now total: a hand-edited `pd6.` row reads uncoached instead of turning the Uncoached and Coached views into 503s. It screens the base64url alphabet and length, reads the bytes as LATIN1, and checks the JSON with `pg_input_is_valid` (PostgreSQL 16+; Neon reports 17) and `jsonb_typeof` before counting. `isCoached` now keeps a leading byte order mark so both rules reject it. Three tamper-only payloads (`\u0000` escape, lone surrogate, numeric overflow) still differ, without throwing, and a test pins them. Canonical tokens keep their verdict. RED commits: `04b6312` (version guard, 6 failing), `d51dab7` (malformed rows, 2 failing: a base64 error and two 503 views), `ce96eef` (BOM, 1 failing). Decisions and verbatim RED output are in `docs/decisions/coached-sql-hardening.md`.
 
 Local gates at `ef6436d` (the commit after it changes only docs):
 

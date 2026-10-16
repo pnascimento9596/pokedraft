@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { touchScroll } from "./mobile/helpers";
+import { RUN_151 } from "./pins";
 
 const formations = ["4-3-3", "4-4-2", "4-2-3-1", "4-1-4-1", "3-5-2", "3-4-3", "3-4-2-1", "5-3-2"];
 for (const width of [375, 390, 1280]) {
@@ -160,7 +161,7 @@ test("touch completes all sixteen 151 picks, swaps players, and preserves the se
     reducedMotion: "reduce",
   });
   const page = await context.newPage();
-  await page.goto("/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151");
+  await page.goto(RUN_151.url);
   await page.getByTestId("run-start").tap();
   for (let round = 1; round <= 16; round++) {
     await expect(page.getByTestId("round-header")).toHaveText(`Round ${round} of 16`);
@@ -178,7 +179,7 @@ test("touch completes all sixteen 151 picks, swaps players, and preserves the se
   await a.tap();
   await b.tap();
   await page.getByTestId("see-results").tap();
-  await expect(page.getByTestId("results-record")).toHaveText("3-0-2");
+  await expect(page.getByTestId("results-record")).toHaveText(RUN_151.record);
   await context.close();
 });
 

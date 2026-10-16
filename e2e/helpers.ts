@@ -1,5 +1,6 @@
 import { expect, type Download, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+import { SHARE_LINK } from "./pins";
 
 export async function draftSixteen(page: Page): Promise<void> {
   const header = page.getByTestId("round-header");
@@ -25,7 +26,7 @@ export async function shareAndReplay(page: Page, record: string): Promise<void> 
   await expect(page.getByTestId("results-record")).toHaveText(record);
   await page.getByRole("button", { name: "Share" }).click();
   const link = await page.evaluate(() => navigator.clipboard.readText());
-  expect(link).toMatch(/\/r\/pd6\?t=[A-Za-z0-9_-]+$/);
+  expect(link).toMatch(SHARE_LINK);
 
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download image" }).click();
