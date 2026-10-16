@@ -102,10 +102,7 @@ describe("two-leg exhibition", () => {
       { user: 1, opp: 0 },
     ]);
     expect(tie.leg2.score).toEqual({ user: 2, opp: 0 });
-    expect(tie.leg2.goals.map(goalLine)).toEqual([
-      "29' Metapod, assist Charizard",
-      "91' Caterpie",
-    ]);
+    expect(tie.leg2.goals.map(goalLine)).toEqual(["29' Metapod, assist Charizard", "91' Caterpie"]);
     expect(tie.aggregate).toEqual({ user: 2, opp: 1 });
     expect(tie.decidedBy).toBe("extra-time");
     expect(tie.leg2.shootout).toBeNull();
