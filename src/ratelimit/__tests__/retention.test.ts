@@ -132,13 +132,13 @@ describe("rate-limit retention (catches rows for keys that never return being ke
     expect(await bucketKeys()).toEqual(["submit:player"]);
   });
 
-  it("refuses a window longer than the 7-day event retention (catches a backfill that would miss pruned history)", async () => {
+  it("refuses a window longer than the 1-day bucket idle cutoff (catches pruning a bucket whose attempts are still inside the window)", async () => {
     const limiter = drizzleLimiter(() => db);
     await expect(
-      limiter.consume("submit", "k", NOW, { max: 1, windowMs: 7 * DAY + 1 }),
+      limiter.consume("submit", "k", NOW, { max: 1, windowMs: 2 * DAY }),
     ).rejects.toThrow(
-      new RangeError("rate-limit window 604800001 ms exceeds event retention 604800000 ms"),
+      new RangeError("rate-limit window 172800000 ms exceeds bucket idle cutoff 86400000 ms"),
     );
-    expect(await limiter.consume("submit", "k", NOW, { max: 1, windowMs: 7 * DAY })).toBe(true);
+    expect(await limiter.consume("submit", "k", NOW, { max: 1, windowMs: DAY })).toBe(true);
   });
 });
