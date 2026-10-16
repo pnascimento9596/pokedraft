@@ -2,6 +2,7 @@
 
 import { useId, useState, useSyncExternalStore } from "react";
 import {
+  DEFAULT_PANEL,
   MANAGER_MODE_HINT,
   MANAGER_MODE_LABEL,
   MATCH_VIEWS,
@@ -30,8 +31,11 @@ export function MatchdaySettings() {
   const labelId = useId();
   const snapshot = useSyncExternalStore(subscribe, stored, () => null);
   const [local, setLocal] = useState<{ managerMode: boolean; matchView: MatchView } | null>(null);
-  if (snapshot === null) return null;
-  const [mm, mv] = snapshot.split("|") as [string, MatchView];
+  // The server and the first client render draw the defaults, so nothing moves once the stored
+  // choice is read: only the switch and the pressed segment change.
+  const [mm, mv] = (
+    snapshot ?? `${DEFAULT_PANEL.managerMode ? "1" : "0"}|${DEFAULT_PANEL.matchView}`
+  ).split("|") as [string, MatchView];
   const value = local ?? { managerMode: mm === "1", matchView: mv };
   const set = (patch: Partial<typeof value>) => {
     const next = { ...value, ...patch };

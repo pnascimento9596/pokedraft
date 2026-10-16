@@ -84,36 +84,40 @@ export function Touchline({
       <div className={s.sub}>
         <div className={s.field}>
           <label htmlFor={offId}>Take off</label>
-          <select
-            id={offId}
-            value={takeOff ?? ""}
-            disabled={closed || !subsLeft || onPitch.length === 0}
-            data-testid="sub-off"
-            onChange={(e) => setOff(Number(e.target.value) as StarterIndex)}
-          >
-            {onPitch.map(({ slot, id }) => (
-              <option key={slot} value={slot}>
-                {slots[slot]!.label} {speciesById(id).name}
-              </option>
-            ))}
-          </select>
+          <span className={s.select}>
+            <select
+              id={offId}
+              value={takeOff ?? ""}
+              disabled={closed || !subsLeft || onPitch.length === 0}
+              data-testid="sub-off"
+              onChange={(e) => setOff(Number(e.target.value) as StarterIndex)}
+            >
+              {onPitch.map(({ slot, id }) => (
+                <option key={slot} value={slot}>
+                  {slots[slot]!.label} {speciesById(id).name}
+                </option>
+              ))}
+            </select>
+          </span>
         </div>
         <div className={s.field}>
           <label htmlFor={onId}>Bring on</label>
-          <select
-            id={onId}
-            value={bringOn ?? ""}
-            disabled={closed || !subsLeft || bench.length === 0}
-            data-testid="sub-on"
-            onChange={(e) => setOn(Number(e.target.value) as BenchIndex)}
-          >
-            {bench.length === 0 ? <option value="">Nobody left</option> : null}
-            {bench.map((b) => (
-              <option key={b.index} value={b.index}>
-                {speciesById(b.species).name}
-              </option>
-            ))}
-          </select>
+          <span className={s.select}>
+            <select
+              id={onId}
+              value={bringOn ?? ""}
+              disabled={closed || !subsLeft || bench.length === 0}
+              data-testid="sub-on"
+              onChange={(e) => setOn(Number(e.target.value) as BenchIndex)}
+            >
+              {bench.length === 0 ? <option value="">Nobody left</option> : null}
+              {bench.map((b) => (
+                <option key={b.index} value={b.index}>
+                  {speciesById(b.species).name}
+                </option>
+              ))}
+            </select>
+          </span>
         </div>
         <button
           type="button"

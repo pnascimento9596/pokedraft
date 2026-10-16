@@ -99,11 +99,33 @@
   color: var(--text-muted);
 }
 
+.select {
+  position: relative;
+  min-width: 0;
+}
+
+/* WebKit draws a native select at its own height; a plain one honours the 44px target. */
+.select::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
 .field select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 44px;
   min-height: 44px;
   width: 100%;
   min-width: 0;
-  padding: 0 8px;
+  padding: 0 32px 0 8px;
   border: 1px solid var(--border-control);
   border-radius: var(--radius-sm);
   background: var(--surface);
