@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { POKEDEX } from "@/data/pokedex";
 import { challengeHref } from "@/ui/challenge-href";
 import { careerSummary } from "@/ui/career";
 import { PlayerImage } from "@/components/PlayerImage";
 import { StatusNote } from "@/components/ui/primitives";
 import { FINISH_LABEL, record } from "@/ui/labels";
-import { BUCKET_LABEL, HISTORY_LIMIT, loadHistory, type RunRecord } from "@/ui/runs";
+import { BUCKET_LABEL, HISTORY_LIMIT } from "@/ui/runs";
+import { useSavedRuns } from "./store";
 import s from "./HistoryList.module.css";
 
 function when(at: string): string {
@@ -17,32 +18,15 @@ function when(at: string): string {
   return d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 }
 
-// localStorage is only readable after mount; the server snapshot is the loading state. The
-// cache is dropped on every mount so a run finished in this tab shows up after navigation.
-let snapshot: readonly RunRecord[] | undefined;
-
-function subscribe(onChange: () => void): () => void {
-  const refresh = () => {
-    snapshot = undefined;
-    onChange();
-  };
-  refresh();
-  window.addEventListener("storage", refresh);
-  return () => window.removeEventListener("storage", refresh);
-}
-
-function getSnapshot(): readonly RunRecord[] {
-  return (snapshot ??= loadHistory());
-}
-
 export function HistoryList() {
-  const runs = useSyncExternalStore(subscribe, getSnapshot, () => null);
+  const saved = useSavedRuns();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [speciesFilter, setSpeciesFilter] = useState<"all" | "drafted" | "champions">("all");
   const [filter, setFilter] = useState<"all" | "champions">("all");
 
-  if (runs === null) return <p className="kicker">Loading your runs</p>;
+  if (saved === null) return <p className="kicker">Loading your runs</p>;
+  const { runs, lifetime } = saved;
   if (runs.length === 0) {
     return (
       <StatusNote className={s.empty} title="No runs yet." data-testid="history-empty">
@@ -53,7 +37,7 @@ export function HistoryList() {
       </StatusNote>
     );
   }
-  const career = careerSummary(runs);
+  const career = careerSummary(runs, lifetime);
   const matchingSpecies = POKEDEX.filter((pokemon) => {
     const counts = career.species.get(pokemon.id);
     return (
@@ -96,7 +80,9 @@ export function HistoryList() {
       <section aria-label="Win rate by formation" className={s.career}>
         <h3>Win rate by formation</h3>
         <p className={s.scope}>
-          Ranked match wins divided by all recorded matches, including draws and losses.
+          Ranked match wins divided by all recorded matches, including draws and losses. Counts
+          every ranked run in this browser&apos;s lifetime totals, not only the {HISTORY_LIMIT}{" "}
+          stored runs.
         </p>
         {career.formations.length === 0 ? (
           <p>No ranked matches recorded.</p>

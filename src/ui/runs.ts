@@ -39,6 +39,9 @@ export interface RunRecord {
   readonly finish: CupFinish;
   readonly flawless: boolean;
   readonly at: string;
+  /** Goals across the cup's played matches, extra time included. Absent on older records. */
+  readonly goalsFor?: number;
+  readonly goalsAgainst?: number;
 }
 
 export interface BucketStats {
@@ -59,7 +62,7 @@ const SquadSpeciesIds = z
   .min(1)
   .max(16)
   .refine((ids) => new Set(ids).size === ids.length);
-const RunRecordSchema = z.object({
+export const RunRecordSchema = z.object({
   squadSpeciesIds: SquadSpeciesIds.optional(),
   token: z.string().min(1),
   bucket: z.enum(STAT_BUCKETS),
@@ -72,6 +75,8 @@ const RunRecordSchema = z.object({
   finish: z.enum(["group", "R32", "R16", "QF", "SF", "F", "champion"]),
   flawless: z.boolean(),
   at: z.string().min(1),
+  goalsFor: Count.optional(),
+  goalsAgainst: Count.optional(),
 });
 const BucketStatsSchema = z.object({
   runs: Count,
@@ -79,7 +84,7 @@ const BucketStatsSchema = z.object({
   bestRecord: z.object({ wins: Count, draws: Count, losses: Count }).nullable(),
 });
 
-const HISTORY_KEY = "pokedraft:history:v1";
+export const HISTORY_KEY = "pokedraft:history:v1";
 export const HISTORY_LIMIT = 50;
 
 export function loadHistory(): readonly RunRecord[] {
@@ -117,7 +122,19 @@ export function toRecord(
     finish: cup.finish,
     flawless: cup.flawless,
     at,
+    ...goalTotals(cup),
   };
+}
+
+function goalTotals(cup: CupResult): { goalsFor: number; goalsAgainst: number } {
+  let goalsFor = 0;
+  let goalsAgainst = 0;
+  for (const match of cup.matches) {
+    if (match.status !== "played") continue;
+    goalsFor += match.regulation.user + (match.extraTime?.user ?? 0);
+    goalsAgainst += match.regulation.opp + (match.extraTime?.opp ?? 0);
+  }
+  return { goalsFor, goalsAgainst };
 }
 
 const STATS_KEY = "pokedraft:stats:v1";
