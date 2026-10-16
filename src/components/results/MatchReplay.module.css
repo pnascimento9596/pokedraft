@@ -1,0 +1,31 @@
+.replay {
+  border: 1px solid var(--border-emphasis);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  box-shadow: var(--shadow-raised);
+  min-width: 0;
+  scroll-margin-top: 16px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
+}
+
+.head :global(.btn) {
+  min-height: 44px;
+}
