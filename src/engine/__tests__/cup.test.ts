@@ -198,41 +198,47 @@ const attackingShare = (byRole: Partial<Record<Role, number>>): number => {
   return ((byRole.ST ?? 0) + (byRole.W ?? 0) + (byRole.AM ?? 0)) / total;
 };
 
-describe("scorer roles (catches defenders and holding midfielders scoring like forwards)", () => {
-  // Three hand squads in two formations, pooled: one squad alone swings with who takes its
-  // penalties (KANTO's CB Dragonite, SHO 99, takes all of them). The line factors this replaced
-  // pool to 53.0%.
-  const squads = [P75, KANTO, MIDDLING].flatMap((l) =>
-    (["4-3-3", "4-2-3-1"] as const).map((formation) => ({ ...l, formation }) as FullLineup),
-  );
+// Engine 6 plays 5-minute windows, so 6 squads x SEEDS cups exceed the 15 s default on a 4-worker
+// hosted runner (timed out at 82c4467). Same budget as the other statistical suites.
+describe(
+  "scorer roles (catches defenders and holding midfielders scoring like forwards)",
+  { timeout: 60_000 },
+  () => {
+    // Three hand squads in two formations, pooled: one squad alone swings with who takes its
+    // penalties (KANTO's CB Dragonite, SHO 99, takes all of them). The line factors this replaced
+    // pool to 53.0%.
+    const squads = [P75, KANTO, MIDDLING].flatMap((l) =>
+      (["4-3-3", "4-2-3-1"] as const).map((formation) => ({ ...l, formation }) as FullLineup),
+    );
 
-  it("gives ST, W and AM 70 to 80% of user goals", () => {
-    const pooled: Partial<Record<Role, number>> = {};
-    for (const l of squads) {
-      const byRole = goalRoles(
-        l,
-        SEEDS.map((seed) => runCup(l, seed, "cup8")),
-      );
-      for (const [r, n] of Object.entries(byRole) as [Role, number][]) {
-        pooled[r] = (pooled[r] ?? 0) + n;
+    it("gives ST, W and AM 70 to 80% of user goals", () => {
+      const pooled: Partial<Record<Role, number>> = {};
+      for (const l of squads) {
+        const byRole = goalRoles(
+          l,
+          SEEDS.map((seed) => runCup(l, seed, "cup8")),
+        );
+        for (const [r, n] of Object.entries(byRole) as [Role, number][]) {
+          pooled[r] = (pooled[r] ?? 0) + n;
+        }
       }
-    }
-    const share = attackingShare(pooled);
-    expect(share >= 0.7 && share <= 0.8).toBe(true);
-  });
+      const share = attackingShare(pooled);
+      expect(share >= 0.7 && share <= 0.8).toBe(true);
+    });
 
-  it("never lets the goalkeeper score from open play", () => {
-    for (const l of squads) {
-      const keeper = l.starters[0];
-      const goals = SEEDS.slice(0, 50)
-        .map((seed) => runCup(l, seed, "cup8"))
-        .flatMap((r) => r.matches)
-        .flatMap((m) => (m.status === "played" ? m.goals : []))
-        .filter((g) => g.side === "user" && !g.penalty && g.scorer === keeper);
-      expect(goals).toEqual([]);
-    }
-  });
-});
+    it("never lets the goalkeeper score from open play", () => {
+      for (const l of squads) {
+        const keeper = l.starters[0];
+        const goals = SEEDS.slice(0, 50)
+          .map((seed) => runCup(l, seed, "cup8"))
+          .flatMap((r) => r.matches)
+          .flatMap((m) => (m.status === "played" ? m.goals : []))
+          .filter((g) => g.side === "user" && !g.penalty && g.scorer === keeper);
+        expect(goals).toEqual([]);
+      }
+    });
+  },
+);
 
 describe("player of the tournament contribution (catches an opaque or role-blind award)", () => {
   // Independent recompute: goals 3, assists 2, a clean sheet 2 in goal and 1 at CB, FB or DM
