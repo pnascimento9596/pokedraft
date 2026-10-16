@@ -23,6 +23,7 @@ const ENTRY: BoardEntry = {
   draws: 0,
   losses: 0,
   createdAt: "2026-10-09T12:00:00.000Z",
+  coached: false,
 };
 
 function json(status: number, body: unknown): Response {
@@ -127,6 +128,46 @@ describe("Board", () => {
       "/api/leaderboard?mode=kanto151&scope=all",
       expect.anything(),
     );
+  });
+  it("marks coached runs with a chip and filters the fetched rows without re-ranking them (catches a filter that refetches or renumbers)", async () => {
+    const fetchMock = vi.fn(async () =>
+      json(200, {
+        mode: "cup8",
+        scope: "daily",
+        date: "2026-10-09",
+        entries: [
+          { ...ENTRY, rank: 1, token: "pd6.a", nickname: "Coach", coached: true },
+          { ...ENTRY, rank: 2, token: "pd6.b", nickname: "Plain", coached: false },
+        ],
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    render(<Board view={DAILY} />);
+    expect((await screen.findAllByTestId("board-row")).length).toBe(2);
+    expect(screen.getAllByTestId("coached-chip").map((c) => c.textContent)).toEqual(["Coached"]);
+
+    fireEvent.click(screen.getByTestId("coach-filter-coached"));
+    const coached = screen.getAllByTestId("board-row");
+    expect(coached.map((r) => r.textContent?.startsWith("1Coach"))).toEqual([true]);
+
+    fireEvent.click(screen.getByTestId("coach-filter-uncoached"));
+    const plain = screen.getAllByTestId("board-row");
+    expect(plain.map((r) => r.textContent?.startsWith("2Plain"))).toEqual([true]);
+    expect(screen.getByTestId("coach-filter-uncoached").getAttribute("aria-pressed")).toBe("true");
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects a board reply whose rows lack the coached flag (catches a contract drift read as uncoached)", async () => {
+    const { coached: _drop, ...legacy } = ENTRY;
+    void _drop;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", entries: [legacy] }),
+      ),
+    );
+    render(<Board view={DAILY} />);
+    expect(await screen.findByTestId("board-error")).toBeTruthy();
   });
 });
 

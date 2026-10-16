@@ -9,7 +9,19 @@ import {
 } from "@/engine/types";
 import { readJson, writeJson } from "./storage";
 
-// Everything the home panel controls. Challenge settings are derived from it.
+export const MATCH_VIEWS = ["quick", "live"] as const;
+export type MatchView = (typeof MATCH_VIEWS)[number];
+export const MANAGER_MODE_LABEL = "Manager mode";
+export const MANAGER_MODE_HINT =
+  "Make tactics and substitutions from the touchline during each match";
+
+export const MATCH_VIEW_LABEL: Readonly<Record<MatchView, string>> = {
+  quick: "Quick sim",
+  live: "Live match",
+};
+
+// Everything the home panel controls. Challenge settings are derived from it. `managerMode` and
+// `matchView` are how the player watches the cup; they never reach the run token's settings.
 export interface PanelSettings {
   readonly formation: FormationId;
   readonly gens: readonly Gen[];
@@ -18,6 +30,8 @@ export interface PanelSettings {
   readonly order: DraftOrder;
   readonly showRatings: boolean;
   readonly showChallengeRatings: boolean;
+  readonly managerMode: boolean;
+  readonly matchView: MatchView;
 }
 
 export const DEFAULT_PANEL: PanelSettings = {
@@ -28,6 +42,8 @@ export const DEFAULT_PANEL: PanelSettings = {
   order: "squadFirst",
   showRatings: false,
   showChallengeRatings: false,
+  managerMode: false,
+  matchView: "quick",
 };
 
 const PANEL_KEY = "pokedraft:panel";
@@ -51,6 +67,10 @@ function parsePanel(raw: unknown): PanelSettings {
       typeof r.showChallengeRatings === "boolean"
         ? r.showChallengeRatings
         : DEFAULT_PANEL.showChallengeRatings,
+    managerMode: typeof r.managerMode === "boolean" ? r.managerMode : DEFAULT_PANEL.managerMode,
+    matchView: (MATCH_VIEWS as readonly unknown[]).includes(r.matchView)
+      ? (r.matchView as MatchView)
+      : DEFAULT_PANEL.matchView,
   };
 }
 
@@ -60,6 +80,11 @@ export function loadPanel(): PanelSettings {
 
 export function savePanel(panel: PanelSettings): void {
   writeJson(PANEL_KEY, panel);
+}
+
+// With manager mode off and the quick view, the cup goes straight to the results as it always has.
+export function playsMatchday(panel: Pick<PanelSettings, "managerMode" | "matchView">): boolean {
+  return panel.managerMode || panel.matchView === "live";
 }
 
 export type ChallengeMode = "cup8" | "kanto151";

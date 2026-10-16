@@ -37,6 +37,7 @@ const entrySchema = z.object({
   draws: z.number(),
   losses: z.number(),
   createdAt: z.string(),
+  coached: z.boolean(),
 }) satisfies z.ZodType<BoardEntry>;
 
 const boardOkSchema = z.object({ entries: z.array(entrySchema) });

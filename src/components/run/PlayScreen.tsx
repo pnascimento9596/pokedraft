@@ -14,6 +14,7 @@ import { settingsSummary } from "@/ui/settingsSummary";
 import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
 import type { Restored } from "./savedRun";
+import { MatchdaySettings } from "@/components/matchday/MatchdaySettings";
 import { RoadStrip } from "./RoadStrip";
 import { SettingsSummary } from "@/components/SettingsSummary";
 import { ModuleCard, StatusNote } from "@/components/ui/primitives";
@@ -205,6 +206,7 @@ export function Challenge({
       >
         <SettingsSummary items={settingsSummary(settings)} />
         {renderSetup?.(loading)}
+        {settings.mode !== "builder" ? <MatchdaySettings /> : null}
         <button
           type="button"
           className="btn btn--primary"

@@ -58,6 +58,8 @@ export interface BoardEntry {
   readonly draws: number;
   readonly losses: number;
   readonly createdAt: string;
+  /** The run's token carries touchline decisions. Derived from the token when the board is read. */
+  readonly coached: boolean;
 }
 
 // The run is saved before its rank is looked up, so a failed lookup leaves rank null.

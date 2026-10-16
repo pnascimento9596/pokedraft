@@ -37,6 +37,7 @@ interface BoardRow {
   readonly draws: number;
   readonly losses: number;
   readonly createdAt: string;
+  readonly coached: boolean;
 }
 
 export function boardRow(rank: number): BoardRow {
@@ -54,6 +55,8 @@ export function boardRow(rank: number): BoardRow {
     draws: rank % 3,
     losses: rank % 2,
     createdAt: "2026-10-09T12:00:00.000Z",
+    // Every fourth row was coached from the touchline, so the chip shows in the phone scenes.
+    coached: rank % 4 === 2,
   };
 }
 
@@ -346,6 +349,34 @@ export const SCENES: readonly Scene[] = [
       await settle(page);
     },
     primary: (page) => page.getByRole("button", { name: "Share", exact: true }),
+  },
+  {
+    id: "matchday pre-match",
+    route: "/play",
+    open: async (page) => {
+      await seedStorage(page, { "pokedraft:panel": { managerMode: true, matchView: "quick" } });
+      await startRun(page, PLAY_8_0);
+      await draftRounds(page, 16);
+      await page.getByTestId("see-results").click();
+      await expect(page.getByTestId("prematch")).toBeVisible();
+      await settle(page);
+    },
+    primary: (page) => page.getByTestId("prematch-go"),
+  },
+  {
+    id: "matchday live touchline",
+    route: "/play",
+    open: async (page) => {
+      await seedStorage(page, { "pokedraft:panel": { managerMode: true, matchView: "live" } });
+      await startRun(page, PLAY_8_0);
+      await draftRounds(page, 16);
+      await page.getByTestId("see-results").click();
+      await page.getByTestId("prematch-go").click();
+      await expect(page.getByTestId("stop-kickoff")).toBeVisible();
+      await expect(page.getByTestId("broadcast")).toBeVisible();
+      await settle(page);
+    },
+    primary: (page) => page.getByTestId("stop-go"),
   },
   {
     id: "daily results",

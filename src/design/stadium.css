@@ -42,3 +42,38 @@
     --stadium-glass: var(--surface);
   }
 }
+
+/* The match broadcast. The pitch is grass in both themes, so these do not change with it. */
+:root {
+  --bc-turf-a: #2d7a3a;
+  --bc-turf-b: #286d34;
+  --bc-line: rgba(255, 255, 255, 0.78);
+  --bc-ink: #f8fafc;
+  --bc-shade: rgba(3, 12, 7, 0.78);
+  --bc-user: #fbbf24;
+  --bc-opp: #60a5fa;
+  --bc-ball: #f8fafc;
+  --bc-ball-ink: #0f172a;
+  --bc-net: rgba(255, 255, 255, 0.35);
+  --bc-medic: #ef4444;
+  --card-yellow: #facc15;
+  --card-yellow-ink: #1c1917;
+  --card-red: #dc2626;
+  --card-red-ink: #fff7ed;
+  --fx-fire: #f97316;
+  --fx-fire-core: #fde047;
+  --fx-water: #38bdf8;
+  --fx-water-core: #e0f2fe;
+  --fx-electric: #facc15;
+  --fx-electric-core: #fffbeb;
+  --fx-grass: #4ade80;
+  --fx-grass-core: #166534;
+  --fx-ice: #a5f3fc;
+  --fx-ice-core: #f0fdff;
+  --fx-psychic: #e879f9;
+  --fx-psychic-core: #fdf4ff;
+  --fx-impact: #f8fafc;
+  --fx-impact-core: #fbbf24;
+  --fx-shield: #93c5fd;
+  --fx-shield-core: #eff6ff;
+}

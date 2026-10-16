@@ -2,6 +2,7 @@ import { and, asc, count, desc, eq, gt, lt, or, sql, type SQL } from "drizzle-or
 import { leaderboardEntries, type LeaderboardRow, type NewLeaderboardRow } from "@/db/schema";
 import type { Db } from "@/db/types";
 import { admissionCtes, type RateLimitRule } from "@/ratelimit/store";
+import { isCoached } from "@/ui/manager/coached";
 import { squadPreview } from "./squad-preview";
 import { BOARD_LIMIT, type BoardEntry, type BoardMode } from "../contract";
 
@@ -175,6 +176,7 @@ export function toBoardEntry<R extends number | null>(
   return {
     rank,
     squadSpeciesIds: squadPreview(row.token),
+    coached: isCoached(row.token),
     nickname: row.nickname,
     mode: row.mode,
     variant: row.variant,

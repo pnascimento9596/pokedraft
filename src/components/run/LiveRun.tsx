@@ -1,18 +1,42 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { replay, type DraftSettings, type IsoDate } from "@/engine";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  decodeToken,
+  encodeToken,
+  replay,
+  type CupResult,
+  type DraftSettings,
+  type DraftState,
+  type IsoDate,
+  type ManagerAction,
+} from "@/engine";
+import { toFullLineup } from "@/engine/draft";
+import { MatchdayFlow } from "@/components/matchday/MatchdayFlow";
+import type { CupContext } from "@/ui/manager/touchline";
 import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
 import { ResultsView } from "@/components/results/ResultsView";
 import { focusHeading } from "@/ui/focus";
-import { loadPanel, playHref } from "@/ui/settings";
+import { loadPanel, playHref, playsMatchday, type MatchView } from "@/ui/settings";
 import { DraftBoard } from "./DraftBoard";
 import { runToken, startRun, step, type Run } from "./runState";
 import { forgetRun, saveRun, type Restored, type RunSlot } from "./savedRun";
 import s from "./PlayScreen.module.css";
 
-type Screen = Restored;
+// The matchday is never saved on its own: a reload during it comes back to the finished draft.
+type Screen =
+  | Restored
+  | {
+      readonly kind: "matchday";
+      readonly run: Run;
+      readonly token: string;
+      readonly draft: DraftState;
+      readonly cup: CupResult;
+      readonly ctx: CupContext;
+      readonly view: MatchView;
+      readonly managerMode: boolean;
+    };
 export { restoreRun } from "./savedRun";
 
 // The draft and the results. PlayScreen loads this module (and the species data under it) with
@@ -55,7 +79,7 @@ export function LiveRun({
   // Every screen change goes through here, so the tab always holds the run that is showing.
   const show = (next: Screen) => {
     if (next.kind === "draft") saveRun(slot, "draft", runToken(next.run));
-    else saveRun(slot, "results", next.token);
+    else if (next.kind === "results") saveRun(slot, "results", next.token);
     setScreen(next);
   };
 
@@ -63,20 +87,64 @@ export function LiveRun({
     const token = runToken(run);
     try {
       const { draft, cup } = replay(token);
-      show({ kind: "results", token, draft, cup });
+      const panel = loadPanel();
+      // Builder runs are friendlies; the matchday belongs to the drafted cups.
+      if (settings.mode !== "builder" && playsMatchday(panel)) {
+        show({
+          kind: "matchday",
+          run,
+          token,
+          draft,
+          cup,
+          ctx: { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode },
+          view: panel.matchView,
+          managerMode: panel.managerMode,
+        });
+      } else {
+        show({ kind: "results", token, draft, cup });
+      }
       window.scrollTo({ top: 0 });
     } catch {
       setFailure("This run could not be scored. Start a new run.");
     }
   };
 
+  const matchdayToken = screen.kind === "matchday" ? screen.token : null;
+  const finishMatchday = useCallback(
+    (manager: readonly ManagerAction[]) => {
+      if (matchdayToken === null) return;
+      try {
+        const token = encodeToken({ ...decodeToken(matchdayToken), manager });
+        const { draft, cup } = replay(token);
+        saveRun({ settings, seed, daily: daily ?? null }, "results", token);
+        setScreen({ kind: "results", token, draft, cup });
+        window.scrollTo({ top: 0 });
+      } catch {
+        setFailure("This run could not be scored. Start a new run.");
+      }
+    },
+    [matchdayToken, settings, seed, daily],
+  );
+
   const newRun = () => {
     forgetRun(slot, {
-      screen: screen.kind,
-      token: screen.kind === "draft" ? runToken(screen.run) : screen.token,
+      screen: screen.kind === "matchday" ? "draft" : screen.kind,
+      token: screen.kind === "results" ? screen.token : runToken(screen.run),
     });
     onNewRun();
   };
+
+  if (screen.kind === "matchday") {
+    return (
+      <MatchdayFlow
+        ctx={screen.ctx}
+        initialCup={screen.cup}
+        view={screen.view}
+        managerMode={screen.managerMode}
+        onFinish={finishMatchday}
+      />
+    );
+  }
 
   if (screen.kind === "results") {
     return (

@@ -1,0 +1,101 @@
+import type { FullLineup, MatchResult } from "@/engine/types";
+import type { MatchView } from "@/ui/settings";
+import { injuries } from "@/ui/manager/touchline";
+
+type PlayedMatch = Extract<MatchResult, { status: "played" }>;
+
+export interface Pace {
+  /** Real milliseconds per match minute in normal time. */
+  readonly regulation: number;
+  /** Real milliseconds per match minute in extra time. */
+  readonly extraTime: number;
+  /** Real milliseconds per shootout kick. */
+  readonly kick: number;
+  /** How long the clock holds on a goal and on a save while the broadcast stages it. */
+  readonly holdGoal: number;
+  readonly holdSave: number;
+}
+
+// Live: 25 s a half (one five-minute window is about 2.8 s), 8 s an extra-time half, 1.2 s a
+// kick. Quick: about 5 s for a whole match.
+export const PACE: Readonly<Record<MatchView, Pace>> = {
+  live: {
+    regulation: 25_000 / 45,
+    extraTime: 8_000 / 15,
+    kick: 1_200,
+    holdGoal: 2_600,
+    holdSave: 900,
+  },
+  quick: {
+    regulation: 4_400 / 90,
+    extraTime: 900 / 30,
+    kick: 300,
+    holdGoal: 0,
+    holdSave: 0,
+  },
+};
+
+export type StopKind = "kickoff" | "halftime" | "extraTime" | "injury";
+
+/** A minute where manager mode stops the clock and hands the touchline to the player. */
+export interface Stop {
+  readonly key: string;
+  readonly kind: StopKind;
+  readonly minute: number;
+}
+
+/**
+ * Kickoff, half-time, the break before extra time and each user injury the manager can answer, in
+ * minute order.
+ */
+export function stopsFor(match: PlayedMatch, lineup: FullLineup): readonly Stop[] {
+  if (match.windows === undefined) return [];
+  const stops: Stop[] = [
+    { key: "kickoff", kind: "kickoff", minute: 0 },
+    { key: "halftime", kind: "halftime", minute: 45 },
+    ...injuries(match, lineup)
+      .filter((call) => call.options.length > 0)
+      .map((call): Stop => ({
+        key: `injury:${call.minute}:${call.slot}`,
+        kind: "injury",
+        minute: call.minute,
+      })),
+  ];
+  if (match.extraTime) stops.push({ key: "extraTime", kind: "extraTime", minute: 90 });
+  // An injury at 45 happens before the half-time whistle, so its prompt comes first.
+  const order = (s: Stop) => (s.kind === "injury" ? 0 : 1);
+  return stops.sort((a, b) => a.minute - b.minute || order(a) - order(b));
+}
+
+/** The next stop at or after `minute` that the player has not answered yet. */
+export function nextStop(
+  stops: readonly Stop[],
+  answered: ReadonlySet<string>,
+  minute: number,
+): Stop | null {
+  return stops.find((s) => s.minute >= minute && !answered.has(s.key)) ?? null;
+}
+
+/**
+ * Moves the match clock on by `ms` real milliseconds at `speed`, never past `limit` (the next
+ * stop or hold) or the final whistle.
+ */
+export function advanceClock(
+  minute: number,
+  ms: number,
+  pace: Pace,
+  speed: number,
+  limit: number,
+): number {
+  let left = ms * speed;
+  let at = minute;
+  while (left > 0 && at < limit) {
+    const rate = at < 90 ? pace.regulation : pace.extraTime;
+    const edge = at < 90 ? Math.min(90, limit) : limit;
+    const step = Math.min(edge - at, left / rate);
+    at += step;
+    left -= step * rate;
+    if (step <= 0) break;
+  }
+  return Math.min(at, limit);
+}

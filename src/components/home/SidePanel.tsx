@@ -5,7 +5,13 @@ import { flushSync } from "react-dom";
 import { FORMATION_IDS, GENS, type FormationId, type Gen } from "@/engine/types";
 import { ORDER_LABEL, STYLE_LABEL, genLabel, record } from "@/ui/labels";
 import { BUCKET_LABEL, STAT_BUCKETS, type BucketStats, type StatBucket } from "@/ui/runs";
-import type { ChallengeMode, PanelSettings } from "@/ui/settings";
+import {
+  MANAGER_MODE_HINT,
+  MANAGER_MODE_LABEL,
+  MATCH_VIEW_LABEL,
+  type ChallengeMode,
+  type PanelSettings,
+} from "@/ui/settings";
 import { ModuleCard, Table } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
 import { ConfirmPlay } from "./ConfirmPlay";
@@ -255,6 +261,22 @@ export function SidePanel({
               hint="Off keeps challenges blind"
               checked={panel.showChallengeRatings}
               onChange={(showChallengeRatings) => set({ showChallengeRatings })}
+            />
+          </section>
+
+          <section className={s.section}>
+            <h2 className={s.heading}>Matchday</h2>
+            <Switch
+              label={MANAGER_MODE_LABEL}
+              hint={MANAGER_MODE_HINT}
+              checked={panel.managerMode}
+              onChange={(managerMode) => set({ managerMode })}
+            />
+            <Segmented
+              label="Match view"
+              value={panel.matchView}
+              options={MATCH_VIEW_LABEL}
+              onChange={(matchView) => set({ matchView })}
             />
           </section>
 

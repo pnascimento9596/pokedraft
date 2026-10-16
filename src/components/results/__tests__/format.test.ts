@@ -6,6 +6,7 @@ import {
   contributionLine,
   finalScore,
   goalLine,
+  incidentLine,
   shootoutLine,
   type PlayedMatch,
 } from "@/components/results/format";
@@ -204,5 +205,82 @@ describe("results format", () => {
         total: 10.67,
       }),
     ).toBe("10.67 pts: goals 3, assists 4, clean sheets 1, minutes 2.67");
+  });
+});
+
+describe("incidentLine (catches results that hide who made a change or mislabel a card)", () => {
+  it("names injuries, substitutions with reason and who made them, and cards on both sides", () => {
+    expect(
+      incidentLine({ kind: "injury", side: "user", minute: 33, slot: 4, player: sp(6) }, "Opp"),
+    ).toBe("33' Charizard is injured");
+    expect(
+      incidentLine(
+        {
+          kind: "sub",
+          side: "user",
+          minute: 33,
+          slot: 4,
+          out: sp(6),
+          in: sp(9),
+          reason: "injury",
+          by: "auto",
+        },
+        "Opp",
+      ),
+    ).toBe("33' Blastoise on for Charizard (injury, assistant)");
+    expect(
+      incidentLine(
+        {
+          kind: "sub",
+          side: "user",
+          minute: 61,
+          slot: 9,
+          out: sp(25),
+          in: sp(26),
+          reason: "tactical",
+          by: "manager",
+        },
+        "Opp",
+      ),
+    ).toBe("61' Raichu on for Pikachu (tactical, your call)");
+    expect(
+      incidentLine(
+        { kind: "yellow", side: "opp", minute: 12, slot: 3, player: sp(1), secondYellow: false },
+        "Kanto FC",
+      ),
+    ).toBe("12' Yellow card for Bulbasaur (Kanto FC)");
+    expect(
+      incidentLine(
+        { kind: "red", side: "user", minute: 70, slot: 3, player: sp(4), secondYellow: true },
+        "Opp",
+      ),
+    ).toBe("70' Second yellow, red card for Charmander");
+  });
+
+  it("says whether the user, the assistant or the opponent changed the tactic", () => {
+    expect(
+      incidentLine(
+        { kind: "tactic", side: "user", minute: 0, tactic: "press", by: "manager" },
+        "Opp",
+      ),
+    ).toBe("Kick off: you play Press");
+    expect(
+      incidentLine(
+        { kind: "tactic", side: "user", minute: 46, tactic: "attack", by: "manager" },
+        "Opp",
+      ),
+    ).toBe("46' You switch to Attack");
+    expect(
+      incidentLine(
+        { kind: "tactic", side: "user", minute: 75, tactic: "defend", by: "auto" },
+        "Opp",
+      ),
+    ).toBe("75' Your assistant switches to Defend");
+    expect(
+      incidentLine(
+        { kind: "tactic", side: "opp", minute: 60, tactic: "counter", by: "auto" },
+        "Opp",
+      ),
+    ).toBe("60' Opp switch to Counter");
   });
 });

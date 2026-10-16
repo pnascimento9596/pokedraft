@@ -8,7 +8,13 @@ import { StatusNote } from "@/components/ui/primitives";
 import { announce } from "@/components/Announcer";
 import { record } from "@/ui/labels";
 import { fetchBoard, type BoardResult, type BoardView } from "./client";
-import { variantLabel } from "./format";
+import {
+  COACH_FILTERS,
+  COACH_FILTER_LABEL,
+  filterCoached,
+  variantLabel,
+  type CoachFilter,
+} from "./format";
 import s from "./Board.module.css";
 
 const ERROR_COPY: Readonly<Record<Extract<BoardResult, { kind: "error" }>["reason"], string>> = {
@@ -34,6 +40,7 @@ export function Board({ view }: { readonly view: BoardView }) {
   const [attempt, setAttempt] = useState(0);
   const key = `${view.mode}|${view.scope}|${view.scope === "daily" ? view.date : ""}|${attempt}`;
   const [loaded, setLoaded] = useState<{ key: string; result: BoardResult } | null>(null);
+  const [coach, setCoach] = useState<CoachFilter>("all");
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -109,50 +116,92 @@ export function Board({ view }: { readonly view: BoardView }) {
     );
   }
 
+  const rows = filterCoached(result.entries, coach);
   return (
-    <ol ref={target} className={s.list} data-testid="board" aria-label="Leaderboard" tabIndex={-1}>
-      {result.entries.map((e) => (
-        <li
-          key={e.token}
-          className={s.row}
-          data-testid="board-row"
-          data-top={e.rank <= 3 || undefined}
-        >
-          <Link href={`/r/${e.token}`} className={s.link}>
-            <span className={s.rank}>{e.rank}</span>
-            <span className={s.main}>
-              <span className={s.nick}>{e.nickname}</span>
-              <span className={s.meta}>{variantLabel(e.variant)}</span>
-              <span className={s.squad}>
-                {e.squadSpeciesIds ? (
-                  e.squadSpeciesIds.map((id) => (
-                    <PlayerImage key={id} dexId={id} size={24} alt={`Squad species ${id}`} />
-                  ))
-                ) : (
-                  <span className={s.meta}>Squad preview unavailable.</span>
-                )}
+    <>
+      <div
+        className={s.coachFilter}
+        role="group"
+        aria-label="Coached runs"
+        data-testid="coach-filter"
+      >
+        {COACH_FILTERS.map((f) => (
+          <button
+            key={f}
+            type="button"
+            className="chip"
+            aria-pressed={coach === f}
+            data-testid={`coach-filter-${f}`}
+            onClick={() => setCoach(f)}
+          >
+            {COACH_FILTER_LABEL[f]}
+          </button>
+        ))}
+      </div>
+      {rows.length === 0 ? (
+        <p className={s.filterEmpty} data-testid="coach-filter-empty">
+          {coach === "coached"
+            ? "No coached runs in this list."
+            : "Every run in this list was coached."}
+        </p>
+      ) : null}
+      <ol
+        ref={target}
+        className={s.list}
+        data-testid="board"
+        aria-label="Leaderboard"
+        tabIndex={-1}
+      >
+        {rows.map((e) => (
+          <li
+            key={e.token}
+            className={s.row}
+            data-testid="board-row"
+            data-top={e.rank <= 3 || undefined}
+          >
+            <Link href={`/r/${e.token}`} className={s.link}>
+              <span className={s.rank}>{e.rank}</span>
+              <span className={s.main}>
+                <span className={s.nick}>
+                  {e.nickname}
+                  {e.coached ? (
+                    <span className={s.coached} data-testid="coached-chip">
+                      Coached
+                    </span>
+                  ) : null}
+                </span>
+                <span className={s.meta}>{variantLabel(e.variant)}</span>
+                <span className={s.squad}>
+                  {e.squadSpeciesIds ? (
+                    e.squadSpeciesIds.map((id) => (
+                      <PlayerImage key={id} dexId={id} size={24} alt={`Squad species ${id}`} />
+                    ))
+                  ) : (
+                    <span className={s.meta}>Squad preview unavailable.</span>
+                  )}
+                </span>
               </span>
-            </span>
-            <span className={s.recordCol}>
-              <span className={s.label}>W-D-L</span>
-              <span className={s.record}>
-                <Figure value={record(e.wins, e.draws, e.losses)} />
+              <span className={s.recordCol}>
+                <span className={s.label}>W-D-L</span>
+                <span className={s.record}>
+                  <Figure value={record(e.wins, e.draws, e.losses)} />
+                </span>
               </span>
-            </span>
-            <span className={s.scoreCol}>
-              <span className={s.label}>Team Score</span>
-              <span className={s.score}>
-                <Figure value={e.teamScore} />
+              <span className={s.scoreCol}>
+                <span className={s.label}>Team Score</span>
+                <span className={s.score}>
+                  <Figure value={e.teamScore} />
+                </span>
               </span>
-            </span>
-          </Link>
-          {challengeHref(e.token) !== null ? (
-            <Link className={`btn btn--ghost ${s.challenge}`} href={challengeHref(e.token)!}>
-              Challenge this Seed
             </Link>
-          ) : null}
-        </li>
-      ))}
-    </ol>
+            {challengeHref(e.token) !== null ? (
+              <Link className={`btn btn--ghost ${s.challenge}`} href={challengeHref(e.token)!}>
+                Challenge this Seed
+              </Link>
+            ) : null}
+          </li>
+        ))}
+      </ol>
+    </>
   );
 }

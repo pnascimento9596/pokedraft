@@ -8,6 +8,7 @@ import {
   absenceLine,
   finalScore,
   goalLine,
+  incidentLine,
   saveLine,
   opponentRefLabel,
   shootoutLine,
@@ -54,6 +55,9 @@ export function MatchdayLive({
     ...(match.saves ?? [])
       .filter((event) => event.minute <= minute)
       .map((event) => ({ kind: "save" as const, event })),
+    ...(match.incidents ?? [])
+      .filter((event) => event.minute <= minute)
+      .map((event) => ({ kind: "incident" as const, event })),
   ].sort((a, b) => a.event.minute - b.event.minute);
   const recordedScore = finalScore(match);
   const hasGoalTimeline =
@@ -230,16 +234,30 @@ export function MatchdayLive({
               key={i}
               className={s.eventRow}
               data-side={item.event.side}
-              data-testid={item.kind === "save" ? "broadcast-save" : undefined}
+              data-testid={
+                item.kind === "save"
+                  ? "broadcast-save"
+                  : item.kind === "incident"
+                    ? "broadcast-incident"
+                    : undefined
+              }
             >
               <span>
-                {item.kind === "save"
-                  ? `Save for ${item.event.side === "user" ? "Your XI" : match.opponent.name}`
-                  : item.event.side === "user"
-                    ? "⚽ Goal for Your XI"
-                    : `⚽ ${match.opponent.name}`}
+                {item.kind === "incident"
+                  ? "Match event"
+                  : item.kind === "save"
+                    ? `Save for ${item.event.side === "user" ? "Your XI" : match.opponent.name}`
+                    : item.event.side === "user"
+                      ? "⚽ Goal for Your XI"
+                      : `⚽ ${match.opponent.name}`}
               </span>
-              <span>{item.kind === "save" ? saveLine(item.event) : goalLine(item.event)}</span>
+              <span>
+                {item.kind === "incident"
+                  ? incidentLine(item.event, match.opponent.name)
+                  : item.kind === "save"
+                    ? saveLine(item.event)
+                    : goalLine(item.event)}
+              </span>
             </div>
           ))
         )}

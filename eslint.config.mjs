@@ -4,7 +4,13 @@ import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
 
 const determinism = {
-  files: ["src/scouting/**/*.ts", "src/lib/**/*.ts", "scripts/data/**/*.{ts,mjs}"],
+  files: [
+    "src/scouting/**/*.ts",
+    "src/lib/**/*.ts",
+    "scripts/data/**/*.{ts,mjs}",
+    "src/ui/matchday/**/*.ts",
+    "src/ui/manager/**/*.ts",
+  ],
   rules: {
     "no-restricted-properties": [
       "error",
