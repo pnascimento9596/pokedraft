@@ -10,7 +10,8 @@ import {
   type Tactic,
 } from "@/engine/types";
 import { MAX_SUBS, type Decision, type Touchline as TouchlineState } from "@/ui/manager/touchline";
-import { TACTIC_HINT, TACTIC_LABEL } from "@/components/results/format";
+import { TACTIC_HINT } from "@/components/results/format";
+import { TACTIC_LABEL } from "@/ui/matchday/copy";
 import s from "./Touchline.module.css";
 
 export const TAKEOVER_COPY =

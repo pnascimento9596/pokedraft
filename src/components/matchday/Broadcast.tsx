@@ -5,7 +5,7 @@ import { FORMATIONS } from "@/engine";
 import type { FormationId, FullLineup, MatchResult, Side } from "@/engine/types";
 import type { Moveset } from "@/data/movesets";
 import { PlayerImage } from "@/components/PlayerImage";
-import { TACTIC_LABEL } from "@/components/results/format";
+import { TACTIC_LABEL } from "@/ui/matchday/copy";
 import { beatKey } from "@/ui/matchday/player";
 import {
   ambientBall,
