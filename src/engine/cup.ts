@@ -243,7 +243,8 @@ export function runCup(
     for (const st of stints(fielded.starters, match, minutes)) {
       const played = st.to! - st.from;
       const role = formation.slots[st.slot]!.role;
-      // A clean sheet belongs to a defender or keeper who played at least half of it.
+      // A clean sheet needs half of regulation (45 minutes), not half of the minutes played, so
+      // extra time never raises the bar for a defender or keeper who held the shutout.
       const sheet =
         conceded === 0 && played * 2 >= REGULATION_MINUTES ? c.awards.cleanSheet[role] : undefined;
       bump(st.species, {
