@@ -1,3 +1,5 @@
+// Type only: a value import of the contract would pull `@/engine` and the species data into every
+// page that formats a date (the /play and /daily start panels; e2e/data-split.spec.ts).
 import type { CoachFilter } from "@/leaderboard/contract";
 import { GENS, type DraftOrder, type DraftStyle } from "@/engine/types";
 import { ORDER_LABEL, STYLE_LABEL } from "@/ui/labels";
@@ -36,7 +38,6 @@ export function longDate(date: string): string {
   });
 }
 
-export { COACH_FILTERS, type CoachFilter } from "@/leaderboard/contract";
 export const COACH_FILTER_LABEL: Readonly<Record<CoachFilter, string>> = {
   all: "All",
   uncoached: "Uncoached",

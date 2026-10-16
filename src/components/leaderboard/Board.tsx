@@ -8,7 +8,8 @@ import { StatusNote } from "@/components/ui/primitives";
 import { announce } from "@/components/Announcer";
 import { record } from "@/ui/labels";
 import { fetchBoard, type BoardResult, type BoardView } from "./client";
-import { COACH_FILTERS, COACH_FILTER_LABEL, variantLabel, type CoachFilter } from "./format";
+import { COACH_FILTERS, type CoachFilter } from "@/leaderboard/contract";
+import { COACH_FILTER_LABEL, variantLabel } from "./format";
 import s from "./Board.module.css";
 
 const FILTER_EMPTY: Readonly<Record<Exclude<CoachFilter, "all">, string>> = {
