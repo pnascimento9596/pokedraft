@@ -137,6 +137,17 @@ describe("runCup", () => {
     expect([appearances[59], appearances[4], appearances[10]]).toEqual([4, 5, 0]);
     expect(r.awards.goldenBoot).toEqual({ species: 136, goals: 5, assists: 1, appearances: 5 });
   });
+
+  // The matchday UI reads only absences[0] (fieldedFor in src/ui/manager/touchline.ts and the
+  // pre-match screen in MatchdayFlow), so a second absence would silently vanish from the screen.
+  it("records at most one pre-match absence per match (catches a second absence the UI would drop)", () => {
+    const most = Math.max(
+      ...[...RUNS, ...MIDDLING_RUNS].flatMap((r) =>
+        r.matches.map((m) => (m.status === "played" ? m.absences.length : 0)),
+      ),
+    );
+    expect(most).toBe(1);
+  });
 });
 
 describe("buildLadder", () => {

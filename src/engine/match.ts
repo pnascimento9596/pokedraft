@@ -519,6 +519,8 @@ export function simulateMatch(
     lastMinute = Math.max(lastMinute, minute);
   };
 
+  // A slot a red card emptied falls back to its original starter here, so rateTeam still rates
+  // that player. The vacancy multipliers in rate() are calibrated to correct for that too.
   const refreshUserLines = (): void => {
     if (bench === null) return;
     const starters = user.onPitch.map((o, i) => o?.species.id ?? bench.lineup.starters[i]!);
@@ -602,6 +604,8 @@ export function simulateMatch(
 
   const boundary = (t: number): void => {
     applyDecisionsUpTo(t);
+    // Any manager decision switches the auto coach off for the user side, fatigue subs included.
+    // Pinned by manager.test.ts "hands the touchline to the manager".
     if (!managed) {
       const next = autoTactic("balanced", t, user.goals, opp.goals);
       if (next !== user.tactic) {

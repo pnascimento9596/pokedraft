@@ -41,6 +41,7 @@ export interface Fielded {
 }
 
 export function fieldedFor(lineup: FullLineup, match: PlayedMatch): Fielded {
+  // At most one absence per match is pinned in src/engine/__tests__/cup.test.ts.
   const absence = match.absences[0];
   if (absence === undefined || absence.in === null) {
     return { starters: lineup.starters, bench: lineup.bench, benchOut: null };
