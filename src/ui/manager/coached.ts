@@ -23,7 +23,7 @@ const VERSIONS = [6] as const;
  */
 export const MANAGER_TOKEN_VERSIONS: PositiveIntegers<typeof VERSIONS> = VERSIONS;
 
-const decoder = new TextDecoder();
+const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
 
 function payloadOf(token: string): string | null {
   for (const v of MANAGER_TOKEN_VERSIONS) {

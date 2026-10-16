@@ -171,7 +171,7 @@ const MALFORMED: [string, string, boolean][] = [
     true,
   ],
   ["pd6 numeric overflow", pd6("[1e1000000]"), false],
-  ["pd6 leading byte order mark", pd6("\uFEFF[\"c\",\"s\",[],[[\"t\"]]]"), false],
+  ["pd6 leading byte order mark", pd6('\uFEFF["c","s",[],[["t"]]]'), false],
 ];
 
 describe("coachedSql is total on malformed pd6 tokens (catches a tampered row turning the filtered boards into 503s)", () => {
@@ -194,6 +194,31 @@ describe("coachedSql is total on malformed pd6 tokens (catches a tampered row tu
     expect(MALFORMED.map(([name, tok]) => [name, isCoached(tok)])).toEqual(
       MALFORMED.map(([name, , want]) => [name, want]),
     );
+  });
+
+  it("pins the tampered-only payloads PostgreSQL jsonb rejects and JSON.parse accepts", async () => {
+    const divergent: [string, string][] = [
+      ["pd6 nul escape", pd6('["\\u0000",1,2,3]')],
+      ["pd6 lone surrogate", pd6('["\\ud800",1,2,3]')],
+      ["pd6 overflow x4", pd6("[1e1000000,1,2,3]")],
+    ];
+    await db
+      .insert(leaderboardEntries)
+      .values(divergent.map(([name, tok], i) => row(name, tok, 1, i)));
+    const result = await db.execute(
+      sql`SELECT nickname, ${coachedSql} AS coached FROM ${leaderboardEntries}`,
+    );
+    const fromSql = Object.fromEntries(
+      (result as unknown as { rows: { nickname: string; coached: boolean }[] }).rows.map((r) => [
+        r.nickname,
+        r.coached,
+      ]),
+    );
+    expect(divergent.map(([name, tok]) => [name, fromSql[name], isCoached(tok)])).toEqual([
+      ["pd6 nul escape", false, true],
+      ["pd6 lone surrogate", false, true],
+      ["pd6 overflow x4", false, true],
+    ]);
   });
 
   it("keeps every coach view at 200 with a malformed row on the board", async () => {
