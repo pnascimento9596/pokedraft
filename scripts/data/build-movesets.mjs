@@ -34,26 +34,28 @@ const CSV_FILES = [
 export const KEEPER_MOVES = [
   "protect",
   "detect",
-  "endure",
-  "wide-guard",
-  "baneful-bunker",
-  "spiky-shield",
-  "kings-shield",
-  "obstruct",
-  "silk-trap",
-  "burning-bulwark",
+  "reflect",
+  "light-screen",
+  "barrier",
+  "iron-defense",
+  "harden",
+  "withdraw",
+  "defense-curl",
+  "agility",
 ];
 
 export const ABOUT =
   "Presentation-only canon movesets for the match broadcast; the engine and scouting never read this file. " +
   "Source: PokéAPI CSVs at the pinned commit, default form of each species. " +
-  "Candidate tiers, in order: level-up moves in the most recent version group (by version_groups.order) where the species has any level-up move; " +
-  "then level-up moves from each earlier version group, most recent first; then machine moves from the most recent version group where the species has any machine move. " +
+  "Version groups are ordered by version_groups.order. " +
+  "Candidate tiers, in order: level-up moves in the debut version group (the earliest where the species has any level-up move); " +
+  "then level-up moves in the newest version group where it has any level-up move; then machine moves in the newest version group where it has any machine move. " +
   "Tiers are added only while fewer than 4 damaging moves (physical or special with non-null power) are pooled; a move keeps its first tier. " +
   "Rank: earlier tier, then STAB (move type is one of the species types), then higher power, then higher accuracy (null counts as 101), then lower move id. " +
   "Pick in rank order taking at most 2 moves per type, then fill any open slot from the skipped moves in rank order. " +
-  "When every tier holds fewer than 4 damaging moves, the open slots take the species' other canon moves from the same tiers (status moves, or damaging moves with variable power, which keep power null) by the same rank. " +
-  "keeperMove is the first of protect, detect, endure, wide-guard, baneful-bunker, spiky-shield, kings-shield, obstruct, silk-trap, burning-bulwark that the default form learns by any method in any version group, else null.";
+  "When the tiers hold fewer than 4 damaging moves, the open slots take the species' other canon moves from the same tiers (status moves, or damaging moves with variable power, which keep power null) by the same rank. " +
+  "keeperMove is the first of protect, detect, reflect, light-screen, barrier, iron-defense, harden, withdraw, defense-curl, agility that the default form learns by any method in its debut version group; " +
+  "failing that, the first of them it learns by any method in its newest level-up version group; else null.";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
@@ -189,20 +191,22 @@ export function buildMovesets(csv, maxSpecies = MAX_SPECIES) {
     const speciesTypes = required(typesBy.get(pid), `types for pokemon ${pid}`);
     const learns = learnsBy.get(pid) ?? [];
 
-    const byVg = (method) => {
+    const groups = (method) => {
       const out = new Map();
       for (const r of learns) {
         if (r.pokemon_move_method_id !== method) continue;
         if (!out.has(r.version_group_id)) out.set(r.version_group_id, new Set());
         out.get(r.version_group_id).add(r.move_id);
       }
-      return [...out.entries()]
-        .sort((a, b) => vgOrder.get(b[0]) - vgOrder.get(a[0]))
-        .map(([, ids]) => ids);
+      return [...out.entries()].sort((a, b) => vgOrder.get(a[0]) - vgOrder.get(b[0]));
     };
-    const levelTiers = byVg(levelUp);
-    const machineTiers = byVg(machine);
-    const tiers = [...levelTiers, ...machineTiers.slice(0, 1)];
+    const levelGroups = groups(levelUp);
+    const debut = levelGroups[0];
+    const newest = levelGroups.at(-1);
+    const newestMachine = groups(machine).at(-1);
+    const tiers = [debut, newest === debut ? undefined : newest, newestMachine]
+      .filter((g) => g !== undefined)
+      .map(([, ids]) => ids);
 
     const pool = new Map();
     for (let t = 0; t < tiers.length; t++) {
@@ -228,8 +232,16 @@ export function buildMovesets(csv, maxSpecies = MAX_SPECIES) {
     }
     if (picked.length === 0) throw new Error(`species ${id} learns no move`);
 
-    const learnedIds = new Set(learns.map((r) => moves.get(r.move_id)?.id));
-    const keeper = KEEPER_MOVES.find((k) => learnedIds.has(k));
+    const learnedIn = (group) =>
+      new Set(
+        learns
+          .filter((r) => group !== undefined && r.version_group_id === group[0])
+          .map((r) => moves.get(r.move_id)?.id),
+      );
+    const inDebut = learnedIn(debut);
+    const inNewest = learnedIn(newest);
+    const keeper =
+      KEEPER_MOVES.find((k) => inDebut.has(k)) ?? KEEPER_MOVES.find((k) => inNewest.has(k));
 
     species.push({
       id,

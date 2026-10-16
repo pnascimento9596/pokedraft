@@ -26,28 +26,34 @@ describe("movesets.json", () => {
 });
 
 describe("movesetFor canon spot checks (verified against the pinned PokéAPI CSVs)", () => {
-  it("gives Charizard its Scarlet/Violet level-up fire and flying STAB moves", () => {
-    expect(ids(6)).toEqual(["flare-blitz", "inferno", "air-slash", "dragon-claw"]);
+  it("gives Charizard its red-blue Flamethrower, catching a newest-group-first pick", () => {
+    expect(ids(6)).toContain("flamethrower");
+    expect(ids(6)).toEqual(["flamethrower", "ember", "slash", "scratch"]);
     expect(movesetFor(6).moves[0]).toEqual({
-      id: "flare-blitz",
-      name: "Flare Blitz",
+      id: "flamethrower",
+      name: "Flamethrower",
       type: "fire",
-      damageClass: "physical",
-      power: 120,
+      damageClass: "special",
+      power: 90,
     });
-    expect(movesetFor(6).keeperMove?.id).toBe("protect");
+    expect(movesetFor(6).keeperMove?.id).toBe("reflect");
   });
 
-  it("gives Blastoise water STAB first", () => {
-    expect(ids(9)).toEqual(["wave-crash", "hydro-pump", "flash-cannon", "bite"]);
+  it("gives Blastoise both Water Gun and Hydro Pump from red-blue", () => {
+    expect(ids(9)).toContain("water-gun");
+    expect(ids(9)).toContain("hydro-pump");
+    expect(ids(9)).toEqual(["hydro-pump", "water-gun", "skull-bash", "bite"]);
+    expect(movesetFor(9).keeperMove?.id).toBe("reflect");
   });
 
-  it("gives Pikachu two electric moves and then its strongest non-electric ones", () => {
-    expect(ids(25)).toEqual(["thunder", "thunderbolt", "iron-tail", "quick-attack"]);
+  it("gives Pikachu its red-blue level-up set, which has Thunder but not Thunderbolt", () => {
+    expect(ids(25)).toEqual(["thunder", "thunder-shock", "swift", "quick-attack"]);
+    expect(ids(25)).not.toContain("thunderbolt");
   });
 
-  it("gives Gengar ghost STAB and no invented poison move, since its newest level-up set has none", () => {
-    expect(ids(94)).toEqual(["shadow-ball", "hex", "dream-eater", "dark-pulse"]);
+  it("gives Gengar its red-blue Lick and Dream Eater, then Scarlet/Violet ghost and dark moves", () => {
+    expect(ids(94)).toEqual(["lick", "dream-eater", "shadow-ball", "dark-pulse"]);
+    expect(movesetFor(94).keeperMove?.id).toBe("protect");
   });
 
   it("gives Magikarp Tackle, its Sword/Shield TMs, and Splash with null power", () => {
@@ -78,8 +84,8 @@ describe("movesetFor canon spot checks (verified against the pinned PokéAPI CSV
   });
 
   it("gives Wobbuffet its canon counters with null power rather than an invented damage figure", () => {
-    expect(ids(202)).toEqual(["amnesia", "mirror-coat", "splash", "destiny-bond"]);
-    expect(movesetFor(202).moves[1]).toEqual({
+    expect(ids(202)).toEqual(["mirror-coat", "destiny-bond", "safeguard", "counter"]);
+    expect(movesetFor(202).moves[0]).toEqual({
       id: "mirror-coat",
       name: "Mirror Coat",
       type: "psychic",

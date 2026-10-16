@@ -14,31 +14,43 @@ commit `c80757193bd0889054e36f4209762360bdaa4b95` from the shared cache, validat
 
 ## Rule
 
-The same text ships in the artifact's `about` field.
+The same text ships in the artifact's `about` field. The rule was revised on PR #58 so each species
+shows its classic signature moves (Charizard's Flamethrower, Blastoise's Water Gun). The first
+version ranked the newest learnset first and dropped both.
 
-1. Candidate tiers, in order:
-   - level-up moves in the most recent version group (by `version_groups.order`, not id) where the
-     default form has any level-up move;
-   - level-up moves from each earlier version group, most recent first;
-   - machine moves from the most recent version group where the default form has any machine move.
-2. Tiers are added only while fewer than 4 damaging moves are pooled. Damaging means damage class
+1. Version groups are ordered by `version_groups.order`, not by id.
+2. Candidate tiers, in order:
+   - level-up moves in the debut version group, the earliest one where the default form has any
+     level-up move;
+   - level-up moves in the newest version group where it has any level-up move;
+   - machine moves in the newest version group where it has any machine move.
+   Version groups between the debut and the newest are not used.
+3. Tiers are added only while fewer than 4 damaging moves are pooled. Damaging means damage class
    physical or special with a non-null power. A move keeps the first tier it appears in.
-3. Rank by earlier tier, then STAB (move type is one of the species types), then higher power, then
-   higher accuracy (null counts as 101), then lower move id.
-4. Pick in rank order taking at most 2 moves per type, then fill any open slot from the skipped
+4. Rank by earlier tier, then STAB (move type is one of the species types), then higher power, then
+   higher accuracy (null counts as 101), then lower move id. A later tier never displaces an
+   earlier tier's pick.
+5. Pick in rank order taking at most 2 moves per type, then fill any open slot from the skipped
    moves in rank order.
-5. When every tier holds fewer than 4 damaging moves, the open slots take the species' other canon
+6. When the tiers hold fewer than 4 damaging moves, the open slots take the species' other canon
    moves from the same tiers by the same rank. These are status moves or damaging moves with
    variable power (Flail, Counter, Mirror Coat), which keep their real damage class and
    `power: null`. Nothing is invented, so a species can have fewer than 4 moves.
-6. `keeperMove` is the first of Protect, Detect, Endure, Wide Guard, Baneful Bunker, Spiky Shield,
-   King's Shield, Obstruct, Silk Trap, Burning Bulwark that the default form learns by any method in
-   any version group, else null.
+7. `keeperMove` is the first of Protect, Detect, Reflect, Light Screen, Barrier, Iron Defense,
+   Harden, Withdraw, Defense Curl, Agility that the default form learns by any method in its debut
+   version group. Failing that, it is the first of them learned by any method in its newest
+   level-up version group. Otherwise it is null.
 
-Two readings of the dispatch were settled here. "Machine moves from the most recent version group"
-means the most recent group in which the species has machine moves, because Magikarp, for one, has
-no Scarlet/Violet machine rows. Ranking uses the tier as its first key so an extension tier only
-fills slots and never pushes a newer level-up move out.
+Readings settled here:
+
+- **STAB stays in the ranking.** Ranking on power alone puts Tackle (id 33) ahead of Water Gun
+  (id 55) for Blastoise, since both have 40 power and 100 accuracy. Blastoise would then lose Water
+  Gun.
+- **The Gen 1 debut.** For Gen 1 species the earliest group by `order` is `red-green-japan`, not
+  `red-blue`. A build that ignored `red-green-japan` and `blue-japan` produced species and move
+  tables identical to this one, so no exclusion list ships.
+- **"Newest group" for the keeper fallback** means the newest level-up group, the same group as
+  tier 2.
 
 ## Sources
 
@@ -63,29 +75,48 @@ level-up rows past `scarlet-violet` (order 27), so Scarlet/Violet is the newest 
 
 ## Encoding and size
 
-The artifact holds one move table keyed by PokéAPI identifier (395 moves) and one row per species
+The artifact holds one move table keyed by PokéAPI identifier (417 moves) and one row per species
 that cites moves by identifier. The accessor joins them, so callers see full move objects. A
-per-species object encoding of the same data measured 488,535 bytes minified (28,604 gzip), so the
-table form was chosen from the start.
+per-species object encoding of the same data measured 486,422 bytes minified (27,465 gzip), so the
+table form is kept.
 
 | Measure | Bytes |
 | --- | --- |
-| `movesets.json` on disk | 138,526 |
-| gzip -9 of the file | 18,641 |
-| minified JSON (what a bundler inlines) | 131,007 |
-| gzip -9 of minified JSON | 18,358 |
+| `movesets.json` on disk | 139,510 |
+| gzip -9 of the file | 19,043 |
+| minified JSON (what a bundler inlines) | 131,859 |
+| gzip -9 of minified JSON | 18,747 |
 
 That is under the 150 KB raw budget, so no index-array encoding was added. Nothing imports
 `movesets.ts` from a client component yet, so the current client bundle is unchanged.
 
 ## Coverage
 
-- 1,016 species get 4 moves. 9 get fewer: Metapod, Weedle, Kakuna, Ditto, Unown, Smeargle, Cosmog,
-  Cosmoem, Blipbug.
+- 1,015 species get 4 moves. 10 get fewer: Metapod, Weedle, Kakuna, Ditto, Unown, Smeargle,
+  Wurmple, Cosmog, Cosmoem, Blipbug.
 - 8 species have no damaging move in any tier and get only canon non-damaging moves: Kakuna, Ditto,
   Wobbuffet, Smeargle, Wynaut, Pyukumuku, Cosmog, Cosmoem.
-- `keeperMove` is Protect for 1,003 species and null for 22. Protect is first in the list and
-  nearly universal, so the other nine keeper moves never win.
+
+`keeperMove` distribution:
+
+| keeperMove | Species |
+| --- | --- |
+| protect | 889 |
+| reflect | 89 |
+| null | 22 |
+| harden | 13 |
+| agility | 8 |
+| iron-defense | 2 |
+| defense-curl | 1 |
+| withdraw | 1 |
+
+Protect is still 86.7% of species, above the 80% mark. Protect has been a machine move since Gen 2,
+so every species debuting in Gen 2 or later that learns it in its debut group gets it first. Gen 1
+species debut before Protect existed and mostly get Reflect.
+
+The 22 null keepers are Caterpie, Weedle, Zubat, Golbat, Machop, Machoke, Machamp, Tangela,
+Magikarp, Ditto, Unown, Wobbuffet, Smeargle, Wurmple, Wynaut, Kricketot, Combee, Tynamo,
+Scatterbug, Cosmog, Cosmoem, Blipbug.
 
 ## Spot checks
 
@@ -93,23 +124,39 @@ Each was read from the cached CSVs before it became a literal test assertion.
 
 | Species | Moves | keeperMove |
 | --- | --- | --- |
-| Charizard (6) | Flare Blitz, Inferno, Air Slash, Dragon Claw | Protect |
-| Blastoise (9) | Wave Crash, Hydro Pump, Flash Cannon, Bite | Protect |
-| Pikachu (25) | Thunder, Thunderbolt, Iron Tail, Quick Attack | Protect |
-| Gengar (94) | Shadow Ball, Hex, Dream Eater, Dark Pulse | Protect |
+| Charizard (6) | Flamethrower, Ember, Slash, Scratch | Reflect |
+| Blastoise (9) | Hydro Pump, Water Gun, Skull Bash, Bite | Reflect |
+| Pikachu (25) | Thunder, Thunder Shock, Swift, Quick Attack | Reflect |
+| Gengar (94) | Lick, Dream Eater, Shadow Ball, Dark Pulse | Protect |
 | Magikarp (129) | Tackle, Hydro Pump, Bounce, Splash | null |
 | Ditto (132) | Transform | null |
-| Wobbuffet (202) | Amnesia, Mirror Coat, Splash, Destiny Bond | null |
+| Wobbuffet (202) | Mirror Coat, Destiny Bond, Safeguard, Counter | null |
 | Smeargle (235) | Sketch | null |
 
-Gengar's Scarlet/Violet level-up set has no poison move, so it gets no poison STAB. Magikarp's
-Hydro Pump and Bounce are its Sword/Shield machine moves.
+- Pikachu does not get Thunderbolt. Its red-blue level-up set is Growl, Thunder Shock, Thunder Wave,
+  Quick Attack, Swift, Agility and Thunder. That set already holds 4 damaging moves, so the rule
+  never reaches a group where Pikachu learns Thunderbolt (a red-blue TM, and level-up in later
+  games). The test asserts that absence literally.
+- Gengar's red-blue set has only 2 damaging moves (Lick, Dream Eater). Shadow Ball and Dark Pulse
+  come from Scarlet/Violet level-up, with Shadow Ball as the second ghost move under the cap.
+- Magikarp's red-blue set is Splash and Tackle. Its Hydro Pump and Bounce are Sword/Shield machine
+  moves, because it has no Scarlet/Violet machine rows.
 
 ## Tests
 
-- `scripts/data/build-movesets.test.ts` runs the rule on small CSV fixtures. Each case fails under
-  a named mutation: a per-type cap of 3, null accuracy ranked as 0, version groups sorted by id, a
-  keeper picked by name, and machine moves taken from the oldest group.
-- `src/data/__tests__/movesets.test.ts` checks the schema, coverage of every Pokédex id with 1 to 4
-  moves, that the committed file is in the builder's canonical form, the spot checks above, and the
-  `RangeError` on an unknown id.
+- `scripts/data/build-movesets.test.ts` runs the rule on small CSV fixtures. In the fixtures, the
+  debut, middle and newest version groups have ids that disagree with their order. Each of these
+  mutations makes at least one test fail:
+  - a per-type cap of 3;
+  - null accuracy ranked as 0;
+  - version groups sorted by id;
+  - the newest group taken as the debut;
+  - machine moves from the oldest group;
+  - middle level-up groups included;
+  - the keeper taken from the newest group before the debut group.
+- `src/data/__tests__/movesets.test.ts` checks:
+  - the schema;
+  - that every Pokédex id is covered with 1 to 4 moves;
+  - that the committed file is in the builder's canonical form;
+  - the spot checks above;
+  - the `RangeError` on an unknown id.

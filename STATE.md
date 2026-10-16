@@ -4,7 +4,7 @@ Measured ground truth. Updated in the same PR as every merge.
 
 ## Canon movesets artifact
 
-`src/data/movesets.json` holds up to 4 canon signature moves and a `keeperMove` for each of the 1,025 species, built by `pnpm data:movesets` from the pinned PokéAPI CSVs (three new inputs pinned in `src/data/movesets.sources.json`). It is presentation-only for the future match broadcast: nothing in `src/engine` or `src/scouting` reads it, and `pokedex.json` and `scouting.json` rebuild unchanged. `movesetFor(speciesId)` in `src/data/movesets.ts` is the accessor. The file is 138,526 bytes (18,641 gzip) and no client component imports it yet. The selection rule, hashes and spot checks are in `docs/decisions/canon-movesets.md`. Not merged at the time of writing.
+`src/data/movesets.json` holds up to 4 canon signature moves and a `keeperMove` for each of the 1,025 species, built by `pnpm data:movesets` from the pinned PokéAPI CSVs (three new inputs pinned in `src/data/movesets.sources.json`). It is presentation-only for the future match broadcast: nothing in `src/engine` or `src/scouting` reads it, and `pokedex.json` and `scouting.json` rebuild unchanged. Moves come first from each species' debut level-up set (Charizard gets Flamethrower, Blastoise gets Water Gun and Hydro Pump). `keeperMove` prefers the debut group too, and Protect is still 889 of 1,025 species. `movesetFor(speciesId)` in `src/data/movesets.ts` is the accessor. The file is 139,510 bytes (19,043 gzip) and no client component imports it yet. The selection rule, hashes and spot checks are in `docs/decisions/canon-movesets.md`. Not merged at the time of writing.
 
 ## Submission attempts correction
 

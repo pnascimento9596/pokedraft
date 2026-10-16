@@ -24,29 +24,31 @@ const MOVES: MoveRow[] = [
   ["10", "splash", "1", "", "", "1"],
   ["11", "flail", "1", "", "100", "2"],
   ["12", "protect", "1", "", "", "1"],
-  ["20", "detect", "2", "", "", "1"],
-  ["14", "endure", "1", "", "", "1"],
-  ["16", "wide-guard", "6", "", "", "1"],
-  ["15", "baneful-bunker", "4", "", "", "1"],
-  ["17", "spiky-shield", "12", "", "", "1"],
-  ["18", "kings-shield", "9", "", "", "1"],
-  ["19", "obstruct", "17", "", "100", "1"],
-  ["13", "silk-trap", "7", "", "", "1"],
-  ["21", "burning-bulwark", "10", "", "", "1"],
+  ["13", "detect", "2", "", "", "1"],
+  ["14", "reflect", "14", "", "", "1"],
+  ["15", "light-screen", "14", "", "", "1"],
+  ["16", "barrier", "14", "", "", "1"],
+  ["17", "iron-defense", "9", "", "", "1"],
+  ["18", "harden", "1", "", "", "1"],
+  ["19", "withdraw", "11", "", "", "1"],
+  ["20", "defense-curl", "1", "", "", "1"],
+  ["21", "agility", "14", "", "", "1"],
 ];
 
 const TYPE_IDS: [string, string][] = [
   ["1", "normal"],
   ["2", "fighting"],
-  ["4", "poison"],
   ["6", "rock"],
-  ["7", "bug"],
   ["9", "steel"],
   ["10", "fire"],
   ["11", "water"],
-  ["12", "grass"],
-  ["17", "dark"],
+  ["14", "psychic"],
 ];
+
+// Version group ids deliberately disagree with their order: 1 is oldest, 3 is middle, 2 is newest.
+const OLDEST = "1";
+const MIDDLE = "3";
+const NEWEST = "2";
 
 function fixture(speciesType: string, learns: Learn[][]) {
   return {
@@ -93,56 +95,49 @@ function fixture(speciesType: string, learns: Learn[][]) {
     ],
     types: TYPE_IDS.map(([id, identifier]) => ({ id, identifier })),
     version_groups: [
-      { id: "1", order: "1" },
-      { id: "2", order: "3" },
-      { id: "3", order: "2" },
+      { id: OLDEST, order: "1" },
+      { id: NEWEST, order: "3" },
+      { id: MIDDLE, order: "2" },
     ],
   };
 }
+
+const levelUp = (vg: string, moves: string[]): Learn[] => moves.map((m) => [vg, "1", m]);
 
 describe("buildMovesets selection rule", () => {
   it("caps a type at two picks and ranks null accuracy above 100, catching a pick of three STAB fire moves", () => {
     const doc = buildMovesets(
       fixture("10", [
-        ["blaze-a", "blaze-b", "blaze-c", "rock-sure", "rock-null", "tackle"].map((m): Learn => [
-          "2",
-          "1",
-          m,
-        ]),
+        levelUp(NEWEST, ["blaze-a", "blaze-b", "blaze-c", "rock-sure", "rock-null", "tackle"]),
       ]),
       1,
     );
     expect(doc.species[0].moves).toEqual(["blaze-a", "blaze-b", "rock-null", "rock-sure"]);
   });
 
-  it("orders version groups by their order column, not their id, so a stale learnset never wins", () => {
+  it("takes the debut group by order, not id, over a stronger newest group, catching a newest-first pick", () => {
     const doc = buildMovesets(
       fixture("10", [
         [
-          ["3", "1", "blaze-c"],
-          ["3", "1", "tackle"],
-          ["3", "1", "rock-sure"],
-          ["3", "1", "blaze-b"],
-          ["2", "1", "old-kick"],
-          ["2", "1", "tackle"],
-          ["2", "1", "rock-sure"],
-          ["2", "1", "blaze-a"],
+          ...levelUp(MIDDLE, ["blaze-c", "tackle", "old-kick", "rock-sure"]),
+          ...levelUp(NEWEST, ["blaze-a", "blaze-b", "rock-null"]),
         ],
       ]),
       1,
     );
-    expect(doc.species[0].moves).toEqual(["blaze-a", "rock-sure", "old-kick", "tackle"]);
+    expect(doc.species[0].moves).toEqual(["blaze-c", "rock-sure", "old-kick", "tackle"]);
   });
 
-  it("extends to earlier level-up groups and then the newest machine group, keeping the newest tier first", () => {
+  it("fills from the newest level-up group and then the newest machine group, skipping middle groups", () => {
     const doc = buildMovesets(
       fixture("10", [
         [
-          ["2", "1", "tackle"],
-          ["3", "1", "old-kick"],
-          ["1", "4", "tm-weak"],
-          ["3", "4", "tm-wave"],
-          ["3", "4", "tm-weak"],
+          ...levelUp(OLDEST, ["tackle"]),
+          ...levelUp(MIDDLE, ["blaze-a"]),
+          ...levelUp(NEWEST, ["old-kick"]),
+          [OLDEST, "4", "rock-sure"],
+          [MIDDLE, "4", "tm-wave"],
+          [MIDDLE, "4", "tm-weak"],
         ],
       ]),
       1,
@@ -151,16 +146,7 @@ describe("buildMovesets selection rule", () => {
   });
 
   it("fills open slots with canon non-damaging moves and keeps variable power null, never inventing a move", () => {
-    const doc = buildMovesets(
-      fixture("11", [
-        [
-          ["2", "1", "splash"],
-          ["2", "1", "tackle"],
-          ["2", "1", "flail"],
-        ],
-      ]),
-      1,
-    );
+    const doc = buildMovesets(fixture("11", [levelUp(NEWEST, ["splash", "tackle", "flail"])]), 1);
     expect(doc.species[0]).toEqual({
       id: 1,
       moves: ["tackle", "splash", "flail"],
@@ -180,17 +166,30 @@ describe("buildMovesets selection rule", () => {
     });
   });
 
-  it("picks the keeper move by list priority across any method, catching a pick by move id, name, or level-up only", () => {
+  it("prefers a keeper move from the debut group, then the newest group, ignoring middle groups", () => {
     const doc = buildMovesets(
       fixture("10", [
         [
-          ["2", "1", "tackle"],
-          ["1", "2", "baneful-bunker"],
-          ["2", "4", "wide-guard"],
+          ...levelUp(OLDEST, ["tackle"]),
+          ...levelUp(NEWEST, ["tackle"]),
+          [OLDEST, "2", "harden"],
+          [NEWEST, "4", "protect"],
         ],
+        [
+          ...levelUp(OLDEST, ["tackle"]),
+          ...levelUp(NEWEST, ["tackle"]),
+          [MIDDLE, "2", "protect"],
+          [NEWEST, "4", "agility"],
+          [NEWEST, "2", "detect"],
+        ],
+        [...levelUp(OLDEST, ["tackle"]), [MIDDLE, "4", "reflect"]],
       ]),
-      1,
+      3,
     );
-    expect(doc.species[0].keeperMove).toBe("wide-guard");
+    expect(doc.species.map((s: { keeperMove: string | null }) => s.keeperMove)).toEqual([
+      "harden",
+      "detect",
+      null,
+    ]);
   });
 });
