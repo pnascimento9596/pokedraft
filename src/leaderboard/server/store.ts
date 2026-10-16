@@ -43,10 +43,13 @@ const t = leaderboardEntries;
 /**
  * `isCoached` in SQL: for a token of a version in `MANAGER_TOKEN_VERSIONS`, base64url-decode the
  * payload after the `pd<v>.` prefix and test that the JSON array has more than three elements.
- * Every other token is uncoached. Stored tokens are canonical re-encodes (`encodeToken` on submit),
- * so `decode` and the jsonb cast never see malformed input; a malformed row would make the query
- * fail rather than mislabel it. The prefix lengths come from the version strings, and the only
- * interpolated text is those constant versions.
+ * Every other token is uncoached. The expression is total, so a hand-edited row reads uncoached
+ * instead of failing the whole board query. Only a token in the base64url alphabet whose body
+ * length is not 1 mod 4 reaches `decode`. The bytes are read as LATIN1, which never fails except
+ * on a NUL byte, so invalid UTF-8 is tolerated the way `TextDecoder` replaces it, and
+ * `pg_input_is_valid` (PostgreSQL 16 and later) screens the JSON before the cast. CASE fixes the
+ * evaluation order that AND does not. The only spliced text is the versions, which must be
+ * positive integers.
  */
 export function coachedSqlFor(versions: readonly number[]): SQL<boolean> {
   for (const v of versions) {
@@ -56,9 +59,10 @@ export function coachedSqlFor(versions: readonly number[]): SQL<boolean> {
   }
   return sql<boolean>`(CASE ${sql.join(
     versions.map((v) => {
-      const prefix = `pd${v}.`;
-      const n = prefix.length;
-      return sql`WHEN ${t.token} LIKE ${sql.raw(`'${prefix}%'`)} THEN jsonb_array_length(convert_from(decode(rpad(translate(substr(${t.token}, ${sql.raw(String(n + 1))}), '-_', '+/'), ((length(${t.token}) - ${sql.raw(String(n))} + 3) / 4) * 4, '='), 'base64'), 'UTF8')::jsonb) > 3`;
+      const n = `pd${v}.`.length;
+      const bytes = sql`decode(rpad(translate(substr(${t.token}, ${sql.raw(String(n + 1))}), '-_', '+/'), ((length(${t.token}) - ${sql.raw(String(n))} + 3) / 4) * 4, '='), 'base64')`;
+      const text = sql`convert_from(${bytes}, 'LATIN1')`;
+      return sql`WHEN ${t.token} ~ ${sql.raw(`'^pd${v}\\.[A-Za-z0-9_-]+$'`)} AND (length(${t.token}) - ${sql.raw(String(n))}) % 4 <> 1 THEN (CASE WHEN position('\\x00'::bytea IN ${bytes}) > 0 THEN false WHEN NOT pg_input_is_valid(${text}, 'jsonb') THEN false WHEN jsonb_typeof(${text}::jsonb) <> 'array' THEN false ELSE jsonb_array_length(${text}::jsonb) > 3 END)`;
     }),
     sql.raw(" "),
   )} ELSE false END)`;
