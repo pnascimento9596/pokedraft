@@ -26,6 +26,33 @@ both times (chromium 343 and 1, iphone-se 135 and 29, iphone-14 173 and 3, pixel
 webkit-wheel 6, webkit-progress 6). Hosted CI and the independent review: NOT RUN at the time of
 writing.
 
+## Coached SQL hardening
+
+Not merged at the time of writing. Branch `fix/coached-sql-hardening` off `648cf2f`, dispatch C items 11 and 12; item 13 (a stored `coached` column) is deferred until a filtered view is measurably slow. `coachedSqlFor(versions)` builds the board's coached rule and throws at module load on any version that is not a positive integer, and `MANAGER_TOKEN_VERSIONS` is typed so such a value does not compile. `coachedSql` is now total: a hand-edited `pd6.` row reads uncoached instead of turning the Uncoached and Coached views into 503s. It screens the base64url alphabet and length, reads the bytes as LATIN1, and checks the JSON with `pg_input_is_valid` (PostgreSQL 16+; Neon reports 17) and `jsonb_typeof` before counting. `isCoached` now keeps a leading byte order mark so both rules reject it. Three tamper-only payloads (`\u0000` escape, lone surrogate, numeric overflow) still differ, without throwing, and a test pins them. Canonical tokens keep their verdict. RED commits: `04b6312` (version guard, 6 failing), `d51dab7` (malformed rows, 2 failing: a base64 error and two 503 views), `ce96eef` (BOM, 1 failing). Decisions and verbatim RED output are in `docs/decisions/coached-sql-hardening.md`.
+
+Local gates at `ef6436d` (the commit after it changes only docs):
+
+- `pnpm vitest run src/leaderboard`: 81 passed in 8 files. Lint, typecheck, build and format check exited 0. Unit tests: 1,294 passed of 1,294, in 140 files.
+- The compiled `coachedSql` on a scratch PostgreSQL 16.14 cluster gave the same verdicts as the PGlite tests on 11 tokens, including 4,096-character nesting, without an error.
+- Playwright on a fresh build with `PLAYWRIGHT_PORT=3483 CI=1`: 804 passed, 0 failed, 61 skipped. By project: chromium 343 passed and 1 skipped, iphone-se 135 and 29, iphone-14 173 and 3, pixel-7 141 and 28, webkit-wheel 6 and 0, webkit-progress 6 and 0.
+- Hosted CI and the independent review: NOT RUN at the time of writing.
+
+## Engine comments and invariants
+
+Merged as PR #64 (squash `56c41d4`, reviewed head `deee557`, GLM 5.3 Flash APPROVE in round 1
+with the canary echoed; hosted check and e2e green on that head). Branch
+`chore/engine-invariants-comments`, off `origin/main` at `648cf2f`. Section A of the 2026-10-16 hand-off. No runtime behaviour changes.
+Comments in `src/engine/cup.ts`, `src/engine/match.ts`, `src/ui/manager/touchline.ts` and
+`src/components/matchday/MatchdayFlow.tsx` record three rules. A clean sheet needs half of
+regulation even in extra time. The vacancy multipliers also correct the original starter that
+`refreshUserLines` re-inserts into a slot a red card emptied. Any manager decision switches the
+auto coach off for the user side. A new case in `src/engine/__tests__/cup.test.ts` pins at most
+one pre-match absence per match over 400 cups and fails on a local `[absence, absence]` mutation.
+No golden moved and `src/engine/versions/v5` is untouched (provenance check exit 0). Local gates
+are engine suite 273 of 273, goldens 7 of 7, and lint, typecheck, test (1284 of 1284 on the rerun
+after one unrelated `announce-builder` flake), build and format check all exit 0. Playwright NOT
+RUN because nothing at runtime changed. Details in `docs/decisions/engine-invariants-comments.md`.
+
 ## Manager mode UI and the Live match broadcast
 
 Merged as PR #62 (squash `35b99cf`, reviewed head `c75187e`, GLM APPROVE in round 2 after the Coached filter moved server-side; hosted check and e2e green on that head). Production after the deploy: health serves `35b99cf` on engine 6; `/api/leaderboard` returns `coach` all, uncoached and coached views and 400 for an unknown value; `e2e/manager-mode.spec.ts` against the production URL passed 10 of 10 on chromium and pixel-7. Branch `feat/manager-mode-broadcast`, which merged `origin/main` at `6915a84` (engine 6). No file under `src/engine` changed. Two panel settings, `managerMode` (default off) and `matchView` (`quick` or `live`, default `quick`), sit on the home panel and on the `/play` and `/daily` start screens. With both at their defaults, See results goes straight to the results as before. Otherwise the cup plays match by match after the draft. In manager mode the touchline stops at kickoff, half time, the break before extra time and each user injury. Every decision is checked and then replayed through `runCup` (about 174 ms per call in node), and the finished token carries the manager list and replays from the share link. Live match is a lazy-loaded top-down broadcast with `PlayerImage` sprites and canon move callouts. Movesets load by dynamic import, and the choreography is seeded from `src/lib/rng.ts`. Results list match incidents. Leaderboard rows carry `coached`, derived at read time from the token with no column. Board rows show a Coached chip and an All / Uncoached / Coached filter that runs in SQL (`coach=` on `GET /api/leaderboard`, `coachedSql` mirrors `isCoached` over `MANAGER_TOKEN_VERSIONS`), so each view is its own top 50 ranked 1..n; the submit rank stays the overall board rank. A reload during the matchday returns to the finished draft. Decisions and limits are in `docs/decisions/manager-mode-broadcast.md`, and browser screenshots and a GIF are in `docs/reports/manager-mode/`. RED commit: `385bc84` (savedRun coached restore).
