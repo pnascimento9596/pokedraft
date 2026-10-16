@@ -1,5 +1,13 @@
 import { z } from "zod";
-import { decodeToken, encodeToken, replay, type CupResult, type DraftState } from "@/engine";
+import {
+  decodeToken,
+  encodeToken,
+  replay,
+  type CupResult,
+  type DraftState,
+  type ManagerAction,
+} from "@/engine";
+import { MATCH_VIEWS, type MatchView } from "@/ui/settings";
 import {
   forgetRunSnapshot,
   readRunCheckpoint,
@@ -14,13 +22,29 @@ import { runToken, startRun, step, type Run } from "./runState";
 
 // Snapshots keep only the run token (settings, seed, actions) and which screen it was on. Everything
 // else is rebuilt by replaying the actions through the engine, so a restored run cannot drift from
-// the one that was played.
-const savedSchema = z.object({
-  screen: z.enum(["draft", "results"]),
-  token: z.string(),
-  daily: z.string().nullable(),
+// the one that was played. A matchday snapshot's token carries the touchline decisions so far.
+const matchdaySchema = z.object({
+  match: z.number().int().nonnegative(),
+  view: z.enum(MATCH_VIEWS),
+  managerMode: z.boolean(),
 });
+const savedSchema = z.union([
+  z.object({
+    screen: z.enum(["draft", "results"]),
+    token: z.string(),
+    daily: z.string().nullable(),
+  }),
+  z.object({
+    screen: z.literal("matchday"),
+    token: z.string(),
+    daily: z.string().nullable(),
+    matchday: matchdaySchema,
+  }),
+]);
 type Saved = z.infer<typeof savedSchema>;
+
+/** Where a matchday stood: the match on screen and how it is being played. */
+export type MatchdayAt = z.infer<typeof matchdaySchema>;
 
 export type Restored =
   | { readonly kind: "draft"; readonly run: Run }
@@ -29,22 +53,53 @@ export type Restored =
       readonly token: string;
       readonly draft: DraftState;
       readonly cup: CupResult;
+    }
+  | {
+      readonly kind: "matchday";
+      readonly run: Run;
+      /** The draft's own token, without the touchline decisions. */
+      readonly token: string;
+      readonly draft: DraftState;
+      /** The cup as the decisions so far play it. */
+      readonly cup: CupResult;
+      readonly actions: readonly ManagerAction[];
+      readonly match: number;
+      readonly view: MatchView;
+      readonly managerMode: boolean;
     };
 
 export type { RunSlot };
 
-function snapshot(slot: RunSlot, screen: Saved["screen"], token: string): string {
-  const saved: Saved = { screen, token, daily: slot.daily };
+type SettledScreen = "draft" | "results";
+
+function snapshot(slot: RunSlot, screen: SettledScreen, token: string, at?: undefined): string;
+function snapshot(slot: RunSlot, screen: "matchday", token: string, at: MatchdayAt): string;
+function snapshot(slot: RunSlot, screen: Saved["screen"], token: string, at?: MatchdayAt): string {
+  const saved: Saved =
+    screen === "matchday"
+      ? { screen, token, daily: slot.daily, matchday: at! }
+      : { screen, token, daily: slot.daily };
   return JSON.stringify(saved);
 }
 
-export function saveRun(slot: RunSlot, screen: Saved["screen"], token: string): void {
-  const raw = snapshot(slot, screen, token);
+export function saveRun(slot: RunSlot, screen: SettledScreen, token: string): void;
+export function saveRun(slot: RunSlot, screen: "matchday", token: string, at: MatchdayAt): void;
+export function saveRun(
+  slot: RunSlot,
+  screen: Saved["screen"],
+  token: string,
+  at?: MatchdayAt,
+): void {
+  const raw =
+    screen === "matchday" ? snapshot(slot, screen, token, at!) : snapshot(slot, screen, token);
   writeSession(runSlotKey(slot), raw);
   writeRunCheckpoint(slot, raw);
 }
 
-export function forgetRun(slot: RunSlot, own?: Pick<Saved, "screen" | "token">): void {
+export function forgetRun(
+  slot: RunSlot,
+  own?: { readonly screen: SettledScreen; readonly token: string },
+): void {
   forgetRunSnapshot(slot, own === undefined ? undefined : snapshot(slot, own.screen, own.token));
 }
 
@@ -83,10 +138,32 @@ export function restoreRun(slot: RunSlot): Restored | null {
   if (saved === null || saved.daily !== slot.daily) return null;
   const run = rebuild(slot, saved);
   if (run === null) return null;
-  if (saved.screen === "draft") {
+  const keep = () => {
     writeSession(runSlotKey(slot), raw);
     if (readRunCheckpoint(slot) === null) writeRunCheckpoint(slot, raw);
+  };
+  if (saved.screen === "draft") {
+    keep();
     return { kind: "draft", run };
+  }
+  // A matchday is a run still in progress, so it comes back from a durable checkpoint like a draft.
+  if (saved.screen === "matchday") {
+    try {
+      const { draft, cup } = replay(saved.token);
+      if (cup.matches[saved.matchday.match]?.status !== "played") return null;
+      keep();
+      return {
+        kind: "matchday",
+        run,
+        token: runToken(run),
+        draft,
+        cup,
+        actions: decodeToken(saved.token).manager ?? [],
+        ...saved.matchday,
+      };
+    } catch {
+      return null;
+    }
   }
   // An unseeded challenge run entered without an active session token must not
   // restore an old completed run's results page from durable localStorage.
@@ -95,8 +172,7 @@ export function restoreRun(slot: RunSlot): Restored | null {
   }
   try {
     const { draft, cup } = replay(saved.token);
-    writeSession(runSlotKey(slot), raw);
-    if (readRunCheckpoint(slot) === null) writeRunCheckpoint(slot, raw);
+    keep();
     return { kind: "results", token: saved.token, draft, cup };
   } catch {
     return null;

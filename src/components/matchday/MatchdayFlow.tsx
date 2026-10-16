@@ -43,19 +43,32 @@ function resultWord(m: PlayedMatch): string {
 export function MatchdayFlow({
   ctx,
   initialCup,
+  initialActions = [],
+  initialMatch = 0,
   view,
   managerMode,
+  onProgress,
   onFinish,
 }: {
   readonly ctx: CupContext;
+  /** The cup as `initialActions` play it. */
   readonly initialCup: CupResult;
+  readonly initialActions?: readonly ManagerAction[];
+  /** The match to open on; a restored matchday resumes where it was. */
+  readonly initialMatch?: number;
   readonly view: MatchView;
   readonly managerMode: boolean;
+  /** Called with the decisions so far whenever they or the current match change. */
+  readonly onProgress?: (manager: readonly ManagerAction[], match: number) => void;
   readonly onFinish: (manager: readonly ManagerAction[]) => void;
 }) {
-  const [actions, setActions] = useState<readonly ManagerAction[]>([]);
+  const [actions, setActions] = useState<readonly ManagerAction[]>(initialActions);
   const [cup, setCup] = useState(initialCup);
-  const [index, setIndex] = useState<number | null>(() => nextPlayed(initialCup, -1));
+  const [index, setIndex] = useState<number | null>(() =>
+    initialCup.matches[initialMatch]?.status === "played"
+      ? initialMatch
+      : nextPlayed(initialCup, initialMatch),
+  );
   const [phase, setPhase] = useState<"pre" | "play">("pre");
 
   useEffect(() => {
@@ -64,7 +77,8 @@ export function MatchdayFlow({
 
   useEffect(() => {
     if (index === null) onFinish(actions);
-  }, [index, actions, onFinish]);
+    else onProgress?.(actions, index);
+  }, [index, actions, onFinish, onProgress]);
 
   if (index === null) return null;
   const match = cup.matches[index] as PlayedMatch;
