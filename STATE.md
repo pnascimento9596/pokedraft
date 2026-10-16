@@ -3,9 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Matchday robustness (dispatch B)
+
+Not merged at the time of writing. Branch `feat/matchday-robustness` off `648cf2f`. No file under `src/engine` changed.
+
+- A reload during the matchday now comes back at the same match with every touchline decision kept. The run snapshot gains a `matchday` screen whose token carries the decisions so far. This replaces the earlier "returns to the finished draft" behaviour.
+- Each played match on the results page has Watch live. It lazy-loads the Live match broadcast for that match, and a pd5 link reaches the goals-only fallback.
+- The start screen's manager mode and match view follow a change made in another tab.
+- One formatter, `incidentText` in `src/ui/matchday/copy.ts`, serves both the ticker and the results. An opponent tactic at minute 0 reads "Kick off: Opp play Counter".
+- A touchline decision costs a median 27.7 ms at a 4x CPU throttle in Chromium (15 samples, range 24.3 to 33.6 ms, worst cold decision 42.4 ms). That is under the 100 ms bar, so the synchronous replay stays.
+
+RED commits: `223d3f6` (savedRun matchday restore), `b17be61` (opponent kickoff copy), `f8383bb` (cross-tab settings) and `08897fb` (Watch live browser test).
+
+Local gates at `6866dc4` (the commits after it change only docs):
+
+- Lint, typecheck, build, format check, image seam and client bundle all exited 0.
+- Unit tests: 1,289 passed in 140 files.
+- Playwright with `PLAYWRIGHT_PORT=3482 CI=1`: 811 passed, 0 failed, 61 skipped. By project: chromium 348 and 1, iphone-se 135 and 29, webkit-wheel 6 and 0, webkit-progress 6 and 0, iphone-14 173 and 3, pixel-7 143 and 28.
+- Hosted CI, the independent review and a physical phone: NOT RUN.
+
+Measurements, decisions and failing output for each RED are in `docs/decisions/matchday-robustness.md`.
+
 ## Tooling and process dispatch
 
-Branch `chore/tooling-and-process`, not merged at the time of writing. No file under `src/`
+Merged as PR #66 (squash `e5e71d0`, reviewed head `2f28559`, GLM 5.3 Flash APPROVE in round 2 after a coordinator fix to `strip-verdict.py`, with the canary echoed; hosted check and e2e green on that head). Branch `chore/tooling-and-process`. No file under `src/`
 changed. `tools/review/review-packet.py` builds the GLM packet (`--out-dir`, repeatable
 `--exclude`, clean-tree check) and `tools/review/strip-verdict.py` checks the reply for the
 canary, the full head SHA and one verdict word. The overrides record Sol as an optional lane, GLM
@@ -52,27 +73,6 @@ No golden moved and `src/engine/versions/v5` is untouched (provenance check exit
 are engine suite 273 of 273, goldens 7 of 7, and lint, typecheck, test (1284 of 1284 on the rerun
 after one unrelated `announce-builder` flake), build and format check all exit 0. Playwright NOT
 RUN because nothing at runtime changed. Details in `docs/decisions/engine-invariants-comments.md`.
-
-## Matchday robustness (dispatch B)
-
-Not merged at the time of writing. Branch `feat/matchday-robustness` off `648cf2f`. No file under `src/engine` changed.
-
-- A reload during the matchday now comes back at the same match with every touchline decision kept. The run snapshot gains a `matchday` screen whose token carries the decisions so far. This replaces the earlier "returns to the finished draft" behaviour.
-- Each played match on the results page has Watch live. It lazy-loads the Live match broadcast for that match, and a pd5 link reaches the goals-only fallback.
-- The start screen's manager mode and match view follow a change made in another tab.
-- One formatter, `incidentText` in `src/ui/matchday/copy.ts`, serves both the ticker and the results. An opponent tactic at minute 0 reads "Kick off: Opp play Counter".
-- A touchline decision costs a median 27.7 ms at a 4x CPU throttle in Chromium (15 samples, range 24.3 to 33.6 ms, worst cold decision 42.4 ms). That is under the 100 ms bar, so the synchronous replay stays.
-
-RED commits: `223d3f6` (savedRun matchday restore), `b17be61` (opponent kickoff copy), `f8383bb` (cross-tab settings) and `08897fb` (Watch live browser test).
-
-Local gates at `6866dc4` (the commits after it change only docs):
-
-- Lint, typecheck, build, format check, image seam and client bundle all exited 0.
-- Unit tests: 1,289 passed in 140 files.
-- Playwright with `PLAYWRIGHT_PORT=3482 CI=1`: 811 passed, 0 failed, 61 skipped. By project: chromium 348 and 1, iphone-se 135 and 29, webkit-wheel 6 and 0, webkit-progress 6 and 0, iphone-14 173 and 3, pixel-7 143 and 28.
-- Hosted CI, the independent review and a physical phone: NOT RUN.
-
-Measurements, decisions and failing output for each RED are in `docs/decisions/matchday-robustness.md`.
 
 ## Manager mode UI and the Live match broadcast
 
