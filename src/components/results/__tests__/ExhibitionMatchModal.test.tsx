@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Lineup, Seed } from "@/engine";
 import { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
@@ -136,4 +136,64 @@ it("closes on native Escape, clears replay timers and restores the invoking cont
   view.unmount();
   expect(document.activeElement).toBe(trigger);
   trigger.remove();
+});
+
+describe("two-leg exhibition", () => {
+  it("shows both legs, the aggregate and a penalty decision, and the one-match result is unchanged", () => {
+    render(<ExhibitionMatchModal opponent={opponent} onClose={() => {}} />);
+    expect(screen.getByRole("button", { name: "One match" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Two legs" }));
+    expect(screen.getByTestId("exhibition-leg-1-score").textContent).toBe("0 - 0");
+    expect(screen.getByTestId("exhibition-leg-2-score").textContent).toBe("1 - 1");
+    expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("1 - 1");
+    expect(screen.getByTestId("exhibition-decided").textContent).toBe("On penalties");
+    expect(screen.getByRole("region", { name: "Aggregate" }).textContent).toBe(
+      "Aggregate 1 - 1On penalties. Shared squad wins the tie.",
+    );
+    expect(screen.getAllByRole("status").map((status) => status.textContent)).toEqual([
+      "Leg 1 full time. Leg drawn.",
+      "Leg 2 after extra time. Penalties: 6-7 on pens.",
+    ]);
+    expect(screen.queryByTestId("exhibition-score")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "One match" }));
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("0 - 2");
+    expect(localStorage.length).toBe(1);
+  });
+
+  it("replays leg 2 through extra time and hides the aggregate until both legs reach full time", () => {
+    render(<ExhibitionMatchModal opponent={opponent} onClose={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: "Two legs" }));
+    const leg2 = within(screen.getByRole("region", { name: "Leg 2" }));
+    fireEvent.click(leg2.getByRole("button", { name: "Replay highlights" }));
+    expect(leg2.getByRole("status").textContent).toBe("0' / 120' Replay of recorded goals.");
+    expect(screen.queryByTestId("exhibition-aggregate")).toBeNull();
+    expect(screen.getByRole("region", { name: "Aggregate" }).textContent).toBe(
+      "The aggregate shows when both legs are at full time.",
+    );
+    for (let i = 0; i < 40; i++)
+      act(() => {
+        vi.advanceTimersByTime(80);
+      });
+    expect(leg2.getByRole("status").textContent).toBe(
+      "Leg 2 after extra time. Penalties: 6-7 on pens.",
+    );
+    expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("1 - 1");
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("plays a fresh tie on rematch and settles it on aggregate without extra time", () => {
+    render(<ExhibitionMatchModal opponent={opponent} onClose={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: "Two legs" }));
+    fireEvent.click(screen.getByRole("button", { name: "Play rematch" }));
+    fireEvent.click(screen.getByRole("button", { name: "Play rematch" }));
+    expect(screen.getByTestId("exhibition-leg-1-score").textContent).toBe("0 - 0");
+    expect(screen.getByTestId("exhibition-leg-2-score").textContent).toBe("1 - 0");
+    expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("1 - 0");
+    expect(screen.getByTestId("exhibition-decided").textContent).toBe("On aggregate");
+    expect(screen.getAllByRole("status")[1]!.textContent).toBe(
+      "Leg 2 full time. Your squad wins the leg.",
+    );
+  });
 });
