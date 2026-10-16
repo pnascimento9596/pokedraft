@@ -1,9 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 import { pngSize } from "./helpers";
+import { RUN_151 } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
 
-const SEEDED = "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151";
+const SEEDED = RUN_151.url;
 
 async function draftRounds(page: Page, from: number, to: number): Promise<void> {
   const header = page.getByTestId("round-header");
@@ -53,10 +54,10 @@ test("a seeded run survives a reload and Back then Forward mid-draft, and its re
 
   await draftRounds(page, 6, 16);
   await page.getByTestId("see-results").click();
-  await expect(page.getByTestId("results-record")).toHaveText("3-0-2");
+  await expect(page.getByTestId("results-record")).toHaveText(RUN_151.record);
 
   await page.reload();
-  await expect(page.getByTestId("results-record")).toHaveText("3-0-2");
+  await expect(page.getByTestId("results-record")).toHaveText(RUN_151.record);
   await expect(page.getByTestId("submit-panel")).toBeVisible();
 
   await page.getByRole("button", { name: "New run" }).click();

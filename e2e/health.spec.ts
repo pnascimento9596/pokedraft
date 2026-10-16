@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { ENGINE_VERSION, TOKEN_VERSIONS } from "./pins";
 
 test("health serves dynamic deployment metadata without requiring a database", async ({
   request,
@@ -7,7 +8,7 @@ test("health serves dynamic deployment metadata without requiring a database", a
   expect(response.status()).toBe(200);
   expect(response.headers()["cache-control"]).toBe("no-store");
   expect(await response.json()).toMatchObject({
-    engine: "pokedraft-engine-6",
-    tokenVersions: [1, 2, 3, 4, 5, 6],
+    engine: ENGINE_VERSION,
+    tokenVersions: TOKEN_VERSIONS,
   });
 });

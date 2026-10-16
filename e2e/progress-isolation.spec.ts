@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { ready } from "./mobile/scenes";
+import { RUN_151 } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
 
@@ -70,7 +71,7 @@ test("a browser restart restores the exact draft and results without duplicating
     ]);
     await pick(next, 6, 16);
     await next.getByTestId("see-results").click();
-    await expect(next.getByTestId("results-record")).toHaveText("3-0-2");
+    await expect(next.getByTestId("results-record")).toHaveText(RUN_151.record);
     await expect
       .poll(() =>
         next.evaluate(
@@ -87,9 +88,9 @@ test("a browser restart restores the exact draft and results without duplicating
     try {
       const result = await after.newPage();
       await result.goto(SEEDED);
-      await expect(result.getByTestId("results-record")).toHaveText("3-0-2");
+      await expect(result.getByTestId("results-record")).toHaveText(RUN_151.record);
       await result.reload();
-      await expect(result.getByTestId("results-record")).toHaveText("3-0-2");
+      await expect(result.getByTestId("results-record")).toHaveText(RUN_151.record);
       expect(
         await result.evaluate(
           () => JSON.parse(localStorage.getItem("pokedraft:history:v1") ?? "[]").length,
@@ -120,14 +121,14 @@ test("simultaneous players keep separate progress and history while viewing a sh
     const bobSquad = await squad(bob);
     await pick(alice, 3, 16);
     await alice.getByTestId("see-results").click();
-    await expect(alice.getByTestId("results-record")).toHaveText("3-0-2");
+    await expect(alice.getByTestId("results-record")).toHaveText(RUN_151.record);
     await expect(bob.getByTestId("round-header")).toContainText("Round 5 of 16");
     expect(await squad(bob)).toEqual(bobSquad);
     const raw = await alice.evaluate(() => localStorage.getItem("pokedraft.run.kanto151"));
     const token = JSON.parse(raw!).token as string;
     const [version, payload] = token.split(".");
     await bob.goto(`/r/${version}?t=${payload}`);
-    await expect(bob.getByTestId("results-record")).toHaveText("3-0-2");
+    await expect(bob.getByTestId("results-record")).toHaveText(RUN_151.record);
     await bob.goto("/history");
     await expect(bob.getByTestId("history-empty")).toBeVisible();
     await bob.goto(OTHER);

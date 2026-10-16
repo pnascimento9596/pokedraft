@@ -1,16 +1,16 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { RUN_151, RUN_8_0 } from "../pins";
 import { settle, waitForHydration } from "./helpers";
 
 // ---------------------------------------------------------------------------------------------
 // Challenge URLs. The two seeds are the ones e2e/challenge.spec.ts pins, so a tap-only run that
 // makes the same picks as draftSixteen must reach the same records.
 
-export const PLAY_8_0 =
-  "/play?mode=cup8&f=4-4-2&order=squadFirst&g=123456789&style=classic3&seed=e2e-80";
-export const PLAY_151 = "/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151";
+export const PLAY_8_0 = RUN_8_0.url;
+export const PLAY_151 = RUN_151.url;
 export const DAILY = "/daily";
-export const RECORD_8_0 = "1-2-1";
-export const RECORD_151 = "3-0-2";
+export const RECORD_8_0 = RUN_8_0.record;
+export const RECORD_151 = RUN_151.record;
 
 // The real engine-1 share link e2e/a11y.spec.ts and e2e/old-links.spec.ts open.
 export const SHARED_RUN =
