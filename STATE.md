@@ -1,6 +1,57 @@
 # STATE
 
-Measured ground truth. Updated in the same PR as every merge.
+Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
+and its squash SHA are recorded in the next PR's STATE update.
+
+## Tooling and process dispatch
+
+Branch `chore/tooling-and-process`, not merged at the time of writing. No file under `src/`
+changed. `tools/review/review-packet.py` builds the GLM packet (`--out-dir`, repeatable
+`--exclude`, clean-tree check) and `tools/review/strip-verdict.py` checks the reply for the
+canary, the full head SHA and one verdict word. The overrides record Sol as an optional lane, GLM
+5.3 Flash as the gate, and no silent model swaps. Playwright now picks a port from the checkout
+path when `PLAYWRIGHT_PORT` is unset, the server it starts reports `git rev-parse HEAD` as its
+health sha, and global setup fails when a reused server reports another commit (skipped in CI and
+for deployments, warned when the server has no sha). Live-engine e2e pins (seeded records, the
+mirror exhibition, the live token prefix, share-link regex and engine version) are generated into
+`e2e/pins.ts` by `pnpm e2e:pins`, and a vitest guard fails when that file is stale. The hosted
+timing audit of statistical suites found no test above 40% of its budget without a 60 s timeout,
+so no timeout changed. Decisions, the timing table and the proof runs are in
+`docs/decisions/tooling-and-process.md`.
+
+Gates at `180bfe0` (later commits change only docs): lint, typecheck, build and mirrors exit
+0; unit tests 1,287 of 1,287 in 141 files. Playwright on a fresh build with
+`PLAYWRIGHT_PORT=3484 CI=1`, before and after the pin migration: 804 passed, 0 failed, 61 skipped
+both times (chromium 343 and 1, iphone-se 135 and 29, iphone-14 173 and 3, pixel-7 141 and 28,
+webkit-wheel 6, webkit-progress 6). Hosted CI and the independent review: NOT RUN at the time of
+writing.
+
+## Coached SQL hardening
+
+Merged as PR #65 (squash `e251199`, reviewed head `ad90c82`, GLM 5.3 Flash APPROVE in round 1 with the canary echoed; hosted check and e2e green on that head). Branch `fix/coached-sql-hardening` off `648cf2f`, dispatch C items 11 and 12; item 13 (a stored `coached` column) is deferred until a filtered view is measurably slow. `coachedSqlFor(versions)` builds the board's coached rule and throws at module load on any version that is not a positive integer, and `MANAGER_TOKEN_VERSIONS` is typed so such a value does not compile. `coachedSql` is now total: a hand-edited `pd6.` row reads uncoached instead of turning the Uncoached and Coached views into 503s. It screens the base64url alphabet and length, reads the bytes as LATIN1, and checks the JSON with `pg_input_is_valid` (PostgreSQL 16+; Neon reports 17) and `jsonb_typeof` before counting. `isCoached` now keeps a leading byte order mark so both rules reject it. Three tamper-only payloads (`\u0000` escape, lone surrogate, numeric overflow) still differ, without throwing, and a test pins them. Canonical tokens keep their verdict. RED commits: `04b6312` (version guard, 6 failing), `d51dab7` (malformed rows, 2 failing: a base64 error and two 503 views), `ce96eef` (BOM, 1 failing). Decisions and verbatim RED output are in `docs/decisions/coached-sql-hardening.md`.
+
+Local gates at `ef6436d` (the commit after it changes only docs):
+
+- `pnpm vitest run src/leaderboard`: 81 passed in 8 files. Lint, typecheck, build and format check exited 0. Unit tests: 1,294 passed of 1,294, in 140 files.
+- The compiled `coachedSql` on a scratch PostgreSQL 16.14 cluster gave the same verdicts as the PGlite tests on 11 tokens, including 4,096-character nesting, without an error.
+- Playwright on a fresh build with `PLAYWRIGHT_PORT=3483 CI=1`: 804 passed, 0 failed, 61 skipped. By project: chromium 343 passed and 1 skipped, iphone-se 135 and 29, iphone-14 173 and 3, pixel-7 141 and 28, webkit-wheel 6 and 0, webkit-progress 6 and 0.
+- Hosted CI and the independent review: NOT RUN at the time of writing.
+
+## Engine comments and invariants
+
+Merged as PR #64 (squash `56c41d4`, reviewed head `deee557`, GLM 5.3 Flash APPROVE in round 1
+with the canary echoed; hosted check and e2e green on that head). Branch
+`chore/engine-invariants-comments`, off `origin/main` at `648cf2f`. Section A of the 2026-10-16 hand-off. No runtime behaviour changes.
+Comments in `src/engine/cup.ts`, `src/engine/match.ts`, `src/ui/manager/touchline.ts` and
+`src/components/matchday/MatchdayFlow.tsx` record three rules. A clean sheet needs half of
+regulation even in extra time. The vacancy multipliers also correct the original starter that
+`refreshUserLines` re-inserts into a slot a red card emptied. Any manager decision switches the
+auto coach off for the user side. A new case in `src/engine/__tests__/cup.test.ts` pins at most
+one pre-match absence per match over 400 cups and fails on a local `[absence, absence]` mutation.
+No golden moved and `src/engine/versions/v5` is untouched (provenance check exit 0). Local gates
+are engine suite 273 of 273, goldens 7 of 7, and lint, typecheck, test (1284 of 1284 on the rerun
+after one unrelated `announce-builder` flake), build and format check all exit 0. Playwright NOT
+RUN because nothing at runtime changed. Details in `docs/decisions/engine-invariants-comments.md`.
 
 ## Matchday robustness (dispatch B)
 

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { draftSixteen } from "./helpers";
+import { SHARE_LINK } from "./pins";
 
 // Manager mode and the Live match broadcast. The settings are seeded before the app loads, the
 // way a player who switched them on at home arrives at the challenge.
@@ -89,7 +90,7 @@ test.describe("manager mode", () => {
 
     await page.getByRole("button", { name: "Share" }).click();
     const link = await page.evaluate(() => navigator.clipboard.readText());
-    expect(link).toMatch(/\/r\/pd6\?t=[A-Za-z0-9_-]+$/);
+    expect(link).toMatch(SHARE_LINK);
     await page.goto(link);
     await expect(page.getByTestId("results-record")).toHaveText(record!);
     await expect(page.getByTestId("results-score")).toHaveText(score!);

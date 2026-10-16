@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { draftSixteen, shareAndReplay } from "./helpers";
+import { RUN_151, RUN_8_0 } from "./pins";
 
 test.use({
   reducedMotion: "reduce",
@@ -9,23 +10,21 @@ test.use({
 test("151 Challenge with a fixed seed drafts 16, shows results, and the share link replays the same record", async ({
   page,
 }) => {
-  await page.goto("/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151");
+  await page.goto(RUN_151.url);
   await page.getByTestId("run-start").click();
   await draftSixteen(page);
   await page.getByTestId("see-results").click();
   await expect(page.getByTestId("match-F")).toBeVisible();
-  await shareAndReplay(page, "3-0-2");
+  await shareAndReplay(page, RUN_151.record);
 });
 
 test("8-0 Challenge (Classic) with a fixed seed drafts 16, shows results, and the share link replays the same record", async ({
   page,
 }) => {
-  await page.goto(
-    "/play?mode=cup8&f=4-4-2&order=squadFirst&g=123456789&style=classic3&seed=e2e-80",
-  );
+  await page.goto(RUN_8_0.url);
   await page.getByTestId("run-start").click();
   await draftSixteen(page);
   await page.getByTestId("see-results").click();
   await expect(page.getByTestId("match-G1")).toBeVisible();
-  await shareAndReplay(page, "1-2-1");
+  await shareAndReplay(page, RUN_8_0.record);
 });

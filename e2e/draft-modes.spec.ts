@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { shareAndReplay } from "./helpers";
+import { RUN_POSITION_FIRST } from "./pins";
 
 test.describe("challenge drafts", () => {
   test.use({
@@ -10,9 +11,7 @@ test.describe("challenge drafts", () => {
   test("Position First 8-0 asks for a slot before it rolls, drafts 16 and replays the same record", async ({
     page,
   }) => {
-    await page.goto(
-      "/play?mode=cup8&f=4-3-3&order=positionFirst&g=123456789&style=open&seed=e2e-pf",
-    );
+    await page.goto(RUN_POSITION_FIRST.url);
     await page.getByTestId("run-start").click();
     const header = page.getByTestId("round-header");
     for (let round = 1; round <= 16; round++) {
@@ -25,7 +24,7 @@ test.describe("challenge drafts", () => {
     }
     await expect(header).toHaveText("Draft complete");
     await page.getByTestId("see-results").click();
-    await shareAndReplay(page, "0-3-0");
+    await shareAndReplay(page, RUN_POSITION_FIRST.record);
   });
 
   test("8-0 rerolls share one count of 3 across type and region", async ({ page }) => {

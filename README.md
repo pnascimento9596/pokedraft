@@ -31,7 +31,7 @@ the leaderboard database needs these (never commit them; `.env*` is git-ignored)
 
 ```sh
 pnpm lint && pnpm typecheck && pnpm test && pnpm build   # the CI ladder
-pnpm test:e2e                                            # Playwright against `next start` on port 3400
+pnpm test:e2e                                            # Playwright against `next start` on this checkout's port (3400 to 3999, from its path)
 PLAYWRIGHT_PORT=3442 pnpm test:e2e                       # the same on another port
 PLAYWRIGHT_BASE_URL=https://pokedraft-woad.vercel.app pnpm exec playwright test e2e/mobile-acceptance.spec.ts   # mobile acceptance against production, writes nothing
 pnpm check:image-seam && pnpm check:image-packs          # image guards (also in CI)

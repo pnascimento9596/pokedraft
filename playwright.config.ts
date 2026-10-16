@@ -1,14 +1,18 @@
 import { defineConfig, devices } from "@playwright/test";
+import { localServerPort, worktreeHead } from "./e2e/local-server";
 
 // PLAYWRIGHT_BASE_URL points the suite at a running deployment and turns the local server off, so
 // the mobile acceptance suite can run against production:
 //   PLAYWRIGHT_BASE_URL=https://pokedraft-woad.vercel.app pnpm exec playwright test e2e/mobile-acceptance.spec.ts
-// PLAYWRIGHT_PORT moves the local `next start` server off the default port.
+// PLAYWRIGHT_PORT moves the local `next start` server. Without it each checkout gets its own port
+// from its path, and e2e/global-setup.ts refuses a reused server built from another commit.
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL;
-const PORT = Number(process.env.PLAYWRIGHT_PORT) || 3400;
+const PORT = Number(process.env.PLAYWRIGHT_PORT) || localServerPort(process.cwd());
+const HEAD = worktreeHead();
 
 export default defineConfig({
   testDir: "e2e",
+  globalSetup: "./e2e/global-setup.ts",
   timeout: 120_000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -64,6 +68,8 @@ export default defineConfig({
         command: `pnpm exec next start --port ${PORT}`,
         url: `http://localhost:${PORT}`,
         reuseExistingServer: !process.env.CI,
+        // /api/health reports this as its sha, so global setup can tell this checkout's server apart.
+        env: HEAD === null ? {} : { VERCEL_GIT_COMMIT_SHA: HEAD },
         timeout: 60_000,
       },
 });

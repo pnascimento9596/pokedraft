@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { RUN_KEYBOARD } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
 
@@ -12,7 +13,7 @@ async function tabTo(page: Page, target: Locator, key: "Tab" | "Shift+Tab" = "Ta
 }
 
 test("a whole 151 draft by keyboard alone", async ({ page }) => {
-  await page.goto("/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-kb");
+  await page.goto(RUN_KEYBOARD.url);
   await tabTo(page, page.getByTestId("run-start"));
   await page.keyboard.press("Enter");
 
@@ -28,7 +29,7 @@ test("a whole 151 draft by keyboard alone", async ({ page }) => {
   await expect(header).toHaveText("Draft complete");
   await tabTo(page, page.getByTestId("see-results"), "Shift+Tab");
   await page.keyboard.press("Enter");
-  await expect(page.getByTestId("results-record")).toHaveText("4-0-1");
+  await expect(page.getByTestId("results-record")).toHaveText(RUN_KEYBOARD.record);
 });
 
 test("the picker opens by keyboard, keeps focus inside and closes on Escape", async ({ page }) => {

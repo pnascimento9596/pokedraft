@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { draftSixteen } from "./helpers";
+import { RUN_151 } from "./pins";
 
 // The engine 3 golden cup8 run (scripts/audit/fixtures.json on the audit branch): 3-0-2, R16, Team Score 593.
 const GOLDEN_RUN =
@@ -104,11 +105,11 @@ for (const width of [360, 390]) {
     test.skip(browserName !== "chromium", "layout-shift entries are Chromium only");
     await page.setViewportSize({ width, height: 844 });
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/play?mode=kanto151&f=4-3-3&order=squadFirst&seed=e2e-151");
+    await page.goto(RUN_151.url);
     await page.getByTestId("run-start").click();
     await draftSixteen(page);
     await page.getByTestId("see-results").click();
-    await expect(page.getByTestId("results-record")).toHaveText("3-0-2");
+    await expect(page.getByTestId("results-record")).toHaveText(RUN_151.record);
     await page.addInitScript(() => {
       const w = window as unknown as { __restoreShifts: number[] };
       w.__restoreShifts = [];
@@ -118,7 +119,7 @@ for (const width of [360, 390]) {
       }).observe({ type: "layout-shift", buffered: true });
     });
     await page.reload();
-    await expect(page.getByTestId("results-record")).toHaveText("3-0-2");
+    await expect(page.getByTestId("results-record")).toHaveText(RUN_151.record);
     await page.waitForLoadState("networkidle");
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(500);

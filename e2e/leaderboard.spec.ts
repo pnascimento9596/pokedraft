@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { draftSixteen } from "./helpers";
+import { ENGINE_VERSION, LIVE_TOKEN } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
 
@@ -61,8 +62,8 @@ test("the daily run completes on /daily and its submission posts the token and s
   await page.getByTestId("submit-button").click();
   await expect(page.getByTestId("submit-success")).toHaveText("#4Misty is on the daily board.");
 
-  expect(posted).toMatchObject({ nickname: "Misty", engineVersion: "pokedraft-engine-6" });
-  expect((posted as { token: string }).token).toMatch(/^pd6\./);
+  expect(posted).toMatchObject({ nickname: "Misty", engineVersion: ENGINE_VERSION });
+  expect((posted as { token: string }).token).toMatch(LIVE_TOKEN);
   await expect(page.getByRole("link", { name: "View leaderboard" })).toHaveAttribute(
     "href",
     "/leaderboard?mode=cup8&scope=daily&date=2026-10-09",
