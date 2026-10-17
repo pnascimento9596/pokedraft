@@ -54,7 +54,7 @@ const payloads = [...artifacts.values()];
 if (payloads.some((payload) => payload.copies === 0))
   throw new Error("Build is missing a required artifact payload");
 const totalCopies = payloads.reduce((sum, payload) => sum + payload.copies, 0);
-assert.equal(totalCopies, Number(process.argv[3] ?? 3), "unexpected emitted data payload count");
+assert.equal(totalCopies, Number(process.argv[3] ?? 4), "unexpected emitted data payload count");
 console.log(
   JSON.stringify(
     {
