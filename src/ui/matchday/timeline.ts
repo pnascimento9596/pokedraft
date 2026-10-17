@@ -120,7 +120,6 @@ export interface SlotChange {
 
 export type PlayKind = "pass" | "dribble" | "through" | "cross" | "duel";
 
-/** One 1.25-minute open-play phase: possession carrier, receiver, pressing defender, runners and ability. */
 export interface PlayPhase {
   readonly from: number;
   readonly to: number;
@@ -449,10 +448,9 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
           const forward = pool.filter((s) => s !== fromSlot && s >= Math.max(4, fromSlot - 1));
           const choices = forward.length > 0 ? forward : pool.filter((s) => s !== fromSlot);
           toSlot =
-            choices.length > 0
-              ? choices[Math.floor(playRng.next() * choices.length)]!
-              : fromSlot;
-          kind = toSlot >= 8 && roll > 0.78 ? "cross" : toSlot >= 7 && roll > 0.56 ? "through" : "pass";
+            choices.length > 0 ? choices[Math.floor(playRng.next() * choices.length)]! : fromSlot;
+          kind =
+            toSlot >= 8 && roll > 0.78 ? "cross" : toSlot >= 7 && roll > 0.56 ? "through" : "pass";
         }
       }
 
@@ -462,8 +460,7 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
           ? otherOutfield[Math.floor(playRng.next() * otherOutfield.length)]!
           : toSlot;
       const r2Pool = otherOutfield.filter((s) => s !== r1);
-      const r2 =
-        r2Pool.length > 0 ? r2Pool[Math.floor(playRng.next() * r2Pool.length)]! : r1;
+      const r2 = r2Pool.length > 0 ? r2Pool[Math.floor(playRng.next() * r2Pool.length)]! : r1;
       const presserSlot =
         defPool.length > 0 ? defPool[Math.floor(playRng.next() * defPool.length)]! : 5;
 
@@ -471,8 +468,7 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
       const useAbility =
         kind === "through" || kind === "cross" || kind === "duel" || playRng.next() < 0.45;
       const role = kind === "duel" ? "duel" : kind === "dribble" ? "dribble" : "pass";
-      const moveset =
-        actor.species === null || movesOf === null ? null : movesOf(actor.species);
+      const moveset = actor.species === null || movesOf === null ? null : movesOf(actor.species);
       const callout = useAbility ? playCallout(actor.name, moveset, role, playRng) : null;
 
       plays.push({
@@ -586,7 +582,6 @@ export function goalBall(from: Point, scorer: Point, mouth: Point, progress: num
   return mouth;
 }
 
-/** A saved shot: attacker to the keeper at the goal line, then parried clear. */
 export function saveBall(attacker: Point, mouth: Point, deflect: Point, progress: number): Point {
   if (progress < 0.45) return lerp(attacker, mouth, progress / 0.45);
   if (progress < 0.65) return mouth;
@@ -594,15 +589,7 @@ export function saveBall(attacker: Point, mouth: Point, deflect: Point, progress
 }
 
 export type PlayerPose =
-  | "idle"
-  | "run"
-  | "sprint"
-  | "dribble"
-  | "cast"
-  | "press"
-  | "celebrate"
-  | "dive"
-  | "down";
+  "idle" | "run" | "sprint" | "dribble" | "cast" | "press" | "celebrate" | "dive" | "down";
 
 export interface StagedPlayer {
   readonly side: Side;
@@ -692,11 +679,7 @@ function phaseWaypoint(
   );
   const attDir = phase.side === "user" ? 1 : -1;
   const surge =
-    phase.kind === "through" || phase.kind === "cross"
-      ? 14
-      : phase.kind === "dribble"
-        ? 11
-        : 7;
+    phase.kind === "through" || phase.kind === "cross" ? 14 : phase.kind === "dribble" ? 11 : 7;
   const pullY = phase.toSlot >= 8 ? (50 - carrierHome.y) * 0.25 : 0;
   const focus = clampPoint(
     {
@@ -749,8 +732,7 @@ function phaseWaypoint(
       const cadenceY = d ? Math.cos(d.phase + phaseIndex * 0.9) * 2.0 : 0;
       const teamShiftX = (focus.x - 50) * 0.22 + (inPossession ? 5.5 * dir : -4.5 * dir);
       const teamShiftY = (focus.y - 50) * 0.24;
-      const isRunner =
-        inPossession && (slot === phase.runners[0] || slot === phase.runners[1]);
+      const isRunner = inPossession && (slot === phase.runners[0] || slot === phase.runners[1]);
       const runnerBoostX = isRunner ? 11 * dir : 0;
       const runnerBoostY = isRunner ? (home.y < 50 ? -3.5 : 3.5) : 0;
       return clampPoint({
@@ -766,7 +748,6 @@ function phaseWaypoint(
   };
 }
 
-/** Stages all 22 players, the ball, its trajectory trail and active ability callouts at `clock`. */
 export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   const { clock, active, kicks, motion } = input;
   const userSlots = resolveSlots(input.userSlots);
@@ -797,8 +778,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       return b.side === side && (b.scorer.slot === slot || b.assist?.slot === slot);
     if (b.kind === "save")
       return (
-        (b.side === side && b.keeper.slot === slot) ||
-        (b.side !== side && b.attacker.slot === slot)
+        (b.side === side && b.keeper.slot === slot) || (b.side !== side && b.attacker.slot === slot)
       );
     if (b.kind === "card") return b.side === side && b.player.slot === slot;
     if (b.kind === "injury" || b.kind === "sub")
@@ -806,7 +786,6 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     return false;
   };
 
-  // Reduced motion: still slots, no trails or running poses.
   if (!motion) {
     const buildStill = (
       side: Side,
@@ -842,7 +821,6 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     };
   }
 
-  // Penalty shootout staging.
   if (timeline.kicks.length > 0 && clock >= timeline.finalMinute) {
     const kickIdx = Math.max(0, Math.min(kicks - 1, timeline.kicks.length - 1));
     const kick = timeline.kicks[kickIdx]!;
@@ -857,10 +835,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         : attSide === "opp" && kick.taker.species !== null
           ? timeline.oppXI.indexOf(kick.taker.species)
           : -1);
-    const buildPenSide = (
-      side: Side,
-      xi: readonly (SpeciesId | null)[],
-    ): (StagedPlayer | null)[] =>
+    const buildPenSide = (side: Side, xi: readonly (SpeciesId | null)[]): (StagedPlayer | null)[] =>
       xi.map((id, slot) => {
         if (id === null && (side === "user" || !input.oppLabels?.[slot])) return null;
         const isTaker = side === attSide && takerSlot === slot;
@@ -915,21 +890,17 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     };
   }
 
-  // Open-play waypoint interpolation.
   const rawIdx = Math.floor(clock / PHASE_LEN);
   const phaseIdx = Math.max(0, Math.min(timeline.plays.length - 1, rawIdx));
   const phase = timeline.plays[phaseIdx];
-  const u = phase
-    ? Math.min(1, Math.max(0, (clock - phase.from) / (phase.to - phase.from)))
-    : 0;
+  const u = phase ? Math.min(1, Math.max(0, (clock - phase.from) / (phase.to - phase.from))) : 0;
   const smoothU = smoothstep(u);
 
   const wpStart =
     phase !== undefined
       ? phaseWaypoint(timeline, Math.max(0, phaseIdx - 1), userSlots, oppSlots)
       : null;
-  const wpEnd =
-    phase !== undefined ? phaseWaypoint(timeline, phaseIdx, userSlots, oppSlots) : null;
+  const wpEnd = phase !== undefined ? phaseWaypoint(timeline, phaseIdx, userSlots, oppSlots) : null;
 
   const baseSpot = (side: Side, slot: number): Point => {
     const slots = side === "user" ? userSlots : oppSlots;
@@ -987,9 +958,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         ? pts[b.side][scorerSlot]!
         : { x: b.side === "user" ? 80 : 20, y: 50 };
     const fromSpot =
-      assistSlot !== null && pts[b.side][assistSlot]
-        ? pts[b.side][assistSlot]!
-        : { x: 50, y: 50 };
+      assistSlot !== null && pts[b.side][assistSlot] ? pts[b.side][assistSlot]! : { x: 50, y: 50 };
     ballPos = goalBall(fromSpot, scorerSpot, mouth, progress);
     ballLoft =
       progress < 0.35
@@ -1061,7 +1030,6 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     const fromSpot = pts[phase.side][phase.fromSlot] ?? { x: 50, y: 50 };
     const toSpot = pts[phase.side][phase.toSlot] ?? fromSpot;
     if (phase.fromSlot === phase.toSlot) {
-      // Dribble: the ball stays at the carrier's feet with a subtle stride lead.
       const stride = 1.6 + 0.5 * Math.sin(u * Math.PI * 2);
       ballPos = clampPoint({ x: toSpot.x + attDir * stride, y: toSpot.y });
       ballLoft = Math.abs(Math.sin(u * Math.PI * 2)) * 0.12;
@@ -1086,7 +1054,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
           progress: u,
         };
       }
-    } else if ( u < 0.24) {
+    } else if (u < 0.24) {
       ballPos = clampPoint({ x: fromSpot.x + attDir * 1.6, y: fromSpot.y });
       carrier = phase.actor;
       if (phase.callout !== null) ballEffect = phase.callout.effect;
@@ -1094,20 +1062,22 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       const flight = (u - 0.24) / 0.62;
       const eased = 1 - (1 - flight) * (1 - flight);
       ballPos = lerp(fromSpot, toSpot, eased);
-      const peakLoft =
-        phase.kind === "cross" ? 0.85 : phase.kind === "through" ? 0.5 : 0.22;
+      const peakLoft = phase.kind === "cross" ? 0.85 : phase.kind === "through" ? 0.5 : 0.22;
       ballLoft = Math.sin(flight * Math.PI) * peakLoft;
       ballEffect = phase.callout?.effect ?? null;
-      carrier = flight < 0.5 ? phase.actor : {
-        side: phase.side,
-        slot: phase.toSlot,
-        species: (phase.side === "user" ? userXI : oppXI)[phase.toSlot] ?? null,
-        name: labelOf(
-          phase.side,
-          phase.toSlot,
-          (phase.side === "user" ? userXI : oppXI)[phase.toSlot] ?? null,
-        ),
-      };
+      carrier =
+        flight < 0.5
+          ? phase.actor
+          : {
+              side: phase.side,
+              slot: phase.toSlot,
+              species: (phase.side === "user" ? userXI : oppXI)[phase.toSlot] ?? null,
+              name: labelOf(
+                phase.side,
+                phase.toSlot,
+                (phase.side === "user" ? userXI : oppXI)[phase.toSlot] ?? null,
+              ),
+            };
       trail = {
         from: fromSpot,
         to: ballPos,
@@ -1158,7 +1128,11 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       const dist = Math.hypot(dx, dy);
       const hasBall = carrier?.side === side && carrier.slot === slot;
       const isCaster =
-        (b?.kind === "goal" && b.side === side && b.scorer.slot === slot && progress >= 0.3 && progress <= 0.68) ||
+        (b?.kind === "goal" &&
+          b.side === side &&
+          b.scorer.slot === slot &&
+          progress >= 0.3 &&
+          progress <= 0.68) ||
         (b?.kind === "save" && b.side !== side && b.attacker.slot === slot && progress < 0.45) ||
         (playCalloutStage?.side === side && playCalloutStage.slot === slot);
 
@@ -1233,4 +1207,3 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     playCallout: b === undefined ? playCalloutStage : null,
   };
 }
-

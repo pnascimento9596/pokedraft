@@ -52,7 +52,9 @@ const MATCH: PlayedMatch = {
     },
   ],
   saves: [{ kind: "save", side: "opp", minute: 12, attacker: id(25), keeper: id(143) }],
-  incidents: [{ kind: "yellow", side: "user", minute: 5, slot: 2, player: id(4), secondYellow: false }],
+  incidents: [
+    { kind: "yellow", side: "user", minute: 5, slot: 2, player: id(4), secondYellow: false },
+  ],
   windows: Array.from({ length: 18 }, (_, w) => ({
     minute: (w + 1) * 5,
     score: { user: 0, opp: 0 },

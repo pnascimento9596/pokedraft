@@ -86,4 +86,3 @@ export function playCallout(
     effect: effectFor(move.type),
   };
 }
-

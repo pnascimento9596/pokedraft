@@ -145,8 +145,8 @@
 
 .energy {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 4px 12px;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 6px 10px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -154,11 +154,29 @@
 
 .energyRow {
   display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) 54px 26px;
+  grid-template-columns: 34px minmax(0, 1fr) 50px 26px;
   align-items: center;
   gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
   font-size: 12px;
   line-height: 16px;
+}
+
+.energyRow[data-interactive] {
+  cursor: pointer;
+}
+
+.energyRow[data-selected] {
+  border-color: var(--accent);
+  background: var(--selected);
+}
+
+.energyRow[data-tired] .energyValue {
+  color: var(--risk-text, var(--risk-mark));
+  font-weight: 700;
 }
 
 .energyRow[data-empty] {
@@ -168,6 +186,13 @@
 .energyRole {
   font-weight: 700;
   color: var(--text-muted);
+}
+
+.energyPlayer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
 }
 
 .energyName {

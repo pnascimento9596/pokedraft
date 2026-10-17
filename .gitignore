@@ -50,3 +50,4 @@ scripts/calibration/out/
 /playwright-report/
 /blob-report/
 /output/
+/.claude/worktrees/

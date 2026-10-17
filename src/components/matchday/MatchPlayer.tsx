@@ -3,15 +3,27 @@
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { speciesById } from "@/engine";
-import type { BenchIndex, FullLineup, ManagerAction, MatchResult } from "@/engine/types";
+import type { BenchIndex, FullLineup, ManagerAction, MatchResult, Tactic } from "@/engine/types";
 import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Stop } from "@/ui/matchday/clock";
-import { beatLine, kickLine, type Teams } from "@/ui/matchday/copy";
+import { TACTIC_LABEL, beatLine, kickLine, type Teams } from "@/ui/matchday/copy";
 import { START, beatKey, decisionMinute, play, revealed, type PlayEnv } from "@/ui/matchday/player";
-import { buildTimeline } from "@/ui/matchday/timeline";
-import { playGoalHorn, unlockAudio } from "@/components/wheel/sound";
+import { buildTimeline, frameAt } from "@/ui/matchday/timeline";
+import {
+  playAbilitySound,
+  playCardSound,
+  playGoalHorn,
+  playKickPass,
+  playOppGoal,
+  playSaveSound,
+  playSubSound,
+  playWhistle,
+  setSoundEnabled,
+  unlockAudio,
+  useSoundEnabled,
+} from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { Touchline } from "./Touchline";
 import s from "./MatchPlayer.module.css";
@@ -64,6 +76,7 @@ export function MatchPlayer({
   readonly footer?: ReactNode;
 }) {
   const motion = !useReducedMotion();
+  const soundOn = useSoundEnabled();
   const timeline = useMemo(
     () => buildTimeline(match, { matchIndex, seed, lineup }),
     [match, matchIndex, seed, lineup],
@@ -105,7 +118,7 @@ export function MatchPlayer({
 
   // The broadcast keeps staging effects while a stop or a pause holds the clock.
   useEffect(() => {
-    if (moving || view !== "live" || !motion) return;
+    if (moving || !motion) return;
     let raf = 0;
     const frame = (t: number) => {
       setNow(t);
@@ -117,19 +130,60 @@ export function MatchPlayer({
       cancelAnimationFrame(raf);
       window.clearTimeout(stopAt);
     };
-  }, [moving, view, motion]);
+  }, [moving, motion]);
 
-  const horned = useRef(new Set<string>());
+  const sounded = useRef(new Set<string>());
   useEffect(() => {
+    const fresh: ReturnType<typeof buildTimeline>["beats"][number][] = [];
     for (const b of timeline.beats) {
-      if (b.kind !== "goal" || b.side !== "user") continue;
       const key = beatKey(b);
-      if (state.fired[key] !== undefined && !horned.current.has(key)) {
-        horned.current.add(key);
-        playGoalHorn();
+      if (state.fired[key] !== undefined && !sounded.current.has(key)) {
+        sounded.current.add(key);
+        fresh.push(b);
       }
     }
-  }, [state.fired, timeline]);
+    if (fresh.length === 0) return;
+    if (state.stage === "done" && fresh.length > 2) {
+      playWhistle("fulltime");
+      return;
+    }
+    for (const b of fresh) {
+      if (b.kind === "goal") {
+        if (b.side === "user") playGoalHorn();
+        else playOppGoal();
+        playAbilitySound(b.callout.effect);
+      } else if (b.kind === "save") {
+        playSaveSound();
+      } else if (b.kind === "card") {
+        playCardSound(b.color);
+      } else if (b.kind === "sub") {
+        playSubSound();
+      } else if (b.kind === "whistle") {
+        const wKind =
+          b.label === "Kick off"
+            ? "kickoff"
+            : b.label === "Half time" || b.label === "Extra time half time"
+              ? "halftime"
+              : "fulltime";
+        playWhistle(wKind);
+      }
+    }
+  }, [state.fired, state.stage, timeline]);
+
+  const lastPhase = useRef(-1);
+  useEffect(() => {
+    if (!moving) return;
+    const idx = Math.floor(state.minute / 1.25);
+    if (idx === lastPhase.current || idx < 0 || idx >= timeline.plays.length) return;
+    lastPhase.current = idx;
+    const phase = timeline.plays[idx];
+    if (phase === undefined) return;
+    if (phase.callout !== null) {
+      playAbilitySound(phase.callout.effect);
+    } else if (phase.kind !== "dribble") {
+      playKickPass();
+    }
+  }, [moving, state.minute, timeline.plays]);
 
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
@@ -154,6 +208,29 @@ export function MatchPlayer({
     if (manager === undefined) return;
     setError(manager.decide(at, d));
   };
+
+  const snapWindow =
+    match.windows?.find((w) => w.minute >= Math.max(5, Math.ceil(clock / 5) * 5)) ??
+    match.windows?.[0];
+  const latestTactic = (side: "user" | "opp"): Tactic | null => {
+    for (let i = shown.length - 1; i >= 0; i--) {
+      const b = shown[i]!;
+      if (b.kind === "tactic" && b.side === side) return b.tactic;
+    }
+    return null;
+  };
+  const userTactic: Tactic =
+    line?.tactic ?? latestTactic("user") ?? snapWindow?.tactic.user ?? "balanced";
+  const oppTactic: Tactic = latestTactic("opp") ?? snapWindow?.tactic.opp ?? "balanced";
+  const userShots = shown.filter(
+    (b) => (b.kind === "goal" && b.side === "user") || (b.kind === "save" && b.side === "opp"),
+  ).length;
+  const oppShots = shown.filter(
+    (b) => (b.kind === "goal" && b.side === "opp") || (b.kind === "save" && b.side === "user"),
+  ).length;
+  const lean = frameAt(timeline, clock)?.ball ?? 0;
+  const userMomentum = Math.round(50 + lean * 28);
+  const oppMomentum = 100 - userMomentum;
 
   const stop = state.stop;
   const injury =
@@ -191,19 +268,39 @@ export function MatchPlayer({
         <span style={{ width: `${Math.min(100, (clock / timeline.finalMinute) * 100)}%` }} />
       </div>
 
-      {view === "live" ? (
-        <Broadcast
-          match={match}
-          matchIndex={matchIndex}
-          seed={seed}
-          lineup={lineup}
-          clock={clock}
-          now={now}
-          fired={state.fired}
-          kicks={state.kicks}
-          motion={motion}
-        />
-      ) : null}
+      <div className={s.hud} data-testid="match-hud">
+        <div className={s.hudSide}>
+          <span className={s.hudBadge} data-side="user">
+            {TACTIC_LABEL[userTactic]}
+          </span>
+          <span className={`num ${s.hudStat}`}>{userShots} SoT</span>
+        </div>
+        <div className={s.momentum} aria-label="Match momentum">
+          <span className={`num ${s.momentumPct}`}>{userMomentum}%</span>
+          <span className={s.momentumTrack} aria-hidden="true">
+            <span className={s.momentumFill} style={{ width: `${userMomentum}%` }} />
+          </span>
+          <span className={`num ${s.momentumPct}`}>{oppMomentum}%</span>
+        </div>
+        <div className={`${s.hudSide} ${s.hudSideOpp}`}>
+          <span className={`num ${s.hudStat}`}>{oppShots} SoT</span>
+          <span className={s.hudBadge} data-side="opp">
+            {TACTIC_LABEL[oppTactic]}
+          </span>
+        </div>
+      </div>
+
+      <Broadcast
+        match={match}
+        matchIndex={matchIndex}
+        seed={seed}
+        lineup={lineup}
+        clock={clock}
+        now={now}
+        fired={state.fired}
+        kicks={state.kicks}
+        motion={motion}
+      />
 
       <div className={s.controls}>
         {!done ? (
@@ -239,6 +336,15 @@ export function MatchPlayer({
             </button>
           </>
         ) : null}
+        <button
+          type="button"
+          className="btn btn--ghost btn--sm"
+          aria-pressed={soundOn}
+          data-testid="sound-toggle"
+          onClick={() => setSoundEnabled(!soundOn)}
+        >
+          {soundOn ? "Sound on" : "Sound off"}
+        </button>
       </div>
 
       {stop !== null && stop.kind !== "injury" ? (

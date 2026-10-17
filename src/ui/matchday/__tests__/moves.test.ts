@@ -103,4 +103,3 @@ describe("callouts (catches a callout that drops the canon move or the type effe
     });
   });
 });
-

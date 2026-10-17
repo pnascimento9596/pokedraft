@@ -1,23 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FORMATIONS } from "@/engine";
-import type { FormationId, FullLineup, MatchResult, Side } from "@/engine/types";
+import { FORMATIONS, speciesById } from "@/engine";
+import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
 import type { Moveset } from "@/data/movesets";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TACTIC_LABEL } from "@/ui/matchday/copy";
 import { beatKey } from "@/ui/matchday/player";
 import {
-  ambientBall,
   buildTimeline,
-  driftPoint,
-  frameAt,
-  goalBall,
   goalMouth,
-  slotPoint,
-  xiAt,
+  stagePitch,
   type Beat,
   type Point,
+  type StagedPlayer,
   type Timeline,
 } from "@/ui/matchday/timeline";
 import s from "./Broadcast.module.css";
@@ -124,45 +120,78 @@ export function Broadcast({
   );
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
-  const frame = frameAt(timeline, clock);
-  const line = frame?.line ?? { user: 0, opp: 0 };
-  const userXI = xiAt(timeline, "user", clock);
-  const oppXI = xiAt(timeline, "opp", clock);
-
-  const spot = (side: Side, slot: number): Point => {
-    const slots = side === "user" ? userSlots : oppSlots;
-    const home = slotPoint(side, slots[slot] ?? { x: 50, y: 50 }, line[side]);
-    const d = timeline.drift[side][slot];
-    return d === undefined ? home : driftPoint(home, d, clock, motion);
-  };
+  const oppLabels = useMemo(
+    () =>
+      match.opponent.roster.map((r) =>
+        r.kind === "species" ? speciesById(r.id).name : `No. ${r.number}`,
+      ),
+    [match.opponent.roster],
+  );
 
   const active = activeBeat(timeline, fired, now, motion);
+  const stage = stagePitch(timeline, {
+    clock,
+    active,
+    kicks,
+    motion,
+    userSlots,
+    oppSlots,
+    oppLabels,
+  });
   const goal = active?.beat.kind === "goal" ? active.beat : null;
-  let ball = ambientBall(timeline, clock, motion);
-  if (goal !== null && goal.scorer.slot !== null) {
-    const scorer = spot(goal.side, goal.scorer.slot);
-    const from = goal.assist?.slot != null ? spot(goal.side, goal.assist.slot) : { x: 50, y: 50 };
-    ball = goalBall(from, scorer, goalMouth(goal.side), motion ? active!.progress : 1);
-  } else if (goal !== null) {
-    ball = goalMouth(goal.side);
-  } else if (active?.beat.kind === "save") {
-    ball = goalMouth(active.beat.side === "user" ? "opp" : "user");
-  }
   const progress = active?.progress ?? 0;
   const shown = (from: number, to = 1) => !motion || (progress >= from && progress <= to);
-
   const kickList = timeline.kicks.slice(0, kicks);
-  const highlight = (side: Side, slot: number): boolean => {
-    const b = active?.beat;
-    if (b === undefined) return false;
-    if (b.kind === "goal")
-      return b.side === side && (b.scorer.slot === slot || b.assist?.slot === slot);
-    if (b.kind === "save") return b.side === side && b.keeper.slot === slot;
-    if (b.kind === "card") return b.side === side && b.player.slot === slot;
-    if (b.kind === "injury" || b.kind === "sub")
-      return side === "user" && (b.kind === "injury" ? b.player.slot : b.slot) === slot;
-    return false;
+
+  const renderPlayer = (p: StagedPlayer | null, keyPrefix: string) => {
+    if (p === null) return null;
+    const ref = p.side === "opp" ? match.opponent.roster[p.slot] : undefined;
+    return (
+      <div
+        key={`${keyPrefix}${p.slot}`}
+        className={s.player}
+        data-side={p.side}
+        data-slot={p.slot}
+        data-pose={p.pose}
+        data-facing={p.facing}
+        data-ball={p.hasBall || undefined}
+        data-hot={p.hot || undefined}
+        data-effect={p.callout?.effect ?? undefined}
+        style={pct(p.point)}
+      >
+        <span className={s.playerSprite}>
+          {p.species !== null ? (
+            <PlayerImage dexId={p.species} size={80} alt="" />
+          ) : (
+            <span className={s.shirt}>{ref?.kind === "shirt" ? ref.number : ""}</span>
+          )}
+        </span>
+        {p.yellowCards > 0 ? (
+          <span
+            className={s.cardPip}
+            data-testid={`pitch-card-${p.side}-${p.slot}`}
+            aria-hidden="true"
+          />
+        ) : null}
+        {p.hasBall ? (
+          <span className={s.carrierBadge} data-testid="ball-carrier">
+            {p.name}
+          </span>
+        ) : null}
+      </div>
+    );
   };
+
+  const trail = stage.trail;
+  const trailMidY =
+    trail === null
+      ? 50
+      : (trail.from.y + trail.to.y) / 2 -
+        (trail.kind === "shot" || trail.kind === "pass" ? 3.5 : 0);
+  const trailPath =
+    trail === null
+      ? ""
+      : `M ${trail.from.x} ${trail.from.y} Q ${(trail.from.x + trail.to.x) / 2} ${trailMidY} ${trail.to.x} ${trail.to.y}`;
 
   return (
     <div
@@ -186,45 +215,111 @@ export function Broadcast({
           <rect x={1.5} y={1.5} width={97} height={61} className={s.mark} />
           <line x1={50} y1={1.5} x2={50} y2={62.5} className={s.mark} />
           <circle cx={50} cy={32} r={8} className={s.mark} />
-          <rect x={1.5} y={17} width={14} height={30} className={s.mark} />
-          <rect x={84.5} y={17} width={14} height={30} className={s.mark} />
-          <rect x={0} y={27} width={1.5} height={10} className={s.goal} />
-          <rect x={98.5} y={27} width={1.5} height={10} className={s.goal} />
+          <circle cx={50} cy={32} r={0.55} className={s.spot} />
+          <rect x={1.5} y={14} width={14.5} height={36} className={s.mark} />
+          <rect x={84} y={14} width={14.5} height={36} className={s.mark} />
+          <rect x={1.5} y={23} width={5.2} height={18} className={s.mark} />
+          <rect x={93.3} y={23} width={5.2} height={18} className={s.mark} />
+          <circle cx={11} cy={32} r={0.5} className={s.spot} />
+          <circle cx={89} cy={32} r={0.5} className={s.spot} />
+          <path d="M 16 25.5 A 7.5 7.5 0 0 1 16 38.5" className={s.mark} />
+          <path d="M 84 25.5 A 7.5 7.5 0 0 0 84 38.5" className={s.mark} />
+          <path d="M 1.5 3.3 A 1.8 1.8 0 0 0 3.3 1.5" className={s.mark} />
+          <path d="M 96.7 1.5 A 1.8 1.8 0 0 0 98.5 3.3" className={s.mark} />
+          <path d="M 1.5 60.7 A 1.8 1.8 0 0 1 3.3 62.5" className={s.mark} />
+          <path d="M 98.5 60.7 A 1.8 1.8 0 0 0 96.7 62.5" className={s.mark} />
+          <rect x={0} y={26.5} width={1.5} height={11} className={s.goal} />
+          <rect x={98.5} y={26.5} width={1.5} height={11} className={s.goal} />
         </svg>
 
-        {userXI.map((id, slot) =>
-          id === null ? null : (
-            <div
-              key={`u${slot}`}
-              className={s.player}
-              data-side="user"
-              data-hot={highlight("user", slot) || undefined}
-              style={pct(spot("user", slot))}
-            >
-              <PlayerImage dexId={id} size={80} alt="" />
-            </div>
-          ),
-        )}
-        {oppXI.map((id, slot) => {
-          const ref = match.opponent.roster[slot];
-          return ref === undefined || (id === null && ref.kind === "species") ? null : (
-            <div
-              key={`o${slot}`}
-              className={s.player}
-              data-side="opp"
-              data-hot={highlight("opp", slot) || undefined}
-              style={pct(spot("opp", slot))}
-            >
-              {id !== null ? (
-                <PlayerImage dexId={id} size={80} alt="" />
-              ) : (
-                <span className={s.shirt}>{ref.kind === "shirt" ? ref.number : ""}</span>
-              )}
-            </div>
-          );
-        })}
+        {trail !== null ? (
+          <svg
+            className={s.trails}
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            data-testid="pitch-trails"
+            data-kind={trail.kind}
+            data-effect={trail.effect ?? undefined}
+          >
+            <path d={trailPath} className={s.trailGlow} />
+            <path d={trailPath} className={s.trailLine} />
+            <circle cx={trail.from.x} cy={trail.from.y} r={1.1} className={s.trailOrigin} />
+          </svg>
+        ) : null}
 
-        <div className={s.ball} style={pct(ball)} data-testid="broadcast-ball" />
+        {stage.players.user.map((p) => renderPlayer(p, "u"))}
+        {stage.players.opp.map((p) => renderPlayer(p, "o"))}
+
+        {stage.playCallout !== null ? (
+          <>
+            <div
+              className={s.playEffect}
+              data-effect={stage.playCallout.callout.effect}
+              style={pct(stage.playCallout.point)}
+            />
+            <div
+              className={s.playBadge}
+              data-side={stage.playCallout.side}
+              data-effect={stage.playCallout.callout.effect}
+              data-testid="pitch-ability"
+              style={pct(stage.playCallout.point)}
+            >
+              {stage.playCallout.callout.text}
+            </div>
+          </>
+        ) : null}
+
+        <div
+          className={s.ball}
+          style={pct(stage.ball)}
+          data-effect={stage.ball.effect ?? undefined}
+          data-testid="broadcast-ball"
+        >
+          <span
+            className={s.ballShadow}
+            style={{
+              transform: `translate(-50%, -50%) scale(${(1 + stage.ball.loft * 0.45).toFixed(2)})`,
+              opacity: Math.max(0.28, 0.72 - stage.ball.loft * 0.35),
+            }}
+          />
+          <svg
+            viewBox="0 0 32 32"
+            className={s.ballSvg}
+            data-testid="soccer-ball-svg"
+            style={{
+              transform: `translateY(${(-stage.ball.loft * 11).toFixed(1)}px) scale(${(1 + stage.ball.loft * 0.28).toFixed(2)}) rotate(${stage.ball.spin}deg)`,
+            }}
+          >
+            <circle cx="16" cy="16" r="14.5" className={s.ballSphere} />
+            <circle cx="11.5" cy="11" r="9.5" className={s.ballHighlight} />
+            <path
+              className={s.ballSeam}
+              d="M16 9.2 L16 2.2 M22.4 13.8 L29.2 11.4 M20 21.4 L24.6 27.2 M12 21.4 L7.4 27.2 M9.6 13.8 L2.8 11.4"
+            />
+            <polygon className={s.ballPanel} points="16,9.2 22.4,13.8 20,21.4 12,21.4 9.6,13.8" />
+            <path
+              className={s.ballPanel}
+              d="M11.8 2.4 L16 5.4 L20.2 2.4 A14.2 14.2 0 0 0 11.8 2.4 Z"
+            />
+            <path
+              className={s.ballPanel}
+              d="M27.6 7.8 L25.8 12.6 L29.8 15.8 A14.2 14.2 0 0 0 27.6 7.8 Z"
+            />
+            <path
+              className={s.ballPanel}
+              d="M27.2 24.6 L22.2 24.2 L20.2 29.2 A14.2 14.2 0 0 0 27.2 24.6 Z"
+            />
+            <path
+              className={s.ballPanel}
+              d="M11.8 29.2 L9.8 24.2 L4.8 24.6 A14.2 14.2 0 0 0 11.8 29.2 Z"
+            />
+            <path
+              className={s.ballPanel}
+              d="M2.2 15.8 L6.2 12.6 L4.4 7.8 A14.2 14.2 0 0 0 2.2 15.8 Z"
+            />
+            <circle cx="16" cy="16" r="14.5" className={s.ballRim} />
+          </svg>
+        </div>
 
         {goal !== null && shown(0.35, 0.75) ? (
           <div

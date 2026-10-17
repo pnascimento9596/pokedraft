@@ -9,6 +9,7 @@ import {
   type StarterIndex,
   type Tactic,
 } from "@/engine/types";
+import { PlayerImage } from "@/components/PlayerImage";
 import { MAX_SUBS, type Decision, type Touchline as TouchlineState } from "@/ui/manager/touchline";
 import { TACTIC_HINT } from "@/components/results/format";
 import { TACTIC_LABEL } from "@/ui/matchday/copy";
@@ -146,10 +147,25 @@ export function Touchline({
       <ul className={s.energy} aria-label="Energy">
         {line.onPitch.map((id, slot) => {
           const energy = line.energy[slot];
+          const canPick = !closed && subsLeft && id !== null;
+          const selected = takeOff === slot && id !== null;
+          const tired = energy != null && energy < 65;
           return (
-            <li key={slot} className={s.energyRow} data-empty={id === null || undefined}>
+            <li
+              key={slot}
+              className={s.energyRow}
+              data-testid={`energy-slot-${slot}`}
+              data-empty={id === null || undefined}
+              data-selected={selected || undefined}
+              data-tired={tired || undefined}
+              data-interactive={canPick || undefined}
+              onClick={canPick ? () => setOff(slot as StarterIndex) : undefined}
+            >
               <span className={s.energyRole}>{slots[slot]!.label}</span>
-              <span className={s.energyName}>{id === null ? "Empty" : speciesById(id).name}</span>
+              <span className={s.energyPlayer}>
+                {id !== null ? <PlayerImage dexId={id} size={22} alt="" /> : null}
+                <span className={s.energyName}>{id === null ? "Empty" : speciesById(id).name}</span>
+              </span>
               <meter
                 className={s.meter}
                 min={0}
