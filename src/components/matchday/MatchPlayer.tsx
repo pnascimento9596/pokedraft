@@ -26,11 +26,12 @@ import {
 } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { Touchline } from "./Touchline";
+import { useMovesets } from "./useMovesets";
 import s from "./MatchPlayer.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
-// The broadcast and the canon movesets it reads load only when a live match mounts.
+// The broadcast loads only when a live match mounts.
 const Broadcast = dynamic(() => import("./Broadcast").then((m) => m.Broadcast), {
   ssr: false,
   loading: () => <div className={s.broadcastLoading}>Loading the broadcast</div>,
@@ -77,9 +78,10 @@ export function MatchPlayer({
 }) {
   const motion = !useReducedMotion();
   const soundOn = useSoundEnabled();
+  const movesOf = useMovesets();
   const timeline = useMemo(
-    () => buildTimeline(match, { matchIndex, seed, lineup }),
-    [match, matchIndex, seed, lineup],
+    () => buildTimeline(match, { matchIndex, seed, lineup, movesOf }),
+    [match, matchIndex, seed, lineup, movesOf],
   );
   const stops = useMemo(
     () => (manager === undefined ? [] : stopsFor(match, lineup)),
@@ -100,7 +102,8 @@ export function MatchPlayer({
     envRef.current = env;
   }, [env]);
 
-  const moving = state.running && state.stage !== "done" && state.stop === null;
+  // The clock holds at kickoff until the movesets settle, so every callout and sound is canon.
+  const moving = movesOf !== null && state.running && state.stage !== "done" && state.stop === null;
   useEffect(() => {
     if (!moving) return;
     let raf = 0;
@@ -292,8 +295,7 @@ export function MatchPlayer({
 
       <Broadcast
         match={match}
-        matchIndex={matchIndex}
-        seed={seed}
+        timeline={timeline}
         lineup={lineup}
         clock={clock}
         now={now}

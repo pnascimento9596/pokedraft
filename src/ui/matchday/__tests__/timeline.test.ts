@@ -98,6 +98,24 @@ describe("buildTimeline (catches choreography that changes between two viewings 
     expect(buildTimeline(match(), input)).toEqual(buildTimeline(match(), input));
   });
 
+  it("plays the same phases with and without the canon movesets (catches sprites that jump when movesets load)", () => {
+    const shape = (movesOf: typeof movesetFor | null) =>
+      buildTimeline(match(), { ...input, movesOf }).plays.map((p) => ({
+        side: p.side,
+        fromSlot: p.fromSlot,
+        toSlot: p.toSlot,
+        kind: p.kind,
+      }));
+    const generic = shape(null);
+    const canon = shape(movesetFor);
+    expect(canon).toEqual(generic);
+    expect([canon[3], canon[10], canon[30]]).toEqual([
+      { side: "opp", fromSlot: 9, toSlot: 10, kind: "cross" },
+      { side: "user", fromSlot: 9, toSlot: 10, kind: "pass" },
+      { side: "user", fromSlot: 9, toSlot: 10, kind: "through" },
+    ]);
+  });
+
   it("draws different ambient drift for another match index", () => {
     const a = buildTimeline(match(), input).drift.user;
     const b = buildTimeline(match(), { ...input, matchIndex: 3 }).drift.user;

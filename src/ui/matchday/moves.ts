@@ -37,15 +37,20 @@ export interface Callout {
   readonly effect: Effect;
 }
 
-/** A scorer's move: a damaging move with power when the species has one, else any of its moves. */
+/**
+ * A scorer's move: a damaging move with power when the species has one, else any of its moves.
+ * Always draws exactly one number, so a stream shared with other picks stays aligned whether or
+ * not the species has moves.
+ */
 export function pickMove(moves: readonly Move[], rng: Rng): Move | null {
+  const roll = rng.next();
   const damaging = moves.filter((m) => m.damageClass !== "status" && m.power !== null);
   const pool = damaging.length > 0 ? damaging : moves;
-  return pool.length === 0 ? null : rng.pick(pool);
+  return pool.length === 0 ? null : pool[Math.floor(roll * pool.length)]!;
 }
 
 export function shotCallout(name: string, moveset: Moveset | null, rng: Rng): Callout {
-  const move = moveset === null ? null : pickMove(moveset.moves, rng);
+  const move = pickMove(moveset?.moves ?? [], rng);
   if (move === null) return { text: `${name} shoots!`, move: null, type: null, effect: "impact" };
   return {
     text: `${name} used ${move.name}!`,
@@ -75,7 +80,7 @@ export function playCallout(
   role: PlayRole,
   rng: Rng,
 ): Callout {
-  const move = moveset === null ? null : pickMove(moveset.moves, rng);
+  const move = pickMove(moveset?.moves ?? [], rng);
   if (move === null) {
     return { text: `${name} ${PLAY_FALLBACK[role]}`, move: null, type: null, effect: "impact" };
   }
