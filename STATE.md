@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Audits archive and program start (2026-10-17)
+
+Branch `docs/audits-2026-10-17` off `f4489cb`. Docs only (Green). Audit A, Audit G, the program
+brief and Audit A's 13 production screenshots now live in `docs/reports/audits-2026-10-17/`, with
+SHA-256 hashes in its README and a `program-log.md` that gets one entry per wave. Decision log:
+`docs/decisions/audits-2026-10-17.md`.
+
+Previous PRs, now merged and live:
+
+- PR #70 (matchday simulation overhaul): squash `40f3c92`, reviewed head `f20ab71`, GLM 5.3 Flash
+  APPROVE with canary `matchday-sim-6823f5df8ab5673193a42648d59a1273` echoed (PR comment).
+  `main` CI run 39011425527 green.
+- PR #69 (draft picker over the pitch): squash `f4489cb`, head `ab62a1c`. The PR comments hold no
+  reviewer receipt for that head, so its reviewer is unknown here. `main` CI run 39042707390
+  green.
+- Production `/api/health?db=1` serves `f4489cb63fedc131274248b14c00758378898ca3` on
+  `pokedraft-engine-6`, token versions 1 to 6, `db.status` ok.
+
+Gates at `6e08aaa`: `prettier --check STATE.md` passed, `pnpm check:mirrors` reported mirrors
+identical, and the three Markdown copies hash equal to their sources. Unit tests, build and
+Playwright: NOT RUN, because nothing under `src/`, `e2e/` or config changed. Hosted CI runs on the
+PR.
+
 ## Draft picker over the pitch
 
 Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
