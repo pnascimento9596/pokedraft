@@ -3,6 +3,25 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Unit flakes
+
+Branch `test/unit-flakes`, off `e449555`. Test only (Green), an out-of-band side fix outside Wave 1. Only `announce-builder.test.tsx` and `run.test.tsx` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Nothing changes for the player. Two unit tests that flaked on loaded four-worker runs now wait for what they depend on.
+- `announce-builder.test.tsx` waited 1 s for a `?b=` link to load the builder engine with `import()`. Under load that wait measured up to 2.7 s (hosted run 39073776203 failed it). The open helper now waits once with the 10 s budget `Builder.test.tsx` already uses. With the two files alone under 36 CPU burners, it failed 20 of 20 runs before the fix and passed 20 of 20 after.
+- `run.test.tsx` "saves a new unseeded run before its first pick" read storage before `LiveRun`'s save effect could run. Under load the save was missing in 1 of 200 starts. The test now waits for the save. React flushes the effect before any pick, so this is not a product bug.
+- Mutating each product path (`Builder.tsx` Randomize score, `HomeScreen.tsx` ignoring `?b=`, `LiveRun.tsx` dropping the new-run save) still fails the matching test.
+
+RED commit: none, because no new guard was added. The loaded repro counts are the RED evidence.
+
+Gates at `598f824` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on both touched tests passed.
+- Unit tests, `pnpm test --maxWorkers=4`: 1,332 passed in 8 of 8 unloaded runs and 2 of 2 runs under 24 CPU burners.
+- Hosted CI, Playwright (no UI change) and the GLM review: NOT RUN at the time of writing.
+
+Scope, repro counts, measurements and the mutation output are in `docs/decisions/unit-flakes.md`.
+
 ## Speed-aware staging
 
 Branch `fix/speed-aware-staging`, built on row 1d (`fix/injury-staging`). UI only (Yellow), Wave 1 row 1e. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
