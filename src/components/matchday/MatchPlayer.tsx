@@ -161,7 +161,11 @@ export function MatchPlayer({
         sounded.current.add(key);
         fresh.push(b);
       }
-      if (b.kind === "goal" && !horned.current.has(key) && landed(b, state.fired, now, staged)) {
+      if (
+        b.kind === "goal" &&
+        !horned.current.has(key) &&
+        landed(b, state.fired, now, staged, state.speed)
+      ) {
         horned.current.add(key);
         scored.push(b);
       }
@@ -194,7 +198,7 @@ export function MatchPlayer({
         playWhistle(wKind);
       }
     }
-  }, [state.fired, state.stage, timeline, now, staged]);
+  }, [state.fired, state.stage, state.speed, timeline, now, staged]);
 
   const lastPhase = useRef(-1);
   useEffect(() => {
@@ -214,7 +218,7 @@ export function MatchPlayer({
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
   const shown = timeline.beats.filter(
-    (b) => revealed(b, clock) && landed(b, state.fired, now, staged),
+    (b) => revealed(b, clock) && landed(b, state.fired, now, staged, state.speed),
   );
   const goals = shown.filter((b) => b.kind === "goal");
   const score = goals.at(-1)?.kind === "goal" ? goals.at(-1)!.score : { user: 0, opp: 0 };
@@ -327,6 +331,7 @@ export function MatchPlayer({
         fired={state.fired}
         kicks={state.kicks}
         motion={motion}
+        speed={state.speed}
       />
 
       <div className={s.controls}>
