@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Quick is not a broadcast
+
+Branch `fix/quick-not-broadcast`, built on row 1e (`fix/speed-aware-staging`). UI only (Yellow), Wave 1 row 1f. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- With manager mode on, every match now plays at the live pace, even when Quick sim is the saved choice. Before, a managed match with the default Quick view was over in about 5 s.
+- While manager mode is on, the Match view selector on the home panel and on the challenge and daily start screens shows Live match, disables Quick sim and says "Manager mode plays live". Turning manager mode off brings the saved Quick choice back.
+- A Quick match draws a still pitch with no move badges and plays only the beat sounds (whistles, goals, saves, cards, subs), not a sound for every phase.
+
+RED commit: `d31e4d1` (7 failing tests in `MatchPlayer.quick.test.tsx`, `MatchdayFlow.pace.test.tsx`, `MatchdaySettings.test.tsx` and `SidePanel.test.tsx`).
+
+Gates at `8fe6174` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed. `pnpm check:image-seam` clean.
+- Unit tests: 1,341 passed in 150 files.
+- Playwright on a fresh build of `8fe6174`: `quick-not-broadcast`, `manager-mode`, `mobile-targets` and `mobile-acceptance` gave 375 passed, 0 failed, 54 skipped. `watch-live`, `speed-aware-staging`, `score-lands-with-ball`, `one-shared-timeline`, `honest-momentum` and `injury-staging` gave 8 passed.
+- Browser proof: `docs/reports/quick-not-broadcast/390-home-manager-plays-live.png`, `390-start-manager-plays-live.png` and `390-managed-match-live-pace.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/quick-not-broadcast.md`.
+
 ## Speed-aware staging
 
 Branch `fix/speed-aware-staging`, built on row 1d (`fix/injury-staging`). UI only (Yellow), Wave 1 row 1e. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
