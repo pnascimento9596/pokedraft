@@ -298,12 +298,13 @@ for (const engine of ["chromium", "webkit"] as const) {
   }
 }
 
-// Bug: each roll scrolled to the wheel, not the pitch. In short portrait the wheel sits in a fixed
-// sheet, so the page stayed where the last slot tap left it and the pitch top was cut off. In
-// short landscape the picker sat in flow below the pitch and the scroll dragged the pitch away.
+// Bug: each roll scrolled to the wheel, not the pitch. In short portrait the wheel sat in a fixed
+// bottom sheet, so the page stayed where the last slot tap left it and the pitch top was cut off.
+// In short landscape and on desktop the picker sat in flow beside or below the pitch.
 for (const [label, viewport] of [
   ["short portrait", { width: 390, height: 667 }],
   ["short landscape", { width: 844, height: 390 }],
+  ["desktop", { width: 1280, height: 720 }],
 ] as const) {
   test(`${label} picker opens over the pitch and a pick leaves the pitch on screen`, async ({
     browser,
@@ -321,9 +322,14 @@ for (const [label, viewport] of [
     for (let round = 1; round <= 3; round++) {
       await expect(page.getByTestId("round-header")).toHaveText(`Round ${round} of 16`);
       await expect(page.locator('[data-testid^="candidate-"]')).toHaveCount(3);
-      expect(
-        await page.getByTestId("draft-drawer").evaluate((e) => getComputedStyle(e).position),
-      ).toBe("fixed");
+      const picker = await page.getByTestId("draft-drawer").evaluate((e) => {
+        const r = e.getBoundingClientRect();
+        return {
+          position: getComputedStyle(e).position,
+          offCenter: Math.round(Math.abs(r.top + r.bottom - innerHeight) / 2),
+        };
+      });
+      expect(picker, `round ${round} picker centered`).toEqual({ position: "fixed", offCenter: 0 });
       const fieldOpen = await top("pitch");
       expect(fieldOpen, `round ${round} pitch behind the picker`).toBeGreaterThanOrEqual(0);
       expect(fieldOpen).toBeLessThan(viewport.height / 2);
