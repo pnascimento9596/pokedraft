@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { IsoDate } from "@/engine";
@@ -382,7 +382,9 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
     fresh.seed = "run-test";
     render(<PlayScreen />);
     await start();
-    expect(localStorage.getItem("pokedraft.run.cup8")).not.toBeNull();
+    // LiveRun saves the new run in an effect after the board commits; React flushes it before the
+    // first pick, but findBy can resolve first on a loaded run (1 in 200 starts under load).
+    await waitFor(() => expect(localStorage.getItem("pokedraft.run.cup8")).not.toBeNull());
     cleanup();
     sessionStorage.clear();
     fresh.seed = "other-seed";
