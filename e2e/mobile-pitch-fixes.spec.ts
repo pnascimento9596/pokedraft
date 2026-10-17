@@ -44,7 +44,8 @@ function carrier(page: Page): Promise<{ font: string; scale: number; text: strin
     if (el === null) return null;
     return {
       font: getComputedStyle(el).fontSize,
-      scale: Math.round((el.getBoundingClientRect().height / el.offsetHeight) * 100) / 100,
+      // offsetHeight is the unscaled layout height, rounded to a whole pixel.
+      scale: Math.round((el.getBoundingClientRect().height / el.offsetHeight) * 10) / 10,
       text: el.textContent ?? "",
     };
   });
