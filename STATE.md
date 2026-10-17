@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## One shared timeline
+
+Branch `fix/one-shared-timeline` off `f4489cb`. UI only (Yellow), Wave 1 row 1a. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The pitch, the HUD, the ticker and the match sounds now read one timeline. `MatchPlayer` loads the canon movesets and hands its timeline to `Broadcast`, which no longer builds its own.
+- Players no longer jump when the movesets finish loading. Open-play callouts draw from their own substream `broadcast:<seed>:<i>:callouts`, and every callout draws exactly one number. Before, 69 of 72 phases differed between the two timelines on the test fixture.
+- The clock holds at kickoff until the movesets settle. A failed load falls back to generic callouts.
+- Typed ability sounds (fire, water, electric, grass, ice, psychic) now play. In a live 390px replay at the `origin/main` build, 0 typed tones played. At the fix build, 13 did.
+
+RED commit: `64cfaab` (5 failing tests in `moves.test.ts`, `timeline.test.ts` and `MatchPlayer.movesets.test.tsx`).
+
+Gates at `dd4f3e7` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,319 passed in 145 files. A first full run failed 1 test in `src/components/run/__tests__/run.test.tsx` (a run survives a reload), which this PR does not touch. That file passed 30 of 30 on five isolated reruns, and the full chain then passed. Flaky under load, recorded here.
+- Playwright on a fresh build of the fix code (`7832262`; `dd4f3e7` adds only the spec and its screenshot): `one-shared-timeline`, `watch-live`, `manager-mode`, `recorded-saves`, `engine-v4`, `club-region-identity`, `mobile-targets` and `mobile-acceptance` gave 386 passed, 0 failed, 54 skipped. The new spec, pinned to the chromium project at `dd4f3e7`, passed 1 of 1.
+- Browser proof: `docs/reports/one-shared-timeline/390-typed-callout.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing. PR #71 (audits archive) was still open, so its merge is not recorded here.
+
+Scope, RED output and measurements are in `docs/decisions/one-shared-timeline.md`.
+
 ## Draft picker over the pitch
 
 Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
