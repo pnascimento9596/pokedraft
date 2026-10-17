@@ -25,11 +25,20 @@ function stored(): string {
   return `${p.managerMode ? "1" : "0"}|${p.matchView}`;
 }
 
+type Matchday = { readonly managerMode: boolean; readonly matchView: MatchView };
+
 /**
  * Manager mode and the match view on a challenge's start screen. They are the same two settings
- * the home panel holds; changing them here saves them there too.
+ * the home panel holds; changing them here saves them there too. The home page passes its own
+ * panel state as `value`, so this copy and the side panel's never disagree.
  */
-export function MatchdaySettings() {
+export function MatchdaySettings({
+  value: controlled,
+  onChange,
+}: {
+  readonly value?: Matchday;
+  readonly onChange?: (next: Matchday) => void;
+} = {}) {
   const labelId = useId();
   const snapshot = useSyncExternalStore(subscribe, stored, () => null);
   // A choice made here holds only while the stored panel is the one it was made over, so it covers
@@ -44,11 +53,16 @@ export function MatchdaySettings() {
     snapshot ?? `${DEFAULT_PANEL.managerMode ? "1" : "0"}|${DEFAULT_PANEL.matchView}`
   ).split("|") as [string, MatchView];
   const value =
-    local !== null && local.over === snapshot
+    controlled ??
+    (local !== null && local.over === snapshot
       ? local.value
-      : { managerMode: mm === "1", matchView: mv };
-  const set = (patch: Partial<typeof value>) => {
+      : { managerMode: mm === "1", matchView: mv });
+  const set = (patch: Partial<Matchday>) => {
     const next = { ...value, ...patch };
+    if (onChange !== undefined) {
+      onChange(next);
+      return;
+    }
     savePanel({ ...loadPanel(), ...next });
     setLocal({ over: stored(), value: next });
   };

@@ -67,7 +67,10 @@ export interface BuilderProps {
   readonly onChange: (next: DraftState) => void;
   readonly showRatings: boolean;
   readonly onReset: () => void;
-  readonly onFriendly: (friendly: Friendly) => void;
+  /** Resolves once the cup is on screen; rejects when its code could not load. */
+  readonly onFriendly: (friendly: Friendly) => Promise<void>;
+  /** The Matchday settings, shown with Play a friendly cup. */
+  readonly matchday?: ReactNode;
 }
 
 interface Cascade {
@@ -85,6 +88,7 @@ export function Builder({
   showRatings,
   onReset,
   onFriendly,
+  matchday,
 }: BuilderProps) {
   const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
   const [picking, setPicking] = useState<SlotRef | null>(null);
@@ -203,10 +207,14 @@ export function Builder({
     });
 
   const playFriendly = () =>
-    withLive(({ engine, draft }) => {
+    withLive(async ({ engine, draft }) => {
       const t = engine.builderToken(draft.settings, draft.lineup, freshSeed() as Seed);
       const { draft: played, cup } = engine.replay(t);
-      onFriendly({ token: t, draft: played, cup });
+      try {
+        await onFriendly({ token: t, draft: played, cup });
+      } catch {
+        say("The cup could not load. Check your connection.");
+      }
     });
 
   // The same number and label as the picker row.
@@ -359,6 +367,7 @@ export function Builder({
         ) : null}
 
         <div className={s.friendly}>
+          {matchday !== undefined ? <div className={s.friendlyMatchday}>{matchday}</div> : null}
           <button
             type="button"
             className="btn btn--primary"
