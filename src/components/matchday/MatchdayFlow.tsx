@@ -190,12 +190,13 @@ function PreMatch({
         {fielded.starters.map((id, slot) => (
           <li key={slot}>
             <span className={s.role}>{slots[slot]!.label}</span>
-            <PlayerImage dexId={id} size={32} alt="" />
+            <PlayerImage dexId={id} size={32} alt="" eager />
             <span className={s.name}>{speciesById(id).name}</span>
           </li>
         ))}
       </ol>
-      <BossRoster opponent={match.opponent} />
+      {/* Both elevens load here, so every sprite is drawn when the match kicks off. */}
+      <BossRoster opponent={match.opponent} eager />
       <button type="button" className="btn btn--primary" data-testid="prematch-go" onClick={onGo}>
         Go to the match
       </button>
