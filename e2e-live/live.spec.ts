@@ -43,7 +43,7 @@ test("daily run: submit as verify-bot, see the row, replay it, fetch its card", 
   await page.goto(boardHref);
   const row = page.getByTestId("board-row").filter({ hasText: "verify-bot" });
   await expect(row).toHaveCount(1);
-  const shareHref = (await row.getByRole("link").getAttribute("href"))!;
+  const shareHref = (await row.locator('a[href^="/r/"]').getAttribute("href"))!;
 
   const shared = await page.goto(shareHref);
   expect(shared?.status()).toBe(200);

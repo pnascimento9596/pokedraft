@@ -3,9 +3,17 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Hand-off follow-up: production check after PRs #64 to #67
+
+Production health after the #67 deploy serves `482299988485191e38f2768d6a37c00104f67c85` on `pokedraft-engine-6` with token versions 1 to 6. `/api/leaderboard` with `scope=all` answers 200 for `coach` all, uncoached and coached in both `cup8` and `kanto151`.
+
+The live suite (`LIVE_URL=https://pokedraft-woad.vercel.app pnpm exec playwright test -c playwright.live.config.ts`) passed 3 of 4 before this PR. The daily verify-bot case submitted and found its row, then failed with `strict mode violation: getByTestId('board-row').filter({ hasText: 'verify-bot' }).getByRole('link') resolved to 2 elements`: board rows have carried a "Challenge this Seed" link since #50/#52, and hosted CI does not run `e2e-live`. The spec now reads the row's `/r/` share link. The three live runs (before, a single-test rerun, after) each submitted a verify-bot daily run to production, as the live check intends; the board shows one verify-bot row.
+
+Section E product calls and the worktree cleanup are recorded in `docs/decisions/tooling-and-process.md`. Still NOT RUN: a physical phone check of manager mode and Live match (owner action), and the Sol review lane (no access).
+
 ## Matchday robustness (dispatch B)
 
-Not merged at the time of writing. Branch `feat/matchday-robustness` off `648cf2f`. No file under `src/engine` changed.
+Merged as PR #67 (squash `4822999`, reviewed head `3dcb28e`, GLM 5.3 Flash APPROVE in round 1 with the canary echoed; hosted check and e2e green on that head). Branch `feat/matchday-robustness` off `648cf2f`. No file under `src/engine` changed.
 
 - A reload during the matchday now comes back at the same match with every touchline decision kept. The run snapshot gains a `matchday` screen whose token carries the decisions so far. This replaces the earlier "returns to the finished draft" behaviour.
 - Each played match on the results page has Watch live. It lazy-loads the Live match broadcast for that match, and a pd5 link reaches the goals-only fallback.
