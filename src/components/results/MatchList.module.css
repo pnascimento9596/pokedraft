@@ -329,3 +329,8 @@
   color: var(--text-muted);
   font-weight: 500;
 }
+
+.watch {
+  align-self: flex-start;
+  min-height: 44px;
+}

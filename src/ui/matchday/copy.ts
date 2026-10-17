@@ -1,7 +1,7 @@
 import type { Side, Tactic } from "@/engine/types";
 import type { Beat, Kick } from "./timeline";
 
-const TACTIC: Readonly<Record<Tactic, string>> = {
+export const TACTIC_LABEL: Readonly<Record<Tactic, string>> = {
   balanced: "Balanced",
   attack: "Attack",
   defend: "Defend",
@@ -14,6 +14,79 @@ const REASON = { injury: "injury", fatigue: "fresh legs", tactical: "tactical" }
 export interface Teams {
   readonly user: string;
   readonly opp: string;
+}
+
+interface Named {
+  readonly name: string;
+}
+
+/**
+ * An injury, substitution, card or tactic change with its players already named. The broadcast's
+ * beats have this shape, and the results map the engine's incidents onto it, so both read alike.
+ */
+export type IncidentCopy =
+  | { readonly kind: "injury"; readonly minute: number; readonly player: Named }
+  | {
+      readonly kind: "sub";
+      readonly minute: number;
+      readonly in: Named;
+      readonly out: Named;
+      readonly reason: keyof typeof REASON;
+      readonly by: "manager" | "auto";
+    }
+  | {
+      readonly kind: "card";
+      readonly minute: number;
+      readonly side: Side;
+      readonly player: Named;
+      readonly color: "yellow" | "red";
+      readonly secondYellow: boolean;
+    }
+  | {
+      readonly kind: "tactic";
+      readonly minute: number;
+      readonly side: Side;
+      readonly tactic: Tactic;
+      readonly by: "manager" | "auto";
+    };
+
+/** A card names the player's team; `user` is null where the user's own side goes unnamed. */
+export interface CardTeams {
+  readonly user: string | null;
+  readonly opp: string;
+}
+
+/** The one line for an incident, shared by the match ticker and the results list. */
+export function incidentText(c: IncidentCopy, teams: CardTeams): string {
+  const at = `${c.minute}'`;
+  switch (c.kind) {
+    case "injury":
+      return `${at} ${c.player.name} is injured`;
+    case "sub":
+      return `${at} ${c.in.name} on for ${c.out.name} (${REASON[c.reason]}, ${c.by === "manager" ? "your call" : "assistant"})`;
+    case "card": {
+      const card =
+        c.color === "yellow"
+          ? "Yellow card"
+          : c.secondYellow
+            ? "Second yellow, red card"
+            : "Red card";
+      const team = c.side === "user" ? teams.user : teams.opp;
+      return `${at} ${card} for ${c.player.name}${team === null ? "" : ` (${team})`}`;
+    }
+    case "tactic": {
+      const label = TACTIC_LABEL[c.tactic];
+      if (c.side === "opp") {
+        return c.minute === 0
+          ? `Kick off: ${teams.opp} play ${label}`
+          : `${at} ${teams.opp} switch to ${label}`;
+      }
+      if (c.minute === 0) return `Kick off: you play ${label}`;
+      return c.by === "manager"
+        ? `${at} You switch to ${label}`
+        : `${at} Your assistant switches to ${label}`;
+    }
+  }
 }
 
 function team(teams: Teams, side: Side): string {
@@ -33,18 +106,8 @@ export function beatLine(b: Beat, teams: Teams): string {
     }
     case "save":
       return `${at} ${b.keeper.name} saves from ${b.attacker.name}`;
-    case "card":
-      return `${at} ${b.color === "yellow" ? "Yellow card" : b.secondYellow ? "Second yellow, red card" : "Red card"} for ${b.player.name} (${team(teams, b.side)})`;
-    case "injury":
-      return `${at} ${b.player.name} is injured`;
-    case "sub":
-      return `${at} ${b.in.name} on for ${b.out.name} (${REASON[b.reason]}, ${b.by === "manager" ? "your call" : "assistant"})`;
-    case "tactic":
-      if (b.side === "opp") return `${at} ${teams.opp} switch to ${TACTIC[b.tactic]}`;
-      if (b.minute === 0) return `Kick off: you play ${TACTIC[b.tactic]}`;
-      return b.by === "manager"
-        ? `${at} You switch to ${TACTIC[b.tactic]}`
-        : `${at} Your assistant switches to ${TACTIC[b.tactic]}`;
+    default:
+      return incidentText(b, teams);
   }
 }
 

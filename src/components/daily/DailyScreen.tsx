@@ -13,7 +13,7 @@ import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/st
 import s from "./DailyScreen.module.css";
 
 const savedSchema = z.object({
-  screen: z.enum(["draft", "results"]),
+  screen: z.enum(["draft", "results", "matchday"]),
   token: z.string(),
   daily: z.string().nullable(),
 });

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type {
   Contribution,
@@ -35,6 +36,16 @@ import s from "./ResultsView.module.css";
 import { ModuleCard, Pill, Table } from "@/components/ui/primitives";
 import { NavIcon, type NavFamily } from "@/components/ui/nav-icons";
 import { SoundToggle } from "@/components/wheel/SoundToggle";
+
+// Watch live loads the match player and its broadcast only when a match is opened.
+const MatchReplay = dynamic(() => import("./MatchReplay").then((m) => m.MatchReplay), {
+  ssr: false,
+  loading: () => (
+    <p className="kicker" data-testid="match-replay-loading">
+      Loading the broadcast
+    </p>
+  ),
+});
 
 export interface ResultsViewProps {
   /** The run token: `encodeToken` output that `replay` accepts. */
@@ -81,6 +92,7 @@ export function ResultsView({
     null,
   );
   const [showMatchday, setShowMatchday] = useState(false);
+  const [watching, setWatching] = useState<number | null>(null);
   const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
 
   return (
@@ -146,6 +158,14 @@ export function ResultsView({
       {showMatchday ? (
         <MatchdayLive cup={cup} draft={draft} onClose={() => setShowMatchday(false)} />
       ) : null}
+      {watching !== null ? (
+        <MatchReplay
+          cup={cup}
+          draft={draft}
+          matchIndex={watching}
+          onClose={() => setWatching(null)}
+        />
+      ) : null}
 
       <MatchHighlights
         cup={cup}
@@ -165,6 +185,7 @@ export function ResultsView({
             cup={cup}
             draft={draft}
             onSelectStar={(round) => setSelectedHighlightRound(round)}
+            onWatch={setWatching}
           />
         </ModuleCard>
 

@@ -283,4 +283,13 @@ describe("incidentLine (catches results that hide who made a change or mislabel 
       ),
     ).toBe("60' Opp switch to Counter");
   });
+
+  it("writes an opponent tactic at kickoff as the shape they start in, not a 0' switch", () => {
+    expect(
+      incidentLine(
+        { kind: "tactic", side: "opp", minute: 0, tactic: "counter", by: "auto" },
+        "Opp",
+      ),
+    ).toBe("Kick off: Opp play Counter");
+  });
 });

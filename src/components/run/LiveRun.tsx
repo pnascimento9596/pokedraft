@@ -21,23 +21,47 @@ import { focusHeading } from "@/ui/focus";
 import { loadPanel, playHref, playsMatchday, type MatchView } from "@/ui/settings";
 import { DraftBoard } from "./DraftBoard";
 import { runToken, startRun, step, type Run } from "./runState";
-import { forgetRun, saveRun, type Restored, type RunSlot } from "./savedRun";
+import { forgetRun, saveRun, type MatchdayAt, type Restored, type RunSlot } from "./savedRun";
 import s from "./PlayScreen.module.css";
 
-// The matchday is never saved on its own: a reload during it comes back to the finished draft.
-type Screen =
-  | Restored
-  | {
-      readonly kind: "matchday";
-      readonly run: Run;
-      readonly token: string;
-      readonly draft: DraftState;
-      readonly cup: CupResult;
-      readonly ctx: CupContext;
-      readonly view: MatchView;
-      readonly managerMode: boolean;
-    };
+type MatchdayScreen = Extract<Restored, { kind: "matchday" }> & { readonly ctx: CupContext };
+type Screen = Exclude<Restored, { kind: "matchday" }> | MatchdayScreen;
 export { restoreRun } from "./savedRun";
+
+function matchdayScreen(
+  run: Run,
+  token: string,
+  draft: DraftState,
+  cup: CupResult,
+  at: { actions: readonly ManagerAction[]; match: number; view: MatchView; managerMode: boolean },
+): MatchdayScreen {
+  const ctx = { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode };
+  const { actions, match, view, managerMode } = at;
+  return { kind: "matchday", run, token, draft, cup, ctx, actions, match, view, managerMode };
+}
+
+// The snapshot's token is the draft's own token with the decisions so far.
+function saveMatchday(
+  slot: RunSlot,
+  token: string,
+  manager: readonly ManagerAction[],
+  at: MatchdayAt,
+): void {
+  saveRun(slot, "matchday", encodeToken({ ...decodeToken(token), manager: [...manager] }), {
+    match: at.match,
+    view: at.view,
+    managerMode: at.managerMode,
+  });
+}
+
+function firstPlayed(cup: CupResult): number {
+  return cup.matches.findIndex((m) => m.status === "played");
+}
+
+function screenOf(initial: Restored): Screen {
+  if (initial.kind !== "matchday") return initial;
+  return matchdayScreen(initial.run, initial.token, initial.draft, initial.cup, initial);
+}
 
 // The draft and the results. PlayScreen loads this module (and the species data under it) with
 // import() at Start, so the start panel's first load carries none of it.
@@ -57,8 +81,8 @@ export function LiveRun({
   readonly onNewRun: () => void;
 }) {
   const slot: RunSlot = { settings, seed, daily: daily ?? null };
-  const [screen, setScreen] = useState<Screen>(
-    () => initial ?? { kind: "draft", run: startRun(settings, seed) },
+  const [screen, setScreen] = useState<Screen>(() =>
+    initial === null ? { kind: "draft", run: startRun(settings, seed) } : screenOf(initial),
   );
   const [failure, setFailure] = useState<string | null>(null);
   const [showRatings] = useState(() => loadPanel().showChallengeRatings);
@@ -80,6 +104,7 @@ export function LiveRun({
   const show = (next: Screen) => {
     if (next.kind === "draft") saveRun(slot, "draft", runToken(next.run));
     else if (next.kind === "results") saveRun(slot, "results", next.token);
+    else saveMatchday(slot, next.token, next.actions, next);
     setScreen(next);
   };
 
@@ -90,16 +115,14 @@ export function LiveRun({
       const panel = loadPanel();
       // Builder runs are friendlies; the matchday belongs to the drafted cups.
       if (settings.mode !== "builder" && playsMatchday(panel)) {
-        show({
-          kind: "matchday",
-          run,
-          token,
-          draft,
-          cup,
-          ctx: { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode },
-          view: panel.matchView,
-          managerMode: panel.managerMode,
-        });
+        show(
+          matchdayScreen(run, token, draft, cup, {
+            actions: [],
+            match: firstPlayed(cup),
+            view: panel.matchView,
+            managerMode: panel.managerMode,
+          }),
+        );
       } else {
         show({ kind: "results", token, draft, cup });
       }
@@ -110,6 +133,20 @@ export function LiveRun({
   };
 
   const matchdayToken = screen.kind === "matchday" ? screen.token : null;
+  const matchdayView = screen.kind === "matchday" ? screen.view : null;
+  const matchdayManaged = screen.kind === "matchday" && screen.managerMode;
+  // Each decision and each new match is checkpointed, so a reload comes back to this match.
+  const progressMatchday = useCallback(
+    (manager: readonly ManagerAction[], match: number) => {
+      if (matchdayToken === null || matchdayView === null) return;
+      saveMatchday({ settings, seed, daily: daily ?? null }, matchdayToken, manager, {
+        match,
+        view: matchdayView,
+        managerMode: matchdayManaged,
+      });
+    },
+    [matchdayToken, matchdayView, matchdayManaged, settings, seed, daily],
+  );
   const finishMatchday = useCallback(
     (manager: readonly ManagerAction[]) => {
       if (matchdayToken === null) return;
@@ -127,10 +164,16 @@ export function LiveRun({
   );
 
   const newRun = () => {
-    forgetRun(slot, {
-      screen: screen.kind === "matchday" ? "draft" : screen.kind,
-      token: screen.kind === "results" ? screen.token : runToken(screen.run),
-    });
+    // A matchday's snapshot changes with every decision, so this tab's own copy names it.
+    forgetRun(
+      slot,
+      screen.kind === "matchday"
+        ? undefined
+        : {
+            screen: screen.kind,
+            token: screen.kind === "results" ? screen.token : runToken(screen.run),
+          },
+    );
     onNewRun();
   };
 
@@ -139,8 +182,11 @@ export function LiveRun({
       <MatchdayFlow
         ctx={screen.ctx}
         initialCup={screen.cup}
+        initialActions={screen.actions}
+        initialMatch={screen.match}
         view={screen.view}
         managerMode={screen.managerMode}
+        onProgress={progressMatchday}
         onFinish={finishMatchday}
       />
     );

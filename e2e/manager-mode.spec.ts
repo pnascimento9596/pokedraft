@@ -101,6 +101,50 @@ test.describe("manager mode", () => {
     );
   });
 
+  test("a reload during the matchday comes back at the same match with the decisions kept", async ({
+    page,
+  }) => {
+    await seedPanel(page, { managerMode: true, matchView: "quick" });
+    await toMatchday(page);
+    await page.getByTestId("prematch-go").click();
+    await page.getByTestId("tactic-attack").click();
+    await expect(page.getByTestId("tactic-attack")).toHaveAttribute("aria-pressed", "true");
+    await page.getByTestId("stop-go").click();
+    await page.getByTestId("skip-ft").click();
+    await page.getByTestId("fulltime-next").click();
+    await expect(page.getByTestId("matchday")).toHaveAttribute("data-match", "1");
+    const title = await page.getByTestId("matchday-title").textContent();
+
+    await page.reload();
+    await expect(page.getByTestId("matchday")).toHaveAttribute("data-match", "1");
+    await expect(page.getByTestId("matchday-title")).toHaveText(title!);
+    await expect(page.getByTestId("prematch")).toBeVisible();
+
+    await finishCup(page);
+    await expect(page.getByTestId("coached-pill")).toHaveText("Coached");
+    await page.getByTestId("match-G1").getByTestId("match-incidents").locator("summary").click();
+    await expect(page.getByTestId("match-G1").getByTestId("match-incidents")).toContainText(
+      "Kick off: you play Attack",
+    );
+  });
+
+  test("a start screen follows manager mode and the match view changed in another tab", async ({
+    page,
+    context,
+  }) => {
+    await page.goto(PLAY);
+    await expect(page.getByTestId("manager-mode")).toHaveAttribute("aria-checked", "false");
+    const other = await context.newPage();
+    await other.goto(PLAY);
+    await other.getByTestId("manager-mode").click();
+    await other.getByTestId("match-view-live").click();
+    await expect(other.getByTestId("manager-mode")).toHaveAttribute("aria-checked", "true");
+
+    await expect(page.getByTestId("manager-mode")).toHaveAttribute("aria-checked", "true");
+    await expect(page.getByTestId("match-view-live")).toHaveAttribute("aria-pressed", "true");
+    await other.close();
+  });
+
   test("with manager mode off and the quick view, See results goes straight to the results", async ({
     page,
   }) => {

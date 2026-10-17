@@ -176,6 +176,40 @@ describe("coached runs (catches a results page that drops a run once it carries 
     });
   });
 
+  it("restores an in-progress matchday at the match it was on, with the decisions taken so far", () => {
+    const run = completeRun();
+    const manager = [
+      { type: "tactic", match: 0, minute: 0, tactic: "attack" },
+      { type: "tactic", match: 1, minute: 45, tactic: "defend" },
+    ] as const;
+    const token = encodeToken({ ...decodeToken(runToken(run)), manager: [...manager] });
+    saveRun(slot, "matchday", token, { match: 1, view: "live", managerMode: true });
+    sessionStorage.clear();
+
+    const restored = restoreRun(slot);
+    expect(restored?.kind).toBe("matchday");
+    if (restored?.kind !== "matchday") throw new Error("matchday not restored");
+    expect(restored.match).toBe(1);
+    expect(restored.view).toBe("live");
+    expect(restored.managerMode).toBe(true);
+    expect(restored.actions).toEqual([
+      { type: "tactic", match: 0, minute: 0, tactic: "attack" },
+      { type: "tactic", match: 1, minute: 45, tactic: "defend" },
+    ]);
+    expect(runToken(restored.run)).toBe(runToken(run));
+    const second = restored.cup.matches[1];
+    if (second?.status !== "played") throw new Error("second match not played");
+    expect(second.incidents?.filter((i) => i.kind === "tactic" && i.by === "manager")).toEqual([
+      { kind: "tactic", side: "user", minute: 45, tactic: "defend", by: "manager" },
+    ]);
+  });
+
+  it("refuses a matchday checkpoint that points past the matches the cup played", () => {
+    const run = completeRun();
+    saveRun(slot, "matchday", runToken(run), { match: 9, view: "quick", managerMode: true });
+    expect(restoreRun(slot)).toBeNull();
+  });
+
   it("still refuses a coached token whose draft belongs to other settings", () => {
     const run = completeRun();
     const token = encodeToken({

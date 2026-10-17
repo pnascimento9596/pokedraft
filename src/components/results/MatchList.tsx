@@ -27,15 +27,18 @@ export function MatchList({
   cup,
   draft,
   onSelectStar,
+  onWatch,
 }: {
   cup: CupResult;
   draft?: DraftState;
   onSelectStar?: (round: PlayedMatch["round"]) => void;
+  /** Opens the Live match broadcast for the match at this index. */
+  onWatch?: (matchIndex: number) => void;
 }) {
   const outIn = eliminatedIn(cup);
   return (
     <ol className={s.list}>
-      {cup.matches.map((m) => (
+      {cup.matches.map((m, i) => (
         <li key={m.round} data-testid={`match-${m.round}`} className={s.row} data-status={m.status}>
           {m.status === "played" ? (
             <Played
@@ -44,6 +47,7 @@ export function MatchList({
               headline={cup.rating.score}
               outNote={outIn === m.round ? FINISH_LABEL[cup.finish] : null}
               onSelectStar={onSelectStar}
+              onWatch={onWatch === undefined ? undefined : () => onWatch(i)}
             />
           ) : (
             <NotPlayed m={m} />
@@ -60,12 +64,14 @@ function Played({
   headline,
   outNote,
   onSelectStar,
+  onWatch,
 }: {
   m: PlayedMatch;
   draft?: DraftState;
   headline: number;
   outNote: string | null;
   onSelectStar?: (round: PlayedMatch["round"]) => void;
+  onWatch?: () => void;
 }) {
   const score = finalScore(m);
   const pens = shootoutLine(m);
@@ -113,6 +119,17 @@ function Played({
             <span className={s.starHeadline}>• {star.headline}</span>
           </div>
         )
+      ) : null}
+      {onWatch !== undefined ? (
+        <button
+          type="button"
+          className={`btn btn--ghost btn--sm ${s.watch}`}
+          data-testid="watch-live"
+          aria-label={`Watch live: ${ROUND_LABEL[m.round]} against ${m.opponent.name}`}
+          onClick={onWatch}
+        >
+          Watch live
+        </button>
       ) : null}
       {m.extraTime !== null || pens !== null ? (
         <p className={s.extra}>

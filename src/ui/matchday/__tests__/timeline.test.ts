@@ -227,4 +227,14 @@ describe("beatLine (catches ticker copy that drops the scorer, the team or who m
       "90' Full time",
     ]);
   });
+
+  it("writes an opponent tactic at kickoff as the shape they start in, not a 0' switch", async () => {
+    const { beatLine } = await import("../copy");
+    expect(
+      beatLine(
+        { kind: "tactic", minute: 0, side: "opp", tactic: "counter", by: "auto" },
+        { user: "Your XI", opp: "Opp" },
+      ),
+    ).toBe("Kick off: Opp play Counter");
+  });
 });
