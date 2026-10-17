@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Security and integrity quick fixes (W1k)
+
+Branch `fix/security-integrity-quick-fixes` off `f4489cb`. Tier Red (gate, rate limits, database client, leaderboard). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- A gate link such as `/gate?next=/..//evil.com` now unlocks to `/`, not to another site.
+- One IPv6 client shares one rate-limit bucket across its /64, for gate attempts and leaderboard submissions. IPv4 is unchanged.
+- A Neon query that hangs fails after 4 seconds into the existing "leaderboard is offline" reply, instead of holding the function to its limit.
+- A JSON or text POST to `/gate/unlock` goes back to the gate with an error, not a 500.
+- A submitted run's rank is counted among runs like it (uncoached or coached). The uncoached leader reads #1, the success line names the view, and View leaderboard opens it.
+- The board's coach view lives in the URL (`/leaderboard?mode=cup8&scope=all&coach=uncoached`), so friends can link a filtered board.
+
+RED commit: `209c429` (15 failing guard tests).
+
+Gates at `5b7ca8d` (later commits change only docs):
+
+- Lint, typecheck, build and format check exited 0.
+- Unit tests: 1,331 passed in 147 files.
+- Playwright on a fresh build (leaderboard, leaderboard-cls, leaderboard-date, mobile-targets, mobile-acceptance): 375 passed, 54 skipped, 0 failed.
+- Full Playwright suite, independent review, a physical phone check and the post-merge production check: NOT RUN.
+
+Scope, RED output and decisions are in `docs/decisions/security-integrity-quick-fixes.md`. Screenshot: `docs/reports/security-integrity-quick-fixes/leaderboard-coach-url-390x844.png`.
+
 ## Draft picker over the pitch
 
 Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
