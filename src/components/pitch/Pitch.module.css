@@ -104,7 +104,8 @@
     0 4px 6px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transition: scale 200ms ease-out;
-  touch-action: none;
+  /* A vertical swipe on a card scrolls the page; a drag that starts sideways still swaps. */
+  touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
   z-index: 1;
@@ -159,6 +160,7 @@
   cursor: default;
 }
 .token[data-dragging] {
+  touch-action: none;
   z-index: 5;
   pointer-events: none;
   opacity: 0.9;
