@@ -319,6 +319,11 @@
   margin-left: auto;
   white-space: nowrap;
 }
+@media (max-width: 480px) {
+  .selectionLegend {
+    display: none;
+  }
+}
 .dragPreview {
   position: fixed;
   pointer-events: none;
