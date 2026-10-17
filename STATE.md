@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Highlights honesty
+
+Branch `fix/highlights-honesty` off `f4489cb`. Wave 1 row 1h. Display only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The highlights type icon and stage tint show the star's own primary type. Arcanine reads Fire, not the Dark of its ability Intimidate.
+- The ability box says "Ability", not "Activated Ability", and the strike announcement no longer claims the ability fired.
+- Clean Sheet Hero and Squad Anchor go to the first player, keeper first, who held a starting slot for the whole match. An absent, subbed, injured or sent-off keeper is skipped. A 0-0 lost on penalties is not a clean sheet.
+- The MVP pill reads L for a losing record (0W-0D-3L) and D for a level one (1W-1D-1L).
+- Highlight, motion, strike, goal and broadcast glyphs sit in `aria-hidden` spans, so screen readers read "Clean Sheet Hero", not "gloves Clean Sheet Hero".
+- A zero weak-spot drag reads 0, not -0.
+
+RED commit: `fc9efaf` (12 failing guards in `starCalculation`, `MatchHighlights` and `ResultsView` tests).
+
+Gates at `dfe9f5f` (later commits change only docs):
+
+- Lint, typecheck, format check on touched files and build exited 0.
+- Unit tests: 1,327 passed in 144 files.
+- Playwright on a fresh build: 429 passed, 0 failed, 54 skipped across the highlights scene, results interactions, Silph Stadium, recorded saves, a11y, contrast, mobile targets and mobile acceptance. Hosted CI runs the full suite.
+- Browser proof at 390x844: `docs/reports/highlights-honesty/`.
+- NOT RUN: the new scene against a `main` build, 360 and 320 screenshots, a physical phone check, GLM review.
+
+Decisions are in `docs/decisions/highlights-honesty.md`.
+
 ## Draft picker over the pitch
 
 Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
