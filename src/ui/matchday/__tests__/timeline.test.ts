@@ -5,6 +5,7 @@ import {
   ambientBall,
   buildTimeline,
   driftPoint,
+  frameAt,
   goalBall,
   saveBall,
   slotPoint,
@@ -150,11 +151,13 @@ describe("buildTimeline (catches choreography that changes between two viewings 
     ]);
   });
 
-  it("leans the ball toward the side making chances and shifts lines with the tactic", () => {
+  it("leans the ball toward the side that made chances in the last window and shifts lines with the tactic", () => {
     const t = buildTimeline(match(), input);
     expect(t.frames).toHaveLength(18);
-    expect(t.frames[2]).toEqual({ from: 10, to: 15, ball: 2 / 3, line: { user: 0, opp: -7 } });
-    expect(t.frames[7]).toEqual({ from: 35, to: 40, ball: -0.5, line: { user: 7, opp: -7 } });
+    expect(t.frames[2]).toEqual({ from: 10, to: 15, ball: 0, line: { user: 0, opp: -7 } });
+    expect(t.frames[3]).toEqual({ from: 15, to: 20, ball: 2 / 3, line: { user: 0, opp: -7 } });
+    expect(t.frames[7]).toEqual({ from: 35, to: 40, ball: 0, line: { user: 7, opp: -7 } });
+    expect(t.frames[8]).toEqual({ from: 40, to: 45, ball: -0.5, line: { user: 7, opp: -7 } });
   });
 
   it("tracks who stands in each slot through injuries and substitutions", () => {
@@ -205,6 +208,43 @@ describe("buildTimeline (catches choreography that changes between two viewings 
       ["Charizard", true, { user: 1, opp: 0 }],
       ["Dragonite", false, { user: 1, opp: 0 }],
     ]);
+  });
+});
+
+describe("momentum (catches a lean that shows a goal or a save before it happens)", () => {
+  const goalAt4 = (seed = "tl") =>
+    buildTimeline(
+      match({
+        regulation: { user: 1, opp: 0 },
+        goals: [
+          { side: "user", minute: 4, penalty: false, kind: "solo", scorer: id(6), assist: null },
+        ],
+        saves: [],
+        incidents: [],
+      }),
+      { ...input, seed },
+    );
+
+  it("reads 0 at kickoff even when the first window holds a goal", () => {
+    expect(frameAt(goalAt4(), 0)?.ball).toBe(0);
+  });
+
+  it("does not move the lean for a goal at 4' before 5'", () => {
+    const t = goalAt4();
+    expect([0, 1, 3.9, 4, 4.5, 4.99].map((m) => frameAt(t, m)?.ball)).toEqual([0, 0, 0, 0, 0, 0]);
+    expect(frameAt(t, 5.01)?.ball).toBe(0.5);
+    expect(frameAt(t, 10.01)?.ball).toBe(0);
+  });
+
+  it("keeps possession before a goal free of the goal later in the same window", () => {
+    const quiet = (seed: string) =>
+      buildTimeline(match({ goals: [], saves: [], incidents: [] }), { ...input, seed });
+    const leaked = Array.from({ length: 24 }, (_, k) => `s${k}`).filter((seed) => {
+      const before = (t: ReturnType<typeof buildTimeline>) =>
+        t.plays.slice(0, 3).map((p) => p.side);
+      return before(goalAt4(seed)).join() !== before(quiet(seed)).join();
+    });
+    expect(leaked).toEqual([]);
   });
 });
 

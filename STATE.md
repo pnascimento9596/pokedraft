@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Honest momentum
+
+Branch `fix/honest-momentum`, built on row 1a (`fix/one-shared-timeline`). UI only (Yellow), Wave 1 row 1b. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The momentum bar no longer leans toward a goal or a save before it happens. It reads 50% / 50% until the first five minutes are played, then follows the window that just finished.
+- The ambient ball and the open-play possession bias read the same lean, so neither drifts toward a chance that has not happened yet.
+- Measured in a live 390px replay of the golden cup8 run's G1, where the user's keeper saves at 3'. Before, 0' to 4' read 36% / 64%. After, 0' to 4' read 50% / 50% and 5' to 9' read 36% / 64%.
+- Not changed by this row: the bar still reads a flat 50/50 in most windows, and each frame's line height still reads the tactic snapshot at the window's end.
+
+RED commit: `018fd21` (3 failing tests in `timeline.test.ts`, plus `e2e/honest-momentum.spec.ts` failing on 36%64% at 0').
+
+Gates at `43c5a5d` (later commits change only docs and screenshots):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,322 passed in 145 files.
+- Playwright on a fresh build of `43c5a5d`: `honest-momentum`, `one-shared-timeline`, `watch-live`, `mobile-targets` and `mobile-acceptance` gave 365 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/honest-momentum/390-kickoff.png` and `docs/reports/honest-momentum/390-after-first-window.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/honest-momentum.md`.
+
+PR #72 (row 1a, one shared timeline) merged as squash `b2f2d49`, reviewed head `667ad76`, GLM 5.3 Flash APPROVE in round 1 with canary `one-timeline-051829b31b7efd9c2408e72508363bb4` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `b2f2d49` with `db.status` ok, and `e2e/one-shared-timeline.spec.ts` against production (`PLAYWRIGHT_BASE_URL`, chromium) passed 1 of 1 with 13 typed tones heard.
+
 ## One shared timeline
 
 Branch `fix/one-shared-timeline` off `f4489cb`. UI only (Yellow), Wave 1 row 1a. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
