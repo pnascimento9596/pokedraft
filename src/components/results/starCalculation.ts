@@ -15,6 +15,8 @@ export interface MatchStar {
   readonly speciesId: SpeciesId;
   readonly name: string;
   readonly role: string;
+  /** Decorative glyph shown before the headline; rendered aria-hidden. */
+  readonly icon: string;
   readonly headline: string;
   readonly statSummary: string;
   readonly ability: string;
@@ -64,6 +66,25 @@ function pickSignatureMove(
   return fallback;
 }
 
+function leftEarly(match: PlayedMatch, id: SpeciesId): boolean {
+  return (match.incidents ?? []).some(
+    (i) =>
+      (i.kind === "sub" && i.out === id) ||
+      ((i.kind === "injury" || i.kind === "red") && i.side === "user" && i.player === id),
+  );
+}
+
+// The first player in formation order, keeper first, who held a starting slot for the whole
+// match: a starter, or the stand-in for an absent one, and never one subbed, injured or sent off.
+function fullMatchAnchor(match: PlayedMatch, draft: DraftState): SpeciesId {
+  for (const starter of draft.lineup.starters) {
+    const absence = match.absences.find((a) => a.out === starter);
+    const id = absence ? absence.in : starter;
+    if (id !== null && !leftEarly(match, id)) return id;
+  }
+  return draft.lineup.starters[0] ?? (1 as SpeciesId);
+}
+
 export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
   const score = finalScore(match);
   const scoreline = `${score.user}-${score.opp}`;
@@ -72,6 +93,7 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
   );
 
   let starId: SpeciesId = draft.lineup.starters[0] ?? (1 as SpeciesId);
+  let icon = "";
   let headline = "";
   let statSummary = "";
 
@@ -117,14 +139,15 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
     const [topId, topStats] = sorted[0]!;
     starId = topId;
 
+    icon = topStats.goals > 0 ? "⚽" : "🎯";
     if (topStats.goals >= 3) {
-      headline = `⚽ Hat-Trick Hero (${topStats.goals} Goals)`;
+      headline = `Hat-Trick Hero (${topStats.goals} Goals)`;
     } else if (topStats.goals === 2) {
-      headline = `⚽ Match Brace (${topStats.goals} Goals)`;
+      headline = `Match Brace (${topStats.goals} Goals)`;
     } else if (topStats.goals === 1) {
-      headline = `⚽ Goal Scorer (${topStats.latestMinute}')`;
+      headline = `Goal Scorer (${topStats.latestMinute}')`;
     } else {
-      headline = `🎯 Key Playmaker (${topStats.assists} Assist${topStats.assists > 1 ? "s" : ""})`;
+      headline = `Key Playmaker (${topStats.assists} Assist${topStats.assists > 1 ? "s" : ""})`;
     }
 
     const parts = [
@@ -136,16 +159,18 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
     statSummary = parts.join(" • ") || "Dominant attacking display";
   } else if (match.shootout !== null && match.outcome === "W") {
     starId = match.shootout.keeper;
-    headline = "🧤 Shootout Hero";
+    icon = "🧤";
+    headline = "Shootout Hero";
     statSummary = "Decisive penalty shootout triumph";
-  } else if (score.opp === 0) {
-    starId = draft.lineup.starters[0] ?? draft.lineup.bench[0] ?? (1 as SpeciesId);
-    headline = "🧤 Clean Sheet Hero";
+  } else if (score.opp === 0 && match.shootout === null) {
+    starId = fullMatchAnchor(match, draft);
+    icon = "🧤";
+    headline = "Clean Sheet Hero";
     statSummary = "Unbroken defensive shutout";
   } else {
-    // Loss or tough game: choose goalkeeper or midfield captain
-    starId = draft.lineup.starters[0] ?? (1 as SpeciesId);
-    headline = "🌟 Squad Anchor";
+    starId = fullMatchAnchor(match, draft);
+    icon = "🌟";
+    headline = "Squad Anchor";
     statSummary = "Battled through fierce pressure";
   }
 
@@ -169,11 +194,12 @@ export function getMatchStar(match: PlayedMatch, draft: DraftState): MatchStar {
     speciesId: starId,
     name: species.name,
     role: roleForSpecies(starId, draft),
+    icon,
     headline,
     statSummary,
     ability: abilityMeta.name,
     abilityFlavor: abilityMeta.flavor,
-    element: abilityMeta.element,
+    element: primaryType,
     kickMove,
     action: isDefensiveStar ? "defend" : "attack",
     matchScore: scoreline,
@@ -211,15 +237,16 @@ export function getTournamentMvp(cup: CupResult, draft: DraftState): MatchStar {
     speciesId: starId,
     name: species.name,
     role: roleForSpecies(starId, draft),
-    headline: "🏆 Player of the Tournament",
+    icon: "🏆",
+    headline: "Player of the Tournament",
     statSummary: statParts.join(" • "),
     ability: abilityMeta.name,
     abilityFlavor: abilityMeta.flavor,
-    element: abilityMeta.element,
+    element: primaryType,
     kickMove,
     action: defensive ? "defend" : "attack",
     matchScore: `${cup.wins}-${cup.draws}-${cup.losses}`,
-    outcome: cup.flawless ? "W" : cup.wins >= cup.losses ? "W" : "D",
+    outcome: cup.wins > cup.losses ? "W" : cup.wins < cup.losses ? "L" : "D",
     opponentName: "Silph Cup",
     isTournamentMvp: true,
   };

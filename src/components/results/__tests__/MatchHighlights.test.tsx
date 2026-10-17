@@ -51,7 +51,7 @@ describe("MatchHighlights", () => {
     expect(screen.getByTestId("strike-btn").textContent).toContain("Defensive drill");
     fireEvent.click(screen.getByTestId("strike-btn"));
     act(() => vi.advanceTimersByTime(600));
-    expect(screen.queryByText("⚽ GOAL!")).toBeNull();
+    expect(screen.getByTestId("goal-overlay").textContent).not.toContain("GOAL!");
     expect(screen.getByTestId("goal-overlay").textContent).toContain("BLOCK!");
     expect(screen.getByTestId("match-highlights").textContent).toContain("Illustrated highlights");
   });
@@ -102,7 +102,7 @@ describe("MatchHighlights", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it("renders the interactive stadium stage with Star player, soccer ball, and ability activation", async () => {
+  it("renders the interactive stadium stage with Star player, soccer ball, and ability", async () => {
     const { draft, cup } = await replay(FLAWLESS);
     render(<MatchHighlights cup={cup} draft={draft} />);
 
@@ -110,7 +110,7 @@ describe("MatchHighlights", () => {
     expect(screen.getByTestId("highlights-stage")).toBeTruthy();
     expect(screen.getByTestId("star-name").textContent).toBeTruthy();
     expect(screen.getByTestId("star-headline").textContent).toBeTruthy();
-    expect(screen.getByTestId("star-ability").textContent).toContain("Activated Ability");
+    expect(screen.getByTestId("star-ability").textContent).toContain("Ability:");
     expect(screen.getByTestId("soccer-ball")).toBeTruthy();
   });
 
@@ -145,7 +145,7 @@ describe("MatchHighlights", () => {
         vi.advanceTimersByTime(600);
       });
       expect(screen.getByTestId("goal-overlay")).toBeTruthy();
-      expect(screen.getByText("⚽ GOAL!")).toBeTruthy();
+      expect(screen.getByTestId("goal-overlay").textContent).toContain("⚽ GOAL!");
 
       // Goal celebration resets back to dribble mode
       act(() => {
@@ -161,10 +161,11 @@ describe("MatchHighlights", () => {
     const { draft, cup } = await replay(ELIMINATED);
     render(<MatchHighlights cup={cup} draft={draft} />);
 
-    const toggle = screen.getByRole("button", { name: "⏸ Pause Motion" });
+    const toggle = screen.getByRole("button", { name: "Pause Motion" });
     fireEvent.click(toggle);
 
     expect(toggle.textContent).toBe("▶ Play Motion");
+    expect(screen.getByRole("button", { name: "Play Motion" })).toBe(toggle);
     expect(toggle.getAttribute("aria-pressed")).toBe("true");
   });
 

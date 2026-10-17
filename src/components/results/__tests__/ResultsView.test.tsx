@@ -317,9 +317,10 @@ describe("ResultsView", () => {
     await view(FLAWLESS);
     expect(screen.getByRole("button", { name: "Watch Matchday Broadcast" })).toBeTruthy();
     const badge = screen.getByTestId("match-star-G1");
-    const shown = Array.from(badge.querySelectorAll("span:not([aria-hidden])"))
-      .map((el) => el.textContent)
-      .join(" ");
+    const spoken = badge.cloneNode(true) as HTMLElement;
+    spoken.querySelectorAll('[aria-hidden="true"]').forEach((el) => el.remove());
+    const shown = spoken.textContent ?? "";
+    expect(shown).toContain("Hero");
     expect(shown).not.toMatch(/\p{Extended_Pictographic}/u);
   });
 });

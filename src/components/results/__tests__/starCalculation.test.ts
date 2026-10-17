@@ -34,7 +34,8 @@ describe("starCalculation", () => {
       },
       draft,
     );
-    expect(star.headline).toBe("⚽ Goal Scorer (10')");
+    expect(star.icon).toBe("⚽");
+    expect(star.headline).toBe("Goal Scorer (10')");
     expect(star.speciesId).toBe(scorer);
     expect(star.statSummary).toBe("1 Goal");
     expect(star.matchScore).toBe("1-1");
