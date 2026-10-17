@@ -94,3 +94,7 @@ None of section 2 applies. The row is display only.
 - A missed penalty's ball ends at `x: 91 / 9`, now 2 units from the spot, so a miss draws a short
   trail. Not changed here.
 - Other rows' committed 390px screenshots predate the two-row HUD. They were left as committed.
+
+## CI flake fixed in this PR
+
+Hosted e2e on `3398f4b` (run 39075805190) failed `e2e/speed-aware-staging.spec.ts` (PR #77) on both attempts: `toBeVisible` on `goal-flash` timed out at 60 s while the replay reached full time at 1 - 0 with the 49' goal in the ticker. At 2x the flash lives about half a second, and a busy runner's visibility poll can miss it. Under a 6x CDP CPU throttle the unchanged spec failed 2 of 4 on this branch's build and 3 of 4 on a `main` build (`c87509f`), so this row did not cause it. The spec now waits on its own MutationObserver log for a frame that drew the flash, then for the callout to go. Under the same throttle it passed 6 of 6, with the callout on screen 977 to 985 ms. `e2e/score-lands-with-ball.spec.ts` polls the flash the same way at 1x (about twice as long on screen) and is left as a watch item.
