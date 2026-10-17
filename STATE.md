@@ -3,6 +3,20 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wheel skip flake
+
+Branch `test/wheel-skip-flake`, off `b8e5c2c`. Test only (Green), an out-of-band side fix outside Wave 1. Only `e2e/wheel-results.spec.ts` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Hosted CI failed `[webkit-wheel]` "wheel results at 1440px › skip results stay in the windows until the next pick and spin" in runs 39052173584 and 39062736785, both attempts, at 120 s on the `Tap to skip` click.
+- Cause, measured per frame in local WebKit: the skip button is not remounted per frame and does not move. It lives only while each reel spins (1.7 s, then 2.1 s). On a slow runner the click's actionability checks outlasted both spins, and then no skip button ever existed again.
+- Fix: the skip variant installs Playwright's clock, pauses it, advances it inside the poll until the reel has moved, clicks, then resumes. Players see no change.
+
+RED commit: none. Plain local WebKit never reproduced it (60 of 60 passed with `--repeat-each 10`). A throwaway harness that busy-waits each animation frame reproduced the CI call log: the old spec failed 10 of 10 at 250 ms and 500 ms per frame; the new one passed 10 of 10 at both.
+
+Gates at `b56ff55`: lint and typecheck exited 0, unit tests 1,327 passed in 146 files, Prettier check passed on the touched files. `e2e/wheel-results.spec.ts` passed 60 of 60 on webkit-wheel (`--repeat-each 10`) and 30 of 30 on chromium (`--repeat-each 5`) against a build of `b8e5c2c`. Hosted CI and the full local e2e suite: NOT RUN at the time of writing.
+
+Scope, the per-frame probe, the harness table and NOT RUN are in `docs/decisions/wheel-skip-flake.md`.
+
 ## Score lands with the ball
 
 Branch `fix/score-lands-with-ball`, built on row 1b (`fix/honest-momentum`, itself on row 1a). UI only (Yellow), Wave 1 row 1c. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
