@@ -27,7 +27,12 @@ function back(req: Request, next: string, error: string): NextResponse {
 }
 
 export async function handleUnlock(req: Request, deps: UnlockDeps): Promise<NextResponse> {
-  const form = await req.formData();
+  let form: FormData;
+  try {
+    form = await req.formData();
+  } catch {
+    return back(req, "/", "1");
+  }
   const next = safeNext(String(form.get("next") ?? "/"));
   const { passcode } = deps;
   if (!passcode) return NextResponse.redirect(new URL(next, req.url), 303);
