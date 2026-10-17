@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Retained JSON dedupe
+
+Branch `fix/retained-json-dedupe` off `f4489cb`. Build and CI only (Red, deploy/build). No file under `src/engine` or `src/data` changed. Players see no change. Old share links replay as before, and the server build carries one copy of each retained data file instead of eight.
+
+- The Turbopack retained-JSON rule in `next.config.ts` matches every `v<n>` bundle, v5 included.
+- `scripts/build/retained-json-loader.cjs` re-exports the live file or the earliest byte-identical retained copy. Before, v2 to v5 each inlined the same 803 KB `scouting.json` once the live file changed.
+- CI runs `node scripts/build/measure-retained-json.mjs .next/server/chunks`, which asserts 4 payloads, after `pnpm build`.
+
+RED commit: `098a694` (measure script fails `8 !== 4` on a fresh build of `f4489cb`; 2 of 7 loader tests fail).
+
+Gates at `a980db9`:
+
+- Lint, typecheck, build, client bundle check and format check on touched files exited 0.
+- Unit tests: 1,316 passed in 144 files.
+- Measure script: 4 payloads, 2,891,853 bytes (was 8 and 5,784,409).
+- Emitted retained replays: 7 of 7 passed; an uncommitted v5 extension passed 9 of 9.
+- Playwright `e2e/old-links.spec.ts` and `e2e/engine-v4.spec.ts`: 4 passed.
+- Full local Playwright suite, review and hosted CI: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/retained-json-dedupe.md`.
+
 ## Draft picker over the pitch
 
 Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
