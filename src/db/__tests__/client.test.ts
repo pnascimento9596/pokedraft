@@ -49,6 +49,18 @@ describe("Neon request timeout (catches SE-18, a hung Neon fetch running to the 
           }),
       ),
     );
-    await expect(getDb().execute(sql`select 1`)).rejects.toThrow(/TimeoutError|timed out|aborted/i);
+    const failure = await getDb()
+      .execute(sql`select 1`)
+      .then(
+        () => null,
+        (e: unknown) => e,
+      );
+    const names: string[] = [];
+    // Drizzle wraps the driver error in `cause`; the Neon driver keeps the fetch error in `sourceError`.
+    for (let cur = failure; cur instanceof Error;) {
+      names.push(cur.name);
+      cur = cur.cause ?? (cur as { sourceError?: unknown }).sourceError;
+    }
+    expect(names).toEqual(["Error", "NeonDbError", "TimeoutError"]);
   });
 });
