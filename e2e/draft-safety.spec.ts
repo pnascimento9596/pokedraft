@@ -1,5 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
-import { centre, settle, settledScrollY, touchDrag, touchScroll } from "./mobile/helpers";
+import {
+  MIN_TARGET,
+  centre,
+  settle,
+  settledScrollY,
+  touchDrag,
+  touchScroll,
+  widestRight,
+} from "./mobile/helpers";
 import { RUN_151, RUN_8_0, RUN_POSITION_FIRST } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
@@ -130,3 +138,42 @@ test.describe("on a 390x844 touch screen", () => {
     expect(moved).toBeGreaterThan(100);
   });
 });
+
+for (const width of [390, 360, 320]) {
+  test.describe(`browser proof at ${width}px`, () => {
+    test.use({ viewport: { width, height: 844 }, hasTouch: true, isMobile: true });
+
+    test(`the open picker and the New run question fit ${width}px with 44px targets`, async ({
+      page,
+    }, info) => {
+      await page.goto(RUN_8_0.url);
+      await page.getByTestId("run-start").click();
+      await expect(page.getByRole("button", { name: "Minimize draft picker" })).toBeVisible();
+      await settle(page);
+      await page.screenshot({ path: info.outputPath(`picker-${width}.png`) });
+      expect(await widestRight(page)).toBeLessThanOrEqual(width);
+
+      await page.locator('[data-testid^="candidate-"]').first().click();
+      await page.locator('[data-testid^="slot-"][data-filled="false"]').first().click();
+      await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
+      await page.getByRole("button", { name: "Minimize draft picker" }).click();
+      await page.getByTestId("new-run").click();
+      const ask = page.getByRole("group", { name: /^Start over\?/ });
+      await expect(ask).toHaveText(
+        "Start over? The 1 player you signed will be lost.Start overKeep drafting",
+      );
+      await ask.evaluate((el) => el.scrollIntoView({ block: "center", behavior: "instant" }));
+      await settle(page);
+      await page.screenshot({ path: info.outputPath(`new-run-${width}.png`) });
+      expect(await widestRight(page)).toBeLessThanOrEqual(width);
+      for (const id of ["new-run-confirm", "new-run-cancel"]) {
+        const box = (await page.getByTestId(id).boundingBox())!;
+        expect({ id, tall: box.height >= MIN_TARGET, wide: box.width >= MIN_TARGET }).toEqual({
+          id,
+          tall: true,
+          wide: true,
+        });
+      }
+    });
+  });
+}

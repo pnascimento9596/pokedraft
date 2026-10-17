@@ -154,6 +154,10 @@ for (const size of [
     await expect(page.locator('[data-testid^="candidate-"]').first()).toBeVisible();
     await keeper.scrollIntoViewIfNeeded();
     await settle(page);
+    // The open picker is modal: the first tap on the dimmed pitch closes it, the next one acts.
+    const covered = (await keeper.boundingBox())!;
+    await page.touchscreen.tap(covered.x + covered.width / 2, covered.y + covered.height / 2);
+    await expect(page.getByRole("button", { name: "Choose a player" })).toBeVisible();
     expect((await inViewport(page, keeper)).problem).toBeNull();
     await tapNow(page, keeper, "select keeper to swap");
     await expect(page.locator('[data-testid^="candidate-"]').first()).not.toBeVisible();
