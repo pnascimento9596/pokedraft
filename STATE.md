@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Builder matchday
+
+Branch `feat/builder-matchday` off `f4489cb`. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- A friendly cup from the home builder now follows Manager mode and Live match. With either on it opens the matchday, and Manager mode reaches the touchline. With both off it goes straight to the results, as before.
+- The Matchday toggles sit above Play a friendly cup and stay in step with the side panel's Matchday switches.
+- A reload during a friendly matchday comes back to the same match from the builder run slot. Friendly results still do not survive a reload.
+- Friendlies stay unranked. The results show no submit panel, and the server rejects a coached builder token as `BUILDER_NOT_RANKED`.
+- The `PlayScreen` and `LiveRun` builder gates are gone, but `/play` never runs a builder cup, so the player path was the home friendly in `HomeScreen`.
+
+RED commit: `aff6f7a` (5 failing tests in `builder-matchday.test.tsx`).
+
+Gates at `06d3755` (later commits change only STATE.md):
+
+- Lint, typecheck, format check, build, client bundle and image seam exited 0.
+- Unit tests: 1,321 passed in 146 files.
+- Playwright on a fresh build, 13 specs (`builder-matchday`, `builder`, `manager-mode`, `mobile-targets`, `mobile-acceptance`, `data-split`, `layout-shift`, `theme-builder`, `builder-ratings-layout`, `a11y`, `run-persist`, `settings-confirm`, `contrast`): 478 passed, 0 failed, 57 skipped.
+- NOT RUN: the full Playwright suite locally, hosted CI, the GLM review, a physical phone check.
+
+Decisions and the RED output are in `docs/decisions/builder-matchday.md`. Screenshots at 390x844 are in `docs/reports/builder-matchday/`.
+
 ## Draft picker over the pitch
 
 Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
