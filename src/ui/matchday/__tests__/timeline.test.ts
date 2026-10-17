@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { movesetFor } from "@/data/movesets";
 import type { FullLineup, Incident, MatchResult, Opponent, SpeciesId } from "@/engine/types";
-import { ambientBall, buildTimeline, driftPoint, goalBall, slotPoint, xiAt } from "../timeline";
+import {
+  ambientBall,
+  buildTimeline,
+  driftPoint,
+  goalBall,
+  saveBall,
+  slotPoint,
+  stagePitch,
+  xiAt,
+} from "../timeline";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 const id = (n: number) => n as SpeciesId;
@@ -206,6 +215,93 @@ describe("pitch geometry (catches sprites that leave the pitch or move with redu
     expect(goalBall(from, scorer, mouth, 0)).toEqual(from);
     expect(goalBall(from, scorer, mouth, 0.35)).toEqual(scorer);
     expect(goalBall(from, scorer, mouth, 0.9)).toEqual(mouth);
+  });
+
+  it("runs a save from the shooter to the keeper and parries the ball clear", () => {
+    const attacker = { x: 76, y: 38 };
+    const mouth = { x: 98, y: 50 };
+    const deflect = { x: 84, y: 24 };
+    expect(saveBall(attacker, mouth, deflect, 0)).toEqual(attacker);
+    expect(saveBall(attacker, mouth, deflect, 0.45)).toEqual(mouth);
+    expect(saveBall(attacker, mouth, deflect, 1)).toEqual(deflect);
+  });
+
+  it("chains open-play phases with connected passes and canon move callouts", () => {
+    const t = buildTimeline(match(), input);
+    expect(t.plays.length).toBe(72);
+    for (let k = 0; k < t.plays.length - 1; k++) {
+      const cur = t.plays[k]!;
+      const next = t.plays[k + 1]!;
+      expect(cur.to).toBe(next.from);
+      if (cur.side === next.side) expect(cur.toSlot).toBe(next.fromSlot);
+    }
+    const abilities = t.plays.filter((p) => p.callout !== null);
+    expect(abilities.length).toBeGreaterThan(10);
+    expect(abilities[0]!.callout!.text).toMatch(/ used .+!$/);
+  });
+
+  it("stages active ball carriers, supporting runs, save trajectories and shootout spots on the pitch", () => {
+    const t = buildTimeline(match(), input);
+    const open = stagePitch(t, {
+      clock: 6.5,
+      active: null,
+      kicks: 0,
+      motion: true,
+      userSlots: LINEUP.formation,
+      oppSlots: "4-3-3",
+    });
+    expect(open.ball.carrier).not.toBeNull();
+    const carrierSide = open.ball.carrier!.side;
+    const carrierSlot = open.ball.carrier!.slot!;
+    expect(open.players[carrierSide][carrierSlot]?.hasBall).toBe(true);
+
+    const still = stagePitch(t, {
+      clock: 6.5,
+      active: null,
+      kicks: 0,
+      motion: false,
+      userSlots: LINEUP.formation,
+      oppSlots: "4-3-3",
+    });
+    expect(still.ball.x).toBe(50);
+    expect(still.ball.y).toBe(50);
+    expect(still.trail).toBeNull();
+
+    const saveBeat = t.beats.find((b) => b.kind === "save")!;
+    const onSave = stagePitch(t, {
+      clock: 12,
+      active: { beat: saveBeat, progress: 0.2 },
+      kicks: 0,
+      motion: true,
+      userSlots: LINEUP.formation,
+      oppSlots: "4-3-3",
+    });
+    expect(onSave.ball.x).toBeLessThan(98);
+    expect(onSave.trail?.kind).toBe("save");
+
+    const shoot = buildTimeline(
+      match({
+        extraTime: { user: 0, opp: 0 },
+        shootout: {
+          user: 1,
+          opp: 0,
+          keeper: id(9),
+          kicks: [{ side: "user", taker: id(6), scored: true }],
+          decider: "kicks",
+          coinWinner: null,
+        },
+      }),
+      input,
+    );
+    const pens = stagePitch(shoot, {
+      clock: 120,
+      active: null,
+      kicks: 1,
+      motion: true,
+      userSlots: LINEUP.formation,
+      oppSlots: "4-3-3",
+    });
+    expect(pens.players.user[9]?.point).toEqual({ x: 86, y: 50 });
   });
 });
 
