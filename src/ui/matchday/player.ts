@@ -49,6 +49,83 @@ export function landed(
   return at === undefined || now - at >= GOAL_LANDS * SHOW.goal;
 }
 
+/** A beat on the pitch: 0 to 1 through its staging, and 1 when motion is reduced. */
+export interface Active {
+  readonly beat: Beat;
+  readonly progress: number;
+}
+
+type InjuryBeat = Extract<Beat, { kind: "injury" }>;
+type SubBeat = Extract<Beat, { kind: "sub" }>;
+
+function replacementFor(timeline: Timeline, injury: InjuryBeat): SubBeat | undefined {
+  return timeline.beats.find(
+    (b): b is SubBeat =>
+      b.kind === "sub" &&
+      b.reason === "injury" &&
+      b.minute === injury.minute &&
+      b.slot === injury.player.slot,
+  );
+}
+
+function injuryFor(timeline: Timeline, sub: SubBeat): InjuryBeat | undefined {
+  return timeline.beats.find(
+    (b): b is InjuryBeat =>
+      b.kind === "injury" && b.minute === sub.minute && b.player.slot === sub.slot,
+  );
+}
+
+/**
+ * When a beat comes onto the pitch. An injury's replacement waits for the injured player's own
+ * staging, so the pitch shows who went down before who comes on.
+ */
+function startOf(
+  timeline: Timeline,
+  fired: Readonly<Record<string, number>>,
+  b: Beat,
+): number | undefined {
+  const at = fired[beatKey(b)];
+  if (at === undefined || b.kind !== "sub" || b.reason !== "injury") return at;
+  const injury = injuryFor(timeline, b);
+  const down = injury === undefined ? undefined : fired[beatKey(injury)];
+  return down === undefined ? at : Math.max(at, down + SHOW.injury);
+}
+
+/**
+ * The latest beat still on the pitch. With reduced motion, the latest beat shown at all. An injury
+ * stays on while the clock waits at its minute for the replacement to come on.
+ */
+export function activeBeat(
+  timeline: Timeline,
+  fired: Readonly<Record<string, number>>,
+  now: number,
+  motion: boolean,
+  clock: number,
+): Active | null {
+  let best: Active | null = null;
+  let bestAt = -Infinity;
+  for (const beat of timeline.beats) {
+    const at = startOf(timeline, fired, beat);
+    if (at === undefined) continue;
+    if (!motion) {
+      if (beat.kind !== "whistle" || best === null) best = { beat, progress: 1 };
+      continue;
+    }
+    const age = now - at;
+    const replacement = beat.kind === "injury" ? replacementFor(timeline, beat) : undefined;
+    const waiting =
+      replacement !== undefined &&
+      beat.minute === clock &&
+      fired[beatKey(replacement)] === undefined;
+    if (age < 0 || (age > SHOW[beat.kind] && !waiting)) continue;
+    if (at >= bestAt) {
+      bestAt = at;
+      best = { beat, progress: Math.min(1, age / SHOW[beat.kind]) };
+    }
+  }
+  return best;
+}
+
 export type Stage = "play" | "pens" | "done";
 
 export interface PlayState {
@@ -102,12 +179,21 @@ function holdFor(b: Beat, pace: Pace): number {
   return 0;
 }
 
+// An injury's replacement stays off the pitch until the manager answers that injury's stop.
+function awaitingAnswer(b: Beat, state: PlayState, env: PlayEnv): boolean {
+  if (b.kind !== "sub" || b.reason !== "injury") return false;
+  const key = `injury:${b.minute}:${b.slot}`;
+  return env.stops.some((s) => s.key === key) && !state.answered.includes(key);
+}
+
 function fire(state: PlayState, env: PlayEnv, clock: number, now: number): PlayState["fired"] {
   let fired = state.fired;
   for (const b of env.timeline.beats) {
     if (b.minute > clock) break;
     const key = beatKey(b);
-    if (fired[key] === undefined && revealed(b, clock)) fired = { ...fired, [key]: now };
+    if (fired[key] === undefined && revealed(b, clock) && !awaitingAnswer(b, state, env)) {
+      fired = { ...fired, [key]: now };
+    }
   }
   return fired;
 }
