@@ -151,11 +151,13 @@ describe("buildTimeline (catches choreography that changes between two viewings 
     ]);
   });
 
-  it("leans the ball toward the side making chances and shifts lines with the tactic", () => {
+  it("leans the ball toward the side that made chances in the last window and shifts lines with the tactic", () => {
     const t = buildTimeline(match(), input);
     expect(t.frames).toHaveLength(18);
-    expect(t.frames[2]).toEqual({ from: 10, to: 15, ball: 2 / 3, line: { user: 0, opp: -7 } });
-    expect(t.frames[7]).toEqual({ from: 35, to: 40, ball: -0.5, line: { user: 7, opp: -7 } });
+    expect(t.frames[2]).toEqual({ from: 10, to: 15, ball: 0, line: { user: 0, opp: -7 } });
+    expect(t.frames[3]).toEqual({ from: 15, to: 20, ball: 2 / 3, line: { user: 0, opp: -7 } });
+    expect(t.frames[7]).toEqual({ from: 35, to: 40, ball: 0, line: { user: 7, opp: -7 } });
+    expect(t.frames[8]).toEqual({ from: 40, to: 45, ball: -0.5, line: { user: 7, opp: -7 } });
   });
 
   it("tracks who stands in each slot through injuries and substitutions", () => {

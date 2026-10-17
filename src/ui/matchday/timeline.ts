@@ -98,7 +98,11 @@ export interface Kick {
 export interface Frame {
   readonly from: number;
   readonly to: number;
-  /** -1 (pinned in the user's half) to 1 (camped in the opponent's). */
+  /**
+   * -1 (pinned in the user's half) to 1 (camped in the opponent's), from the goals and saves of the
+   * window that just finished, so it never leans toward a chance before it happens. The first
+   * window reads 0.
+   */
   readonly ball: number;
   /** Pitch-length percent each side's shape sits above its default. */
   readonly line: { readonly user: number; readonly opp: number };
@@ -362,7 +366,7 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
   const frames: Frame[] = [];
   for (let from = 0; from < finalMinute; from += WINDOW) {
     const to = from + WINDOW;
-    const inside = (m: number) => m > from && m <= to;
+    const inside = (m: number) => m > from - WINDOW && m <= from;
     const pressure = (side: Side) =>
       match.goals.filter((g) => g.side === side && inside(g.minute)).length +
       (match.saves ?? []).filter((s) => s.side !== side && inside(s.minute)).length;
@@ -545,7 +549,7 @@ export function driftPoint(home: Point, d: Drift, minute: number, motion: boolea
   };
 }
 
-/** The ball between events: it sways toward the side making chances in this window. */
+/** The ball between events: it sways toward the side that made chances in the last window. */
 export function ambientBall(timeline: Timeline, minute: number, motion: boolean): Point {
   if (!motion) return { x: 50, y: 50 };
   const lean = frameAt(timeline, minute)?.ball ?? 0;
