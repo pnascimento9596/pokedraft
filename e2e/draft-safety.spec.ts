@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { centre, settle, settledScrollY, touchDrag, touchScroll } from "./mobile/helpers";
 import { RUN_151, RUN_POSITION_FIRST } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
@@ -76,4 +77,51 @@ test("the home side panel stays stuck at top 16 after a 1000px scroll (catches o
     };
   });
   expect(at).toEqual({ scrollY: 1000, top: 16 });
+});
+
+test.describe("on a 390x844 touch screen", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+
+  async function openPicker(page: Page) {
+    await page.goto(RUN_151.url);
+    await page.getByTestId("run-start").click();
+    await expect(page.getByRole("button", { name: "Minimize draft picker" })).toBeVisible();
+    await settle(page);
+  }
+
+  test("a tap on the dimmed pitch around the open picker closes it and places nothing (catches a backdrop that lets taps through)", async ({
+    page,
+  }) => {
+    await openPicker(page);
+    const drawer = (await page.getByTestId("draft-drawer").boundingBox())!;
+    const below = { x: 195, y: Math.min(drawer.y + drawer.height + 20, 830) };
+    await page.touchscreen.tap(below.x, below.y);
+    await expect(page.getByRole("button", { name: "Choose a player" })).toBeVisible();
+    await expect(page.getByTestId("round-header")).toHaveText("Round 1 of 16");
+    await expect(filled(page)).toHaveCount(0);
+  });
+
+  test("a swipe down on the open picker's top bar closes it (catches a sheet with no swipe to close)", async ({
+    page,
+  }) => {
+    await openPicker(page);
+    const bar = page.getByRole("button", { name: "Minimize draft picker" });
+    const from = centre((await bar.boundingBox())!);
+    await touchDrag(page, from, { x: from.x, y: from.y + 160 });
+    await expect(page.getByRole("button", { name: "Choose a player" })).toBeVisible();
+  });
+
+  test("a vertical swipe that starts on a player card scrolls the page (catches touch-action none trapping the scroll)", async ({
+    page,
+  }) => {
+    await openPicker(page);
+    await page.locator('[data-testid^="candidate-"]').first().click();
+    const card = page.getByTestId("slot-s5");
+    await card.evaluate((el) => el.scrollIntoView({ block: "center", behavior: "instant" }));
+    await settle(page);
+    const start = await page.evaluate(() => window.scrollY);
+    await touchScroll(page, centre((await card.boundingBox())!), 160);
+    const moved = (await settledScrollY(page)) - start;
+    expect(moved).toBeGreaterThan(100);
+  });
 });
