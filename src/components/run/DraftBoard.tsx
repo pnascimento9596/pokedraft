@@ -165,12 +165,7 @@ function ActiveDraftBoard({
 
   const placeAfterPick = phase.kind === "choosing" && phase.slot === null;
   useEffect(() => {
-    if (
-      !placeAfterPick ||
-      scrolledRoll.current === rollId ||
-      !window.matchMedia("(max-width: 959px)").matches
-    )
-      return;
+    if (!placeAfterPick || scrolledRoll.current === rollId) return;
     scrolledRoll.current = rollId;
     pitchRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
   }, [rollId, placeAfterPick]);
