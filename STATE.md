@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Speed-aware staging
+
+Branch `fix/speed-aware-staging`, built on row 1d (`fix/injury-staging`). UI only (Yellow), Wave 1 row 1e. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- At 2x speed every beat on the pitch now stages in half the time, so a goal's staging ends when the clock's hold ends instead of running on into play.
+- The score, the ticker and the goal horn still land with the ball at 2x, at 0.6 of the shorter staging.
+- Measured in a live 390px replay of the golden cup8 run's G1 at 2x. The goal's move callout stayed on screen for 1967 ms before and 983 ms after (975 ms expected).
+
+RED commit: `a8795fd` (2 failing tests in `MatchPlayer.speed.test.tsx`).
+
+Gates at `24ed4eb` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,332 passed in 148 files.
+- Playwright on a fresh build of the fix code (`4ad326e`; `24ed4eb` adds only the spec and its screenshot): `speed-aware-staging`, `injury-staging`, `score-lands-with-ball`, `one-shared-timeline`, `honest-momentum`, `manager-mode`, `watch-live`, `mobile-targets` and `mobile-acceptance` gave 382 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/speed-aware-staging/390-2x-goal-landed.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/speed-aware-staging.md`.
+
 ## Injury staging
 
 Branch `fix/injury-staging`, built on row 1c (`fix/score-lands-with-ball`). UI only (Yellow), Wave 1 row 1d. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
