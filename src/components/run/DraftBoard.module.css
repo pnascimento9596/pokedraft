@@ -339,7 +339,7 @@
 .drawerBackdrop {
   display: none;
 }
-@media (max-width: 959px) and (min-height: 500px) {
+@media (max-width: 959px) {
   .board[data-choosing][data-drawer] .drawerToggle {
     color: var(--stadium-ink);
   }
@@ -378,6 +378,13 @@
   .board[data-dragging-candidate] .drawerBackdrop {
     opacity: 0.1;
     pointer-events: none;
+  }
+}
+@media (max-width: 959px) and (max-height: 499px) {
+  .board[data-choosing][data-drawer] .drawer {
+    left: max(8px, calc(50% - 280px));
+    right: max(8px, calc(50% - 280px));
+    max-height: calc(100dvh - 48px);
   }
 }
 @media (max-width: 959px) {

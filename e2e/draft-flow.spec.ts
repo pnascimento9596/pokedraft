@@ -33,7 +33,7 @@ for (const engine of ["chromium", "webkit"] as const) {
         const original = Element.prototype.scrollIntoView;
         Object.defineProperty(window, "draftScrolls", { value: [], writable: true });
         Element.prototype.scrollIntoView = function (options) {
-          if (this.getAttribute("data-testid") === "draft-wheel") {
+          if (this.getAttribute("data-testid") === "draft-pitch") {
             (window as unknown as { draftScrolls: unknown[] }).draftScrolls.push(options);
           }
           original.call(this, options);

@@ -148,7 +148,7 @@ function ActiveDraftBoard({
   const runBefore = useRef(run);
   const spokenRoll = useRef(-1);
   const specialRevealRoll = useRef(-1);
-  const wheelRef = useRef<HTMLDivElement>(null);
+  const pitchRef = useRef<HTMLElement>(null);
   const scrolledRoll = useRef<number | null>(null);
 
   const [prevRollId, setPrevRollId] = useState(rollId);
@@ -163,16 +163,17 @@ function ActiveDraftBoard({
 
   const drawerRef = useRef<HTMLDivElement>(null);
 
+  const placeAfterPick = phase.kind === "choosing" && phase.slot === null;
   useEffect(() => {
     if (
-      phase.kind !== "choosing" ||
+      !placeAfterPick ||
       scrolledRoll.current === rollId ||
       !window.matchMedia("(max-width: 959px)").matches
     )
       return;
     scrolledRoll.current = rollId;
-    wheelRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
-  }, [rollId, phase.kind]);
+    pitchRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
+  }, [rollId, placeAfterPick]);
 
   useEffect(() => {
     if (run.error === null) return;
@@ -535,7 +536,7 @@ function ActiveDraftBoard({
               {drawerOpen ? "Minimize draft picker" : revealed ? "Choose a player" : "View spinner"}
             </button>
             {roll !== null ? (
-              <div ref={wheelRef} className={s.wheels} data-testid="draft-wheel">
+              <div className={s.wheels} data-testid="draft-wheel">
                 <RollReveal
                   key={`reveal-${rollId}`}
                   stages={stagesFor(roll, settings, run.cause)}
@@ -620,7 +621,13 @@ function ActiveDraftBoard({
         <RoadStrip seed={run.seed} mode={mode} compact />
       </div>
 
-      <section className={s.pitch} data-armed={armed || undefined} aria-label="Your squad">
+      <section
+        ref={pitchRef}
+        className={s.pitch}
+        data-testid="draft-pitch"
+        data-armed={armed || undefined}
+        aria-label="Your squad"
+      >
         {selected !== null && phase.kind === "choosing" && !drawerOpen ? (
           <div className={s.selectionBar} data-testid="draft-selection-bar">
             <div className={s.selectionMeta}>
