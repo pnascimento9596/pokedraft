@@ -246,6 +246,14 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     expect(safeNext("/leaderboard?mode=cup8#top")).toBe("/leaderboard?mode=cup8#top");
   });
 
+  it("returns / for dot segments that normalize to a protocol-relative path (catches SE-14, the /..//evil.com open redirect)", () => {
+    expect(safeNext("/..//evil.com")).toBe("/");
+    expect(safeNext("/.//evil.com")).toBe("/");
+    expect(safeNext("/%2e%2e//evil.com")).toBe("/");
+    expect(safeNext("/a/..//evil.com")).toBe("/");
+    expect(safeNext("/a/../b")).toBe("/b");
+  });
+
   it("keeps pokedex.json and scouting.json out of the proxy and token import closure (SD-03: 1.33 MB data chunk in proxy)", () => {
     const closure = importClosure("src/proxy.ts");
     expect(closure).not.toContain("src/data/pokedex.json");
