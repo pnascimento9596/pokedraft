@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Draft safety (Wave 1, 1i)
+
+Branch `fix/draft-safety` off `f4489cb` (PR #69). UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- New run with any player signed asks "Start over? The N players you signed will be lost." with Start over and Keep drafting, focus on Keep drafting. With nothing signed, one tap still starts over.
+- Keys 1 to 3 and the draft's Escape do nothing while the scouting dossier, any open dialog or the New run question is open.
+- html and body clip sideways overflow (`overflow-x: clip`) instead of hiding it, so `position: sticky` sticks. Home Control desk measured at `top: 16` after a 1000px scroll once its main column is taller than it.
+- Pitch cards default to `touch-action: pan-y` (`none` only while dragging), so a vertical swipe on a card scrolls the page. A touch drag that starts vertically now scrolls instead of swapping; the two-tap swap stays.
+- The open picker is modal: a tap on its dimmed backdrop closes it, and a swipe down on its top bar closes it. Taps no longer pass through to the pitch or hub around it.
+- A dragged starter's vertical move is stretched by 1/cos(26deg) so it stays under the pointer on the tilted field.
+
+RED commits: `8660698`, `e8ef69d` and `b3faa46` (harness fix for the sticky and backdrop guards; all six Playwright guards and the drift unit guard fail on `f4489cb` code).
+
+Gates at `681cd5e` (later commits change only docs):
+
+- Lint, typecheck, build and Prettier on changed files exited 0.
+- Unit tests: 1,314 passed in 144 files.
+- Playwright on a fresh build, full suite: 823 passed, 0 failed, 61 skipped.
+- Browser proof at 390x844, 360 and 320: `docs/reports/draft-safety/`.
+- Physical phone check, real touch on WebKit and the GLM review: NOT RUN.
+
+Decisions and RED output are in `docs/decisions/draft-safety.md`.
+
 ## Draft picker over the pitch
 
 Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
