@@ -165,9 +165,14 @@ function ActiveDraftBoard({
 
   const placeAfterPick = phase.kind === "choosing" && phase.slot === null;
   useEffect(() => {
-    if (!placeAfterPick || scrolledRoll.current === rollId) return;
+    const pitch = pitchRef.current;
+    if (!placeAfterPick || pitch === null || scrolledRoll.current === rollId) return;
     scrolledRoll.current = rollId;
-    pitchRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
+    const top = pitch.getBoundingClientRect().top;
+    const headerRoom = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    // Leave the page alone while the pitch top already shows, so the hub above it stays in view.
+    if (top >= headerRoom && top <= window.innerHeight / 2) return;
+    pitch.scrollIntoView({ block: "start", behavior: "instant" });
   }, [rollId, placeAfterPick]);
 
   useEffect(() => {

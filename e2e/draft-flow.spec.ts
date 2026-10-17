@@ -14,6 +14,14 @@ async function wheelVisible(page: Page) {
     .toBe(true);
 }
 
+async function pitchShown(page: Page) {
+  const top = await page
+    .getByTestId("draft-pitch")
+    .evaluate((e) => [Math.round(e.getBoundingClientRect().top), innerHeight / 2]);
+  expect(top[0], "pitch top on screen").toBeGreaterThanOrEqual(0);
+  expect(top[0], "pitch top in the upper half").toBeLessThanOrEqual(top[1]!);
+}
+
 for (const engine of ["chromium", "webkit"] as const) {
   for (const width of [375, 390]) {
     test(`${engine} ${width}px brings each real roll into view without forcing candidate scroll`, async ({
@@ -50,7 +58,7 @@ for (const engine of ["chromium", "webkit"] as const) {
       await wheelVisible(page);
       const scrolls = () =>
         page.evaluate(() => (window as unknown as { draftScrolls: unknown[] }).draftScrolls.length);
-      expect(await scrolls()).toBe(1);
+      await pitchShown(page);
       await expect(page.locator('[data-testid^="candidate-"]')).toHaveCount(3);
       const picker = page.getByTestId("draft-drawer");
       for (const element of [picker, picker.locator("ul")]) {
@@ -74,12 +82,13 @@ for (const engine of ["chromium", "webkit"] as const) {
       await page.screenshot({
         path: `output/mobile-draft-flow/${engine}-${width}-picker-art-ratings.png`,
       });
+      const forced = await scrolls();
       await page.locator('[data-testid^="candidate-"]').first().tap();
       await page.getByTestId("slot-s9").scrollIntoViewIfNeeded();
       const y = await page.evaluate(() => scrollY);
       await page.waitForTimeout(250);
       expect(await page.evaluate(() => scrollY)).toBe(y);
-      expect(await scrolls()).toBe(1);
+      expect(await scrolls()).toBe(forced);
       const frame = await page.getByTestId("slot-s9").evaluate((element) => {
         const s = getComputedStyle(element);
         return { border: s.borderStyle, outline: s.outlineStyle };
@@ -88,31 +97,35 @@ for (const engine of ["chromium", "webkit"] as const) {
       await page.getByTestId("slot-s9").tap();
       await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
       await wheelVisible(page);
-      expect(await scrolls()).toBe(2);
+      await pitchShown(page);
       await page.locator('[data-testid^="candidate-"]').first().tap();
       await page.getByTestId("slot-s0").tap();
       await wheelVisible(page);
-      expect(await scrolls()).toBe(3);
+      await pitchShown(page);
       await page.getByRole("button", { name: /^Reroll type/ }).tap();
       await wheelVisible(page);
-      expect(await scrolls()).toBe(4);
+      await pitchShown(page);
+      const reopened = await scrolls();
       await page.getByRole("button", { name: "Minimize draft picker" }).tap();
       await page.getByRole("button", { name: "Choose a player", exact: true }).tap();
       await page.evaluate(() => window.scrollBy(0, -150));
       await page.waitForTimeout(250);
-      expect(await scrolls()).toBe(4);
+      expect(await scrolls()).toBe(reopened);
       for (let round = 3; round <= 16; round++) {
         await page.locator('[data-testid^="candidate-"]').first().tap();
         await page.locator('[data-testid^="slot-"][data-filled="false"]').first().tap();
-        if (round < 16) await wheelVisible(page);
+        if (round < 16) {
+          await wheelVisible(page);
+          await pitchShown(page);
+        }
       }
       await expect(page.getByTestId("round-header")).toHaveText("Draft complete");
-      expect(await scrolls()).toBe(17);
       await expect(page.getByTestId("draft-wheel")).toHaveCount(0);
+      const complete = await scrolls();
       await page.getByTestId("slot-s9").tap();
       await page.getByTestId("slot-s0").tap();
       await page.waitForTimeout(250);
-      expect(await scrolls()).toBe(17);
+      expect(await scrolls()).toBe(complete);
       await page.screenshot({
         path: `output/mobile-draft-flow/${engine}-${width}-complete.png`,
         fullPage: true,

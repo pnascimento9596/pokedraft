@@ -353,7 +353,8 @@
 .board[data-choosing][data-drawer] .drawerToggle {
   color: var(--stadium-ink);
 }
-.board[data-choosing][data-drawer] .candidates > :global(.kicker) {
+.board[data-choosing][data-drawer] .candidates > :global(.kicker),
+.board[data-choosing][data-drawer] .wheels p {
   color: var(--stadium-muted);
 }
 .board[data-choosing][data-drawer] .drawerBackdrop {
@@ -380,6 +381,9 @@
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
   padding: 12px;
+  /* The global reduced-motion rule turns every 0s transition into 0.01ms, which painted one
+     off-center frame as the picker reopened. */
+  transition-property: none;
 }
 .board[data-dragging-candidate] .drawer {
   opacity: 0.25;
