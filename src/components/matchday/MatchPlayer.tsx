@@ -10,7 +10,7 @@ import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Stop } from "@/ui/matchday/clock";
 import { TACTIC_LABEL, beatLine, kickLine, type Teams } from "@/ui/matchday/copy";
 import { START, beatKey, decisionMinute, play, revealed, type PlayEnv } from "@/ui/matchday/player";
-import { buildTimeline, frameAt } from "@/ui/matchday/timeline";
+import { PHASE_LEN, buildTimeline, frameAt } from "@/ui/matchday/timeline";
 import {
   playAbilitySound,
   playCardSound,
@@ -173,7 +173,7 @@ export function MatchPlayer({
   const lastPhase = useRef(-1);
   useEffect(() => {
     if (!moving) return;
-    const idx = Math.floor(state.minute / 1.25);
+    const idx = Math.floor(state.minute / PHASE_LEN);
     if (idx === lastPhase.current || idx < 0 || idx >= timeline.plays.length) return;
     lastPhase.current = idx;
     const phase = timeline.plays[idx];

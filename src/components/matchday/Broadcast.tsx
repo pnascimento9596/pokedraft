@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FORMATIONS, speciesById } from "@/engine";
+import { FORMATIONS } from "@/engine";
 import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
 import type { Moveset } from "@/data/movesets";
 import { PlayerImage } from "@/components/PlayerImage";
@@ -121,10 +121,7 @@ export function Broadcast({
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
   const oppLabels = useMemo(
-    () =>
-      match.opponent.roster.map((r) =>
-        r.kind === "species" ? speciesById(r.id).name : `No. ${r.number}`,
-      ),
+    () => match.opponent.roster.map((r) => (r.kind === "species" ? "" : `No. ${r.number}`)),
     [match.opponent.roster],
   );
 
@@ -278,7 +275,7 @@ export function Broadcast({
           <span
             className={s.ballShadow}
             style={{
-              transform: `translate(-50%, -50%) scale(${(1 + stage.ball.loft * 0.45).toFixed(2)})`,
+              transform: `translate(-50%, -50%) scale(${(1 - stage.ball.loft * 0.25).toFixed(2)})`,
               opacity: Math.max(0.28, 0.72 - stage.ball.loft * 0.35),
             }}
           />

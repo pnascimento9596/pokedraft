@@ -164,7 +164,7 @@ export const TACTIC_LINE: Readonly<Record<Tactic, number>> = {
 };
 
 const WINDOW = 5;
-const PHASE_LEN = 1.25;
+export const PHASE_LEN = 1.25;
 const TAU = Math.PI * 2;
 
 function name(id: SpeciesId | null, fallback: string): string {
@@ -822,6 +822,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   }
 
   if (timeline.kicks.length > 0 && clock >= timeline.finalMinute) {
+    const taken = kicks > 0;
     const kickIdx = Math.max(0, Math.min(kicks - 1, timeline.kicks.length - 1));
     const kick = timeline.kicks[kickIdx]!;
     const attSide = kick.side;
@@ -844,7 +845,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         const point: Point = isTaker
           ? spot
           : isKeeper
-            ? { x: mouth.x === 98 ? 97 : 3, y: kick.scored ? 43 : 54 }
+            ? { x: mouth.x === 98 ? 97 : 3, y: !taken ? 50 : kick.scored ? 43 : 54 }
             : OwnKeeper
               ? { x: side === "user" ? 6 : 94, y: 50 }
               : {
@@ -858,34 +859,46 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
           name: labelOf(side, slot, id),
           point,
           facing: side === "user" ? "right" : "left",
-          pose: isTaker ? (kick.scored ? "celebrate" : "cast") : isKeeper ? "dive" : "idle",
-          hasBall: false,
+          pose: !taken
+            ? "idle"
+            : isTaker
+              ? kick.scored
+                ? "celebrate"
+                : "cast"
+              : isKeeper
+                ? "dive"
+                : "idle",
+          hasBall: !taken && isTaker,
           hot: isTaker || isKeeper,
           yellowCards: yellows[side][slot] ?? 0,
           callout: null,
         };
       });
-    const target: Point = kick.scored
-      ? { x: mouth.x, y: 46 }
-      : { x: mouth.x === 98 ? 91 : 9, y: 36 };
+    const target: Point = !taken
+      ? spot
+      : kick.scored
+        ? { x: mouth.x, y: 46 }
+        : { x: mouth.x === 98 ? 91 : 9, y: 36 };
     return {
       players: { user: buildPenSide("user", userXI), opp: buildPenSide("opp", oppXI) },
       ball: {
         x: target.x,
         y: target.y,
-        loft: 0.25,
-        spin: (kickIdx + 1) * 360,
-        effect: kick.scored ? "impact" : "shield",
+        loft: taken ? 0.25 : 0,
+        spin: taken ? (kickIdx + 1) * 360 : 0,
+        effect: !taken ? null : kick.scored ? "impact" : "shield",
         carrier: kick.taker,
       },
-      trail: {
-        from: spot,
-        to: target,
-        effect: kick.scored ? "impact" : "shield",
-        type: null,
-        kind: "shot",
-        progress: 1,
-      },
+      trail: taken
+        ? {
+            from: spot,
+            to: target,
+            effect: kick.scored ? "impact" : "shield",
+            type: null,
+            kind: "shot",
+            progress: 1,
+          }
+        : null,
       playCallout: null,
     };
   }
