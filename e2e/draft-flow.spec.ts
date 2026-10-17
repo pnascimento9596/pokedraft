@@ -297,3 +297,49 @@ for (const engine of ["chromium", "webkit"] as const) {
     });
   }
 }
+
+// Bug: each roll scrolled to the wheel, not the pitch. In short portrait the wheel sits in a fixed
+// sheet, so the page stayed where the last slot tap left it and the pitch top was cut off. In
+// short landscape the picker sat in flow below the pitch and the scroll dragged the pitch away.
+for (const [label, viewport] of [
+  ["short portrait", { width: 390, height: 667 }],
+  ["short landscape", { width: 844, height: 390 }],
+] as const) {
+  test(`${label} picker opens over the pitch and a pick leaves the pitch on screen`, async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ viewport, hasTouch: true, reducedMotion: "reduce" });
+    const page = await context.newPage();
+    await page.goto(
+      "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=mobile-flow",
+    );
+    await ready(page, page.getByTestId("run-start"));
+    await expect(page.getByTestId("run-start")).not.toHaveAttribute("aria-busy", "true");
+    await page.getByTestId("run-start").tap();
+    const top = (testId: string) =>
+      page.getByTestId(testId).evaluate((e) => Math.round(e.getBoundingClientRect().top));
+    for (let round = 1; round <= 3; round++) {
+      await expect(page.getByTestId("round-header")).toHaveText(`Round ${round} of 16`);
+      await expect(page.locator('[data-testid^="candidate-"]')).toHaveCount(3);
+      expect(
+        await page.getByTestId("draft-drawer").evaluate((e) => getComputedStyle(e).position),
+      ).toBe("fixed");
+      const fieldOpen = await top("pitch");
+      expect(fieldOpen, `round ${round} pitch behind the picker`).toBeGreaterThanOrEqual(0);
+      expect(fieldOpen).toBeLessThan(viewport.height / 2);
+      // dispatchEvent, not tap: tap scrolls the target into view and would hide the bug.
+      await page.locator('[data-testid^="candidate-"]').first().dispatchEvent("click");
+      await expect(page.getByTestId("draft-selection-bar")).toBeVisible();
+      expect(
+        await top("draft-selection-bar"),
+        `round ${round} selection bar`,
+      ).toBeGreaterThanOrEqual(0);
+      const fieldPicked = await top("pitch");
+      expect(fieldPicked, `round ${round} pitch after pick`).toBeGreaterThanOrEqual(0);
+      expect(fieldPicked).toBeLessThan(viewport.height / 2);
+      // tap scrolls a low slot such as the keeper into view, as a player has to.
+      await page.locator('[data-testid^="slot-"][data-filled="false"]').first().tap();
+    }
+    await context.close();
+  });
+}
