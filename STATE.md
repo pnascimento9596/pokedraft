@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Score lands with the ball
+
+Branch `fix/score-lands-with-ball`, built on row 1b (`fix/honest-momentum`, itself on row 1a). UI only (Yellow), Wave 1 row 1c. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- In a live match the score, the shots-on-target counts, the ticker line, the screen reader line and the goal horn now wait until the ball crosses the line, at 0.6 of the goal staging. Before, they called the goal about 1.56 s early.
+- Under reduced motion and in Quick view nothing is staged, so the goal counts at once.
+- The score is a status region. The live region announces whole event lines, at most 3 at a time and at most once every 1.5 s.
+- Measured in a live 390px replay of the golden cup8 run's G1 (first goal 49'). Before, the score read `1 - 0` before the move callout appeared. After, it read `0 - 0` in flight and `1 - 0` at the GOAL flash.
+
+RED commit: `60f05e7` (3 failing tests in `MatchPlayer.score.test.tsx`; `e2e/score-lands-with-ball.spec.ts` also failed on the RED build).
+
+Gates at `362d187` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,327 passed in 146 files on the last full run. Two earlier full runs at this head each failed 1 test in `src/components/builder/__tests__/announce-builder.test.tsx` ("Randomize says the Team Score the screen shows"), which this PR does not touch and which imports no matchday code. Isolated, it failed 2 of 3 runs, then passed 12 runs in a row. Flaky, recorded here.
+- Playwright on a fresh build of the fix code (`ed2dec8`; `362d187` adds only the spec and its screenshots): `score-lands-with-ball`, `mobile-targets`, `mobile-acceptance`, `watch-live`, `manager-mode`, `one-shared-timeline`, `honest-momentum` and `recorded-saves` gave 383 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/score-lands-with-ball/390-goal-in-flight.png` and `docs/reports/score-lands-with-ball/390-goal-landed.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/score-lands-with-ball.md`.
+
+PR #73 (row 1b, honest momentum) merged as squash `b72ac5a`, reviewed head `ac3f545`, GLM 5.3 Flash APPROVE in round 1 with canary `honest-momentum-bcf935028d6e9b0a6aff5e9fb3a084b1` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `b72ac5a` with `db.status` ok, and `e2e/honest-momentum.spec.ts` against production (chromium) passed 1 of 1.
+
 ## Honest momentum
 
 Branch `fix/honest-momentum`, built on row 1a (`fix/one-shared-timeline`). UI only (Yellow), Wave 1 row 1b. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.

@@ -9,8 +9,16 @@ import type { MatchView } from "@/ui/settings";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Stop } from "@/ui/matchday/clock";
 import { TACTIC_LABEL, beatLine, kickLine, type Teams } from "@/ui/matchday/copy";
-import { START, beatKey, decisionMinute, play, revealed, type PlayEnv } from "@/ui/matchday/player";
-import { PHASE_LEN, buildTimeline, frameAt } from "@/ui/matchday/timeline";
+import {
+  START,
+  beatKey,
+  decisionMinute,
+  landed,
+  play,
+  revealed,
+  type PlayEnv,
+} from "@/ui/matchday/player";
+import { PHASE_LEN, buildTimeline, frameAt, type Beat } from "@/ui/matchday/timeline";
 import {
   playAbilitySound,
   playCardSound,
@@ -45,6 +53,10 @@ export interface ManagerControls {
 
 const TEAMS_USER = "Your XI";
 
+// The screen reader hears at most one announcement this often, and at most this many lines in it.
+const ANNOUNCE_GAP = 1_500;
+const ANNOUNCE_MAX = 3;
+
 const STOP_COPY: Readonly<Record<Stop["kind"], { title: string; go: string } | null>> = {
   kickoff: { title: "Pick a tactic, then kick off.", go: "Kick off" },
   halftime: {
@@ -77,6 +89,8 @@ export function MatchPlayer({
   readonly footer?: ReactNode;
 }) {
   const motion = !useReducedMotion();
+  // Only a live broadcast with motion stages a goal; anywhere else the goal counts at once.
+  const staged = motion && view === "live";
   const soundOn = useSoundEnabled();
   const movesOf = useMovesets();
   const timeline = useMemo(
@@ -136,24 +150,33 @@ export function MatchPlayer({
   }, [moving, motion]);
 
   const sounded = useRef(new Set<string>());
+  const horned = useRef(new Set<string>());
   useEffect(() => {
-    const fresh: ReturnType<typeof buildTimeline>["beats"][number][] = [];
+    const fresh: Beat[] = [];
+    const scored: Extract<Beat, { kind: "goal" }>[] = [];
     for (const b of timeline.beats) {
       const key = beatKey(b);
-      if (state.fired[key] !== undefined && !sounded.current.has(key)) {
+      if (state.fired[key] === undefined) continue;
+      if (!sounded.current.has(key)) {
         sounded.current.add(key);
         fresh.push(b);
       }
+      if (b.kind === "goal" && !horned.current.has(key) && landed(b, state.fired, now, staged)) {
+        horned.current.add(key);
+        scored.push(b);
+      }
     }
-    if (fresh.length === 0) return;
+    if (fresh.length === 0 && scored.length === 0) return;
     if (state.stage === "done" && fresh.length > 4) {
       playWhistle("fulltime");
       return;
     }
+    for (const b of scored) {
+      if (b.side === "user") playGoalHorn();
+      else playOppGoal();
+    }
     for (const b of fresh) {
       if (b.kind === "goal") {
-        if (b.side === "user") playGoalHorn();
-        else playOppGoal();
         playAbilitySound(b.callout.effect);
       } else if (b.kind === "save") {
         playSaveSound();
@@ -171,7 +194,7 @@ export function MatchPlayer({
         playWhistle(wKind);
       }
     }
-  }, [state.fired, state.stage, timeline]);
+  }, [state.fired, state.stage, timeline, now, staged]);
 
   const lastPhase = useRef(-1);
   useEffect(() => {
@@ -190,7 +213,9 @@ export function MatchPlayer({
 
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
-  const shown = timeline.beats.filter((b) => revealed(b, clock));
+  const shown = timeline.beats.filter(
+    (b) => revealed(b, clock) && landed(b, state.fired, now, staged),
+  );
   const goals = shown.filter((b) => b.kind === "goal");
   const score = goals.at(-1)?.kind === "goal" ? goals.at(-1)!.score : { user: 0, opp: 0 };
   const kicks = timeline.kicks.slice(0, state.kicks);
@@ -256,7 +281,7 @@ export function MatchPlayer({
           <span className={`num ${s.clock}`} data-testid="matchday-clock">
             {minuteLabel}
           </span>
-          <span className={`num ${s.score}`} data-testid="matchday-score">
+          <span className={`num ${s.score}`} role="status" data-testid="matchday-score">
             {score.user} - {score.opp}
           </span>
           {pens !== null ? (
@@ -438,7 +463,7 @@ function Ticker({
       text: kickLine(k, teams),
     })),
   ].reverse();
-  const latest = lines[0]?.text ?? "";
+  const latest = useAnnouncement(lines);
   return (
     <div className={s.ticker}>
       <p className={s.srOnly} aria-live="polite" data-testid="ticker-latest">
@@ -511,4 +536,37 @@ function InjuryPrompt({
       </button>
     </div>
   );
+}
+
+/**
+ * The live region's text: every event line not yet announced, oldest first, at most one
+ * announcement per gap so a fast replay does not flood the screen reader.
+ */
+function useAnnouncement(lines: readonly { readonly key: string; readonly text: string }[]) {
+  const [text, setText] = useState("");
+  const said = useRef({ keys: new Set<string>(), at: -Infinity });
+  const latest = useRef(lines);
+  useEffect(() => {
+    latest.current = lines;
+  });
+  const count = lines.length;
+  useEffect(() => {
+    if (count === 0) return;
+    const wait = Math.max(0, said.current.at + ANNOUNCE_GAP - performance.now());
+    const timer = window.setTimeout(() => {
+      const fresh = latest.current.filter((l) => !said.current.keys.has(l.key));
+      if (fresh.length === 0) return;
+      for (const l of fresh) said.current.keys.add(l.key);
+      said.current.at = performance.now();
+      setText(
+        fresh
+          .slice(0, ANNOUNCE_MAX)
+          .reverse()
+          .map((l) => l.text)
+          .join(" "),
+      );
+    }, wait);
+    return () => window.clearTimeout(timer);
+  }, [count]);
+  return text;
 }

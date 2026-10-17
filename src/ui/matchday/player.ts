@@ -1,5 +1,5 @@
 import { advanceClock, nextStop, type Pace, type Stop } from "./clock";
-import type { Beat, Timeline } from "./timeline";
+import { GOAL_LANDS, SHOW, type Beat, type Timeline } from "./timeline";
 
 /** A stable name for a beat, the same across the replays a coach decision triggers. */
 export function beatKey(b: Beat): string {
@@ -32,6 +32,21 @@ function assistantBoundary(b: Beat): boolean {
 
 export function revealed(b: Beat, clock: number): boolean {
   return b.minute < clock || (b.minute === clock && !assistantBoundary(b));
+}
+
+/**
+ * Whether a revealed beat counts yet on the scoreboard, the ticker and the goal horn. A staged goal
+ * waits for the ball to cross the line; a beat that never fired (a skip to full time) counts.
+ */
+export function landed(
+  b: Beat,
+  fired: Readonly<Record<string, number>>,
+  now: number,
+  staged: boolean,
+): boolean {
+  if (b.kind !== "goal" || !staged) return true;
+  const at = fired[beatKey(b)];
+  return at === undefined || now - at >= GOAL_LANDS * SHOW.goal;
 }
 
 export type Stage = "play" | "pens" | "done";
