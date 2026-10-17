@@ -23,6 +23,8 @@ export const submitBodySchema = z.object({
   nickname: z.string(),
   token: z.string().min(1).max(TOKEN_MAX),
   engineVersion: z.string().optional(),
+  /** The view the reply's rank is counted in. Absent is All, as before the field existed. */
+  coach: z.enum(COACH_FILTERS).optional(),
 });
 export type SubmitBody = z.infer<typeof submitBodySchema>;
 

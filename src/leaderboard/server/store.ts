@@ -32,8 +32,8 @@ export interface LeaderboardStore {
   byToken(token: string): Promise<LeaderboardRow | null>;
   dailyTaken(nickname: string, board: Board): Promise<boolean>;
   insert(row: NewLeaderboardRow): Promise<InsertResult>;
-  /** Overall board rank, whatever the coach filter: the rank a submit reply reports. */
-  rankOf(row: LeaderboardRow, board: Board): Promise<number>;
+  /** The row's rank in one coach view of its board, counted the way `top` orders that view. */
+  rankOf(row: LeaderboardRow, board: Board, coach: CoachFilter): Promise<number>;
   /** The top `BOARD_LIMIT` rows of one coach view, in board order; ranks are 1..n in the view. */
   top(board: Board, coach: CoachFilter): Promise<readonly LeaderboardRow[]>;
 }
@@ -189,11 +189,11 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
         };
       }
     },
-    async rankOf(row, board) {
+    async rankOf(row, board, coach) {
       const [r] = await getDb()
         .select({ n: count() })
         .from(t)
-        .where(and(boardFilter(board), aheadOf(row)));
+        .where(and(boardFilter(board), coachFilter(coach), aheadOf(row)));
       return (r?.n ?? 0) + 1;
     },
     async top(board, coach) {
