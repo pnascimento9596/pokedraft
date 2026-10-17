@@ -1,4 +1,5 @@
 import { createHmac } from "node:crypto";
+import { isIPv6 } from "node:net";
 import {
   ENGINE_VERSION,
   RunTokenError,
@@ -85,8 +86,47 @@ export function clientIp(req: Request): string {
   return fwd || "unknown";
 }
 
+function ipv6Groups(addr: string): number[] {
+  let rest = addr.toLowerCase();
+  const tail: number[] = [];
+  const v4 = /(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(rest);
+  if (v4) {
+    const [a, b, c, d] = v4.slice(1).map(Number) as [number, number, number, number];
+    tail.push((a << 8) | b, (c << 8) | d);
+    rest = rest.slice(0, v4.index);
+  }
+  const hex = (part: string | undefined) =>
+    (part ?? "")
+      .split(":")
+      .filter((h) => h !== "")
+      .map((h) => parseInt(h, 16));
+  const [left, right] = rest.split("::");
+  if (right === undefined) return [...hex(left), ...tail];
+  const head = hex(left);
+  const end = [...hex(right), ...tail];
+  return [...head, ...Array<number>(8 - head.length - end.length).fill(0), ...end];
+}
+
+/**
+ * The rate-limit identity of a client address. An IPv6 client normally holds a whole /64, so the
+ * /64 is one bucket. An IPv4-mapped IPv6 address is its IPv4 address. IPv4 and anything that is
+ * not an IPv6 address are keyed exactly as sent.
+ */
+export function rateKey(ip: string): string {
+  const addr = ip.split("%")[0]!;
+  if (!isIPv6(addr)) return ip;
+  const g = ipv6Groups(addr);
+  if (g.slice(0, 5).every((x) => x === 0) && g[5] === 0xffff) {
+    return [g[6]! >> 8, g[6]! & 0xff, g[7]! >> 8, g[7]! & 0xff].join(".");
+  }
+  return `${g
+    .slice(0, 4)
+    .map((x) => x.toString(16))
+    .join(":")}::/64`;
+}
+
 export function hashIp(ip: string, secret: string): string {
-  return createHmac("sha256", secret).update(ip).digest("hex");
+  return createHmac("sha256", secret).update(rateKey(ip)).digest("hex");
 }
 
 export function usableSecret(secret: string | undefined): secret is string {
