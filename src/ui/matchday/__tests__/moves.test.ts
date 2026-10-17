@@ -103,3 +103,32 @@ describe("callouts (catches a callout that drops the canon move or the type effe
     });
   });
 });
+
+describe("callout draws (catches open play that shifts when the canon movesets finish loading)", () => {
+  it("draws exactly one number for a shot, with or without a moveset", () => {
+    const generic = createRng("shot");
+    shotCallout("Ditto", null, generic);
+    expect(generic.next()).toBe(0.3413346700835973);
+    const canon = createRng("shot");
+    shotCallout("Charizard", movesetFor(6), canon);
+    expect(canon.next()).toBe(0.3413346700835973);
+  });
+
+  it("draws exactly one number for an open-play call, with or without a moveset", () => {
+    const generic = createRng("shot");
+    playCallout("Ditto", null, "pass", generic);
+    expect(generic.next()).toBe(0.3413346700835973);
+    const canon = createRng("shot");
+    playCallout("Charizard", movesetFor(6), "pass", canon);
+    expect(canon.next()).toBe(0.3413346700835973);
+  });
+
+  it("gives a Fire mover's shot the fire effect", () => {
+    expect(shotCallout("Charizard", movesetFor(6), createRng("shot"))).toEqual({
+      text: "Charizard used Flamethrower!",
+      move: "Flamethrower",
+      type: "fire",
+      effect: "fire",
+    });
+  });
+});
