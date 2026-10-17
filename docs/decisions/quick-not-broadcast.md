@@ -70,3 +70,7 @@ through the same gate) and is proven by the unit guard, not in a browser.
 - A browser run of a Quick `Broadcast`; no route reaches one (see above).
 - Playwright at 360 and 320. The selector gains one hint line and its layout does not change.
 - Hosted CI, the GLM review and a physical phone check.
+
+## CI flake fixed in this PR
+
+Hosted CI on `17d5290` (run 39071048139) failed the unit job on `MatchPlayer.movesets.test.tsx` "holds the clock at kickoff until the movesets resolve" (`expected 0 to be greater than 0`), a guard from PR #72 that waited a fixed 300 ms of fake time after the movesets gate opened. The real movesets module can still be loading under a four-worker run. Locally the unchanged test failed 1 of 8 full `pnpm test --maxWorkers=4` runs. The guard now keeps flushing the import while the fake clock runs (up to 100 steps of 48 ms) and still asserts minute 0 and "KO" for the first 1000 ms. With the hold removed from `MatchPlayer` it fails (`expected 20 to be +0`); with the fix it passed 10 of 10 full runs.
