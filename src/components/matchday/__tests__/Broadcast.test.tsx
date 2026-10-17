@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { BenchIndex, FullLineup, MatchResult, Opponent, SpeciesId } from "@/engine/types";
 import type { Touchline as TouchlineState } from "@/ui/manager/touchline";
+import { buildTimeline } from "@/ui/matchday/timeline";
 import { Broadcast } from "../Broadcast";
 import { MatchPlayer } from "../MatchPlayer";
 import { Touchline } from "../Touchline";
@@ -67,13 +68,14 @@ const MATCH: PlayedMatch = {
   recap: [],
 };
 
+const TIMELINE = buildTimeline(MATCH, { matchIndex: 0, seed: "bc-test", lineup: LINEUP });
+
 describe("Broadcast (catches a pitch that renders a plain circle instead of a paneled soccer ball SVG, or hides the ball carrier and shot trail)", () => {
   it("renders a paneled SVG soccer ball, the active ball carrier badge and yellow-card pips on the pitch", () => {
     render(
       <Broadcast
         match={MATCH}
-        matchIndex={0}
-        seed="bc-test"
+        timeline={TIMELINE}
         lineup={LINEUP}
         clock={6.5}
         now={1000}
@@ -94,8 +96,7 @@ describe("Broadcast (catches a pitch that renders a plain circle instead of a pa
     render(
       <Broadcast
         match={MATCH}
-        matchIndex={0}
-        seed="bc-test"
+        timeline={TIMELINE}
         lineup={LINEUP}
         clock={12}
         now={2200}

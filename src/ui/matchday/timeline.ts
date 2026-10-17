@@ -382,6 +382,8 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
   const plays: PlayPhase[] = [];
   if (!goalsOnly) {
     const playRng = createRng(`broadcast:${input.seed}:${input.matchIndex}:plays`);
+    // Callouts draw from their own stream so the choreography never depends on movesets.
+    const calloutRng = createRng(`broadcast:${input.seed}:${input.matchIndex}:callouts`);
     let curSide: Side = "user";
     let curSlot = 5;
     let chain = 0;
@@ -469,7 +471,7 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
         kind === "through" || kind === "cross" || kind === "duel" || playRng.next() < 0.45;
       const role = kind === "duel" ? "duel" : kind === "dribble" ? "dribble" : "pass";
       const moveset = actor.species === null || movesOf === null ? null : movesOf(actor.species);
-      const callout = useAbility ? playCallout(actor.name, moveset, role, playRng) : null;
+      const callout = useAbility ? playCallout(actor.name, moveset, role, calloutRng) : null;
 
       plays.push({
         from,
