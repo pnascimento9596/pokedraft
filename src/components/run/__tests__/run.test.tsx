@@ -39,6 +39,7 @@ beforeEach(() => {
     removeEventListener: () => {},
   }));
   vi.stubGlobal("scrollTo", () => {});
+  Element.prototype.scrollIntoView = () => {};
 });
 
 afterEach(() => {

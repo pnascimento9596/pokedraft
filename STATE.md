@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Draft picker over the pitch
+
+Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The draft picker opens as a pop-up centered over the dimmed pitch at every width, desktop included, and closes after a pick. Choose a player reopens it.
+- Each Squad First roll scrolls the pitch into view when its top is hidden. Before, each roll scrolled to the wheel in a fixed sheet, which left the page wherever the last slot tap put it. At 390x667 the pitch top sat at -263px from round 2.
+- Position First rolls do not scroll.
+- Below 480px the selection bar drops its Best, OK and Poor legend so it stays one row. Each slot already shows its fit. Hosted CI caught the wrapped bar pushing the pitch top to 355px of 667px.
+- Dropped guarantees, because the pop-up covers the middle of the pitch: the slot being filled in Position First is hidden while the picker is open; drag to place only reaches slots outside the pop-up; tapping a placed player or the hub Sound button on a small phone needs the picker minimized first.
+
+RED commits: `3c5e178` (pitch hidden after a pick, picker in flow in landscape) and `1c682de` (picker not centered, desktop not an overlay).
+
+Gates at `77284ba` (later commits change only docs):
+
+- Lint, typecheck, format check and build exited 0.
+- Unit tests: 1,305 passed in 143 files.
+- Playwright on a fresh build: 814 passed, 0 failed, 61 skipped.
+- Round 1 at `eac1a26`: GLM 5.3 Flash APPROVE with the canary echoed, then hosted e2e failed 1 of 875 on the wrapped selection bar. `77284ba` fixes it, so that receipt is void.
+- A physical phone check: NOT RUN.
+
+Root cause, measurements and decisions are in `docs/decisions/draft-picker-over-pitch.md`.
+
 ## Matchday simulation, SVG soccer ball and broadcast UX overhaul
 
 Branch `feat/matchday-sim-overhaul` off `47ca844` (PR #68 squash of the post-#67 live check). No file under `src/engine` changed.

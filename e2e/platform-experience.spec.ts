@@ -129,6 +129,10 @@ for (const width of [1280, 320]) {
       const bounds = await sound.boundingBox();
       expect(bounds!.width).toBeGreaterThanOrEqual(44);
       expect(bounds!.height).toBeGreaterThanOrEqual(44);
+      // On a small phone the centered picker covers the hub until it is minimized.
+      if (width === 320) {
+        await page.getByRole("button", { name: "Minimize draft picker" }).click();
+      }
       await sound.click();
       await expect(page.getByRole("button", { name: "Sound on", exact: true })).toHaveAttribute(
         "aria-pressed",
