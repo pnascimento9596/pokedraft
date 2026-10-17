@@ -167,4 +167,33 @@ describe("MatchHighlights", () => {
     expect(toggle.textContent).toBe("▶ Play Motion");
     expect(toggle.getAttribute("aria-pressed")).toBe("true");
   });
+
+  it("labels the ability as the species' ability, never as Activated during the match", async () => {
+    vi.useFakeTimers();
+    const { draft, cup } = await replay(FLAWLESS);
+    render(<MatchHighlights cup={cup} draft={draft} />);
+    const box = screen.getByTestId("star-ability");
+    expect(box.textContent).not.toContain("Activated");
+    expect(box.textContent).toContain("Ability");
+    fireEvent.click(screen.getByTestId("strike-btn"));
+    const live = screen.getByTestId("match-highlights").querySelector("[aria-live]")!;
+    expect(live.textContent).not.toContain(" using ");
+  });
+
+  it("keeps the motion, strike and goal emoji out of the accessible names", async () => {
+    vi.useFakeTimers();
+    const { draft, cup } = await replay(FLAWLESS);
+    render(<MatchHighlights cup={cup} draft={draft} />);
+    expect(screen.getByRole("button", { name: "Pause Motion" })).toBeTruthy();
+    const strike = screen.getByTestId("strike-btn");
+    expect(strike.textContent).toContain("⚽");
+    expect(strike.querySelector('[aria-hidden="true"]')!.textContent).toBe("⚽");
+    expect(
+      screen.getByTestId("star-headline").querySelector('[aria-hidden="true"]'),
+    ).not.toBeNull();
+    fireEvent.click(strike);
+    act(() => vi.advanceTimersByTime(600));
+    const title = screen.getByTestId("goal-overlay").firstElementChild!;
+    expect(title.querySelector('[aria-hidden="true"]')!.textContent).toBe("⚽");
+  });
 });
