@@ -21,8 +21,10 @@ Previous PRs, now merged and live:
 - Production `/api/health?db=1` serves `f4489cb63fedc131274248b14c00758378898ca3` on
   `pokedraft-engine-6`, token versions 1 to 6, `db.status` ok.
 
-Gates: none run locally, because nothing under `src/`, `e2e/` or config changed. Hosted CI runs on
-the PR.
+Gates at `6e08aaa`: `prettier --check STATE.md` passed, `pnpm check:mirrors` reported mirrors
+identical, and the three Markdown copies hash equal to their sources. Unit tests, build and
+Playwright: NOT RUN, because nothing under `src/`, `e2e/` or config changed. Hosted CI runs on the
+PR.
 
 ## Draft picker over the pitch
 
