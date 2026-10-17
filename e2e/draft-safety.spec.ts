@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { centre, settle, settledScrollY, touchDrag, touchScroll } from "./mobile/helpers";
-import { RUN_151, RUN_POSITION_FIRST } from "./pins";
+import { RUN_151, RUN_8_0, RUN_POSITION_FIRST } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
 
@@ -70,6 +70,11 @@ test("the home side panel stays stuck at top 16 after a 1000px scroll (catches o
   const aside = page.getByRole("complementary", { name: "Control desk" });
   await expect(aside).toBeVisible();
   const at = await page.evaluate(() => {
+    // The default Control desk is taller than the main column, which leaves sticky no room to
+    // move. A tall main column gives it that room, so only an ancestor can stop it sticking.
+    const spacer = document.createElement("div");
+    spacer.style.height = "4000px";
+    document.querySelector('aside[aria-label="Control desk"]')!.nextElementSibling!.append(spacer);
     window.scrollTo(0, 1000);
     return {
       scrollY: window.scrollY,
@@ -83,7 +88,7 @@ test.describe("on a 390x844 touch screen", () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 
   async function openPicker(page: Page) {
-    await page.goto(RUN_151.url);
+    await page.goto(RUN_8_0.url);
     await page.getByTestId("run-start").click();
     await expect(page.getByRole("button", { name: "Minimize draft picker" })).toBeVisible();
     await settle(page);
