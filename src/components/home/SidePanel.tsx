@@ -8,7 +8,9 @@ import { BUCKET_LABEL, STAT_BUCKETS, type BucketStats, type StatBucket } from "@
 import {
   MANAGER_MODE_HINT,
   MANAGER_MODE_LABEL,
+  MANAGER_PLAYS_LIVE,
   MATCH_VIEW_LABEL,
+  matchdayView,
   type ChallengeMode,
   type PanelSettings,
 } from "@/ui/settings";
@@ -60,28 +62,44 @@ function Segmented<T extends string>({
   value,
   options,
   onChange,
+  disabled,
+  hint,
 }: {
   readonly label: string;
   readonly value: T;
   readonly options: Readonly<Record<T, string>>;
   readonly onChange: (next: T) => void;
+  readonly disabled?: T;
+  readonly hint?: string;
 }) {
+  const hintId = useId();
   return (
     <div className={s.field}>
       <span className={s.fieldLabel}>{label}</span>
-      <div className={s.segmented} role="group" aria-label={label}>
+      <div
+        className={s.segmented}
+        role="group"
+        aria-label={label}
+        aria-describedby={hint ? hintId : undefined}
+      >
         {(Object.keys(options) as T[]).map((k) => (
           <button
             key={k}
             type="button"
             className={s.segment}
             aria-pressed={value === k}
+            disabled={disabled === k}
             onClick={() => onChange(k)}
           >
             {options[k]}
           </button>
         ))}
       </div>
+      {hint ? (
+        <p className={s.hint} id={hintId}>
+          {hint}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -274,9 +292,11 @@ export function SidePanel({
             />
             <Segmented
               label="Match view"
-              value={panel.matchView}
+              value={matchdayView(panel)}
               options={MATCH_VIEW_LABEL}
               onChange={(matchView) => set({ matchView })}
+              disabled={panel.managerMode ? "quick" : undefined}
+              hint={panel.managerMode ? MANAGER_PLAYS_LIVE : undefined}
             />
           </section>
 

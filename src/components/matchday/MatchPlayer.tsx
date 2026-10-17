@@ -88,9 +88,8 @@ export function MatchPlayer({
   /** Shown under the scoreboard once the match is over. */
   readonly footer?: ReactNode;
 }) {
-  const motion = !useReducedMotion();
-  // Only a live broadcast with motion stages a goal; anywhere else the goal counts at once.
-  const staged = motion && view === "live";
+  // Quick is a still pitch with beat sounds only, so only a live broadcast with motion stages.
+  const motion = !useReducedMotion() && view === "live";
   const soundOn = useSoundEnabled();
   const movesOf = useMovesets();
   const timeline = useMemo(
@@ -164,7 +163,7 @@ export function MatchPlayer({
       if (
         b.kind === "goal" &&
         !horned.current.has(key) &&
-        landed(b, state.fired, now, staged, state.speed)
+        landed(b, state.fired, now, motion, state.speed)
       ) {
         horned.current.add(key);
         scored.push(b);
@@ -198,11 +197,11 @@ export function MatchPlayer({
         playWhistle(wKind);
       }
     }
-  }, [state.fired, state.stage, state.speed, timeline, now, staged]);
+  }, [state.fired, state.stage, state.speed, timeline, now, motion]);
 
   const lastPhase = useRef(-1);
   useEffect(() => {
-    if (!moving) return;
+    if (!moving || view !== "live") return;
     const idx = Math.floor(state.minute / PHASE_LEN);
     if (idx === lastPhase.current || idx < 0 || idx >= timeline.plays.length) return;
     lastPhase.current = idx;
@@ -213,12 +212,12 @@ export function MatchPlayer({
     } else if (phase.kind !== "dribble") {
       playKickPass();
     }
-  }, [moving, state.minute, timeline.plays]);
+  }, [moving, view, state.minute, timeline.plays]);
 
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
   const shown = timeline.beats.filter(
-    (b) => revealed(b, clock) && landed(b, state.fired, now, staged, state.speed),
+    (b) => revealed(b, clock) && landed(b, state.fired, now, motion, state.speed),
   );
   const goals = shown.filter((b) => b.kind === "goal");
   const score = goals.at(-1)?.kind === "goal" ? goals.at(-1)!.score : { user: 0, opp: 0 };

@@ -15,6 +15,8 @@ export const MANAGER_MODE_LABEL = "Manager mode";
 export const MANAGER_MODE_HINT =
   "Make tactics and substitutions from the touchline during each match";
 
+export const MANAGER_PLAYS_LIVE = "Manager mode plays live";
+
 export const MATCH_VIEW_LABEL: Readonly<Record<MatchView, string>> = {
   quick: "Quick sim",
   live: "Live match",
@@ -85,6 +87,12 @@ export function savePanel(panel: PanelSettings): void {
 // With manager mode off and the quick view, the cup goes straight to the results as it always has.
 export function playsMatchday(panel: Pick<PanelSettings, "managerMode" | "matchView">): boolean {
   return panel.managerMode || panel.matchView === "live";
+}
+
+// Nobody can coach a five-second match, so manager mode plays live. The saved view stays as chosen
+// and comes back when manager mode goes off.
+export function matchdayView(panel: Pick<PanelSettings, "managerMode" | "matchView">): MatchView {
+  return panel.managerMode ? "live" : panel.matchView;
 }
 
 export type ChallengeMode = "cup8" | "kanto151";
