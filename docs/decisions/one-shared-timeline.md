@@ -38,7 +38,7 @@ The fix:
   typed ability tones heard at `origin/main` (`f4489cb`) build: 0 (spec failed). At the fix
   build: 13 (grass, electric, ice, fire).
 
-## RED output (commit `64cfaab`, verbatim excerpts)
+## RED output (commit `de664f4` (`64cfaab` before the rebase onto `65cc88b`), verbatim excerpts)
 
 ```
      × draws exactly one number for a shot, with or without a moveset 2ms
