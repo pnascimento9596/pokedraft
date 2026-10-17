@@ -12,13 +12,13 @@ Branch `fix/one-shared-timeline` off `f4489cb`. UI only (Yellow), Wave 1 row 1a.
 - The clock holds at kickoff until the movesets settle. A failed load falls back to generic callouts.
 - Typed ability sounds (fire, water, electric, grass, ice, psychic) now play. In a live 390px replay at the `origin/main` build, 0 typed tones played. At the fix build, 13 did.
 
-RED commit: `64cfaab` (5 failing tests in `moves.test.ts`, `timeline.test.ts` and `MatchPlayer.movesets.test.tsx`).
+RED commit: `de664f4` (5 failing tests in `moves.test.ts`, `timeline.test.ts` and `MatchPlayer.movesets.test.tsx`).
 
-Gates at `dd4f3e7` (later commits change only docs):
+Gates at `dd4f3e7`, before the rebase onto `65cc88b` that made it `2afec93`. The rebase added only the #71 docs, and `git diff dd4f3e7 2afec93 -- src e2e` is empty. Later commits change only docs:
 
 - Lint, typecheck and build exited 0. Prettier check on every touched file passed.
 - Unit tests: 1,319 passed in 145 files. A first full run failed 1 test in `src/components/run/__tests__/run.test.tsx` (a run survives a reload), which this PR does not touch. That file passed 30 of 30 on five isolated reruns, and the full chain then passed. Flaky under load, recorded here.
-- Playwright on a fresh build of the fix code (`7832262`; `dd4f3e7` adds only the spec and its screenshot): `one-shared-timeline`, `watch-live`, `manager-mode`, `recorded-saves`, `engine-v4`, `club-region-identity`, `mobile-targets` and `mobile-acceptance` gave 386 passed, 0 failed, 54 skipped. The new spec, pinned to the chromium project at `dd4f3e7`, passed 1 of 1.
+- Playwright on a fresh build of the fix code (`7832262`, now `d692806`; `dd4f3e7` adds only the spec and its screenshot): `one-shared-timeline`, `watch-live`, `manager-mode`, `recorded-saves`, `engine-v4`, `club-region-identity`, `mobile-targets` and `mobile-acceptance` gave 386 passed, 0 failed, 54 skipped. The new spec, pinned to the chromium project at `dd4f3e7`, passed 1 of 1.
 - Browser proof: `docs/reports/one-shared-timeline/390-typed-callout.png`.
 - Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
 
