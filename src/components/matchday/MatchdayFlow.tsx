@@ -7,7 +7,7 @@ import { PlayerImage } from "@/components/PlayerImage";
 import { BossRoster } from "@/components/results/BossRoster";
 import { finalScore } from "@/components/results/format";
 import { ROUND_LABEL } from "@/ui/labels";
-import type { MatchView } from "@/ui/settings";
+import { matchdayView, type MatchView } from "@/ui/settings";
 import { decide, fieldedFor, type CupContext, type Decision } from "@/ui/manager/touchline";
 import { focusHeading } from "@/ui/focus";
 import { MatchPlayer } from "./MatchPlayer";
@@ -120,7 +120,7 @@ export function MatchdayFlow({
           matchIndex={index}
           seed={ctx.seed}
           lineup={ctx.lineup}
-          view={view}
+          view={matchdayView({ managerMode, matchView: view })}
           manager={managerMode ? { actions, decide: onDecide } : undefined}
           autoStart
           footer={

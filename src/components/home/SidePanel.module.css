@@ -170,6 +170,10 @@
   background: var(--selected);
   color: var(--text);
 }
+.segment:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
 .switch {
   display: flex;
   align-items: center;
