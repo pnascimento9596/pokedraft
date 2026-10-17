@@ -47,9 +47,19 @@ test("at 2x the first goal stages in half the time and the score lands with the 
   await replay.getByTestId("speed-toggle").click();
   await expect(replay.getByTestId("speed-toggle")).toHaveAttribute("aria-pressed", "true");
 
-  await expect(replay.getByTestId("goal-flash")).toBeVisible({ timeout: 60_000 });
+  // The flash lives about half a second at 2x, so a visibility poll can miss it on a busy runner.
+  // The page's own mutation log records every frame that drew it.
+  await page.waitForFunction(
+    () => (window as unknown as { marks: Mark[] }).marks.some((m) => m.flash),
+    null,
+    {
+      timeout: 60_000,
+    },
+  );
   await page.screenshot({ path: `${SHOT}/390-2x-goal-landed.png` });
-  await expect(replay.getByTestId("move-callout")).toBeHidden({ timeout: 5_000 });
+  await page.waitForFunction(() => (window as unknown as { gone: boolean }).gone, null, {
+    timeout: 5_000,
+  });
 
   const marks = await page.evaluate(() => (window as unknown as { marks: Mark[] }).marks);
   console.log(`2x goal staging marks: ${JSON.stringify(marks)}`);

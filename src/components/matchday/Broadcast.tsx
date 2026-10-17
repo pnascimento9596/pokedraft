@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { FORMATIONS } from "@/engine";
 import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
-import { TACTIC_LABEL } from "@/ui/matchday/copy";
+import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
 import { activeBeat } from "@/ui/matchday/player";
 import {
   GOAL_LANDS,
@@ -20,6 +20,9 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // Bosses without a recorded shape line up in a 4-3-3.
 const OPP_SHAPE: FormationId = "4-3-3";
+
+// Stage points are percent of width and height; the trails draw in the pitch's own 100 by 64 box.
+const TRAIL_Y = 0.64;
 
 function pct(p: Point) {
   return { left: `${p.x}%`, top: `${p.y}%` } as const;
@@ -86,12 +89,14 @@ export function Broadcast({
         data-effect={p.callout?.effect ?? undefined}
         style={pct(p.point)}
       >
-        <span className={s.playerSprite}>
-          {p.species !== null ? (
-            <PlayerImage dexId={p.species} size={80} alt="" />
-          ) : (
-            <span className={s.shirt}>{ref?.kind === "shirt" ? ref.number : ""}</span>
-          )}
+        <span className={s.body}>
+          <span className={s.playerSprite}>
+            {p.species !== null ? (
+              <PlayerImage dexId={p.species} size={80} alt="" eager />
+            ) : (
+              <span className={s.shirt}>{ref?.kind === "shirt" ? ref.number : ""}</span>
+            )}
+          </span>
         </span>
         {p.yellowCards > 0 ? (
           <span
@@ -102,7 +107,7 @@ export function Broadcast({
         ) : null}
         {p.hasBall ? (
           <span className={s.carrierBadge} data-testid="ball-carrier">
-            {p.name}
+            {nameplate(p.name)}
           </span>
         ) : null}
       </div>
@@ -118,7 +123,7 @@ export function Broadcast({
   const trailPath =
     trail === null
       ? ""
-      : `M ${trail.from.x} ${trail.from.y} Q ${(trail.from.x + trail.to.x) / 2} ${trailMidY} ${trail.to.x} ${trail.to.y}`;
+      : `M ${trail.from.x} ${trail.from.y * TRAIL_Y} Q ${(trail.from.x + trail.to.x) / 2} ${trailMidY * TRAIL_Y} ${trail.to.x} ${trail.to.y * TRAIL_Y}`;
 
   return (
     <div
@@ -162,15 +167,19 @@ export function Broadcast({
         {trail !== null ? (
           <svg
             className={s.trails}
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
+            viewBox="0 0 100 64"
             data-testid="pitch-trails"
             data-kind={trail.kind}
             data-effect={trail.effect ?? undefined}
           >
             <path d={trailPath} className={s.trailGlow} />
             <path d={trailPath} className={s.trailLine} />
-            <circle cx={trail.from.x} cy={trail.from.y} r={1.1} className={s.trailOrigin} />
+            <circle
+              cx={trail.from.x}
+              cy={trail.from.y * TRAIL_Y}
+              r={1.1}
+              className={s.trailOrigin}
+            />
           </svg>
         ) : null}
 
