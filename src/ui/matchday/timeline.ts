@@ -851,7 +851,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     const kick = timeline.kicks[kickIdx]!;
     const attSide = kick.side;
     const defSide: Side = attSide === "user" ? "opp" : "user";
-    const spot: Point = attSide === "user" ? { x: 86, y: 50 } : { x: 14, y: 50 };
+    const spot: Point = attSide === "user" ? { x: 89, y: 50 } : { x: 11, y: 50 };
     const mouth = goalMouth(attSide);
     const takerSlot =
       kick.taker.slot ??

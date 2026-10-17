@@ -23,7 +23,33 @@ Gates at `598f824` (later commits change only docs):
 
 Scope, repro counts, measurements and the mutation output are in `docs/decisions/unit-flakes.md`.
 
-PR #78 (row 1f, Quick is not a broadcast) is on `origin/main` as squash `c87509f`, read from `git log`. Its reviewer receipt and production check are for the coordinator to record.
+PR #79 (row 1g, mobile pitch fixes) merged as squash `90aba39`, reviewed head `5cac7ce`, GLM 5.3 Flash APPROVE in round 2 with canary `mobile-pitch-r2-3d50fc7ebb70a24bfcd9025660bea576` echoed. Round 1 (`3398f4b`) was APPROVE but hosted e2e failed `speed-aware-staging.spec.ts` twice on a 2x goal flash the visibility poll missed (also failing 3 of 4 on `main` under a 6x CPU throttle); `5cac7ce` reads the flash from the page mutation log. Hosted check and e2e green on `5cac7ce`. Production `/api/health?db=1` served `90aba39` with `db.status` ok, and `e2e/mobile-pitch-fixes.spec.ts` against production (chromium) passed 4 of 4.
+
+## Mobile pitch fixes
+
+Branch `fix/mobile-pitch-fixes`, built on row 1f (`fix/quick-not-broadcast`). UI only (Yellow), Wave 1 row 1g (bundle). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- On phones (below 420px) the match HUD now uses two rows, so the momentum figures no longer run into the shot counts.
+- The ball carrier's nameplate and the yellow card pip keep their full size (11px text, a 9 by 13px pip) instead of shrinking with the sprites. Names over 10 characters are cut to 9 and an ellipsis.
+- Every sprite on the pitch is drawn at kickoff: the pre-match card now loads both elevens.
+- Pass and shot trails keep their shape on the pitch, so the trail's start ring is round, and a penalty taker stands on the drawn penalty spot.
+- Measured in a 390, 360 and 320px replay of the golden cup8 run's G1, and at a managed kickoff stop with 400 ms of added latency: 22 of 22 sprites drawn (17 before).
+
+RED commit: `925bdb5` (3 failing unit tests in `Broadcast.test.tsx` and `timeline.test.ts`, and 4 failing scenes in `e2e/mobile-pitch-fixes.spec.ts`).
+
+Gates at `554c42d` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed. `pnpm check:image-seam` clean.
+- Unit tests: 1,343 passed in 150 files.
+- Playwright on a fresh build of the fix code (`677f01a`; `554c42d` adds only the spec's rounding and the screenshots): `mobile-pitch-fixes`, `mobile-targets`, `mobile-acceptance`, `manager-mode`, `quick-not-broadcast`, `watch-live`, `speed-aware-staging`, `score-lands-with-ball`, `one-shared-timeline`, `honest-momentum`, `injury-staging` and `results-interactions` gave 393 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/mobile-pitch-fixes/390-live-pitch.png`, `360-live-pitch.png`, `320-live-pitch.png`, `390-kickoff-stop.png` and `390-live-pitch-before.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/mobile-pitch-fixes.md`.
+
+PR #78 (row 1f, manager mode plays live, Quick is not a broadcast) merged as squash `c87509f`, reviewed head `27659c6`, GLM 5.3 Flash APPROVE in round 2 with canary `quick-live-r2-c379bd30b4dedd41803af83f7e1b89d4` echoed. Round 1 (`17d5290`) was also APPROVE but hosted CI failed its unit job on a flaky PR #72 guard, fixed in `27659c6`. On `27659c6` the unit job failed once on `announce-builder.test.tsx` (an unrelated known flake) and passed on a rerun of the failed job with no new commit; e2e green. Production `/api/health?db=1` served `c87509f` with `db.status` ok, and `e2e/quick-not-broadcast.spec.ts` against production (chromium) passed 1 of 1.
+
+Hosted e2e on `3398f4b` (run 39075805190) failed `e2e/speed-aware-staging.spec.ts` (PR #77) on both attempts: `toBeVisible` on `goal-flash` timed out at 60 s while the replay reached full time at 1 - 0 with the 49' goal in the ticker. At 2x the flash lives about half a second, and a busy runner's visibility poll can miss it. Under a 6x CDP CPU throttle the unchanged spec failed 2 of 4 on this branch's build and 3 of 4 on a `main` build (`c87509f`), so this row did not cause it. The spec now waits on its own MutationObserver log for a frame that drew the flash, then for the callout to go. Under the same throttle it passed 6 of 6, with the callout on screen 977 to 985 ms. `e2e/score-lands-with-ball.spec.ts` polls the flash the same way at 1x (about twice as long on screen) and is left as a watch item.
 
 ## Quick is not a broadcast
 

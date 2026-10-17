@@ -112,6 +112,61 @@ describe("Broadcast (catches a pitch that renders a plain circle instead of a pa
   });
 });
 
+describe("pitch nameplates (catches a long name whose plate spans a third of a phone pitch)", () => {
+  const crab = Array.from({ length: 11 }, () => id(740));
+  const lineup = { ...LINEUP, starters: crab } as unknown as FullLineup;
+  const match: PlayedMatch = {
+    ...MATCH,
+    opponent: {
+      ...OPPONENT,
+      roster: crab.map((n) => ({ kind: "species" as const, id: n })),
+    } as unknown as Opponent,
+    goals: [],
+    saves: [],
+    incidents: [],
+    regulation: { user: 0, opp: 0 },
+    outcome: "D",
+    windows: MATCH.windows!.map((w) => ({ ...w, onPitch: crab })),
+  };
+  const timeline = buildTimeline(match, { matchIndex: 0, seed: "bc-test", lineup });
+
+  it("shows Crabominable's plate as Crabomina…", () => {
+    render(
+      <Broadcast
+        match={match}
+        timeline={timeline}
+        lineup={lineup}
+        clock={6.5}
+        now={1000}
+        fired={{}}
+        kicks={0}
+        motion={true}
+        speed={1}
+      />,
+    );
+    expect(screen.getByTestId("ball-carrier").textContent).toBe("Crabomina…");
+  });
+
+  it("draws the trails in the pitch's own 100 by 64 box, so a trail origin stays round", () => {
+    render(
+      <Broadcast
+        match={MATCH}
+        timeline={TIMELINE}
+        lineup={LINEUP}
+        clock={12}
+        now={2200}
+        fired={{ "goal:12:user:Charizard": 1000 }}
+        kicks={0}
+        motion={true}
+        speed={1}
+      />,
+    );
+    const trails = screen.getByTestId("pitch-trails");
+    expect(trails.getAttribute("viewBox")).toBe("0 0 100 64");
+    expect(trails.getAttribute("preserveAspectRatio")).toBeNull();
+  });
+});
+
 describe("MatchPlayer and Touchline UX (catches a match screen with no sound toggle, no tactical HUD, or no click-to-sub on energy rows)", () => {
   it("renders the live tactical HUD and toggles match sound from the control bar", () => {
     render(

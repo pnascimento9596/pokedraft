@@ -359,7 +359,8 @@ describe("pitch geometry (catches sprites that leave the pitch or move with redu
       userSlots: LINEUP.formation,
       oppSlots: "4-3-3",
     });
-    expect(pens.players.user[9]?.point).toEqual({ x: 86, y: 50 });
+    // The taker stands on the drawn penalty spot (Broadcast's cx 89), not 3 units short of it.
+    expect(pens.players.user[9]?.point).toEqual({ x: 89, y: 50 });
   });
 });
 
