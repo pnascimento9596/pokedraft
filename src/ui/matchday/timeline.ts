@@ -581,10 +581,24 @@ function smoothstep(t: number): number {
   return k * k * (3 - 2 * k);
 }
 
+/** How long each beat stays on the pitch, in real milliseconds. */
+export const SHOW: Readonly<Record<Beat["kind"], number>> = {
+  whistle: 1_200,
+  goal: 2_600,
+  save: 1_100,
+  card: 1_600,
+  injury: 1_800,
+  sub: 1_800,
+  tactic: 2_000,
+};
+
+/** The share of a goal's staging at which the ball crosses the line. */
+export const GOAL_LANDS = 0.6;
+
 /** A goal move as it plays: assist to scorer, the shot, then the ball in the net. */
 export function goalBall(from: Point, scorer: Point, mouth: Point, progress: number): Point {
   if (progress < 0.35) return lerp(from, scorer, progress / 0.35);
-  if (progress < 0.6) return lerp(scorer, mouth, (progress - 0.35) / 0.25);
+  if (progress < GOAL_LANDS) return lerp(scorer, mouth, (progress - 0.35) / (GOAL_LANDS - 0.35));
   return mouth;
 }
 

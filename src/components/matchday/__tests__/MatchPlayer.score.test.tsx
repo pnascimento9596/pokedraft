@@ -192,8 +192,9 @@ describe("MatchPlayer live region (catches a screen reader flooded several times
       "45' Half time",
       "90' Full time",
     ]);
+    // Sampled once a frame, so a 1500 ms gap can read up to one frame short.
     for (let i = 1; i < said.length; i++) {
-      expect(said[i]!.at - said[i - 1]!.at).toBeGreaterThanOrEqual(1_500);
+      expect(said[i]!.at - said[i - 1]!.at).toBeGreaterThanOrEqual(1_500 - FRAME);
     }
   });
 });

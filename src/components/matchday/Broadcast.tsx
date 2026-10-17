@@ -7,6 +7,8 @@ import { PlayerImage } from "@/components/PlayerImage";
 import { TACTIC_LABEL } from "@/ui/matchday/copy";
 import { beatKey } from "@/ui/matchday/player";
 import {
+  GOAL_LANDS,
+  SHOW,
   goalMouth,
   stagePitch,
   type Beat,
@@ -20,17 +22,6 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // Bosses without a recorded shape line up in a 4-3-3.
 const OPP_SHAPE: FormationId = "4-3-3";
-
-// How long each beat stays on the pitch, in real milliseconds.
-const SHOW: Readonly<Record<Beat["kind"], number>> = {
-  whistle: 1_200,
-  goal: 2_600,
-  save: 1_100,
-  card: 1_600,
-  injury: 1_800,
-  sub: 1_800,
-  tactic: 2_000,
-};
 
 interface Active {
   readonly beat: Beat;
@@ -302,7 +293,7 @@ export function Broadcast({
             style={pct(goalMouth(active.beat.side === "user" ? "opp" : "user"))}
           />
         ) : null}
-        {goal !== null && shown(0.6, 0.9) ? (
+        {goal !== null && shown(GOAL_LANDS, 0.9) ? (
           <div className={s.flash} data-side={goal.side} data-testid="goal-flash">
             GOAL
           </div>
