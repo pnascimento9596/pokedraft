@@ -774,8 +774,13 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   const oppSlots = resolveSlots(input.oppSlots);
   const frame = frameAt(timeline, clock);
   const line = frame?.line ?? { user: 0, opp: 0 };
-  const userXI = xiAt(timeline, "user", clock);
+  const b = active?.beat;
+  const userXI = [...xiAt(timeline, "user", clock)];
+  // The injured player stays down in the slot until the replacement's own beat walks them on.
+  if (b?.kind === "injury" && b.player.slot !== null) userXI[b.player.slot] = b.player.species;
   const oppXI = xiAt(timeline, "opp", clock);
+  const injured = (side: Side, slot: number): boolean =>
+    b?.kind === "injury" && side === "user" && b.player.slot === slot;
 
   const yellows = { user: new Array<number>(11).fill(0), opp: new Array<number>(11).fill(0) };
   for (const b of timeline.beats) {
@@ -791,7 +796,6 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     return side === "user" ? `Slot ${slot + 1}` : `No. ${slot + 1}`;
   };
 
-  const b = active?.beat;
   const isHighlighted = (side: Side, slot: number): boolean => {
     if (b === undefined) return false;
     if (b.kind === "goal")
@@ -821,7 +825,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
           name: labelOf(side, slot, id),
           point: slotPoint(side, slots[slot] ?? { x: 50, y: 50 }, line[side]),
           facing: side === "user" ? "right" : "left",
-          pose: "idle",
+          pose: injured(side, slot) ? "down" : "idle",
           hasBall: false,
           hot: isHighlighted(side, slot),
           yellowCards: yellows[side][slot] ?? 0,
@@ -1170,7 +1174,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         (playCalloutStage?.side === side && playCalloutStage.slot === slot);
 
       let pose: PlayerPose = dist > 9 ? "sprint" : dist > 2.5 ? "run" : "idle";
-      if (b?.kind === "injury" && side === "user" && b.player.slot === slot) {
+      if (injured(side, slot)) {
         pose = "down";
       } else if (
         b?.kind === "goal" &&

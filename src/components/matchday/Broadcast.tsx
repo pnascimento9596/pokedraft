@@ -5,13 +5,11 @@ import { FORMATIONS } from "@/engine";
 import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TACTIC_LABEL } from "@/ui/matchday/copy";
-import { beatKey } from "@/ui/matchday/player";
+import { activeBeat } from "@/ui/matchday/player";
 import {
   GOAL_LANDS,
-  SHOW,
   goalMouth,
   stagePitch,
-  type Beat,
   type Point,
   type StagedPlayer,
   type Timeline,
@@ -22,38 +20,6 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // Bosses without a recorded shape line up in a 4-3-3.
 const OPP_SHAPE: FormationId = "4-3-3";
-
-interface Active {
-  readonly beat: Beat;
-  /** 0 to 1 through its time on screen; 1 when motion is reduced. */
-  readonly progress: number;
-}
-
-/** The latest beat still on screen. With reduced motion, the latest beat shown at all. */
-function activeBeat(
-  timeline: Timeline,
-  fired: Readonly<Record<string, number>>,
-  now: number,
-  motion: boolean,
-): Active | null {
-  let best: Active | null = null;
-  let bestAt = -Infinity;
-  for (const beat of timeline.beats) {
-    const at = fired[beatKey(beat)];
-    if (at === undefined) continue;
-    if (!motion) {
-      if (beat.kind !== "whistle" || best === null) best = { beat, progress: 1 };
-      continue;
-    }
-    const age = now - at;
-    if (age < 0 || age > SHOW[beat.kind]) continue;
-    if (at >= bestAt) {
-      bestAt = at;
-      best = { beat, progress: age / SHOW[beat.kind] };
-    }
-  }
-  return best;
-}
 
 function pct(p: Point) {
   return { left: `${p.x}%`, top: `${p.y}%` } as const;
@@ -86,7 +52,7 @@ export function Broadcast({
     [match.opponent.roster],
   );
 
-  const active = activeBeat(timeline, fired, now, motion);
+  const active = activeBeat(timeline, fired, now, motion, clock);
   const stage = stagePitch(timeline, {
     clock,
     active,
