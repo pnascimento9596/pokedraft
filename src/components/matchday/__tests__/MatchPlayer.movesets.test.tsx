@@ -110,10 +110,14 @@ describe("MatchPlayer movesets (catches a clock that runs before the canon moves
     expect(screen.getByTestId("matchday-clock").textContent).toBe("KO");
 
     gate.open();
-    await act(async () => {
-      await vi.dynamicImportSettled();
-    });
-    await advance(300);
+    // The real movesets module can still be loading under a busy test run, so keep the import
+    // flushing while the fake clock runs instead of assuming it settles in one pass.
+    for (let i = 0; i < 100 && minute() === 0; i++) {
+      await act(async () => {
+        await vi.dynamicImportSettled();
+      });
+      await advance(48);
+    }
     expect(minute()).toBeGreaterThan(0);
   });
 
