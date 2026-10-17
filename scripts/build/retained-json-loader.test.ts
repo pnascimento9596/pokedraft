@@ -13,6 +13,7 @@ function fixture(canonical: string) {
   roots.push(rootContext);
   mkdirSync(path.join(rootContext, "src/data"), { recursive: true });
   writeFileSync(path.join(rootContext, "src/data/pokedex.json"), canonical);
+  mkdirSync(path.join(rootContext, "src/engine/versions/v1/src/data"), { recursive: true });
   const dependencies: string[] = [];
   return {
     rootContext,
