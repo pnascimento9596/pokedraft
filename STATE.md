@@ -5,7 +5,7 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Draft picker over the pitch
 
-Branch `fix/draft-picker-over-pitch` off `47ca844`. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 - The draft picker opens as a pop-up centered over the dimmed pitch at every width, desktop included, and closes after a pick. Choose a player reopens it.
 - Each Squad First roll scrolls the pitch into view when its top is hidden. Before, each roll scrolled to the wheel in a fixed sheet, which left the page wherever the last slot tap put it. At 390x667 the pitch top sat at -263px from round 2.
@@ -24,6 +24,27 @@ Gates at `77284ba` (later commits change only docs):
 - A physical phone check: NOT RUN.
 
 Root cause, measurements and decisions are in `docs/decisions/draft-picker-over-pitch.md`.
+
+## Matchday simulation, SVG soccer ball and broadcast UX overhaul
+
+Branch `feat/matchday-sim-overhaul` off `47ca844` (PR #68 squash of the post-#67 live check). No file under `src/engine` changed.
+
+- `buildTimeline` in `src/ui/matchday/timeline.ts` now builds deterministic 1.25-minute open-play phases (`plays`, seeded from `broadcast:<seed>:<matchIndex>:plays`) with possession chains, dribbles, passes, through-balls, crosses, supporting runners, pressing defenders, and open-play canon move callouts (`playCallout` in `src/ui/matchday/moves.ts`).
+- `stagePitch` interpolates all 22 players smoothly across phase waypoints, stages goalkeeper tracking and dives, drives parabolic ball flight (`loft`, `spin`, `trail`), parries saved shots clear with `saveBall`, lines teams up for penalty shootouts, and freezes positions under reduced motion.
+- `Broadcast.tsx` replaces the 10px white circle with a Telstar-style paneled SVG soccer ball (`soccer-ball-svg`) and ground shadow, adds full pitch markings (6-yard boxes, penalty spots and arcs, corner arcs, center spot), draws curved pass/shot/save trajectory trails (`pitch-trails`), shows active ball-carrier nameplates (`ball-carrier`), yellow-card pips (`pitch-card-<side>-<slot>`), directional sprite facing and running/casting/diving poses, and open-play ability bursts (`pitch-ability`).
+- `MatchPlayer.tsx` mounts `Broadcast` in both `quick` and `live` views, adds a live tactical and momentum HUD (`match-hud`), adds a `Sound on` / `Sound off` toggle (`sound-toggle`) in the control bar, and triggers Web Audio SFX (`playWhistle`, `playKickPass`, `playAbilitySound`, `playSaveSound`, `playCardSound`, `playSubSound`, `playOppGoal`, `playGoalHorn`).
+- `Touchline.tsx` adds `PlayerImage` sprites to the on-pitch energy list (`energy-slot-<slot>`), highlights tired players below 65 energy, and selects a player for substitution when their row is clicked.
+
+RED commits: `0a675ac` (4 failing tests in `moves.test.ts` and `timeline.test.ts`) and `d3e94ae` (4 failing tests in `Broadcast.test.tsx`).
+
+Local gates on the implementation commits:
+
+- Lint, typecheck, build, format check, image seam, theme colors, theme contrast, theme CVD, and client bundle all exited 0.
+- Unit tests: 1,313 passed of 1,313 in 144 files.
+- Playwright (`e2e/manager-mode.spec.ts` and `e2e/watch-live.spec.ts`): 17 passed of 17 across chromium and pixel-7; `e2e/mobile-targets.spec.ts` and `e2e/mobile-acceptance.spec.ts` (`-g "matchday live touchline"`): 10 passed, 2 skipped across iphone-se, iphone-14 and pixel-7.
+- Hosted CI, physical phone check, and the Sol review lane: NOT RUN at the time of writing.
+
+Details and verbatim RED outputs are in `docs/decisions/matchday-sim-overhaul.md`, and updated screenshots are in `docs/reports/manager-mode/`.
 
 ## Hand-off follow-up: production check after PRs #64 to #67
 

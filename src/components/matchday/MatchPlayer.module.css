@@ -59,6 +59,78 @@
   background: var(--accent);
 }
 
+.hud {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, var(--radius-sm));
+  background: var(--surface-sunken);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.hudSide {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.hudSideOpp {
+  justify-content: flex-end;
+}
+
+.hudBadge {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--bc-user);
+  color: var(--text);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.hudBadge[data-side="opp"] {
+  border-color: var(--bc-opp);
+}
+
+.hudStat {
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.momentum {
+  display: grid;
+  grid-template-columns: auto minmax(36px, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.momentumPct {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.momentumTrack {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--bc-opp);
+  overflow: hidden;
+}
+
+.momentumFill {
+  display: block;
+  height: 100%;
+  background: var(--bc-user);
+}
+
 .broadcastLoading {
   display: grid;
   place-items: center;
@@ -76,6 +148,7 @@
 
 .controls :global(.btn) {
   min-height: 44px;
+  min-width: 44px;
 }
 
 .prompt {

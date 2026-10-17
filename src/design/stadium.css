@@ -47,13 +47,22 @@
 :root {
   --bc-turf-a: #2d7a3a;
   --bc-turf-b: #286d34;
+  --bc-apron: #1e5227;
   --bc-line: rgba(255, 255, 255, 0.78);
+  --bc-line-faint: rgba(255, 255, 255, 0.28);
   --bc-ink: #f8fafc;
   --bc-shade: rgba(3, 12, 7, 0.78);
+  --bc-shade-strong: rgba(3, 12, 7, 0.9);
   --bc-user: #fbbf24;
+  --bc-user-glow: rgba(251, 191, 36, 0.45);
   --bc-opp: #60a5fa;
+  --bc-opp-glow: rgba(96, 165, 250, 0.45);
   --bc-ball: #f8fafc;
+  --bc-ball-shine: #ffffff;
+  --bc-ball-shade: #cbd5e1;
   --bc-ball-ink: #0f172a;
+  --bc-ball-seam: #475569;
+  --bc-ball-shadow: rgba(2, 8, 4, 0.55);
   --bc-net: rgba(255, 255, 255, 0.35);
   --bc-medic: #ef4444;
   --card-yellow: #facc15;
@@ -76,4 +85,6 @@
   --fx-impact-core: #fbbf24;
   --fx-shield: #93c5fd;
   --fx-shield-core: #eff6ff;
+  --fx-dive: #cbd5e1;
+  --fx-dive-core: #f8fafc;
 }

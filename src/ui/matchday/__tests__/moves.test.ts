@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { movesetFor, type Move } from "@/data/movesets";
 import { createRng } from "@/lib/rng";
-import { effectFor, pickMove, saveCallout, shotCallout } from "../moves";
+import { effectFor, pickMove, playCallout, saveCallout, shotCallout } from "../moves";
 
 const move = (
   name: string,
@@ -72,6 +72,31 @@ describe("callouts (catches a callout that drops the canon move or the type effe
     });
     expect(shotCallout("Ditto", null, createRng("x"))).toEqual({
       text: "Ditto shoots!",
+      move: null,
+      type: null,
+      effect: "impact",
+    });
+  });
+
+  it("calls a species' canon move during open play, and falls back to action copy without one", () => {
+    const pikachu = movesetFor(25);
+    const call = playCallout("Pikachu", pikachu, "pass", createRng("pika"));
+    expect(call.text).toMatch(/^Pikachu used .+!$/);
+    expect(call.move).not.toBeNull();
+    expect(playCallout("Ditto", null, "pass", createRng("x"))).toEqual({
+      text: "Ditto threads a pass!",
+      move: null,
+      type: null,
+      effect: "impact",
+    });
+    expect(playCallout("Ditto", null, "dribble", createRng("x"))).toEqual({
+      text: "Ditto surges forward!",
+      move: null,
+      type: null,
+      effect: "impact",
+    });
+    expect(playCallout("Ditto", null, "duel", createRng("x"))).toEqual({
+      text: "Ditto wins the tackle!",
       move: null,
       type: null,
       effect: "impact",
