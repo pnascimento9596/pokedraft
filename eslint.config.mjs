@@ -78,6 +78,7 @@ const eslintConfig = defineConfig([
     "scripts/data/.cache/**",
     "scripts/calibration/out/**",
     "tools/**",
+    ".claude/worktrees/**",
   ]),
 ]);
 

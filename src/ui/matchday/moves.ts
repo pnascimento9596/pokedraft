@@ -60,3 +60,29 @@ export function saveCallout(name: string, moveset: Moveset | null): Callout {
   if (move === null) return { text: `${name} dives!`, move: null, type: null, effect: "dive" };
   return { text: `${name} used ${move.name}!`, move: move.name, type: move.type, effect: "shield" };
 }
+
+export type PlayRole = "pass" | "dribble" | "duel";
+
+const PLAY_FALLBACK: Readonly<Record<PlayRole, string>> = {
+  pass: "threads a pass!",
+  dribble: "surges forward!",
+  duel: "wins the tackle!",
+};
+
+export function playCallout(
+  name: string,
+  moveset: Moveset | null,
+  role: PlayRole,
+  rng: Rng,
+): Callout {
+  const move = moveset === null ? null : pickMove(moveset.moves, rng);
+  if (move === null) {
+    return { text: `${name} ${PLAY_FALLBACK[role]}`, move: null, type: null, effect: "impact" };
+  }
+  return {
+    text: `${name} used ${move.name}!`,
+    move: move.name,
+    type: move.type,
+    effect: effectFor(move.type),
+  };
+}

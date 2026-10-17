@@ -6,6 +6,7 @@ src/scouting/review/*.json
 tools/pstack-core
 docs
 scripts/data/.cache
+.claude/worktrees
 
 # Retained engine bundles are frozen byte for byte; formatting would void their digests
 src/engine/versions/v1
