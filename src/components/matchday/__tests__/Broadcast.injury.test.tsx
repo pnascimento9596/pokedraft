@@ -60,6 +60,7 @@ function show(state: PlayState, now: number) {
       fired={state.fired}
       kicks={state.kicks}
       motion={true}
+      speed={state.speed}
     />,
   );
 }

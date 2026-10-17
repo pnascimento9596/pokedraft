@@ -34,6 +34,7 @@ export function Broadcast({
   fired,
   kicks,
   motion,
+  speed,
 }: {
   readonly match: PlayedMatch;
   /** The one timeline the match player clocks, sounds and stages from. */
@@ -44,6 +45,8 @@ export function Broadcast({
   readonly fired: Readonly<Record<string, number>>;
   readonly kicks: number;
   readonly motion: boolean;
+  /** The player's speed: 2x stages every beat in half the time, matching its hold. */
+  readonly speed: number;
 }) {
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
@@ -52,7 +55,7 @@ export function Broadcast({
     [match.opponent.roster],
   );
 
-  const active = activeBeat(timeline, fired, now, motion, clock);
+  const active = activeBeat(timeline, fired, now, motion, clock, speed);
   const stage = stagePitch(timeline, {
     clock,
     active,

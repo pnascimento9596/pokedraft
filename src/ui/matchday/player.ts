@@ -36,17 +36,19 @@ export function revealed(b: Beat, clock: number): boolean {
 
 /**
  * Whether a revealed beat counts yet on the scoreboard, the ticker and the goal horn. A staged goal
- * waits for the ball to cross the line; a beat that never fired (a skip to full time) counts.
+ * waits for the ball to cross the line, which comes sooner at 2x; a beat that never fired (a skip
+ * to full time) counts.
  */
 export function landed(
   b: Beat,
   fired: Readonly<Record<string, number>>,
   now: number,
   staged: boolean,
+  speed: number,
 ): boolean {
   if (b.kind !== "goal" || !staged) return true;
   const at = fired[beatKey(b)];
-  return at === undefined || now - at >= GOAL_LANDS * SHOW.goal;
+  return at === undefined || now - at >= (GOAL_LANDS * SHOW.goal) / speed;
 }
 
 /** A beat on the pitch: 0 to 1 through its staging, and 1 when motion is reduced. */
@@ -83,12 +85,13 @@ function startOf(
   timeline: Timeline,
   fired: Readonly<Record<string, number>>,
   b: Beat,
+  speed: number,
 ): number | undefined {
   const at = fired[beatKey(b)];
   if (at === undefined || b.kind !== "sub" || b.reason !== "injury") return at;
   const injury = injuryFor(timeline, b);
   const down = injury === undefined ? undefined : fired[beatKey(injury)];
-  return down === undefined ? at : Math.max(at, down + SHOW.injury);
+  return down === undefined ? at : Math.max(at, down + SHOW.injury / speed);
 }
 
 /**
@@ -101,26 +104,28 @@ export function activeBeat(
   now: number,
   motion: boolean,
   clock: number,
+  speed: number,
 ): Active | null {
   let best: Active | null = null;
   let bestAt = -Infinity;
   for (const beat of timeline.beats) {
-    const at = startOf(timeline, fired, beat);
+    const at = startOf(timeline, fired, beat, speed);
     if (at === undefined) continue;
     if (!motion) {
       if (beat.kind !== "whistle" || best === null) best = { beat, progress: 1 };
       continue;
     }
     const age = now - at;
+    const show = SHOW[beat.kind] / speed;
     const replacement = beat.kind === "injury" ? replacementFor(timeline, beat) : undefined;
     const waiting =
       replacement !== undefined &&
       beat.minute === clock &&
       fired[beatKey(replacement)] === undefined;
-    if (age < 0 || (age > SHOW[beat.kind] && !waiting)) continue;
+    if (age < 0 || (age > show && !waiting)) continue;
     if (at >= bestAt) {
       bestAt = at;
-      best = { beat, progress: Math.min(1, age / SHOW[beat.kind]) };
+      best = { beat, progress: Math.min(1, age / show) };
     }
   }
   return best;

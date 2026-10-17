@@ -82,6 +82,7 @@ describe("Broadcast (catches a pitch that renders a plain circle instead of a pa
         fired={{}}
         kicks={0}
         motion={true}
+        speed={1}
       />,
     );
     const ball = screen.getByTestId("broadcast-ball");
@@ -103,6 +104,7 @@ describe("Broadcast (catches a pitch that renders a plain circle instead of a pa
         fired={{ "goal:12:user:Charizard": 1000 }}
         kicks={0}
         motion={true}
+        speed={1}
       />,
     );
     const trails = screen.getByTestId("pitch-trails");
