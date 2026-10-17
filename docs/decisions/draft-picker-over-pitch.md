@@ -41,6 +41,9 @@ roll below 960px.
   667px).
 - The wheel result line uses `--stadium-muted` inside the dark pop-up. axe flagged its light-theme
   color as a contrast failure.
+- Below 480px the selection bar hides its Best, OK and Poor legend. The legend wrapped the bar to
+  128px at 390px wide, which put the pitch top at 355px of 667px after a round-1 pick on hosted
+  CI's Linux fonts. The bar is now 84px, and each slot token already shows its fit.
 
 ## Evidence
 
