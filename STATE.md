@@ -18,6 +18,7 @@ Gates at `598f824` (later commits change only docs):
 
 - Lint, typecheck and build exited 0. Prettier check on both touched tests passed.
 - Unit tests, `pnpm test --maxWorkers=4`: 1,332 passed in 8 of 8 unloaded runs and 2 of 2 runs under 24 CPU burners.
+- At the merge of `origin/main` (`545b598`): lint, typecheck and build exited 0, and `pnpm test --maxWorkers=4` passed 1,341 tests in 150 files in 3 of 3 runs.
 - Hosted CI, Playwright (no UI change) and the GLM review: NOT RUN at the time of writing.
 
 Scope, repro counts, measurements and the mutation output are in `docs/decisions/unit-flakes.md`.
