@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Injury staging
+
+Branch `fix/injury-staging`, built on row 1c (`fix/score-lands-with-ball`). UI only (Yellow), Wave 1 row 1d. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- When one of your players is injured, that player now lies down in their slot with the medic banner. The replacement walks on from the touchline after that, with the sub board.
+- In manager mode the replacement stays off the pitch until you answer the injury prompt, so the pitch no longer shows the assistant's pick while you choose.
+- Measured on the golden cup8 quarter-final at 42'. Before, Kommo-o walked straight on and Roselia never lay down. After, Roselia lies down, then Kommo-o walks on.
+
+RED commit: `519cd93` (3 failing tests in `Broadcast.injury.test.tsx`).
+
+Gates at `ace149f` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,330 passed in 147 files.
+- Playwright on a fresh build of the fix code (`3130f82`; `ace149f` adds only the spec and its screenshots): `injury-staging`, `score-lands-with-ball`, `one-shared-timeline`, `honest-momentum`, `manager-mode`, `mobile-targets` and `mobile-acceptance` gave 378 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/injury-staging/390-roselia-down.png` and `docs/reports/injury-staging/390-kommo-o-walks-on.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/injury-staging.md`.
+
 ## Score lands with the ball
 
 Branch `fix/score-lands-with-ball`, built on row 1b (`fix/honest-momentum`, itself on row 1a). UI only (Yellow), Wave 1 row 1c. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
