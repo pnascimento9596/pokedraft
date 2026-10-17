@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Draft picker over the pitch
+
+Branch `fix/draft-picker-over-pitch` off `47ca844`. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The draft picker opens as a pop-up centered over the dimmed pitch at every width, desktop included, and closes after a pick. Choose a player reopens it.
+- Each Squad First roll scrolls the pitch into view when its top is hidden. Before, each roll scrolled to the wheel in a fixed sheet, which left the page wherever the last slot tap put it. At 390x667 the pitch top sat at -263px from round 2.
+- Position First rolls do not scroll.
+- Dropped guarantees, because the pop-up covers the middle of the pitch: the slot being filled in Position First is hidden while the picker is open; drag to place only reaches slots outside the pop-up; tapping a placed player or the hub Sound button on a small phone needs the picker minimized first.
+
+RED commits: `3c5e178` (pitch hidden after a pick, picker in flow in landscape) and `1c682de` (picker not centered, desktop not an overlay).
+
+Gates at `7b37431` (later commits change only docs):
+
+- Lint, typecheck, format check and build exited 0.
+- Unit tests: 1,305 passed in 143 files.
+- Playwright on a fresh build: 814 passed, 0 failed, 61 skipped.
+- Hosted CI, the independent review and a physical phone: NOT RUN at the time of writing.
+
+Root cause, measurements and decisions are in `docs/decisions/draft-picker-over-pitch.md`.
+
 ## Hand-off follow-up: production check after PRs #64 to #67
 
 Production health after the #67 deploy serves `482299988485191e38f2768d6a37c00104f67c85` on `pokedraft-engine-6` with token versions 1 to 6. `/api/leaderboard` with `scope=all` answers 200 for `coach` all, uncoached and coached in both `cup8` and `kanto151`.
