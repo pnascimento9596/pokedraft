@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { FORMATIONS } from "@/engine";
 import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
-import type { Moveset } from "@/data/movesets";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TACTIC_LABEL } from "@/ui/matchday/copy";
 import { beatKey } from "@/ui/matchday/player";
 import {
-  buildTimeline,
   goalMouth,
   stagePitch,
   type Beat,
@@ -19,7 +17,6 @@ import {
 import s from "./Broadcast.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
-type MovesOf = (id: number) => Moveset | null;
 
 // Bosses without a recorded shape line up in a 4-3-3.
 const OPP_SHAPE: FormationId = "4-3-3";
@@ -34,27 +31,6 @@ const SHOW: Readonly<Record<Beat["kind"], number>> = {
   sub: 1_800,
   tactic: 2_000,
 };
-
-function useMovesets(): MovesOf | null {
-  const [movesOf, setMovesOf] = useState<MovesOf | null>(null);
-  useEffect(() => {
-    let live = true;
-    void import("@/data/movesets").then((m) => {
-      if (!live) return;
-      setMovesOf(() => (id: number) => {
-        try {
-          return m.movesetFor(id);
-        } catch {
-          return null;
-        }
-      });
-    });
-    return () => {
-      live = false;
-    };
-  }, []);
-  return movesOf;
-}
 
 interface Active {
   readonly beat: Beat;
@@ -94,8 +70,7 @@ function pct(p: Point) {
 
 export function Broadcast({
   match,
-  matchIndex,
-  seed,
+  timeline,
   lineup,
   clock,
   now,
@@ -104,8 +79,8 @@ export function Broadcast({
   motion,
 }: {
   readonly match: PlayedMatch;
-  readonly matchIndex: number;
-  readonly seed: string;
+  /** The one timeline the match player clocks, sounds and stages from. */
+  readonly timeline: Timeline;
   readonly lineup: FullLineup;
   readonly clock: number;
   readonly now: number;
@@ -113,11 +88,6 @@ export function Broadcast({
   readonly kicks: number;
   readonly motion: boolean;
 }) {
-  const movesOf = useMovesets();
-  const timeline = useMemo(
-    () => buildTimeline(match, { matchIndex, seed, lineup, movesOf }),
-    [match, matchIndex, seed, lineup, movesOf],
-  );
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
   const oppLabels = useMemo(
