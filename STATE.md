@@ -23,6 +23,8 @@ Gates at `ace149f` (later commits change only docs):
 
 Scope, RED output and measurements are in `docs/decisions/injury-staging.md`.
 
+PR #74 (row 1c, score lands with the ball) merged as squash `b8e5c2c`, reviewed head `8395f24`, GLM 5.3 Flash APPROVE in round 1 with canary `score-lands-58be11cd6bfb1ffa49b4a5043d2470ff` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `b8e5c2c` with `db.status` ok, and `e2e/score-lands-with-ball.spec.ts` against production (chromium) passed 1 of 1.
+
 ## Score lands with the ball
 
 Branch `fix/score-lands-with-ball`, built on row 1b (`fix/honest-momentum`, itself on row 1a). UI only (Yellow), Wave 1 row 1c. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -43,6 +45,8 @@ Gates at `362d187` (later commits change only docs):
 - Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
 
 Scope, RED output and measurements are in `docs/decisions/score-lands-with-ball.md`.
+
+PR #73 (row 1b, honest momentum) merged as squash `b72ac5a`, reviewed head `ac3f545`, GLM 5.3 Flash APPROVE in round 1 with canary `honest-momentum-bcf935028d6e9b0a6aff5e9fb3a084b1` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `b72ac5a` with `db.status` ok, and `e2e/honest-momentum.spec.ts` against production (chromium) passed 1 of 1.
 
 ## Honest momentum
 
@@ -65,6 +69,8 @@ Gates at `43c5a5d` (later commits change only docs and screenshots):
 
 Scope, RED output and measurements are in `docs/decisions/honest-momentum.md`.
 
+PR #72 (row 1a, one shared timeline) merged as squash `b2f2d49`, reviewed head `667ad76`, GLM 5.3 Flash APPROVE in round 1 with canary `one-timeline-051829b31b7efd9c2408e72508363bb4` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `b2f2d49` with `db.status` ok, and `e2e/one-shared-timeline.spec.ts` against production (`PLAYWRIGHT_BASE_URL`, chromium) passed 1 of 1 with 13 typed tones heard.
+
 ## One shared timeline
 
 Branch `fix/one-shared-timeline` off `f4489cb`. UI only (Yellow), Wave 1 row 1a. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -74,17 +80,42 @@ Branch `fix/one-shared-timeline` off `f4489cb`. UI only (Yellow), Wave 1 row 1a.
 - The clock holds at kickoff until the movesets settle. A failed load falls back to generic callouts.
 - Typed ability sounds (fire, water, electric, grass, ice, psychic) now play. In a live 390px replay at the `origin/main` build, 0 typed tones played. At the fix build, 13 did.
 
-RED commit: `64cfaab` (5 failing tests in `moves.test.ts`, `timeline.test.ts` and `MatchPlayer.movesets.test.tsx`).
+RED commit: `de664f4` (5 failing tests in `moves.test.ts`, `timeline.test.ts` and `MatchPlayer.movesets.test.tsx`).
 
-Gates at `dd4f3e7` (later commits change only docs):
+Gates at `dd4f3e7`, before the rebase onto `65cc88b` that made it `2afec93`. The rebase added only the #71 docs, and `git diff dd4f3e7 2afec93 -- src e2e` is empty. Later commits change only docs:
 
 - Lint, typecheck and build exited 0. Prettier check on every touched file passed.
 - Unit tests: 1,319 passed in 145 files. A first full run failed 1 test in `src/components/run/__tests__/run.test.tsx` (a run survives a reload), which this PR does not touch. That file passed 30 of 30 on five isolated reruns, and the full chain then passed. Flaky under load, recorded here.
-- Playwright on a fresh build of the fix code (`7832262`; `dd4f3e7` adds only the spec and its screenshot): `one-shared-timeline`, `watch-live`, `manager-mode`, `recorded-saves`, `engine-v4`, `club-region-identity`, `mobile-targets` and `mobile-acceptance` gave 386 passed, 0 failed, 54 skipped. The new spec, pinned to the chromium project at `dd4f3e7`, passed 1 of 1.
+- Playwright on a fresh build of the fix code (`7832262`, now `d692806`; `dd4f3e7` adds only the spec and its screenshot): `one-shared-timeline`, `watch-live`, `manager-mode`, `recorded-saves`, `engine-v4`, `club-region-identity`, `mobile-targets` and `mobile-acceptance` gave 386 passed, 0 failed, 54 skipped. The new spec, pinned to the chromium project at `dd4f3e7`, passed 1 of 1.
 - Browser proof: `docs/reports/one-shared-timeline/390-typed-callout.png`.
-- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing. PR #71 (audits archive) was still open, so its merge is not recorded here.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+PR #71 (audits archive) merged as squash `65cc88b`, reviewed head `a3f04cf`, GLM 5.3 Flash APPROVE in round 2 with canary `audits-r2-8c7a787f937ec25ab33178b69b261f54` echoed. Hosted e2e failed once on `webkit-wheel` `wheel-results.spec.ts` "skip results stay in the windows" (the Tap to skip button detached while spinning, 813 passed, 1 failed) and passed on a rerun of the failed job with no new commit. Production `/api/health?db=1` then served `65cc88b` with `db.status` ok.
 
 Scope, RED output and measurements are in `docs/decisions/one-shared-timeline.md`.
+
+## Audits archive and program start (2026-10-17)
+
+Branch `docs/audits-2026-10-17` off `f4489cb`. Docs only (Green). Audit A, Audit G, the program
+brief and Audit A's 13 production screenshots now live in `docs/reports/audits-2026-10-17/`, with
+SHA-256 hashes in its README and a `program-log.md` that gets one entry per wave. Decision log:
+`docs/decisions/audits-2026-10-17.md`.
+
+Previous PRs, now merged and live:
+
+- PR #70 (matchday simulation overhaul): squash `40f3c92`, reviewed head `f20ab71`, GLM 5.3 Flash
+  APPROVE with canary `matchday-sim-6823f5df8ab5673193a42648d59a1273` echoed (PR comment).
+  `main` CI run 39011425527 green.
+- PR #69 (draft picker over the pitch): squash `f4489cb`, head `ab62a1c`. The PR comments hold no
+  reviewer receipt for that head, so its reviewer is unknown here. `main` CI run 39042707390
+  green.
+- Production `/api/health?db=1` serves `f4489cb63fedc131274248b14c00758378898ca3` on
+  `pokedraft-engine-6`, token versions 1 to 6, `db.status` ok.
+
+Gates at `6e08aaa`: `prettier --check STATE.md` passed, `pnpm check:mirrors` reported mirrors
+identical, and the three Markdown copies hash equal to their sources. Unit tests, build and
+Playwright: NOT RUN, because nothing under `src/`, `e2e/` or config changed. Hosted CI runs on the
+PR.
 
 ## Draft picker over the pitch
 
