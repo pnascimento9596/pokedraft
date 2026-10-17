@@ -106,3 +106,8 @@
   background: var(--selected);
   color: var(--text);
 }
+
+.segment:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
