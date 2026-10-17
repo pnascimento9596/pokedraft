@@ -38,7 +38,7 @@ Two things kept the earlier broadcast from looking like a soccer match.
 - `[data-testid="match-hud"]` sits above the pitch and displays the user tactic pill, shots on target (`goals + opponent saves`), a live momentum bar derived from the window pressure lean, and the opponent tactic pill.
 - `[data-testid="sound-toggle"]` in the match control bar toggles `pokedraft:sound` (`aria-pressed`) with a 44px minimum tap target.
 - `src/components/wheel/sound.ts` synthesizes Web Audio sounds for referee whistles (`playWhistle` for kickoff, halftime, fulltime, and fouls), passes (`playKickPass`), elemental moves (`playAbilitySound` per effect), keeper saves (`playSaveSound`), bookings (`playCardSound`), substitutions (`playSubSound`), and opponent goals (`playOppGoal`) alongside `playGoalHorn`.
-- In `Touchline.tsx`, each row in the on-pitch energy list (`[data-testid="energy-slot-<slot>"]`) now renders the player's `PlayerImage` sprite, highlights tired legs below 65 energy (`data-tired`), and selects that player in the `Take off` dropdown when clicked.
+- In `Touchline.tsx`, each row in the on-pitch energy list (`[data-testid="energy-slot-<slot>"]`) now renders the player's `PlayerImage` sprite, highlights tired legs below 65 energy (`data-tired`), and selects that player in the `Take off` dropdown when clicked or activated with `Enter` or `Space`.
 
 ## Verbatim RED evidence
 
@@ -96,6 +96,6 @@ TestingLibraryElementError: Unable to find an element by: [data-testid="energy-s
 
 - `principle-model-the-domain`. Model open-play soccer possession phases (carrier, receiver, pressing defender, off-ball runners, keeper dive, ball loft and spin) as pure deterministic data in `src/ui/matchday/timeline.ts` so the component is a direct projection of the stage.
 - `principle-redesign-from-first-principles`. Replace the damped CSS transition wiggle and independent sine-wave ball with continuous phase waypoint interpolation and a paneled SVG soccer ball.
-- `principle-experience-first`. Show the animated pitch in both match views, surface live tactics and momentum above the pitch, add Web Audio match sound effects with an inline sound toggle, and let managers click any tired player row to substitute them.
+- `principle-experience-first`. Show the animated pitch in both match views, surface live tactics and momentum above the pitch, add Web Audio match sound effects with an inline sound toggle, and let managers click or keyboard-activate any tired player row to substitute them.
 - `principle-test-behavior-not-implementation` and `tdd`. Every new capability was pinned by a failing behavioral test before implementation.
-- `principle-prove-it-works`. Verified in a real Chromium and WebKit browser through `e2e/manager-mode.spec.ts` and `e2e/watch-live.spec.ts`, with updated screenshots in `docs/reports/manager-mode/`.
+- `principle-prove-it-works`. Verified in real Chromium (`chromium` desktop and `pixel-7` mobile emulation, 17 passed of 17) through `e2e/manager-mode.spec.ts` and `e2e/watch-live.spec.ts`, with updated screenshots in `docs/reports/manager-mode/`.

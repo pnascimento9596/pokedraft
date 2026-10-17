@@ -143,7 +143,7 @@ export function MatchPlayer({
       }
     }
     if (fresh.length === 0) return;
-    if (state.stage === "done" && fresh.length > 2) {
+    if (state.stage === "done" && fresh.length > 4) {
       playWhistle("fulltime");
       return;
     }
@@ -211,7 +211,7 @@ export function MatchPlayer({
 
   const snapWindow =
     match.windows?.find((w) => w.minute >= Math.max(5, Math.ceil(clock / 5) * 5)) ??
-    match.windows?.[0];
+    match.windows?.at(-1);
   const latestTactic = (side: "user" | "opp"): Tactic | null => {
     for (let i = shown.length - 1; i >= 0; i--) {
       const b = shown[i]!;
@@ -341,7 +341,11 @@ export function MatchPlayer({
           className="btn btn--ghost btn--sm"
           aria-pressed={soundOn}
           data-testid="sound-toggle"
-          onClick={() => setSoundEnabled(!soundOn)}
+          onClick={() => {
+            const next = !soundOn;
+            setSoundEnabled(next);
+            if (next) unlockAudio();
+          }}
         >
           {soundOn ? "Sound on" : "Sound off"}
         </button>

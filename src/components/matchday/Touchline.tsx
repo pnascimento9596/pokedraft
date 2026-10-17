@@ -159,7 +159,19 @@ export function Touchline({
               data-selected={selected || undefined}
               data-tired={tired || undefined}
               data-interactive={canPick || undefined}
+              role={canPick ? "button" : undefined}
+              tabIndex={canPick ? 0 : undefined}
               onClick={canPick ? () => setOff(slot as StarterIndex) : undefined}
+              onKeyDown={
+                canPick
+                  ? (e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setOff(slot as StarterIndex);
+                      }
+                    }
+                  : undefined
+              }
             >
               <span className={s.energyRole}>{slots[slot]!.label}</span>
               <span className={s.energyPlayer}>
