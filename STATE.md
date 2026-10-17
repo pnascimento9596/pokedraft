@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Matchday simulation, SVG soccer ball and broadcast UX overhaul
+
+Branch `feat/matchday-sim-overhaul` off `47ca844` (PR #68 squash of the post-#67 live check). No file under `src/engine` changed.
+
+- `buildTimeline` in `src/ui/matchday/timeline.ts` now builds deterministic 1.25-minute open-play phases (`plays`, seeded from `broadcast:<seed>:<matchIndex>:plays`) with possession chains, dribbles, passes, through-balls, crosses, supporting runners, pressing defenders, and open-play canon move callouts (`playCallout` in `src/ui/matchday/moves.ts`).
+- `stagePitch` interpolates all 22 players smoothly across phase waypoints, stages goalkeeper tracking and dives, drives parabolic ball flight (`loft`, `spin`, `trail`), parries saved shots clear with `saveBall`, lines teams up for penalty shootouts, and freezes positions under reduced motion.
+- `Broadcast.tsx` replaces the 10px white circle with a Telstar-style paneled SVG soccer ball (`soccer-ball-svg`) and ground shadow, adds full pitch markings (6-yard boxes, penalty spots and arcs, corner arcs, center spot), draws curved pass/shot/save trajectory trails (`pitch-trails`), shows active ball-carrier nameplates (`ball-carrier`), yellow-card pips (`pitch-card-<side>-<slot>`), directional sprite facing and running/casting/diving poses, and open-play ability bursts (`pitch-ability`).
+- `MatchPlayer.tsx` mounts `Broadcast` in both `quick` and `live` views, adds a live tactical and momentum HUD (`match-hud`), adds a `Sound on` / `Sound off` toggle (`sound-toggle`) in the control bar, and triggers Web Audio SFX (`playWhistle`, `playKickPass`, `playAbilitySound`, `playSaveSound`, `playCardSound`, `playSubSound`, `playOppGoal`, `playGoalHorn`).
+- `Touchline.tsx` adds `PlayerImage` sprites to the on-pitch energy list (`energy-slot-<slot>`), highlights tired players below 65 energy, and selects a player for substitution when their row is clicked.
+
+RED commits: `0a675ac` (4 failing tests in `moves.test.ts` and `timeline.test.ts`) and `d3e94ae` (4 failing tests in `Broadcast.test.tsx`).
+
+Local gates on the implementation commits:
+
+- Lint, typecheck, build, format check, image seam, theme colors, theme contrast, theme CVD, and client bundle all exited 0.
+- Unit tests: 1,313 passed of 1,313 in 144 files.
+- Playwright (`e2e/manager-mode.spec.ts` and `e2e/watch-live.spec.ts`): 17 passed of 17 across chromium and pixel-7.
+- Hosted CI, physical phone check, and the Sol review lane: NOT RUN at the time of writing.
+
+Details and verbatim RED outputs are in `docs/decisions/matchday-sim-overhaul.md`, and updated screenshots are in `docs/reports/manager-mode/`.
+
 ## Hand-off follow-up: production check after PRs #64 to #67
 
 Production health after the #67 deploy serves `482299988485191e38f2768d6a37c00104f67c85` on `pokedraft-engine-6` with token versions 1 to 6. `/api/leaderboard` with `scope=all` answers 200 for `coach` all, uncoached and coached in both `cup8` and `kanto151`.

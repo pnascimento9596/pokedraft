@@ -60,9 +60,14 @@ test.describe("manager mode", () => {
 
     // Kickoff: the touchline is open before the first whistle.
     await expect(page.getByTestId("stop-kickoff")).toBeVisible();
+    await expect(page.getByTestId("broadcast")).toBeVisible();
+    await expect(page.getByTestId("soccer-ball-svg")).toBeVisible();
     await expect(page.getByTestId("touchline-minute")).toHaveText("Before kickoff");
     await page.getByTestId("tactic-attack").click();
     await expect(page.getByTestId("tactic-attack")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("match-hud")).toContainText("Attack");
+    await page.getByTestId("sound-toggle").click();
+    await expect(page.getByTestId("sound-toggle")).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByTestId("takeover")).toHaveText(
       "You have the touchline. Your assistant stops making changes this match.",
     );
@@ -73,6 +78,8 @@ test.describe("manager mode", () => {
     await expect(page.getByTestId("touchline-minute")).toHaveText("45'");
     const before = await page.getByTestId("subs-count").textContent();
     const used = Number(/Subs (\d) of 5/.exec(before ?? "")?.[1]);
+    await page.getByTestId("energy-slot-4").click();
+    await expect(page.getByTestId("sub-off")).toHaveValue("4");
     await page.getByTestId("sub-confirm").click();
     await expect(page.getByTestId("subs-count")).toHaveText(`Subs ${used + 1} of 5`);
     await page.getByTestId("stop-go").click();
@@ -173,6 +180,8 @@ for (const width of [1280, 360]) {
     await toMatchday(page);
     await page.getByTestId("prematch-go").click();
     await expect(page.getByTestId("broadcast")).toHaveAttribute("data-motion", "on");
+    await expect(page.getByTestId("soccer-ball-svg")).toBeVisible();
+    await expect(page.getByTestId("ball-carrier")).toBeVisible();
     await page.getByTestId("speed-toggle").click();
     // Some match in the cup has a goal; play each one until a move callout shows.
     let seen = false;
