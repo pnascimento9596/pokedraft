@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Board } from "@/components/leaderboard/Board";
+import { StatefulBoard } from "./board-harness";
 import type { BoardEntry } from "@/leaderboard/contract";
 
 afterEach(() => {
@@ -39,7 +39,7 @@ describe("Board", () => {
       json(503, { error: { code: "DB_UNAVAILABLE", message: "down" } }),
     );
     vi.stubGlobal("fetch", fetchMock);
-    render(<Board view={DAILY} />);
+    render(<StatefulBoard view={DAILY} />);
     expect((await screen.findByTestId("board-error")).textContent).toContain(
       "The leaderboard is offline right now.",
     );
@@ -65,7 +65,7 @@ describe("Board", () => {
         }),
       );
     vi.stubGlobal("fetch", fetchMock);
-    render(<Board view={DAILY} />);
+    render(<StatefulBoard view={DAILY} />);
     const error = await screen.findByTestId("board-error");
     expect(error.textContent).toContain("Could not reach the leaderboard.");
     expect(screen.queryByTestId("board-empty")).toBeNull();
@@ -79,7 +79,7 @@ describe("Board", () => {
       "fetch",
       vi.fn(async () => json(200, { entries: "nope" })),
     );
-    render(<Board view={DAILY} />);
+    render(<StatefulBoard view={DAILY} />);
     expect(await screen.findByTestId("board-error")).toBeTruthy();
     expect(screen.queryByTestId("board-empty")).toBeNull();
   });
@@ -91,7 +91,7 @@ describe("Board", () => {
         json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", coach: "all", entries: [] }),
       ),
     );
-    render(<Board view={DAILY} />);
+    render(<StatefulBoard view={DAILY} />);
     const empty = await screen.findByTestId("board-empty");
     expect(empty.textContent).toContain("No entries yet.");
     expect(screen.getByRole("link", { name: "Play the daily" }).getAttribute("href")).toBe(
@@ -124,7 +124,7 @@ describe("Board", () => {
       }),
     );
     vi.stubGlobal("fetch", fetchMock);
-    render(<Board view={{ mode: "kanto151", scope: "all", date: "2026-10-09" }} />);
+    render(<StatefulBoard view={{ mode: "kanto151", scope: "all", date: "2026-10-09" }} />);
     const rows = await screen.findAllByTestId("board-row");
     expect(rows.map((r) => r.querySelector("a")?.getAttribute("href"))).toEqual([
       "/r/pd1.abc",
@@ -163,7 +163,7 @@ describe("Board", () => {
       )
       .mockResolvedValueOnce(reply("coached", []));
     vi.stubGlobal("fetch", fetchMock);
-    render(<Board view={DAILY} />);
+    render(<StatefulBoard view={DAILY} />);
     expect((await screen.findAllByTestId("board-row")).length).toBe(1);
     expect(screen.getAllByTestId("coached-chip").map((c) => c.textContent)).toEqual(["Coached"]);
 
@@ -200,7 +200,7 @@ describe("Board", () => {
         )
         .mockResolvedValueOnce(json(200, { ...DAILY, coach: "uncoached", entries: [] })),
     );
-    render(<Board view={DAILY} />);
+    render(<StatefulBoard view={DAILY} />);
     await screen.findAllByTestId("board-row");
     fireEvent.click(screen.getByTestId("coach-filter-uncoached"));
     expect((await screen.findByTestId("coach-filter-empty")).textContent).toBe(
@@ -214,14 +214,14 @@ describe("Board", () => {
       "fetch",
       vi.fn(async () => json(200, { ...DAILY, entries: [ENTRY] })),
     );
-    render(<Board view={DAILY} />);
+    render(<StatefulBoard view={DAILY} />);
     expect(await screen.findByTestId("board-error")).toBeTruthy();
     cleanup();
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => json(200, { ...DAILY, coach: "coached", entries: [ENTRY] })),
     );
-    render(<Board view={DAILY} />);
+    render(<StatefulBoard view={DAILY} />);
     expect(await screen.findByTestId("board-error")).toBeTruthy();
   });
 
@@ -240,7 +240,7 @@ describe("Board", () => {
         }),
       ),
     );
-    render(<Board view={DAILY} />);
+    render(<StatefulBoard view={DAILY} />);
     expect(await screen.findByTestId("board-error")).toBeTruthy();
   });
 });
@@ -262,7 +262,7 @@ it("renders server-provided squad species without replaying retained tokens in t
       }),
     ),
   );
-  render(<Board view={DAILY} />);
+  render(<StatefulBoard view={DAILY} />);
   expect(await screen.findByRole("img", { name: "Squad species 807" })).toBeTruthy();
   expect(screen.getAllByRole("img")).toHaveLength(16);
 });
@@ -274,6 +274,6 @@ it("rejects corrupt server preview metadata rather than drawing invented species
       json(200, { coach: "all", entries: [{ ...ENTRY, squadSpeciesIds: [1026] }] }),
     ),
   );
-  render(<Board view={DAILY} />);
+  render(<StatefulBoard view={DAILY} />);
   expect(await screen.findByTestId("board-error")).toBeTruthy();
 });
