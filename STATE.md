@@ -24,6 +24,8 @@ Gates at `99ec77b` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/follow-camera.md`. Browser proof and perf JSON: `docs/reports/follow-camera/`.
 
+Review round 1 at `be5a86f`: GLM 5.3 Flash APPROVE (canary `follow-camera-9b2e38e8dd010e1cef2629ff5a51a022`), but hosted e2e shard 2 failed `mobile-pitch-fixes.spec.ts` at 390, 360 and 320 (carrier badge scale expected 1, received 1.6; run 39171973319), because Follow is now the phone default and zooms the pitch. The spec now switches to Full pitch before pinning the unzoomed sizes; locally (`CI=1`, chromium, fresh build) `mobile-pitch-fixes` and `follow-camera` passed 8 of 8, carrier 11px at scale 1 and the pip 9x13 at all three widths. The receipt from `be5a86f` is void; the reviewed head is the next one.
+
 ## Team readability
 
 Branch `feat/team-readability` off `c33fa17`. Wave 3 row 3d, matchday pitch only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `MatchPlayer.tsx` and `Touchline.tsx` are untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
