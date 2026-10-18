@@ -21,6 +21,7 @@ Gates at `dfe9f5f` (later commits change only docs):
 - Lint, typecheck, format check on touched files and build exited 0.
 - Unit tests: 1,327 passed in 144 files.
 - Playwright on a fresh build: 429 passed, 0 failed, 54 skipped across the highlights scene, results interactions, Silph Stadium, recorded saves, a11y, contrast, mobile targets and mobile acceptance. Hosted CI runs the full suite.
+- At the merge of `origin/main` (`b01ecf9`): lint, typecheck and build exited 0, and `pnpm test --maxWorkers=4` passed 1,357 tests in 150 files.
 - Browser proof at 390x844: `docs/reports/highlights-honesty/`.
 - NOT RUN: the new scene against a `main` build, 360 and 320 screenshots, a physical phone check, GLM review.
 
