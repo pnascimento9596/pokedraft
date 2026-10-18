@@ -77,6 +77,34 @@ in `docs/reports/builder-matchday/`. The layout change is one stacked block insi
 wrapping row, so 360 and 320 scenes were not added. `e2e/mobile-targets.spec.ts` and
 `e2e/mobile-acceptance.spec.ts` cover the home page at phone widths and pass.
 
+## Hosted CI round 1: a formation dropped during hydration
+
+On `4577309` GLM approved, but hosted e2e shard 7 failed `settings-confirm.spec.ts` "Play 8-0, Yes
+lands on the matching /play URL" on iphone-14, twice:
+
+```
+Expected substring: "4-4-2"
+Received string:    "Settings confirmed?8-0 Challenge will use these settings.Formation4-3-3..."
+```
+
+It passed locally unthrottled. Under an 8x CPU throttle in Chromium, picking 4-4-2 straight after
+`goto("/")` and opening the Play confirmation failed 6 of 6 on this branch and passed 6 of 6 on
+`main` (`63c9d36`), and still passed 6 of 6 on `main` at 24x. Picking after a 1.5 s wait passed
+on both. The pick lands before React hydrates on both builds, but only this branch lost it, and the
+saved panel read `4-3-3`, so the replayed change event saw a select already reset to the default.
+
+Cause: the home page now renders `MatchdaySettings`, whose `useSyncExternalStore` reads the stored
+panel on the client but `null` on the server. That mismatch makes React redo the render right
+after hydration, which resets the controlled select before the queued change replays. The home
+copy is controlled (it gets the panel as `value`), so it never needed the store. A controlled copy
+now passes a no-op subscribe and a `null` snapshot; the uncontrolled `/play` copy is unchanged.
+
+Guard: `settings-confirm.spec.ts` "a formation picked as the home page loads on a slow phone
+survives hydration" (chromium, 8x throttle). RED `1136ad8`: 3 of 3 failed. With the fix: 5 of 5
+passed, the whole spec 23 passed and 3 skipped (chromium and iphone-14),
+`quick-not-broadcast`, `builder-matchday` and `manager-mode` 9 of 9 (chromium), and the
+matchday, home and builder unit tests 111 of 111.
+
 ## NOT RUN
 
 - Hosted CI on the PR (the coordinator opens it).

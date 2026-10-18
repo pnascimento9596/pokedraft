@@ -27,6 +27,9 @@ function stored(): string {
   return `${p.managerMode ? "1" : "0"}|${p.matchView}`;
 }
 
+const noSubscribe = () => () => {};
+const noSnapshot = () => null;
+
 type Matchday = { readonly managerMode: boolean; readonly matchView: MatchView };
 
 /**
@@ -43,7 +46,13 @@ export function MatchdaySettings({
 } = {}) {
   const labelId = useId();
   const hintId = useId();
-  const snapshot = useSyncExternalStore(subscribe, stored, () => null);
+  // A controlled copy never reads the store, so its first client render matches the server's and
+  // hydration has no store update to redo.
+  const snapshot = useSyncExternalStore(
+    controlled === undefined ? subscribe : noSubscribe,
+    controlled === undefined ? stored : noSnapshot,
+    noSnapshot,
+  );
   // A choice made here holds only while the stored panel is the one it was made over, so it covers
   // blocked storage but gives way once another tab saves.
   const [local, setLocal] = useState<{
