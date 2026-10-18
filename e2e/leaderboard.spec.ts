@@ -60,13 +60,19 @@ test("the daily run completes on /daily and its submission posts the token and s
   await expect(panel).toContainText("Submit to today's daily board");
   await page.getByTestId("submit-nickname").fill("  Misty ");
   await page.getByTestId("submit-button").click();
-  await expect(page.getByTestId("submit-success")).toHaveText("#4Misty is on the daily board.");
+  await expect(page.getByTestId("submit-success")).toHaveText(
+    "#4Misty is on the daily board, among uncoached runs.",
+  );
 
-  expect(posted).toMatchObject({ nickname: "Misty", engineVersion: ENGINE_VERSION });
+  expect(posted).toMatchObject({
+    nickname: "Misty",
+    engineVersion: ENGINE_VERSION,
+    coach: "uncoached",
+  });
   expect((posted as { token: string }).token).toMatch(LIVE_TOKEN);
   await expect(page.getByRole("link", { name: "View leaderboard" })).toHaveAttribute(
     "href",
-    "/leaderboard?mode=cup8&scope=daily&date=2026-10-09",
+    "/leaderboard?mode=cup8&scope=daily&date=2026-10-09&coach=uncoached",
   );
 });
 
@@ -121,7 +127,45 @@ test("pressing Uncoached asks the server for coach=uncoached and shows the rows 
   await expect(rows.nth(0).getByRole("link")).toHaveAttribute("href", "/r/pd1.e2e-plain");
   await expect(page.getByTestId("coached-chip")).toHaveCount(0);
   await expect(page.getByTestId("coach-filter-uncoached")).toHaveAttribute("aria-pressed", "true");
+  await expect(page).toHaveURL(/\/leaderboard\?mode=cup8&scope=all&coach=uncoached$/);
   expect(seen).toEqual(["?mode=cup8&scope=all", "?mode=cup8&scope=all&coach=uncoached"]);
+});
+
+test("a /leaderboard link with coach=uncoached opens the Uncoached view and keeps it across board switches", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const seen: string[] = [];
+  await page.route("**/api/leaderboard?**", (route) => {
+    const url = new URL(route.request().url());
+    seen.push(url.search);
+    const coach = url.searchParams.get("coach") ?? "all";
+    return route.fulfill({
+      json: {
+        mode: url.searchParams.get("mode"),
+        scope: url.searchParams.get("scope"),
+        date: url.searchParams.get("date"),
+        coach,
+        entries: [{ ...SECOND, rank: 1, nickname: "Plain", token: "pd1.e2e-plain" }],
+      },
+    });
+  });
+  await page.goto("/leaderboard?mode=cup8&scope=all&coach=uncoached");
+  await expect(page.getByTestId("board-row")).toHaveCount(1);
+  await expect(page.getByTestId("coach-filter-uncoached")).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("coach-filter-all")).toHaveAttribute("aria-pressed", "false");
+  expect(seen).toEqual(["?mode=cup8&scope=all&coach=uncoached"]);
+  await page.screenshot({
+    path: "docs/reports/security-integrity-quick-fixes/leaderboard-coach-url-390x844.png",
+  });
+
+  await page.getByRole("radio", { name: "151 Challenge" }).click();
+  await expect(page).toHaveURL(/\/leaderboard\?mode=kanto151&scope=all&coach=uncoached$/);
+  await expect.poll(() => seen).toContain("?mode=kanto151&scope=all&coach=uncoached");
+
+  await page.getByTestId("coach-filter-all").click();
+  await expect(page).toHaveURL(/\/leaderboard\?mode=kanto151&scope=all$/);
+  await expect(page.getByTestId("coach-filter-all")).toHaveAttribute("aria-pressed", "true");
 });
 
 test("a 503 from the board API shows the error state, never an empty board", async ({ page }) => {

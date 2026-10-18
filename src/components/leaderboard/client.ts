@@ -18,6 +18,7 @@ export interface BoardView {
   readonly mode: BoardMode;
   readonly scope: BoardScope;
   readonly date: string;
+  readonly coach: CoachFilter;
 }
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -57,24 +58,34 @@ export function parseBoardView(q: URLSearchParams, today: string): BoardView {
     ? (q.get("scope") as BoardScope)
     : "daily";
   const date = q.get("date");
+  const coach = (COACH_FILTERS as readonly (string | null)[]).includes(q.get("coach"))
+    ? (q.get("coach") as CoachFilter)
+    : "all";
   return {
     mode: scope === "daily" ? "cup8" : mode,
     scope,
     date: date !== null && ISO_DATE.test(date) ? date : today,
+    coach,
   };
 }
 
-export function boardHref(view: { mode: BoardMode; scope: BoardScope; date?: string | null }) {
+export function boardHref(view: {
+  mode: BoardMode;
+  scope: BoardScope;
+  date?: string | null;
+  coach?: CoachFilter;
+}) {
   const q = new URLSearchParams({ mode: view.mode, scope: view.scope });
   if (view.scope === "daily" && view.date) q.set("date", view.date);
+  if (view.coach !== undefined && view.coach !== "all") q.set("coach", view.coach);
   return `/leaderboard?${q.toString()}`;
 }
 
 // `coach` is sent only for a filtered view, so the default All request is unchanged.
-function apiQuery(view: BoardView, coach: CoachFilter): string {
+function apiQuery(view: BoardView): string {
   const q = new URLSearchParams({ mode: view.mode, scope: view.scope });
   if (view.scope === "daily") q.set("date", view.date);
-  if (coach !== "all") q.set("coach", coach);
+  if (view.coach !== "all") q.set("coach", view.coach);
   return `/api/leaderboard?${q.toString()}`;
 }
 
@@ -84,14 +95,10 @@ export type BoardResult =
 
 // Any reply that is not a well-formed BoardOk for the requested coach view is an error, never an
 // empty board or another view's rows.
-export async function fetchBoard(
-  view: BoardView,
-  coach: CoachFilter,
-  signal?: AbortSignal,
-): Promise<BoardResult> {
+export async function fetchBoard(view: BoardView, signal?: AbortSignal): Promise<BoardResult> {
   let res: Response;
   try {
-    res = await fetch(apiQuery(view, coach), { signal, cache: "no-store" });
+    res = await fetch(apiQuery(view), { signal, cache: "no-store" });
   } catch {
     return { kind: "error", reason: "network" };
   }
@@ -107,7 +114,7 @@ export async function fetchBoard(
     return { kind: "error", reason: offline || res.status === 503 ? "offline" : "unexpected" };
   }
   const ok = boardOkSchema.safeParse(body);
-  return ok.success && ok.data.coach === coach
+  return ok.success && ok.data.coach === view.coach
     ? { kind: "ok", entries: ok.data.entries }
     : { kind: "error", reason: "unexpected" };
 }
@@ -122,13 +129,17 @@ function isSubmitCode(code: string): code is SubmitErrorCode {
   return Object.hasOwn(SUBMIT_ERROR_STATUS, code);
 }
 
-export async function submitRun(nickname: string, token: string): Promise<SubmitResult> {
+export async function submitRun(
+  nickname: string,
+  token: string,
+  coach: CoachFilter,
+): Promise<SubmitResult> {
   let res: Response;
   try {
     res = await fetch("/api/leaderboard", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ nickname, token, engineVersion: ENGINE_VERSION }),
+      body: JSON.stringify({ nickname, token, engineVersion: ENGINE_VERSION, coach }),
     });
   } catch {
     return { kind: "error", code: "NETWORK" };

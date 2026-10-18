@@ -105,7 +105,7 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
         ) : null}
       </div>
       <p className={s.caption}>{caption}</p>
-      <Board view={view} />
+      <Board view={view} onCoachChange={(coach) => go({ coach })} />
     </ModuleCard>
   );
 }

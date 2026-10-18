@@ -226,6 +226,52 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect(replays).toBe(0);
   });
 
+  it("reports the rank in the coach view the client names (catches an uncoached leader told it is #3 behind coached runs)", async () => {
+    const coachedAhead = (nickname: string, minute: number) => ({
+      nickname,
+      mode: "cup8" as const,
+      variant: "classic3.squadFirst.g123456789",
+      dailyDate: null,
+      seed: "coached-ahead",
+      token: encodeToken({
+        ...decodeToken(scriptedToken(CUP8, "coached-ahead")),
+        manager: [{ type: "tactic", match: 0, minute, tactic: "attack" }],
+      }),
+      teamScore: 999,
+      wins: 8,
+      draws: 0,
+      losses: 0,
+      engineVersion: ENGINE_VERSION,
+      ipHash: "seeded",
+      createdAt: new Date("2026-10-01T12:00:00Z"),
+    });
+    await db
+      .insert(leaderboardEntries)
+      .values([coachedAhead("Giovanni", 10), coachedAhead("Lance", 20)]);
+    const token = scriptedToken(CUP8, "lb-cup8");
+
+    const fresh = await submit({ nickname: "Ash", token, coach: "uncoached" });
+    expect([fresh.status, fresh.body.entry.rank, fresh.body.entry.coached]).toEqual([
+      201,
+      1,
+      false,
+    ]);
+
+    const retryAll = await submit({ nickname: "Ash", token, coach: "all" });
+    expect([retryAll.status, retryAll.body.entry.rank]).toEqual([200, 3]);
+
+    const noCoach = await submit({ nickname: "Ash", token });
+    expect([noCoach.status, noCoach.body.entry.rank]).toEqual([200, 3]);
+  });
+
+  it("rejects a coach view the run is not in with 400 INVALID_BODY before the database", async () => {
+    const token = scriptedToken(CUP8, "lb-cup8");
+    const res = await submit({ nickname: "Ash", token, coach: "coached" });
+    expect([res.status, res.body.error.code]).toEqual([400, "INVALID_BODY"]);
+    expect(replays).toBe(0);
+    expect(await rows()).toEqual([]);
+  });
+
   it("rejects bad bodies and bad nicknames", async () => {
     expect((await submit("{nope")).status).toBe(400);
     expect((await submit({ token: "x" })).body.error.code).toBe("INVALID_BODY");

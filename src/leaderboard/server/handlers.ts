@@ -1,4 +1,5 @@
 import { createHmac } from "node:crypto";
+import { isIPv6 } from "node:net";
 import {
   ENGINE_VERSION,
   RunTokenError,
@@ -16,6 +17,7 @@ import {
   submitBodySchema,
   type ApiError,
   type BoardErrorCode,
+  type CoachFilter,
   type BoardOk,
   type SubmitErrorCode,
   type SubmitOk,
@@ -24,6 +26,7 @@ import { dailyDateForSeed, isDailySettings } from "../daily";
 import { parseNickname } from "../nickname";
 import { logServerError, requestIdOf } from "@/observability/log";
 import type { LeaderboardRow } from "@/db/schema";
+import { isCoached } from "@/ui/manager/coached";
 import { toBoardEntry, type Board, type Conflict, type LeaderboardStore } from "./store";
 
 export const RATE_LIMIT = { max: 10, windowMs: 60 * 60 * 1000 } as const;
@@ -85,8 +88,47 @@ export function clientIp(req: Request): string {
   return fwd || "unknown";
 }
 
+function ipv6Groups(addr: string): number[] {
+  let rest = addr.toLowerCase();
+  const tail: number[] = [];
+  const v4 = /(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(rest);
+  if (v4) {
+    const [a, b, c, d] = v4.slice(1).map(Number) as [number, number, number, number];
+    tail.push((a << 8) | b, (c << 8) | d);
+    rest = rest.slice(0, v4.index);
+  }
+  const hex = (part: string | undefined) =>
+    (part ?? "")
+      .split(":")
+      .filter((h) => h !== "")
+      .map((h) => parseInt(h, 16));
+  const [left, right] = rest.split("::");
+  if (right === undefined) return [...hex(left), ...tail];
+  const head = hex(left);
+  const end = [...hex(right), ...tail];
+  return [...head, ...Array<number>(8 - head.length - end.length).fill(0), ...end];
+}
+
+/**
+ * The rate-limit identity of a client address. An IPv6 client normally holds a whole /64, so the
+ * /64 is one bucket. An IPv4-mapped IPv6 address is its IPv4 address. IPv4 and anything that is
+ * not an IPv6 address are keyed exactly as sent.
+ */
+export function rateKey(ip: string): string {
+  const addr = ip.split("%")[0]!;
+  if (!isIPv6(addr)) return ip;
+  const g = ipv6Groups(addr);
+  if (g.slice(0, 5).every((x) => x === 0) && g[5] === 0xffff) {
+    return [g[6]! >> 8, g[6]! & 0xff, g[7]! >> 8, g[7]! & 0xff].join(".");
+  }
+  return `${g
+    .slice(0, 4)
+    .map((x) => x.toString(16))
+    .join(":")}::/64`;
+}
+
 export function hashIp(ip: string, secret: string): string {
-  return createHmac("sha256", secret).update(ip).digest("hex");
+  return createHmac("sha256", secret).update(rateKey(ip)).digest("hex");
 }
 
 export function usableSecret(secret: string | undefined): secret is string {
@@ -115,6 +157,7 @@ interface Submission {
   readonly run: RunToken;
   readonly token: string;
   readonly board: Board;
+  readonly coach: CoachFilter;
 }
 
 // Everything that can be checked without the database. These rejections spend no attempt and
@@ -170,8 +213,12 @@ async function parseSubmission(
   // One run has many encodings (JSON spacing, gens order, 25.0 for 25). Dedupe and store the
   // canonical one, so the token index sees one run as one row.
   const token = encodeToken(run);
+  const coach = body.data.coach ?? "all";
+  if (coach !== "all" && (coach === "coached") !== isCoached(token)) {
+    return reject(submitError("INVALID_BODY", `This run is not on the ${coach} board.`));
+  }
   const board: Board = { mode: run.settings.mode, dailyDate };
-  return { ok: true, sub: { nickname: nick.nickname, run, token, board } };
+  return { ok: true, sub: { nickname: nick.nickname, run, token, board, coach } };
 }
 
 // A retry of an accepted run (same run, same nickname) gets the saved entry back with 200.
@@ -179,10 +226,11 @@ async function rankOrNull(
   store: LeaderboardStore,
   row: LeaderboardRow,
   board: Board,
+  coach: CoachFilter,
   requestId: string,
 ): Promise<number | null> {
   try {
-    return await store.rankOf(row, board);
+    return await store.rankOf(row, board, coach);
   } catch (e) {
     logServerError("submit.rank", requestId, e);
     return null;
@@ -192,10 +240,11 @@ async function rankOrNull(
 async function savedEntry(
   row: LeaderboardRow,
   store: LeaderboardStore,
+  coach: CoachFilter,
   requestId: string,
 ): Promise<Response> {
   const board: Board = { mode: row.mode, dailyDate: row.dailyDate };
-  const rank = await rankOrNull(store, row, board, requestId);
+  const rank = await rankOrNull(store, row, board, coach, requestId);
   const ok: SubmitOk = { entry: toBoardEntry(row, rank) };
   return json(ok, 200);
 }
@@ -216,7 +265,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
       "retry-after": "3600",
     });
   if (!parsed.ok) return parsed.res;
-  const { nickname, run, token, board } = parsed.sub;
+  const { nickname, run, token, board, coach } = parsed.sub;
   try {
     const admission = await deps.store.admitSubmission(
       token,
@@ -226,7 +275,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
       now,
       RATE_LIMIT,
     );
-    if (admission.kind === "retry") return savedEntry(admission.row, deps.store, rid);
+    if (admission.kind === "retry") return savedEntry(admission.row, deps.store, coach, rid);
     if (admission.kind === "limited") return limited();
     if (admission.kind === "conflict") return conflictError(admission.conflict);
   } catch (e) {
@@ -259,11 +308,11 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     if (!inserted.ok) {
       // A concurrent copy of this same submission won the insert race.
       const winner = await deps.store.byToken(token);
-      if (winner?.nickname === nickname) return savedEntry(winner, deps.store, rid);
+      if (winner?.nickname === nickname) return savedEntry(winner, deps.store, coach, rid);
       return conflictError(inserted.conflict);
     }
     // The run is saved. A rank that cannot be computed must not turn that into a failure.
-    const rank = await rankOrNull(deps.store, inserted.row, board, rid);
+    const rank = await rankOrNull(deps.store, inserted.row, board, coach, rid);
     const ok: SubmitOk = { entry: toBoardEntry(inserted.row, rank) };
     return json(ok, 201);
   } catch (e) {
