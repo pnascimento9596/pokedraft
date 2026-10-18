@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ModuleCard, Pill, StatusNote } from "@/components/ui/primitives";
 import { NICKNAME_MAX, NICKNAME_MIN, type SubmitEntry } from "@/leaderboard/contract";
+import { isCoached } from "@/ui/manager/coached";
 import { readJson, writeJson } from "@/ui/storage";
 import { boardHref, submitRun, type SubmitFailure } from "./client";
 import s from "./SubmitPanel.module.css";
@@ -47,6 +48,9 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const successRef = useRef<HTMLParagraphElement>(null);
   const trimmed = nickname.trim();
+  // The reply's rank is counted among runs like this one, so a leader of the uncoached runs reads
+  // #1 rather than its place behind every coached run.
+  const coach = isCoached(token) ? "coached" : "uncoached";
 
   // The form that held focus is gone. The success line takes it, and a screen reader reads it.
   useEffect(() => {
@@ -59,7 +63,7 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
     if (!valid || status.kind === "submitting") return;
     writeJson(NICKNAME_KEY, trimmed);
     setStatus({ kind: "submitting" });
-    const result = await submitRun(trimmed, token);
+    const result = await submitRun(trimmed, token, coach);
     setStatus(result.kind === "ok" ? { kind: "done", entry: result.entry } : result);
   };
 
@@ -83,7 +87,8 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
             </Pill>
           )}
           <span>
-            {entry.nickname} is on {scope === "daily" ? "the daily board" : "the all-time board"}.
+            {entry.nickname} is on {scope === "daily" ? "the daily board" : "the all-time board"},
+            among {coach} runs.
           </span>
         </p>
         {entry.rank === null ? (
@@ -92,7 +97,7 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
           </StatusNote>
         ) : null}
         <Link
-          href={boardHref({ mode: entry.mode, scope, date: entry.dailyDate })}
+          href={boardHref({ mode: entry.mode, scope, date: entry.dailyDate, coach })}
           className="btn btn--primary"
         >
           View leaderboard

@@ -143,3 +143,36 @@ describe("passcode gate attempt limit (catches unlimited passcode guessing)", ()
     spy.mockRestore();
   });
 });
+
+describe("IPv6 attempt buckets (catches SE-12, one IPv6 client rotating through its /64 for unlimited guesses)", () => {
+  it("locks every address in the same /64 once ten attempts are spent, and leaves the next /64 alone", async () => {
+    for (let i = 0; i < 10; i++) await unlock("wrong", `2001:db8:1:2::${i + 1}`);
+    const sibling = await unlock(PASSCODE, "2001:db8:1:2:ffff:ffff:ffff:ffff");
+    expect([sibling.status, location(sibling)]).toEqual([303, "/gate?next=%2Fdaily&error=limited"]);
+    const neighbour = await unlock(PASSCODE, "2001:db8:1:3::1");
+    expect([neighbour.status, location(neighbour)]).toEqual([303, "/daily"]);
+  });
+});
+
+describe("a body that is not a form (catches SE-13, a JSON POST to /gate/unlock throwing a 500)", () => {
+  it("answers a JSON body with a 303 back to the gate and an error, without a cookie", async () => {
+    const req = new Request("https://pokedraft.test/gate/unlock", {
+      method: "POST",
+      headers: { "x-real-ip": "198.51.100.6", "content-type": "application/json" },
+      body: JSON.stringify({ passcode: PASSCODE, next: "/daily" }),
+    });
+    const res = await handleUnlock(req, deps());
+    expect([res.status, location(res)]).toEqual([303, "/gate?next=%2F&error=1"]);
+    expect(res.headers.get("set-cookie")).toBeNull();
+  });
+
+  it("answers an empty text/plain body the same way", async () => {
+    const req = new Request("https://pokedraft.test/gate/unlock", {
+      method: "POST",
+      headers: { "x-real-ip": "198.51.100.6", "content-type": "text/plain" },
+      body: "",
+    });
+    const res = await handleUnlock(req, deps());
+    expect([res.status, location(res)]).toEqual([303, "/gate?next=%2F&error=1"]);
+  });
+});

@@ -5,9 +5,11 @@ import {
   DEFAULT_PANEL,
   MANAGER_MODE_HINT,
   MANAGER_MODE_LABEL,
+  MANAGER_PLAYS_LIVE,
   MATCH_VIEWS,
   MATCH_VIEW_LABEL,
   loadPanel,
+  matchdayView,
   savePanel,
   type MatchView,
 } from "@/ui/settings";
@@ -40,6 +42,7 @@ export function MatchdaySettings({
   readonly onChange?: (next: Matchday) => void;
 } = {}) {
   const labelId = useId();
+  const hintId = useId();
   const snapshot = useSyncExternalStore(subscribe, stored, () => null);
   // A choice made here holds only while the stored panel is the one it was made over, so it covers
   // blocked storage but gives way once another tab saves.
@@ -66,6 +69,7 @@ export function MatchdaySettings({
     savePanel({ ...loadPanel(), ...next });
     setLocal({ over: stored(), value: next });
   };
+  const shown = matchdayView(value);
   return (
     <div className={s.settings} data-testid="matchday-settings">
       <button
@@ -88,13 +92,19 @@ export function MatchdaySettings({
         <span className={s.label} id={labelId}>
           Match view
         </span>
-        <div className={s.segmented} role="group" aria-labelledby={labelId}>
+        <div
+          className={s.segmented}
+          role="group"
+          aria-labelledby={labelId}
+          aria-describedby={value.managerMode ? hintId : undefined}
+        >
           {MATCH_VIEWS.map((v) => (
             <button
               key={v}
               type="button"
               className={s.segment}
-              aria-pressed={value.matchView === v}
+              aria-pressed={shown === v}
+              disabled={value.managerMode && v === "quick"}
               data-testid={`match-view-${v}`}
               onClick={() => set({ matchView: v })}
             >
@@ -102,6 +112,11 @@ export function MatchdaySettings({
             </button>
           ))}
         </div>
+        {value.managerMode ? (
+          <span className={s.hint} id={hintId} data-testid="match-view-hint">
+            {MANAGER_PLAYS_LIVE}
+          </span>
+        ) : null}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import type { Shirt } from "@/engine";
+import type { CupResult, Shirt, SlotId, SpeciesId, StarterIndex } from "@/engine";
 import { describe, expect, it } from "vitest";
 import { replayAnyVersion as replay } from "@/engine/versions";
 import { getAllMatchStars, getMatchStar, getTournamentMvp } from "../starCalculation";
@@ -34,7 +34,8 @@ describe("starCalculation", () => {
       },
       draft,
     );
-    expect(star.headline).toBe("⚽ Goal Scorer (10')");
+    expect(star.icon).toBe("⚽");
+    expect(star.headline).toBe("Goal Scorer (10')");
     expect(star.speciesId).toBe(scorer);
     expect(star.statSummary).toBe("1 Goal");
     expect(star.matchScore).toBe("1-1");
@@ -111,5 +112,124 @@ describe("starCalculation", () => {
     );
     expect(star.kickMove).not.toBe("Detect");
     expect(["Double Kick", "Mega Kick", "Headbutt", "Skull Bash"]).toContain(star.kickMove);
+  });
+
+  type Played = Extract<CupResult["matches"][number], { status: "played" }>;
+
+  async function scoreless(patch: Partial<Played>) {
+    const { draft, cup } = await replay(FLAWLESS);
+    const match = cup.matches.find((m): m is Played => m.status === "played")!;
+    const base: Played = {
+      ...match,
+      outcome: "D",
+      regulation: { user: 0, opp: 0 },
+      extraTime: null,
+      shootout: null,
+      goals: [],
+      absences: [],
+      incidents: [],
+    };
+    return getMatchStar({ ...base, ...patch }, draft);
+  }
+
+  const KEEPER = 630 as SpeciesId;
+  const LB = 893 as SpeciesId;
+  const BENCH_0 = 200 as SpeciesId;
+  const GK_SLOT = "4-3-3.GK" as SlotId;
+
+  it("shows Arcanine as fire, not the dark of its first ability Intimidate", async () => {
+    const { draft, cup } = await replay(FLAWLESS);
+    const match = cup.matches.find((m): m is Played => m.status === "played")!;
+    const arcanine = 59 as SpeciesId;
+    const star = getMatchStar(
+      {
+        ...match,
+        outcome: "W",
+        regulation: { user: 1, opp: 0 },
+        goals: [{ side: "user", scorer: arcanine, assist: null, minute: 30, penalty: false }],
+      },
+      draft,
+    );
+    expect(star.speciesId).toBe(59);
+    expect(star.element).toBe("fire");
+    const mvp = getTournamentMvp(
+      {
+        ...cup,
+        awards: {
+          ...cup.awards,
+          playerOfTournament: { ...cup.awards.playerOfTournament, species: arcanine },
+        },
+      },
+      draft,
+    );
+    expect(mvp.element).toBe("fire");
+  });
+
+  it("gives a 0W-0D-3L tournament record the L tone, not the neutral D", async () => {
+    const { draft, cup } = await replay(ELIMINATED);
+    const mvp = getTournamentMvp({ ...cup, wins: 0, draws: 0, losses: 3, flawless: false }, draft);
+    expect(mvp.matchScore).toBe("0-0-3");
+    expect(mvp.outcome).toBe("L");
+  });
+
+  it("gives a level 1W-1D-1L group exit the D tone, not W", async () => {
+    const { draft, cup } = await replay(ELIMINATED);
+    const mvp = getTournamentMvp({ ...cup, wins: 1, draws: 1, losses: 1, flawless: false }, draft);
+    expect(mvp.outcome).toBe("D");
+  });
+
+  it("keeps the starting keeper as Clean Sheet Hero when he played the whole 0-0", async () => {
+    const star = await scoreless({});
+    expect(star.speciesId).toBe(630);
+    expect(star.headline).toContain("Clean Sheet Hero");
+  });
+
+  it("does not crown an absent keeper Clean Sheet Hero; the stand-in who kept goal gets it", async () => {
+    const star = await scoreless({ absences: [{ slot: GK_SLOT, out: KEEPER, in: BENCH_0 }] });
+    expect(star.speciesId).toBe(200);
+    expect(star.headline).toContain("Clean Sheet Hero");
+  });
+
+  it("does not crown a keeper subbed off at 60' Clean Sheet Hero", async () => {
+    const star = await scoreless({
+      incidents: [
+        {
+          kind: "sub",
+          side: "user",
+          minute: 60,
+          slot: 0 as StarterIndex,
+          out: KEEPER,
+          in: BENCH_0,
+          reason: "fatigue",
+          by: "auto",
+        },
+      ],
+    });
+    expect(star.speciesId).toBe(893);
+    expect(star.headline).toContain("Clean Sheet Hero");
+  });
+
+  it("does not call a 0-0 lost on penalties a clean sheet", async () => {
+    const star = await scoreless({
+      outcome: "L",
+      shootout: { user: 3, opp: 4, keeper: KEEPER, kicks: [], decider: "kicks", coinWinner: null },
+    });
+    expect(star.speciesId).toBe(630);
+    expect(star.headline).toContain("Squad Anchor");
+  });
+
+  it("does not name an absent, unreplaced keeper Squad Anchor of a 0-2 loss", async () => {
+    const star = await scoreless({
+      outcome: "L",
+      regulation: { user: 0, opp: 2 },
+      absences: [{ slot: GK_SLOT, out: KEEPER, in: null }],
+    });
+    expect(star.speciesId).toBe(LB);
+    expect(star.headline).toContain("Squad Anchor");
+  });
+
+  it("keeps emoji out of the headline text so screen readers do not read 'gloves Clean Sheet Hero'", async () => {
+    const star = await scoreless({});
+    expect(star.headline).toBe("Clean Sheet Hero");
   });
 });

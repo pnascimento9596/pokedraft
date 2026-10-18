@@ -27,20 +27,26 @@ for (const width of [390, 1440]) {
         await page.emulateMedia({
           reducedMotion: finish === "reduced" ? "reduce" : "no-preference",
         });
+        // The skip button exists only while a reel spins (1.7 s). A slow WebKit runner can spend
+        // longer than that on click actionability, so the skip run stops time mid-spin.
+        if (finish === "skip") await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
         await page.goto(
           "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-rr",
         );
+        if (finish === "skip") await page.clock.pauseAt(new Date("2026-01-01T01:00:00Z"));
         await page.getByTestId("run-start").click();
         if (finish === "skip") {
           const spinning = page.locator('[data-testid="wheel"][data-state="spinning"]');
           await expect
-            .poll(() =>
-              spinning
+            .poll(async () => {
+              await page.clock.runFor(100);
+              return spinning
                 .locator('[aria-hidden="true"]:has(> [data-kind])')
-                .evaluate((reel) => (reel as HTMLElement).style.transform),
-            )
+                .evaluate((reel) => (reel as HTMLElement).style.transform);
+            })
             .toMatch(/-[1-9]/);
           await page.getByRole("button", { name: "Tap to skip" }).click();
+          await page.clock.resume();
         }
         await expect(page.getByTestId("wheel-result")).toHaveCount(2, { timeout: 10_000 });
         await expect(page.locator('[data-testid^="candidate-"]').first()).toBeVisible();

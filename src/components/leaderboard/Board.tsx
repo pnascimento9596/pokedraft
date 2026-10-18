@@ -36,9 +36,15 @@ function Figure({ value }: { readonly value: string | number }) {
   );
 }
 
-export function Board({ view }: { readonly view: BoardView }) {
+export function Board({
+  view,
+  onCoachChange,
+}: {
+  readonly view: BoardView;
+  readonly onCoachChange: (coach: CoachFilter) => void;
+}) {
   const [attempt, setAttempt] = useState(0);
-  const [coach, setCoach] = useState<CoachFilter>("all");
+  const { coach } = view;
   const board = `${view.mode}|${view.scope}|${view.scope === "daily" ? view.date : ""}`;
   const key = `${board}|${coach}|${attempt}`;
   const [loaded, setLoaded] = useState<{ key: string; result: BoardResult } | null>(null);
@@ -48,7 +54,7 @@ export function Board({ view }: { readonly view: BoardView }) {
 
   useEffect(() => {
     const ctrl = new AbortController();
-    fetchBoard(view, coach, ctrl.signal).then((result) => {
+    fetchBoard(view, ctrl.signal).then((result) => {
       if (ctrl.signal.aborted) return;
       setLoaded({ key, result });
       if (result.kind === "ok" && result.entries.length > 0) setFiltered(board);
@@ -105,7 +111,7 @@ export function Board({ view }: { readonly view: BoardView }) {
           className="chip"
           aria-pressed={coach === f}
           data-testid={`coach-filter-${f}`}
-          onClick={() => setCoach(f)}
+          onClick={() => onCoachChange(f)}
         >
           {COACH_FILTER_LABEL[f]}
         </button>

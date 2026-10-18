@@ -46,6 +46,12 @@ export function shootoutLine(m: PlayedMatch): string | null {
   }
 }
 
+// The weak-spot penalty in Team Score points, with a minus sign only when it costs something.
+export function dragLabel(drag: number): string {
+  const points = Math.round(drag * 100);
+  return points === 0 ? "0" : `-${points}`;
+}
+
 // The player of the tournament's points, by source, as the engine scored them.
 export function contributionLine(c: Contribution): string {
   const { points: p } = c;
