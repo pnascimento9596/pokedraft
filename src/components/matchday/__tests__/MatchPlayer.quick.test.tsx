@@ -128,6 +128,36 @@ describe("Quick view (catches a Quick sim that runs the broadcast: a phase sound
     expect(badges).toBe(0);
   });
 
+  it("Quick shows no cut-in through the 30' goal, while Live shows the goal card", async () => {
+    const cards = async (view: MatchView) => {
+      render(
+        <MatchPlayer
+          match={LATE_GOAL}
+          matchIndex={0}
+          seed="quick-test"
+          lineup={LINEUP}
+          view={view}
+          autoStart
+        />,
+      );
+      await act(async () => {
+        await vi.dynamicImportSettled();
+      });
+      let seen = 0;
+      for (let i = 0; i < 8_000 && minute() < 35; i++) {
+        await act(async () => {
+          vi.advanceTimersByTime(FRAME);
+        });
+        if (screen.queryByTestId("cut-in")?.getAttribute("data-kind") === "goal") seen++;
+      }
+      expect(minute()).toBe(35);
+      cleanup();
+      return seen;
+    };
+    expect(await cards("quick")).toBe(0);
+    expect(await cards("live")).toBeGreaterThan(0);
+  });
+
   it("Live keeps its phase sounds and its moving pitch", async () => {
     await playTo20("live");
     expect(screen.getByTestId("broadcast").getAttribute("data-motion")).toBe("on");

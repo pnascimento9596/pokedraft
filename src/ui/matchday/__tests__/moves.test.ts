@@ -61,6 +61,30 @@ describe("callouts (catches a callout that drops the canon move or the type effe
     ).toEqual(["fire", "water", "electric", "grass", "ice", "psychic", "impact", "impact"]);
   });
 
+  it("gives every one of the 18 types its own effect family (catches Dragon and Ghost moves drawn as a plain impact)", () => {
+    const types = [
+      "normal",
+      "fire",
+      "water",
+      "electric",
+      "grass",
+      "ice",
+      "fighting",
+      "poison",
+      "ground",
+      "flying",
+      "psychic",
+      "bug",
+      "rock",
+      "ghost",
+      "dragon",
+      "dark",
+      "steel",
+      "fairy",
+    ] as const;
+    expect(types.map((t) => effectFor(t))).toEqual([...types]);
+  });
+
   it("calls the keeper's keeperMove as a shield, or a generic dive without one", () => {
     expect(saveCallout("Blastoise", movesetFor(9))).toMatchObject({ effect: "shield" });
     expect(saveCallout("Blastoise", movesetFor(9)).text).toMatch(/^Blastoise used .+!$/);
