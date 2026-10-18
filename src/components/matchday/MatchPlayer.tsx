@@ -1,7 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { speciesById } from "@/engine";
 import type { BenchIndex, FullLineup, ManagerAction, MatchResult, Tactic } from "@/engine/types";
 import { ROUND_LABEL } from "@/ui/labels";
@@ -14,6 +22,7 @@ import {
   activeBeat,
   beatKey,
   decisionMinute,
+  frameNow,
   landed,
   play,
   revealed,
@@ -143,8 +152,11 @@ export function MatchPlayer({
   const send = (action: PlayAction) => {
     const next = play(live.current, action);
     live.current = next;
-    feed.publish(frameOf(next, feed.latest()?.now ?? 0, envRef.current.pace));
+    const t = "now" in action ? action.now : (feed.latest()?.now ?? 0);
+    feed.publish(frameOf(next, t, envRef.current.pace));
     setState(next);
+    // A resume moves every fired time on; the goals that had landed must stay landed meanwhile.
+    if ("now" in action) setNow(frameNow(next, action.now));
   };
 
   // What the match screen shows that time alone changes: the minute on the clock, the goals that
@@ -167,7 +179,12 @@ export function MatchPlayer({
   }, [timeline, motion, view]);
 
   // The clock holds at kickoff until the movesets settle, so every callout and sound is canon.
-  const moving = movesOf !== null && state.running && state.stage !== "done" && state.stop === null;
+  const moving =
+    movesOf !== null &&
+    state.running &&
+    !state.uiHold &&
+    state.stage !== "done" &&
+    state.stop === null;
   useEffect(() => {
     if (!moving) return;
     let raf = 0;
@@ -201,12 +218,13 @@ export function MatchPlayer({
     let shownAt = -Infinity;
     let glance = "";
     const frame = (t: number) => {
+      const at = frameNow(live.current, t);
       const asked = feed.publish(frameOf(live.current, t, envRef.current.pace));
-      const seen = glanceRef.current(live.current, t);
+      const seen = glanceRef.current(live.current, at);
       if (asked || seen !== glance || t - shownAt >= COMMIT_GAP) {
         glance = seen;
         shownAt = t;
-        setNow(t);
+        setNow(at);
       }
       raf = requestAnimationFrame(frame);
     };
@@ -341,10 +359,22 @@ export function MatchPlayer({
   const at = decisionMinute(timeline, clock);
   const line =
     manager === undefined ? null : touchlineAt(match, matchIndex, lineup, manager.actions, at);
+  const closeSheet = () => {
+    if (live.current.uiHold) send({ type: "sheet", open: false, now: performance.now() });
+  };
   const decide = (d: Decision) => {
     if (manager === undefined) return;
-    setError(manager.decide(at, d));
+    const why = manager.decide(at, d);
+    setError(why);
+    if (why === null && d.kind === "sub") closeSheet();
   };
+  const sheet = manager !== undefined && !done;
+  const { sheetRef, pitchRef, playerRef, spacerRef } = useSheet(
+    sheet,
+    state.uiHold,
+    state.stop?.key ?? null,
+    closeSheet,
+  );
 
   const snapWindow =
     match.windows?.find((w) => w.minute >= Math.max(5, Math.ceil(clock / 5) * 5)) ??
@@ -377,6 +407,7 @@ export function MatchPlayer({
 
   return (
     <section
+      ref={playerRef}
       className={s.player}
       aria-label={`${ROUND_LABEL[match.round]} against ${match.opponent.name}`}
       data-testid="match-player"
@@ -427,21 +458,23 @@ export function MatchPlayer({
         </div>
       </div>
 
-      <Broadcast
-        match={match}
-        timeline={timeline}
-        lineup={lineup}
-        clock={clock}
-        now={now}
-        fired={state.fired}
-        kicks={state.kicks}
-        kickProgress={progress}
-        motion={motion}
-        speed={state.speed}
-        feed={feed}
-        cutIns={view === "live"}
-        onBall={crowd ? onBall : undefined}
-      />
+      <div ref={pitchRef} className={s.pitch}>
+        <Broadcast
+          match={match}
+          timeline={timeline}
+          lineup={lineup}
+          clock={clock}
+          now={now}
+          fired={state.fired}
+          kicks={state.kicks}
+          kickProgress={progress}
+          motion={motion}
+          speed={state.speed}
+          feed={feed}
+          cutIns={view === "live"}
+          onBall={crowd ? onBall : undefined}
+        />
+      </div>
 
       <div className={s.controls}>
         {!done ? (
@@ -453,7 +486,7 @@ export function MatchPlayer({
               disabled={stop !== null}
               onClick={() => {
                 unlockAudio();
-                send({ type: "toggle" });
+                send({ type: "toggle", now: performance.now() });
               }}
             >
               {state.running ? "Pause" : clock === 0 ? "Kick off" : "Resume"}
@@ -492,77 +525,157 @@ export function MatchPlayer({
         </button>
       </div>
 
-      {stop !== null && stop.kind !== "injury" ? (
-        <div
-          className={s.prompt}
-          role="dialog"
-          aria-label={STOP_COPY[stop.kind]!.go}
-          data-testid={`stop-${stop.kind}`}
-        >
-          <p className={s.promptTitle}>{STOP_COPY[stop.kind]!.title}</p>
-          <button
-            type="button"
-            className="btn btn--primary"
-            data-testid="stop-go"
-            onClick={() => {
-              unlockAudio();
-              setError(null);
-              send({ type: "answer", key: stop.key });
-            }}
-          >
-            {STOP_COPY[stop.kind]!.go}
-          </button>
+      {sheet ? (
+        <div ref={sheetRef} className={s.sheet} data-testid="touchline-sheet">
+          {stop !== null && stop.kind !== "injury" ? (
+            <div
+              className={s.prompt}
+              role="dialog"
+              aria-label={STOP_COPY[stop.kind]!.go}
+              data-testid={`stop-${stop.kind}`}
+            >
+              <p className={s.promptTitle}>{STOP_COPY[stop.kind]!.title}</p>
+              <button
+                type="button"
+                className="btn btn--primary"
+                data-testid="stop-go"
+                onClick={() => {
+                  unlockAudio();
+                  setError(null);
+                  closeSheet();
+                  send({ type: "answer", key: stop.key });
+                }}
+              >
+                {STOP_COPY[stop.kind]!.go}
+              </button>
+            </div>
+          ) : null}
+
+          {stop?.kind === "injury" && injury !== null ? (
+            <InjuryPrompt
+              key={stop.key}
+              name={speciesById(injury.player).name}
+              minute={injury.minute}
+              autoPick={injury.autoPick}
+              options={injury.options.map((b) => ({
+                index: b.index,
+                name: speciesById(b.species).name,
+              }))}
+              onConfirm={(bench) => {
+                if (bench !== injury.autoPick && manager !== undefined) {
+                  const why = manager.decide(injury.minute, {
+                    kind: "sub",
+                    slot: injury.slot,
+                    bench,
+                  });
+                  setError(why);
+                  if (why !== null) return;
+                }
+                closeSheet();
+                send({ type: "answer", key: stop.key });
+              }}
+              error={error}
+            />
+          ) : null}
+
+          {line !== null ? (
+            <Touchline
+              key={matchIndex}
+              line={line}
+              formation={lineup.formation}
+              onDecide={decide}
+              error={stop?.kind === "injury" ? null : error}
+              sheet={{
+                expanded: state.uiHold,
+                onExpand: (open) => send({ type: "sheet", open, now: performance.now() }),
+              }}
+            />
+          ) : null}
         </div>
-      ) : null}
-
-      {stop?.kind === "injury" && injury !== null ? (
-        <InjuryPrompt
-          key={stop.key}
-          name={speciesById(injury.player).name}
-          minute={injury.minute}
-          autoPick={injury.autoPick}
-          options={injury.options.map((b) => ({
-            index: b.index,
-            name: speciesById(b.species).name,
-          }))}
-          onConfirm={(bench) => {
-            if (bench !== injury.autoPick && manager !== undefined) {
-              const why = manager.decide(injury.minute, { kind: "sub", slot: injury.slot, bench });
-              setError(why);
-              if (why !== null) return;
-            }
-            send({ type: "answer", key: stop.key });
-          }}
-          error={error}
-        />
-      ) : null}
-
-      {line !== null && manager !== undefined && !done ? (
-        <Touchline
-          key={matchIndex}
-          line={line}
-          formation={lineup.formation}
-          onDecide={decide}
-          error={stop?.kind === "injury" ? null : error}
-        />
       ) : null}
 
       {done && footer !== undefined ? <div className={s.footer}>{footer}</div> : null}
 
       <Ticker shown={shown} teams={teams} kicks={kicks} />
+      {sheet ? <div ref={spacerRef} className={s.sheetSpacer} aria-hidden="true" /> : null}
     </section>
   );
 }
 
 function frameOf(st: PlayState, now: number, pace: Pace): LiveFrame {
+  const at = frameNow(st, now);
   return {
     clock: st.minute,
-    now,
+    now: at,
     fired: st.fired,
     kicks: st.kicks,
-    kickProgress: kickProgress(st, now, pace),
+    kickProgress: kickProgress(st, at, pace),
     speed: st.speed,
   };
+}
+
+// Under an open sheet or a stop the scoreboard, the HUD and the pitch stay in view, so the sheet
+// takes at most the room below the pitch with the match player at the top of the screen.
+const PITCH_GAP = 8;
+const MIN_SHEET_ROOM = 120;
+
+/**
+ * Below 600px the touchline is a fixed bottom sheet. The spacer under the page keeps the ticker
+ * reachable above it, and opening the sheet or a stop brings the pitch back into view. Turning the
+ * phone to a layout without the sheet closes it, since nothing there could close it again.
+ */
+function useSheet(present: boolean, expanded: boolean, stopKey: string | null, close: () => void) {
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const pitchRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<HTMLElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
+  const wasFixed = useRef(false);
+  const closeRef = useRef(close);
+  useEffect(() => {
+    closeRef.current = close;
+  });
+
+  useEffect(() => {
+    const sheet = sheetRef.current;
+    const spacer = spacerRef.current;
+    if (!present || sheet === null || spacer === null || typeof ResizeObserver === "undefined")
+      return;
+    const observer = new ResizeObserver(() => {
+      spacer.style.height = `${sheet.getBoundingClientRect().height}px`;
+    });
+    observer.observe(sheet);
+    return () => observer.disconnect();
+  }, [present]);
+
+  useLayoutEffect(() => {
+    const sheet = sheetRef.current;
+    const pitch = pitchRef.current;
+    const player = playerRef.current;
+    const spacer = spacerRef.current;
+    if (!present || sheet === null || pitch === null || player === null || spacer === null) return;
+    const fit = (bringIntoView: boolean) => {
+      const fixed = getComputedStyle(sheet).position === "fixed";
+      if (!fixed && wasFixed.current && expanded) closeRef.current();
+      wasFixed.current = fixed;
+      if (!fixed) return;
+      const top = player.getBoundingClientRect().top;
+      const box = pitch.getBoundingClientRect();
+      const room = Math.max(MIN_SHEET_ROOM, innerHeight - (box.bottom - top) - PITCH_GAP);
+      sheet.style.setProperty("--sheet-room", `${room}px`);
+      const sheetBox = sheet.getBoundingClientRect();
+      // The page must be long enough to scroll the player to the top before the observer runs.
+      spacer.style.height = `${sheetBox.height}px`;
+      if (bringIntoView && (box.top < 0 || box.bottom > sheetBox.top)) {
+        window.scrollTo({ top: scrollY + top, behavior: "instant" });
+      }
+    };
+    fit(expanded || stopKey !== null);
+    const onResize = () => fit(false);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [present, expanded, stopKey]);
+
+  return { sheetRef, pitchRef, playerRef, spacerRef };
 }
 
 // Whether a tick changed anything but the minute: a beat fired, a hold, a stop, the shootout.

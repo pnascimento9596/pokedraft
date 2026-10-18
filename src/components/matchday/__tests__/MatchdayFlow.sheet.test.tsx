@@ -61,14 +61,16 @@ describe("touchline sheet (catches a sheet that lets the clock run while the man
     expect(screen.getByTestId("play-toggle").textContent).toBe("Pause");
   });
 
-  it("confirming a sub resumes the clock: 5' after 1600 ms more", async () => {
+  // From 2.88', the replayed match's 3' save holds the clock 1,100 ms, so 2,400 ms reaches
+  // 3 + (2,400 - 67 - 1,100) * 45 / 25,000 = 5.22'.
+  it("confirming a sub resumes the clock: 5' after 2400 ms more", async () => {
     await kickOff();
     fireEvent.click(toggle());
     await playFor(2000);
     fireEvent.click(screen.getByTestId("sub-confirm"));
     expect(toggle().getAttribute("aria-expanded")).toBe("false");
     expect(screen.getByTestId("subs-count").textContent).toBe("Subs 1 of 5");
-    await playFor(1600);
+    await playFor(2400);
     expect(minute()).toBe(5);
   });
 

@@ -282,6 +282,10 @@ export interface PlayState {
   readonly stage: Stage;
   /** The player's own pause. */
   readonly running: boolean;
+  /** The touchline sheet is open on a phone, which holds the clock apart from the player's pause. */
+  readonly uiHold: boolean;
+  /** When the clock last stopped for a pause or the sheet, while it stays stopped. */
+  readonly pausedAt: number | null;
   readonly speed: 1 | 2;
   /** A manager stop the player has to answer before the clock moves. */
   readonly stop: Stop | null;
@@ -305,6 +309,8 @@ export const START: PlayState = {
   minute: 0,
   stage: "play",
   running: false,
+  uiHold: false,
+  pausedAt: null,
   speed: 1,
   stop: null,
   answered: [],
@@ -317,7 +323,8 @@ export const START: PlayState = {
 
 export type PlayAction =
   | { readonly type: "tick"; readonly now: number; readonly dt: number; readonly env: PlayEnv }
-  | { readonly type: "toggle" }
+  | { readonly type: "toggle"; readonly now: number }
+  | { readonly type: "sheet"; readonly open: boolean; readonly now: number }
   | { readonly type: "speed" }
   | { readonly type: "answer"; readonly key: string }
   | { readonly type: "skip"; readonly env: PlayEnv };
@@ -347,8 +354,35 @@ function fire(state: PlayState, env: PlayEnv, clock: number, now: number): PlayS
   return fired;
 }
 
+const frozen = (s: PlayState) => !s.running || s.uiHold;
+
+/** The time the broadcast stages at: while a pause or the sheet holds the clock, the moment it stopped. */
+export function frameNow(state: PlayState, now: number): number {
+  return frozen(state) && state.pausedAt !== null ? state.pausedAt : now;
+}
+
+/**
+ * Notes when the clock stops, and on resume moves every timestamp the staging reads on by the time
+ * it stood still, so a kick or a goal picks up where it was.
+ */
+function holdTime(prev: PlayState, next: PlayState, now: number): PlayState {
+  if (!frozen(prev) && frozen(next)) return { ...next, pausedAt: now };
+  if (!frozen(prev) || frozen(next)) return next;
+  if (prev.pausedAt === null) return next;
+  const d = now - prev.pausedAt;
+  const fired: Record<string, number> = {};
+  for (const [key, at] of Object.entries(next.fired)) fired[key] = at + d;
+  return {
+    ...next,
+    pausedAt: null,
+    fired,
+    kickAt: next.stage === "pens" ? next.kickAt + d : next.kickAt,
+    hold: next.hold === null ? null : { ...next.hold, until: next.hold.until + d },
+  };
+}
+
 function tick(state: PlayState, env: PlayEnv, now: number, dt: number): PlayState {
-  if (state.stage === "done" || !state.running || state.stop !== null) return state;
+  if (state.stage === "done" || frozen(state) || state.stop !== null) return state;
   if (state.hold !== null) {
     if (now < state.hold.until) return state;
     state = { ...state, hold: null };
@@ -402,7 +436,9 @@ export function play(state: PlayState, action: PlayAction): PlayState {
     case "tick":
       return tick(state, action.env, action.now, action.dt);
     case "toggle":
-      return { ...state, running: !state.running };
+      return holdTime(state, { ...state, running: !state.running }, action.now);
+    case "sheet":
+      return holdTime(state, { ...state, uiHold: action.open }, action.now);
     case "speed":
       return { ...state, speed: state.speed === 1 ? 2 : 1 };
     case "answer":
@@ -422,6 +458,8 @@ export function play(state: PlayState, action: PlayAction): PlayState {
         stage: "done",
         stop: null,
         hold: null,
+        uiHold: false,
+        pausedAt: null,
         kicks: timeline.kicks.length,
         answered: [...new Set([...state.answered, ...stops.map((s) => s.key)])],
       };
