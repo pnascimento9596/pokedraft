@@ -108,7 +108,9 @@ function Played({
               ⭐
             </span>
             <span className={s.starName}>{star.name}</span>
-            <span className={s.starHeadline}>• {star.headline}</span>
+            <span className={s.starHeadline}>
+              <span aria-hidden="true">• {star.icon}</span> {star.headline}
+            </span>
           </button>
         ) : (
           <div className={s.starBadge} data-testid={`match-star-${m.round}`}>
@@ -116,7 +118,9 @@ function Played({
               ⭐
             </span>
             <span className={s.starName}>{star.name}</span>
-            <span className={s.starHeadline}>• {star.headline}</span>
+            <span className={s.starHeadline}>
+              <span aria-hidden="true">• {star.icon}</span> {star.headline}
+            </span>
           </div>
         )
       ) : null}

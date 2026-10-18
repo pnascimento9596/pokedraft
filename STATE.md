@@ -3,6 +3,32 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Highlights honesty
+
+Branch `fix/highlights-honesty`, off `f4489cb`, with `origin/main` (`9d37864`, PR #80) merged in. Wave 1 row 1h. Display only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The highlights type icon and stage tint show the star's own primary type. Arcanine reads Fire, not the Dark of its ability Intimidate.
+- The ability box says "Ability", not "Activated Ability", and the strike announcement no longer claims the ability fired.
+- Clean Sheet Hero and Squad Anchor go to the first player, keeper first, who held a starting slot for the whole match. An absent, subbed, injured or sent-off keeper is skipped. A 0-0 lost on penalties is not a clean sheet.
+- The MVP pill reads L for a losing record (0W-0D-3L) and D for a level one (1W-1D-1L).
+- Highlight, motion, strike, goal and broadcast glyphs sit in `aria-hidden` spans, so screen readers read "Clean Sheet Hero", not "gloves Clean Sheet Hero".
+- A zero weak-spot drag reads 0, not -0.
+
+RED commit: `fc9efaf` (12 failing guards in `starCalculation`, `MatchHighlights` and `ResultsView` tests).
+
+Gates at `dfe9f5f` (later commits change only docs):
+
+- Lint, typecheck, format check on touched files and build exited 0.
+- Unit tests: 1,327 passed in 144 files.
+- Playwright on a fresh build: 429 passed, 0 failed, 54 skipped across the highlights scene, results interactions, Silph Stadium, recorded saves, a11y, contrast, mobile targets and mobile acceptance. Hosted CI runs the full suite.
+- At the merge of `origin/main` (`b01ecf9`): lint, typecheck and build exited 0, and `pnpm test --maxWorkers=4` passed 1,357 tests in 150 files.
+- Browser proof at 390x844: `docs/reports/highlights-honesty/`.
+- NOT RUN: the new scene against a `main` build, 360 and 320 screenshots, a physical phone check, GLM review.
+
+Decisions are in `docs/decisions/highlights-honesty.md`.
+
+PR #80 (side fix, unit flakes) merged as squash `9d37864`, reviewed head `ba6fe52`, GLM 5.3 Flash APPROVE in round 1 with canary `unit-flakes-b94884707ea8ce649921d79f318b1156` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `9d37864` with `db.status` ok (test-only change, no route to check).
+
 ## Unit flakes
 
 Branch `test/unit-flakes`, off `e449555`, with `origin/main` (`c87509f`, PR #78) merged in. Test only (Green), an out-of-band side fix outside Wave 1. Only `announce-builder.test.tsx` and `run.test.tsx` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
