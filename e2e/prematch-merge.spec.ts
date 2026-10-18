@@ -74,7 +74,10 @@ for (const [width, height] of [
       "aria-pressed",
       "true",
     );
+    // Below 600px the takeover line sits in the touchline sheet, shown once the sheet is open.
+    await page.getByTestId("sheet-toggle").click();
     await expect(page.getByTestId("takeover")).toBeVisible();
+    await page.getByTestId("sheet-toggle").click();
     expect(await sideScroll(page)).toBeLessThanOrEqual(0);
     await page.getByTestId("play-toggle").click();
     await page.getByTestId("matchday-title").scrollIntoViewIfNeeded();

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { FullLineup, MatchResult, Opponent, SpeciesId } from "@/engine/types";
 import type { MatchView } from "@/ui/settings";
 import { MatchPlayer } from "../MatchPlayer";
@@ -173,6 +173,40 @@ describe("MatchPlayer score (catches a scoreboard, ticker and goal horn that cal
   it("puts the score in a status region", async () => {
     await mount(ONE_GOAL, "live");
     expect(screen.getByRole("status").textContent).toBe("0 - 0");
+  });
+});
+
+describe("MatchPlayer pause (catches a goal that plays out and is counted while the match is paused)", () => {
+  const toggle = () => fireEvent.click(screen.getByTestId("play-toggle"));
+
+  it("paused at goal progress 0.498 the score stays 0-0 for 5 s; 17 frames after Resume it reads 1-0", async () => {
+    await mount(ONE_GOAL, "live");
+    await toGoalMinute(12);
+    await frames(81);
+    toggle();
+    await frames(313);
+    expect(score()).toBe("0 - 0");
+    expect(ticker()).not.toContain("Goal for");
+    expect(sound.calls.filter((c) => c === "horn")).toEqual([]);
+    toggle();
+    await frames(16);
+    expect(score()).toBe("0 - 0");
+    await frames(1);
+    expect(score()).toBe("1 - 0");
+    expect(sound.calls.filter((c) => c === "horn")).toEqual(["horn"]);
+  });
+
+  it("a goal that has landed stays on the scoreboard through a pause and the Resume tap", async () => {
+    await mount(ONE_GOAL, "live");
+    await toGoalMinute(12);
+    await frames(200);
+    expect(score()).toBe("1 - 0");
+    toggle();
+    await frames(200);
+    toggle();
+    expect(score()).toBe("1 - 0");
+    await frames(1);
+    expect(score()).toBe("1 - 0");
   });
 });
 
