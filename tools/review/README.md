@@ -62,6 +62,9 @@ holding only `APPROVE` or `REQUEST_CHANGES`, optionally labelled `Verdict` and w
 or REQUEST_CHANGES" in prose, so a bare word search would reject real receipts. Exit 0 is APPROVE,
 2 is REQUEST_CHANGES, 1 means the reply does not count (missing canary, missing or short SHA, no
 verdict line, or verdict lines that disagree). A reply that does not count is not a receipt. Rerun the review.
+The packet's preamble asks for the verdict alone on its own line, because GLM had put it on the
+same line as other text (the canary, or a heading's tail) on PRs #89, #92 and #93, and those
+replies did not count.
 
 Any commit after an APPROVE voids it. Re-review the new head.
 
