@@ -24,6 +24,8 @@ Gates at `e094fc8` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/touchline-sheet.md`. Browser proof: `docs/reports/touchline-sheet/`.
 
+Merged origin/main after PRs #100 and #101 at `14a9e70`; only STATE.md conflicted, and `MatchdayFlow.tsx` merged cleanly with 3h's full-time card. After the merge typecheck and build exited 0, 344 matchday and UI unit tests passed in 50 files, and `your-calls`, `touchline-sheet`, `manager-mode` and `prematch-merge` passed 28 of 28 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
 ## Your calls card
 
 Branch `feat/your-calls` off `20e34f6`. Wave 3 row 3h, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed; the card only calls `runCup`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
