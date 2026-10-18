@@ -18,6 +18,8 @@ const WARMUP_MS = 1_000;
 const WINDOW_MS = 10_000;
 const THROTTLE = 4;
 const LONG_TASK_MS = 50;
+// A gap past one and a half 60 Hz frames is a frame the page did not draw.
+const DROPPED_MS = 25;
 
 interface Run {
   readonly target: string;
@@ -25,6 +27,8 @@ interface Run {
   readonly frames: number;
   readonly p50: number;
   readonly p95: number;
+  readonly maxGap: number;
+  readonly dropped: number;
   readonly longTasks: number;
   readonly longTaskMs: number;
   readonly mutationsPerSec: number;
@@ -141,8 +145,10 @@ async function measure(browser: Browser, target: string, url: string, run: numbe
     target,
     run,
     frames: sample.stamps.length,
-    p50: round(percentile(gaps, 0.5)),
-    p95: round(percentile(gaps, 0.95)),
+    p50: round(percentile(gaps, 0.5), 2),
+    p95: round(percentile(gaps, 0.95), 2),
+    maxGap: round(gaps.at(-1) ?? NaN, 2),
+    dropped: gaps.filter((g) => g > DROPPED_MS).length,
     longTasks: sample.long.length,
     longTaskMs: round(
       sample.long.reduce((a, b) => a + b, 0),
@@ -177,6 +183,8 @@ const keys = [
   "frames",
   "p50",
   "p95",
+  "maxGap",
+  "dropped",
   "longTasks",
   "longTaskMs",
   "mutationsPerSec",

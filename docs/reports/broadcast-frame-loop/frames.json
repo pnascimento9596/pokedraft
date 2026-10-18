@@ -1,0 +1,314 @@
+{
+  "throttle": 4,
+  "warmupMs": 1000,
+  "windowMs": 10000,
+  "viewport": "390x844@3x",
+  "summary": {
+    "before": {
+      "frames": {
+        "median": 601,
+        "min": 600,
+        "max": 601
+      },
+      "p50": {
+        "median": 16.7,
+        "min": 16.7,
+        "max": 16.7
+      },
+      "p95": {
+        "median": 16.7,
+        "min": 16.7,
+        "max": 16.8
+      },
+      "maxGap": {
+        "median": 16.8,
+        "min": 16.8,
+        "max": 16.8
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      },
+      "longTasks": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      },
+      "longTaskMs": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      },
+      "mutationsPerSec": {
+        "median": 2329,
+        "min": 2290,
+        "max": 2344
+      },
+      "taskMs": {
+        "median": 5356,
+        "min": 4741,
+        "max": 5785
+      },
+      "scriptMs": {
+        "median": 1234,
+        "min": 1089,
+        "max": 1342
+      },
+      "layoutMs": {
+        "median": 307,
+        "min": 273,
+        "max": 329
+      },
+      "styleMs": {
+        "median": 601,
+        "min": 517,
+        "max": 692
+      }
+    },
+    "after": {
+      "frames": {
+        "median": 600,
+        "min": 600,
+        "max": 600
+      },
+      "p50": {
+        "median": 16.7,
+        "min": 16.7,
+        "max": 16.7
+      },
+      "p95": {
+        "median": 16.7,
+        "min": 16.7,
+        "max": 16.7
+      },
+      "maxGap": {
+        "median": 16.8,
+        "min": 16.8,
+        "max": 16.8
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      },
+      "longTasks": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      },
+      "longTaskMs": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      },
+      "mutationsPerSec": {
+        "median": 1229,
+        "min": 1224,
+        "max": 1233
+      },
+      "taskMs": {
+        "median": 3755,
+        "min": 3595,
+        "max": 4059
+      },
+      "scriptMs": {
+        "median": 574,
+        "min": 538,
+        "max": 622
+      },
+      "layoutMs": {
+        "median": 118,
+        "min": 110,
+        "max": 130
+      },
+      "styleMs": {
+        "median": 715,
+        "min": 702,
+        "max": 813
+      }
+    }
+  },
+  "runs": [
+    {
+      "target": "before",
+      "run": 1,
+      "frames": 601,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 2290,
+      "taskMs": 5785,
+      "scriptMs": 1342,
+      "layoutMs": 329,
+      "styleMs": 692,
+      "minuteFrom": 1,
+      "minuteTo": 14
+    },
+    {
+      "target": "after",
+      "run": 1,
+      "frames": 600,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 1229,
+      "taskMs": 3755,
+      "scriptMs": 574,
+      "layoutMs": 110,
+      "styleMs": 715,
+      "minuteFrom": 2,
+      "minuteTo": 15
+    },
+    {
+      "target": "after",
+      "run": 2,
+      "frames": 600,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 1233,
+      "taskMs": 3833,
+      "scriptMs": 576,
+      "layoutMs": 121,
+      "styleMs": 743,
+      "minuteFrom": 2,
+      "minuteTo": 15
+    },
+    {
+      "target": "before",
+      "run": 2,
+      "frames": 600,
+      "p50": 16.7,
+      "p95": 16.8,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 2344,
+      "taskMs": 5356,
+      "scriptMs": 1281,
+      "layoutMs": 273,
+      "styleMs": 601,
+      "minuteFrom": 2,
+      "minuteTo": 15
+    },
+    {
+      "target": "before",
+      "run": 3,
+      "frames": 601,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 2329,
+      "taskMs": 5197,
+      "scriptMs": 1215,
+      "layoutMs": 307,
+      "styleMs": 592,
+      "minuteFrom": 2,
+      "minuteTo": 15
+    },
+    {
+      "target": "after",
+      "run": 3,
+      "frames": 600,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 1229,
+      "taskMs": 3639,
+      "scriptMs": 547,
+      "layoutMs": 118,
+      "styleMs": 702,
+      "minuteFrom": 2,
+      "minuteTo": 15
+    },
+    {
+      "target": "after",
+      "run": 4,
+      "frames": 600,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 1224,
+      "taskMs": 3595,
+      "scriptMs": 538,
+      "layoutMs": 116,
+      "styleMs": 702,
+      "minuteFrom": 2,
+      "minuteTo": 15
+    },
+    {
+      "target": "before",
+      "run": 4,
+      "frames": 601,
+      "p50": 16.7,
+      "p95": 16.8,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 2323,
+      "taskMs": 4741,
+      "scriptMs": 1089,
+      "layoutMs": 278,
+      "styleMs": 517,
+      "minuteFrom": 2,
+      "minuteTo": 15
+    },
+    {
+      "target": "before",
+      "run": 5,
+      "frames": 601,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 2341,
+      "taskMs": 5449,
+      "scriptMs": 1234,
+      "layoutMs": 328,
+      "styleMs": 631,
+      "minuteFrom": 2,
+      "minuteTo": 15
+    },
+    {
+      "target": "after",
+      "run": 5,
+      "frames": 600,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 1227,
+      "taskMs": 4059,
+      "scriptMs": 622,
+      "layoutMs": 130,
+      "styleMs": 813,
+      "minuteFrom": 2,
+      "minuteTo": 15
+    }
+  ]
+}
