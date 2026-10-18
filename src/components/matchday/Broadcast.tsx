@@ -97,7 +97,7 @@ export function Broadcast({
   const shown = (from: number, to = 1) => !motion || (progress >= from && progress <= to);
   const kickList = timeline.kicks.slice(0, kicks);
 
-  const renderPlayer = (p: StagedPlayer | null, keyPrefix: string) => {
+  const renderPlayer = (p: StagedPlayer | null, keyPrefix: string, leaving = false) => {
     if (p === null) return null;
     const ref = p.side === "opp" ? match.opponent.roster[p.slot] : undefined;
     return (
@@ -106,6 +106,7 @@ export function Broadcast({
         className={s.player}
         data-side={p.side}
         data-slot={p.slot}
+        data-leaving={leaving || undefined}
         data-pose={p.pose}
         data-facing={p.facing}
         data-ball={p.hasBall || undefined}
@@ -210,6 +211,7 @@ export function Broadcast({
 
         {stage.players.user.map((p) => renderPlayer(p, "u"))}
         {stage.players.opp.map((p) => renderPlayer(p, "o"))}
+        {stage.leaving?.map((p) => renderPlayer(p, `off-${p.side}-`, true))}
 
         {stage.playCallout !== null ? (
           <>

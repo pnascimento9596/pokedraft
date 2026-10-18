@@ -966,9 +966,97 @@ function kickoffShape(kicking: Side, taker: number, userSlots: Slots, oppSlots: 
         return { x: CENTRE.x - attackDir(side) * TOUCH, y: CENTRE.y };
       }
       const home = slotPoint(side, slot, 0);
-      return { x: side === "user" ? Math.min(46, home.x) : Math.max(54, home.x), y: home.y };
+      return { x: side === "user" ? Math.min(44, home.x) : Math.max(56, home.x), y: home.y };
     });
   return { user: build("user", userSlots), opp: build("opp", oppSlots) };
+}
+
+/** The phase a clock falls in, and the restart both teams wait for in kickoff shape after a goal. */
+function phaseAt(
+  timeline: Pick<Timeline, "plays">,
+  clock: number,
+): { readonly idx: number; readonly phase?: PlayPhase; readonly waiting?: PlayPhase } {
+  let idx = Math.max(0, Math.min(timeline.plays.length - 1, Math.floor(clock / PHASE_LEN)));
+  // A kickoff starts once the clock moves past its goal, even when the goal ends a phase.
+  const atBoundary = timeline.plays[idx];
+  if (idx > 0 && atBoundary?.kickoff != null && clock <= atBoundary.kickoff) idx--;
+  const restart = timeline.plays[idx + 1];
+  const waiting = restart?.kickoff != null && clock > restart.kickoff ? restart : undefined;
+  return { idx, phase: timeline.plays[idx], waiting };
+}
+
+/** A cubic Hermite segment from `a` to `b` with end tangents `ta` and `tb`, per unit of `u`. */
+function hermite(a: Point, ta: Point, b: Point, tb: Point, u: number): Point {
+  const u2 = u * u;
+  const u3 = u2 * u;
+  const h00 = 2 * u3 - 3 * u2 + 1;
+  const h10 = u3 - 2 * u2 + u;
+  const h01 = 3 * u2 - 2 * u3;
+  const h11 = u3 - u2;
+  return {
+    x: h00 * a.x + h10 * ta.x + h01 * b.x + h11 * tb.x,
+    y: h00 * a.y + h10 * ta.y + h01 * b.y + h11 * tb.y,
+  };
+}
+
+/** Half the step from `a` to `b`: a Catmull-Rom tangent; none without a neighbour. */
+function tangent(a: Point | undefined, b: Point | undefined): Point {
+  return a === undefined || b === undefined
+    ? { x: 0, y: 0 }
+    : { x: (b.x - a.x) / 2, y: (b.y - a.y) / 2 };
+}
+
+/** The closest two teammates may stand, in percent of the pitch length. */
+const PERSONAL_SPACE = 4;
+/** The pitch is drawn 100 long by 64 wide, so a step across counts 0.64 of one along it. */
+const ACROSS = 0.64;
+
+/**
+ * Under this distance the push fades out toward nothing. A push that always restored the full
+ * spacing would flip sides in one frame when two teammates' paths cross; the fade spreads that
+ * swap over the frames the crossing takes.
+ */
+const CROSSING = PERSONAL_SPACE / 2;
+
+/**
+ * One pass over every pair of teammates, in slot order: a pair closer than `PERSONAL_SPACE` steps
+ * apart along the line between them, half the shortfall each, fading out below `CROSSING`.
+ */
+function pushApart(points: readonly Point[]): Point[] {
+  const out = points.map((p) => ({ x: p.x, y: p.y * ACROSS }));
+  for (let i = 0; i < out.length; i++) {
+    for (let j = i + 1; j < out.length; j++) {
+      const a = out[i]!;
+      const b = out[j]!;
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist >= PERSONAL_SPACE || dist === 0) continue;
+      const [nx, ny] = [dx / dist, dy / dist];
+      const half = ((PERSONAL_SPACE - dist) / 2) * Math.min(1, dist / CROSSING);
+      out[i] = { x: a.x - nx * half, y: a.y - ny * half };
+      out[j] = { x: b.x + nx * half, y: b.y + ny * half };
+    }
+  }
+  return out.map((p) => ({ x: p.x, y: p.y / ACROSS }));
+}
+
+/** How far back the pose and facing look to read a player's velocity, in match minutes. */
+const LOOK_BACK = 0.02;
+/** Speeds that turn a stroll into a run and a run into a sprint, in pitch percent per minute. */
+const RUN_SPEED = 2;
+const SPRINT_SPEED = 7.2;
+/** Sideways speed under which a player keeps facing the goal they attack. */
+const TURN_SPEED = 1;
+/** The share of a goal or save staging over which the keeper and the assist react. */
+const REACT = 0.2;
+/** Where a substitute walks on from. */
+const BENCH: Point = { x: 50, y: 94 };
+
+/** Which way a player looks: along their sideways speed, else at the goal they attack. */
+function facingFor(side: Side, sideways: number): "left" | "right" {
+  if (Math.abs(sideways) > TURN_SPEED) return sideways > 0 ? "right" : "left";
+  return side === "user" ? "right" : "left";
 }
 
 export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
@@ -1152,59 +1240,75 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   const save = staged?.kind === "save" ? staged : null;
   const progress = shot === null ? 0 : Math.min(1, shot.age / SHOW[shot.beat.kind]);
 
-  let phaseIdx = Math.max(0, Math.min(timeline.plays.length - 1, Math.floor(clock / PHASE_LEN)));
-  // A kickoff starts once the clock moves past its goal, even when the goal ends a phase.
-  const atBoundary = timeline.plays[phaseIdx];
-  if (phaseIdx > 0 && atBoundary?.kickoff != null && clock <= atBoundary.kickoff) phaseIdx--;
-  const phase = timeline.plays[phaseIdx];
-  const restart = timeline.plays[phaseIdx + 1];
-  // Between a goal and the end of its phase, both teams wait in kickoff shape.
-  const waiting = restart?.kickoff != null && clock > restart.kickoff ? restart : undefined;
+  const { idx: phaseIdx, phase, waiting } = phaseAt(timeline, clock);
   const play = waiting === undefined ? phase : undefined;
   const u = phase ? Math.min(1, Math.max(0, (clock - phase.from) / (phase.to - phase.from))) : 0;
-  const smoothU = smoothstep(u);
 
   const kickoffOf = (p: PlayPhase): Shape => kickoffShape(p.side, p.fromSlot, userSlots, oppSlots);
-  const wpStart =
-    waiting !== undefined
-      ? kickoffOf(waiting)
-      : phase === undefined
-        ? null
-        : phase.kickoff !== null
-          ? kickoffOf(phase)
-          : phaseWaypoint(timeline, Math.max(0, phaseIdx - 1), userSlots, oppSlots);
-  const wpEnd =
-    waiting !== undefined
-      ? wpStart
-      : phase !== undefined
-        ? phaseWaypoint(timeline, phaseIdx, userSlots, oppSlots)
-        : null;
+  const waypoint = (i: number): Shape => phaseWaypoint(timeline, i, userSlots, oppSlots);
+  // Where everyone stands as phase `i` begins: kickoff shape after a goal, else where the last
+  // phase left them.
+  const startShape = (i: number): Shape => {
+    const p = timeline.plays[i];
+    return p?.kickoff != null ? kickoffOf(p) : waypoint(Math.max(0, i - 1));
+  };
+  const spaced = (shape: Shape): Shape => ({
+    user: pushApart(shape.user),
+    opp: pushApart(shape.opp),
+  });
+  // Open play at any clock: a Catmull-Rom spline through the waypoints, so players carry their
+  // speed from one phase into the next. A kickoff, the opening phase and the phase before a
+  // kickoff start or end at rest.
+  const shapeAt = (c: number): Shape => {
+    const at = phaseAt(timeline, c);
+    if (at.waiting !== undefined) return spaced(kickoffOf(at.waiting));
+    const p = at.phase;
+    if (p === undefined) {
+      const homes = (side: Side, slots: Slots): Point[] =>
+        slots.map((slot, i) => {
+          const home = slotPoint(side, slot, line[side]);
+          const d = timeline.drift[side][i];
+          return d === undefined ? home : driftPoint(home, d, c, true);
+        });
+      return spaced({ user: homes("user", userSlots), opp: homes("opp", oppSlots) });
+    }
+    const from = startShape(at.idx);
+    const to = waypoint(at.idx);
+    const before = p.kickoff !== null || at.idx === 0 ? null : startShape(at.idx - 1);
+    const next = timeline.plays[at.idx + 1];
+    const after = next !== undefined && next.kickoff === null ? waypoint(at.idx + 1) : null;
+    const k = Math.min(1, Math.max(0, (c - p.from) / (p.to - p.from)));
+    const curve = (side: Side): Point[] =>
+      to[side].map((b, slot) => {
+        const a = from[side][slot] ?? b;
+        const ta = tangent(before?.[side][slot], b);
+        const tb = tangent(a, after?.[side][slot]);
+        return clampPoint(hermite(a, ta, b, tb, k), 3, 97, 4, 96);
+      });
+    return spaced({ user: curve("user"), opp: curve("opp") });
+  };
+
   const prev = timeline.plays[phaseIdx - 1];
   // Where the ball was when this phase began: a turnover carries it from there to the winner.
   const startBall =
-    phase === undefined || wpStart === null
+    phase === undefined || waiting !== undefined
       ? null
       : phase.kickoff !== null
         ? CENTRE
         : prev !== undefined
-          ? carriedBall(prev, wpStart)
+          ? carriedBall(prev, spaced(startShape(phaseIdx)))
           : null;
 
-  const baseSpot = (side: Side, slot: number): Point => {
-    const slots = side === "user" ? userSlots : oppSlots;
-    const home = slotPoint(side, slots[slot] ?? { x: 50, y: 50 }, line[side]);
-    if (wpStart !== null && wpEnd !== null) {
-      const a = wpStart[side][slot] ?? home;
-      const c = wpEnd[side][slot] ?? home;
-      return lerp(a, c, smoothU);
-    }
-    const d = timeline.drift[side][slot];
-    return d === undefined ? home : driftPoint(home, d, clock, true);
+  const here = shapeAt(clock);
+  const back = shapeAt(Math.max(0, clock - LOOK_BACK));
+  const velocity = (side: Side, slot: number): Point => {
+    const a = back[side][slot];
+    const c = here[side][slot];
+    return a === undefined || c === undefined
+      ? { x: 0, y: 0 }
+      : { x: (c.x - a.x) / LOOK_BACK, y: (c.y - a.y) / LOOK_BACK };
   };
-
-  const userPoints = userSlots.map((_, slot) => baseSpot("user", slot));
-  const oppPoints = oppSlots.map((_, slot) => baseSpot("opp", slot));
-  const pts = { user: userPoints, opp: oppPoints };
+  const pts = { user: [...here.user], opp: [...here.opp] };
 
   let ballPos = ambientBall(timeline, clock, true);
   let ballLoft = 0;
@@ -1348,16 +1452,19 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     if (assistSlot !== null && pts[b.side][assistSlot]) {
       const baseAssist = pts[b.side][assistSlot]!;
       pts[b.side][assistSlot] = clampPoint({
-        x: baseAssist.x + attDir * 6,
+        x: baseAssist.x + attDir * 6 * smoothstep(progress / REACT),
         y: baseAssist.y,
       });
     }
     const defSide: Side = b.side === "user" ? "opp" : "user";
     if (pts[defSide][0]) {
-      pts[defSide][0] = {
-        x: mouth.x === 98 ? 96.5 : 3.5,
-        y: progress > 0.35 ? 43 : 50,
-      };
+      const goalLine = mouth.x === 98 ? 96.5 : 3.5;
+      const dive = smoothstep((progress - 0.35) / REACT);
+      pts[defSide][0] = lerp(
+        pts[defSide][0]!,
+        { x: goalLine, y: 50 - 7 * dive },
+        smoothstep(progress / REACT),
+      );
     }
     const scorerSpot =
       scorerSlot !== null && pts[b.side][scorerSlot]
@@ -1411,10 +1518,8 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       attSlot !== null && pts[attSide][attSlot] ? pts[attSide][attSlot]! : strike;
     const keeperSlot = b.keeper.slot ?? 0;
     if (pts[b.side][keeperSlot]) {
-      pts[b.side][keeperSlot] = {
-        x: mouth.x === 98 ? 96.5 : 3.5,
-        y: 50 + (attackerSpot.y - 50) * 0.18,
-      };
+      const set = { x: mouth.x === 98 ? 96.5 : 3.5, y: 50 + (attackerSpot.y - 50) * 0.18 };
+      pts[b.side][keeperSlot] = lerp(pts[b.side][keeperSlot]!, set, smoothstep(progress / REACT));
     }
     // The parry falls back into open play: to where the ball goes on once the clock resumes.
     const resumed = stagePitch(timeline, { ...input, clock: b.minute + RESUME, shot: null }).ball;
@@ -1433,8 +1538,18 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   }
   if (staged !== null) playCalloutStage = null;
 
-  if (b?.kind === "sub" && pts.user[b.slot]) {
-    pts.user[b.slot] = lerp({ x: 50, y: 94 }, pts.user[b.slot]!, smoothstep(active?.progress ?? 0));
+  const walks = input.walks ?? [];
+  const xiOf = (side: Side) => (side === "user" ? userXI : oppXI);
+  // A substitute on their way on, whatever banner shows meanwhile.
+  const walkingOn = (side: Side, slot: number): Walk | undefined =>
+    walks.find(
+      (w) => w.dir === "on" && w.side === side && w.slot === slot && xiOf(side)[slot] === w.species,
+    );
+  for (const w of walks) {
+    const spot = pts[w.side][w.slot];
+    if (spot !== undefined && walkingOn(w.side, w.slot) === w) {
+      pts[w.side][w.slot] = lerp(BENCH, spot, smoothstep(w.progress));
+    }
   }
 
   const buildStagedSide = (
@@ -1444,10 +1559,9 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     xi.map((id, slot) => {
       if (id === null && (side === "user" || !input.oppLabels?.[slot])) return null;
       const point = pts[side][slot] ?? { x: 50, y: 50 };
-      const prevPoint = wpStart?.[side][slot] ?? point;
-      const dx = point.x - prevPoint.x;
-      const dy = point.y - prevPoint.y;
-      const dist = Math.hypot(dx, dy);
+      const v = velocity(side, slot);
+      const speed = Math.hypot(v.x, v.y);
+      const comingOn = walkingOn(side, slot);
       const hasBall = carrier?.side === side && carrier.slot === slot;
       const isCaster =
         (goal !== null &&
@@ -1461,9 +1575,11 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
           progress < SAVE_REACH) ||
         (playCalloutStage?.side === side && playCalloutStage.slot === slot);
 
-      let pose: PlayerPose = dist > 9 ? "sprint" : dist > 2.5 ? "run" : "idle";
+      let pose: PlayerPose = speed > SPRINT_SPEED ? "sprint" : speed > RUN_SPEED ? "run" : "idle";
       if (injured(side, slot)) {
         pose = "down";
+      } else if (comingOn !== undefined && comingOn.progress < 1) {
+        pose = "run";
       } else if (
         goal !== null &&
         goal.side === side &&
@@ -1493,9 +1609,8 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         pose = "sprint";
       }
 
-      const defaultFacing = side === "user" ? "right" : "left";
-      const facing: "left" | "right" =
-        Math.abs(dx) > 1.2 ? (dx >= 0 ? "right" : "left") : defaultFacing;
+      const sideways = comingOn !== undefined && comingOn.progress < 1 ? point.x - BENCH.x : v.x;
+      const facing = facingFor(side, sideways);
 
       return {
         side,
@@ -1515,11 +1630,35 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       };
     });
 
+  // Sent off or substituted: from their spot in the shape to the nearer touchline.
+  const leaving = walks.flatMap((w): StagedPlayer[] => {
+    const spot = here[w.side][w.slot];
+    const home = (w.side === "user" ? userSlots : oppSlots)[w.slot];
+    if (w.dir !== "off" || spot === undefined || home === undefined) return [];
+    const edge = { x: spot.x, y: slotPoint(w.side, home, 0).y < 50 ? 0 : 100 };
+    return [
+      {
+        side: w.side,
+        slot: w.slot,
+        species: w.species,
+        name: w.name,
+        point: lerp(spot, edge, smoothstep(w.progress)),
+        facing: facingFor(w.side, 0),
+        pose: "run",
+        hasBall: false,
+        hot: false,
+        yellowCards: 0,
+        callout: null,
+      },
+    ];
+  });
+
   return {
     players: {
       user: buildStagedSide("user", userXI),
       opp: buildStagedSide("opp", oppXI),
     },
+    leaving,
     ball: {
       x: ballPos.x,
       y: ballPos.y,
@@ -1568,6 +1707,13 @@ function settleStage(
       loft: Math.max(0, playing.ball.loft + (last.ball.loft - resumed.ball.loft) * left),
     },
     trail: left > 0 ? null : playing.trail,
+    leaving: playing.leaving?.map((p) => {
+      const same = (q: StagedPlayer) =>
+        q.side === p.side && q.slot === p.slot && q.species === p.species;
+      const from = last.leaving?.find(same)?.point;
+      const to = resumed.leaving?.find(same)?.point;
+      return { ...p, point: carry(p.point, from, to) };
+    }),
     playCallout: playing.playCallout,
   };
 }
