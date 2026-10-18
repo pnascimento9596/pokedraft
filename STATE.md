@@ -25,6 +25,230 @@ Gates at `5b7ca8d` (later commits change only docs):
 
 Scope, RED output and decisions are in `docs/decisions/security-integrity-quick-fixes.md`. Screenshot: `docs/reports/security-integrity-quick-fixes/leaderboard-coach-url-390x844.png`.
 
+## Unit flakes
+
+Branch `test/unit-flakes`, off `e449555`, with `origin/main` (`c87509f`, PR #78) merged in. Test only (Green), an out-of-band side fix outside Wave 1. Only `announce-builder.test.tsx` and `run.test.tsx` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Nothing changes for the player. Two unit tests that flaked on loaded four-worker runs now wait for what they depend on.
+- `announce-builder.test.tsx` waited 1 s for a `?b=` link to load the builder engine with `import()`. Under load that wait measured up to 2.7 s (hosted run 39073776203 failed it). The open helper now waits once with the 10 s budget `Builder.test.tsx` already uses. With the two files alone under 36 CPU burners, it failed 20 of 20 runs before the fix and passed 20 of 20 after.
+- `run.test.tsx` "saves a new unseeded run before its first pick" read storage before `LiveRun`'s save effect could run. Under load the save was missing in 1 of 200 starts. The test now waits for the save. React flushes the effect before any pick, so this is not a product bug.
+- Mutating each product path (`Builder.tsx` Randomize score, `HomeScreen.tsx` ignoring `?b=`, `LiveRun.tsx` dropping the new-run save) still fails the matching test.
+
+RED commit: none, because no new guard was added. The loaded repro counts are the RED evidence.
+
+Gates at `598f824` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on both touched tests passed.
+- Unit tests, `pnpm test --maxWorkers=4`: 1,332 passed in 8 of 8 unloaded runs and 2 of 2 runs under 24 CPU burners.
+- At the merge of `origin/main` (`545b598`): lint, typecheck and build exited 0, and `pnpm test --maxWorkers=4` passed 1,341 tests in 150 files in 3 of 3 runs.
+- Hosted CI, Playwright (no UI change) and the GLM review: NOT RUN at the time of writing.
+
+Scope, repro counts, measurements and the mutation output are in `docs/decisions/unit-flakes.md`.
+
+PR #79 (row 1g, mobile pitch fixes) merged as squash `90aba39`, reviewed head `5cac7ce`, GLM 5.3 Flash APPROVE in round 2 with canary `mobile-pitch-r2-3d50fc7ebb70a24bfcd9025660bea576` echoed. Round 1 (`3398f4b`) was APPROVE but hosted e2e failed `speed-aware-staging.spec.ts` twice on a 2x goal flash the visibility poll missed (also failing 3 of 4 on `main` under a 6x CPU throttle); `5cac7ce` reads the flash from the page mutation log. Hosted check and e2e green on `5cac7ce`. Production `/api/health?db=1` served `90aba39` with `db.status` ok, and `e2e/mobile-pitch-fixes.spec.ts` against production (chromium) passed 4 of 4.
+
+## Mobile pitch fixes
+
+Branch `fix/mobile-pitch-fixes`, built on row 1f (`fix/quick-not-broadcast`). UI only (Yellow), Wave 1 row 1g (bundle). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- On phones (below 420px) the match HUD now uses two rows, so the momentum figures no longer run into the shot counts.
+- The ball carrier's nameplate and the yellow card pip keep their full size (11px text, a 9 by 13px pip) instead of shrinking with the sprites. Names over 10 characters are cut to 9 and an ellipsis.
+- Every sprite on the pitch is drawn at kickoff: the pre-match card now loads both elevens.
+- Pass and shot trails keep their shape on the pitch, so the trail's start ring is round, and a penalty taker stands on the drawn penalty spot.
+- Measured in a 390, 360 and 320px replay of the golden cup8 run's G1, and at a managed kickoff stop with 400 ms of added latency: 22 of 22 sprites drawn (17 before).
+
+RED commit: `925bdb5` (3 failing unit tests in `Broadcast.test.tsx` and `timeline.test.ts`, and 4 failing scenes in `e2e/mobile-pitch-fixes.spec.ts`).
+
+Gates at `554c42d` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed. `pnpm check:image-seam` clean.
+- Unit tests: 1,343 passed in 150 files.
+- Playwright on a fresh build of the fix code (`677f01a`; `554c42d` adds only the spec's rounding and the screenshots): `mobile-pitch-fixes`, `mobile-targets`, `mobile-acceptance`, `manager-mode`, `quick-not-broadcast`, `watch-live`, `speed-aware-staging`, `score-lands-with-ball`, `one-shared-timeline`, `honest-momentum`, `injury-staging` and `results-interactions` gave 393 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/mobile-pitch-fixes/390-live-pitch.png`, `360-live-pitch.png`, `320-live-pitch.png`, `390-kickoff-stop.png` and `390-live-pitch-before.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/mobile-pitch-fixes.md`.
+
+PR #78 (row 1f, manager mode plays live, Quick is not a broadcast) merged as squash `c87509f`, reviewed head `27659c6`, GLM 5.3 Flash APPROVE in round 2 with canary `quick-live-r2-c379bd30b4dedd41803af83f7e1b89d4` echoed. Round 1 (`17d5290`) was also APPROVE but hosted CI failed its unit job on a flaky PR #72 guard, fixed in `27659c6`. On `27659c6` the unit job failed once on `announce-builder.test.tsx` (an unrelated known flake) and passed on a rerun of the failed job with no new commit; e2e green. Production `/api/health?db=1` served `c87509f` with `db.status` ok, and `e2e/quick-not-broadcast.spec.ts` against production (chromium) passed 1 of 1.
+
+Hosted e2e on `3398f4b` (run 39075805190) failed `e2e/speed-aware-staging.spec.ts` (PR #77) on both attempts: `toBeVisible` on `goal-flash` timed out at 60 s while the replay reached full time at 1 - 0 with the 49' goal in the ticker. At 2x the flash lives about half a second, and a busy runner's visibility poll can miss it. Under a 6x CDP CPU throttle the unchanged spec failed 2 of 4 on this branch's build and 3 of 4 on a `main` build (`c87509f`), so this row did not cause it. The spec now waits on its own MutationObserver log for a frame that drew the flash, then for the callout to go. Under the same throttle it passed 6 of 6, with the callout on screen 977 to 985 ms. `e2e/score-lands-with-ball.spec.ts` polls the flash the same way at 1x (about twice as long on screen) and is left as a watch item.
+
+## Quick is not a broadcast
+
+Branch `fix/quick-not-broadcast`, built on row 1e (`fix/speed-aware-staging`). UI only (Yellow), Wave 1 row 1f. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- With manager mode on, every match now plays at the live pace, even when Quick sim is the saved choice. Before, a managed match with the default Quick view was over in about 5 s.
+- While manager mode is on, the Match view selector on the home panel and on the challenge and daily start screens shows Live match, disables Quick sim and says "Manager mode plays live". Turning manager mode off brings the saved Quick choice back.
+- A Quick match draws a still pitch with no move badges and plays only the beat sounds (whistles, goals, saves, cards, subs), not a sound for every phase.
+
+RED commit: `d31e4d1` (7 failing tests in `MatchPlayer.quick.test.tsx`, `MatchdayFlow.pace.test.tsx`, `MatchdaySettings.test.tsx` and `SidePanel.test.tsx`).
+
+Gates at `8fe6174` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed. `pnpm check:image-seam` clean.
+- Unit tests: 1,341 passed in 150 files.
+- Playwright on a fresh build of `8fe6174`: `quick-not-broadcast`, `manager-mode`, `mobile-targets` and `mobile-acceptance` gave 375 passed, 0 failed, 54 skipped. `watch-live`, `speed-aware-staging`, `score-lands-with-ball`, `one-shared-timeline`, `honest-momentum` and `injury-staging` gave 8 passed.
+- Browser proof: `docs/reports/quick-not-broadcast/390-home-manager-plays-live.png`, `390-start-manager-plays-live.png` and `390-managed-match-live-pace.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/quick-not-broadcast.md`.
+
+PR #77 (row 1e, speed-aware staging) merged as squash `e449555`, reviewed head `0a91bd9`, GLM 5.3 Flash APPROVE in round 1 with canary `speed-aware-fd842687f017bab0a83f941ce9ec86f7` echoed (a first reply put APPROVE on a line with other text, which the checker does not count, so the review ran again on the same packet); hosted check and e2e green on that head. Production `/api/health?db=1` served `e449555` with `db.status` ok, and `e2e/speed-aware-staging.spec.ts` against production (chromium) passed 1 of 1.
+
+Hosted CI on `17d5290` (run 39071048139) failed the unit job on `MatchPlayer.movesets.test.tsx` "holds the clock at kickoff until the movesets resolve" (`expected 0 to be greater than 0`), a guard from PR #72 that waited a fixed 300 ms of fake time after the movesets gate opened. The real movesets module can still be loading under a four-worker run. Locally the unchanged test failed 1 of 8 full `pnpm test --maxWorkers=4` runs. The guard now keeps flushing the import while the fake clock runs (up to 100 steps of 48 ms) and still asserts minute 0 and "KO" for the first 1000 ms. With the hold removed from `MatchPlayer` it fails (`expected 20 to be +0`); with the fix it passed 10 of 10 full runs.
+
+## Speed-aware staging
+
+Branch `fix/speed-aware-staging`, built on row 1d (`fix/injury-staging`). UI only (Yellow), Wave 1 row 1e. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- At 2x speed every beat on the pitch now stages in half the time, so a goal's staging ends when the clock's hold ends instead of running on into play.
+- The score, the ticker and the goal horn still land with the ball at 2x, at 0.6 of the shorter staging.
+- Measured in a live 390px replay of the golden cup8 run's G1 at 2x. The goal's move callout stayed on screen for 1967 ms before and 983 ms after (975 ms expected).
+
+RED commit: `a8795fd` (2 failing tests in `MatchPlayer.speed.test.tsx`).
+
+Gates at `24ed4eb` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,332 passed in 148 files.
+- Playwright on a fresh build of the fix code (`4ad326e`; `24ed4eb` adds only the spec and its screenshot): `speed-aware-staging`, `injury-staging`, `score-lands-with-ball`, `one-shared-timeline`, `honest-momentum`, `manager-mode`, `watch-live`, `mobile-targets` and `mobile-acceptance` gave 382 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/speed-aware-staging/390-2x-goal-landed.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/speed-aware-staging.md`.
+
+PR #76 (side fix, wheel skip flake) merged as squash `cd6c50e`, reviewed head `8e60bb2`, GLM 5.3 Flash APPROVE in round 1 with canary `wheel-flake-a047a6eeec8c4612f84233b893511419` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `cd6c50e` with `db.status` ok (test-only change, no route to check).
+
+## Wheel skip flake
+
+Branch `test/wheel-skip-flake`, off `b8e5c2c`. Test only (Green), an out-of-band side fix outside Wave 1. Only `e2e/wheel-results.spec.ts` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Hosted CI failed `[webkit-wheel]` "wheel results at 1440px › skip results stay in the windows until the next pick and spin" in runs 39052173584 and 39062736785, both attempts, at 120 s on the `Tap to skip` click.
+- Cause, measured per frame in local WebKit: the skip button is not remounted per frame and does not move. It lives only while each reel spins (1.7 s, then 2.1 s). On a slow runner the click's actionability checks outlasted both spins, and then no skip button ever existed again.
+- Fix: the skip variant installs Playwright's clock, pauses it, advances it inside the poll until the reel has moved, clicks, then resumes. Players see no change.
+
+RED commit: none. Plain local WebKit never reproduced it (60 of 60 passed with `--repeat-each 10`). A throwaway harness that busy-waits each animation frame reproduced the CI call log: the old spec failed 10 of 10 at 250 ms and 500 ms per frame; the new one passed 10 of 10 at both.
+
+Gates at `b56ff55`: lint and typecheck exited 0, unit tests 1,327 passed in 146 files, Prettier check passed on the touched files. `e2e/wheel-results.spec.ts` passed 60 of 60 on webkit-wheel (`--repeat-each 10`) and 30 of 30 on chromium (`--repeat-each 5`) against a build of `b8e5c2c`. Hosted CI and the full local e2e suite: NOT RUN at the time of writing.
+
+Scope, the per-frame probe, the harness table and NOT RUN are in `docs/decisions/wheel-skip-flake.md`.
+
+PR #75 (row 1d, injury staging) merged as squash `09fcdae`, reviewed head `aa007c4`, GLM 5.3 Flash APPROVE in round 1 with canary `injury-staging-204fa02bad0d89b0341621bfe6cf0236` echoed. Hosted e2e failed once on this flake (run 39062736785, 817 passed, 1 failed) and passed on a rerun of the failed job with no new commit. Production `/api/health?db=1` served `09fcdae` with `db.status` ok, and `e2e/injury-staging.spec.ts` against production (chromium) passed 1 of 1.
+
+## Injury staging
+
+Branch `fix/injury-staging`, built on row 1c (`fix/score-lands-with-ball`). UI only (Yellow), Wave 1 row 1d. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- When one of your players is injured, that player now lies down in their slot with the medic banner. The replacement walks on from the touchline after that, with the sub board.
+- In manager mode the replacement stays off the pitch until you answer the injury prompt, so the pitch no longer shows the assistant's pick while you choose.
+- Measured on the golden cup8 quarter-final at 42'. Before, Kommo-o walked straight on and Roselia never lay down. After, Roselia lies down, then Kommo-o walks on.
+
+RED commit: `519cd93` (3 failing tests in `Broadcast.injury.test.tsx`).
+
+Gates at `ace149f` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,330 passed in 147 files.
+- Playwright on a fresh build of the fix code (`3130f82`; `ace149f` adds only the spec and its screenshots): `injury-staging`, `score-lands-with-ball`, `one-shared-timeline`, `honest-momentum`, `manager-mode`, `mobile-targets` and `mobile-acceptance` gave 378 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/injury-staging/390-roselia-down.png` and `docs/reports/injury-staging/390-kommo-o-walks-on.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/injury-staging.md`.
+
+PR #74 (row 1c, score lands with the ball) merged as squash `b8e5c2c`, reviewed head `8395f24`, GLM 5.3 Flash APPROVE in round 1 with canary `score-lands-58be11cd6bfb1ffa49b4a5043d2470ff` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `b8e5c2c` with `db.status` ok, and `e2e/score-lands-with-ball.spec.ts` against production (chromium) passed 1 of 1.
+
+## Score lands with the ball
+
+Branch `fix/score-lands-with-ball`, built on row 1b (`fix/honest-momentum`, itself on row 1a). UI only (Yellow), Wave 1 row 1c. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- In a live match the score, the shots-on-target counts, the ticker line, the screen reader line and the goal horn now wait until the ball crosses the line, at 0.6 of the goal staging. Before, they called the goal about 1.56 s early.
+- Under reduced motion and in Quick view nothing is staged, so the goal counts at once.
+- The score is a status region. The live region announces whole event lines, at most 3 at a time and at most once every 1.5 s.
+- Measured in a live 390px replay of the golden cup8 run's G1 (first goal 49'). Before, the score read `1 - 0` before the move callout appeared. After, it read `0 - 0` in flight and `1 - 0` at the GOAL flash.
+
+RED commit: `60f05e7` (3 failing tests in `MatchPlayer.score.test.tsx`; `e2e/score-lands-with-ball.spec.ts` also failed on the RED build).
+
+Gates at `362d187` (later commits change only docs):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,327 passed in 146 files on the last full run. Two earlier full runs at this head each failed 1 test in `src/components/builder/__tests__/announce-builder.test.tsx` ("Randomize says the Team Score the screen shows"), which this PR does not touch and which imports no matchday code. Isolated, it failed 2 of 3 runs, then passed 12 runs in a row. Flaky, recorded here.
+- Playwright on a fresh build of the fix code (`ed2dec8`; `362d187` adds only the spec and its screenshots): `score-lands-with-ball`, `mobile-targets`, `mobile-acceptance`, `watch-live`, `manager-mode`, `one-shared-timeline`, `honest-momentum` and `recorded-saves` gave 383 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/score-lands-with-ball/390-goal-in-flight.png` and `docs/reports/score-lands-with-ball/390-goal-landed.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/score-lands-with-ball.md`.
+
+PR #73 (row 1b, honest momentum) merged as squash `b72ac5a`, reviewed head `ac3f545`, GLM 5.3 Flash APPROVE in round 1 with canary `honest-momentum-bcf935028d6e9b0a6aff5e9fb3a084b1` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `b72ac5a` with `db.status` ok, and `e2e/honest-momentum.spec.ts` against production (chromium) passed 1 of 1.
+
+## Honest momentum
+
+Branch `fix/honest-momentum`, built on row 1a (`fix/one-shared-timeline`). UI only (Yellow), Wave 1 row 1b. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The momentum bar no longer leans toward a goal or a save before it happens. It reads 50% / 50% until the first five minutes are played, then follows the window that just finished.
+- The ambient ball and the open-play possession bias read the same lean, so neither drifts toward a chance that has not happened yet.
+- Measured in a live 390px replay of the golden cup8 run's G1, where the user's keeper saves at 3'. Before, 0' to 4' read 36% / 64%. After, 0' to 4' read 50% / 50% and 5' to 9' read 36% / 64%.
+- Not changed by this row: the bar still reads a flat 50/50 in most windows, and each frame's line height still reads the tactic snapshot at the window's end.
+
+RED commit: `018fd21` (3 failing tests in `timeline.test.ts`, plus `e2e/honest-momentum.spec.ts` failing on 36%64% at 0').
+
+Gates at `43c5a5d` (later commits change only docs and screenshots):
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,322 passed in 145 files.
+- Playwright on a fresh build of `43c5a5d`: `honest-momentum`, `one-shared-timeline`, `watch-live`, `mobile-targets` and `mobile-acceptance` gave 365 passed, 0 failed, 54 skipped.
+- Browser proof: `docs/reports/honest-momentum/390-kickoff.png` and `docs/reports/honest-momentum/390-after-first-window.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+Scope, RED output and measurements are in `docs/decisions/honest-momentum.md`.
+
+PR #72 (row 1a, one shared timeline) merged as squash `b2f2d49`, reviewed head `667ad76`, GLM 5.3 Flash APPROVE in round 1 with canary `one-timeline-051829b31b7efd9c2408e72508363bb4` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `b2f2d49` with `db.status` ok, and `e2e/one-shared-timeline.spec.ts` against production (`PLAYWRIGHT_BASE_URL`, chromium) passed 1 of 1 with 13 typed tones heard.
+
+## One shared timeline
+
+Branch `fix/one-shared-timeline` off `f4489cb`. UI only (Yellow), Wave 1 row 1a. No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The pitch, the HUD, the ticker and the match sounds now read one timeline. `MatchPlayer` loads the canon movesets and hands its timeline to `Broadcast`, which no longer builds its own.
+- Players no longer jump when the movesets finish loading. Open-play callouts draw from their own substream `broadcast:<seed>:<i>:callouts`, and every callout draws exactly one number. Before, 69 of 72 phases differed between the two timelines on the test fixture.
+- The clock holds at kickoff until the movesets settle. A failed load falls back to generic callouts.
+- Typed ability sounds (fire, water, electric, grass, ice, psychic) now play. In a live 390px replay at the `origin/main` build, 0 typed tones played. At the fix build, 13 did.
+
+RED commit: `de664f4` (5 failing tests in `moves.test.ts`, `timeline.test.ts` and `MatchPlayer.movesets.test.tsx`).
+
+Gates at `dd4f3e7`, before the rebase onto `65cc88b` that made it `2afec93`. The rebase added only the #71 docs, and `git diff dd4f3e7 2afec93 -- src e2e` is empty. Later commits change only docs:
+
+- Lint, typecheck and build exited 0. Prettier check on every touched file passed.
+- Unit tests: 1,319 passed in 145 files. A first full run failed 1 test in `src/components/run/__tests__/run.test.tsx` (a run survives a reload), which this PR does not touch. That file passed 30 of 30 on five isolated reruns, and the full chain then passed. Flaky under load, recorded here.
+- Playwright on a fresh build of the fix code (`7832262`, now `d692806`; `dd4f3e7` adds only the spec and its screenshot): `one-shared-timeline`, `watch-live`, `manager-mode`, `recorded-saves`, `engine-v4`, `club-region-identity`, `mobile-targets` and `mobile-acceptance` gave 386 passed, 0 failed, 54 skipped. The new spec, pinned to the chromium project at `dd4f3e7`, passed 1 of 1.
+- Browser proof: `docs/reports/one-shared-timeline/390-typed-callout.png`.
+- Hosted CI, the GLM review and a physical phone check: NOT RUN at the time of writing.
+
+PR #71 (audits archive) merged as squash `65cc88b`, reviewed head `a3f04cf`, GLM 5.3 Flash APPROVE in round 2 with canary `audits-r2-8c7a787f937ec25ab33178b69b261f54` echoed. Hosted e2e failed once on `webkit-wheel` `wheel-results.spec.ts` "skip results stay in the windows" (the Tap to skip button detached while spinning, 813 passed, 1 failed) and passed on a rerun of the failed job with no new commit. Production `/api/health?db=1` then served `65cc88b` with `db.status` ok.
+
+Scope, RED output and measurements are in `docs/decisions/one-shared-timeline.md`.
+
+## Audits archive and program start (2026-10-17)
+
+Branch `docs/audits-2026-10-17` off `f4489cb`. Docs only (Green). Audit A, Audit G, the program
+brief and Audit A's 13 production screenshots now live in `docs/reports/audits-2026-10-17/`, with
+SHA-256 hashes in its README and a `program-log.md` that gets one entry per wave. Decision log:
+`docs/decisions/audits-2026-10-17.md`.
+
+Previous PRs, now merged and live:
+
+- PR #70 (matchday simulation overhaul): squash `40f3c92`, reviewed head `f20ab71`, GLM 5.3 Flash
+  APPROVE with canary `matchday-sim-6823f5df8ab5673193a42648d59a1273` echoed (PR comment).
+  `main` CI run 39011425527 green.
+- PR #69 (draft picker over the pitch): squash `f4489cb`, head `ab62a1c`. The PR comments hold no
+  reviewer receipt for that head, so its reviewer is unknown here. `main` CI run 39042707390
+  green.
+- Production `/api/health?db=1` serves `f4489cb63fedc131274248b14c00758378898ca3` on
+  `pokedraft-engine-6`, token versions 1 to 6, `db.status` ok.
+
+Gates at `6e08aaa`: `prettier --check STATE.md` passed, `pnpm check:mirrors` reported mirrors
+identical, and the three Markdown copies hash equal to their sources. Unit tests, build and
+Playwright: NOT RUN, because nothing under `src/`, `e2e/` or config changed. Hosted CI runs on the
+PR.
+
 ## Draft picker over the pitch
 
 Branch `fix/draft-picker-over-pitch` off `47ca844`, with `origin/main` at `40f3c92` (PR #70, matchday overhaul) merged in to clear a STATE.md conflict. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.

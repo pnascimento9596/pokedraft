@@ -4,7 +4,14 @@ import { PlayerImage } from "@/components/PlayerImage";
 import { opponentRefLabel } from "./format";
 import s from "./BossRoster.module.css";
 
-export function BossRoster({ opponent }: { opponent: Opponent }) {
+/** `eager` loads the pictures even while the list is closed, so the match that follows has them. */
+export function BossRoster({
+  opponent,
+  eager = false,
+}: {
+  readonly opponent: Opponent;
+  readonly eager?: boolean;
+}) {
   const region = clubRegion(opponent.id);
   const pokemon = opponent.roster.flatMap((ref) =>
     ref.kind === "species" ? [speciesById(ref.id)] : [],
@@ -46,7 +53,7 @@ export function BossRoster({ opponent }: { opponent: Opponent }) {
               <span className={s.role}>{formation.slots[index]!.label}</span>
             ) : null}
             {ref.kind === "species" ? (
-              <PlayerImage dexId={ref.id} size={36} alt={opponentRefLabel(ref)} />
+              <PlayerImage dexId={ref.id} size={36} alt={opponentRefLabel(ref)} eager={eager} />
             ) : null}
             <span className={s.name}>{opponentRefLabel(ref)}</span>
           </li>
