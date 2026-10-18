@@ -9,6 +9,8 @@ import { localServerPort, worktreeHead } from "./e2e/local-server";
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL;
 const PORT = Number(process.env.PLAYWRIGHT_PORT) || localServerPort(process.cwd());
 const HEAD = worktreeHead();
+// Playwright mutes headless Chromium itself but not --headed, --ui or --debug runs.
+const MUTED_CHROMIUM = { launchOptions: { args: ["--mute-audio"] } };
 
 export default defineConfig({
   testDir: "e2e",
@@ -32,7 +34,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: { ...devices["Desktop Chrome"], ...MUTED_CHROMIUM },
       testIgnore: /mobile-(acceptance|targets|draft)/,
     },
     {
@@ -57,7 +59,7 @@ export default defineConfig({
     },
     {
       name: "pixel-7",
-      use: { ...devices["Pixel 7"] },
+      use: { ...devices["Pixel 7"], ...MUTED_CHROMIUM },
       // Manager mode reads the share link from the clipboard, which WebKit cannot grant.
       testMatch: /(mobile-(acceptance|targets|draft)|manager-mode)\.spec\.ts/,
     },
