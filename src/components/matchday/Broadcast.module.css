@@ -138,16 +138,19 @@
   opacity: 0.75;
 }
 
+/* The frame loop moves each player with an inline transform from the pitch's top left corner. */
 .player {
   --fx: var(--fx-impact);
   position: absolute;
+  left: 0;
+  top: 0;
   z-index: 2;
   display: grid;
   place-items: center;
   width: calc(80px * var(--sprite));
   height: calc(80px * var(--sprite));
   transform: translate(-50%, -70%);
-  will-change: left, top;
+  will-change: transform;
 }
 
 /* The ring, the aura and the sprite scale with the pitch; the nameplate and the card pip, which
@@ -491,11 +494,13 @@
   --ball-glow: transparent;
   position: absolute;
   z-index: 4;
+  left: 0;
+  top: 0;
   width: clamp(15px, 3.2cqi, 22px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  will-change: left, top;
+  will-change: transform;
 }
 
 .ball[data-effect="fire"] {
@@ -531,6 +536,8 @@
   height: 40%;
   border-radius: 50%;
   background: var(--bc-ball-shadow);
+  transform: translate(-50%, -50%) scale(calc(1 - var(--loft, 0) * 0.25));
+  opacity: max(0.28, 0.72 - var(--loft, 0) * 0.35);
 }
 
 .ballSvg {
@@ -540,6 +547,8 @@
   height: 100%;
   border-radius: 50%;
   box-shadow: 0 0 8px 1px var(--ball-glow);
+  transform: translateY(calc(var(--loft, 0) * -11px)) scale(calc(1 + var(--loft, 0) * 0.28))
+    rotate(calc(var(--spin, 0) * 1deg));
 }
 
 .ballSphere {
