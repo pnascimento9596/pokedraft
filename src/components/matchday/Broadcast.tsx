@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { FORMATIONS } from "@/engine";
 import type { FullLineup, MatchResult } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
@@ -35,6 +35,7 @@ export function Broadcast({
   kicks,
   motion,
   speed,
+  onBall,
 }: {
   readonly match: PlayedMatch;
   /** The one timeline the match player clocks, sounds and stages from. */
@@ -47,6 +48,8 @@ export function Broadcast({
   readonly motion: boolean;
   /** The player's speed: 2x stages every beat in half the time, matching its hold. */
   readonly speed: number;
+  /** Hears where the staged ball is along the pitch, 0 to 100, after each paint. */
+  readonly onBall?: (x: number) => void;
 }) {
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
@@ -66,6 +69,10 @@ export function Broadcast({
     oppSlots,
     oppLabels,
   });
+  const ballX = stage.ball.x;
+  useEffect(() => {
+    onBall?.(ballX);
+  }, [onBall, ballX]);
   const goal = active?.beat.kind === "goal" ? active.beat : null;
   const progress = active?.progress ?? 0;
   const shown = (from: number, to = 1) => !motion || (progress >= from && progress <= to);
