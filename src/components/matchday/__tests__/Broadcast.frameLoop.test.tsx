@@ -78,7 +78,7 @@ const style = (sel: string) => document.querySelector(sel)?.getAttribute("style"
 const USER_5 = '[data-side="user"][data-slot="5"]';
 
 describe("pitch transforms (catches a frame loop that moves the players somewhere stagePitch did not put them)", () => {
-  it("at 6.5' the user's slot 5 stands at origin/main's 25.10%, 50.00% of the pitch", () => {
+  it("at 6.5' the user's slot 5 stands where stagePitch puts it, 25.26%, 50.17% of the pitch", () => {
     render(
       <Broadcast
         match={MATCH}
@@ -92,18 +92,19 @@ describe("pitch transforms (catches a frame loop that moves the players somewher
         speed={1}
       />,
     );
-    // origin/main (458c56e): left 25.099000022671863%, top 49.99705573093594%. The pitch is 64
-    // units tall per 100 wide, so 50.00% of its height is 32.00 units of its width.
+    // stagePitch with smooth movement (row 2c): x 25.261753646265802, y 50.17082478016053. The
+    // pitch is 64 units tall per 100 wide, so 50.17% of its height is 32.11 units of its width.
+    // origin/main before row 2c (458c56e) drew 25.10%, 50.00%.
     expect(style(USER_5)).toBe(
-      "transform: translate3d(25.10cqi, 32.00cqi, 0) translate(-50%, -70%)",
+      "transform: translate3d(25.26cqi, 32.11cqi, 0) translate(-50%, -70%)",
     );
-    // origin/main (458c56e): left 8.700000000000001%, top 49.3994%.
+    // stagePitch with smooth movement (row 2c): x 8.507648471302096, y 47.93649973727299.
     expect(style('[data-side="user"][data-slot="0"]')).toBe(
-      "transform: translate3d(8.70cqi, 31.62cqi, 0) translate(-50%, -70%)",
+      "transform: translate3d(8.51cqi, 30.68cqi, 0) translate(-50%, -70%)",
     );
   });
 
-  it("at 12' with the goal 1.2 s in, the ball sits in the net at 89.89%, 50.39%, lofted 0.78", () => {
+  it("at 12' with the goal 1.2 s in, the ball sits in the net at 89.88%, 50.49%, lofted 0.78", () => {
     render(
       <Broadcast
         match={MATCH}
@@ -117,14 +118,15 @@ describe("pitch transforms (catches a frame loop that moves the players somewher
         speed={1}
       />,
     );
-    // origin/main (458c56e): left 89.8912138965073%, top 50.38581060153981%, shadow scale 0.80.
+    // stagePitch with smooth movement (row 2c): x 89.88173673243108, y 50.494303308207186, loft
+    // 0.7819825271100007. origin/main before row 2c (458c56e) drew 89.89%, 50.39%.
     expect(style('[data-testid="broadcast-ball"]')).toBe(
-      "transform: translate3d(89.89cqi, 32.25cqi, 0) translate(-50%, -50%); --loft: 0.78; --spin: 3480",
+      "transform: translate3d(89.88cqi, 32.32cqi, 0) translate(-50%, -50%); --loft: 0.78; --spin: 3480",
     );
-    // origin/main (458c56e): M 83.35913620202706 32.445825584001554 Q 86.62517504926717
-    // 30.106372184493516 89.8912138965073 32.24691878498548.
+    // stagePitch with smooth movement (row 2c): the trail runs from 83.34202465577835,
+    // 50.892492084262976 to the ball, curving 3.5 above their midpoint.
     expect(document.querySelector('[data-testid="pitch-trails"] path')?.getAttribute("d")).toBe(
-      "M 83.36 32.45 Q 86.63 30.11 89.89 32.25",
+      "M 83.34 32.57 Q 86.61 30.20 89.88 32.32",
     );
   });
 
