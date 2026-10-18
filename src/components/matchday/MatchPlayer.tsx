@@ -26,8 +26,9 @@ import {
   revealed,
   type PlayEnv,
 } from "@/ui/matchday/player";
-import { PHASE_LEN, buildTimeline, frameAt, type Beat } from "@/ui/matchday/timeline";
-import { crowdGain, kickPassDue, roarFor } from "@/ui/matchday/crowd";
+import { PHASE_LEN, buildTimeline, frameAt, type Beat, type Kick } from "@/ui/matchday/timeline";
+import { crowdGain, kickPassDue, penRoar, roarFor } from "@/ui/matchday/crowd";
+import { kickCues, kickProgress, kicksShown, type KickCue } from "@/ui/matchday/shootout";
 import {
   crowdRoar,
   playAbilitySound,
@@ -51,6 +52,14 @@ import { useMovesets } from "./useMovesets";
 import s from "./MatchPlayer.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
+
+const KICK_SOUND: Readonly<Record<KickCue, (kick: Kick, speed: number) => void>> = {
+  whistle: () => playWhistle("foul"),
+  strike: () => playKickPass(),
+  roar: (kick, speed) => crowdRoar(penRoar(kick.side, speed)),
+  horn: (kick) => (kick.side === "user" ? playGoalHorn() : playOppGoal()),
+  glove: () => playSaveSound(),
+};
 
 // The broadcast loads only when a live match mounts.
 const Broadcast = dynamic(() => import("./Broadcast").then((m) => m.Broadcast), {
@@ -240,6 +249,26 @@ export function MatchPlayer({
     }
   }, [moving, view, state.minute, timeline.plays]);
 
+  const progress = kickProgress(state, now, env.pace);
+  const cued = useRef(new Set<string>());
+  useEffect(() => {
+    if (timeline.kicks.length === 0 || state.stage === "play") return;
+    const due: { key: string; kick: Kick; cue: KickCue }[] = [];
+    const last = Math.min(state.kicks, timeline.kicks.length - 1);
+    for (let i = 0; i <= last; i++) {
+      const kick = timeline.kicks[i]!;
+      const at = i < state.kicks ? 1 : progress;
+      for (const c of kickCues(kick.scored, motion)) {
+        const key = `${i}:${c.cue}`;
+        if (c.at <= at && !cued.current.has(key)) due.push({ key, kick, cue: c.cue });
+      }
+    }
+    for (const d of due) cued.current.add(d.key);
+    // A skip resolves every remaining kick at once and gets no burst of sounds.
+    if (new Set(due.map((d) => d.kick.index)).size > 1) return;
+    for (const { kick, cue } of due) KICK_SOUND[cue](kick, state.speed);
+  }, [timeline, state.stage, state.kicks, state.speed, progress, motion]);
+
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
   const shown = timeline.beats.filter(
@@ -247,7 +276,10 @@ export function MatchPlayer({
   );
   const goals = shown.filter((b) => b.kind === "goal");
   const score = goals.at(-1)?.kind === "goal" ? goals.at(-1)!.score : { user: 0, opp: 0 };
-  const kicks = timeline.kicks.slice(0, state.kicks);
+  const kicks = timeline.kicks.slice(
+    0,
+    kicksShown(timeline.kicks.length, state.kicks, progress, motion),
+  );
   const pens = kicks.at(-1)?.score ?? null;
   const done = state.stage === "done";
   const minuteLabel = done
@@ -355,6 +387,7 @@ export function MatchPlayer({
         now={now}
         fired={state.fired}
         kicks={state.kicks}
+        kickProgress={progress}
         motion={motion}
         speed={state.speed}
         onBall={crowd ? onBall : undefined}

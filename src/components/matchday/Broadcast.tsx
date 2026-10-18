@@ -14,6 +14,7 @@ import {
   type StagedPlayer,
   type Timeline,
 } from "@/ui/matchday/timeline";
+import { kicksShown, suddenDeath } from "@/ui/matchday/shootout";
 import s from "./Broadcast.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
@@ -36,6 +37,7 @@ export function Broadcast({
   now,
   fired,
   kicks,
+  kickProgress = 0,
   motion,
   speed,
   onBall,
@@ -48,6 +50,8 @@ export function Broadcast({
   readonly now: number;
   readonly fired: Readonly<Record<string, number>>;
   readonly kicks: number;
+  /** How far through the kick in progress the shootout is, 0 to 1. */
+  readonly kickProgress?: number;
   readonly motion: boolean;
   /** The player's speed: 2x stages every beat in half the time, matching its hold. */
   readonly speed: number;
@@ -66,6 +70,7 @@ export function Broadcast({
     clock,
     active,
     kicks,
+    kickProgress,
     motion,
     userSlots,
     oppSlots,
@@ -78,7 +83,11 @@ export function Broadcast({
   const goal = active?.beat.kind === "goal" ? active.beat : null;
   const progress = active?.progress ?? 0;
   const shown = (from: number, to = 1) => !motion || (progress >= from && progress <= to);
-  const kickList = timeline.kicks.slice(0, kicks);
+  const kickList = timeline.kicks.slice(
+    0,
+    kicksShown(timeline.kicks.length, kicks, kickProgress, motion),
+  );
+  const shootout = timeline.kicks.length > 0 && clock >= timeline.finalMinute;
 
   const renderPlayer = (p: StagedPlayer | null, keyPrefix: string) => {
     if (p === null) return null;
@@ -331,7 +340,12 @@ export function Broadcast({
             {active.beat.label}
           </p>
         ) : null}
-        {timeline.kicks.length > 0 && clock >= timeline.finalMinute ? (
+        {shootout && kicks < timeline.kicks.length && suddenDeath(kicks) ? (
+          <p className={s.banner} data-testid="sudden-death">
+            Sudden death
+          </p>
+        ) : null}
+        {shootout ? (
           <ol className={s.kicks} aria-label="Penalty shootout" data-testid="shootout">
             {timeline.kicks.map((k, i) => (
               <li
