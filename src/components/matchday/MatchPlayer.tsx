@@ -331,6 +331,7 @@ export function MatchPlayer({
         kicks={state.kicks}
         motion={motion}
         speed={state.speed}
+        cutIns={view === "live"}
       />
 
       <div className={s.controls}>

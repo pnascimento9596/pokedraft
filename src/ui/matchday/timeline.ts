@@ -124,6 +124,12 @@ export interface SlotChange {
 
 export type PlayKind = "pass" | "dribble" | "through" | "cross" | "duel";
 
+/**
+ * Why an open-play phase carries a callout: a through ball or a cross into the final third, a duel
+ * that wins the ball for a goal or a save, or a slice of ordinary build-up.
+ */
+export type CalloutMoment = "through" | "cross" | "key-duel" | "build-up";
+
 export interface PlayPhase {
   readonly from: number;
   readonly to: number;
@@ -135,6 +141,8 @@ export interface PlayPhase {
   readonly runners: readonly [number, number];
   readonly actor: PitchRef;
   readonly callout: Callout | null;
+  /** Set exactly when `callout` is. */
+  readonly moment: CalloutMoment | null;
 }
 
 export interface Timeline {
@@ -169,6 +177,16 @@ export const TACTIC_LINE: Readonly<Record<Tactic, number>> = {
 
 const WINDOW = 5;
 export const PHASE_LEN = 1.25;
+
+/** Bosses without a recorded shape line up in a 4-3-3. */
+export const OPP_SHAPE: FormationId = "4-3-3";
+
+// A slot this far up its own half (engine y) receives the ball in the final third.
+const FINAL_THIRD_Y = 70;
+const BUILD_UP_SHARE = 0.15;
+// Minutes between two callouts, so they mark moments instead of narrating every touch. Key duels
+// ignore it: they lead straight to a shot.
+const CALLOUT_GAP = 5;
 const TAU = Math.PI * 2;
 
 function name(id: SpeciesId | null, fallback: string): string {
@@ -386,8 +404,13 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
   const plays: PlayPhase[] = [];
   if (!goalsOnly) {
     const playRng = createRng(`broadcast:${input.seed}:${input.matchIndex}:plays`);
-    // Callouts draw from their own stream so the choreography never depends on movesets.
+    // Callouts draw one number every phase from their own stream, so neither the choreography nor
+    // another phase's call depends on the movesets or on which phases get a callout.
     const calloutRng = createRng(`broadcast:${input.seed}:${input.matchIndex}:callouts`);
+    const shapeOf = (side: Side) =>
+      FORMATIONS[side === "user" ? input.lineup.formation : (match.opponent.formation ?? OPP_SHAPE)]
+        .slots;
+    let lastCallout = -Infinity;
     let curSide: Side = "user";
     let curSlot = 5;
     let chain = 0;
@@ -471,11 +494,29 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
         defPool.length > 0 ? defPool[Math.floor(playRng.next() * defPool.length)]! : 5;
 
       const actor = pitchRefAt(side, fromSlot, to);
-      const useAbility =
-        kind === "through" || kind === "cross" || kind === "duel" || playRng.next() < 0.45;
+      const buildUpRoll = kind === "pass" || kind === "dribble" ? playRng.next() : 1;
+      const finalThird = (shapeOf(side)[toSlot]?.y ?? 0) >= FINAL_THIRD_Y;
+      const candidate: CalloutMoment | null =
+        kind === "duel"
+          ? goalIn !== undefined || saveIn !== undefined
+            ? "key-duel"
+            : null
+          : kind === "through" || kind === "cross"
+            ? finalThird
+              ? kind
+              : null
+            : buildUpRoll < BUILD_UP_SHARE
+              ? "build-up"
+              : null;
+      const moment =
+        candidate === "key-duel" || (candidate !== null && from - lastCallout >= CALLOUT_GAP)
+          ? candidate
+          : null;
+      if (moment !== null) lastCallout = from;
       const role = kind === "duel" ? "duel" : kind === "dribble" ? "dribble" : "pass";
       const moveset = actor.species === null || movesOf === null ? null : movesOf(actor.species);
-      const callout = useAbility ? playCallout(actor.name, moveset, role, calloutRng) : null;
+      const call = playCallout(actor.name, moveset, role, calloutRng);
+      const callout = moment === null ? null : call;
 
       plays.push({
         from,
@@ -488,6 +529,7 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
         runners: [r1, r2],
         actor,
         callout,
+        moment,
       });
       curSide = side;
       curSlot = toSlot;
@@ -651,9 +693,11 @@ export interface PitchStage {
   readonly playCallout: {
     readonly side: Side;
     readonly slot: number;
+    readonly species: SpeciesId | null;
     readonly point: Point;
     readonly callout: Callout;
     readonly kind: PlayKind;
+    readonly moment: CalloutMoment;
   } | null;
 }
 
@@ -1137,13 +1181,15 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       };
     }
 
-    if (phase.callout !== null && u >= 0.12 && u <= 0.88) {
+    if (phase.callout !== null && phase.moment !== null && u >= 0.12 && u <= 0.88) {
       playCalloutStage = {
         side: phase.side,
         slot: phase.fromSlot,
+        species: phase.actor.species,
         point: fromSpot,
         callout: phase.callout,
         kind: phase.kind,
+        moment: phase.moment,
       };
     }
   }

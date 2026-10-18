@@ -53,14 +53,6 @@ describe("callouts (catches a callout that drops the canon move or the type effe
     });
   });
 
-  it("maps the six drawn types and gives every other type the generic impact", () => {
-    expect(
-      ["fire", "water", "electric", "grass", "ice", "psychic", "dragon", "normal"].map((t) =>
-        effectFor(t as never),
-      ),
-    ).toEqual(["fire", "water", "electric", "grass", "ice", "psychic", "impact", "impact"]);
-  });
-
   it("gives every one of the 18 types its own effect family (catches Dragon and Ghost moves drawn as a plain impact)", () => {
     const types = [
       "normal",

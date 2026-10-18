@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import type { Effect } from "@/ui/matchday/moves";
 import { readJson, writeJson } from "@/ui/storage";
 
 const SOUND_KEY = "pokedraft:sound";
@@ -227,26 +228,55 @@ export function playSubSound(): void {
   }
 }
 
-export function playAbilitySound(
-  effect:
-    "fire" | "water" | "electric" | "grass" | "ice" | "psychic" | "impact" | "shield" | "dive",
-): void {
+interface AbilityProfile {
+  readonly type: OscillatorType;
+  readonly start: number;
+  readonly end: number;
+  readonly dur: number;
+}
+
+const ABILITY_PROFILE = {
+  flame: { type: "sawtooth", start: 220, end: 520, dur: 0.16 },
+  tide: { type: "sine", start: 340, end: 620, dur: 0.15 },
+  spark: { type: "square", start: 880, end: 440, dur: 0.12 },
+  bloom: { type: "triangle", start: 480, end: 760, dur: 0.14 },
+  frost: { type: "sine", start: 1046.5, end: 1318.5, dur: 0.15 },
+  mind: { type: "sine", start: 660, end: 390, dur: 0.18 },
+  quake: { type: "sawtooth", start: 130, end: 55, dur: 0.2 },
+  strike: { type: "triangle", start: 200, end: 80, dur: 0.11 },
+  guard: { type: "triangle", start: 330, end: 660, dur: 0.16 },
+  dive: { type: "sine", start: 240, end: 110, dur: 0.12 },
+} as const satisfies Readonly<Record<string, AbilityProfile>>;
+
+// The 18 types share ten synth families; the generic effects keep their own.
+const ABILITY_FAMILY: Readonly<Record<Effect, keyof typeof ABILITY_PROFILE>> = {
+  fire: "flame",
+  dragon: "flame",
+  water: "tide",
+  poison: "tide",
+  electric: "spark",
+  steel: "spark",
+  grass: "bloom",
+  bug: "bloom",
+  fairy: "bloom",
+  ice: "frost",
+  flying: "frost",
+  psychic: "mind",
+  ghost: "mind",
+  dark: "mind",
+  ground: "quake",
+  rock: "quake",
+  fighting: "strike",
+  normal: "strike",
+  impact: "strike",
+  shield: "guard",
+  dive: "dive",
+};
+
+export function playAbilitySound(effect: Effect): void {
   if (ctx === null || !soundEnabled() || ctx.state !== "running") return;
   const t = ctx.currentTime;
-  const profile: Readonly<
-    Record<typeof effect, { type: OscillatorType; start: number; end: number; dur: number }>
-  > = {
-    fire: { type: "sawtooth", start: 220, end: 520, dur: 0.16 },
-    water: { type: "sine", start: 340, end: 620, dur: 0.15 },
-    electric: { type: "square", start: 880, end: 440, dur: 0.12 },
-    grass: { type: "triangle", start: 480, end: 760, dur: 0.14 },
-    ice: { type: "sine", start: 1046.5, end: 1318.5, dur: 0.15 },
-    psychic: { type: "sine", start: 660, end: 390, dur: 0.18 },
-    shield: { type: "triangle", start: 330, end: 660, dur: 0.16 },
-    dive: { type: "sine", start: 240, end: 110, dur: 0.12 },
-    impact: { type: "triangle", start: 200, end: 80, dur: 0.11 },
-  };
-  const p = profile[effect];
+  const p: AbilityProfile = ABILITY_PROFILE[ABILITY_FAMILY[effect]];
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = p.type;

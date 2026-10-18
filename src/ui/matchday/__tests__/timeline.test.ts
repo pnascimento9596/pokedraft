@@ -125,6 +125,9 @@ describe("buildTimeline (catches choreography that changes between two viewings 
       { side: "user", fromSlot: 9, toSlot: 10, kind: "pass" },
       { side: "user", fromSlot: 9, toSlot: 10, kind: "through" },
     ]);
+    const moments = (movesOf: typeof movesetFor | null) =>
+      buildTimeline(match(), { ...input, movesOf }).plays.map((p) => p.moment);
+    expect(moments(movesetFor)).toEqual(moments(null));
   });
 
   it("draws different ambient drift for another match index", () => {
