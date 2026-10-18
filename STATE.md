@@ -3,6 +3,12 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wave 2 summary
+
+Branch `docs/wave2-summary` off `87e7d51`. Docs only (Green). Appends the Wave 2 entry to `docs/reports/audits-2026-10-17/program-log.md`: every PR with its squash and reviewed head, the production checks, the measurements that moved, brief-vs-code notes and open carryovers. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #96 (row 2f, fatigue on the pitch) merged as squash `87e7d51`, reviewed head `2d67b2e`, GLM 5.3 Flash APPROVE in round 1 with canary `fatigue-b84b3eb34bb7cb7683a5940fd3f3ecb2` echoed. At `2d67b2e` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,481 unit tests passed in 171 files and Prettier passed on 11 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `87e7d51` with `db.status` ok, and `fatigue.spec.ts` plus `continuous-ball.spec.ts` against production (chromium) passed 2 of 2. NOT RUN: physical phone check (owner action); a per-frame guard at 2x.
+
 ## Fatigue on the pitch
 
 Branch `feat/fatigue` off `origin/feat/smooth-movement` at `0588297` (row 2c, PR #94), with `origin/feat/smooth-movement` merged in again at `5744f20` (carrying `origin/main` with PR #93). Pure staging plus `Broadcast.tsx` and CSS (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
