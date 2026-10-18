@@ -73,3 +73,82 @@ choose the order. All reviews were GLM 5.3 Flash with an echoed canary; no fallb
   `git merge origin/main` only.
 - The audits went public in #71 before the 1k fixes shipped (now in production) and before row
   5f, which stays open until Wave 5.
+
+## Wave 2. The broadcast feels like football
+
+All eight rows merged, one PR each, each live-checked on production. Production serves `87e7d51`
+(PR #96), engine 6, token versions 1 to 6, `db.status` ok.
+
+| Row | PR | Squash | Reviewed head | Review | Production check |
+| --- | --- | --- | --- | --- | --- |
+| 2h audio polish | #88 | `e7f2012` | `f46ef6c` | GLM APPROVE, round 1 | `audio-polish` 2 of 2 |
+| 2g callouts and type effects | #89 | `ae8ee22` | `60dc61d` | GLM APPROVE (rerun: first reply's verdict line did not parse) | `callouts-type-effects` 4 of 4 |
+| 2b continuous ball | #90 | `458c56e` | `18c0fb0` | GLM APPROVE, round 2 | `continuous-ball`, `callouts-type-effects` 5 of 5 |
+| 2a frame loop | #91 | `e3d0e95` | `b420c85` | GLM APPROVE, round 1 | `broadcast-frame-loop` and three matchday specs 9 of 9 |
+| 2e shootout with suspense | #92 | `85b292e` | `5b2229a` | GLM APPROVE (rerun: verdict line did not parse) | `shootout-suspense`, `continuous-ball` 2 of 2 |
+| 2d set pieces | #93 | `20fe868` | `fc9bae8` | GLM APPROVE (rerun: verdict line did not parse) | `set-pieces`, `continuous-ball` 5 of 5 |
+| 2c smooth movement | #94 | `ebb04f0` | `daeb1c3` | GLM APPROVE, round 1 | `smooth-movement`, `continuous-ball`, `set-pieces` 7 of 7 |
+| 2f fatigue on the pitch | #96 | `87e7d51` | `2d67b2e` | GLM APPROVE, round 1 | `fatigue`, `continuous-ball` 2 of 2 |
+
+Side PR outside the table: #95 (review packet asks for the verdict alone on its own line,
+`2b2bb0f`). All reviews were GLM 5.3 Flash with an echoed canary; no fallback reviewer ran.
+
+Order: 2h first, then 2g and 2b, which every later row builds on. 2a landed after 2b so the per-frame
+painter was written against `stageFrame` once. 2e landed before 2a's last merge, 2d before 2c, and 2f
+was built on 2c's branch and opened only after 2c merged, with the owner's leave to choose the order.
+
+### Measurements that moved
+
+- 2b: largest one-frame ball move on the golden cup at 1x, 78.0% to 3.87%. Browser spec, fastest
+  100 ms speed per 60 Hz frame: 9.00 on the old build, 2.68 to 2.70 since.
+- 2c: largest one-frame player move per golden match at 1x, 6.28 to 35.08% before, 3.01 to 4.94% after
+  (the 4.94 is 2b's save settle). Teammates closer than 4%: 31.9% of sampled open-play frames to
+  7.4%.
+- 2a: at 390x844 and 4x CPU throttle, DOM mutations about 2,207 to 1,164 per second, main-thread task
+  time 3,022 to 2,824 ms per 10 s (second batch 4,167 to 3,764), React commits 62 to 12 in 62 frames.
+  Style recalc rose, 257 to 484 ms per 10 s. p50 and p95 frame interval unchanged at 16.7 ms, no
+  dropped frames either side.
+- 2g: open-play callouts per match, mean 54.83 to 13.81 (median 55 to 14, max 61 to 18).
+- 2h: kick thuds over phases 0 to 16 of the pinned audio match, 6 to 5; Watch live now unlocks audio
+  before the broadcast opens.
+- 2d: every goal kind is staged from the engine's `goalKind`; worst ball move inside any goal staging
+  over 200 extra viewings 3.67% (solo).
+- 2f: tired players (energy under 65) cover 0.85 of each move; no golden match goes under 65, so the
+  proof is a pinned builder run.
+
+### Brief vs code
+
+- 2a: the brief said React already ticked at about 10 Hz; it rendered every frame (62 commits in 62
+  frames). The single rAF stays in `MatchPlayer` and `Broadcast` subscribes to it.
+- 2b: the browser's one-frame bound failed on a hosted runner (9.82%) from late renders, not
+  teleports; the spec measures over 100 ms windows and the 4% bound stays in the unit test.
+- 2c and 2f: open play is a Catmull-Rom spline, so the 0.85 slows waypoints, not a lerp. The 4%
+  spacing is pinned at a sampled moment, not every frame.
+- 2d: the solo goal beats the outfield player nearest the run, not the phase's presser, who can stand
+  behind the scorer. Row 2b's log said no golden goal was a free kick; that holds for cup8 only.
+- 2e: sudden death starts at kick 11 (`ENGINE_COEFFICIENTS.shootout.kicks` 5 a side). The engine
+  records only `scored`, so every miss is staged as a save while the ticker still says "misses".
+- 2f: `StageInput` takes every window snapshot, not the latest, so the past path does not jump when a
+  window closes.
+
+### Open carryovers
+
+- At 2x speed a player can still move 9.85% and the ball 8.84% in one frame; no guard covers 2x.
+- Over 20 extra seeds the ball's worst open-play frame is 4.41% (duel turnovers), above the 4%
+  golden-cup bound.
+- 2a: style recalc cost is unexplained; pose and facing update at the 10 Hz floor; the perf harness
+  was not rerun after the 2e and later merges.
+- 2c re-pinned 2a's frame-loop positions from its own staging.
+- 2e: pausing mid-kick lets the kick play out and resume starts the next at once (predates the row).
+- 2g: extra-time matches get about 20 callouts; badges clip at the pitch edge; reduced motion shows
+  no key-duel cards.
+- 2h: the crowd needs an unlock again after a reload; reduced motion keeps the crowd level constant.
+- 2f: the pip and arc are small at 390; the extra waypoint work is unmeasured; the proof depends on a
+  builder token valid on engine 6.
+- Flake: `MatchPlayer.quick.test.tsx` ("Quick shows no cut-in through the 30' goal", about 1.9 s
+  locally) hit the 15 s limit once on a hosted runner (#92); the failed job was rerun.
+- GLM put its verdict on a line with other text three times (#89, #92, #93); #95 asks for it alone,
+  and the replies since have parsed (#94, #95, #96).
+- A physical phone check and on-device sound were not run for any row (owner action).
+- Process: on #94 a push went out while a merge had stopped on a conflict (a pipe hid the exit code);
+  it was resolved in the next commit with no force-push.
