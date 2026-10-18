@@ -10,7 +10,8 @@ carryovers. The brief is `pokedraft-implementation-prompt-2026-10-17.md` in this
 
 ## Wave 1. Truth pass
 
-All twelve rows merged, one PR each, each live-checked on production before the next began.
+All twelve program rows (1a to 1l) merged, one PR each, each live-checked on production before
+the next began. The table also lists the audits archive (#71), which has no route to check.
 Production serves `4173b94` (PR #86), engine 6, token versions 1 to 6, `db.status` ok.
 
 | Row | PR | Squash | Reviewed head | Review | Production check |
@@ -54,7 +55,7 @@ choose the order. All reviews were GLM 5.3 Flash with an echoed canary; no fallb
   `body` had `overflow-x: hidden`.
 - 1j: the player path is the home friendly in `HomeScreen`; `/play` never runs a builder cup.
 - 1k: a bad unlock body answers 303 back to the gate, and `rankOf` takes the coach view.
-- 1l: measured 2,891,853 bytes saved against the audit's estimate.
+- 1l: the measured saving is 2,892,556 bytes (5,784,409 to 2,891,853), not the audit's estimate.
 
 ### Open carryovers
 

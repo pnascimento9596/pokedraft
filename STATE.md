@@ -9,7 +9,7 @@ Branch `docs/wave1-summary` off `4173b94`. Docs only (Green). Appends the Wave 1
 
 PR #86 (row 1l, retained JSON dedupe) merged as squash `4173b94`, reviewed head `0054190`, GLM 5.3 Flash APPROVE in round 1 with canary `retained-json-5b9cb3e1965e74be6b4dd2ed18269158` echoed. Hosted check (its new measure step read 4 copies, 2,891,853 bytes) and all eight e2e shards green on that head. Production `/api/health?db=1` served `4173b94` with `db.status` ok, and `e2e/old-links.spec.ts` plus `e2e/engine-v4.spec.ts` against production (chromium) passed 4 of 4.
 
-Gates: prettier check on the two changed files. No runtime change.
+Gates at `10cf2f7` (the coordinator's review run): lint, typecheck and build exited 0, 1,387 unit tests passed in 155 files, and Prettier passed on all three changed files (`STATE.md`, the decision log and `program-log.md`); hosted check and all eight e2e shards green. Review round 1 asked for this gate record and a corrected 1l saving (2,892,556 bytes). No runtime change.
 
 ## Retained JSON dedupe
 

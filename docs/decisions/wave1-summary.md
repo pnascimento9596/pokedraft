@@ -8,10 +8,13 @@ Decisions:
 
 - Every number in the entry comes from a STATE section, a hosted CI log or a production check run in
   this program. Nothing is estimated.
-- The table lists all twelve rows in merge order, so 1k sits before 1i and 1j. The reorder is
+- The table lists all twelve program rows in merge order, so 1k sits before 1i and 1j. The reorder is
   stated with its reason, the audits having gone public in #71.
 - Carryovers name what is unfixed, including process slips (one force-push on #72), so the next
   wave starts from the real state.
 
-NOT RUN: lint, typecheck, unit tests and build add nothing for a Markdown-only change; hosted CI
-runs them anyway. GLM review is run by the coordinator.
+- PR #70 is not in the record: it merged as `40f3c92`, the commit both audits read, before the
+  program started at `f4489cb`.
+
+Gates: the coordinator ran lint, typecheck, unit tests, build and a Prettier check on all three
+changed files at the reviewed head. Hosted CI runs the same and the full e2e suite.
