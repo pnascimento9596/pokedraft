@@ -22,6 +22,7 @@ const LINE: TouchlineState = {
   subsUsed: 2,
   onPitch: [1, 4, 7, 10, 13, 16, 19, 21, 23, 27, 25].map(id),
   energy: [96, 80, 81, 82, 83, 84, 85, 86, 87, 88, 62],
+  yellow: [false, false, false, true, false, false, false, false, false, false, false],
   bench: [seat(0, 133), seat(1, 143, false), seat(2, 150), seat(3, 151, false), seat(4, 152)],
   open: true,
 };
@@ -132,5 +133,99 @@ describe("Touchline as a phone sheet (catches a collapsed sheet without its tact
   it("has no toggle without a sheet", () => {
     render(<Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} />);
     expect(screen.queryByTestId("sheet-toggle")).toBeNull();
+  });
+});
+
+describe("Touchline intelligence (catches a touchline that hides the assistant's state, the bench's fit or a booking)", () => {
+  it("states the assistant's engine 6 behaviour: subs on, tactics on before a decision; subs off, tactics off after", () => {
+    const { rerender } = render(
+      <Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} />,
+    );
+    expect(screen.getByTestId("assistant-status").textContent).toBe(
+      "Assistant: subs on, tactics on",
+    );
+    rerender(
+      <Touchline
+        line={{ ...LINE, managed: true }}
+        formation="4-3-3"
+        onDecide={() => {}}
+        error={null}
+      />,
+    );
+    expect(screen.getByTestId("assistant-status").textContent).toBe(
+      "Assistant: subs off, tactics off",
+    );
+  });
+
+  it("picks who goes off by tapping an energy row and who comes on by tapping a bench card, with no Take off select", () => {
+    const onDecide = vi.fn();
+    render(<Touchline line={LINE} formation="4-3-3" onDecide={onDecide} error={null} />);
+    expect(screen.queryByTestId("sub-off")).toBeNull();
+    expect(screen.getByTestId("energy-slot-10").getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(screen.getByTestId("energy-slot-4"));
+    expect(screen.getByTestId("energy-slot-4").getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByTestId("energy-slot-10").getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(screen.getByTestId("bench-card-2"));
+    expect(screen.getByTestId("bench-card-2").getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(screen.getByTestId("sub-confirm"));
+    expect(onDecide).toHaveBeenCalledWith({ kind: "sub", slot: 4, bench: 2 });
+  });
+
+  it("with ratings off, bench cards show the fit glyph for the outgoing slot and no numbers", () => {
+    render(<Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} />);
+    expect(
+      ["bench-card-0", "bench-card-2", "bench-card-4"].map(
+        (t) => screen.getByTestId(t).querySelector("[data-fit]")?.textContent,
+      ),
+    ).toEqual(["\u2605 Best", "OK Fit", "Poor Fit"]);
+    expect(screen.queryByTestId("bench-card-1")).toBeNull();
+    for (const t of ["bench-card-0", "bench-card-2", "bench-card-4"]) {
+      expect(screen.getByTestId(t).textContent).not.toMatch(/\d/);
+    }
+    fireEvent.click(screen.getByTestId("energy-slot-4"));
+    expect(screen.getByTestId("bench-card-4").querySelector("[data-fit]")?.textContent).toBe(
+      "\u2605 Best",
+    );
+  });
+
+  it("with ratings on, bench cards add the fit score for the outgoing slot and STA", () => {
+    render(<Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} ratings />);
+    expect(screen.getByTestId("bench-card-0").querySelector("[data-numbers]")?.textContent).toBe(
+      "Fit 52, STA 47",
+    );
+    fireEvent.click(screen.getByTestId("energy-slot-4"));
+    expect(screen.getByTestId("bench-card-0").querySelector("[data-numbers]")?.textContent).toBe(
+      "Fit 42, STA 47",
+    );
+  });
+
+  it("puts a yellow card on the booked player's energy row only", () => {
+    render(<Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} />);
+    expect(screen.getByTestId("energy-slot-3").querySelector("[data-yellow]")).not.toBeNull();
+    expect(document.querySelectorAll("[data-yellow]")).toHaveLength(1);
+  });
+
+  it("badges each tactic pill against a possession side, and none against a balanced one", () => {
+    const { rerender } = render(
+      <Touchline
+        line={LINE}
+        formation="4-3-3"
+        onDecide={() => {}}
+        error={null}
+        style="possession"
+      />,
+    );
+    expect(
+      ["balanced", "attack", "defend", "press", "counter"].map((t) =>
+        screen.getByTestId(`edge-${t}`).getAttribute("data-edge"),
+      ),
+    ).toEqual(["neutral", "neutral", "unfavourable", "favourable", "favourable"]);
+    expect(screen.getByTestId("edge-press").textContent).toBe("\u25b2Edge");
+    expect(screen.getByTestId("edge-defend").textContent).toBe("\u25bcAvoid");
+    expect(screen.getByTestId("edge-attack").textContent).toBe("=Even");
+    rerender(
+      <Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} style="balanced" />,
+    );
+    expect(document.querySelectorAll('[data-testid^="edge-"]')).toHaveLength(0);
   });
 });
