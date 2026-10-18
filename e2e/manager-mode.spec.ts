@@ -86,7 +86,7 @@ test.describe("manager mode", () => {
     const sheet = page.getByTestId("sheet-toggle");
     if (await sheet.isVisible()) await sheet.click();
     await page.getByTestId("energy-slot-4").click();
-    await expect(page.getByTestId("sub-off")).toHaveValue("4");
+    await expect(page.getByTestId("energy-slot-4")).toHaveAttribute("aria-pressed", "true");
     await page.getByTestId("sub-confirm").click();
     await expect(page.getByTestId("subs-count")).toHaveText(`Subs ${used + 1} of 5`);
     await page.getByTestId("stop-go").click();

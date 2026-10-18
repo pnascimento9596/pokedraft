@@ -233,6 +233,13 @@
   font-weight: 700;
 }
 
+.promptLine {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-muted);
+}
+
 .choices {
   display: grid;
   gap: 4px;

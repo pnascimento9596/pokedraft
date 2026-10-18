@@ -32,8 +32,11 @@ describe("Touchline (catches a panel that offers used players or records nothing
     render(<Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} />);
     expect(screen.getByTestId("touchline-minute").textContent).toBe("46'");
     expect(screen.getByTestId("subs-count").textContent).toBe("Subs 2 of 5");
-    const on = screen.getByTestId("sub-on") as HTMLSelectElement;
-    expect([...on.options].map((o) => o.textContent)).toEqual(["Eevee", "Mewtwo", "Chikorita"]);
+    expect(
+      [...document.querySelectorAll('[data-testid^="bench-card-"]')].map(
+        (c) => c.querySelector("[class*=benchName]")?.textContent,
+      ),
+    ).toEqual(["Eevee", "Mewtwo", "Chikorita"]);
     expect(screen.queryByTestId("takeover")).toBeNull();
     expect(screen.getByTestId("tactic-balanced").getAttribute("aria-pressed")).toBe("true");
   });
@@ -50,8 +53,8 @@ describe("Touchline (catches a panel that offers used players or records nothing
   it("records the picked substitution by slot and bench seat", () => {
     const onDecide = vi.fn();
     render(<Touchline line={LINE} formation="4-3-3" onDecide={onDecide} error={null} />);
-    fireEvent.change(screen.getByTestId("sub-off"), { target: { value: "10" } });
-    fireEvent.change(screen.getByTestId("sub-on"), { target: { value: "2" } });
+    fireEvent.click(screen.getByTestId("energy-slot-10"));
+    fireEvent.click(screen.getByTestId("bench-card-2"));
     fireEvent.click(screen.getByTestId("sub-confirm"));
     expect(onDecide).toHaveBeenCalledWith({ kind: "sub", slot: 10, bench: 2 });
   });

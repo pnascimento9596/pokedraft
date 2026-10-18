@@ -17,6 +17,7 @@ import {
   type Decision,
 } from "@/ui/manager/touchline";
 import { focusHeading } from "@/ui/focus";
+import { scoutLine } from "@/ui/manager/intel";
 import { MatchPlayer } from "./MatchPlayer";
 import { TacticPills } from "./TacticPills";
 import s from "./MatchdayFlow.module.css";
@@ -55,6 +56,7 @@ export function MatchdayFlow({
   initialMatch = 0,
   view,
   managerMode,
+  showRatings = false,
   onProgress,
   onFinish,
 }: {
@@ -66,6 +68,8 @@ export function MatchdayFlow({
   readonly initialMatch?: number;
   readonly view: MatchView;
   readonly managerMode: boolean;
+  /** The ratings setting for this run; off hides the touchline's fit scores and STA. */
+  readonly showRatings?: boolean;
   /** Called with the decisions so far whenever they or the current match change. */
   readonly onProgress?: (manager: readonly ManagerAction[], match: number) => void;
   readonly onFinish: (manager: readonly ManagerAction[]) => void;
@@ -140,6 +144,7 @@ export function MatchdayFlow({
           lineup={ctx.lineup}
           view={matchdayView({ managerMode, matchView: view })}
           manager={managerMode ? { actions, decide: onDecide } : undefined}
+          ratings={showRatings}
           autoStart
           footer={
             <div className={s.fulltime} data-testid="fulltime">
@@ -211,7 +216,17 @@ function PreMatch({
         </p>
       ) : null}
       {tactic !== undefined ? (
-        <TacticPills label="Starting tactic" value={tactic} onPick={setTactic} />
+        <>
+          <p className={s.scout} data-testid="scout-line">
+            {scoutLine(match.opponent.tacticalStyle)}
+          </p>
+          <TacticPills
+            label="Starting tactic"
+            value={tactic}
+            style={match.opponent.tacticalStyle}
+            onPick={setTactic}
+          />
+        </>
       ) : null}
       {error !== null ? (
         <p className={s.error} role="alert">
