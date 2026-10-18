@@ -34,6 +34,7 @@ import {
   landed,
   play,
   revealed,
+  staged,
   type PlayAction,
   type PlayEnv,
   type PlayState,
@@ -145,8 +146,8 @@ export function MatchPlayer({
     [manager, match, lineup],
   );
   const env: PlayEnv = useMemo(
-    () => ({ timeline, stops, pace: PACE[view] }),
-    [timeline, stops, view],
+    () => ({ timeline, stops, pace: PACE[view], replays: motion }),
+    [timeline, stops, view, motion],
   );
   const [state, setState] = useState<PlayState>(() => ({
     ...START,
@@ -433,6 +434,7 @@ export function MatchPlayer({
   const userMomentum = Math.round(50 + lean * 28);
   const oppMomentum = 100 - userMomentum;
 
+  const onPitch = staged(state, now);
   const stop = state.stop;
   const injury =
     stop?.kind === "injury"
@@ -519,18 +521,31 @@ export function MatchPlayer({
           match={match}
           timeline={timeline}
           lineup={lineup}
-          clock={clock}
-          now={now}
-          fired={state.fired}
+          clock={onPitch.clock}
+          now={onPitch.now}
+          fired={onPitch.fired}
           kicks={state.kicks}
           kickProgress={progress}
           motion={motion}
-          speed={state.speed}
+          speed={onPitch.speed}
           feed={feed}
           cutIns={view === "live"}
           camera={view === "live" ? cameraChoice : "full"}
           onBall={crowd ? onBall : undefined}
         />
+        {state.replay !== null ? (
+          <div className={s.replayBug} data-testid="instant-replay">
+            <span className={s.replayTag}>REPLAY</span>
+            <button
+              type="button"
+              className="btn btn--sm"
+              data-testid="replay-skip"
+              onClick={() => send({ type: "endReplay", now: performance.now() })}
+            >
+              Skip replay
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <div className={s.controls}>
@@ -683,15 +698,8 @@ export function MatchPlayer({
 }
 
 function frameOf(st: PlayState, now: number, pace: Pace): LiveFrame {
-  const at = frameNow(st, now);
-  return {
-    clock: st.minute,
-    now: at,
-    fired: st.fired,
-    kicks: st.kicks,
-    kickProgress: kickProgress(st, at, pace),
-    speed: st.speed,
-  };
+  const view = staged(st, now);
+  return { ...view, kicks: st.kicks, kickProgress: kickProgress(st, view.now, pace) };
 }
 
 // Under an open sheet or a stop the scoreboard, the HUD and the pitch stay in view, so the sheet

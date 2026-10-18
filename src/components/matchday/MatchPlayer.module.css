@@ -206,7 +206,38 @@
 }
 
 .pitch {
+  position: relative;
   min-width: 0;
+}
+
+/* The instant replay's bug sits over the pitch's top left corner, with its skip beside it. */
+.replayBug {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.replayTag {
+  padding: 4px 10px;
+  border-left: 4px solid var(--live);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+
+.replayBug :global(.btn) {
+  min-height: 44px;
+  min-width: 44px;
+  pointer-events: auto;
 }
 
 /* From 600px up the sheet's prompts and touchline sit in the page as before. */
