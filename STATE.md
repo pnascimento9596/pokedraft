@@ -25,6 +25,8 @@ Gates at `1303a58` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/team-readability.md`. Browser proof: `docs/reports/team-readability/`.
 
+Merged origin/main after PR #102 (row 3a) at `ce9e48a`; only STATE.md conflicted. After the merge typecheck and build exited 0, 358 matchday, UI and design unit tests passed in 54 files, and `team-readability`, `touchline-sheet`, `pitch-card-containment` and `callouts-type-effects` passed 31 of 31 locally (`CI=1`, chromium, fresh build). The full gates at the reviewed head are in the review receipt.
+
 ## Touchline bottom sheet
 
 Branch `feat/touchline-sheet` off `b08c68c`. Wave 3 row 3a, matchday UI and the pure play reducer (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
