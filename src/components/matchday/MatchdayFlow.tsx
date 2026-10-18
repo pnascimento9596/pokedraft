@@ -5,6 +5,7 @@ import { FORMATIONS, speciesById } from "@/engine";
 import type { CupResult, FullLineup, ManagerAction, MatchResult } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { BossRoster } from "@/components/results/BossRoster";
+import { unlockAudio } from "@/components/wheel/sound";
 import { finalScore } from "@/components/results/format";
 import { ROUND_LABEL } from "@/ui/labels";
 import { matchdayView, type MatchView } from "@/ui/settings";
@@ -197,7 +198,15 @@ function PreMatch({
       </ol>
       {/* Both elevens load here, so every sprite is drawn when the match kicks off. */}
       <BossRoster opponent={match.opponent} eager />
-      <button type="button" className="btn btn--primary" data-testid="prematch-go" onClick={onGo}>
+      <button
+        type="button"
+        className="btn btn--primary"
+        data-testid="prematch-go"
+        onClick={() => {
+          unlockAudio();
+          onGo();
+        }}
+      >
         Go to the match
       </button>
     </div>
