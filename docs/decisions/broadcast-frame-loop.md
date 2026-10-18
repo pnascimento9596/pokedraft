@@ -63,6 +63,28 @@ After this change:
   On this branch it reads 2.68 and passes. On a fresh build of `ae8ee22` it reads 9.00 and fails
   (`Received: 8.997818670370082`), so its RED still holds.
 
+## Merge of row 2e
+
+`origin/main` `85b292e` (PR #92 shootout) merged in at `f0f73b9`.
+
+- `LiveFrame` carries `kickProgress`. `MatchPlayer`'s `frameOf` computes it per frame with
+  `kickProgress(state, now, pace)`, and the painter passes it to `stageFrame`. The penalty moves on
+  every frame.
+- The render key adds the kick in progress (and with it the sudden-death banner) and the count of
+  kick dots shown. MatchPlayer's glance adds how many of the kick's cues (whistle at 0, strike at
+  0.35, outcome at 0.6) the frame has crossed. The shootout score and the kick sounds then render on
+  their frame and do not wait for the gap.
+- Guard `a frame at kickProgress 0.5 between renders at 0.2 paints the ball in flight`.
+  - It pins the ball as a plain render at 0.5 draws it:
+    `translate3d(95.00cqi, 33.92cqi, 0)`, loft 0.33.
+  - Mutation: the painter passed the render's `kickProgress` and not the frame's. The guard failed
+    with the ball still on the spot: `translate3d(89.00cqi, 32.00cqi, 0)`, loft 0.00.
+- Guard `the frame where the kick lands asks for a render`.
+  - It passes. With the kick-dot count removed from the key, it still passes, because the keeper's
+    reaction also starts at 0.6 and changes the key on the same frame.
+  - So this guard does not isolate the dots. The dots are covered by that shared render.
+- The perf harness was not rerun after this merge. The numbers above are from `6e9d509`.
+
 ## Brief vs code
 
 - The brief describes React "ticking at about 10 Hz" as a fact. At `fe6d183` React ticked once
@@ -244,17 +266,21 @@ At the earlier merged head `f511c73`:
 Before the merge, at `513d113`: lint, typecheck and build exited 0, 1392 tests passed in 156 files,
 and the same Playwright set without `audio-polish` gave 423 passed, 54 skipped and 0 failed.
 
-Browser proof is in `docs/reports/broadcast-frame-loop/{390,360,320}-live.png`, taken at `6e9d509`.
+Browser proof is in `docs/reports/broadcast-frame-loop/{390,360,320}-live.png`, taken at `f0f73b9`.
 `e2e/broadcast-frame-loop.spec.ts` checks at each width with touch that all 22 players carry
 `translate3d` transforms and that their centers sit inside the pitch. It also checks that the ball
 moves between samples and that the page has no horizontal overflow.
+
+At `f0f73b9` (after the #92 merge):
+
+- `pnpm lint` and `pnpm typecheck` exited 0, and `pnpm test` passed 1453 tests in 166 files.
+- `pnpm build` and all 7 `check:*` scripts exited 0.
+- Playwright with a fresh build, `PLAYWRIGHT_PORT=3521 CI=1`, ran the 10 specs above plus
+  `shootout-suspense`. Result: 20 passed, 0 failed. `continuous-ball` read 2.68.
 
 ## NOT RUN
 
 - Physical phone check (owner action, requested in the PR body).
 - Full local Playwright suite. Hosted CI runs all eight shards.
 - Independent review (the coordinator runs GLM).
-- PR #92's `kickProgress` is not wired into the per-frame painter. #92 had not landed at the last
-  fetch (`origin/main` `458c56e`). Once it lands, `LiveFrame` needs a `kickProgress`, which
-  `MatchPlayer` computes per frame from `kickProgress(state, now, pace)`, and the painter passes it
-  to `stageFrame`.
+- Perf harness and trace at `f0f73b9`. The last measurement is at `6e9d509`, before #92.

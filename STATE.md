@@ -5,8 +5,8 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Broadcast frame loop
 
-Branch `perf/broadcast-frame-loop` off `fe6d183`, with `origin/main` merged in, last at `458c56e`
-(PRs #89 and #90). UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting`
+Branch `perf/broadcast-frame-loop` off `fe6d183`, with `origin/main` merged in, last at `85b292e`
+(PRs #89, #90 and #92). UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting`
 changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 For the player, a live match looks the same and does less work per frame. Before, React re-rendered
@@ -16,7 +16,9 @@ also render at once on a new minute, a fired beat, a landed goal, or a frame who
 cut-in, trail, play badge or carrier. A frame loop moves the 22 players and the ball with
 `translate3d` transforms from row 2b's `stageFrame`. Quick and reduced motion stay still. The score
 lands at goal progress 0.6, and 1x/2x staging, manager stops, injury staging and row 2g's cut-ins
-keep their timings.
+keep their timings. Row 2e's penalty moves per frame at that frame's `kickProgress`. The
+sudden-death banner, the kick dots, the shootout score and the kick sounds render on the frame that
+reaches them.
 
 RED commits: `3129582`, `6c06799` (5 of 5 guard tests fail on `origin/main` code). The cut-in timing
 guard fails when the painter is forced never to ask for a render (mutation proof on the merged
@@ -35,17 +37,17 @@ side, before `458c56e` and after `6e9d509` (medians, batch 1 then batch 2):
 
 Headless numbers do not include GPU raster. Details are in `docs/decisions/broadcast-frame-loop.md`.
 
-Gates at `6e9d509`:
+Gates at `f0f73b9` (after the #92 merge):
 
 - Lint, typecheck and build exited 0.
-- Unit tests: 1431 passed in 163 files.
+- Unit tests: 1453 passed in 166 files.
 - `check:mirrors`, `image-seam`, `image-packs`, `theme-contrast`, `theme-colors`, `theme-cvd` and
   `client-bundle` exited 0.
 - Playwright (`broadcast-frame-loop`, `continuous-ball`, `callouts-type-effects`, `audio-polish`,
   `score-lands-with-ball`, `speed-aware-staging`, `mobile-pitch-fixes`, `injury-staging`,
-  `one-shared-timeline`, `quick-not-broadcast`) gave 19 passed and 0 failed.
-- NOT RUN: physical phone check, full local Playwright suite, review, hosted CI, and PR #92's
-  `kickProgress` in the per-frame painter (#92 not landed at the last fetch).
+  `one-shared-timeline`, `quick-not-broadcast`, `shootout-suspense`) gave 20 passed and 0 failed.
+- NOT RUN: physical phone check, full local Playwright suite, review, hosted CI, and a perf rerun
+  at `f0f73b9`. The numbers above are from `6e9d509`, before #92.
 
 ## Shootout with suspense
 
