@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Touchline intelligence
+
+Branch `feat/touchline-intel` off `bee9acf` (row 3a's branch, PR #102). Wave 3 row 3g, matchday UI (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- In manager mode the pre-match card has a scout line ("Scout: a pressing side. Best edge: Counter, then Press. Avoid Defend.") and each tactic pill carries an Edge, Even or Avoid badge against the opponent's style, worked out from the engine's own style multipliers. A balanced opponent gets no badges.
+- Half time repeats the scout line and names the two most tired outfield players.
+- The touchline says what the assistant does: "Assistant: subs on, tactics on" until you decide anything in the match, then "Assistant: subs off, tactics off" (engine 6 behaviour).
+- Subs are picked by tapping: an energy row for who goes off, a bench card for who comes on. Bench cards show the Best, OK or Poor fit glyph for that position, plus "Fit n, STA n" when ratings are on. The Take off and Bring on selects are gone.
+- A booked player's energy row shows a yellow card. The injury prompt names the position.
+- During an unanswered injury stop the ticker no longer shows the assistant's replacement (the 1d carryover).
+- A managed match stops at 65' when an outfield player is below 65 energy. Engine 6 cannot get anyone that low by 65' (the measured minimum is 67), so this stop never shows in a real match yet; see the decision log.
+- The closed phone sheet is 143 px high, up from 115 px, to fit the assistant line.
+
+RED commit: `1005614` (24 of 60 failed).
+
+Gates at `1efeb35` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck, test and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 1,554 passed in 177 files.
+- Playwright (`CI=1`, fresh build at `1efeb35`): `touchline-intel` 6 passed; with `touchline-sheet`, `manager-mode`, `prematch-merge`, `injury-staging`, `builder-matchday`, `mobile-targets` and `mobile-acceptance` the run was 405 passed, 56 skipped by their own project gates, exit 0.
+- The 65' stop in a browser (unreachable in engine 6), review, hosted CI, the full e2e suite, `env(safe-area-inset-bottom)` on a device and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/touchline-intel.md`. Browser proof: `docs/reports/touchline-intel/`.
+
 ## Touchline bottom sheet
 
 Branch `feat/touchline-sheet` off `b08c68c`. Wave 3 row 3a, matchday UI and the pure play reducer (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
