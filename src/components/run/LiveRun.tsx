@@ -26,7 +26,7 @@ import s from "./PlayScreen.module.css";
 
 type MatchdayScreen = Extract<Restored, { kind: "matchday" }> & { readonly ctx: CupContext };
 type Screen = Exclude<Restored, { kind: "matchday" }> | MatchdayScreen;
-export { restoreRun } from "./savedRun";
+export { restoreFriendly, restoreRun } from "./savedRun";
 
 function matchdayScreen(
   run: Run,
@@ -56,6 +56,31 @@ function saveMatchday(
 
 function firstPlayed(cup: CupResult): number {
   return cup.matches.findIndex((m) => m.status === "played");
+}
+
+type Settled = Exclude<Restored, { kind: "draft" }>;
+
+// A finished draft plays its cup on the matchday when the panel asks for it, else shows results.
+function afterDraft(run: Run, token: string, draft: DraftState, cup: CupResult): Settled {
+  const panel = loadPanel();
+  if (!playsMatchday(panel)) return { kind: "results", token, draft, cup };
+  return {
+    kind: "matchday",
+    run,
+    token,
+    draft,
+    cup,
+    actions: [],
+    match: firstPlayed(cup),
+    view: panel.matchView,
+    managerMode: panel.managerMode,
+  };
+}
+
+/** Where a friendly cup from the home builder opens: its matchday or its results. */
+export function friendlyStart(token: string, draft: DraftState, cup: CupResult): Settled {
+  const { settings, seed, actions } = decodeToken(token);
+  return afterDraft(actions.reduce(step, startRun(settings, seed)), token, draft, cup);
 }
 
 function screenOf(initial: Restored): Screen {
@@ -112,20 +137,7 @@ export function LiveRun({
     const token = runToken(run);
     try {
       const { draft, cup } = replay(token);
-      const panel = loadPanel();
-      // Builder runs are friendlies; the matchday belongs to the drafted cups.
-      if (settings.mode !== "builder" && playsMatchday(panel)) {
-        show(
-          matchdayScreen(run, token, draft, cup, {
-            actions: [],
-            match: firstPlayed(cup),
-            view: panel.matchView,
-            managerMode: panel.managerMode,
-          }),
-        );
-      } else {
-        show({ kind: "results", token, draft, cup });
-      }
+      show(screenOf(afterDraft(run, token, draft, cup)));
       window.scrollTo({ top: 0 });
     } catch {
       setFailure("This run could not be scored. Start a new run.");

@@ -129,6 +129,25 @@ function rebuild(slot: RunSlot, saved: Saved): Run | null {
   }
 }
 
+/**
+ * A friendly's matchday from the home builder, saved in the builder slot. The page has no settings
+ * of its own, so the saved token names them.
+ */
+export function restoreFriendly(slot: RunSlot): Extract<Restored, { kind: "matchday" }> | null {
+  const session = readSession(runSlotKey(slot));
+  const raw = session !== null && session !== RUN_CLEARED ? session : readRunCheckpoint(slot);
+  const saved = raw === null ? null : parse(raw);
+  if (saved?.screen !== "matchday") return null;
+  try {
+    const { settings } = decodeToken(saved.token);
+    if (settings.mode !== slot.settings.mode) return null;
+    const restored = restoreRun({ ...slot, settings });
+    return restored?.kind === "matchday" ? restored : null;
+  } catch {
+    return null;
+  }
+}
+
 export function restoreRun(slot: RunSlot): Restored | null {
   const session = readSession(runSlotKey(slot));
   if (session === RUN_CLEARED) return null;

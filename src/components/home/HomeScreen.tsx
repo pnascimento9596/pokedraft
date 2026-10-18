@@ -8,9 +8,20 @@ import {
   type Friendly,
   type LiveDesk,
 } from "@/components/builder/Builder";
+import { MatchdaySettings } from "@/components/matchday/MatchdaySettings";
+import type { LiveRun, friendlyStart } from "@/components/run/LiveRun";
+import { MODE_LABEL } from "@/ui/labels";
 import { BUILDER_URL_SEED, filledCount } from "@/ui/lineup";
 import { loadStats, type BucketStats, type StatBucket } from "@/ui/runs";
-import { readJson, writeJson } from "@/ui/storage";
+import {
+  RUN_CLEARED,
+  readJson,
+  readRunCheckpoint,
+  readSession,
+  runSlotKey,
+  writeJson,
+  type RunSlot,
+} from "@/ui/storage";
 import {
   DEFAULT_PANEL,
   builderSettings,
@@ -24,9 +35,34 @@ import { fullLineup } from "@/components/builder/model";
 import s from "./HomeScreen.module.css";
 
 // The builder engine and the species data load on first use (a pointer over the builder, a tap, a
-// focus, a ?b= link, or a saved squad), not with the initial page bundle.
+// focus, a ?b= link, or a saved squad), not with the initial page bundle. The cup screens (the
+// matchday and the results) load the same way.
 const loadEngine = () => import("@/components/builder/live");
+const loadLiveRun = () => import("@/components/run/LiveRun");
 const BUILDER_CHECKPOINT_KEY = "pokedraft.builder";
+// Every friendly saves its matchday under the one builder slot, whatever its settings.
+const FRIENDLY_SLOT: RunSlot = {
+  settings: builderSettings(DEFAULT_PANEL),
+  seed: null,
+  daily: null,
+};
+
+interface FriendlyScreen {
+  readonly LiveRun: typeof LiveRun;
+  readonly initial: ReturnType<typeof friendlyStart>;
+}
+
+// Reads the slot without the engine, so a home visit only loads the cup code for a live matchday.
+function savedFriendlyMatchday(): boolean {
+  const session = readSession(runSlotKey(FRIENDLY_SLOT));
+  if (session === RUN_CLEARED) return false;
+  const raw = session ?? readRunCheckpoint(FRIENDLY_SLOT);
+  try {
+    return raw !== null && (JSON.parse(raw) as { screen?: unknown }).screen === "matchday";
+  } catch {
+    return false;
+  }
+}
 
 function whenIdleAfterLoad(task: () => void): () => void {
   let id = 0;
@@ -58,7 +94,7 @@ export function HomeScreen() {
   const [panel, setPanel] = useState<PanelSettings>(DEFAULT_PANEL);
   const [live, setLive] = useState<LiveDesk | null>(null);
   const [stats, setStats] = useState<Readonly<Record<StatBucket, BucketStats>> | null>(null);
-  const [friendly, setFriendly] = useState<Friendly | null>(null);
+  const [friendly, setFriendly] = useState<FriendlyScreen | null>(null);
   const showingResults = friendly !== null;
   const shownBefore = useRef(showingResults);
 
@@ -136,11 +172,32 @@ export function HomeScreen() {
     const checkpoint = readJson<unknown>(BUILDER_CHECKPOINT_KEY, null);
     const token = b ?? (typeof checkpoint === "string" ? checkpoint : null);
     if (token !== null) startLive(token).catch(() => {});
+    if (savedFriendlyMatchday()) {
+      loadLiveRun().then(
+        (mod) => {
+          const initial = mod.restoreFriendly(FRIENDLY_SLOT);
+          if (initial !== null) setFriendly({ LiveRun: mod.LiveRun, initial });
+        },
+        () => {},
+      );
+    }
     // Runs once after hydration; startLive only reads refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => whenIdleAfterLoad(() => void loadEngine().catch(() => {})), []);
+  useEffect(
+    () =>
+      whenIdleAfterLoad(() => {
+        loadEngine().catch(() => {});
+        loadLiveRun().catch(() => {});
+      }),
+    [],
+  );
+
+  const playFriendly = async ({ token, draft, cup }: Friendly) => {
+    const mod = await loadLiveRun();
+    setFriendly({ LiveRun: mod.LiveRun, initial: mod.friendlyStart(token, draft, cup) });
+  };
 
   useEffect(() => {
     if (live === null) return;
@@ -165,13 +222,14 @@ export function HomeScreen() {
     }
   };
 
-  if (friendly !== null && live !== null) {
+  if (friendly !== null) {
+    const { draft } = friendly.initial;
     return (
-      <live.engine.ResultsView
-        token={friendly.token}
-        draft={friendly.draft}
-        cup={friendly.cup}
-        variant="live"
+      <friendly.LiveRun
+        settings={draft.settings}
+        seed={draft.seed}
+        title={MODE_LABEL.builder}
+        initial={friendly.initial}
         onNewRun={() => {
           setFriendly(null);
           setStats(loadStats());
@@ -212,7 +270,13 @@ export function HomeScreen() {
             changeDraft({ ...live, draft: freshDraft(live.engine, DEFAULT_PANEL) });
           }
         }}
-        onFriendly={setFriendly}
+        onFriendly={playFriendly}
+        matchday={
+          <MatchdaySettings
+            value={{ managerMode: panel.managerMode, matchView: panel.matchView }}
+            onChange={(next) => changePanel({ ...panel, ...next })}
+          />
+        }
       />
     </div>
   );

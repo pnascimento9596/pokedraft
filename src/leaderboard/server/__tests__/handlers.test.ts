@@ -133,6 +133,18 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect(await rows()).toHaveLength(0);
   });
 
+  it("rejects a coached builder token with 422 BUILDER_NOT_RANKED, so a managed friendly stays unranked", async () => {
+    const coached = encodeToken({
+      ...decodeToken(scriptedToken(BUILDER, "builder")),
+      manager: [{ type: "tactic", match: 0, minute: 30, tactic: "attack" }],
+    });
+    const res = await submit({ nickname: "Brock", token: coached });
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe("BUILDER_NOT_RANKED");
+    expect(replays).toBe(0);
+    expect(await rows()).toHaveLength(0);
+  });
+
   // Bug: engine 6 accepts coached tokens before boards can mark them Coached, so a hand-made
   // replay coach would rank unmarked. Remove this guard with the manager UI and board marker.
   it("ranks a coached token and marks it Coached on the board, next to an uncoached one (catches coached runs refused or shown unmarked)", async () => {

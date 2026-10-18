@@ -432,6 +432,7 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
     render(<PlayScreen />);
     await pickGulpinAtStriker();
     fireEvent.click(screen.getByTestId("new-run"));
+    fireEvent.click(screen.getByTestId("new-run-confirm"));
 
     reload(<PlayScreen />);
 
@@ -495,6 +496,7 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
       await pickGulpinAtStriker();
       expect(localStorage.getItem("pokedraft.run.cup8")).not.toBeNull();
       fireEvent.click(screen.getByTestId("new-run"));
+      fireEvent.click(screen.getByTestId("new-run-confirm"));
       expect(localStorage.getItem("pokedraft.run.cup8")).toBeNull();
       reload(<PlayScreen />);
       await act(async () => {});
@@ -516,6 +518,7 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
     await pickGulpinAtStriker();
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
     fireEvent.click(screen.getByTestId("new-run"));
+    fireEvent.click(screen.getByTestId("new-run-confirm"));
     expect(screen.getByTestId("run-start")).toBeTruthy();
     vi.restoreAllMocks();
   });

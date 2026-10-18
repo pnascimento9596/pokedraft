@@ -56,6 +56,9 @@ interface DragState {
 }
 
 const DRAG_THRESHOLD = 6;
+// The field tilts back by rotateX(26deg) (Pitch.module.css), so a starter's vertical move on the
+// field shows on screen shortened by cos(26deg). Stretching it back keeps the card under the finger.
+const FIELD_TILT_COS = Math.cos((26 * Math.PI) / 180);
 
 export function Pitch({
   formation,
@@ -143,7 +146,11 @@ export function Pitch({
         style={{
           ...style,
           ...(species ? typeFrame(species.types[0]) : null),
-          ...(dragging ? { translate: `${drag.dx}px ${drag.dy}px` } : null),
+          ...(dragging
+            ? {
+                translate: `${drag.dx}px ${at === undefined ? drag.dy : Math.round((drag.dy / FIELD_TILT_COS) * 100) / 100}px`,
+              }
+            : null),
         }}
         onClick={(e) => {
           // A mouse drag ends with a click on the dragged token, which must not also open it. A
