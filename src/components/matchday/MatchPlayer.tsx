@@ -1,7 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { speciesById } from "@/engine";
 import type { BenchIndex, FullLineup, ManagerAction, MatchResult, Tactic } from "@/engine/types";
 import { ROUND_LABEL } from "@/ui/labels";
@@ -19,7 +27,9 @@ import {
   type PlayEnv,
 } from "@/ui/matchday/player";
 import { PHASE_LEN, buildTimeline, frameAt, type Beat } from "@/ui/matchday/timeline";
+import { crowdGain, kickPassDue, roarFor } from "@/ui/matchday/crowd";
 import {
+  crowdRoar,
   playAbilitySound,
   playCardSound,
   playGoalHorn,
@@ -28,7 +38,10 @@ import {
   playSaveSound,
   playSubSound,
   playWhistle,
+  setCrowdLevel,
   setSoundEnabled,
+  startCrowdBed,
+  stopCrowdBed,
   unlockAudio,
   useSoundEnabled,
 } from "@/components/wheel/sound";
@@ -148,6 +161,16 @@ export function MatchPlayer({
     };
   }, [moving, motion]);
 
+  // The crowd only fills a live broadcast while its clock runs: Quick, a pause, a stop, full time,
+  // leaving the matchday and the sound toggle all silence it.
+  const crowd = soundOn && view === "live" && moving;
+  useEffect(() => {
+    if (!crowd) return;
+    startCrowdBed();
+    return stopCrowdBed;
+  }, [crowd]);
+  const onBall = useCallback((x: number) => setCrowdLevel(crowdGain(x)), []);
+
   const sounded = useRef(new Set<string>());
   const horned = useRef(new Set<string>());
   useEffect(() => {
@@ -177,6 +200,7 @@ export function MatchPlayer({
     for (const b of scored) {
       if (b.side === "user") playGoalHorn();
       else playOppGoal();
+      if (view === "live") crowdRoar(roarFor(b, state.speed));
     }
     for (const b of fresh) {
       if (b.kind === "goal") {
@@ -197,9 +221,10 @@ export function MatchPlayer({
         playWhistle(wKind);
       }
     }
-  }, [state.fired, state.stage, state.speed, timeline, now, motion]);
+  }, [state.fired, state.stage, state.speed, timeline, now, motion, view]);
 
   const lastPhase = useRef(-1);
+  const lastKick = useRef<number | null>(null);
   useEffect(() => {
     if (!moving || view !== "live") return;
     const idx = Math.floor(state.minute / PHASE_LEN);
@@ -209,7 +234,8 @@ export function MatchPlayer({
     if (phase === undefined) return;
     if (phase.callout !== null) {
       playAbilitySound(phase.callout.effect);
-    } else if (phase.kind !== "dribble") {
+    } else if (kickPassDue(idx, phase, lastKick.current)) {
+      lastKick.current = idx;
       playKickPass();
     }
   }, [moving, view, state.minute, timeline.plays]);
@@ -332,6 +358,7 @@ export function MatchPlayer({
         motion={motion}
         speed={state.speed}
         cutIns={view === "live"}
+        onBall={crowd ? onBall : undefined}
       />
 
       <div className={s.controls}>

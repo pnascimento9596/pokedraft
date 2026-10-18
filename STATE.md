@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Audio polish
+
+Branch `feat/audio-polish` off `fe6d183`. UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- With sound on, tapping Watch live or Go to the match unlocks audio, so the autostarted broadcast is no longer silent until Pause and Resume.
+- A live broadcast has a synthesized crowd (band-passed seeded noise, no assets) that swells as the ball nears either box and roars when a goal lands: 2250 ms for a normal goal, 4950 ms for an equaliser at 80' or later, halved at 2x.
+- The crowd stops on pause, manager stops, full time, Sound off, closing Watch live and leaving the matchday. Quick has no crowd, no roar and no kick thud.
+- The kick thud never sounds twice in any three phases.
+
+RED commit: `da0bcc8` (11 tests failed in 4 files and `crowd.test.ts` failed to import `../crowd`).
+
+Gates at `b8b8d14` (code identical at `41a7fe1`, which adds the spec and docs):
+
+- Lint, typecheck and build exited 0 (lint, typecheck and Prettier on touched files re-run at `41a7fe1`, exit 0).
+- Unit tests: 1,410 passed in 159 files.
+- Playwright (port 3524, `CI=1`): `audio-polish`, `mobile-targets`, `mobile-acceptance`, `watch-live`, `one-shared-timeline`, `manager-mode`, `builder-matchday`, `mobile-pitch-fixes`, `honest-momentum`, `injury-staging`: 387 passed, 54 skipped by their own project gates.
+- iOS Safari audio on a device, review and hosted CI: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/audio-polish.md`.
+
+PR #87 (Wave 1 summary) merged as squash `fe6d183`, reviewed head `b7823f4`, GLM 5.3 Flash APPROVE in round 2 with canary `wave1-summary-r2-e85818455aaf26363677ab2a4eaef30d` echoed. Round 1 (`10cf2f7`) was REQUEST_CHANGES: the section misstated its gates and called 2,891,853 bytes a saving (the saving is 2,892,556). At `b7823f4` lint, typecheck and build exited 0, 1,387 unit tests passed in 155 files and Prettier passed on the three changed files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `fe6d183` with `db.status` ok (docs only, no route to check). Wave 1's live checks are recorded in `docs/reports/audits-2026-10-17/program-log.md`.
+
 ## Wave 1 summary
 
 Branch `docs/wave1-summary` off `4173b94`. Docs only (Green). Appends the Wave 1 entry to `docs/reports/audits-2026-10-17/program-log.md`: every PR with its squash and reviewed head, the production checks, the measurements that moved, brief-vs-code notes and open carryovers. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.

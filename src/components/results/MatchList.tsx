@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { CupResult, DraftState, MatchResult } from "@/engine";
+import { unlockAudio } from "@/components/wheel/sound";
 import { FINISH_LABEL, ROUND_LABEL, ROUND_SHORT } from "@/ui/labels";
 import {
   absenceLine,
@@ -130,7 +131,10 @@ function Played({
           className={`btn btn--ghost btn--sm ${s.watch}`}
           data-testid="watch-live"
           aria-label={`Watch live: ${ROUND_LABEL[m.round]} against ${m.opponent.name}`}
-          onClick={onWatch}
+          onClick={() => {
+            unlockAudio();
+            onWatch();
+          }}
         >
           Watch live
         </button>

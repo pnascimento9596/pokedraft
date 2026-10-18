@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type CSSProperties } from "react";
+import { useEffect, useMemo, type CSSProperties } from "react";
 import { FORMATIONS } from "@/engine";
 import type { FullLineup, MatchResult } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
@@ -52,6 +52,7 @@ export function Broadcast({
   motion,
   speed,
   cutIns = false,
+  onBall,
 }: {
   readonly match: PlayedMatch;
   /** The one timeline the match player clocks, sounds and stages from. */
@@ -66,6 +67,8 @@ export function Broadcast({
   readonly speed: number;
   /** Lower-third cards for shots on target and key duels: live broadcasts only, never Quick. */
   readonly cutIns?: boolean;
+  /** Hears where the staged ball is along the pitch, 0 to 100, after each paint. */
+  readonly onBall?: (x: number) => void;
 }) {
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
@@ -84,6 +87,10 @@ export function Broadcast({
     oppSlots,
     oppLabels,
   });
+  const ballX = stage.ball.x;
+  useEffect(() => {
+    onBall?.(ballX);
+  }, [onBall, ballX]);
   const goal = active?.beat.kind === "goal" ? active.beat : null;
   const cutIn = cutIns ? cutInAt(active, stage.playCallout) : null;
   const progress = active?.progress ?? 0;
