@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Fatigue on the pitch
+
+Branch `feat/fatigue` off `origin/feat/smooth-movement` at `0588297` (row 2c, PR #94), with `origin/feat/smooth-movement` merged in again at `5744f20` (carrying `origin/main` with PR #93). Pure staging plus `Broadcast.tsx` and CSS (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The pitch reads each user player's energy from the latest window snapshot at or before the clock, and only when that window recorded the same player in the slot. The opponent, a substitute before their first window, and runs with no windows show no energy.
+- Below 65 a player covers 0.85 of each phase's move (on row 2c's spline, through shortened waypoints), strides 1.18 times slower and shows a sweat pip. Below 55 a stamina arc shows under the sprite.
+- The pip and the arc render at about 10 Hz as children of the player element the frame loop moves. Quick and reduced motion keep players on their spots.
+- With every slot at 50 energy, the ball's largest one-frame move over the golden cup is 3.73% (bound 4%); the largest player move is row 2c's save settle, 5.19% (4.94% fresh).
+
+RED commit: `1c38ae4` (7 of 9 failed).
+
+Gates at `ef2b4a9` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. Prettier passed on the touched files. `check:theme-colors`, `check:theme-contrast`, `check:theme-cvd`, `check:image-seam` and `check:client-bundle` exited 0.
+- Unit tests: 1,481 passed in 171 files.
+- Playwright (port 3528, `CI=1`, fresh build): `fatigue`, `smooth-movement`, `continuous-ball`, `broadcast-frame-loop`, `set-pieces`, `mobile-targets`, `mobile-acceptance`, `quick-not-broadcast`, `injury-staging`, `shootout-suspense`, `watch-live`: 377 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/fatigue.md`. Browser proof: `docs/reports/fatigue/`.
+
 ## Smooth movement
 
 Branch `feat/smooth-movement` off `458c56e`, with `origin/main` merged in, last at `e3d0e95` (PRs #92 and #91). Pure staging plus a thin `Broadcast.tsx` change (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
