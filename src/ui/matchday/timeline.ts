@@ -737,6 +737,8 @@ export interface Walk {
   readonly species: SpeciesId | null;
   readonly name: string;
   readonly dir: "on" | "off";
+  /** The beat's minute: a player going off leaves from where that moment found them. */
+  readonly minute: number;
   /** 0 to 1 through the walk; an injury's replacement waits at 0 until the injured player is seen. */
   readonly progress: number;
 }
@@ -1535,6 +1537,13 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     }
   }
 
+  // An injured player stays down where the injury found them, so they walk off from that
+  // spot. Play, and the ball, carry on around them.
+  if (b?.kind === "injury" && b.player.slot !== null) {
+    const down = shapeAt(b.minute).user[b.player.slot];
+    if (down !== undefined) pts.user[b.player.slot] = down;
+  }
+
   const buildStagedSide = (
     side: Side,
     xi: readonly (SpeciesId | null)[],
@@ -1613,9 +1622,10 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       };
     });
 
-  // Sent off or substituted: from their spot in the shape to the nearer touchline.
+  // Sent off or substituted: from their spot in the shape at the beat to the nearer touchline,
+  // in a straight line while play runs on without them.
   const leaving = walks.flatMap((w): StagedPlayer[] => {
-    const spot = here[w.side][w.slot];
+    const spot = (w.minute === clock ? here : shapeAt(w.minute))[w.side][w.slot];
     const home = (w.side === "user" ? userSlots : oppSlots)[w.slot];
     if (w.dir !== "off" || spot === undefined || home === undefined) return [];
     const edge = { x: spot.x, y: slotPoint(w.side, home, 0).y < 50 ? 0 : 100 };

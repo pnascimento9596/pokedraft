@@ -178,8 +178,8 @@ describe("smooth movement (catches players stopping dead at every phase, stackin
         stageFrame(timeline, viewFor(5, { clock: 6.01, fired, now: FIRED_AT + after, speed })).stage
           .leaving ?? []
       ).map((p) => ({ side: p.side, slot: p.slot, species: p.species, y: +p.point.y.toFixed(2) }));
-    expect(leaving(0)).toEqual([{ side: "user", slot: 2, species: 272, y: 30.61 }]);
-    expect(leaving(900)).toEqual([{ side: "user", slot: 2, species: 272, y: 15.3 }]);
+    expect(leaving(0)).toEqual([{ side: "user", slot: 2, species: 272, y: 30.55 }]);
+    expect(leaving(900)).toEqual([{ side: "user", slot: 2, species: 272, y: 15.28 }]);
     expect(leaving(1_799)).toEqual([{ side: "user", slot: 2, species: 272, y: 0 }]);
     expect(leaving(1_800)).toEqual([]);
     expect(leaving(899, 2)).toEqual([{ side: "user", slot: 2, species: 272, y: 0 }]);

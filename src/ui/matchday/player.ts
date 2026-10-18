@@ -213,8 +213,8 @@ export function walksAt(
       // its board is not up yet: the substitute waits on the touchline and the player going off
       // stays put. A sub skipped past never walks.
       if (b.kind === "sub" && b.reason !== "injury" && b.minute === clock) {
-        walks.push({ ...walker(b.in, b.slot), dir: "on", progress: 0 });
-        walks.push({ ...walker(b.out, b.slot), dir: "off", progress: 0 });
+        walks.push({ ...walker(b.in, b.slot), dir: "on", minute: b.minute, progress: 0 });
+        walks.push({ ...walker(b.out, b.slot), dir: "off", minute: b.minute, progress: 0 });
       }
       continue;
     }
@@ -223,11 +223,13 @@ export function walksAt(
     if (b.kind === "card") {
       if (b.player.slot === null) continue;
       const { side, slot, species, name } = b.player;
-      walks.push({ side, slot, species, name, dir: "off", progress });
+      walks.push({ side, slot, species, name, dir: "off", minute: b.minute, progress });
       continue;
     }
-    walks.push({ ...walker(b.in, b.slot), dir: "on", progress });
-    if (now >= at) walks.push({ ...walker(b.out, b.slot), dir: "off", progress });
+    walks.push({ ...walker(b.in, b.slot), dir: "on", minute: b.minute, progress });
+    if (now >= at) {
+      walks.push({ ...walker(b.out, b.slot), dir: "off", minute: b.minute, progress });
+    }
   }
   return walks;
 }
