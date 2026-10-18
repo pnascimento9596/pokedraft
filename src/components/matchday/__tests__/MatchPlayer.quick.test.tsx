@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import type { FullLineup, MatchResult, Opponent, SpeciesId } from "@/engine/types";
+import { PACE } from "@/ui/matchday/clock";
 import type { MatchView } from "@/ui/settings";
 import { MatchPlayer } from "../MatchPlayer";
 
@@ -129,7 +130,8 @@ describe("Quick view (catches a Quick sim that runs the broadcast: a phase sound
   });
 
   it("Quick shows no cut-in through the 30' goal, while Live shows the goal card", async () => {
-    const cards = async (view: MatchView) => {
+    /** The minute the goal card first shows, or null if it never shows by 35'. */
+    const firstGoalCard = async (view: MatchView): Promise<number | null> => {
       render(
         <MatchPlayer
           match={LATE_GOAL}
@@ -143,19 +145,33 @@ describe("Quick view (catches a Quick sim that runs the broadcast: a phase sound
       await act(async () => {
         await vi.dynamicImportSettled();
       });
-      let seen = 0;
+      // The goal beat fires at 30', so no card can show before it. Jump there in 100 ms frames,
+      // the largest dt the frame loop takes, instead of 16 ms ones: stepping 16 ms frames from
+      // kickoff took 14 s of the 15 s budget on a hosted runner.
+      const frame = globalThis.requestAnimationFrame;
+      globalThis.requestAnimationFrame = (cb) =>
+        setTimeout(() => cb(performance.now()), 100) as unknown as number;
+      await act(async () => {
+        vi.advanceTimersByTime(PACE[view].regulation * 29);
+      });
+      globalThis.requestAnimationFrame = frame;
+      expect(minute()).toBe(28);
       for (let i = 0; i < 8_000 && minute() < 35; i++) {
         await act(async () => {
           vi.advanceTimersByTime(FRAME);
         });
-        if (screen.queryByTestId("cut-in")?.getAttribute("data-kind") === "goal") seen++;
+        if (screen.queryByTestId("cut-in")?.getAttribute("data-kind") === "goal") {
+          const at = minute();
+          cleanup();
+          return at;
+        }
       }
       expect(minute()).toBe(35);
       cleanup();
-      return seen;
+      return null;
     };
-    expect(await cards("quick")).toBe(0);
-    expect(await cards("live")).toBeGreaterThan(0);
+    expect(await firstGoalCard("quick")).toBeNull();
+    expect(await firstGoalCard("live")).toBe(30);
   });
 
   it("Live keeps its phase sounds and its moving pitch", async () => {
