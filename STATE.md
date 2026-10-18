@@ -21,11 +21,12 @@ Gates at `5b7ca8d` (later commits change only docs):
 - Lint, typecheck, build and format check exited 0.
 - Unit tests: 1,331 passed in 147 files.
 - Playwright on a fresh build (leaderboard, leaderboard-cls, leaderboard-date, mobile-targets, mobile-acceptance): 375 passed, 54 skipped, 0 failed.
+- At the merge of `origin/main` (`0145412`) the coordinator reruns lint, typecheck, unit tests, build and the format check on the reviewed head; the counts are in the PR's review comment and the next STATE update.
 - Full Playwright suite, independent review, a physical phone check and the post-merge production check: NOT RUN.
 
 Scope, RED output and decisions are in `docs/decisions/security-integrity-quick-fixes.md`. Screenshot: `docs/reports/security-integrity-quick-fixes/leaderboard-coach-url-390x844.png`.
 
-PR #82 (side fix, CI e2e shards) merged as squash `754d838`, reviewed head `ac0c6d3`, GLM 5.3 Flash APPROVE with canary `ci-shard-r3-1c82513b2110db5a53eb92acc7b4bc89` echoed (earlier four-shard heads `a380010` and `c4e6113` were approved or in review before the move to eight). On `ac0c6d3` the eight shards took 4.5, 5.7, 3.0, 5.6, 5.5, 8.4, 6.5 and 3.1 min, all green. Shard 6 ran 110 tests in 6.5 min with no retry: Playwright splits by test count, not time, so the slowest shard is 8.4 min against 9.1 min with four. Production `/api/health?db=1` served `754d838` with `db.status` ok (CI-only change, no route to check). PR #81 (row 1h) is recorded in the CI e2e shards section below.
+PR #82 (side fix, CI e2e shards) merged as squash `754d838`, reviewed head `ac0c6d3`, GLM 5.3 Flash APPROVE with canary `ci-shard-r3-1c82513b2110db5a53eb92acc7b4bc89` echoed (the earlier four-shard head `a380010` was approved; the review of `c4e6113` was stopped when the PR moved to eight shards). On `ac0c6d3` the eight shards took 4.5, 5.7, 3.0, 5.6, 5.5, 8.4, 6.5 and 3.1 min, all green. Shard 6 ran 110 tests in 6.5 min with no retry: Playwright splits by test count, not time, so the slowest shard is 8.4 min against 9.1 min with four. Production `/api/health?db=1` served `754d838` with `db.status` ok (CI-only change, no route to check). PR #81 (row 1h) is recorded in the CI e2e shards section below.
 
 ## CI e2e shards
 
