@@ -695,14 +695,37 @@ export const SHOW: Readonly<Record<Beat["kind"], number>> = {
 
 /** The share of a goal's staging at which the ball crosses the line. */
 export const GOAL_LANDS = 0.6;
+/** The share of a goal's staging at which the scorer strikes the ball. */
+const STRIKE = 0.35;
+/** A set piece: by now the ball sits on its spot, the taker waits at the run-up, a wall has formed. */
+const SET_PLACED = 0.18;
+/** A set piece: the taker has stepped up to the ball, and pauses there until the strike. */
+const STEPPED_UP = 0.27;
+/** A header: the ball has gone out wide and the cross starts. */
+const CROSS_FROM = 0.2;
+/** How high the ball is when a header meets it. */
+const CROSS_LOFT = 0.85;
+/** How far behind the ball a set-piece taker starts the run-up. */
+const RUN_UP = 5;
+/** A free kick's wall: how far toward goal it stands, and the gap between its three players. */
+const WALL_GAP = 9;
+const WALL_SPACING = 4;
+/** How far a free kick's curve bows off the straight line, as its control point's offset. */
+const CURL = 14;
+/** How far a solo run swerves around the defender who steps in. */
+const SWERVE = 5;
+const SOLO_TOUCHES = 4;
+/** A solo run: by now the scorer has the ball at their feet, and the defender has stepped in. */
+const SOLO_GATHER = 0.1;
+const PRESSER_IN = 0.2;
 
 /** How long the pitch takes to settle after a goal or a save leaves it, in real milliseconds. */
 export const SETTLE: Readonly<Record<"goal" | "save", number>> = { goal: 600, save: 300 };
 
 /** A goal move as it plays: from the live ball to the shot, the shot, then the ball in the net. */
 export function goalBall(from: Point, shot: Point, mouth: Point, progress: number): Point {
-  if (progress < 0.35) return lerp(from, shot, progress / 0.35);
-  if (progress < GOAL_LANDS) return lerp(shot, mouth, (progress - 0.35) / (GOAL_LANDS - 0.35));
+  if (progress < STRIKE) return lerp(from, shot, progress / STRIKE);
+  if (progress < GOAL_LANDS) return lerp(shot, mouth, (progress - STRIKE) / (GOAL_LANDS - STRIKE));
   return mouth;
 }
 
@@ -770,8 +793,10 @@ export interface BallTrail {
   readonly to: Point;
   readonly effect: Effect | null;
   readonly type: PokemonType | null;
-  readonly kind: "pass" | "shot" | "save" | "dribble";
+  readonly kind: "pass" | "cross" | "shot" | "save" | "dribble";
   readonly progress: number;
+  /** The control point of the curve drawn from `from` to `to`, when the ball bends. */
+  readonly via?: Point;
 }
 
 export interface PitchStage {
@@ -1407,82 +1432,27 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     }
   }
 
+  const present = (side: Side, slot: number): boolean =>
+    pts[side][slot] !== undefined &&
+    ((side === "user" ? userXI : oppXI)[slot] != null ||
+      (side === "opp" && Boolean(input.oppLabels?.[slot])));
+  const refAt = (side: Side, slot: number): PitchRef => {
+    const id = (side === "user" ? userXI : oppXI)[slot] ?? null;
+    return { side, slot, species: id, name: labelOf(side, slot, id) };
+  };
+  let goalStage: GoalStage | null = null;
+
   // A goal or a save takes the ball from wherever the pitch has it: open play, or the last shot
   // still settling.
   const handover = shot?.before ? stagePitch(timeline, { ...input, shot: shot.before }).ball : null;
   const liveBall = handover === null ? ballPos : { x: handover.x, y: handover.y };
   if (goal !== null) {
-    const b = goal;
-    const attDir = attackDir(b.side);
-    const mouth = goalMouth(b.side);
-    const scorerSlot = b.scorer.slot;
-    const assistSlot = b.assist?.slot ?? null;
-    const setPiece =
-      b.goalKind === "penalty"
-        ? penaltySpot(b.side)
-        : b.goalKind === "free-kick"
-          ? freeKickSpot(b.side)
-          : null;
-    if (scorerSlot !== null && pts[b.side][scorerSlot]) {
-      const baseScorer = pts[b.side][scorerSlot]!;
-      const targetScorer =
-        setPiece !== null
-          ? { x: setPiece.x - attDir * 3, y: setPiece.y }
-          : clampPoint({
-              x: b.side === "user" ? 82 : 18,
-              y: 50 + (baseScorer.y - 50) * 0.45,
-            });
-      pts[b.side][scorerSlot] = lerp(baseScorer, targetScorer, Math.min(1, progress * 1.8));
-    }
-    if (assistSlot !== null && pts[b.side][assistSlot]) {
-      const baseAssist = pts[b.side][assistSlot]!;
-      pts[b.side][assistSlot] = clampPoint({
-        x: baseAssist.x + attDir * 6 * smoothstep(progress / REACT),
-        y: baseAssist.y,
-      });
-    }
-    const defSide: Side = b.side === "user" ? "opp" : "user";
-    if (pts[defSide][0]) {
-      const goalLine = mouth.x === 98 ? 96.5 : 3.5;
-      const dive = smoothstep((progress - 0.35) / REACT);
-      pts[defSide][0] = lerp(
-        pts[defSide][0]!,
-        { x: goalLine, y: 50 - 7 * dive },
-        smoothstep(progress / REACT),
-      );
-    }
-    const scorerSpot =
-      scorerSlot !== null && pts[b.side][scorerSlot]
-        ? pts[b.side][scorerSlot]!
-        : { x: b.side === "user" ? 80 : 20, y: 50 };
-    const shotSpot = setPiece ?? scorerSpot;
-    ballPos = goalBall(liveBall, shotSpot, mouth, progress);
-    ballLoft =
-      progress < 0.35
-        ? Math.sin((progress / 0.35) * Math.PI) * 0.35
-        : progress < 0.65
-          ? Math.sin(((progress - 0.35) / 0.3) * Math.PI) * 0.85
-          : 0;
-    ballEffect = b.callout.effect;
-    carrier = progress < 0.35 && b.assist ? b.assist : b.scorer;
-    trail =
-      progress < 0.35
-        ? {
-            from: liveBall,
-            to: ballPos,
-            effect: null,
-            type: null,
-            kind: "pass",
-            progress: progress / 0.35,
-          }
-        : {
-            from: shotSpot,
-            to: ballPos,
-            effect: b.callout.effect,
-            type: b.callout.type,
-            kind: "shot",
-            progress: Math.min(1, (progress - 0.35) / 0.3),
-          };
+    goalStage = stageGoal(goal, progress, liveBall, pts, present, refAt);
+    ballPos = goalStage.ball;
+    ballLoft = goalStage.loft;
+    ballEffect = goal.callout.effect;
+    carrier = goalStage.carrier;
+    trail = goalStage.trail;
   } else if (save !== null) {
     const b = save;
     const attSide: Side = b.side === "user" ? "opp" : "user";
@@ -1568,10 +1538,15 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         (playCalloutStage?.side === side && playCalloutStage.slot === slot);
 
       let pose: PlayerPose = speed > SPRINT_SPEED ? "sprint" : speed > RUN_SPEED ? "run" : "idle";
+      const inWall = goal !== null && goal.side !== side && goalStage?.wall.includes(slot);
       if (injured(side, slot)) {
         pose = "down";
       } else if (comingOn !== undefined && comingOn.progress < 1) {
         pose = "run";
+      } else if (inWall) {
+        pose = progress >= SET_PLACED ? "idle" : "run";
+      } else if (goal !== null && goal.side !== side && goalStage?.beaten === slot) {
+        pose = "press";
       } else if (
         goal !== null &&
         goal.side === side &&
@@ -1602,7 +1577,8 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       }
 
       const sideways = comingOn !== undefined && comingOn.progress < 1 ? point.x - BENCH.x : v.x;
-      const facing = facingFor(side, sideways);
+      // A wall keeps its side's facing while it shuffles into place.
+      const facing = inWall ? (side === "user" ? "right" : "left") : facingFor(side, sideways);
 
       return {
         side,
@@ -1663,6 +1639,276 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     trail,
     playCallout: b === undefined ? playCalloutStage : null,
   };
+}
+
+type GoalBeat = Extract<Beat, { kind: "goal" }>;
+
+/** A goal as the pitch acts it out at one moment, by the kind the engine recorded. */
+interface GoalStage {
+  readonly ball: Point;
+  readonly loft: number;
+  readonly carrier: PitchRef;
+  readonly trail: BallTrail | null;
+  /** The defenders lined up in a free kick's wall. */
+  readonly wall: readonly number[];
+  /** The defender a solo run goes past. */
+  readonly beaten: number | null;
+}
+
+function bezier(a: Point, c: Point, b: Point, t: number): Point {
+  const k = Math.min(1, Math.max(0, t));
+  const m = 1 - k;
+  return {
+    x: m * m * a.x + 2 * m * k * c.x + k * k * b.x,
+    y: m * m * a.y + 2 * m * k * c.y + k * k * b.y,
+  };
+}
+
+/** The outfield players of a side nearest a point, nearest first; a tie goes to the lower slot. */
+function nearestOutfield(
+  at: readonly Point[],
+  side: Side,
+  to: Point,
+  present: (side: Side, slot: number) => boolean,
+  exclude: number | null,
+): number[] {
+  const away = (slot: number) => Math.hypot(at[slot]!.x - to.x, at[slot]!.y - to.y);
+  return at
+    .map((_, slot) => slot)
+    .filter((slot) => slot !== 0 && slot !== exclude && present(side, slot))
+    .sort((a, b) => away(a) - away(b) || a - b);
+}
+
+/**
+ * Stages a goal by its kind, moving the players it involves in `pts`. Every kind strikes the ball
+ * at `STRIKE` and has it over the line at `GOAL_LANDS`, starting from the live ball.
+ */
+function stageGoal(
+  goal: GoalBeat,
+  progress: number,
+  live: Point,
+  pts: { readonly user: Point[]; readonly opp: Point[] },
+  present: (side: Side, slot: number) => boolean,
+  refAt: (side: Side, slot: number) => PitchRef,
+): GoalStage {
+  const side = goal.side;
+  const attDir = attackDir(side);
+  const defSide: Side = side === "user" ? "opp" : "user";
+  const mouth = goalMouth(side);
+  const scorerSlot =
+    goal.scorer.slot !== null && pts[side][goal.scorer.slot] ? goal.scorer.slot : null;
+  const scorerBase =
+    scorerSlot === null ? { x: side === "user" ? 80 : 20, y: 50 } : pts[side][scorerSlot]!;
+  const moveScorer = (p: Point) => {
+    if (scorerSlot !== null) pts[side][scorerSlot] = p;
+  };
+  if (pts[defSide][0]) {
+    const dive = smoothstep((progress - STRIKE) / REACT);
+    pts[defSide][0] = lerp(
+      pts[defSide][0]!,
+      { x: mouth.x === 98 ? 96.5 : 3.5, y: 50 - 7 * dive },
+      smoothstep(progress / REACT),
+    );
+  }
+  const flight = Math.min(1, Math.max(0, (progress - STRIKE) / (GOAL_LANDS - STRIKE)));
+  const shot = (from: Point, to: Point, via?: Point): BallTrail => ({
+    from,
+    to,
+    effect: goal.callout.effect,
+    type: goal.callout.type,
+    kind: "shot",
+    progress: Math.min(1, (progress - STRIKE) / 0.3),
+    ...(via === undefined ? {} : { via }),
+  });
+  const quiet = { wall: [], beaten: null } as const;
+
+  switch (goal.goalKind) {
+    case "penalty":
+    case "free-kick": {
+      const spot = goal.goalKind === "penalty" ? penaltySpot(side) : freeKickSpot(side);
+      const runUp = { x: spot.x - attDir * RUN_UP, y: spot.y };
+      const over = { x: spot.x - attDir * TOUCH, y: spot.y };
+      moveScorer(
+        progress < SET_PLACED
+          ? lerp(scorerBase, runUp, smoothstep(progress / SET_PLACED))
+          : lerp(runUp, over, smoothstep((progress - SET_PLACED) / (STEPPED_UP - SET_PLACED))),
+      );
+      const wall =
+        goal.goalKind === "free-kick"
+          ? nearestOutfield(pts[defSide], defSide, spot, present, null).slice(0, 3)
+          : [];
+      [...wall]
+        .sort((a, b) => pts[defSide][a]!.y - pts[defSide][b]!.y || a - b)
+        .forEach((slot, k) => {
+          const place = { x: spot.x + attDir * WALL_GAP, y: spot.y + (k - 1) * WALL_SPACING };
+          pts[defSide][slot] = lerp(pts[defSide][slot]!, place, smoothstep(progress / SET_PLACED));
+        });
+      const bend = { x: (spot.x + mouth.x) / 2, y: spot.y - CURL };
+      const curls = goal.goalKind === "free-kick";
+      const ball =
+        progress < STRIKE
+          ? lerp(live, spot, progress / SET_PLACED)
+          : progress >= GOAL_LANDS
+            ? mouth
+            : curls
+              ? bezier(spot, bend, mouth, flight)
+              : lerp(spot, mouth, flight);
+      return {
+        ball,
+        loft: progress < STRIKE ? 0 : Math.sin(flight * Math.PI) * (curls ? 0.6 : 0.25),
+        carrier: goal.scorer,
+        trail:
+          progress < STRIKE ? null : shot(spot, ball, curls ? lerp(spot, bend, flight) : undefined),
+        wall,
+        beaten: null,
+      };
+    }
+    case "header": {
+      const wing = { x: side === "user" ? 84 : 16, y: live.y < 50 ? 12 : 88 };
+      const meet = {
+        x: side === "user" ? 88 : 12,
+        y: 50 + Math.min(8, Math.max(-8, (scorerBase.y - 50) * 0.3)),
+      };
+      const bend = { x: (wing.x + meet.x) / 2 + attDir * 6, y: (wing.y + meet.y) / 2 };
+      const nearest = nearestOutfield(pts[side], side, wing, present, scorerSlot)[0];
+      const crosser = goal.assist ?? (nearest === undefined ? null : refAt(side, nearest));
+      if (crosser?.slot != null && pts[side][crosser.slot]) {
+        const out = { x: wing.x - attDir * TOUCH, y: wing.y };
+        pts[side][crosser.slot] = lerp(
+          pts[side][crosser.slot]!,
+          out,
+          smoothstep(progress / CROSS_FROM),
+        );
+      }
+      moveScorer(lerp(scorerBase, meet, smoothstep(progress / STRIKE)));
+      if (progress < CROSS_FROM) {
+        const t = progress / CROSS_FROM;
+        const ball = lerp(live, wing, t);
+        return {
+          ball,
+          loft: Math.sin(t * Math.PI) * 0.2,
+          carrier: crosser ?? goal.scorer,
+          trail: { from: live, to: ball, effect: null, type: null, kind: "pass", progress: t },
+          ...quiet,
+        };
+      }
+      if (progress < STRIKE) {
+        const c = (progress - CROSS_FROM) / (STRIKE - CROSS_FROM);
+        const ball = bezier(wing, bend, meet, c);
+        return {
+          ball,
+          loft: CROSS_LOFT * Math.sin((c * Math.PI) / 2) + 0.3 * Math.sin(c * Math.PI),
+          carrier: goal.scorer,
+          trail: {
+            from: wing,
+            to: ball,
+            effect: null,
+            type: null,
+            kind: "cross",
+            progress: c,
+            via: lerp(wing, bend, c),
+          },
+          ...quiet,
+        };
+      }
+      const ball = progress >= GOAL_LANDS ? mouth : lerp(meet, mouth, flight);
+      return {
+        ball,
+        loft: CROSS_LOFT * (1 - flight),
+        carrier: goal.scorer,
+        trail: shot(meet, ball),
+        ...quiet,
+      };
+    }
+    case "solo": {
+      const target = clampPoint({
+        x: side === "user" ? 82 : 18,
+        y: 50 + (scorerBase.y - 50) * 0.45,
+      });
+      const mid = lerp(scorerBase, target, 0.5);
+      const beaten = nearestOutfield(pts[defSide], defSide, mid, present, null)[0] ?? null;
+      const from = beaten === null ? mid : pts[defSide][beaten]!;
+      if (beaten !== null) {
+        pts[defSide][beaten] = lerp(from, mid, smoothstep(progress / PRESSER_IN));
+      }
+      const away = from.y >= mid.y ? -1 : 1;
+      const u = smoothstep(progress / STRIKE);
+      const run = lerp(scorerBase, target, u);
+      const feet = clampPoint({ x: run.x, y: run.y + away * SWERVE * Math.sin(u * Math.PI) });
+      moveScorer(feet);
+      const strike = clampPoint({ x: target.x + attDir * TOUCH, y: target.y });
+      if (progress < STRIKE) {
+        const touch = TOUCH * (1 + 0.6 * Math.abs(Math.sin(SOLO_TOUCHES * Math.PI * u)));
+        const chain = clampPoint({ x: feet.x + attDir * touch, y: feet.y });
+        const ball = lerp(live, chain, progress / SOLO_GATHER);
+        return {
+          ball,
+          loft: Math.abs(Math.sin(SOLO_TOUCHES * Math.PI * u)) * 0.1,
+          carrier: goal.scorer,
+          trail: {
+            from: live,
+            to: ball,
+            effect: null,
+            type: null,
+            kind: "dribble",
+            progress: progress / STRIKE,
+          },
+          wall: [],
+          beaten,
+        };
+      }
+      const ball = progress >= GOAL_LANDS ? mouth : lerp(strike, mouth, flight);
+      return {
+        ball,
+        loft: Math.sin(flight * Math.PI) * 0.5,
+        carrier: goal.scorer,
+        trail: shot(strike, ball),
+        wall: [],
+        beaten,
+      };
+    }
+    case "open-play": {
+      const assistSlot = goal.assist?.slot ?? null;
+      moveScorer(
+        lerp(
+          scorerBase,
+          clampPoint({ x: side === "user" ? 82 : 18, y: 50 + (scorerBase.y - 50) * 0.45 }),
+          Math.min(1, progress * 1.8),
+        ),
+      );
+      if (assistSlot !== null && pts[side][assistSlot]) {
+        const baseAssist = pts[side][assistSlot]!;
+        pts[side][assistSlot] = clampPoint({
+          x: baseAssist.x + attDir * 6 * smoothstep(progress / REACT),
+          y: baseAssist.y,
+        });
+      }
+      const shotSpot = scorerSlot === null ? scorerBase : pts[side][scorerSlot]!;
+      const ball = goalBall(live, shotSpot, mouth, progress);
+      return {
+        ball,
+        loft:
+          progress < STRIKE
+            ? Math.sin((progress / STRIKE) * Math.PI) * 0.35
+            : progress < 0.65
+              ? Math.sin(((progress - STRIKE) / 0.3) * Math.PI) * 0.85
+              : 0,
+        carrier: progress < STRIKE && goal.assist ? goal.assist : goal.scorer,
+        trail:
+          progress < STRIKE
+            ? {
+                from: live,
+                to: ball,
+                effect: null,
+                type: null,
+                kind: "pass",
+                progress: progress / STRIKE,
+              }
+            : shot(shotSpot, ball),
+        ...quiet,
+      };
+    }
+  }
 }
 
 /**
