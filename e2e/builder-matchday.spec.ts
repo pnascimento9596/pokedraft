@@ -30,12 +30,13 @@ test("a builder friendly with Manager mode on reaches the touchline, resumes aft
   await play.click();
   await expect(page.getByTestId("matchday")).toHaveAttribute("data-match", "0");
   await expect(page.getByTestId("matchday")).toContainText("Match 1 · Manager mode");
-  await page.getByTestId("prematch-go").click();
-  await expect(page.getByTestId("stop-kickoff")).toBeVisible();
-  await expect(page.getByTestId("touchline-minute")).toHaveText("Before kickoff");
   await page.getByTestId("tactic-attack").click();
   await expect(page.getByTestId("tactic-attack")).toHaveAttribute("aria-pressed", "true");
+  await page.getByTestId("prematch-go").click();
   await expect(page.getByTestId("broadcast")).toBeVisible();
+  await expect(page.getByTestId("touchline")).toBeVisible();
+  await expect(page.getByTestId("tactic-attack")).toHaveAttribute("aria-pressed", "true");
+  await page.getByTestId("play-toggle").click();
   await page.getByTestId("matchday-title").scrollIntoViewIfNeeded();
   await page.screenshot({ path: `${SHOTS}/390-friendly-touchline.png` });
 
