@@ -22,6 +22,13 @@ export const TYPE_PALETTE = {
   fairy: "#D685AD",
 } as const satisfies Readonly<Record<PokemonType, string>>;
 
+/**
+ * The opponent's ring when its club has no theme (`--bc-opp`), and the ring it switches to when
+ * its kit is too close to the user's. White sits at least 12 from every type colour in every
+ * vision the CVD audit checks.
+ */
+export const PITCH_KIT = { opp: "#60A5FA", clash: "#F8FAFC" } as const;
+
 export const CARD_ROLE: Readonly<Record<Role, string>> = {
   GK: "GK",
   CB: "DF",

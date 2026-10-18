@@ -16,10 +16,12 @@ import { PlayerImage } from "@/components/PlayerImage";
 import { TypeIcon } from "@/components/TypeIcon";
 import { TYPE_PALETTE } from "@/design/stadium";
 import { typeLabel } from "@/ui/labels";
+import { badgeCorner, type Size } from "@/ui/matchday/badge";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
 import { cutInAt, type CutIn } from "@/ui/matchday/cutin";
 import { isSpent, isTired } from "@/ui/matchday/fatigue";
 import type { FrameFeed, LiveFrame } from "@/ui/matchday/feed";
+import { kitsFor } from "@/ui/matchday/kit";
 import { beatKey, stageFrame, type Active } from "@/ui/matchday/player";
 import {
   GOAL_LANDS,
@@ -137,8 +139,10 @@ interface PitchNodes {
   readonly playBadge: RefObject<HTMLDivElement | null>;
 }
 
+const UNMEASURED: Size = { w: 0, h: 0 };
+
 /** Moves every staged thing on the pitch to where `stage` puts it. */
-function paint(nodes: PitchNodes, stage: PitchStage): void {
+function paint(nodes: PitchNodes, stage: PitchStage, badge: Size, pitch: Size): void {
   for (const [el, { side, slot, leaving }] of nodes.players) {
     const p = leaving
       ? stage.leaving?.find((w) => w.side === side && w.slot === slot)
@@ -162,9 +166,9 @@ function paint(nodes: PitchNodes, stage: PitchStage): void {
   }
   if (stage.playCallout !== null) {
     const { point } = stage.playCallout;
-    const at = `left: ${fixed(point.x)}%; top: ${fixed(point.y)}%`;
-    put(nodes.playEffect.current, "style", at);
-    put(nodes.playBadge.current, "style", at);
+    const corner = badgeCorner(point, badge, pitch);
+    put(nodes.playEffect.current, "style", `left: ${fixed(point.x)}%; top: ${fixed(point.y)}%`);
+    put(nodes.playBadge.current, "style", `left: ${fixed(corner.x)}%; top: ${fixed(corner.y)}%`);
   }
 }
 
@@ -243,6 +247,10 @@ export function Broadcast({
 }) {
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
+  const kitStyle = useMemo(() => {
+    const kits = kitsFor(lineup.starters, match.opponent.theme);
+    return { ...TYPE_VARS, "--kit-user": kits.user, "--kit-opp": kits.opp } as CSSProperties;
+  }, [lineup.starters, match.opponent.theme]);
   const oppLabels = useMemo(
     () => match.opponent.roster.map((r) => (r.kind === "species" ? "" : `No. ${r.number}`)),
     [match.opponent.roster],
@@ -264,6 +272,7 @@ export function Broadcast({
     });
   const { active, stage } = frameAt({ clock, now, fired, kicks, kickProgress, speed });
 
+  const pitchRef = useRef<HTMLDivElement>(null);
   const players = useRef(new Map<HTMLElement, Tracked>());
   const ballRef = useRef<HTMLDivElement>(null);
   const trailRef = useRef<SVGSVGElement>(null);
@@ -296,10 +305,20 @@ export function Broadcast({
     const shotsOf = (f: LiveFrame) =>
       kicksShown(timeline.kicks.length, f.kicks, f.kickProgress, motion);
     const rendered = screenKey(active, stage, cutIns, kicks, shotsOf(props));
+    // Measured once per render, and only while a badge shows, so frames between renders read no
+    // layout.
+    const badgeEl = playBadgeRef.current;
+    const pitchEl = pitchRef.current;
+    const badge =
+      badgeEl === null ? UNMEASURED : { w: badgeEl.offsetWidth, h: badgeEl.offsetHeight };
+    const pitch =
+      badgeEl === null || pitchEl === null
+        ? UNMEASURED
+        : { w: pitchEl.clientWidth, h: pitchEl.clientHeight };
     const draw = () => {
       const f = feed?.latest() ?? props;
       const latest = frameAt(f);
-      paint(nodes, latest.stage);
+      paint(nodes, latest.stage, badge, pitch);
       return screenKey(latest.active, latest.stage, cutIns, f.kicks, shotsOf(f)) !== rendered;
     };
     draw();
@@ -394,9 +413,9 @@ export function Broadcast({
       data-testid="broadcast"
       data-motion={motion ? "on" : "off"}
       data-goals-only={timeline.goalsOnly || undefined}
-      style={TYPE_VARS}
+      style={kitStyle}
     >
-      <div className={s.pitch} aria-hidden="true">
+      <div ref={pitchRef} className={s.pitch} aria-hidden="true">
         {PITCH_LINES}
 
         {trail !== null ? (

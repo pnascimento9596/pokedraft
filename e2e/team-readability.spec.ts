@@ -22,7 +22,8 @@ async function watchLive(page: Page) {
 
 /**
  * Each sprite's drawn width and the colour of the ring at its feet, by side. The width is the
- * scaled frame the 80px art fills; the art inside it turns and squashes with each pose.
+ * scaled frame the 80px art fills; the art inside it turns and squashes with each pose. A player
+ * in the play (`hot`) wears a white ring with a glow in the kit instead.
  */
 function sprites(page: Page) {
   return page.getByTestId("broadcast").evaluate((root) =>
@@ -31,6 +32,7 @@ function sprites(page: Page) {
       const art = body.querySelector("img");
       return {
         side: el.dataset.side ?? "",
+        hot: el.dataset.hot !== undefined,
         width:
           art === null || !art.complete
             ? null
@@ -61,8 +63,11 @@ for (const width of [390, 360, 320]) {
     await page.screenshot({ path: `${SHOT}/${width}-kits.png` });
 
     expect(narrowest).toBeGreaterThanOrEqual(44);
-    expect(seen.filter((p) => p.side === "user").every((p) => p.ring.includes(POISON))).toBe(true);
-    expect(seen.filter((p) => p.side === "opp").every((p) => p.ring.includes(WATER))).toBe(true);
+    const rings = (side: string) => seen.filter((p) => p.side === side && !p.hot);
+    expect(rings("user").length).toBeGreaterThanOrEqual(9);
+    expect(rings("opp").length).toBeGreaterThanOrEqual(9);
+    expect(rings("user").every((p) => p.ring.includes(POISON))).toBe(true);
+    expect(rings("opp").every((p) => p.ring.includes(WATER))).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
@@ -97,7 +102,7 @@ for (const width of [390, 360, 320]) {
 
     // A badge's margin is its closest distance to a pitch edge; below zero it is clipped.
     const badges = new Map<string, number>();
-    let edge = false;
+    let closest = Infinity;
     for (let i = 0; i < 3_000 && (await player.getAttribute("data-minute")) !== "90"; i++) {
       await page.clock.runFor(50);
       const seen = await broadcast.evaluate((root) => {
@@ -117,15 +122,14 @@ for (const width of [390, 360, 320]) {
       });
       if (seen === null) continue;
       badges.set(seen.text, Math.min(badges.get(seen.text) ?? Infinity, seen.margin));
-      if (!edge && seen.margin < 2) {
-        edge = true;
+      if (seen.margin < closest) {
+        closest = seen.margin;
         await broadcast.screenshot({ path: `${SHOT}/${width}-edge-badge.png` });
       }
     }
     const clipped = [...badges.entries()]
       .filter(([, margin]) => margin < -0.5)
       .map(([text, margin]) => `${text} by ${Math.round(-margin * 10) / 10}px`);
-    const closest = Math.min(...badges.values());
     console.log(
       `${width}px: ${badges.size} badges, closest margin ${Math.round(closest * 10) / 10}px, clipped ${JSON.stringify(clipped)}`,
     );
