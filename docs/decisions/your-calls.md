@@ -155,6 +155,12 @@ second version watches that attribute too.
 - `YOUR_CALLS` is a generated pin, so an engine bump moves the e2e scores through `pnpm e2e:pins`
   as every other pin does. The named call text is a literal in the spec.
 
+## Row order
+
+The hand-off recommends 3a before 3h. 3h was ready first and touches neither `MatchPlayer.tsx`,
+`Touchline.tsx` nor `player.ts`, the files 3a rewrites, so the coordinator landed 3h first under
+the owner's leave to choose the order within a wave. It also unblocks Wave 6 sooner.
+
 ## Brief vs code
 
 - The hand-off's 28 ms per `runCup` is about 5 ms in Node. From the 8-run rows of the table it

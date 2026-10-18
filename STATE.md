@@ -47,6 +47,8 @@ Measurements and decisions are in `docs/decisions/test-chores.md`. No browser pr
 
 Merged origin/main after PR #98 (row 3f) at `c28cfd2`; only STATE.md conflicted. Then `callouts-type-effects.spec.ts` waits for a typed badge in one filtered locator (the badge lives only for its phase; PR #98's hosted shard 1 found it, lost it and failed twice with "element(s) not found", run 39157333456). RED for that race is the hosted run; it did not reproduce locally. After the merge and the spec fix, build exited 0, `callouts-type-effects` and `fatigue` passed 5 of 5 locally (`CI=1`, chromium) and `check-retained-replays.mts` passed 10 emitted golden replays. The full gates at the reviewed head are in the review receipt.
 
+PR #100 (test flakes and retained replays, Green) merged as squash `20e34f6`, reviewed head `3432861`, GLM 5.3 Flash APPROVE in round 1 with canary `test-chores-4f9dc4674c3afab8be87f9fcad51dc26` echoed. At `3432861` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,511 unit tests passed in 173 files and Prettier passed on 8 touched files; hosted check and all eight e2e shards green, and the hosted `check` job ran `check-retained-replays.mts` after the build (10 emitted golden replays passed, v1 to v5 bundles and the live engine 6). Production `/api/health?db=1` served `20e34f6` with `db.status` ok, and `fatigue.spec.ts` plus `callouts-type-effects.spec.ts` against production (chromium) passed 5 of 5. No product code changed.
+
 ## Pre-match merge
 
 Branch `feat/prematch-merge` off `bcf5493`. Matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
