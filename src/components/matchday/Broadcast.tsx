@@ -93,10 +93,12 @@ function place(p: Point, anchor: string): string {
   return `transform: translate3d(${fixed(p.x)}cqi, ${fixed(p.y * TRAIL_Y)}cqi, 0) ${anchor}`;
 }
 
-function trailPath(trail: NonNullable<PitchStage["trail"]>): string {
-  const midY =
-    (trail.from.y + trail.to.y) / 2 - (trail.kind === "shot" || trail.kind === "pass" ? 3.5 : 0);
-  return `M ${fixed(trail.from.x)} ${fixed(trail.from.y * TRAIL_Y)} Q ${fixed((trail.from.x + trail.to.x) / 2)} ${fixed(midY * TRAIL_Y)} ${fixed(trail.to.x)} ${fixed(trail.to.y * TRAIL_Y)}`;
+export function trailPath(trail: NonNullable<PitchStage["trail"]>): string {
+  const bend = trail.via ?? {
+    x: (trail.from.x + trail.to.x) / 2,
+    y: (trail.from.y + trail.to.y) / 2 - (trail.kind === "shot" || trail.kind === "pass" ? 3.5 : 0),
+  };
+  return `M ${fixed(trail.from.x)} ${fixed(trail.from.y * TRAIL_Y)} Q ${fixed(bend.x)} ${fixed(bend.y * TRAIL_Y)} ${fixed(trail.to.x)} ${fixed(trail.to.y * TRAIL_Y)}`;
 }
 
 const written = new WeakMap<Element, Map<string, string>>();
