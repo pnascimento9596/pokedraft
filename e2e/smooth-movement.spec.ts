@@ -41,11 +41,14 @@ function spots(pitch: Locator, selector: string): Promise<Spot[]> {
   return pitch.locator(selector).evaluateAll((els) =>
     els.map((el) => {
       const e = el as HTMLElement;
+      // The frame loop writes the spot as a transform in units of the pitch width, where the
+      // pitch is 64 units tall.
+      const moved = /translate3d\(([-\d.]+)cqi, ([-\d.]+)cqi/.exec(e.style.transform);
       return {
         side: e.dataset.side ?? "",
         slot: e.dataset.slot ?? "",
-        x: Number.parseFloat(e.style.left),
-        y: Number.parseFloat(e.style.top),
+        x: moved === null ? Number.NaN : Number(moved[1]),
+        y: moved === null ? Number.NaN : Number(moved[2]) / 0.64,
       };
     }),
   );
