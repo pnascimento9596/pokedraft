@@ -37,7 +37,10 @@ for (const width of [390, 1440])
       await expect(page.getByTestId("run-start")).toBeVisible();
       await type(page.getByRole("list", { name: "Cup rounds" }).getByRole("button"), 15, 20, "600");
       await page.getByTestId("run-start").click();
-      if (width === 390) await page.getByRole("button", { name: /Challenge Hub/ }).click();
+      if (width === 390) {
+        await page.getByRole("button", { name: "Minimize draft picker" }).click();
+        await page.getByRole("button", { name: /Challenge Hub/ }).click();
+      }
       await type(
         page.locator("main header").getByText("8-0 Challenge", { exact: true }),
         11,

@@ -61,6 +61,18 @@ function tap(el: HTMLElement) {
 }
 
 describe("Pitch", () => {
+  it("stretches a dragged starter's vertical move by 1/cos(26deg) so it stays under the pointer on the tilted field (catches drag drift)", () => {
+    render(
+      <Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSwap={() => {}} />,
+    );
+    document.elementFromPoint = () => null;
+    const card = screen.getByTestId("slot-s2");
+    const mouse = { pointerId: 3, pointerType: "mouse", button: 0 };
+    fireEvent.pointerDown(card, { ...mouse, clientX: 10, clientY: 10 });
+    fireEvent.pointerMove(card, { ...mouse, clientX: 10, clientY: 110 });
+    expect(card.style.translate).toBe("0px 111.26px");
+  });
+
   it("keeps filled tactical slot labels visible instead of hiding LCB behind a generic DF label", () => {
     render(<Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} />);
     const card = screen.getByTestId("slot-s2");

@@ -313,8 +313,8 @@ test("0 self-check: widestRight and documentScrollWidth pass a clean page and ca
   expect(await widestRight(page)).toBeLessThanOrEqual(await width());
   expect(await documentScrollWidth(page)).toBeLessThanOrEqual(await width());
 
-  // The app sets overflow-x:hidden on html and body, which hides the overflow from scrollWidth
-  // in some engines. widestRight reads the element boxes, so it still sees the 900px child.
+  // overflow-x:hidden (the app's old setting; it clips now) on html and body hides the overflow
+  // from scrollWidth in some engines. widestRight reads the element boxes, so it still sees the 900px child.
   await load(
     page,
     `<style>html,body{overflow-x:hidden}</style>
@@ -514,7 +514,7 @@ test("0 self-check: pageScrollReach passes a page that scrolls to its end and fl
   expect(hiddenRoot.scrolledTo).toBeGreaterThan(0);
   expect(hiddenRoot.viewportOverflowY).toBe("hidden");
 
-  // The app's own setting, overflow-x:hidden, leaves vertical scrolling on.
+  // overflow-x:hidden, the app's old setting, leaves vertical scrolling on.
   await load(page, `<style>html,body{overflow-x:hidden}</style>${tall}`);
   const app = await pageScrollReach(page);
   expect(app.viewportOverflowY).toBe("auto");
