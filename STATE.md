@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Fatigue on the pitch
+
+Branch `feat/fatigue` off `origin/feat/smooth-movement` at `0588297` (row 2c, PR #94), with `origin/feat/smooth-movement` merged in again at `5744f20` (carrying `origin/main` with PR #93). Pure staging plus `Broadcast.tsx` and CSS (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The pitch reads each user player's energy from the latest window snapshot at or before the clock, and only when that window recorded the same player in the slot. The opponent, a substitute before their first window, and runs with no windows show no energy.
+- Below 65 a player covers 0.85 of each phase's move (on row 2c's spline, through shortened waypoints), strides 1.18 times slower and shows a sweat pip. Below 55 a stamina arc shows under the sprite.
+- The pip and the arc render at about 10 Hz as children of the player element the frame loop moves. Quick and reduced motion keep players on their spots.
+- With every slot at 50 energy, the ball's largest one-frame move over the golden cup is 3.73% (bound 4%); the largest player move is row 2c's save settle, 5.19% (4.94% fresh).
+
+RED commit: `1c38ae4` (7 of 9 failed).
+
+Gates at `ef2b4a9` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. Prettier passed on the touched files. `check:theme-colors`, `check:theme-contrast`, `check:theme-cvd`, `check:image-seam` and `check:client-bundle` exited 0.
+- Unit tests: 1,481 passed in 171 files.
+- Playwright (port 3528, `CI=1`, fresh build): `fatigue`, `smooth-movement`, `continuous-ball`, `broadcast-frame-loop`, `set-pieces`, `mobile-targets`, `mobile-acceptance`, `quick-not-broadcast`, `injury-staging`, `shootout-suspense`, `watch-live`: 377 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/fatigue.md`. Browser proof: `docs/reports/fatigue/`.
+
+PR #94 (row 2c, smooth movement) merged as squash `ebb04f0`, reviewed head `daeb1c3`, GLM 5.3 Flash APPROVE in round 1 with canary `smooth-movement-2308817edaf550b7f5821536ab84261a` echoed. At `daeb1c3` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,472 unit tests passed in 169 files and Prettier passed on touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `ebb04f0` with `db.status` ok, and `smooth-movement`, `continuous-ball` and `set-pieces` against production (chromium) passed 7 of 7, the ball's fastest 100 ms speed reading 2.69% per frame. NOT RUN: physical phone check (owner action); a per-frame guard at 2x. Carryovers: at 2x a player can still move 9.85% in one frame; over 20 extra seeds the ball's worst frame is 4.41% (duel turnovers, as row 2b recorded); #91's frame-loop pins were re-pinned from this row's staging.
+
+Merged origin/main after PR #94 (the squash of the branch this row started from) and PR #95. Conflicts were only this row's own additions against the squashed copy (`windows` on `StageInput` and `FrameView`, the tired waypoints, `energy` on staged players) and STATE; the code equals `ef2b4a9`'s plus #95's tooling. After the merge: lint, typecheck and build exited 0, 168 matchday unit tests passed in 27 files, and `fatigue`, `smooth-movement`, `continuous-ball`, `set-pieces` and `broadcast-frame-loop` passed 11 of 11 locally, the ball's fastest 100 ms speed reading 2.69% per frame.
+
 ## Smooth movement
 
 Branch `feat/smooth-movement` off `458c56e`, with `origin/main` merged in, last at `e3d0e95` (PRs #92 and #91). Pure staging plus a thin `Broadcast.tsx` change (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.

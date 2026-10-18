@@ -18,6 +18,7 @@ import { TYPE_PALETTE } from "@/design/stadium";
 import { typeLabel } from "@/ui/labels";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
 import { cutInAt, type CutIn } from "@/ui/matchday/cutin";
+import { isSpent, isTired } from "@/ui/matchday/fatigue";
 import type { FrameFeed, LiveFrame } from "@/ui/matchday/feed";
 import { beatKey, stageFrame, type Active } from "@/ui/matchday/player";
 import {
@@ -53,6 +54,9 @@ function pct(p: Point) {
 }
 
 const fixed = (n: number) => n.toFixed(2);
+
+// A shallow smile under the sprite; its lit share is the player's energy out of 100.
+const STAMINA_ARC = "M 2 2 Q 12 9 22 2";
 
 // The shares of a goal's staging at which its card, effect and flash come and go.
 const OPENS = [0.25, 0.35, GOAL_LANDS];
@@ -256,6 +260,7 @@ export function Broadcast({
       userSlots,
       oppSlots,
       oppLabels,
+      windows: match.windows,
     });
   const { active, stage } = frameAt({ clock, now, fired, kicks, kickProgress, speed });
 
@@ -331,6 +336,7 @@ export function Broadcast({
         data-ball={p.hasBall || undefined}
         data-hot={p.hot || undefined}
         data-effect={p.callout?.effect ?? undefined}
+        data-tired={isTired(p.energy) || undefined}
       >
         <span className={s.body}>
           <span className={s.playerSprite}>
@@ -341,6 +347,29 @@ export function Broadcast({
             )}
           </span>
         </span>
+        {isTired(p.energy) ? (
+          <span
+            className={s.sweatPip}
+            data-testid={`pitch-sweat-${p.side}-${p.slot}`}
+            aria-hidden="true"
+          />
+        ) : null}
+        {isSpent(p.energy) ? (
+          <svg
+            className={s.stamina}
+            viewBox="0 0 24 8"
+            data-testid={`pitch-stamina-${p.side}-${p.slot}`}
+            aria-hidden="true"
+          >
+            <path className={s.staminaTrack} d={STAMINA_ARC} pathLength={100} />
+            <path
+              className={s.staminaLeft}
+              d={STAMINA_ARC}
+              pathLength={100}
+              strokeDasharray={`${p.energy} 100`}
+            />
+          </svg>
+        ) : null}
         {p.yellowCards > 0 ? (
           <span
             className={s.cardPip}

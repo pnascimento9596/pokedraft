@@ -65,6 +65,9 @@
   --bc-ball-shadow: rgba(2, 8, 4, 0.55);
   --bc-net: rgba(255, 255, 255, 0.35);
   --bc-medic: #ef4444;
+  --bc-sweat: #7dd3fc;
+  --bc-stamina: #fb923c;
+  --bc-stamina-track: rgba(3, 12, 7, 0.55);
   --card-yellow: #facc15;
   --card-yellow-ink: #1c1917;
   --card-red: #dc2626;

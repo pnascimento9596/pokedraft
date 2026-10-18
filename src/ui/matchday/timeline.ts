@@ -17,6 +17,7 @@ import type {
 } from "@/engine/types";
 import { fieldedFor } from "@/ui/manager/touchline";
 import { playCallout, saveCallout, shotCallout, type Callout, type Effect } from "./moves";
+import { TIRED_REACH, energyAt, isTired, type EnergyWindow } from "./fatigue";
 import { stageKick, waitingPoint } from "./shootout";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
@@ -786,6 +787,8 @@ export interface StagedPlayer {
   readonly hot: boolean;
   readonly yellowCards: number;
   readonly callout: Callout | null;
+  /** Energy 0 to 100 from the latest window; null for the opponent and anyone with no window. */
+  readonly energy: number | null;
 }
 
 export interface BallTrail {
@@ -840,6 +843,8 @@ export interface StageInput {
   readonly shot?: Shot | null;
   /** Players walking on or off; none with motion off. */
   readonly walks?: readonly Walk[];
+  /** The match's window snapshots, for the user's energy; none on an engine that kept none. */
+  readonly windows?: readonly EnergyWindow[];
 }
 
 export type ShotBeat = Extract<Beat, { kind: "goal" | "save" }>;
@@ -1078,6 +1083,8 @@ function pushApart(points: readonly Point[]): Point[] {
   return out.map((p) => ({ x: p.x, y: p.y / ACROSS }));
 }
 
+/** How many phases back a tired player's shortfall is carried. */
+const TIRED_DEPTH = 4;
 /** How far back the pose and facing look to read a player's velocity, in match minutes. */
 const LOOK_BACK = 0.02;
 /** Speeds that turn a stroll into a run and a run into a sprint, in pitch percent per minute. */
@@ -1109,6 +1116,9 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   const oppXI = xiAt(timeline, "opp", clock);
   const injured = (side: Side, slot: number): boolean =>
     b?.kind === "injury" && side === "user" && b.player.slot === slot;
+  const windows = input.windows ?? [];
+  const energyOf = (side: Side, slot: number, id: SpeciesId | null, minute: number) =>
+    side === "user" ? energyAt(windows, slot, id, minute) : null;
 
   const yellows = { user: new Array<number>(11).fill(0), opp: new Array<number>(11).fill(0) };
   for (const b of timeline.beats) {
@@ -1158,6 +1168,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
           hot: highlights(b, side, slot),
           yellowCards: yellows[side][slot] ?? 0,
           callout: null,
+          energy: energyOf(side, slot, id, clock),
         };
       });
     const userPlayers = buildStill("user", userXI, userSlots);
@@ -1211,6 +1222,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
           hot: isTaker || isKeeper,
           yellowCards: yellows[side][slot] ?? 0,
           callout: null,
+          energy: null,
         };
       });
     return {
@@ -1255,12 +1267,48 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   const u = phase ? Math.min(1, Math.max(0, (clock - phase.from) / (phase.to - phase.from))) : 0;
 
   const kickoffOf = (p: PlayPhase): Shape => kickoffShape(p.side, p.fromSlot, userSlots, oppSlots);
-  const waypoint = (i: number): Shape => phaseWaypoint(timeline, i, userSlots, oppSlots);
+  const raw = new Map<number, Shape>();
+  const rawWaypoint = (i: number): Shape => {
+    let shape = raw.get(i);
+    if (shape === undefined) {
+      shape = phaseWaypoint(timeline, i, userSlots, oppSlots);
+      raw.set(i, shape);
+    }
+    return shape;
+  };
+  // A tired player covers `TIRED_REACH` of the way from where they start a phase to its waypoint,
+  // so they fall behind play. Where they start is itself short of the last waypoint, back
+  // `TIRED_DEPTH` phases; what is left beyond that is under 0.15^4 of a move. Each waypoint is a
+  // fixed function of its index, so the spline through them stays continuous.
+  const reached = new Map<string, Shape>();
+  const waypoint = (i: number, depth = TIRED_DEPTH): Shape => {
+    const p = timeline.plays[i];
+    if (depth === 0 || p === undefined || windows.length === 0) return rawWaypoint(i);
+    const key = `${i}:${depth}`;
+    const known = reached.get(key);
+    if (known !== undefined) return known;
+    const xi = xiAt(timeline, "user", p.from);
+    const shape = rawWaypoint(i);
+    let out = shape;
+    if (xi.some((id, slot) => isTired(energyAt(windows, slot, id, p.from)))) {
+      const from = startShape(i, depth - 1);
+      out = {
+        user: shape.user.map((to, slot) =>
+          isTired(energyAt(windows, slot, xi[slot] ?? null, p.from)) && from.user[slot]
+            ? lerp(from.user[slot]!, to, TIRED_REACH)
+            : to,
+        ),
+        opp: shape.opp,
+      };
+    }
+    reached.set(key, out);
+    return out;
+  };
   // Where everyone stands as phase `i` begins: kickoff shape after a goal, else where the last
   // phase left them.
-  const startShape = (i: number): Shape => {
+  const startShape = (i: number, depth = TIRED_DEPTH): Shape => {
     const p = timeline.plays[i];
-    return p?.kickoff != null ? kickoffOf(p) : waypoint(Math.max(0, i - 1));
+    return p?.kickoff != null ? kickoffOf(p) : waypoint(Math.max(0, i - 1), depth);
   };
   const spaced = (shape: Shape): Shape => ({
     user: pushApart(shape.user),
@@ -1595,6 +1643,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
           playCalloutStage?.side === side && playCalloutStage.slot === slot
             ? playCalloutStage.callout
             : null,
+        energy: energyOf(side, slot, id, clock),
       };
     });
 
@@ -1618,6 +1667,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         hot: false,
         yellowCards: 0,
         callout: null,
+        energy: null,
       },
     ];
   });
