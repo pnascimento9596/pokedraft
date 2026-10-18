@@ -2,12 +2,13 @@
 
 import { useMemo } from "react";
 import { FORMATIONS } from "@/engine";
-import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
+import type { FullLineup, MatchResult } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
 import { stageFrame } from "@/ui/matchday/player";
 import {
   GOAL_LANDS,
+  OPP_SHAPE,
   goalMouth,
   type Point,
   type StagedPlayer,
@@ -16,9 +17,6 @@ import {
 import s from "./Broadcast.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
-
-// Bosses without a recorded shape line up in a 4-3-3.
-const OPP_SHAPE: FormationId = "4-3-3";
 
 // Stage points are percent of width and height; the trails draw in the pitch's own 100 by 64 box.
 const TRAIL_Y = 0.64;

@@ -117,12 +117,12 @@ describe("continuous ball (catches the ball teleporting between frames, 78.0% of
     const timeline = timelineAt(0);
     goalAt(timeline, 49);
     const restart = timeline.plays[40]!;
-    expect(restart).toMatchObject({ from: 50, side: "opp", fromSlot: 6, kickoff: 49 });
+    expect(restart).toMatchObject({ from: 50, side: "opp", fromSlot: 5, kickoff: 49 });
     const waiting = stageFrame(timeline, viewFor(0, { clock: 49.5, fired: {}, now: 0 })).stage;
     expect({ x: waiting.ball.x, y: waiting.ball.y }).toEqual({ x: 50, y: 50 });
     expect({ side: waiting.ball.carrier?.side, slot: waiting.ball.carrier?.slot }).toEqual({
       side: "opp",
-      slot: 6,
+      slot: 5,
     });
     const kickoff = stageFrame(timeline, viewFor(0, { clock: 50, fired: {}, now: 0 })).stage.ball;
     expect(kickoff.x).toBeCloseTo(50, 6);

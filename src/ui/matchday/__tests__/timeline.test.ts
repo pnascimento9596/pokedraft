@@ -8,6 +8,7 @@ import {
   frameAt,
   goalBall,
   saveBall,
+  SHOW,
   slotPoint,
   stagePitch,
   xiAt,
@@ -110,10 +111,11 @@ describe("buildTimeline (catches choreography that changes between two viewings 
     const generic = shape(null);
     const canon = shape(movesetFor);
     expect(canon).toEqual(generic);
+    // Phase 10 is the kickoff after the user's 12' goal: the opponent's holding midfielder.
     expect([canon[3], canon[10], canon[30]]).toEqual([
       { side: "opp", fromSlot: 9, toSlot: 10, kind: "cross" },
-      { side: "user", fromSlot: 9, toSlot: 10, kind: "pass" },
-      { side: "user", fromSlot: 9, toSlot: 10, kind: "through" },
+      { side: "opp", fromSlot: 5, toSlot: 5, kind: "dribble" },
+      { side: "opp", fromSlot: 10, toSlot: 6, kind: "duel" },
     ]);
   });
 
@@ -275,13 +277,15 @@ describe("pitch geometry (catches sprites that leave the pitch or move with redu
     expect(goalBall(from, scorer, mouth, 0.9)).toEqual(mouth);
   });
 
-  it("runs a save from the shooter to the keeper and parries the ball clear", () => {
+  it("runs a save from the live ball to the shooter to the keeper and parries the ball clear", () => {
+    const live = { x: 60, y: 30 };
     const attacker = { x: 76, y: 38 };
     const mouth = { x: 98, y: 50 };
     const deflect = { x: 84, y: 24 };
-    expect(saveBall(attacker, mouth, deflect, 0)).toEqual(attacker);
-    expect(saveBall(attacker, mouth, deflect, 0.45)).toEqual(mouth);
-    expect(saveBall(attacker, mouth, deflect, 1)).toEqual(deflect);
+    expect(saveBall(live, attacker, mouth, deflect, 0)).toEqual(live);
+    expect(saveBall(live, attacker, mouth, deflect, 0.3)).toEqual(attacker);
+    expect(saveBall(live, attacker, mouth, deflect, 0.55)).toEqual(mouth);
+    expect(saveBall(live, attacker, mouth, deflect, 1)).toEqual(deflect);
   });
 
   it("chains open-play phases with connected passes and canon move callouts", () => {
@@ -328,7 +332,8 @@ describe("pitch geometry (catches sprites that leave the pitch or move with redu
     const saveBeat = t.beats.find((b) => b.kind === "save")!;
     const onSave = stagePitch(t, {
       clock: 12,
-      active: { beat: saveBeat, progress: 0.2 },
+      active: null,
+      shot: { beat: saveBeat, age: 0.2 * SHOW.save },
       kicks: 0,
       motion: true,
       userSlots: LINEUP.formation,

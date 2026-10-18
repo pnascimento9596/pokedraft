@@ -1,10 +1,13 @@
 import { advanceClock, nextStop, type Pace, type Stop } from "./clock";
 import {
   GOAL_LANDS,
+  SETTLE,
   SHOW,
   stagePitch,
   type Beat,
   type PitchStage,
+  type Shot,
+  type ShotBeat,
   type StageInput,
   type Timeline,
 } from "./timeline";
@@ -139,6 +142,53 @@ export function activeBeat(
   return best;
 }
 
+/**
+ * The goal or save the ball is acting out or settling back from. It holds the ball for its whole
+ * staging, whatever banner comes up meanwhile, and for as long as the clock stays on its minute; a
+ * goal and a save fired together stage the goal.
+ */
+export function shotOnPitch(
+  timeline: Timeline,
+  fired: Readonly<Record<string, number>>,
+  now: number,
+  speed: number,
+  clock: number,
+): Shot | null {
+  const latest = (until: number): { beat: ShotBeat; at: number } | null => {
+    let best: { beat: ShotBeat; at: number } | null = null;
+    for (const beat of timeline.beats) {
+      if (beat.kind !== "goal" && beat.kind !== "save") continue;
+      const at = fired[beatKey(beat)];
+      if (at === undefined || at > until) continue;
+      if (
+        best === null ||
+        at > best.at ||
+        (at === best.at && beat.kind === "goal" && best.beat.kind !== "goal")
+      ) {
+        best = { beat, at };
+      }
+    }
+    return best;
+  };
+  const onPitch = (s: { beat: ShotBeat; at: number } | null, t: number) =>
+    s !== null && (t - s.at) * speed <= SHOW[s.beat.kind] + SETTLE[s.beat.kind];
+  const shot = latest(now);
+  if (shot === null || (!onPitch(shot, now) && clock > shot.beat.minute)) return null;
+  // A shot that fired while an earlier one was still on the pitch takes the ball from it.
+  let earlier: { beat: ShotBeat; at: number } | null = null;
+  for (const beat of timeline.beats) {
+    if (beat === shot.beat || (beat.kind !== "goal" && beat.kind !== "save")) continue;
+    const at = fired[beatKey(beat)];
+    if (at === undefined || at >= shot.at) continue;
+    if (earlier === null || at > earlier.at) earlier = { beat, at };
+  }
+  const before =
+    earlier !== null && onPitch(earlier, shot.at)
+      ? { beat: earlier.beat, age: (shot.at - earlier.at) * speed }
+      : null;
+  return { beat: shot.beat, age: (now - shot.at) * speed, before };
+}
+
 /** What the broadcast knows at one rendered frame. */
 export interface FrameView {
   readonly clock: number;
@@ -166,6 +216,7 @@ export function stageFrame(
     userSlots: view.userSlots,
     oppSlots: view.oppSlots,
     oppLabels: view.oppLabels,
+    shot: view.motion ? shotOnPitch(timeline, view.fired, view.now, view.speed, view.clock) : null,
   });
   return { active, stage };
 }

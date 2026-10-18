@@ -24,7 +24,8 @@ export const PACE: Readonly<Record<MatchView, Pace>> = {
     extraTime: 8_000 / 15,
     kick: 1_200,
     holdGoal: 2_600,
-    holdSave: 900,
+    // The whole save staging, so open play resumes from the save's minute as it does after a goal.
+    holdSave: 1_100,
   },
   quick: {
     regulation: 4_400 / 90,
