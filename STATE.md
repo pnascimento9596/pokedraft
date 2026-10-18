@@ -3,6 +3,18 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## CI e2e shards
+
+Branch `ci/shard-e2e`, off `9d37864`. CI only (Green), an out-of-band side fix outside Wave 1. Only `.github/workflows/ci.yml` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Nothing changes for the player. The hosted `e2e` job now runs as four parallel shards (`--shard=N/4`), each uploading its own report on failure.
+- Before: PR #80's `pnpm test:e2e` step took 28.6 min for 824 passed and 61 skipped, the whole critical path of every merge. The after time is read from this PR's run.
+- Observed, not fixed here: `main` push run 39080199806 on `90aba39` failed `Builder.test.tsx` once (`expected 'DF  LCB + Tap to Draft!' to be 'DF  LCB  Bulbasaur Grass Poison '`, line 275), a lazy-import race like the one PR #80 fixed in `announce-builder.test.tsx`. Carried over.
+
+Gates: no test or source change. Hosted CI on this PR is the proof. Local Playwright: NOT RUN.
+
+Measurements and the rejected options are in `docs/decisions/ci-shard-e2e.md`.
+
 ## Unit flakes
 
 Branch `test/unit-flakes`, off `e449555`, with `origin/main` (`c87509f`, PR #78) merged in. Test only (Green), an out-of-band side fix outside Wave 1. Only `announce-builder.test.tsx` and `run.test.tsx` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
