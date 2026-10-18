@@ -24,6 +24,8 @@ Gates at `49c1ef2` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/haptics.md`. Browser proof: `docs/reports/haptics/`.
 
+Merged origin/main after PR #106 (row 3b) at `1d337d5`. `MatchPlayer.tsx` and its CSS conflicted where both rows added a control after the sound toggle; both stay, the camera group on the controls row and the haptics hint on its own line below. After the merge lint, typecheck and build exited 0, 394 matchday and UI unit tests passed in 58 files, `haptics`, `follow-camera`, `audio-polish` and `mobile-pitch-fixes` passed 13 of 13 and `mobile-targets` 93 of 93 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
 ## Follow camera
 
 Branch `feat/follow-camera` off `feat/team-readability` at `d656db7`. Wave 3 row 3b, matchday pitch and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
