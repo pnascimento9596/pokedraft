@@ -61,6 +61,7 @@ import {
   useSoundEnabled,
 } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
+import { ShareGoalButton } from "@/components/share/ShareGoalButton";
 import { Touchline } from "./Touchline";
 import { setCamera, useCamera } from "./useCamera";
 import { useMovesets } from "./useMovesets";
@@ -118,6 +119,8 @@ export function MatchPlayer({
   autoStart = false,
   footer,
   aside,
+  startAt,
+  shareGoal,
 }: {
   readonly match: PlayedMatch;
   readonly matchIndex: number;
@@ -131,6 +134,10 @@ export function MatchPlayer({
   readonly footer?: ReactNode;
   /** Shown under the ticker, from the minute on the clock and the score that has landed. */
   readonly aside?: (minute: number, score: Score) => ReactNode;
+  /** Opens the match seeked to this minute, as a goal link does. */
+  readonly startAt?: number;
+  /** The link a user goal's ticker line offers to share. */
+  readonly shareGoal?: (minute: number) => string;
 }) {
   // Quick is a still pitch with beat sounds only, so only a live broadcast with motion stages.
   const motion = !useReducedMotion() && view === "live";
@@ -149,10 +156,12 @@ export function MatchPlayer({
     () => ({ timeline, stops, pace: PACE[view], replays: motion }),
     [timeline, stops, view, motion],
   );
-  const [state, setState] = useState<PlayState>(() => ({
-    ...START,
-    running: autoStart || manager !== undefined,
-  }));
+  const [state, setState] = useState<PlayState>(() => {
+    const start = { ...START, running: autoStart || manager !== undefined };
+    return startAt === undefined
+      ? start
+      : play(start, { type: "seek", minute: startAt, now: 0, env });
+  });
   const [error, setError] = useState<string | null>(null);
   // Once the match has been played to the end it stays over: a seek replays it, with no touchline.
   const [ended, setEnded] = useState(false);
@@ -263,8 +272,9 @@ export function MatchPlayer({
   }, [crowd]);
   const onBall = useCallback((x: number) => setCrowdLevel(crowdGain(x)), []);
 
-  const sounded = useRef(new Set<string>());
-  const horned = useRef(new Set<string>());
+  // A match opened at a minute has heard every beat before it.
+  const sounded = useRef(new Set(startAt === undefined ? [] : Object.keys(state.fired)));
+  const horned = useRef(new Set(startAt === undefined ? [] : Object.keys(state.fired)));
   useEffect(() => {
     const fresh: Beat[] = [];
     const scored: Extract<Beat, { kind: "goal" }>[] = [];
@@ -690,7 +700,7 @@ export function MatchPlayer({
 
       {ended && footer !== undefined ? <div className={s.footer}>{footer}</div> : null}
 
-      <Ticker shown={shown} teams={teams} kicks={kicks} />
+      <Ticker shown={shown} teams={teams} kicks={kicks} shareGoal={shareGoal} />
       {aside?.(Math.floor(clock), score)}
       {sheet ? <div ref={spacerRef} className={s.sheetSpacer} aria-hidden="true" /> : null}
     </section>
@@ -781,10 +791,12 @@ function Ticker({
   shown,
   teams,
   kicks,
+  shareGoal,
 }: {
   readonly shown: readonly ReturnType<typeof buildTimeline>["beats"][number][];
   readonly teams: Teams;
   readonly kicks: readonly ReturnType<typeof buildTimeline>["kicks"][number][];
+  readonly shareGoal?: (minute: number) => string;
 }) {
   const lines = [
     ...shown.map((b) => ({
@@ -792,6 +804,11 @@ function Ticker({
       kind: b.kind,
       side: "side" in b ? b.side : undefined,
       text: beatLine(b, teams),
+      minute: b.minute,
+      share:
+        shareGoal !== undefined && b.kind === "goal" && b.side === "user"
+          ? shareGoal(b.minute)
+          : undefined,
     })),
     ...kicks.map((k) => ({
       key: `kick:${k.index}`,
@@ -810,6 +827,9 @@ function Ticker({
         {lines.map((l, i) => (
           <li key={l.key} data-kind={l.kind} data-side={l.side} data-latest={i === 0 || undefined}>
             {l.text}
+            {"share" in l && l.share !== undefined ? (
+              <ShareGoalButton path={l.share} minute={l.minute} className={s.tickerShare} />
+            ) : null}
           </li>
         ))}
       </ol>

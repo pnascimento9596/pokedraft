@@ -13,6 +13,7 @@ import {
 import { MatchIncidents } from "./MatchIncidents";
 import { RecordedSaves } from "./RecordedSaves";
 import { BossRoster } from "./BossRoster";
+import { ShareGoalButton } from "@/components/share/ShareGoalButton";
 import { getMatchStar } from "./starCalculation";
 import s from "./MatchList.module.css";
 
@@ -29,12 +30,15 @@ export function MatchList({
   draft,
   onSelectStar,
   onWatch,
+  goalHref,
 }: {
   cup: CupResult;
   draft?: DraftState;
   onSelectStar?: (round: PlayedMatch["round"]) => void;
   /** Opens the Live match broadcast for the match at this index. */
   onWatch?: (matchIndex: number) => void;
+  /** The link "Share this goal" copies for a goal of the user's at this match and minute. */
+  goalHref?: (matchIndex: number, minute: number) => string;
 }) {
   const outIn = eliminatedIn(cup);
   return (
@@ -49,6 +53,7 @@ export function MatchList({
               outNote={outIn === m.round ? FINISH_LABEL[cup.finish] : null}
               onSelectStar={onSelectStar}
               onWatch={onWatch === undefined ? undefined : () => onWatch(i)}
+              shareGoal={goalHref === undefined ? undefined : (minute) => goalHref(i, minute)}
             />
           ) : (
             <NotPlayed m={m} />
@@ -66,6 +71,7 @@ function Played({
   outNote,
   onSelectStar,
   onWatch,
+  shareGoal,
 }: {
   m: PlayedMatch;
   draft?: DraftState;
@@ -73,6 +79,7 @@ function Played({
   outNote: string | null;
   onSelectStar?: (round: PlayedMatch["round"]) => void;
   onWatch?: () => void;
+  shareGoal?: (minute: number) => string;
 }) {
   const score = finalScore(m);
   const pens = shootoutLine(m);
@@ -171,7 +178,12 @@ function Played({
         <div className={s.scorers}>
           <ul className={s.goalList} aria-label="Your goals">
             {user.map((g, i) => (
-              <li key={i}>{goalLine(g)}</li>
+              <li key={i} className={s.goalLine}>
+                {goalLine(g)}
+                {shareGoal !== undefined ? (
+                  <ShareGoalButton path={shareGoal(g.minute)} minute={g.minute} />
+                ) : null}
+              </li>
             ))}
           </ul>
           <ul className={`${s.goalList} ${s.goalOpp}`} aria-label="Opponent goals">

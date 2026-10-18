@@ -25,6 +25,7 @@ import {
 } from "@/ui/labels";
 import { recordCompletedRun } from "@/ui/lifetime";
 import { isCoached } from "@/ui/manager/coached";
+import { goalHref, watchIndex } from "@/ui/run-link";
 import { toRecord } from "@/ui/runs";
 import { contributionLine, dragLabel } from "./format";
 import { FitReveal } from "./FitReveal";
@@ -58,6 +59,8 @@ export interface ResultsViewProps {
   /** Leaderboard submit panel; rendered for `live` runs only. */
   readonly submit?: ReactNode;
   readonly navFamily?: NavFamily;
+  /** A goal link's replay: the match to open and the goal's minute. */
+  readonly watch?: { readonly matchIndex: number; readonly minute: number } | null;
 }
 
 function modeLine(draft: DraftState): string {
@@ -75,6 +78,7 @@ export function ResultsView({
   onNewRun,
   submit,
   navFamily = "play",
+  watch = null,
 }: ResultsViewProps) {
   const recorded = useRef(false);
   useEffect(() => {
@@ -90,7 +94,11 @@ export function ResultsView({
   const [selectedHighlightRound, setSelectedHighlightRound] = useState<CupRound | "mvp" | null>(
     null,
   );
-  const [watching, setWatching] = useState<number | null>(null);
+  const [watching, setWatching] = useState<{ matchIndex: number; goal?: number } | null>(
+    watch === null ? null : { matchIndex: watch.matchIndex, goal: watch.minute },
+  );
+  const goalLink = (matchIndex: number, minute: number) =>
+    goalHref(token, watchIndex(cup, matchIndex), minute);
   const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
 
   return (
@@ -148,7 +156,9 @@ export function ResultsView({
         <MatchReplay
           cup={cup}
           draft={draft}
-          matchIndex={watching}
+          matchIndex={watching.matchIndex}
+          goal={watching.goal}
+          shareGoal={(minute) => goalLink(watching.matchIndex, minute)}
           onClose={() => setWatching(null)}
         />
       ) : null}
@@ -171,7 +181,8 @@ export function ResultsView({
             cup={cup}
             draft={draft}
             onSelectStar={(round) => setSelectedHighlightRound(round)}
-            onWatch={setWatching}
+            onWatch={(matchIndex) => setWatching({ matchIndex })}
+            goalHref={goalLink}
           />
         </ModuleCard>
 

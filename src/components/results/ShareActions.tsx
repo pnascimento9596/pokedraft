@@ -7,6 +7,7 @@ import { builderToken } from "@/ui/builder-token";
 import { BUILDER_URL_SEED } from "@/ui/lineup";
 import { DEFAULT_PANEL, playHref } from "@/ui/settings";
 import { runHref } from "@/ui/run-link";
+import { copyLink } from "@/components/share/copyLink";
 import {
   DOWNLOAD_FAILED,
   downloadStatus,
@@ -50,14 +51,8 @@ export function ShareActions({
         );
 
   const share = async () => {
-    const url = `${location.origin}${runHref(token)}`;
     card.reset();
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied("Link copied");
-    } catch {
-      setCopied("Could not copy the link");
-    }
+    setCopied(await copyLink(runHref(token)));
   };
 
   const download = () => {
