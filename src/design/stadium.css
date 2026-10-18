@@ -69,6 +69,8 @@
   --card-yellow-ink: #1c1917;
   --card-red: #dc2626;
   --card-red-ink: #fff7ed;
+  /* The bright centre the type-palette effects mix toward. */
+  --fx-core-tint: #ffffff;
   --fx-fire: #f97316;
   --fx-fire-core: #fde047;
   --fx-water: #38bdf8;
