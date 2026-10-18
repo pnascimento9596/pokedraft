@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Your calls card
+
+Branch `feat/your-calls` off `20e34f6`. Wave 3 row 3h, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed; the card only calls `runCup`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- At full time of a match where the player made at least one call, a "Your calls" card shows the assistant's score next to theirs, for example "Assistant 6-1, You 8-2". A shootout reads "0-0 (5-4 pens)".
+- The card then names the call whose removal moves the score most ("Biggest swing: your Attack switch at 45'."), or says "No single call changed the score." It checks at most 8 calls and never names one it did not replay.
+- It says whether later results changed without this match's calls, and "Later calls depended on this match." when they cannot be replayed without it. If the scores match, it says so.
+- The card lives in the full-time footer, which shows only once the match is over. Matches with no call of the player's have no card. It shows scores only, so nothing new appears with ratings off.
+- Each replay runs in its own task. In headless chromium at 4x CPU throttle, 8 replays took 254 to 300 ms with no long task; the score line showed after 45 to 59 ms.
+
+RED commit: `cbd24ad` (2 of 2 files failed: the 1 collected test, and `your-calls.test.ts` with 5 tests could not import the missing module).
+
+Gates at `3ac4b9b` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 9 touched files.
+- Unit tests: 1,517 passed in 175 files.
+- Playwright (`CI=1`, fresh build at `3ac4b9b`): `your-calls`, `manager-mode`, `prematch-merge`, `injury-staging`, `builder-matchday`, `mobile-targets` and `mobile-acceptance`: 382 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, 360 and 320 proof (no new fixed width) and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/your-calls.md`. Browser proof: `docs/reports/your-calls/`.
+
 ## Test flakes and retained replays in CI
 
 Branch `chore/test-flakes-retained-replays` off `bcf5493`. Tests, one build check and the CI workflow only (Green). No product code, and no file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -25,6 +46,8 @@ Gates at `b941966` (code identical at the docs commit that adds this section):
 Measurements and decisions are in `docs/decisions/test-chores.md`. No browser proof: no UI changed.
 
 Merged origin/main after PR #98 (row 3f) at `c28cfd2`; only STATE.md conflicted. Then `callouts-type-effects.spec.ts` waits for a typed badge in one filtered locator (the badge lives only for its phase; PR #98's hosted shard 1 found it, lost it and failed twice with "element(s) not found", run 39157333456). RED for that race is the hosted run; it did not reproduce locally. After the merge and the spec fix, build exited 0, `callouts-type-effects` and `fatigue` passed 5 of 5 locally (`CI=1`, chromium) and `check-retained-replays.mts` passed 10 emitted golden replays. The full gates at the reviewed head are in the review receipt.
+
+PR #100 (test flakes and retained replays, Green) merged as squash `20e34f6`, reviewed head `3432861`, GLM 5.3 Flash APPROVE in round 1 with canary `test-chores-4f9dc4674c3afab8be87f9fcad51dc26` echoed. At `3432861` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,511 unit tests passed in 173 files and Prettier passed on 8 touched files; hosted check and all eight e2e shards green, and the hosted `check` job ran `check-retained-replays.mts` after the build (10 emitted golden replays passed, v1 to v5 bundles and the live engine 6). Production `/api/health?db=1` served `20e34f6` with `db.status` ok, and `fatigue.spec.ts` plus `callouts-type-effects.spec.ts` against production (chromium) passed 5 of 5. No product code changed.
 
 ## Pre-match merge
 

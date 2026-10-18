@@ -19,6 +19,7 @@ import {
 import { focusHeading } from "@/ui/focus";
 import { MatchPlayer } from "./MatchPlayer";
 import { TacticPills } from "./TacticPills";
+import { YourCalls } from "./YourCalls";
 import s from "./MatchdayFlow.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
@@ -151,6 +152,7 @@ export function MatchdayFlow({
                   : ""}
                 .
               </p>
+              <YourCalls ctx={ctx} cup={cup} actions={actions} matchIndex={index} />
               <button
                 type="button"
                 className="btn btn--primary"
