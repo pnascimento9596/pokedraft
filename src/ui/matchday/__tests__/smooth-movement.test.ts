@@ -186,6 +186,24 @@ describe("smooth movement (catches players stopping dead at every phase, stackin
     expect(leaving(900, 2)).toEqual([]);
   });
 
+  it("walks a red-carded player straight off from where the card found them while the clock runs on (catches the walker drifting 7% sideways with play they left)", () => {
+    const timeline = timelineAt(5);
+    const card = timeline.beats.find((b) => b.kind === "card" && b.color === "red")!;
+    const fired = { [beatKey(card)]: FIRED_AT };
+    const walker = (after: number) => {
+      const clock = 6 + after / PACE.live.regulation;
+      const stage = stageFrame(timeline, viewFor(5, { clock, fired, now: FIRED_AT + after })).stage;
+      return (stage.leaving ?? []).map((p) => ({
+        x: +p.point.x.toFixed(2),
+        y: +p.point.y.toFixed(2),
+      }));
+    };
+    expect(walker(0)).toEqual([{ x: 17.2, y: 30.55 }]);
+    expect(walker(300)).toEqual([{ x: 17.2, y: 28.29 }]);
+    expect(walker(900)).toEqual([{ x: 17.2, y: 15.28 }]);
+    expect(walker(1_500)).toEqual([{ x: 17.2, y: 2.26 }]);
+  });
+
   it("walks a substituted player off while the substitute walks on (catches the player going off vanishing at the sub beat)", () => {
     const timeline = timelineAt(1);
     const sub = timeline.beats.find((b) => b.kind === "sub" && b.minute === 60)!;
