@@ -59,6 +59,57 @@
   background: var(--accent);
 }
 
+.bar {
+  position: relative;
+  display: grid;
+  align-items: center;
+}
+
+.bar[data-pips] {
+  min-height: 44px;
+}
+
+.pips {
+  position: absolute;
+  inset: 0;
+}
+
+/* A 44 px target around a small dot, kept inside the bar at both ends. */
+.pip {
+  position: absolute;
+  top: 0;
+  left: clamp(0px, calc(var(--at) - 22px), calc(100% - 44px));
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.pip span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+.pip[data-side="opp"] span {
+  background: var(--text-muted);
+}
+
+.pip:focus-visible {
+  outline: none;
+}
+
+.pip:focus-visible span {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .hud {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;

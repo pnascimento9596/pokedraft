@@ -337,7 +337,43 @@ export type PlayAction =
   | { readonly type: "sheet"; readonly open: boolean; readonly now: number }
   | { readonly type: "speed" }
   | { readonly type: "answer"; readonly key: string }
-  | { readonly type: "skip"; readonly env: PlayEnv };
+  | { readonly type: "skip"; readonly env: PlayEnv }
+  | { readonly type: "seek"; readonly minute: number; readonly now: number; readonly env: PlayEnv };
+
+// A beat a seek passes counts as shown this long ago: landed, staged and settled, so it neither
+// plays on the pitch nor sounds.
+const SEEN_LONG_AGO = 3_600_000;
+
+/**
+ * The clock moved to `minute` and running. Every beat it passes counts as shown long ago and every
+ * later beat waits to fire again. A manager stop nobody answered before `minute` refuses the seek,
+ * so a seek never answers one.
+ */
+function seek(state: PlayState, env: PlayEnv, minute: number, now: number): PlayState {
+  const { timeline } = env;
+  const to = Math.min(timeline.finalMinute, Math.max(0, minute));
+  const skipped = env.stops.some((s) => s.minute <= to && !state.answered.includes(s.key));
+  if (skipped) return state;
+  const fired: Record<string, number> = {};
+  for (const b of timeline.beats) {
+    if (b.minute > to) break;
+    if (revealed(b, to)) fired[beatKey(b)] = now - SEEN_LONG_AGO;
+  }
+  return {
+    ...state,
+    minute: to,
+    stage: "play",
+    running: true,
+    uiHold: false,
+    pausedAt: null,
+    stop: null,
+    hold: null,
+    held: Object.keys(fired),
+    fired,
+    kicks: 0,
+    kickAt: 0,
+  };
+}
 
 function holdFor(b: Beat, pace: Pace): number {
   if (b.kind === "goal") return pace.holdGoal;
@@ -474,6 +510,8 @@ export function play(state: PlayState, action: PlayAction): PlayState {
         answered: [...new Set([...state.answered, ...stops.map((s) => s.key)])],
       };
     }
+    case "seek":
+      return seek(state, action.env, action.minute, action.now);
   }
 }
 

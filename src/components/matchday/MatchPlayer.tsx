@@ -8,6 +8,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from "react";
 import { speciesById } from "@/engine";
@@ -152,6 +153,9 @@ export function MatchPlayer({
     running: autoStart || manager !== undefined,
   }));
   const [error, setError] = useState<string | null>(null);
+  // Once the match has been played to the end it stays over: a seek replays it, with no touchline.
+  const [ended, setEnded] = useState(false);
+  if (state.stage === "done" && !ended) setEnded(true);
   const [now, setNow] = useState(0);
   // The play state of the newest frame, ahead of `state` between renders.
   const live = useRef(state);
@@ -347,6 +351,24 @@ export function MatchPlayer({
     for (const { kick, cue } of due) KICK_SOUND[cue](kick, state.speed);
   }, [timeline, state.stage, state.kicks, state.speed, progress, motion]);
 
+  // A replay, or a match already played to full time, can seek; a live managed match cannot, so a
+  // seek never jumps a stop.
+  const seekable = manager === undefined || ended;
+  const seekTo = (minute: number) => {
+    unlockAudio();
+    send({ type: "seek", minute, now: performance.now(), env });
+    // The beats the seek passed count as heard, so none sounds again; later ones sound as they fire.
+    for (const b of timeline.beats) {
+      const key = beatKey(b);
+      const passed = live.current.fired[key] !== undefined;
+      for (const heard of [sounded.current, horned.current]) {
+        if (passed) heard.add(key);
+        else heard.delete(key);
+      }
+    }
+    cued.current.clear();
+  };
+
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
   const shown = timeline.beats.filter(
@@ -380,7 +402,7 @@ export function MatchPlayer({
     setError(why);
     if (why === null && d.kind === "sub") closeSheet();
   };
-  const sheet = manager !== undefined && !done;
+  const sheet = manager !== undefined && !ended;
   const { sheetRef, pitchRef, playerRef, spacerRef } = useSheet(
     sheet,
     state.uiHold,
@@ -444,8 +466,30 @@ export function MatchPlayer({
         </span>
         <span className={`${s.team} ${s.teamOpp}`}>{match.opponent.name}</span>
       </div>
-      <div className={s.progress} aria-hidden="true">
-        <span style={{ width: `${Math.min(100, (clock / timeline.finalMinute) * 100)}%` }} />
+      <div className={s.bar} data-pips={seekable || undefined}>
+        <div className={s.progress} aria-hidden="true">
+          <span style={{ width: `${Math.min(100, (clock / timeline.finalMinute) * 100)}%` }} />
+        </div>
+        {seekable ? (
+          <div className={s.pips} role="group" aria-label="Goals">
+            {timeline.beats.map((b) =>
+              b.kind === "goal" ? (
+                <button
+                  key={beatKey(b)}
+                  type="button"
+                  className={s.pip}
+                  data-testid="goal-pip"
+                  data-side={b.side}
+                  style={{ "--at": `${(b.minute / timeline.finalMinute) * 100}%` } as CSSProperties}
+                  aria-label={`Watch the ${b.minute}' goal`}
+                  onClick={() => seekTo(b.minute - 1)}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              ) : null,
+            )}
+          </div>
+        ) : null}
       </div>
 
       <div className={s.hud} data-testid="match-hud">
@@ -629,7 +673,7 @@ export function MatchPlayer({
         </div>
       ) : null}
 
-      {done && footer !== undefined ? <div className={s.footer}>{footer}</div> : null}
+      {ended && footer !== undefined ? <div className={s.footer}>{footer}</div> : null}
 
       <Ticker shown={shown} teams={teams} kicks={kicks} />
       {aside?.(Math.floor(clock), score)}
