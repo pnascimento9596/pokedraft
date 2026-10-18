@@ -57,6 +57,23 @@ test.describe("settings panel and Play confirmation on a phone", () => {
     await expect(page.getByTestId("round-header")).toContainText("Round 1 of 16");
   });
 
+  test("a formation picked as the home page loads on a slow phone survives hydration (catches a store read redoing hydration and dropping the pick)", async ({
+    page,
+  }) => {
+    test.skip(test.info().project.name !== "chromium", "CPU throttling needs Chromium's CDP");
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 8 });
+    await page.goto("/");
+    await formation(page).selectOption("4-4-2");
+    await page.getByRole("button", { name: "Play 8-0 Challenge" }).click();
+    await expect(dialog(page)).toContainText("4-4-2");
+    expect(
+      await page.evaluate(
+        () => JSON.parse(localStorage.getItem("pokedraft:panel") ?? "{}").formation,
+      ),
+    ).toBe("4-4-2");
+  });
+
   test("Play from home menu starts a fresh run instead of restoring old completed results", async ({
     page,
   }) => {

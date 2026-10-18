@@ -206,7 +206,7 @@ export function Challenge({
       >
         <SettingsSummary items={settingsSummary(settings)} />
         {renderSetup?.(loading)}
-        {settings.mode !== "builder" ? <MatchdaySettings /> : null}
+        <MatchdaySettings />
         <button
           type="button"
           className="btn btn--primary"

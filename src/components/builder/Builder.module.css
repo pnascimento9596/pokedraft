@@ -99,6 +99,11 @@
   border-top: 1px solid var(--line);
 }
 
+.friendlyMatchday {
+  flex-basis: 100%;
+  min-width: 0;
+}
+
 .friendlyNote {
   font-size: 13px;
   color: var(--ink-soft);

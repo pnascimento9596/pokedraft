@@ -3,6 +3,32 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Builder matchday
+
+Branch `feat/builder-matchday` off `f4489cb`, with `origin/main` merged in, last at `63c9d36` (PR #84). UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- A friendly cup from the home builder now follows Manager mode and Live match. With either on it opens the matchday, and Manager mode reaches the touchline. With both off it goes straight to the results, as before.
+- The Matchday toggles sit above Play a friendly cup and stay in step with the side panel's Matchday switches.
+- A reload during a friendly matchday comes back to the same match from the builder run slot. Friendly results still do not survive a reload.
+- Friendlies stay unranked. The results show no submit panel, and the server rejects a coached builder token as `BUILDER_NOT_RANKED`.
+- The `PlayScreen` and `LiveRun` builder gates are gone, but `/play` never runs a builder cup, so the player path was the home friendly in `HomeScreen`.
+- With PR #78's rule merged in, Manager mode plays a friendly live too: `MatchdayFlow` applies `matchdayView`, and the builder's toggles disable Quick with the same hint. The merge made `SidePanel.test.tsx` find two Quick sim buttons (the desk's and the builder's). Its two manager-mode guards now read the Control desk's copy and also assert the builder copy is disabled under Manager mode and pressed after it goes off. Forcing Quick enabled in `MatchdaySettings` fails the new assertion (`expected false to be true`). `e2e/quick-not-broadcast.spec.ts` hit the same two copies (strict mode, 2 elements) and now reads the desk's copy and checks the builder's Quick is disabled; on a fresh build of the merge it passed 1 of 1, and `builder-matchday` plus `manager-mode` passed 8 of 8 (chromium).
+
+RED commit: `aff6f7a` (5 failing tests in `builder-matchday.test.tsx`).
+
+Gates at `06d3755` (later commits change only STATE.md):
+
+- Lint, typecheck, format check, build, client bundle and image seam exited 0.
+- Unit tests: 1,321 passed in 146 files.
+- Playwright on a fresh build, 13 specs (`builder-matchday`, `builder`, `manager-mode`, `mobile-targets`, `mobile-acceptance`, `data-split`, `layout-shift`, `theme-builder`, `builder-ratings-layout`, `a11y`, `run-persist`, `settings-confirm`, `contrast`): 478 passed, 0 failed, 57 skipped.
+- NOT RUN: the full Playwright suite locally, hosted CI, the GLM review, a physical phone check.
+
+Hosted CI round 1 on `4577309` (GLM APPROVE, canary `builder-matchday-1beacf9854e8996ac05950ad9b355a14`) failed e2e shard 7: `settings-confirm.spec.ts` lost a 4-4-2 pick on iphone-14. Cause: the home page's new `MatchdaySettings` read the stored panel through `useSyncExternalStore` (server `null`, client stored), so React redid the render after hydration and reset the select before the queued pick replayed. Under an 8x CPU throttle the pick was lost 6 of 6 on this branch and 0 of 6 on `main`. A controlled `MatchdaySettings` no longer reads the store. RED `1136ad8` (new slow-phone guard, 3 of 3 failed); with the fix the guard passed 5 of 5 and `settings-confirm` 23 passed, 3 skipped (chromium, iphone-14).
+
+Decisions and the RED output are in `docs/decisions/builder-matchday.md`. Screenshots at 390x844 are in `docs/reports/builder-matchday/`.
+
+PR #84 (row 1i, draft safety) merged as squash `63c9d36`, reviewed head `7d9c485`, GLM 5.3 Flash APPROVE in round 2 with canary `draft-safety-r2-e0e51731aa6c1ac38eca1adff08d9674` echoed. Round 1 (`904951a`, canary `draft-safety-76b0e65314925f378432c265b5d26dcf`) was REQUEST_CHANGES: it could not see the inert-while-dragging backdrop rule, which predates the PR (`DraftBoard.module.css` line 399). `7d9c485` makes the candidate drag test assert the picker is open (3 of 3 phone projects passed, 3 of 3 failed with the rule removed) and corrects the overflow wording (body only). Hosted check and all eight e2e shards green on `7d9c485`. Production `/api/health?db=1` served `63c9d36` with `db.status` ok, and `e2e/draft-safety.spec.ts` against production (chromium) passed 9 of 9.
+
 ## Draft safety (Wave 1, 1i)
 
 Branch `fix/draft-safety` off `f4489cb` (PR #69), with `origin/main` merged in, last at `b7f28d6` (PR #83). Only STATE.md conflicted. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
