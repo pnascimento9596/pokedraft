@@ -7,7 +7,7 @@ import type { BenchIndex, FullLineup, ManagerAction, MatchResult, Tactic } from 
 import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
-import { PACE, stopsFor, type Stop } from "@/ui/matchday/clock";
+import { PACE, stopsFor, type Pace, type Stop } from "@/ui/matchday/clock";
 import { TACTIC_LABEL, beatLine, kickLine, type Teams } from "@/ui/matchday/copy";
 import {
   START,
@@ -22,8 +22,9 @@ import {
   type PlayState,
 } from "@/ui/matchday/player";
 import { frameSource, type LiveFrame } from "@/ui/matchday/feed";
-import { PHASE_LEN, buildTimeline, frameAt, type Beat } from "@/ui/matchday/timeline";
-import { crowdGain, kickPassDue, roarFor } from "@/ui/matchday/crowd";
+import { PHASE_LEN, buildTimeline, frameAt, type Beat, type Kick } from "@/ui/matchday/timeline";
+import { crowdGain, kickPassDue, penRoar, roarFor } from "@/ui/matchday/crowd";
+import { kickCues, kickProgress, kicksShown, type KickCue } from "@/ui/matchday/shootout";
 import {
   crowdRoar,
   playAbilitySound,
@@ -47,6 +48,14 @@ import { useMovesets } from "./useMovesets";
 import s from "./MatchPlayer.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
+
+const KICK_SOUND: Readonly<Record<KickCue, (kick: Kick, speed: number) => void>> = {
+  whistle: () => playWhistle("foul"),
+  strike: () => playKickPass(),
+  roar: (kick, speed) => crowdRoar(penRoar(kick.side, speed)),
+  horn: (kick) => (kick.side === "user" ? playGoalHorn() : playOppGoal()),
+  glove: () => playSaveSound(),
+};
 
 // The broadcast loads only when a live match mounts.
 const Broadcast = dynamic(() => import("./Broadcast").then((m) => m.Broadcast), {
@@ -135,13 +144,13 @@ export function MatchPlayer({
   const send = (action: PlayAction) => {
     const next = play(live.current, action);
     live.current = next;
-    feed.publish(frameOf(next, feed.latest()?.now ?? 0));
+    feed.publish(frameOf(next, feed.latest()?.now ?? 0, envRef.current.pace));
     setState(next);
   };
 
   // What the match screen shows that time alone changes: the minute on the clock, the goals that
-  // have landed, the play the phase sounds follow, and the beat on the pitch. A change renders at
-  // once, not on the next gap.
+  // have landed, the play the phase sounds follow, the beat on the pitch, and the penalty's cues
+  // (its sounds and the shootout score). A change renders at once, not on the next gap.
   const glanceRef = useRef<(st: PlayState, t: number) => string>(() => "");
   useEffect(() => {
     glanceRef.current = (st, t) => {
@@ -152,7 +161,9 @@ export function MatchPlayer({
       }
       const on = activeBeat(timeline, st.fired, t, motion, st.minute, st.speed);
       const phase = view === "live" ? Math.floor(st.minute / PHASE_LEN) : 0;
-      return `${Math.floor(st.minute)}|${goals}|${phase}|${on === null ? "" : beatKey(on.beat)}`;
+      const kick = kickProgress(st, t, envRef.current.pace);
+      const cues = kickCues(true, motion).filter((c) => c.at <= kick).length;
+      return `${Math.floor(st.minute)}|${goals}|${phase}|${on === null ? "" : beatKey(on.beat)}|${cues}`;
     };
   }, [timeline, motion, view]);
 
@@ -170,7 +181,7 @@ export function MatchPlayer({
       const prev = live.current;
       const next = play(prev, { type: "tick", now: t, dt, env: envRef.current });
       live.current = next;
-      const asked = feed.publish(frameOf(next, t));
+      const asked = feed.publish(frameOf(next, t, envRef.current.pace));
       const seen = glanceRef.current(next, t);
       if (asked || changed(prev, next) || seen !== glance || t - shownAt >= COMMIT_GAP) {
         glance = seen;
@@ -191,7 +202,7 @@ export function MatchPlayer({
     let shownAt = -Infinity;
     let glance = "";
     const frame = (t: number) => {
-      const asked = feed.publish(frameOf(live.current, t));
+      const asked = feed.publish(frameOf(live.current, t, envRef.current.pace));
       const seen = glanceRef.current(live.current, t);
       if (asked || seen !== glance || t - shownAt >= COMMIT_GAP) {
         glance = seen;
@@ -287,6 +298,26 @@ export function MatchPlayer({
     }
   }, [moving, view, state.minute, timeline.plays]);
 
+  const progress = kickProgress(state, now, env.pace);
+  const cued = useRef(new Set<string>());
+  useEffect(() => {
+    if (timeline.kicks.length === 0 || state.stage === "play") return;
+    const due: { key: string; kick: Kick; cue: KickCue }[] = [];
+    const last = Math.min(state.kicks, timeline.kicks.length - 1);
+    for (let i = 0; i <= last; i++) {
+      const kick = timeline.kicks[i]!;
+      const at = i < state.kicks ? 1 : progress;
+      for (const c of kickCues(kick.scored, motion)) {
+        const key = `${i}:${c.cue}`;
+        if (c.at <= at && !cued.current.has(key)) due.push({ key, kick, cue: c.cue });
+      }
+    }
+    for (const d of due) cued.current.add(d.key);
+    // A skip resolves every remaining kick at once and gets no burst of sounds.
+    if (new Set(due.map((d) => d.kick.index)).size > 1) return;
+    for (const { kick, cue } of due) KICK_SOUND[cue](kick, state.speed);
+  }, [timeline, state.stage, state.kicks, state.speed, progress, motion]);
+
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
   const shown = timeline.beats.filter(
@@ -294,7 +325,10 @@ export function MatchPlayer({
   );
   const goals = shown.filter((b) => b.kind === "goal");
   const score = goals.at(-1)?.kind === "goal" ? goals.at(-1)!.score : { user: 0, opp: 0 };
-  const kicks = timeline.kicks.slice(0, state.kicks);
+  const kicks = timeline.kicks.slice(
+    0,
+    kicksShown(timeline.kicks.length, state.kicks, progress, motion),
+  );
   const pens = kicks.at(-1)?.score ?? null;
   const done = state.stage === "done";
   const minuteLabel = done
@@ -402,6 +436,7 @@ export function MatchPlayer({
         now={now}
         fired={state.fired}
         kicks={state.kicks}
+        kickProgress={progress}
         motion={motion}
         speed={state.speed}
         feed={feed}
@@ -520,8 +555,15 @@ export function MatchPlayer({
   );
 }
 
-function frameOf(st: PlayState, now: number): LiveFrame {
-  return { clock: st.minute, now, fired: st.fired, kicks: st.kicks, speed: st.speed };
+function frameOf(st: PlayState, now: number, pace: Pace): LiveFrame {
+  return {
+    clock: st.minute,
+    now,
+    fired: st.fired,
+    kicks: st.kicks,
+    kickProgress: kickProgress(st, now, pace),
+    speed: st.speed,
+  };
 }
 
 // Whether a tick changed anything but the minute: a beat fired, a hold, a stop, the shootout.

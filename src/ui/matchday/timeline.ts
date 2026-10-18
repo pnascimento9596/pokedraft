@@ -17,6 +17,7 @@ import type {
 } from "@/engine/types";
 import { fieldedFor } from "@/ui/manager/touchline";
 import { playCallout, saveCallout, shotCallout, type Callout, type Effect } from "./moves";
+import { stageKick, waitingPoint } from "./shootout";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
@@ -786,6 +787,8 @@ export interface StageInput {
   readonly clock: number;
   readonly active: { readonly beat: Beat; readonly progress: number } | null;
   readonly kicks: number;
+  /** How far through the kick in progress the shootout is, 0 to 1 (see `kickProgress`). */
+  readonly kickProgress?: number;
   readonly motion: boolean;
   readonly userSlots: FormationId | readonly { readonly x: number; readonly y: number }[];
   readonly oppSlots: FormationId | readonly { readonly x: number; readonly y: number }[];
@@ -1031,13 +1034,12 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   }
 
   if (timeline.kicks.length > 0 && clock >= timeline.finalMinute) {
-    const taken = kicks > 0;
-    const kickIdx = Math.max(0, Math.min(kicks - 1, timeline.kicks.length - 1));
-    const kick = timeline.kicks[kickIdx]!;
+    // The kick in progress, or the last kick's reaction held once the shootout is over.
+    const done = kicks >= timeline.kicks.length;
+    const kick = timeline.kicks[done ? timeline.kicks.length - 1 : kicks]!;
+    const staged = stageKick(kick, done ? 1 : (input.kickProgress ?? 0));
     const attSide = kick.side;
     const defSide: Side = attSide === "user" ? "opp" : "user";
-    const spot: Point = attSide === "user" ? { x: 89, y: 50 } : { x: 11, y: 50 };
-    const mouth = goalMouth(attSide);
     const takerSlot =
       kick.taker.slot ??
       (attSide === "user" && kick.taker.species !== null
@@ -1050,17 +1052,13 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         if (id === null && (side === "user" || !input.oppLabels?.[slot])) return null;
         const isTaker = side === attSide && takerSlot === slot;
         const isKeeper = side === defSide && slot === 0;
-        const OwnKeeper = side === attSide && slot === 0;
         const point: Point = isTaker
-          ? spot
+          ? staged.taker.point
           : isKeeper
-            ? { x: mouth.x === 98 ? 97 : 3, y: !taken ? 50 : kick.scored ? 43 : 54 }
-            : OwnKeeper
+            ? staged.keeper.point
+            : slot === 0
               ? { x: side === "user" ? 6 : 94, y: 50 }
-              : {
-                  x: side === "user" ? 46 : 54,
-                  y: 18 + slot * 6.2,
-                };
+              : waitingPoint(side, slot);
         return {
           side,
           slot,
@@ -1068,46 +1066,24 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
           name: labelOf(side, slot, id),
           point,
           facing: side === "user" ? "right" : "left",
-          pose: !taken
-            ? "idle"
-            : isTaker
-              ? kick.scored
-                ? "celebrate"
-                : "cast"
-              : isKeeper
-                ? "dive"
-                : "idle",
-          hasBall: !taken && isTaker,
+          pose: isTaker ? staged.taker.pose : isKeeper ? staged.keeper.pose : "idle",
+          hasBall: isTaker && staged.taker.hasBall,
           hot: isTaker || isKeeper,
           yellowCards: yellows[side][slot] ?? 0,
           callout: null,
         };
       });
-    const target: Point = !taken
-      ? spot
-      : kick.scored
-        ? { x: mouth.x, y: 46 }
-        : { x: mouth.x === 98 ? 91 : 9, y: 36 };
     return {
       players: { user: buildPenSide("user", userXI), opp: buildPenSide("opp", oppXI) },
       ball: {
-        x: target.x,
-        y: target.y,
-        loft: taken ? 0.25 : 0,
-        spin: taken ? (kickIdx + 1) * 360 : 0,
-        effect: !taken ? null : kick.scored ? "impact" : "shield",
+        x: staged.ball.point.x,
+        y: staged.ball.point.y,
+        loft: staged.ball.loft,
+        spin: staged.ball.spin,
+        effect: staged.ball.effect,
         carrier: kick.taker,
       },
-      trail: taken
-        ? {
-            from: spot,
-            to: target,
-            effect: kick.scored ? "impact" : "shield",
-            type: null,
-            kind: "shot",
-            progress: 1,
-          }
-        : null,
+      trail: staged.trail,
       playCallout: null,
     };
   }

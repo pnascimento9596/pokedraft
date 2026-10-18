@@ -29,6 +29,7 @@ import {
   type StagedPlayer,
   type Timeline,
 } from "@/ui/matchday/timeline";
+import { kicksShown, suddenDeath } from "@/ui/matchday/shootout";
 import s from "./Broadcast.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
@@ -59,10 +60,16 @@ const CLOSES = [0.75, 0.9];
 
 /**
  * What the broadcast renders that time alone changes: the beat on the pitch and its windows, the
- * cut-in, the trail, the play badge and the ball's carrier. A frame whose key differs from the last
+ * cut-in, the trail, the play badge, the ball's carrier and the shootout's banner and kick dots. A frame whose key differs from the last
  * render asks for a render at once.
  */
-function screenKey(active: Active | null, stage: PitchStage, cutIns: boolean): string {
+function screenKey(
+  active: Active | null,
+  stage: PitchStage,
+  cutIns: boolean,
+  kicks: number,
+  shots: number,
+): string {
   const p = active?.beat.kind === "goal" ? active.progress : 0;
   const windows = OPENS.filter((w) => p >= w).length + CLOSES.filter((w) => p > w).length;
   const cut = cutIns ? cutInAt(active, stage.playCallout) : null;
@@ -76,6 +83,8 @@ function screenKey(active: Active | null, stage: PitchStage, cutIns: boolean): s
     play === null ? "" : `${play.side}${play.slot}:${play.callout.text}`,
     stage.ball.effect ?? "",
     carrier === null ? "" : `${carrier.side}${carrier.slot}`,
+    // The shootout: the kick in progress (and with it the sudden-death banner) and the kick dots.
+    `${kicks}:${shots}`,
   ].join("|");
 }
 
@@ -188,6 +197,7 @@ export function Broadcast({
   now,
   fired,
   kicks,
+  kickProgress = 0,
   motion,
   speed,
   feed,
@@ -202,6 +212,8 @@ export function Broadcast({
   readonly now: number;
   readonly fired: Readonly<Record<string, number>>;
   readonly kicks: number;
+  /** How far through the kick in progress the shootout is, 0 to 1. */
+  readonly kickProgress?: number;
   readonly motion: boolean;
   /** The player's speed: 2x stages every beat in half the time, matching its hold. */
   readonly speed: number;
@@ -225,13 +237,14 @@ export function Broadcast({
       fired: f.fired,
       now: f.now,
       kicks: f.kicks,
+      kickProgress: f.kickProgress,
       motion,
       speed: f.speed,
       userSlots,
       oppSlots,
       oppLabels,
     });
-  const { active, stage } = frameAt({ clock, now, fired, kicks, speed });
+  const { active, stage } = frameAt({ clock, now, fired, kicks, kickProgress, speed });
 
   const players = useRef(new Map<HTMLElement, { side: Side; slot: number }>());
   const ballRef = useRef<HTMLDivElement>(null);
@@ -257,12 +270,15 @@ export function Broadcast({
       playEffect: playEffectRef,
       playBadge: playBadgeRef,
     };
-    const props: LiveFrame = { clock, now, fired, kicks, speed };
-    const rendered = screenKey(active, stage, cutIns);
+    const props: LiveFrame = { clock, now, fired, kicks, kickProgress, speed };
+    const shotsOf = (f: LiveFrame) =>
+      kicksShown(timeline.kicks.length, f.kicks, f.kickProgress, motion);
+    const rendered = screenKey(active, stage, cutIns, kicks, shotsOf(props));
     const draw = () => {
-      const latest = frameAt(feed?.latest() ?? props);
+      const f = feed?.latest() ?? props;
+      const latest = frameAt(f);
       paint(nodes, latest.stage);
-      return screenKey(latest.active, latest.stage, cutIns) !== rendered;
+      return screenKey(latest.active, latest.stage, cutIns, f.kicks, shotsOf(f)) !== rendered;
     };
     draw();
     if (feed === undefined || !motion) return;
@@ -276,7 +292,11 @@ export function Broadcast({
   const cutIn = cutIns ? cutInAt(active, stage.playCallout) : null;
   const progress = active?.progress ?? 0;
   const shown = (from: number, to = 1) => !motion || (progress >= from && progress <= to);
-  const kickList = timeline.kicks.slice(0, kicks);
+  const kickList = timeline.kicks.slice(
+    0,
+    kicksShown(timeline.kicks.length, kicks, kickProgress, motion),
+  );
+  const shootout = timeline.kicks.length > 0 && clock >= timeline.finalMinute;
 
   const renderPlayer = (p: StagedPlayer | null, keyPrefix: string) => {
     if (p === null) return null;
@@ -515,7 +535,12 @@ export function Broadcast({
             {active.beat.label}
           </p>
         ) : null}
-        {timeline.kicks.length > 0 && clock >= timeline.finalMinute ? (
+        {shootout && kicks < timeline.kicks.length && suddenDeath(kicks) ? (
+          <p className={s.banner} data-testid="sudden-death">
+            Sudden death
+          </p>
+        ) : null}
+        {shootout ? (
           <ol className={s.kicks} aria-label="Penalty shootout" data-testid="shootout">
             {timeline.kicks.map((k, i) => (
               <li

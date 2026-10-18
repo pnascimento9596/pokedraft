@@ -2,7 +2,7 @@
 import { Profiler } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
-import type { FullLineup, MatchResult, Opponent, SpeciesId } from "@/engine/types";
+import type { FullLineup, MatchResult, Opponent, PenKick, SpeciesId } from "@/engine/types";
 import { frameSource } from "@/ui/matchday/feed";
 import { buildTimeline, SHOW } from "@/ui/matchday/timeline";
 import { Broadcast } from "../Broadcast";
@@ -237,8 +237,133 @@ describe("cut-in timing (catches a goal card that waits up to 100 ms for the nex
       />,
     );
     expect(screen.queryByTestId("cut-in")).toBeNull();
-    const frame = (now: number) => ({ clock: 12, now, fired: GOAL, kicks: 0, speed: 1 });
+    const frame = (now: number) => ({
+      clock: 12,
+      now,
+      fired: GOAL,
+      kicks: 0,
+      kickProgress: 0,
+      speed: 1,
+    });
     expect(feed.publish(frame(at(0.2)))).toBe(false);
     expect(feed.publish(frame(at(0.26)))).toBe(true);
+  });
+});
+
+describe("shootout frames (catches a penalty that only moves at the 10 Hz render)", () => {
+  const u = (n: number, scored: boolean): PenKick => ({ side: "user", taker: id(n), scored });
+  const o = (n: number, scored: boolean): PenKick => ({
+    side: "opp",
+    taker: { kind: "species", id: id(n) },
+    scored,
+  });
+  // shootout-staging.test.ts's opening kicks: the user's first taker scores.
+  const PENS: PlayedMatch = {
+    ...MATCH,
+    round: "F",
+    regulation: { user: 0, opp: 0 },
+    extraTime: { user: 0, opp: 0 },
+    shootout: {
+      user: 1,
+      opp: 0,
+      keeper: id(9),
+      kicks: [u(6, true), o(149, false)],
+      decider: "kicks",
+      coinWinner: null,
+    },
+    outcome: "W",
+    goals: [],
+    saves: [],
+    incidents: [],
+  };
+  const T = buildTimeline(PENS, { matchIndex: 0, seed: "pens", lineup: LINEUP });
+  // Measured from a plain render at kickProgress 0.5: past the strike (0.35), short of the goal
+  // (0.6), so the ball is in the air.
+  const FLIGHT =
+    "transform: translate3d(95.00cqi, 33.92cqi, 0) translate(-50%, -50%); --loft: 0.33; --spin: 324.00000000000006";
+  const ball = () => style('[data-testid="broadcast-ball"]');
+  const stand = (kickProgress: number) => {
+    render(
+      <Broadcast
+        match={PENS}
+        timeline={T}
+        lineup={LINEUP}
+        clock={T.finalMinute}
+        now={5000}
+        fired={{}}
+        kicks={0}
+        kickProgress={kickProgress}
+        motion={true}
+        speed={1}
+      />,
+    );
+    const seen = ball();
+    cleanup();
+    return seen;
+  };
+
+  it("a frame at kickProgress 0.5 between renders at 0.2 paints the ball in flight, as a render at 0.5 does", () => {
+    const flight = stand(0.5);
+    const runUp = stand(0.2);
+    expect(flight).toBe(FLIGHT);
+    expect(runUp).not.toBe(flight);
+
+    const feed = frameSource();
+    render(
+      <Broadcast
+        match={PENS}
+        timeline={T}
+        lineup={LINEUP}
+        clock={T.finalMinute}
+        now={5000}
+        fired={{}}
+        kicks={0}
+        kickProgress={0.2}
+        motion={true}
+        speed={1}
+        feed={feed}
+      />,
+    );
+    expect(ball()).toBe(runUp);
+    feed.publish({
+      clock: T.finalMinute,
+      now: 5016,
+      fired: {},
+      kicks: 0,
+      kickProgress: 0.5,
+      speed: 1,
+    });
+    expect(ball()).toBe(flight);
+  });
+
+  // The keeper's reaction also starts at 0.6, so this holds with or without the kick dots in the
+  // render key; the dots ride on the same render.
+  it("the frame where the kick lands asks for a render, so its dot fills on that frame", () => {
+    const feed = frameSource();
+    render(
+      <Broadcast
+        match={PENS}
+        timeline={T}
+        lineup={LINEUP}
+        clock={T.finalMinute}
+        now={5000}
+        fired={{}}
+        kicks={0}
+        kickProgress={0.5}
+        motion={true}
+        speed={1}
+        feed={feed}
+      />,
+    );
+    const frame = (kickProgress: number) => ({
+      clock: T.finalMinute,
+      now: 5016,
+      fired: {},
+      kicks: 0,
+      kickProgress,
+      speed: 1,
+    });
+    expect(feed.publish(frame(0.55))).toBe(false);
+    expect(feed.publish(frame(0.6))).toBe(true);
   });
 });

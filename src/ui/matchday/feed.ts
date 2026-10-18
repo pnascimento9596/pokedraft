@@ -4,6 +4,8 @@ export interface LiveFrame {
   readonly now: number;
   readonly fired: Readonly<Record<string, number>>;
   readonly kicks: number;
+  /** How far through the penalty in progress the shootout is, 0 to 1. */
+  readonly kickProgress: number;
   readonly speed: number;
 }
 
