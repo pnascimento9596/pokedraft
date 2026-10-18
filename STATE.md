@@ -3,6 +3,23 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Set pieces
+
+Branch `feat/set-pieces` off `458c56e`, with `origin/main` merged in at `85b292e` (PR #92). Matchday staging only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, so goal kinds and outcomes are untouched and the goldens pass. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+For the player, a goal now plays out by the kind the engine recorded (`Beat.goalKind`). A penalty freezes the shape: the ball rolls to the spot, the taker steps up, pauses and kicks. A free kick lines three defenders up in a wall and curls the shot around it. A header comes off a cross from the wing and is met at loft 0.85. A solo goal dribbles a chain of touches past the defender who steps in. Every kind starts from the live ball and still puts the ball over the line, and the score on the board, at `GOAL_LANDS` (0.6). Quick and reduced motion stay still. Open play is unchanged.
+
+RED commit: `77a9454` (4 of 7 guards failed; the landing, still-motion and free-kick continuity guards pin kept behaviour and passed), after the no-behaviour prefactor `4540e14`. GREEN: `39c3c07`.
+
+Gates at `2cbb5f1` (the merge of `origin/main` at `85b292e`):
+
+- Lint, typecheck, build and `check:mirrors` exited 0. Unit tests: 1,452 passed in 166 files. Prettier passed on every touched file.
+- Playwright on a fresh build, port 3527: `set-pieces`, `continuous-ball`, `shootout-suspense`, `score-lands-with-ball`, `speed-aware-staging`, `watch-live`, `callouts-type-effects`, `quick-not-broadcast`, `one-shared-timeline`, `mobile-targets` and `mobile-acceptance`: 377 passed, 54 skipped by their own project gates. The continuous-ball scene sampled 2,249 frames with a fastest ball speed of 2.68% of the pitch length per frame.
+- Every goal kind is reached by a pinned replay at 390x844 with touch: cup8 G1 49' solo, cup8 R32 9' header and 84' penalty, kanto151 R32 17' free kick.
+- NOT RUN: the full local Playwright suite, a continuity guard at 2x, browser proof at 360 and 320 (no layout change), the review and the physical phone check.
+
+Measurements and decisions are in `docs/decisions/set-pieces.md`. Screenshots are in `docs/reports/set-pieces/`.
+
 ## Shootout with suspense
 
 Branch `feat/shootout-suspense` off `e7f2012`, with `origin/main` merged in at `ae8ee22` (PR #89). UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
