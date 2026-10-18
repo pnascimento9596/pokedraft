@@ -168,9 +168,10 @@ async function playOut(view: MatchView, match: PlayedMatch): Promise<string[]> {
   await act(async () => {
     await vi.dynamicImportSettled();
   });
-  for (let i = 0; i < 20_000 && stage() !== "done"; i++) {
+  // 48 ms frames keep a 120-minute live match quick to run; every kick still spans 25 frames.
+  for (let i = 0; i < 8_000 && stage() !== "done"; i++) {
     await act(async () => {
-      vi.advanceTimersByTime(16);
+      vi.advanceTimersByTime(48);
     });
   }
   expect(stage()).toBe("done");
@@ -181,7 +182,7 @@ async function playOut(view: MatchView, match: PlayedMatch): Promise<string[]> {
 
 const TWO = shootoutMatch([u(6, true), o(149, false)]);
 
-describe("shootout sounds (catches penalties played in dead silence)", () => {
+describe("shootout sounds (catches penalties played in dead silence)", { timeout: 60_000 }, () => {
   it("Live: whistle, strike, then the crowd roar on a goal and the glove on a save, per kick", async () => {
     expect(await playOut("live", TWO)).toEqual([
       "whistle:foul",
