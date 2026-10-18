@@ -24,11 +24,61 @@ Gates at `b941966` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/test-chores.md`. No browser proof: no UI changed.
 
+## Pre-match merge
+
+Branch `feat/prematch-merge` off `bcf5493`. Matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- In manager mode the pre-match card shows the five tactic pills, labelled "Starting tactic", next to the opponent, style and shape. Sim mode shows no pills.
+- The button reads "Kick off" and starts running play at once. The clock no longer stops at 0'. Half time, extra time and injury stops are unchanged.
+- Picking a tactic other than the one the side starts in records it at minute 0 through `decide`, the path the old kickoff stop used, so tokens and old replays are unchanged. Keeping Balanced records nothing, so the assistant stays on.
+- The touchline and the pre-match card share one `TacticPills` component. Every pill is at least 58 px tall at 390, 360 and 320 px.
+- The brief's "weakest line and key player" on the pre-match card and a Team Score in the match header do not exist in the code; both are recorded as Wave 4 carryovers, not invented.
+
+RED commit: `995c229` (8 of 23 failed).
+
+Gates at `eb2af7b` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 20 touched files.
+- Unit tests: 1,486 passed in 172 files.
+- Playwright (`CI=1`, fresh build at `eb2af7b`): `prematch-merge` and `manager-mode` 19 passed; `builder-matchday`, `quick-not-broadcast`, `mobile-pitch-fixes`, `injury-staging` and `watch-live` 10 passed; `mobile-targets` and `mobile-acceptance` 360 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/prematch-merge.md`. Browser proof: `docs/reports/prematch-merge/`.
+
+Merged origin/main after PR #99 (row 3-0, motion bounds) at `3ed16b8`; only STATE.md conflicted. After the merge typecheck and build exited 0, and `prematch-merge`, `manager-mode`, `continuous-ball` and `injury-staging` passed 22 of 22 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #98 (row 3f, prematch merge) merged as squash `b08c68c`, reviewed head `8789a50`, GLM 5.3 Flash APPROVE in round 1 with canary `prematch-merge-2a6e531b18d95c9875727ef78ceb72f7` echoed. At `8789a50` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,511 unit tests passed in 173 files and Prettier passed on 22 touched files. Hosted check and e2e shards 2 to 8 green; shard 1 failed `callouts-type-effects.spec.ts` at 320px twice (the typed badge was visible, then gone before its text was read: "element(s) not found"). It passed 3 of 3 locally at the same head, and `gh run rerun 39157333456 --failed` passed with no commit, so the receipt stood. The spec race is fixed in the test chore. Production `/api/health?db=1` served `b08c68c` with `db.status` ok, and `prematch-merge.spec.ts` plus `manager-mode.spec.ts` against production (chromium) passed 12 of 12. NOT RUN: physical phone check (owner action).
+
+## Motion bounds
+
+Branch `fix/motion-bounds` off `bcf5493`. Wave 3 row 3-0, pure staging in `src/ui/matchday/timeline.ts` (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- After a save, players the shot pulled upfield ease back into play over 600 ms instead of 300 ms, the same as after a goal. The keeper's parry now carries the ball half way back toward play and the settle carries the rest, so the ball no longer crosses the whole pitch in a third of a second.
+- When a player wins the ball in a duel and passes, the pass leaves from where they won it. Before, the ball rode along with the winner as they sprinted away.
+- At 2x everything still moves twice as far per frame (the bound is 4% of the pitch per frame at 1x and 8% at 2x), but no single frame goes past it any more.
+- Golden cup, largest one-frame move at 1x: ball 3.61% (was 3.88%), player 3.53% (was 4.94%). At 2x: ball 6.77% (was 8.84%), player 6.26% (was 9.85%). Over the 20 sweep seeds the ball's worst 1x frame is 3.97% (was 4.41%), with no view at 4% (was 6 of 120).
+- Measured first: both golden 2x maxima come from the one 59' save in match 0 (the player from the settle, the ball from the parry), not from duel turnovers. The sweep's 4.41% comes from the duel's pass after the tackle (0.33 to 0.44 of the phase), not from the 0.24 tackle window.
+
+RED commit: `e847c38` (8 of 22 failed). Contract pin, not a RED guard: `364b537` (painter and `stageFrame` parity). It passed before the fix and fails 3 of 3 when the painter paints the rendered props instead of the feed's frame.
+
+Gates at `d758f67` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 4 touched code files.
+- Unit tests: 1,506 passed in 172 files.
+- Playwright at `2e7d125` (`d758f67` changes only the unit guard; port 3611, `CI=1`, fresh build): `callouts-type-effects`, `set-pieces`, `smooth-movement`, `continuous-ball`, `broadcast-frame-loop`, `fatigue`, `shootout-suspense`, `mobile-targets`, `mobile-acceptance`, `injury-staging`, `speed-aware-staging`, `score-lands-with-ball`, `watch-live`, `quick-not-broadcast`: 384 passed, 54 skipped by their own project gates. The new 2x case read 5.67% per frame (bound 8); a build with `bcf5493`'s staging read 7.91%.
+- Review, hosted CI, the full e2e suite, 360 and 320 proof (no layout change) and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/motion-bounds.md`. Browser proof: `docs/reports/motion-bounds/`.
+
+PR #99 (row 3-0, motion bounds) merged as squash `39a3a6a`, reviewed head `d86e58b`, GLM 5.3 Flash APPROVE in round 1 with canary `motion-bounds-73120b16774a27fbf0825311cbd44022` echoed. At `d86e58b` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,506 unit tests passed in 172 files and Prettier passed on 6 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `39a3a6a` with `db.status` ok, and `continuous-ball.spec.ts` plus `smooth-movement.spec.ts` against production (chromium) passed 4 of 4, the 2x case reading 5.67% per frame (bound 8%) and the 1x case 2.23%. NOT RUN: physical phone check (owner action).
+
 ## Wave 2 summary
 
 Branch `docs/wave2-summary` off `87e7d51`. Docs only (Green). Appends the Wave 2 entry to `docs/reports/audits-2026-10-17/program-log.md`: every PR with its squash and reviewed head, the production checks, the measurements that moved, brief-vs-code notes and open carryovers. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 PR #96 (row 2f, fatigue on the pitch) merged as squash `87e7d51`, reviewed head `2d67b2e`, GLM 5.3 Flash APPROVE in round 1 with canary `fatigue-b84b3eb34bb7cb7683a5940fd3f3ecb2` echoed. At `2d67b2e` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,481 unit tests passed in 171 files and Prettier passed on 11 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `87e7d51` with `db.status` ok, and `fatigue.spec.ts` plus `continuous-ball.spec.ts` against production (chromium) passed 2 of 2. NOT RUN: physical phone check (owner action); a per-frame guard at 2x.
+
+PR #97 (Wave 2 summary, Green) merged as squash `bcf5493`, reviewed head `4b55aef`, GLM 5.3 Flash APPROVE in round 1 with canary `wave2-summary-5326c9df154f05e6123128adc28d221e` echoed. At `4b55aef` lint, typecheck and build exited 0 and 1,481 unit tests passed in 171 files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `bcf5493` with `db.status` ok. No runtime change.
 
 ## Fatigue on the pitch
 

@@ -107,7 +107,7 @@ for (const width of [390, 360, 320]) {
   });
 }
 
-test("all 22 sprites are drawn at the kickoff stop on a slow network, at 390px", async ({
+test("all 22 sprites are drawn as the match kicks off on a slow network, at 390px", async ({
   page,
 }) => {
   test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
@@ -137,7 +137,9 @@ test("all 22 sprites are drawn at the kickoff stop on a slow network, at 390px",
   // The player reads the pre-match card before going on.
   await page.waitForTimeout(2_000);
   await page.getByTestId("prematch-go").click();
-  await expect(page.getByTestId("stop-kickoff")).toBeVisible();
+  await expect(page.getByTestId("broadcast")).toBeVisible();
+  await page.getByTestId("play-toggle").click();
+  const minute = Number(await page.getByTestId("match-player").getAttribute("data-minute"));
 
   const sprites = await page.evaluate(() =>
     [...document.querySelectorAll<HTMLImageElement>('[data-testid="broadcast"] img')].map(
@@ -146,7 +148,8 @@ test("all 22 sprites are drawn at the kickoff stop on a slow network, at 390px",
   );
   await page.getByTestId("broadcast").scrollIntoViewIfNeeded();
   await page.screenshot({ path: `${SHOT}/390-kickoff-stop.png` });
-  console.log(`sprites drawn at the kickoff stop: ${JSON.stringify(sprites)}`);
+  console.log(`sprites drawn at ${minute}': ${JSON.stringify(sprites)}`);
+  expect(minute).toBeLessThanOrEqual(2);
   expect(sprites.length).toBe(22);
   expect(sprites.filter(Boolean).length).toBe(22);
 });

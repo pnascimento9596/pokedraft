@@ -116,3 +116,9 @@
   margin: 0;
   font-weight: 700;
 }
+
+.error {
+  margin: 0;
+  color: var(--risk-text, var(--risk-mark));
+  font-size: 13px;
+}

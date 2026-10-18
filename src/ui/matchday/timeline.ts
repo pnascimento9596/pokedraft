@@ -720,8 +720,14 @@ const SOLO_TOUCHES = 4;
 const SOLO_GATHER = 0.1;
 const PRESSER_IN = 0.2;
 
-/** How long the pitch takes to settle after a goal or a save leaves it, in real milliseconds. */
-export const SETTLE: Readonly<Record<"goal" | "save", number>> = { goal: 600, save: 300 };
+/**
+ * How long the pitch takes to settle after a goal or a save leaves it, in real milliseconds at 1x.
+ * A save can leave its shooter most of the pitch from open play, so it eases back as slowly as a
+ * goal does.
+ */
+export const SETTLE: Readonly<Record<"goal" | "save", number>> = { goal: 600, save: 600 };
+/** The share of the way back to open play a parry carries the ball; the settle carries the rest. */
+const PARRY = 0.5;
 
 /** A goal move as it plays: from the live ball to the shot, the shot, then the ball in the net. */
 export function goalBall(from: Point, shot: Point, mouth: Point, progress: number): Point {
@@ -1424,7 +1430,15 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       // An even pace: the lowest top speed that still lands the pass, so a long ball crosses the
       // pitch over many frames instead of a few.
       const flight = (u - 0.24) / (PASS_LANDS - 0.24);
-      ballPos = lerp(fromSpot, toSpot, flight);
+      // A duel's winner runs on after the tackle, so their pass leaves from where they won the
+      // ball instead of riding the run.
+      const won =
+        phase.kind === "duel"
+          ? shapeAt(phase.from + TACKLE * (phase.to - phase.from))[phase.side][phase.fromSlot]
+          : undefined;
+      const release =
+        won === undefined ? fromSpot : clampPoint({ x: won.x + attDir * TOUCH, y: won.y });
+      ballPos = lerp(release, toSpot, flight);
       const peakLoft = phase.kind === "cross" ? 0.85 : phase.kind === "through" ? 0.5 : 0.22;
       ballLoft = Math.sin(flight * Math.PI) * peakLoft;
       ballEffect = phase.callout?.effect ?? null;
@@ -1442,7 +1456,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
               ),
             };
       trail = {
-        from: fromSpot,
+        from: release,
         to: ballPos,
         effect: phase.callout?.effect ?? null,
         type: phase.callout?.type ?? null,
@@ -1524,9 +1538,10 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
       const set = { x: mouth.x === 98 ? 96.5 : 3.5, y: 50 + (attackerSpot.y - 50) * 0.18 };
       pts[b.side][keeperSlot] = lerp(pts[b.side][keeperSlot]!, set, smoothstep(progress / REACT));
     }
-    // The parry falls back into open play: to where the ball goes on once the clock resumes.
+    // The parry falls back toward open play, where the ball goes on once the clock resumes.
     const resumed = stagePitch(timeline, { ...input, clock: b.minute + RESUME, shot: null }).ball;
-    ballPos = saveBall(liveBall, strike, mouth, { x: resumed.x, y: resumed.y }, progress);
+    const parried = lerp(mouth, { x: resumed.x, y: resumed.y }, PARRY);
+    ballPos = saveBall(liveBall, strike, mouth, parried, progress);
     ballLoft = progress < SAVE_REACH ? Math.sin((progress / SAVE_REACH) * Math.PI) * 0.65 : 0.25;
     ballEffect = b.callout.effect;
     carrier = progress < SAVE_REACH ? b.attacker : b.keeper;
