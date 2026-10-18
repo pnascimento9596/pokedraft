@@ -74,7 +74,8 @@ describe("your calls card (catches a card shown before full time, or one that ne
     expect(screen.getByTestId("your-calls")).toBeTruthy();
     await frames(0, 1);
     expect(screen.getByTestId("your-calls-score").textContent).toBe("Assistant 1-0, You 3-1");
-    await frames(0, 4);
+    expect(screen.queryByTestId("your-calls-call")).toBeNull();
+    await frames(16, 4);
     expect(screen.getByTestId("your-calls-call").textContent).toBe(
       "Biggest swing: your Attack switch at 12'.",
     );
