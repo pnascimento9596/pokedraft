@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { createRng } from "@/lib/rng";
 import { readJson, writeJson } from "@/ui/storage";
 
 const SOUND_KEY = "pokedraft:sound";
@@ -18,6 +19,7 @@ export function setSoundEnabled(on: boolean): void {
   enabled = on;
   writeJson(SOUND_KEY, on);
   if (on) unlockAudio();
+  else stopCrowdBed();
   for (const l of listeners) l();
 }
 
@@ -274,4 +276,93 @@ export function playSpecialReveal(): void {
     osc.start(start);
     osc.stop(start + 0.23);
   }
+}
+
+interface CrowdBed {
+  readonly source: AudioBufferSourceNode;
+  readonly level: GainNode;
+  readonly roar: GainNode;
+  lastLevel: number;
+}
+
+let bed: CrowdBed | null = null;
+
+const BED_SECONDS = 2;
+const BED_BAND_HZ = 700;
+const BED_Q = 0.6;
+const LEVEL_SMOOTHING = 0.25;
+const LEVEL_STEP = 0.002;
+const BED_FADE = 0.06;
+
+/**
+ * Starts the looping crowd: two seconds of seeded white noise through a band-pass, with a level
+ * gain that follows the ball and a separate gain for goal roars. A suspended context is fine: the
+ * loop starts sounding when the tap that unlocked audio resumes it.
+ */
+export function startCrowdBed(): void {
+  if (bed !== null || ctx === null || !soundEnabled() || ctx.state === "closed") return;
+  const length = Math.floor(ctx.sampleRate * BED_SECONDS);
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  const rng = createRng("crowd-bed");
+  for (let i = 0; i < length; i++) data[i] = rng.next() * 2 - 1;
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  source.loop = true;
+  const band = ctx.createBiquadFilter();
+  band.type = "bandpass";
+  band.frequency.value = BED_BAND_HZ;
+  band.Q.value = BED_Q;
+  const level = ctx.createGain();
+  level.gain.value = 0;
+  const roar = ctx.createGain();
+  roar.gain.value = 0;
+  source.connect(band);
+  band.connect(level).connect(ctx.destination);
+  band.connect(roar).connect(ctx.destination);
+  source.start();
+  bed = { source, level, roar, lastLevel: 0 };
+}
+
+/** Eases the crowd toward `gain`, skipping changes too small to hear. */
+export function setCrowdLevel(gain: number): void {
+  if (bed === null || ctx === null) return;
+  if (Math.abs(gain - bed.lastLevel) < LEVEL_STEP) return;
+  bed.lastLevel = gain;
+  bed.level.gain.setTargetAtTime(gain, ctx.currentTime, LEVEL_SMOOTHING);
+}
+
+/** Swells the crowd for a goal: up to the peak, held, then back to silence. */
+export function crowdRoar(r: {
+  readonly peak: number;
+  readonly attackMs: number;
+  readonly holdMs: number;
+  readonly releaseMs: number;
+}): void {
+  if (bed === null || ctx === null) return;
+  const t = ctx.currentTime;
+  const g = bed.roar.gain;
+  g.cancelScheduledValues(t);
+  g.setValueAtTime(g.value, t);
+  g.linearRampToValueAtTime(r.peak, t + r.attackMs / 1000);
+  g.setValueAtTime(r.peak, t + (r.attackMs + r.holdMs) / 1000);
+  g.linearRampToValueAtTime(0, t + (r.attackMs + r.holdMs + r.releaseMs) / 1000);
+}
+
+/** Fades the crowd out over a few frames, stops the loop and lets the nodes go. */
+export function stopCrowdBed(): void {
+  if (bed === null) return;
+  const { source, level, roar } = bed;
+  bed = null;
+  if (ctx === null) return;
+  const t = ctx.currentTime;
+  for (const g of [level.gain, roar.gain]) {
+    g.cancelScheduledValues(t);
+    g.setTargetAtTime(0, t, BED_FADE / 3);
+  }
+  source.onended = () => {
+    level.disconnect();
+    roar.disconnect();
+  };
+  source.stop(t + BED_FADE);
 }
