@@ -3,6 +3,20 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## CI e2e shards
+
+Branch `ci/shard-e2e`, off `9d37864`, with `origin/main` (`68f37c9`, PR #81) merged in. CI only (Green), an out-of-band side fix outside Wave 1. Only `.github/workflows/ci.yml` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Nothing changes for the player. The hosted `e2e` job now runs as eight parallel shards (`--shard=N/8`), each uploading its own report on failure.
+- Before: PR #80's `pnpm test:e2e` step took 28.6 min for 824 passed and 61 skipped, the whole critical path of every merge. On this PR's first run (head `a380010`) the four shards took 6.7, 6.9, 7.4 and 9.1 min end to end, all green, so the job finishes in about 9 min instead of about 31. This head moves to eight shards; its time is read from this PR's run.
+- Observed, not fixed here: `main` push run 39080199806 on `90aba39` failed `Builder.test.tsx` once (`expected 'DF  LCB + Tap to Draft!' to be 'DF  LCB  Bulbasaur Grass Poison '`, line 275), a lazy-import race like the one PR #80 fixed in `announce-builder.test.tsx`. Carried over.
+
+Gates: no test or source change. Hosted CI on this PR is the proof. Local Playwright: NOT RUN.
+
+Measurements and the rejected options are in `docs/decisions/ci-shard-e2e.md`.
+
+PR #81 (row 1h, highlights honesty) merged as squash `68f37c9`, reviewed head `b1f6f8e`, GLM 5.3 Flash APPROVE in round 1 with canary `highlights-honesty-ea975c4a469b2015a2e21c90fcf7b4d3` echoed (the first gate run on `464ec6e` failed prettier on the new spec, fixed in `b1f6f8e` before review); hosted check and e2e green on that head. Production `/api/health?db=1` served `68f37c9` with `db.status` ok, and `e2e/highlights-honesty.spec.ts` against production (chromium) passed 1 of 1.
+
 ## Highlights honesty
 
 Branch `fix/highlights-honesty`, off `f4489cb`, with `origin/main` (`9d37864`, PR #80) merged in. Wave 1 row 1h. Display only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
