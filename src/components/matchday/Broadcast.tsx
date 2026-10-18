@@ -5,11 +5,10 @@ import { FORMATIONS } from "@/engine";
 import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
-import { activeBeat } from "@/ui/matchday/player";
+import { stageFrame } from "@/ui/matchday/player";
 import {
   GOAL_LANDS,
   goalMouth,
-  stagePitch,
   type Point,
   type StagedPlayer,
   type Timeline,
@@ -58,12 +57,13 @@ export function Broadcast({
     [match.opponent.roster],
   );
 
-  const active = activeBeat(timeline, fired, now, motion, clock, speed);
-  const stage = stagePitch(timeline, {
+  const { active, stage } = stageFrame(timeline, {
     clock,
-    active,
+    fired,
+    now,
     kicks,
     motion,
+    speed,
     userSlots,
     oppSlots,
     oppLabels,

@@ -1,5 +1,13 @@
 import { advanceClock, nextStop, type Pace, type Stop } from "./clock";
-import { GOAL_LANDS, SHOW, type Beat, type Timeline } from "./timeline";
+import {
+  GOAL_LANDS,
+  SHOW,
+  stagePitch,
+  type Beat,
+  type PitchStage,
+  type StageInput,
+  type Timeline,
+} from "./timeline";
 
 /** A stable name for a beat, the same across the replays a coach decision triggers. */
 export function beatKey(b: Beat): string {
@@ -129,6 +137,37 @@ export function activeBeat(
     }
   }
   return best;
+}
+
+/** What the broadcast knows at one rendered frame. */
+export interface FrameView {
+  readonly clock: number;
+  readonly fired: Readonly<Record<string, number>>;
+  readonly now: number;
+  readonly kicks: number;
+  readonly motion: boolean;
+  readonly speed: number;
+  readonly userSlots: StageInput["userSlots"];
+  readonly oppSlots: StageInput["oppSlots"];
+  readonly oppLabels?: readonly string[];
+}
+
+/** The beat on the pitch and the staged pitch for one frame, as the broadcast draws it. */
+export function stageFrame(
+  timeline: Timeline,
+  view: FrameView,
+): { readonly active: Active | null; readonly stage: PitchStage } {
+  const active = activeBeat(timeline, view.fired, view.now, view.motion, view.clock, view.speed);
+  const stage = stagePitch(timeline, {
+    clock: view.clock,
+    active,
+    kicks: view.kicks,
+    motion: view.motion,
+    userSlots: view.userSlots,
+    oppSlots: view.oppSlots,
+    oppLabels: view.oppLabels,
+  });
+  return { active, stage };
 }
 
 export type Stage = "play" | "pens" | "done";
