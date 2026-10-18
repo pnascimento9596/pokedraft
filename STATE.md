@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Haptics and tap for sound
+
+Branch `feat/haptics` off `40221a8`. Wave 3 row 3e, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `Broadcast.tsx` is untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- On a phone with vibration (Android), your goal buzzes once (120 ms), a red card for your team buzzes twice, and the final whistle buzzes once long. The opponent's goals and red cards do not buzz.
+- Haptics follow the beat sounds: only in Live, only with sound on, once per event. A pause and resume buzzes nothing again, and a skip to full time buzzes nothing, as it plays no sound.
+- The matchday toggle now reads "Sound and haptics on" or "off", with the hint "Haptics work on Android phones only." It is still the one sound setting the draft wheel uses.
+- After a reload the browser can keep audio waiting for a tap. The matchday now shows a "Tap for sound" button (44 px) while that is so, and the first tap anywhere on the matchday starts the sound and removes it (the 2h carryover).
+- Reduced motion still leaves the crowd at its normal level: reduced motion governs motion, the Sound toggle governs sound (2h carryover closed as by design).
+
+RED commit: `3115615` (6 of 10 unit tests failed in 2 files; `haptics.spec.ts` failed 3 of 3 on a `40221a8` build).
+
+Gates at `49c1ef2` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 10 touched code, test and doc files.
+- Unit tests: 1,555 passed in 181 files.
+- Playwright (`CI=1`, fresh build at `49c1ef2`): chromium `haptics`, `audio-polish`, `watch-live`, `quick-not-broadcast`, `manager-mode`, `prematch-merge`, `touchline-sheet` and `builder-matchday` 30 passed; `mobile-targets` and `mobile-acceptance` 370 passed, 56 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, vibration on a real Android phone and audio after a reload on a real iPhone: NOT RUN at the time of writing. The spec stubs `navigator.vibrate` and emulates iOS Safari's autoplay rule.
+
+Measurements and decisions are in `docs/decisions/haptics.md`. Browser proof: `docs/reports/haptics/`.
+
 ## Team readability
 
 Branch `feat/team-readability` off `c33fa17`. Wave 3 row 3d, matchday pitch only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `MatchPlayer.tsx` and `Touchline.tsx` are untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
