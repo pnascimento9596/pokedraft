@@ -148,6 +148,7 @@ describe("pitch transforms (catches a frame loop that moves the players somewher
 
 describe("frame loop (catches a live match that re-renders the whole match screen in React on every animation frame)", () => {
   const FRAME = 16;
+  const minute = () => Number(screen.getByTestId("match-player").getAttribute("data-minute"));
 
   async function frames(n: number) {
     for (let i = 0; i < n; i++) {
@@ -176,8 +177,10 @@ describe("frame loop (catches a live match that re-renders the whole match scree
     await act(async () => {
       await vi.dynamicImportSettled();
     });
-    // Past the kickoff whistle and into open play, where no beat fires until the 5' card.
-    await frames(30);
+    // The clock holds at kickoff until the movesets chunk settles; run on into open play, where
+    // no beat fires until the 5' card.
+    for (let i = 0; i < 2_000 && minute() < 1; i++) await frames(1);
+    expect(minute()).toBe(1);
   }
 
   it("commits about 10 times in a second of open play, not once per frame (62)", async () => {
@@ -185,22 +188,24 @@ describe("frame loop (catches a live match that re-renders the whole match scree
     await mountLive(() => commits++);
     commits = 0;
     await frames(62);
-    expect(Number(screen.getByTestId("match-player").getAttribute("data-minute"))).toBeLessThan(5);
-    expect(commits).toBeLessThanOrEqual(12);
-    expect(commits).toBeGreaterThanOrEqual(9);
+    // 62 frames is 992 ms of live play, 1.8 match minutes: the clock ran and no beat fired.
+    expect(minute()).toBe(2);
+    // One render per 100 ms gap, each new play rendering at once and restarting the gap.
+    expect(commits).toBe(10);
   });
 
-  it("moves the players on every frame between commits", async () => {
+  it("rolls the ball on every frame between commits", async () => {
     let commits = 0;
     await mountLive(() => commits++);
-    const spots: (string | null)[] = [];
+    const balls: (string | null)[] = [];
     const before = commits;
     for (let i = 0; i < 5; i++) {
       await frames(1);
-      spots.push(style(USER_5));
+      balls.push(style('[data-testid="broadcast-ball"]'));
     }
     expect(commits - before).toBeLessThanOrEqual(1);
-    expect(spots.every((s) => s?.startsWith("transform: translate3d("))).toBe(true);
-    expect(new Set(spots).size).toBe(5);
+    expect(balls.every((b) => b?.startsWith("transform: translate3d("))).toBe(true);
+    expect(new Set(balls).size).toBe(5);
+    expect(style(USER_5)?.startsWith("transform: translate3d(")).toBe(true);
   });
 });
