@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Team readability
+
+Branch `feat/team-readability` off `c33fa17`. Wave 3 row 3d, matchday pitch only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `MatchPlayer.tsx` and `Touchline.tsx` are untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Each side's players stand on a ring in their kit. Your kit is the type most of your starting eleven carry; a dual type counts toward both its types, and a tie goes to the type seen first in slot order. The opponent wears its theme's type.
+- When the two kits look too alike (closer than 10 in the CVD audit's own metric, in normal, protanopia or deuteranopia vision), the opponent wears white. A club with no theme keeps the old blue unless it clashes too.
+- Sprites draw at 44px on phones instead of 38.4px. Wider pitches keep 56 and 72px.
+- A move's badge over a player now stays inside the pitch. In the golden group match, 5 to 7 of 13 badges were cut off by up to 65px at 390, 360 and 320; none are now.
+- The rings show in Quick and with reduced motion. They add no element and no per-frame write.
+- The 2f carryover (sweat pip and stamina arc not sized in px) did not reproduce: both already sit in the unscaled player box at 6 by 8 and 24 by 8 px at 390 and 320. Closed in the decision log.
+
+RED commit: `33a3e60` (3 of 3 unit files failed: the 2 collected tests, and `kit.test.ts` with 7 tests and `badge.test.ts` with 4 tests could not import the missing modules; `team-readability.spec.ts` failed 7 of 7 on a `c33fa17` build).
+
+Gates at `1303a58` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 12 touched code and test files.
+- Unit tests: 1,530 passed in 178 files.
+- Playwright (`CI=1`, fresh build at `1303a58`): chromium `team-readability`, `pitch-card-containment`, `mobile-pitch-fixes`, `broadcast-frame-loop`, `fatigue`, `callouts-type-effects`, `continuous-ball` and `one-shared-timeline` 34 passed; `mobile-targets` and `mobile-acceptance` 360 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, a frame-loop perf trace and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/team-readability.md`. Browser proof: `docs/reports/team-readability/`.
+
 ## Your calls card
 
 Branch `feat/your-calls` off `20e34f6`. Wave 3 row 3h, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed; the card only calls `runCup`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
