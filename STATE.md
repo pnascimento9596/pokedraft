@@ -20,6 +20,7 @@ Gates at `a980db9`:
 - Measure script: 4 payloads, 2,891,853 bytes (was 8 and 5,784,409).
 - Emitted retained replays: 7 of 7 passed; an uncommitted v5 extension passed 9 of 9.
 - Playwright `e2e/old-links.spec.ts` and `e2e/engine-v4.spec.ts`: 4 passed.
+- On a fresh build of the `origin/main` merge (`badda9f`): measure script 4 copies, 2,891,853 bytes, exit 0.
 - Full local Playwright suite, review and hosted CI: NOT RUN at the time of writing.
 
 Measurements and decisions are in `docs/decisions/retained-json-dedupe.md`.
