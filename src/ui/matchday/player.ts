@@ -209,9 +209,10 @@ export function walksAt(
     if (b.kind !== "sub" && !(b.kind === "card" && b.color === "red")) continue;
     const at = startOf(timeline, fired, b, speed);
     if (at === undefined) {
-      // The assistant's sub on a window's minute is in the lineup a moment before its board goes
-      // up: the substitute waits on the touchline and the player going off stays put.
-      if (b.kind === "sub" && b.reason !== "injury") {
+      // While the clock stands exactly on the minute of the assistant's sub, the lineup has it but
+      // its board is not up yet: the substitute waits on the touchline and the player going off
+      // stays put. A sub skipped past never walks.
+      if (b.kind === "sub" && b.reason !== "injury" && b.minute === clock) {
         walks.push({ ...walker(b.in, b.slot), dir: "on", progress: 0 });
         walks.push({ ...walker(b.out, b.slot), dir: "off", progress: 0 });
       }

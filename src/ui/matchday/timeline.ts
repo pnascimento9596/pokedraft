@@ -961,6 +961,9 @@ function kickoffTaker(side: Side, slots: Slots, pool: readonly number[]): number
   return nearestTo(CENTRE, pool, homes) ?? pool[0] ?? 5;
 }
 
+/** How deep from its own goal line a team's kickoff shape starts squeezing players together. */
+const KICKOFF_SQUEEZE = 36;
+
 /** Both teams in their own half, the taker standing over the ball on the centre spot. */
 function kickoffShape(kicking: Side, taker: number, userSlots: Slots, oppSlots: Slots): Shape {
   const build = (side: Side, slots: Slots): Point[] =>
@@ -969,7 +972,11 @@ function kickoffShape(kicking: Side, taker: number, userSlots: Slots, oppSlots: 
         return { x: CENTRE.x - attackDir(side) * TOUCH, y: CENTRE.y };
       }
       const home = slotPoint(side, slot, 0);
-      return { x: side === "user" ? Math.min(44, home.x) : Math.max(56, home.x), y: home.y };
+      const depth = side === "user" ? home.x : 100 - home.x;
+      // Everyone ahead of the midfield line squeezes into it in order, so no two stack up.
+      const held =
+        depth <= KICKOFF_SQUEEZE ? depth : KICKOFF_SQUEEZE + (depth - KICKOFF_SQUEEZE) / 7;
+      return { x: side === "user" ? held : 100 - held, y: home.y };
     });
   return { user: build("user", userSlots), opp: build("opp", oppSlots) };
 }
