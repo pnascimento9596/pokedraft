@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Mute e2e audio
+
+Branch `chore/mute-e2e-audio` off `40221a8`. Playwright config only (Green). No product code, and no file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Developers running the e2e suite locally no longer hear the crowd bed or move sounds from Chromium. The `chromium` and `pixel-7` projects launch with `--mute-audio` through one shared constant.
+- Playwright 1.64.0 already muted headless Chromium. Headed runs (`--headed`, `--ui`, `--debug`) were not muted; a scratch probe of the browser command line read `mute-audio=false` there before the change and `true` after.
+- The AudioContext still runs under mute. Every spec that turns sound on passed unchanged.
+- Playwright has no mute option for WebKit. No WebKit project runs a spec that turns sound on, and sound is off by default.
+
+RED: no RED commit. The change is config only and no test can observe the speakers. Before and after probe output is verbatim in the decision log.
+
+Gates at `010cf50` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on `playwright.config.ts`.
+- Unit tests: 1,545 passed in 179 files.
+- Playwright (`CI=1`, fresh build at `010cf50`, chromium and pixel-7): `audio-polish`, `watch-live`, `one-shared-timeline`, `platform-experience` and `manager-mode` 34 passed.
+- Review, hosted CI, the full e2e suite and a listening check during a headed run: NOT RUN at the time of writing.
+
+Decisions are in `docs/decisions/mute-e2e-audio.md`.
+
 ## Team readability
 
 Branch `feat/team-readability` off `c33fa17`. Wave 3 row 3d, matchday pitch only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `MatchPlayer.tsx` and `Touchline.tsx` are untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
