@@ -3,13 +3,16 @@ import {
   GOAL_LANDS,
   SETTLE,
   SHOW,
+  WALK,
   stagePitch,
   type Beat,
+  type PitchRef,
   type PitchStage,
   type Shot,
   type ShotBeat,
   type StageInput,
   type Timeline,
+  type Walk,
 } from "./timeline";
 
 /** A stable name for a beat, the same across the replays a coach decision triggers. */
@@ -189,6 +192,52 @@ export function shotOnPitch(
   return { beat: shot.beat, age: (now - shot.at) * speed, before };
 }
 
+/**
+ * Everyone walking on or off at `now`: a red-carded player to the touchline, and both sides of a
+ * substitution, each over `WALK` at 1x from when their beat comes onto the pitch.
+ */
+export function walksAt(
+  timeline: Timeline,
+  fired: Readonly<Record<string, number>>,
+  now: number,
+  speed: number,
+  clock: number,
+): Walk[] {
+  const walks: Walk[] = [];
+  for (const b of timeline.beats) {
+    if (b.minute > clock) break;
+    if (b.kind !== "sub" && !(b.kind === "card" && b.color === "red")) continue;
+    const at = startOf(timeline, fired, b, speed);
+    if (at === undefined) {
+      // While the clock stands exactly on the minute of the assistant's sub, the lineup has it but
+      // its board is not up yet: the substitute waits on the touchline and the player going off
+      // stays put. A sub skipped past never walks.
+      if (b.kind === "sub" && b.reason !== "injury" && b.minute === clock) {
+        walks.push({ ...walker(b.in, b.slot), dir: "on", minute: b.minute, progress: 0 });
+        walks.push({ ...walker(b.out, b.slot), dir: "off", minute: b.minute, progress: 0 });
+      }
+      continue;
+    }
+    const progress = Math.max(0, ((now - at) * speed) / WALK);
+    if (progress >= 1) continue;
+    if (b.kind === "card") {
+      if (b.player.slot === null) continue;
+      const { side, slot, species, name } = b.player;
+      walks.push({ side, slot, species, name, dir: "off", minute: b.minute, progress });
+      continue;
+    }
+    walks.push({ ...walker(b.in, b.slot), dir: "on", minute: b.minute, progress });
+    if (now >= at) {
+      walks.push({ ...walker(b.out, b.slot), dir: "off", minute: b.minute, progress });
+    }
+  }
+  return walks;
+}
+
+function walker(ref: PitchRef, slot: number): Pick<Walk, "side" | "slot" | "species" | "name"> {
+  return { side: ref.side, slot, species: ref.species, name: ref.name };
+}
+
 /** What the broadcast knows at one rendered frame. */
 export interface FrameView {
   readonly clock: number;
@@ -219,6 +268,7 @@ export function stageFrame(
     oppSlots: view.oppSlots,
     oppLabels: view.oppLabels,
     shot: view.motion ? shotOnPitch(timeline, view.fired, view.now, view.speed, view.clock) : null,
+    walks: view.motion ? walksAt(timeline, view.fired, view.now, view.speed, view.clock) : [],
   });
   return { active, stage };
 }

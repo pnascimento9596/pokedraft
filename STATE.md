@@ -3,6 +3,33 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Smooth movement
+
+Branch `feat/smooth-movement` off `458c56e`, with `origin/main` merged in, last at `e3d0e95` (PRs #92 and #91). Pure staging plus a thin `Broadcast.tsx` change (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Players glide through each phase on a Catmull-Rom spline instead of stopping dead at every waypoint.
+- Facing and pose follow how a player moves now, not where they started the phase.
+- Teammates no longer stack on one spot: one push-apart pass keeps same-side players about 4% apart, and the kickoff shape no longer puts two central players on one spot.
+- A red-carded or substituted player walks to the near touchline over 1.8 s (0.9 s at 2x) instead of vanishing; the substitute walks on from the bench. An injured player stays down where the injury found them.
+- Quick and reduced motion stay still (decision 1).
+- After the frame loop (#91), a walker going off reads their spot from the leaving list, not their old slot, and a walk starting or ending asks for a render. The #91 unit pins moved to this row's staged spots.
+- The largest one-frame move of any player at 1x over the golden cup fell from 35.08% to 4.94% of the pitch length; the ball stays under 4%.
+
+RED commits: `9b8a0ca` (6 of 7 failed), `8fa9c1f` (2 of 9 failed), `a846a3f` (1 of 10 failed), `eb746df` (browser, 1 of 2 failed).
+
+Gates at `491e0ee` (code identical at the docs commit that updates this section):
+
+- Lint, typecheck and build exited 0.
+- Unit tests: 1,463 passed in 167 files.
+- Playwright (port 3526, `CI=1`, fresh build): `smooth-movement`, `continuous-ball`, `broadcast-frame-loop`, `injury-staging`, `shootout-suspense`, `mobile-targets`, `mobile-acceptance`, `watch-live`, `speed-aware-staging`, `score-lands-with-ball`, `quick-not-broadcast`: 374 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/smooth-movement.md`.
+
+Merged origin/main after PR #93 (set pieces). Row 2d moved goal staging into `stageGoal`, so this row's eased keeper (dive from the strike over REACT) and eased open-play assist moved into it. Poses combine both rows: speed-based run and sprint, the walk-on run, the wall's run then idle, and the beaten defender's press. A wall keeps its side's facing; everyone else faces by velocity. After the merge: lint, typecheck and build exited 0, 159 matchday unit tests passed in 25 files (the set-pieces and smooth-movement guards included), and `smooth-movement`, `set-pieces`, `continuous-ball`, `broadcast-frame-loop`, `score-lands-with-ball`, `shootout-suspense` and `injury-staging` passed 13 of 13 locally, the ball's fastest 100 ms speed reading 2.70% per frame.
+
+PR #95 (review verdict line, Green) merged as squash `2b2bb0f`, reviewed head `18f25af`, GLM 5.3 Flash APPROVE in round 1 with canary `verdict-line-1d059dc9254aafe1e1ecbe42fbf77377` echoed; that reply was the first built with the new preamble and its verdict line parsed. At `18f25af` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,462 unit tests passed in 168 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `2b2bb0f` with `db.status` ok. No runtime change, so no live spec.
+
 ## Review verdict line
 
 Branch `chore/review-verdict-line` off `20fe868`. Review tooling only (Green). No runtime change.
