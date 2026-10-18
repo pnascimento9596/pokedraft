@@ -3,7 +3,8 @@ import { fullLineup } from "@/components/builder/model";
 import { playSingle, playTwoLegs, exhibitionFixture } from "@/components/results/exhibition";
 import { finalScore, goalLine } from "@/components/results/format";
 import { candidatesFor } from "@/components/run/runState";
-import { applyAction, createDraft, replay } from "@/engine";
+import { applyAction, createDraft, replay, runCup } from "@/engine";
+import { toFullLineup } from "@/engine/draft";
 import {
   ENGINE_VERSION,
   GENS,
@@ -11,6 +12,7 @@ import {
   type DraftAction,
   type DraftSettings,
   type DraftState,
+  type ManagerAction,
   type Score,
   type Seed,
   type SlotRef,
@@ -68,6 +70,29 @@ function seededRecord(url: string): string {
   const actions = draftFirstOfferFirstSlot(parsed.settings, seed);
   const { cup } = replay({ v: RUN_TOKEN_VERSION, settings: parsed.settings, seed, actions });
   return `${cup.wins}-${cup.draws}-${cup.losses}`;
+}
+
+// e2e/your-calls.spec.ts: the manager-mode run with Attack picked at the 45' stop of match 0.
+// Scores in the card's hyphen form, straight from the engine with and without that call.
+const YOUR_CALLS_URL =
+  "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach";
+const YOUR_CALLS_ACTION: ManagerAction = { type: "tactic", match: 0, minute: 45, tactic: "attack" };
+
+function yourCalls() {
+  const parsed = parsePlayQuery(new URL(YOUR_CALLS_URL, "http://pokedraft.invalid").searchParams);
+  if (parsed === null || parsed.seed === null) throw new Error("the your-calls run is not seeded");
+  const seed = parsed.seed as Seed;
+  const actions = draftFirstOfferFirstSlot(parsed.settings, seed);
+  const { draft } = replay({ v: RUN_TOKEN_VERSION, settings: parsed.settings, seed, actions });
+  const lineup = toFullLineup(draft);
+  const first = (manager: ManagerAction[]) => {
+    const m = runCup(lineup, seed, parsed.settings.mode, undefined, manager).matches[0];
+    if (m?.status !== "played" || m.shootout !== null)
+      throw new Error("match 0 has no plain score");
+    const s = finalScore(m);
+    return `${s.user}-${s.opp}`;
+  };
+  return { url: YOUR_CALLS_URL, assistant: first([]), you: first([YOUR_CALLS_ACTION]) };
 }
 
 const scoreText = (score: Score) => `${score.user} - ${score.opp}`;
@@ -146,6 +171,11 @@ export async function renderPins(): Promise<string> {
     ``,
     `// The golden engine-3 cup8 squad saved as the Builder squad and played against itself.`,
     `export const MIRROR_EXHIBITION = ${JSON.stringify(await mirrorExhibition())} as const;`,
+  );
+  lines.push(
+    ``,
+    `// A manager-mode run with Attack at the 45' stop of match 0: the full-time card's two scores.`,
+    `export const YOUR_CALLS = ${JSON.stringify(yourCalls())} as const;`,
   );
   const options = await resolveConfig(PINS_PATH);
   return format(lines.join("\n"), { ...options, filepath: PINS_PATH });

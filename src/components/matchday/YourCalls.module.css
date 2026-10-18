@@ -1,0 +1,33 @@
+.calls {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-emphasis);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+}
+
+.heading {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.score {
+  margin: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.line {
+  margin: 0;
+  font-size: 14px;
+}
+
+.pending {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}

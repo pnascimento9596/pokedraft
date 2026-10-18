@@ -41,3 +41,10 @@ export const MIRROR_EXHIBITION = {
   aggregateRematch: 2,
   aggregate: "5 - 10",
 } as const;
+
+// A manager-mode run with Attack at the 45' stop of match 0: the full-time card's two scores.
+export const YOUR_CALLS = {
+  url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach",
+  assistant: "6-1",
+  you: "8-2",
+} as const;
