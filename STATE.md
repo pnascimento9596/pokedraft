@@ -3,6 +3,14 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wave 1 summary
+
+Branch `docs/wave1-summary` off `4173b94`. Docs only (Green). Appends the Wave 1 entry to `docs/reports/audits-2026-10-17/program-log.md`: every PR with its squash and reviewed head, the production checks, the measurements that moved, brief-vs-code notes and open carryovers. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #86 (row 1l, retained JSON dedupe) merged as squash `4173b94`, reviewed head `0054190`, GLM 5.3 Flash APPROVE in round 1 with canary `retained-json-5b9cb3e1965e74be6b4dd2ed18269158` echoed. Hosted check (its new measure step read 4 copies, 2,891,853 bytes) and all eight e2e shards green on that head. Production `/api/health?db=1` served `4173b94` with `db.status` ok, and `e2e/old-links.spec.ts` plus `e2e/engine-v4.spec.ts` against production (chromium) passed 4 of 4.
+
+Gates at `10cf2f7` (the coordinator's review run): lint, typecheck and build exited 0, 1,387 unit tests passed in 155 files, and Prettier passed on all three changed files (`STATE.md`, the decision log and `program-log.md`); hosted check and all eight e2e shards green. Review round 1 asked for this gate record and a corrected 1l saving (2,892,556 bytes). No runtime change.
+
 ## Retained JSON dedupe
 
 Branch `fix/retained-json-dedupe` off `f4489cb`, with `origin/main` merged in, last at `badda9f` (PR #85). Build and CI only (Red, deploy/build). No file under `src/engine` or `src/data` changed. Players see no change. Old share links replay as before, and the server build carries one copy of each retained data file instead of eight.
