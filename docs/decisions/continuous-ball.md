@@ -234,3 +234,7 @@ length (2.68% scaled to one 60 Hz frame). Before the merge, at `0ea0c23`: 2,259 
 - The GLM review and the live production check (coordinator).
 - Browser proof at 360 and 320. No layout changed.
 - A guard at 2x.
+
+## Hosted CI round 1
+
+Hosted CI at `d70c71a` failed e2e shard 1: `continuous-ball.spec.ts` measured 9.82% and then 7.90% (retry) against its one-frame bound of 4, where local runs read 2.70 to 3.87. Reproduced under CDP CPU throttle: 5.36% at 4x, 5.91% at 6x. The samples around the 4x peak show a render that missed a frame (2.04 over 34 ms) and then caught up (3.92 over 16 ms), which together match the carried ball's steady 2% a frame, so the step is render lateness, not a teleport. The spec now takes the fastest speed over any window of at least 100 ms, scaled to one 60 Hz frame, with a bound of 6. Measured with it: 2.68 at 1x, 2.68 at 6x, 3.44 to 4.23 at 8x and 10x. Against a build of `main` at `ae8ee22` the same spec reads 9.00 (from a 53% single-frame jump) and fails, 2 of 2. The 4% bound on the choreography itself stays in `continuous-ball.test.ts`, sampled at an exact 60 Hz clock.
