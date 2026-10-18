@@ -26,6 +26,31 @@ Gates at `3d76f09` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/fullscreen-score-bug.md`. Browser proof: `docs/reports/fullscreen-score-bug/`.
 
+## Haptics and tap for sound
+
+Branch `feat/haptics` off `40221a8`. Wave 3 row 3e, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `Broadcast.tsx` is untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- On a phone with vibration (Android), your goal buzzes once (120 ms), a red card for your team buzzes twice, and the final whistle buzzes once long. The opponent's goals and red cards do not buzz.
+- Haptics follow the beat sounds: only in Live, only with sound on, once per event. A pause and resume buzzes nothing again, and a skip to full time buzzes nothing, as it plays no sound.
+- The matchday toggle now reads "Sound and haptics on" or "off", with the hint "Haptics work on Android phones only." It is still the one sound setting the draft wheel uses.
+- After a reload the browser can keep audio waiting for a tap. The matchday now shows a "Tap for sound" button (44 px) while that is so, and the first tap anywhere on the matchday starts the sound and removes it (the 2h carryover).
+- Reduced motion still leaves the crowd at its normal level: reduced motion governs motion, the Sound toggle governs sound (2h carryover closed as by design).
+
+RED commit: `3115615` (6 of 10 unit tests failed in 2 files; `haptics.spec.ts` failed 3 of 3 on a `40221a8` build).
+
+Gates at `49c1ef2` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 10 touched code, test and doc files.
+- Unit tests: 1,555 passed in 181 files.
+- Playwright (`CI=1`, fresh build at `49c1ef2`): chromium `haptics`, `audio-polish`, `watch-live`, `quick-not-broadcast`, `manager-mode`, `prematch-merge`, `touchline-sheet` and `builder-matchday` 30 passed; `mobile-targets` and `mobile-acceptance` 370 passed, 56 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, vibration on a real Android phone and audio after a reload on a real iPhone: NOT RUN at the time of writing. The spec stubs `navigator.vibrate` and emulates iOS Safari's autoplay rule.
+
+Measurements and decisions are in `docs/decisions/haptics.md`. Browser proof: `docs/reports/haptics/`.
+
+Merged origin/main after PR #106 (row 3b) at `1d337d5`. `MatchPlayer.tsx` and its CSS conflicted where both rows added a control after the sound toggle; both stay, the camera group on the controls row and the haptics hint on its own line below. After the merge lint, typecheck and build exited 0, 394 matchday and UI unit tests passed in 58 files, `haptics`, `follow-camera`, `audio-polish` and `mobile-pitch-fixes` passed 13 of 13 and `mobile-targets` 93 of 93 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #107 (row 3e, haptics and tap for sound) merged as squash `8247f20`, reviewed head `f729d11`, GLM 5.3 Flash APPROVE in round 1 with canary `haptics-1568e86cb64bdbbb152c99156adf2c7d` echoed. At `f729d11` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,582 unit tests passed in 184 files and Prettier passed on 11 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `8247f20` with `db.status` ok, and `haptics.spec.ts` plus `audio-polish.spec.ts` against production (chromium) passed 5 of 5. NOT RUN: physical phone check (owner action), including a real Android vibration.
+
 ## Follow camera
 
 Branch `feat/follow-camera` off `feat/team-readability` at `d656db7`. Wave 3 row 3b, matchday pitch and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -46,6 +71,10 @@ Gates at `99ec77b` (code identical at the docs commit that adds this section):
 - Review, hosted CI, the full e2e suite and a physical phone: NOT RUN at the time of writing.
 
 Measurements and decisions are in `docs/decisions/follow-camera.md`. Browser proof and perf JSON: `docs/reports/follow-camera/`.
+
+Review round 1 at `be5a86f`: GLM 5.3 Flash APPROVE (canary `follow-camera-9b2e38e8dd010e1cef2629ff5a51a022`), but hosted e2e shard 2 failed `mobile-pitch-fixes.spec.ts` at 390, 360 and 320 (carrier badge scale expected 1, received 1.6; run 39171973319), because Follow is now the phone default and zooms the pitch. The spec now switches to Full pitch before pinning the unzoomed sizes; locally (`CI=1`, chromium, fresh build) `mobile-pitch-fixes` and `follow-camera` passed 8 of 8, carrier 11px at scale 1 and the pip 9x13 at all three widths. The receipt from `be5a86f` is void; the reviewed head is the next one.
+
+PR #106 (row 3b, follow camera) merged as squash `1e417e3`, reviewed head `7e8b503`, GLM 5.3 Flash APPROVE in round 2 with canary `follow-camera-r2-789a6edce25ae0d736d1e2507fe1bbfc` echoed (round 1 at `be5a86f` approved, but hosted shard 2 failed `mobile-pitch-fixes` under the new phone zoom; the spec now pins its sizes in Full pitch). At `7e8b503` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,572 unit tests passed in 182 files and Prettier passed on 18 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `1e417e3` with `db.status` ok, and `follow-camera`, `mobile-pitch-fixes` and `broadcast-frame-loop` against production (chromium) passed 11 of 11. NOT RUN: physical phone check (owner action), including stutter from the 10 Hz pose floor under zoom.
 
 ## Team readability
 
