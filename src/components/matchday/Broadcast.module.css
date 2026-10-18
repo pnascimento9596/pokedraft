@@ -117,12 +117,16 @@
   --fx-core: var(--fx-dive-core);
 }
 
-/* Strokes do not scale with the box; 1cqi is one pitch unit, so they keep their width. */
+/* Strokes do not scale with the box; 1cqi is one pitch unit, so they keep their width. The glow
+   and the line draw the shape through use, which passes them every stroke property but this one. */
+.trailShape {
+  vector-effect: non-scaling-stroke;
+}
+
 .trailGlow {
   fill: none;
   stroke: var(--fx);
   stroke-width: 1.5cqi;
-  vector-effect: non-scaling-stroke;
   stroke-linecap: round;
   opacity: 0.48;
 }
@@ -133,7 +137,6 @@
   stroke-width: 0.65cqi;
   stroke-linecap: round;
   stroke-dasharray: 2.2cqi 1.4cqi;
-  vector-effect: non-scaling-stroke;
 }
 
 .trails[data-kind="shot"] .trailLine,

@@ -4,6 +4,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -178,9 +179,8 @@ function paint(
   const trail = nodes.trail.current;
   if (trail !== null && stage.trail !== null) {
     const d = trailPath(stage.trail);
-    const [glow, line, origin] = trail.children;
-    put(glow ?? null, "d", d);
-    put(line ?? null, "d", d);
+    const [defs, , , origin] = trail.children;
+    put(defs?.firstElementChild ?? null, "d", d);
     put(origin ?? null, "cx", fixed(stage.trail.from.x));
     put(origin ?? null, "cy", fixed(stage.trail.from.y * TRAIL_Y));
   }
@@ -304,6 +304,7 @@ export function Broadcast({
   const { active, stage } = frameAt({ clock, now, fired, kicks, kickProgress, speed });
 
   const pitchRef = useRef<HTMLDivElement>(null);
+  const trailId = `trail${useId().replace(/\W/g, "")}`;
   const cameraRef = useRef<CameraTrack | null>(null);
   const players = useRef(new Map<HTMLElement, Tracked>());
   const ballRef = useRef<HTMLDivElement>(null);
@@ -481,8 +482,12 @@ export function Broadcast({
               data-kind={trail.kind}
               data-effect={trail.effect ?? undefined}
             >
-              <path className={s.trailGlow} />
-              <path className={s.trailLine} />
+              {/* One shape drawn twice, so a moving trail writes its path once a frame. */}
+              <defs>
+                <path id={trailId} className={s.trailShape} />
+              </defs>
+              <use href={`#${trailId}`} className={s.trailGlow} />
+              <use href={`#${trailId}`} className={s.trailLine} />
               <circle r={1.1} className={s.trailOrigin} />
             </svg>
           ) : null}
