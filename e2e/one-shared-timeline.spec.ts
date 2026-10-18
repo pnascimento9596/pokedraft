@@ -2,10 +2,30 @@ import { expect, test } from "@playwright/test";
 import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
 
 const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
-const TYPED = ["fire", "water", "electric", "grass", "ice", "psychic"];
+const TYPED = [
+  "normal",
+  "fire",
+  "water",
+  "electric",
+  "grass",
+  "ice",
+  "fighting",
+  "poison",
+  "ground",
+  "flying",
+  "psychic",
+  "bug",
+  "rock",
+  "ghost",
+  "dragon",
+  "dark",
+  "steel",
+  "fairy",
+];
 const SHOT = "docs/reports/one-shared-timeline";
 
-// Fingerprints of playAbilitySound's typed profiles: oscillator type, start and end frequency.
+// Fingerprints of playAbilitySound's typed families: oscillator type, start and end frequency,
+// named after one type in each family.
 const ABILITY_TONES: Record<string, string> = {
   "sawtooth:220:520": "fire",
   "sine:340:620": "water",
@@ -13,6 +33,7 @@ const ABILITY_TONES: Record<string, string> = {
   "triangle:480:760": "grass",
   "sine:1046.5:1318.5": "ice",
   "sine:660:390": "psychic",
+  "sawtooth:130:55": "ground",
 };
 
 test("a live match plays typed move sounds and shows typed callouts at 390px", async ({ page }) => {
