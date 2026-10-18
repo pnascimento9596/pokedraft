@@ -3,6 +3,23 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Continuous ball
+
+Branch `feat/continuous-ball` off `fe6d183`. Matchday staging only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+For the player, the broadcast ball no longer teleports. A tackle carries the ball to the defender who won it. Goals and saves start from where the ball is. Penalties are taken from the spot. After a goal both teams walk back to kickoff shape and the side that conceded kicks off from the centre. On the golden cup, the largest one-frame ball move at 1x falls from 78.0% to 3.87% of the pitch length. Each save now holds the live clock for 1,100 ms instead of 900.
+
+RED commit: `e7b7ece` (4 of 4 guards failed), after the prefactor `a4e7e66` that adds the `stageFrame` seam with no behaviour change. GREEN: `0ea0c23`.
+
+Gates at `0ea0c23`:
+
+- Lint, typecheck and build exited 0. Unit tests: 1,391 passed in 156 files.
+- Prettier passed on every touched file.
+- Playwright on a fresh build, port 3532 (3522 was held by another dispatch's server). `e2e/continuous-ball.spec.ts` passed 1 of 1 in its own run (2,259 frames, largest rendered move 2.70%). A second run of `mobile-targets`, `mobile-acceptance`, `watch-live`, `one-shared-timeline`, `recorded-saves`, `score-lands-with-ball`, `injury-staging`, `speed-aware-staging` and `quick-not-broadcast` had 371 passed and 54 skipped of 425.
+- NOT RUN: the full local Playwright suite, the review, and browser proof at 360 and 320 (no layout change).
+
+Measurements and decisions are in `docs/decisions/continuous-ball.md`. Screenshots are in `docs/reports/continuous-ball/`.
+
 ## Wave 1 summary
 
 Branch `docs/wave1-summary` off `4173b94`. Docs only (Green). Appends the Wave 1 entry to `docs/reports/audits-2026-10-17/program-log.md`: every PR with its squash and reviewed head, the production checks, the measurements that moved, brief-vs-code notes and open carryovers. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
