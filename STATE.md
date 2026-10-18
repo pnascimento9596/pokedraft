@@ -49,6 +49,8 @@ Gates at `f0f73b9` (after the #92 merge):
 - NOT RUN: physical phone check, full local Playwright suite, review, hosted CI, and a perf rerun
   at `f0f73b9`. The numbers above are from `6e9d509`, before #92.
 
+PR #92 (row 2e, shootout with suspense) merged as squash `85b292e`, reviewed head `5b2229a`. At `5b2229a` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,445 unit tests passed in 165 files and Prettier passed on 12 touched files. GLM 5.3 Flash: the first reply (canary `shootout-2449282c14c0d19c6b0cf507e6718bb0`) read APPROVE but put the verdict on a line with other text, so it was not counted; the full rerun at the same head with canary `shootout-b-186b4fc0bd2aa36934fd3fe7f08420d2` approved. Hosted `check` first failed on a timeout in `MatchPlayer.quick.test.tsx` ("Quick shows no cut-in through the 30' goal", over 15 s), a row 2g test that takes about 1.9 s locally both on `main` at `458c56e` and on `5b2229a` (3 runs each); the failed job was rerun with no commit and passed, and all eight e2e shards were green. Production `/api/health?db=1` served `85b292e` with `db.status` ok, and `shootout-suspense.spec.ts` plus `continuous-ball.spec.ts` against production (chromium) passed 2 of 2. NOT RUN: physical phone check and on-device sound (owner action). Carryover: that Quick test is the heaviest matchday unit test and has hit the 15 s limit once on a hosted runner.
+
 ## Shootout with suspense
 
 Branch `feat/shootout-suspense` off `e7f2012`, with `origin/main` merged in at `ae8ee22` (PR #89). UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
