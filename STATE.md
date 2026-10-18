@@ -23,6 +23,8 @@ Gates at `f755466`:
 
 Browser proof: `docs/reports/callouts-type-effects/` (goal cut-in and callout badge at 390, 360 and 320, and the reduced-motion goal card at 390). Measurements and decisions are in `docs/decisions/callouts-type-effects.md`.
 
+PR #88 (row 2h, audio polish) merged as squash `e7f2012`, reviewed head `f46ef6c`, GLM 5.3 Flash APPROVE in round 1 with canary `audio-polish-dcd1218ec61c1a8e038774952dbb605e` echoed. At `f46ef6c` lint, typecheck and build exited 0, 1,410 unit tests passed in 159 files and Prettier passed on 14 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `e7f2012` with `db.status` ok, and `e2e/audio-polish.spec.ts` against production (chromium) passed 2 of 2. NOT RUN: iOS Safari audio on a real device (owner action).
+
 ## Audio polish
 
 Branch `feat/audio-polish` off `fe6d183`. UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
