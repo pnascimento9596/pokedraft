@@ -53,6 +53,7 @@ import {
 } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { Touchline } from "./Touchline";
+import { setCamera, useCamera } from "./useCamera";
 import { useMovesets } from "./useMovesets";
 import s from "./MatchPlayer.module.css";
 
@@ -122,6 +123,7 @@ export function MatchPlayer({
   // Quick is a still pitch with beat sounds only, so only a live broadcast with motion stages.
   const motion = !useReducedMotion() && view === "live";
   const soundOn = useSoundEnabled();
+  const cameraChoice = useCamera();
   const movesOf = useMovesets();
   const timeline = useMemo(
     () => buildTimeline(match, { matchIndex, seed, lineup, movesOf }),
@@ -472,6 +474,7 @@ export function MatchPlayer({
           speed={state.speed}
           feed={feed}
           cutIns={view === "live"}
+          camera={view === "live" ? cameraChoice : "full"}
           onBall={crowd ? onBall : undefined}
         />
       </div>
@@ -523,6 +526,28 @@ export function MatchPlayer({
         >
           {soundOn ? "Sound on" : "Sound off"}
         </button>
+        {view === "live" ? (
+          <div className={s.camera} role="group" aria-label="Camera">
+            <button
+              type="button"
+              className="btn btn--sm"
+              aria-pressed={cameraChoice === "full"}
+              data-testid="camera-full"
+              onClick={() => setCamera("full")}
+            >
+              Full pitch
+            </button>
+            <button
+              type="button"
+              className="btn btn--sm"
+              aria-pressed={cameraChoice === "follow"}
+              data-testid="camera-follow"
+              onClick={() => setCamera("follow")}
+            >
+              Follow
+            </button>
+          </div>
+        ) : null}
       </div>
 
       {sheet ? (

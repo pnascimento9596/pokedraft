@@ -77,6 +77,9 @@ for (const width of [390, 360, 320]) {
     await page.getByTestId("match-G1").getByTestId("watch-live").click();
     const replay = page.getByTestId("match-replay");
     await expect(replay.getByTestId("broadcast")).toHaveAttribute("data-motion", "on");
+    // Follow (the phone default) zooms the whole pitch 1.6x; these sizes are pinned unzoomed.
+    await replay.getByRole("button", { name: "Full pitch" }).click();
+    await expect(replay.getByTestId("broadcast")).toHaveAttribute("data-camera", "full");
 
     const overlaps = new Set<string>();
     let badge: Awaited<ReturnType<typeof carrier>> = null;
