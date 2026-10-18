@@ -149,8 +149,8 @@ export function waitingPoint(side: Side, slot: number): Point {
   const dir = side === "user" ? 1 : -1;
   const k = Math.min(9, Math.max(0, slot - 1));
   const s = (2 * k) / 9 - 1;
-  const depth = 3 + 8 * (1 - s * s) + (k % 2) * 5;
-  return { x: 50 - dir * depth, y: 50 + 34 * s };
+  const depth = 3 + 12 * (1 - s * s) + (k % 2) * 9;
+  return { x: 50 - dir * depth, y: 50 + 30 * s };
 }
 
 function clamp01(t: number): number {
