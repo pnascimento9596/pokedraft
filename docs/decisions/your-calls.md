@@ -170,6 +170,9 @@ second version watches that attribute too.
 
 At `3ac4b9b`: lint, typecheck and build exited 0; all seven `check:*` scripts exited 0; 1,517
 unit tests passed in 175 files; Prettier passed on the 9 touched files.
+Playwright (`CI=1`, fresh build at `3ac4b9b`): `your-calls` 1, `manager-mode` 14, `prematch-merge` 5,
+`injury-staging` 1, `builder-matchday` 1, `mobile-targets` 90 and `mobile-acceptance` 270 passed
+(382), with 54 skipped by their own project gates and none failed.
 
 ## NOT RUN
 
