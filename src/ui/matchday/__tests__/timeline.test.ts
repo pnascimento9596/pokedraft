@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { movesetFor } from "@/data/movesets";
-import type { FullLineup, Incident, MatchResult, Opponent, SpeciesId } from "@/engine/types";
+import { applyAction, createDraft, runCup } from "@/engine";
+import { slotRefs, toFullLineup } from "@/engine/draft";
+import type {
+  DraftSettings,
+  FullLineup,
+  Incident,
+  MatchResult,
+  Opponent,
+  Seed,
+  SpeciesId,
+} from "@/engine/types";
 import {
   ambientBall,
   buildTimeline,
@@ -115,6 +125,9 @@ describe("buildTimeline (catches choreography that changes between two viewings 
       { side: "user", fromSlot: 9, toSlot: 10, kind: "pass" },
       { side: "user", fromSlot: 9, toSlot: 10, kind: "through" },
     ]);
+    const moments = (movesOf: typeof movesetFor | null) =>
+      buildTimeline(match(), { ...input, movesOf }).plays.map((p) => p.moment);
+    expect(moments(movesetFor)).toEqual(moments(null));
   });
 
   it("draws different ambient drift for another match index", () => {
@@ -361,6 +374,63 @@ describe("pitch geometry (catches sprites that leave the pitch or move with redu
     });
     // The taker stands on the drawn penalty spot (Broadcast's cx 89), not 3 units short of it.
     expect(pens.players.user[9]?.point).toEqual({ x: 89, y: 50 });
+  });
+});
+
+// A real cup's first match: seed "a1", 4-2-3-1, every pick the first offer.
+function pinnedCupMatch(): { match: PlayedMatch; lineup: FullLineup } {
+  const settings: DraftSettings = {
+    mode: "cup8",
+    formation: "4-2-3-1",
+    gens: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    style: "classic3",
+    order: "squadFirst",
+  };
+  let state = createDraft(settings, "a1" as Seed);
+  for (const slot of slotRefs()) {
+    const roll = state.phase.kind === "choosing" ? state.phase.roll : null;
+    if (roll === null) throw new Error("expected a roll");
+    const species = roll.kind === "species" ? roll.species : roll.offers![0]!;
+    state = applyAction(state, { type: "pick", species, slot });
+  }
+  const lineup = toFullLineup(state);
+  const first = runCup(lineup, "a1" as Seed, "cup8").matches[0];
+  if (first?.status !== "played") throw new Error("expected a played match");
+  return { match: first, lineup };
+}
+
+describe("callout budget (catches open play that calls a move on most phases instead of the big moments)", () => {
+  it("a pinned seed yields between 10 and 18 open-play callouts (60 before the budget)", () => {
+    const { match: m, lineup } = pinnedCupMatch();
+    const t = buildTimeline(m, { matchIndex: 0, seed: "a1", lineup, movesOf: movesetFor });
+    const calls = t.plays.filter((p) => p.callout !== null).length;
+    expect(t.plays.length).toBe(72);
+    expect(calls).toBeGreaterThanOrEqual(10);
+    expect(calls).toBeLessThanOrEqual(18);
+    expect(calls).toBe(12);
+  });
+
+  it("calls a move only on final-third through balls, crosses, key duels and build-up", () => {
+    const t = buildTimeline(match(), input);
+    const called = t.plays.filter((p) => p.callout !== null);
+    expect(called.length).toBeGreaterThanOrEqual(10);
+    expect(called.length).toBeLessThanOrEqual(18);
+    for (const p of t.plays) expect(p.moment === null).toBe(p.callout === null);
+    const allowed: Record<string, readonly string[]> = {
+      through: ["through"],
+      cross: ["cross"],
+      duel: ["key-duel"],
+      pass: ["build-up"],
+      dribble: ["build-up"],
+    };
+    for (const p of called) expect(allowed[p.kind]).toContain(p.moment);
+    const chance = (from: number, to: number) =>
+      t.beats.some(
+        (b) => (b.kind === "goal" || b.kind === "save") && b.minute > from && b.minute <= to,
+      );
+    for (const p of called.filter((q) => q.moment === "key-duel")) {
+      expect(chance(p.from, p.to)).toBe(true);
+    }
   });
 });
 

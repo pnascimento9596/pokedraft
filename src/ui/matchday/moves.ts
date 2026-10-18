@@ -2,31 +2,14 @@ import type { Rng } from "@/lib/rng";
 import type { Move, Moveset } from "@/data/movesets";
 import type { PokemonType } from "@/engine/types";
 
-/** The broadcast's on-pitch effect for a move. */
-export const EFFECTS = [
-  "fire",
-  "water",
-  "electric",
-  "grass",
-  "ice",
-  "psychic",
-  "impact",
-  "shield",
-  "dive",
-] as const;
-export type Effect = (typeof EFFECTS)[number];
-
-const TYPE_EFFECT: Partial<Record<PokemonType, Effect>> = {
-  fire: "fire",
-  water: "water",
-  electric: "electric",
-  grass: "grass",
-  ice: "ice",
-  psychic: "psychic",
-};
+/**
+ * The broadcast's on-pitch effect for a move: its type's own family, or a generic impact, shield or
+ * dive when no typed move is known.
+ */
+export type Effect = PokemonType | "impact" | "shield" | "dive";
 
 export function effectFor(type: PokemonType): Effect {
-  return TYPE_EFFECT[type] ?? "impact";
+  return type;
 }
 
 /** A move called on the pitch: who used it, the canon move, and the effect it draws. */

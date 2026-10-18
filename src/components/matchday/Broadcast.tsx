@@ -1,13 +1,18 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, type CSSProperties } from "react";
 import { FORMATIONS } from "@/engine";
-import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
+import type { FullLineup, MatchResult } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
+import { TypeIcon } from "@/components/TypeIcon";
+import { TYPE_PALETTE } from "@/design/stadium";
+import { typeLabel } from "@/ui/labels";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
+import { cutInAt, type CutIn } from "@/ui/matchday/cutin";
 import { activeBeat } from "@/ui/matchday/player";
 import {
   GOAL_LANDS,
+  OPP_SHAPE,
   goalMouth,
   stagePitch,
   type Point,
@@ -18,8 +23,16 @@ import s from "./Broadcast.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
-// Bosses without a recorded shape line up in a 4-3-3.
-const OPP_SHAPE: FormationId = "4-3-3";
+// Every type's palette colour, so each type's effects draw in its own family.
+const TYPE_VARS = Object.fromEntries(
+  Object.entries(TYPE_PALETTE).map(([type, color]) => [`--type-${type}`, color]),
+) as CSSProperties;
+
+const CUT_IN_LABEL: Readonly<Record<CutIn["kind"], string>> = {
+  goal: "Goal",
+  save: "Save",
+  duel: "Key duel",
+};
 
 // Stage points are percent of width and height; the trails draw in the pitch's own 100 by 64 box.
 const TRAIL_Y = 0.64;
@@ -38,6 +51,7 @@ export function Broadcast({
   kicks,
   motion,
   speed,
+  cutIns = false,
   onBall,
 }: {
   readonly match: PlayedMatch;
@@ -51,6 +65,8 @@ export function Broadcast({
   readonly motion: boolean;
   /** The player's speed: 2x stages every beat in half the time, matching its hold. */
   readonly speed: number;
+  /** Lower-third cards for shots on target and key duels: live broadcasts only, never Quick. */
+  readonly cutIns?: boolean;
   /** Hears where the staged ball is along the pitch, 0 to 100, after each paint. */
   readonly onBall?: (x: number) => void;
 }) {
@@ -76,6 +92,7 @@ export function Broadcast({
     onBall?.(ballX);
   }, [onBall, ballX]);
   const goal = active?.beat.kind === "goal" ? active.beat : null;
+  const cutIn = cutIns ? cutInAt(active, stage.playCallout) : null;
   const progress = active?.progress ?? 0;
   const shown = (from: number, to = 1) => !motion || (progress >= from && progress <= to);
   const kickList = timeline.kicks.slice(0, kicks);
@@ -138,6 +155,7 @@ export function Broadcast({
       data-testid="broadcast"
       data-motion={motion ? "on" : "off"}
       data-goals-only={timeline.goalsOnly || undefined}
+      style={TYPE_VARS}
     >
       <div className={s.pitch} aria-hidden="true">
         <svg className={s.lines} viewBox="0 0 100 64" preserveAspectRatio="none">
@@ -286,12 +304,52 @@ export function Broadcast({
       </div>
 
       <div className={s.overlay}>
-        {goal !== null && shown(0.25, 1) ? (
+        {cutIn !== null ? (
+          <div
+            className={s.cutIn}
+            data-testid="cut-in"
+            data-kind={cutIn.kind}
+            data-side={cutIn.side}
+            data-effect={cutIn.callout.effect}
+          >
+            <span className={s.cutInSprite}>
+              {cutIn.species !== null ? (
+                <PlayerImage dexId={cutIn.species} size={80} alt="" eager />
+              ) : null}
+            </span>
+            <span className={s.cutInText}>
+              <span className={s.cutInKind}>{CUT_IN_LABEL[cutIn.kind]}</span>
+              <span
+                className={s.cutInMove}
+                data-testid={
+                  cutIn.kind === "goal"
+                    ? "move-callout"
+                    : cutIn.kind === "save"
+                      ? "save-callout"
+                      : "duel-callout"
+                }
+              >
+                {cutIn.callout.text}
+              </span>
+            </span>
+            {cutIn.callout.type !== null ? (
+              <span
+                className={s.cutInType}
+                data-testid="cut-in-type"
+                data-type={cutIn.callout.type}
+              >
+                <TypeIcon type={cutIn.callout.type} size={16} decorative />
+                <span className={s.cutInTypeName}>{typeLabel(cutIn.callout.type)}</span>
+              </span>
+            ) : null}
+          </div>
+        ) : null}
+        {!cutIns && goal !== null && shown(0.25, 1) ? (
           <p className={s.callout} data-effect={goal.callout.effect} data-testid="move-callout">
             {goal.callout.text}
           </p>
         ) : null}
-        {active?.beat.kind === "save" ? (
+        {!cutIns && active?.beat.kind === "save" ? (
           <p
             className={s.callout}
             data-effect={active.beat.callout.effect}

@@ -357,6 +357,7 @@ export function MatchPlayer({
         kicks={state.kicks}
         motion={motion}
         speed={state.speed}
+        cutIns={view === "live"}
         onBall={crowd ? onBall : undefined}
       />
 
