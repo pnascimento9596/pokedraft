@@ -3,6 +3,7 @@ import {
   cameraAt,
   cameraTransform,
   defaultCamera,
+  projectPoint,
   seeks,
   stepCamera,
   visibleBox,
@@ -18,7 +19,7 @@ const FRAME = 1000 / 60;
 
 function run(cam: Camera, target: { x: number; y: number }, wide: boolean, ms: number): Camera {
   let c = cam;
-  for (let t = 0; t < ms; t += FRAME) c = stepCamera(c, target, wide, FRAME);
+  for (let i = 0; i < Math.round(ms / FRAME); i++) c = stepCamera(c, target, wide, FRAME);
   return c;
 }
 
@@ -57,6 +58,18 @@ describe("follow camera clamp (catches a camera that shows the apron outside the
       right: 100,
       bottom: 100,
     });
+  });
+});
+
+describe("play badge re-projected through the camera (catches a badge zoomed with the pitch until it is wider than the view)", () => {
+  it("at the far corner flag a player at 80%, 70% of the pitch shows at 68%, 52% of the view", () => {
+    const p = projectPoint(cameraAt(FAR_FLAG, false), { x: 80, y: 70 });
+    expect(p.x).toBeCloseTo(68, 6);
+    expect(p.y).toBeCloseTo(52, 6);
+  });
+
+  it("on the full pitch a point shows where it stands", () => {
+    expect(projectPoint(cameraAt(FAR_FLAG, true), { x: 80, y: 70 })).toEqual({ x: 80, y: 70 });
   });
 });
 
