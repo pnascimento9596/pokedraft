@@ -3,8 +3,9 @@ import { Profiler } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import type { FullLineup, MatchResult, Opponent, PenKick, SpeciesId } from "@/engine/types";
-import { frameSource } from "@/ui/matchday/feed";
-import { buildTimeline, SHOW } from "@/ui/matchday/timeline";
+import { frameSource, type LiveFrame } from "@/ui/matchday/feed";
+import { stageFrame } from "@/ui/matchday/player";
+import { buildTimeline, SHOW, type Point } from "@/ui/matchday/timeline";
 import { Broadcast } from "../Broadcast";
 import { MatchPlayer } from "../MatchPlayer";
 
@@ -148,6 +149,92 @@ describe("pitch transforms (catches a frame loop that moves the players somewher
       "transform: translate3d(36.68cqi, 32.00cqi, 0) translate(-50%, -70%)",
     );
   });
+});
+
+describe("painter parity (catches a frame loop that paints a frame other than the one stageFrame stages for its clock and time)", () => {
+  // The transforms Broadcast writes, built here from the pitch geometry (100 wide, 64 tall, in
+  // units of the broadcast's width) rather than from Broadcast's own helpers.
+  const at = (p: Point) => `translate3d(${p.x.toFixed(2)}cqi, ${(p.y * 0.64).toFixed(2)}cqi, 0)`;
+  const GOAL = { "goal:12:user:Charizard": 1000 };
+  const INSTANTS: readonly (LiveFrame & { readonly name: string })[] = [
+    {
+      name: "open play at 6.5'",
+      clock: 6.5,
+      now: 1000,
+      fired: {},
+      kicks: 0,
+      kickProgress: 0,
+      speed: 1,
+    },
+    {
+      name: "the 12' goal in flight",
+      clock: 12,
+      now: 1000 + 0.45 * SHOW.goal,
+      fired: GOAL,
+      kicks: 0,
+      kickProgress: 0,
+      speed: 1,
+    },
+    {
+      name: "the pitch settling after the goal at 2x",
+      clock: 12.4,
+      now: 1000 + (SHOW.goal + 300) / 2,
+      fired: GOAL,
+      kicks: 0,
+      kickProgress: 0,
+      speed: 2,
+    },
+  ];
+
+  it.each(INSTANTS)(
+    "$name: every player and the ball stand where stageFrame puts them",
+    (frame) => {
+      const feed = frameSource();
+      render(
+        <Broadcast
+          match={MATCH}
+          timeline={TIMELINE}
+          lineup={LINEUP}
+          clock={1}
+          now={0}
+          fired={{}}
+          kicks={0}
+          motion={true}
+          speed={1}
+          feed={feed}
+        />,
+      );
+      feed.publish(frame);
+      const { stage } = stageFrame(TIMELINE, {
+        clock: frame.clock,
+        fired: frame.fired,
+        now: frame.now,
+        kicks: frame.kicks,
+        kickProgress: frame.kickProgress,
+        motion: true,
+        speed: frame.speed,
+        userSlots: LINEUP.formation,
+        oppSlots: "4-3-3",
+        oppLabels: OPPONENT.roster.map(() => ""),
+        windows: MATCH.windows,
+      });
+      const staged: Record<string, string> = {};
+      for (const p of [...stage.players.user, ...stage.players.opp]) {
+        if (p !== null)
+          staged[`${p.side}:${p.slot}`] = `transform: ${at(p.point)} translate(-50%, -70%)`;
+      }
+      const painted: Record<string, string | null> = {};
+      for (const el of document.querySelectorAll<HTMLElement>("[data-slot]:not([data-leaving])")) {
+        painted[`${el.dataset.side}:${el.dataset.slot}`] = el.getAttribute("style");
+      }
+      expect(Object.keys(painted)).toHaveLength(22);
+      expect(painted).toEqual(staged);
+      const { ball } = stage;
+      expect(style('[data-testid="broadcast-ball"]')).toBe(
+        `transform: ${at(ball)} translate(-50%, -50%); --loft: ${ball.loft.toFixed(2)}; --spin: ${ball.spin}`,
+      );
+    },
+  );
 });
 
 describe("frame loop (catches a live match that re-renders the whole match screen in React on every animation frame)", () => {
