@@ -51,6 +51,12 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    # The suite is about 6,700 test-seconds, CPU bound on the phone projects. Eight shards on
+    # separate runners cut the wall clock to roughly an eighth plus the per-job setup.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -61,11 +67,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium webkit
       - run: pnpm build
-      - run: pnpm test:e2e
+      - run: pnpm test:e2e --shard=${{ matrix.shard }}/8
       - name: Upload the Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shard }}
           path: playwright-report
           retention-days: 7

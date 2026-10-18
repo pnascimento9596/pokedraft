@@ -298,4 +298,29 @@ describe("ResultsView", () => {
       expect(loadHistory()).toEqual([]);
     },
   );
+
+  it("shows a zero weak-spot drag as 0, not -0", async () => {
+    const { cup } = await replay(FLAWLESS);
+    await view(FLAWLESS, "shared", { ...cup, rating: { ...cup.rating, drag: 0.004 } });
+    const label = within(screen.getByTestId("score-breakdown")).getByText("Weak-spot drag");
+    expect(label.nextElementSibling!.textContent).toBe("0");
+  });
+
+  it("shows a real weak-spot drag with its minus sign", async () => {
+    const { cup } = await replay(FLAWLESS);
+    await view(FLAWLESS, "shared", { ...cup, rating: { ...cup.rating, drag: 0.12 } });
+    const label = within(screen.getByTestId("score-breakdown")).getByText("Weak-spot drag");
+    expect(label.nextElementSibling!.textContent).toBe("-12");
+  });
+
+  it("hides the match star badge emoji and the broadcast play glyph from screen readers", async () => {
+    await view(FLAWLESS);
+    expect(screen.getByRole("button", { name: "Watch Matchday Broadcast" })).toBeTruthy();
+    const badge = screen.getByTestId("match-star-G1");
+    const spoken = badge.cloneNode(true) as HTMLElement;
+    spoken.querySelectorAll('[aria-hidden="true"]').forEach((el) => el.remove());
+    const shown = spoken.textContent ?? "";
+    expect(shown).toContain("Hero");
+    expect(shown).not.toMatch(/\p{Extended_Pictographic}/u);
+  });
 });

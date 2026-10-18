@@ -5,7 +5,7 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Security and integrity quick fixes (W1k)
 
-Branch `fix/security-integrity-quick-fixes` off `f4489cb`. Tier Red (gate, rate limits, database client, leaderboard). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+Branch `fix/security-integrity-quick-fixes`, off `f4489cb`, with `origin/main` (`754d838`, PR #82) merged in. Tier Red (gate, rate limits, database client, leaderboard). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 - A gate link such as `/gate?next=/..//evil.com` now unlocks to `/`, not to another site.
 - One IPv6 client shares one rate-limit bucket across its /64, for gate attempts and leaderboard submissions. IPv4 is unchanged.
@@ -24,6 +24,48 @@ Gates at `5b7ca8d` (later commits change only docs):
 - Full Playwright suite, independent review, a physical phone check and the post-merge production check: NOT RUN.
 
 Scope, RED output and decisions are in `docs/decisions/security-integrity-quick-fixes.md`. Screenshot: `docs/reports/security-integrity-quick-fixes/leaderboard-coach-url-390x844.png`.
+
+PR #82 (side fix, CI e2e shards) merged as squash `754d838`, reviewed head `ac0c6d3`, GLM 5.3 Flash APPROVE with canary `ci-shard-r3-1c82513b2110db5a53eb92acc7b4bc89` echoed (earlier four-shard heads `a380010` and `c4e6113` were approved or in review before the move to eight). On `ac0c6d3` the eight shards took 4.5, 5.7, 3.0, 5.6, 5.5, 8.4, 6.5 and 3.1 min, all green. Shard 6 ran 110 tests in 6.5 min with no retry: Playwright splits by test count, not time, so the slowest shard is 8.4 min against 9.1 min with four. Production `/api/health?db=1` served `754d838` with `db.status` ok (CI-only change, no route to check). PR #81 (row 1h) is recorded in the CI e2e shards section below.
+
+## CI e2e shards
+
+Branch `ci/shard-e2e`, off `9d37864`, with `origin/main` (`68f37c9`, PR #81) merged in. CI only (Green), an out-of-band side fix outside Wave 1. Only `.github/workflows/ci.yml` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Nothing changes for the player. The hosted `e2e` job now runs as eight parallel shards (`--shard=N/8`), each uploading its own report on failure.
+- Before: PR #80's `pnpm test:e2e` step took 28.6 min for 824 passed and 61 skipped, the whole critical path of every merge. On this PR's first run (head `a380010`) the four shards took 6.7, 6.9, 7.4 and 9.1 min end to end, all green, so the job finishes in about 9 min instead of about 31. This head moves to eight shards; its time is read from this PR's run.
+- Observed, not fixed here: `main` push run 39080199806 on `90aba39` failed `Builder.test.tsx` once (`expected 'DF  LCB + Tap to Draft!' to be 'DF  LCB  Bulbasaur Grass Poison '`, line 275), a lazy-import race like the one PR #80 fixed in `announce-builder.test.tsx`. Carried over.
+
+Gates: no test or source change. Hosted CI on this PR is the proof. Local Playwright: NOT RUN.
+
+Measurements and the rejected options are in `docs/decisions/ci-shard-e2e.md`.
+
+PR #81 (row 1h, highlights honesty) merged as squash `68f37c9`, reviewed head `b1f6f8e`, GLM 5.3 Flash APPROVE in round 1 with canary `highlights-honesty-ea975c4a469b2015a2e21c90fcf7b4d3` echoed (the first gate run on `464ec6e` failed prettier on the new spec, fixed in `b1f6f8e` before review); hosted check and e2e green on that head. Production `/api/health?db=1` served `68f37c9` with `db.status` ok, and `e2e/highlights-honesty.spec.ts` against production (chromium) passed 1 of 1.
+
+## Highlights honesty
+
+Branch `fix/highlights-honesty`, off `f4489cb`, with `origin/main` (`9d37864`, PR #80) merged in. Wave 1 row 1h. Display only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The highlights type icon and stage tint show the star's own primary type. Arcanine reads Fire, not the Dark of its ability Intimidate.
+- The ability box says "Ability", not "Activated Ability", and the strike announcement no longer claims the ability fired.
+- Clean Sheet Hero and Squad Anchor go to the first player, keeper first, who held a starting slot for the whole match. An absent, subbed, injured or sent-off keeper is skipped. A 0-0 lost on penalties is not a clean sheet.
+- The MVP pill reads L for a losing record (0W-0D-3L) and D for a level one (1W-1D-1L).
+- Highlight, motion, strike, goal and broadcast glyphs sit in `aria-hidden` spans, so screen readers read "Clean Sheet Hero", not "gloves Clean Sheet Hero".
+- A zero weak-spot drag reads 0, not -0.
+
+RED commit: `fc9efaf` (12 failing guards in `starCalculation`, `MatchHighlights` and `ResultsView` tests).
+
+Gates at `dfe9f5f` (later commits change only docs):
+
+- Lint, typecheck, format check on touched files and build exited 0.
+- Unit tests: 1,327 passed in 144 files.
+- Playwright on a fresh build: 429 passed, 0 failed, 54 skipped across the highlights scene, results interactions, Silph Stadium, recorded saves, a11y, contrast, mobile targets and mobile acceptance. Hosted CI runs the full suite.
+- At the merge of `origin/main` (`b01ecf9`): lint, typecheck and build exited 0, and `pnpm test --maxWorkers=4` passed 1,357 tests in 150 files.
+- Browser proof at 390x844: `docs/reports/highlights-honesty/`.
+- NOT RUN: the new scene against a `main` build, 360 and 320 screenshots, a physical phone check, GLM review.
+
+Decisions are in `docs/decisions/highlights-honesty.md`.
+
+PR #80 (side fix, unit flakes) merged as squash `9d37864`, reviewed head `ba6fe52`, GLM 5.3 Flash APPROVE in round 1 with canary `unit-flakes-b94884707ea8ce649921d79f318b1156` echoed; hosted check and e2e green on that head. Production `/api/health?db=1` served `9d37864` with `db.status` ok (test-only change, no route to check).
 
 ## Unit flakes
 

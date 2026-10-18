@@ -86,9 +86,7 @@ export function MatchHighlights({
     unlockAudio();
     if (currentStar.action === "attack") playGoalHorn();
     setStriking(true);
-    setAnnouncement(
-      `${currentStar.name} unleashed ${currentStar.kickMove} using ${currentStar.ability}!`,
-    );
+    setAnnouncement(`${currentStar.name} unleashed ${currentStar.kickMove}!`);
 
     goalTimer.current = setTimeout(() => {
       setShowGoal(true);
@@ -146,7 +144,8 @@ export function MatchHighlights({
           onClick={() => setPaused((p) => !p)}
           aria-pressed={paused}
         >
-          {paused ? "▶ Play Motion" : "⏸ Pause Motion"}
+          <span aria-hidden="true">{paused ? "▶" : "⏸"}</span>{" "}
+          {paused ? "Play Motion" : "Pause Motion"}
         </button>
       </div>
 
@@ -219,15 +218,14 @@ export function MatchHighlights({
           </div>
 
           <div className={s.headlineText} data-testid="star-headline">
-            {currentStar.headline}
+            <span aria-hidden="true">{currentStar.icon}</span> {currentStar.headline}
           </div>
 
           <div className={s.statSummary}>{currentStar.statSummary}</div>
 
-          {/* Ability Activation Banner */}
           <div className={s.abilityBox} data-testid="star-ability">
             <div className={s.abilityHeader}>
-              <span>Activated Ability:</span>
+              <span>Ability:</span>
               <span className={s.abilityTag}>{currentStar.ability}</span>
             </div>
             <div className={s.abilityFlavor}>{currentStar.abilityFlavor}</div>
@@ -242,7 +240,13 @@ export function MatchHighlights({
               disabled={striking}
               data-testid="strike-btn"
             >
-              {currentStar.action === "defend" ? "Defensive drill: " : "⚽ Unleash "}
+              {currentStar.action === "defend" ? (
+                "Defensive drill: "
+              ) : (
+                <>
+                  <span aria-hidden="true">⚽</span> Unleash{" "}
+                </>
+              )}
               {currentStar.kickMove}!
             </button>
           </div>
@@ -259,7 +263,13 @@ export function MatchHighlights({
             }
           >
             <div className={s.goalTitle}>
-              {currentStar.action === "defend" ? "BLOCK!" : "⚽ GOAL!"}
+              {currentStar.action === "defend" ? (
+                "BLOCK!"
+              ) : (
+                <>
+                  <span aria-hidden="true">⚽</span> GOAL!
+                </>
+              )}
             </div>
             <div className={s.goalSubtitle}>
               {currentStar.name} {currentStar.action === "defend" ? "blocks" : "strikes"} with{" "}
