@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Pre-match merge
+
+Branch `feat/prematch-merge` off `bcf5493`. Matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- In manager mode the pre-match card shows the five tactic pills, labelled "Starting tactic", next to the opponent, style and shape. Sim mode shows no pills.
+- The button reads "Kick off" and starts running play at once. The clock no longer stops at 0'. Half time, extra time and injury stops are unchanged.
+- Picking a tactic other than the one the side starts in records it at minute 0 through `decide`, the path the old kickoff stop used, so tokens and old replays are unchanged. Keeping Balanced records nothing, so the assistant stays on.
+- The touchline and the pre-match card share one `TacticPills` component. Every pill is at least 58 px tall at 390, 360 and 320 px.
+- The brief's "weakest line and key player" on the pre-match card and a Team Score in the match header do not exist in the code; both are recorded as Wave 4 carryovers, not invented.
+
+RED commit: `995c229` (8 of 23 failed).
+
+Gates at `eb2af7b` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 20 touched files.
+- Unit tests: 1,486 passed in 172 files.
+- Playwright (`CI=1`, fresh build at `eb2af7b`): `prematch-merge` and `manager-mode` 19 passed; `builder-matchday`, `quick-not-broadcast`, `mobile-pitch-fixes`, `injury-staging` and `watch-live` 10 passed; `mobile-targets` and `mobile-acceptance` 360 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/prematch-merge.md`. Browser proof: `docs/reports/prematch-merge/`.
+
 ## Wave 2 summary
 
 Branch `docs/wave2-summary` off `87e7d51`. Docs only (Green). Appends the Wave 2 entry to `docs/reports/audits-2026-10-17/program-log.md`: every PR with its squash and reviewed head, the production checks, the measurements that moved, brief-vs-code notes and open carryovers. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
