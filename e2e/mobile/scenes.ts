@@ -388,11 +388,18 @@ export const SCENES: readonly Scene[] = [
       await draftRounds(page, 16);
       await page.getByTestId("see-results").click();
       await page.getByTestId("prematch-go").click();
-      await expect(page.getByTestId("stop-kickoff")).toBeVisible();
       await expect(page.getByTestId("broadcast")).toBeVisible();
+      await expect(page.getByTestId("touchline")).toBeVisible();
+      await expect
+        .poll(async () =>
+          Number(await page.getByTestId("match-player").getAttribute("data-minute")),
+        )
+        .toBeGreaterThan(0);
+      await page.getByTestId("play-toggle").click();
+      await expect(page.getByTestId("play-toggle")).toHaveText("Resume");
       await settle(page);
     },
-    primary: (page) => page.getByTestId("stop-go"),
+    primary: (page) => page.getByTestId("play-toggle"),
   },
   {
     id: "daily results",

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { FullLineup, MatchResult, SpeciesId } from "@/engine/types";
-import { PACE, type Stop } from "../clock";
+import { PACE, stopsFor, type Stop } from "../clock";
 import {
   START,
   beatKey,
@@ -81,6 +81,17 @@ describe("play (catches a broadcast clock that runs through a manager stop or a 
     const resumed = play(s, { type: "answer", key: "halftime" });
     expect(resumed).toMatchObject({ stop: null, running: true, answered: ["halftime"] });
     expect(run(resumed, live, 1000, 60_000).minute).toBeGreaterThan(45);
+  });
+
+  it("Kick off starts the clock with no stop at 0' (catches a managed match held at a kickoff stop)", () => {
+    const managed: PlayEnv = { ...live, stops: stopsFor(MATCH, LINEUP) };
+    const first = play(
+      { ...START, running: true },
+      { type: "tick", now: 16, dt: 16, env: managed },
+    );
+    expect(first.stop).toBeNull();
+    expect(first.running).toBe(true);
+    expect(first.minute).toBeCloseTo(16 / PACE.live.regulation, 9);
   });
 
   it("does not move while the player has paused", () => {

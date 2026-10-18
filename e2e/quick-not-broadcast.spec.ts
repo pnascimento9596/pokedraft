@@ -53,8 +53,6 @@ test("manager mode plays live over a saved Quick choice, at 390px", async ({ pag
   await page.getByTestId("prematch-go").click();
   await expect(page.getByTestId("match-player")).toHaveAttribute("data-view", "live");
   await expect(page.getByTestId("broadcast")).toHaveAttribute("data-motion", "on");
-  await expect(page.getByTestId("stop-kickoff")).toBeVisible();
-  await page.getByTestId("stop-go").click();
 
   // Live pace is 25 s a half; Quick would be past 60' after 3 s.
   await page.waitForTimeout(3_000);

@@ -41,7 +41,7 @@ function runUntil(
   while (!done(s)) {
     t += FRAME;
     s = play(s, { type: "tick", now: t, dt: FRAME, env });
-    if (s.stop?.key === "kickoff" || s.stop?.key === "halftime") {
+    if (s.stop?.key === "halftime") {
       s = play(s, { type: "answer", key: s.stop.key });
     }
     if (t > 200_000) throw new Error("the clock never reached the condition");

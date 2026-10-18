@@ -56,14 +56,17 @@ test.describe("manager mode", () => {
   }) => {
     await seedPanel(page, { managerMode: true, matchView: "quick" });
     await toMatchday(page);
-    await page.getByTestId("prematch-go").click();
 
-    // Kickoff: the touchline is open before the first whistle.
-    await expect(page.getByTestId("stop-kickoff")).toBeVisible();
+    // The starting tactic is picked on the pre-match card; Kick off goes straight to running play.
+    await page.getByTestId("tactic-attack").click();
+    await expect(page.getByTestId("tactic-attack")).toHaveAttribute("aria-pressed", "true");
+    await page.getByTestId("prematch-go").click();
     await expect(page.getByTestId("broadcast")).toBeVisible();
     await expect(page.getByTestId("soccer-ball-svg")).toBeVisible();
-    await expect(page.getByTestId("touchline-minute")).toHaveText("Before kickoff");
-    await page.getByTestId("tactic-attack").click();
+    await expect(page.locator('[data-testid^="stop-"]')).toHaveCount(0);
+    await expect
+      .poll(async () => Number(await page.getByTestId("match-player").getAttribute("data-minute")))
+      .toBeGreaterThan(0);
     await expect(page.getByTestId("tactic-attack")).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByTestId("match-hud")).toContainText("Attack");
     await page.getByTestId("sound-toggle").click();
@@ -71,7 +74,6 @@ test.describe("manager mode", () => {
     await expect(page.getByTestId("takeover")).toHaveText(
       "You have the touchline. Your assistant stops making changes this match.",
     );
-    await page.getByTestId("stop-go").click();
     // Manager mode plays live; 2x keeps the wait for half time near 13 s.
     await page.getByTestId("speed-toggle").click();
 
@@ -115,10 +117,9 @@ test.describe("manager mode", () => {
   }) => {
     await seedPanel(page, { managerMode: true, matchView: "quick" });
     await toMatchday(page);
-    await page.getByTestId("prematch-go").click();
     await page.getByTestId("tactic-attack").click();
     await expect(page.getByTestId("tactic-attack")).toHaveAttribute("aria-pressed", "true");
-    await page.getByTestId("stop-go").click();
+    await page.getByTestId("prematch-go").click();
     await page.getByTestId("skip-ft").click();
     await page.getByTestId("fulltime-next").click();
     await expect(page.getByTestId("matchday")).toHaveAttribute("data-match", "1");

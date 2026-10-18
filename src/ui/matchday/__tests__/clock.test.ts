@@ -65,9 +65,8 @@ describe("stopsFor (catches manager mode that skips an injury prompt or stops a 
     { kind: "injury", side: "user", minute: 70, slot: 6, player: id(7) },
   ];
 
-  it("stops at kickoff, the injury at 45 before the half-time whistle, and each later injury", () => {
+  it("stops at the injury at 45 before the half-time whistle and each later injury, never at 0' (catches the kickoff stop the pre-match tactic replaced)", () => {
     expect(stopsFor(match(injured), LINEUP).map((s) => s.key)).toEqual([
-      "kickoff",
       "injury:45:4",
       "halftime",
       "injury:70:6",
@@ -76,7 +75,7 @@ describe("stopsFor (catches manager mode that skips an injury prompt or stops a 
 
   it("finds the next unanswered stop", () => {
     const stops = stopsFor(match(injured), LINEUP);
-    expect(nextStop(stops, new Set(["kickoff", "injury:45:4"]), 0)?.key).toBe("halftime");
+    expect(nextStop(stops, new Set(["injury:45:4"]), 0)?.key).toBe("halftime");
     expect(nextStop(stops, new Set(), 46)?.key).toBe("injury:70:6");
     expect(nextStop(stops, new Set(), 71)).toBeNull();
   });

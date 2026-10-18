@@ -31,7 +31,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it("Go to the match unlocks audio inside the tap (catches an autostarted match that never unlocks sound)", () => {
+it("Kick off unlocks audio inside the tap (catches an autostarted match that never unlocks sound)", () => {
   render(
     <MatchdayFlow ctx={CTX} initialCup={cup} view="live" managerMode={false} onFinish={() => {}} />,
   );
