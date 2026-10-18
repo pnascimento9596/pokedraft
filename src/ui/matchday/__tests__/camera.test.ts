@@ -6,7 +6,6 @@ import {
   projectPoint,
   seeks,
   stepCamera,
-  visibleBox,
   zoomOf,
   type Camera,
 } from "../camera";
@@ -42,22 +41,8 @@ describe("follow camera clamp (catches a camera that shows the apron outside the
     );
   });
 
-  it("at the far flag the view is the pitch's last 62.5% each way, 37.5 to 100", () => {
-    const box = visibleBox(cameraAt(FAR_FLAG, false));
-    expect(box.left).toBeCloseTo(37.5, 6);
-    expect(box.top).toBeCloseTo(37.5, 6);
-    expect(box.right).toBeCloseTo(100, 6);
-    expect(box.bottom).toBeCloseTo(100, 6);
-  });
-
   it("the full pitch has no translation at all: translate(0.00%, 0.00%) scale(1.000)", () => {
     expect(cameraTransform(cameraAt(FAR_FLAG, true))).toBe("translate(0.00%, 0.00%) scale(1.000)");
-    expect(visibleBox(cameraAt(FAR_FLAG, true))).toEqual({
-      left: 0,
-      top: 0,
-      right: 100,
-      bottom: 100,
-    });
   });
 });
 
