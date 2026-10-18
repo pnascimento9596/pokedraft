@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Team readability
+
+Branch `feat/team-readability` off `c33fa17`. Wave 3 row 3d, matchday pitch only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `MatchPlayer.tsx` and `Touchline.tsx` are untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Each side's players stand on a ring in their kit. Your kit is the type most of your starting eleven carry; a dual type counts toward both its types, and a tie goes to the type seen first in slot order. The opponent wears its theme's type.
+- When the two kits look too alike (closer than 10 in the CVD audit's own metric, in normal, protanopia or deuteranopia vision), the opponent wears white. A club with no theme keeps the old blue unless it clashes too.
+- Sprites draw at 44px on phones instead of 38.4px. Wider pitches keep 56 and 72px.
+- A move's badge over a player now stays inside the pitch. In the golden group match, 5 to 7 of 13 badges were cut off by up to 65px at 390, 360 and 320; none are now.
+- The rings show in Quick and with reduced motion. They add no element and no per-frame write.
+- The 2f carryover (sweat pip and stamina arc not sized in px) did not reproduce: both already sit in the unscaled player box at 6 by 8 and 24 by 8 px at 390 and 320. Closed in the decision log.
+
+RED commit: `33a3e60` (3 of 3 unit files failed: the 2 collected tests, and `kit.test.ts` with 7 tests and `badge.test.ts` with 4 tests could not import the missing modules; `team-readability.spec.ts` failed 7 of 7 on a `c33fa17` build).
+
+Gates at `1303a58` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 12 touched code and test files.
+- Unit tests: 1,530 passed in 178 files.
+- Playwright (`CI=1`, fresh build at `1303a58`): chromium `team-readability`, `pitch-card-containment`, `mobile-pitch-fixes`, `broadcast-frame-loop`, `fatigue`, `callouts-type-effects`, `continuous-ball` and `one-shared-timeline` 34 passed; `mobile-targets` and `mobile-acceptance` 360 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, a frame-loop perf trace and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/team-readability.md`. Browser proof: `docs/reports/team-readability/`.
+
+Merged origin/main after PR #102 (row 3a) at `ce9e48a`; only STATE.md conflicted. After the merge typecheck and build exited 0, 358 matchday, UI and design unit tests passed in 54 files, and `team-readability`, `touchline-sheet`, `pitch-card-containment` and `callouts-type-effects` passed 31 of 31 locally (`CI=1`, chromium, fresh build). The full gates at the reviewed head are in the review receipt.
+
 ## Touchline bottom sheet
 
 Branch `feat/touchline-sheet` off `b08c68c`. Wave 3 row 3a, matchday UI and the pure play reducer (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -25,6 +49,8 @@ Gates at `e094fc8` (code identical at the docs commit that adds this section):
 Measurements and decisions are in `docs/decisions/touchline-sheet.md`. Browser proof: `docs/reports/touchline-sheet/`.
 
 Merged origin/main after PRs #100 and #101 at `14a9e70`; only STATE.md conflicted, and `MatchdayFlow.tsx` merged cleanly with 3h's full-time card. After the merge typecheck and build exited 0, 344 matchday and UI unit tests passed in 50 files, and `your-calls`, `touchline-sheet`, `manager-mode` and `prematch-merge` passed 28 of 28 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #102 (row 3a, touchline bottom sheet) merged as squash `02e45cd`, reviewed head `72063d0`, GLM 5.3 Flash APPROVE in round 1 with canary `touchline-sheet-b261a397b3341849f45c9c6d003fec37` echoed. At `72063d0` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,532 unit tests passed in 176 files and Prettier passed on 17 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `02e45cd` with `db.status` ok, and `touchline-sheet.spec.ts` plus `shootout-suspense.spec.ts` against production (chromium) passed 9 of 9. NOT RUN: physical phone check (owner action); `env(safe-area-inset-bottom)` on a real device.
 
 ## Your calls card
 
