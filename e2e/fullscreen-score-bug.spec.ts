@@ -139,7 +139,7 @@ test("score bug present only when fullscreen: the button enters and leaves full 
   await expect(replay.getByTestId("fullscreen-toggle")).toHaveText("Full screen");
 });
 
-test("in manager mode at 844x390 the touchline sits in the page under a pitch no taller than 70svh, and a sub goes through (catches a landscape phone with no usable touchline)", async ({
+test("in manager mode at 844x390 the touchline sits in the page under a pitch no taller than 70svh, and a sub goes through; the half-time question leaves full screen (catches a landscape phone with no usable touchline, or a stop hidden behind full screen)", async ({
   page,
 }) => {
   test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
@@ -184,4 +184,11 @@ test("in manager mode at 844x390 the touchline sits in the page under a pitch no
   await page.screenshot({ path: `${SHOT}/844x390-touchline.png` });
   await page.getByTestId("sub-confirm").tap();
   await expect(page.getByTestId("subs-count")).toHaveText("Subs 1 of 5");
+
+  await page.getByTestId("speed-toggle").tap();
+  await page.getByTestId("fullscreen-toggle").tap();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement !== null)).toBe(true);
+  await page.screenshot({ path: `${SHOT}/844x390-fullscreen.png` });
+  await expect(page.getByTestId("stop-halftime")).toBeVisible({ timeout: 60_000 });
+  expect(await page.evaluate(() => document.fullscreenElement)).toBeNull();
 });
