@@ -36,7 +36,7 @@ export const PACE: Readonly<Record<MatchView, Pace>> = {
   },
 };
 
-export type StopKind = "kickoff" | "halftime" | "extraTime" | "injury";
+export type StopKind = "halftime" | "extraTime" | "injury";
 
 /** A minute where manager mode stops the clock and hands the touchline to the player. */
 export interface Stop {
@@ -46,13 +46,12 @@ export interface Stop {
 }
 
 /**
- * Kickoff, half-time, the break before extra time and each user injury the manager can answer, in
- * minute order.
+ * Half-time, the break before extra time and each user injury the manager can answer, in minute
+ * order. The starting tactic is picked before kickoff, so the clock never stops at 0'.
  */
 export function stopsFor(match: PlayedMatch, lineup: FullLineup): readonly Stop[] {
   if (match.windows === undefined) return [];
   const stops: Stop[] = [
-    { key: "kickoff", kind: "kickoff", minute: 0 },
     { key: "halftime", kind: "halftime", minute: 45 },
     ...injuries(match, lineup)
       .filter((call) => call.options.length > 0)

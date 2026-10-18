@@ -2,16 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { FORMATIONS, speciesById } from "@/engine";
-import type { CupResult, FullLineup, ManagerAction, MatchResult } from "@/engine/types";
+import type { CupResult, FullLineup, ManagerAction, MatchResult, Tactic } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { BossRoster } from "@/components/results/BossRoster";
 import { unlockAudio } from "@/components/wheel/sound";
 import { finalScore } from "@/components/results/format";
 import { ROUND_LABEL } from "@/ui/labels";
 import { matchdayView, type MatchView } from "@/ui/settings";
-import { decide, fieldedFor, type CupContext, type Decision } from "@/ui/manager/touchline";
+import {
+  decide,
+  fieldedFor,
+  touchlineAt,
+  type CupContext,
+  type Decision,
+} from "@/ui/manager/touchline";
 import { focusHeading } from "@/ui/focus";
 import { MatchPlayer } from "./MatchPlayer";
+import { TacticPills } from "./TacticPills";
 import s from "./MatchdayFlow.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
@@ -113,7 +120,17 @@ export function MatchdayFlow({
       </header>
 
       {phase === "pre" ? (
-        <PreMatch match={match} lineup={ctx.lineup} onGo={() => setPhase("play")} />
+        <PreMatch
+          key={index}
+          match={match}
+          lineup={ctx.lineup}
+          start={managerMode ? touchlineAt(match, index, ctx.lineup, actions, 0).tactic : undefined}
+          onKickOff={(tactic) => {
+            const why = tactic === null ? null : onDecide(0, { kind: "tactic", tactic });
+            if (why === null) setPhase("play");
+            return why;
+          }}
+        />
       ) : (
         <MatchPlayer
           key={index}
@@ -153,12 +170,18 @@ export function MatchdayFlow({
 function PreMatch({
   match,
   lineup,
-  onGo,
+  start,
+  onKickOff,
 }: {
   readonly match: PlayedMatch;
   readonly lineup: FullLineup;
-  readonly onGo: () => void;
+  /** The tactic the side starts in, present in manager mode only. */
+  readonly start: Tactic | undefined;
+  /** Kicks off with the tactic to record, or null to record nothing; returns why it was refused. */
+  readonly onKickOff: (tactic: Tactic | null) => string | null;
 }) {
+  const [tactic, setTactic] = useState(start);
+  const [error, setError] = useState<string | null>(null);
   const fielded = fieldedFor(lineup, match);
   const slots = FORMATIONS[lineup.formation].slots;
   // At most one absence per match is pinned in src/engine/__tests__/cup.test.ts.
@@ -187,6 +210,14 @@ function PreMatch({
           {absence.in !== null ? `. ${speciesById(absence.in).name} starts instead.` : "."}
         </p>
       ) : null}
+      {tactic !== undefined ? (
+        <TacticPills label="Starting tactic" value={tactic} onPick={setTactic} />
+      ) : null}
+      {error !== null ? (
+        <p className={s.error} role="alert">
+          {error}
+        </p>
+      ) : null}
       <ol className={s.xi} aria-label="Your starting eleven">
         {fielded.starters.map((id, slot) => (
           <li key={slot}>
@@ -204,10 +235,12 @@ function PreMatch({
         data-testid="prematch-go"
         onClick={() => {
           unlockAudio();
-          onGo();
+          // Any recorded decision hands the match to the player and switches the assistant off,
+          // so keeping the starting tactic records nothing.
+          setError(onKickOff(tactic !== undefined && tactic !== start ? tactic : null));
         }}
       >
-        Go to the match
+        Kick off
       </button>
     </div>
   );

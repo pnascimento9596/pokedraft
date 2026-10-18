@@ -2,17 +2,10 @@
 
 import { useId, useState } from "react";
 import { FORMATIONS, speciesById } from "@/engine";
-import {
-  TACTICS,
-  type BenchIndex,
-  type FormationId,
-  type StarterIndex,
-  type Tactic,
-} from "@/engine/types";
+import type { BenchIndex, FormationId, StarterIndex } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { MAX_SUBS, type Decision, type Touchline as TouchlineState } from "@/ui/manager/touchline";
-import { TACTIC_HINT } from "@/components/results/format";
-import { TACTIC_LABEL } from "@/ui/matchday/copy";
+import { TacticPills } from "./TacticPills";
 import s from "./Touchline.module.css";
 
 export const TAKEOVER_COPY =
@@ -64,24 +57,14 @@ export function Touchline({
         </p>
       ) : null}
 
-      <div className={s.tactics} role="group" aria-label="Tactic">
-        {TACTICS.map((t: Tactic) => (
-          <button
-            key={t}
-            type="button"
-            className={s.tactic}
-            aria-pressed={line.tactic === t}
-            disabled={closed}
-            data-testid={`tactic-${t}`}
-            onClick={() => {
-              if (line.tactic !== t) onDecide({ kind: "tactic", tactic: t });
-            }}
-          >
-            <span className={s.tacticName}>{TACTIC_LABEL[t]}</span>
-            <span className={s.tacticHint}>{TACTIC_HINT[t]}</span>
-          </button>
-        ))}
-      </div>
+      <TacticPills
+        label="Tactic"
+        value={line.tactic}
+        disabled={closed}
+        onPick={(t) => {
+          if (line.tactic !== t) onDecide({ kind: "tactic", tactic: t });
+        }}
+      />
 
       <div className={s.sub}>
         <div className={s.field}>

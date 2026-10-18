@@ -81,7 +81,6 @@ const ANNOUNCE_GAP = 1_500;
 const ANNOUNCE_MAX = 3;
 
 const STOP_COPY: Readonly<Record<Stop["kind"], { title: string; go: string } | null>> = {
-  kickoff: { title: "Pick a tactic, then kick off.", go: "Kick off" },
   halftime: {
     title: "Half time. Make your changes for the second half.",
     go: "Start the second half",
