@@ -250,6 +250,7 @@ export interface FrameView {
   readonly userSlots: StageInput["userSlots"];
   readonly oppSlots: StageInput["oppSlots"];
   readonly oppLabels?: readonly string[];
+  readonly windows?: StageInput["windows"];
 }
 
 /** The beat on the pitch and the staged pitch for one frame, as the broadcast draws it. */
@@ -269,6 +270,7 @@ export function stageFrame(
     oppLabels: view.oppLabels,
     shot: view.motion ? shotOnPitch(timeline, view.fired, view.now, view.speed, view.clock) : null,
     walks: view.motion ? walksAt(timeline, view.fired, view.now, view.speed, view.clock) : [],
+    windows: view.windows,
   });
   return { active, stage };
 }
