@@ -7,18 +7,23 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  type CSSProperties,
   type RefObject,
 } from "react";
 import { FORMATIONS } from "@/engine";
-import type { FormationId, FullLineup, MatchResult, Side, SpeciesId } from "@/engine/types";
+import type { FullLineup, MatchResult, Side, SpeciesId } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
+import { TypeIcon } from "@/components/TypeIcon";
+import { TYPE_PALETTE } from "@/design/stadium";
+import { typeLabel } from "@/ui/labels";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
+import { cutInAt, type CutIn } from "@/ui/matchday/cutin";
 import type { FrameFeed, LiveFrame } from "@/ui/matchday/feed";
-import { activeBeat } from "@/ui/matchday/player";
+import { beatKey, stageFrame, type Active } from "@/ui/matchday/player";
 import {
   GOAL_LANDS,
+  OPP_SHAPE,
   goalMouth,
-  stagePitch,
   type PitchStage,
   type Point,
   type StagedPlayer,
@@ -28,8 +33,16 @@ import s from "./Broadcast.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
-// Bosses without a recorded shape line up in a 4-3-3.
-const OPP_SHAPE: FormationId = "4-3-3";
+// Every type's palette colour, so each type's effects draw in its own family.
+const TYPE_VARS = Object.fromEntries(
+  Object.entries(TYPE_PALETTE).map(([type, color]) => [`--type-${type}`, color]),
+) as CSSProperties;
+
+const CUT_IN_LABEL: Readonly<Record<CutIn["kind"], string>> = {
+  goal: "Goal",
+  save: "Save",
+  duel: "Key duel",
+};
 
 // Stage points are percent of width and height; the trails draw in the pitch's own 100 by 64 box.
 const TRAIL_Y = 0.64;
@@ -39,6 +52,32 @@ function pct(p: Point) {
 }
 
 const fixed = (n: number) => n.toFixed(2);
+
+// The shares of a goal's staging at which its card, effect and flash come and go.
+const OPENS = [0.25, 0.35, GOAL_LANDS];
+const CLOSES = [0.75, 0.9];
+
+/**
+ * What the broadcast renders that time alone changes: the beat on the pitch and its windows, the
+ * cut-in, the trail, the play badge and the ball's carrier. A frame whose key differs from the last
+ * render asks for a render at once.
+ */
+function screenKey(active: Active | null, stage: PitchStage, cutIns: boolean): string {
+  const p = active?.beat.kind === "goal" ? active.progress : 0;
+  const windows = OPENS.filter((w) => p >= w).length + CLOSES.filter((w) => p > w).length;
+  const cut = cutIns ? cutInAt(active, stage.playCallout) : null;
+  const { trail, playCallout: play } = stage;
+  const carrier = stage.ball.carrier;
+  return [
+    active === null ? "" : beatKey(active.beat),
+    windows,
+    cut === null ? "" : `${cut.kind}:${cut.callout.text}`,
+    trail === null ? "" : `${trail.kind}:${trail.effect ?? ""}`,
+    play === null ? "" : `${play.side}${play.slot}:${play.callout.text}`,
+    stage.ball.effect ?? "",
+    carrier === null ? "" : `${carrier.side}${carrier.slot}`,
+  ].join("|");
+}
 
 // One unit of the pitch's width is 1cqi of the broadcast; its height is 64 of those units.
 function place(p: Point, anchor: string): string {
@@ -152,6 +191,7 @@ export function Broadcast({
   motion,
   speed,
   feed,
+  cutIns = false,
   onBall,
 }: {
   readonly match: PlayedMatch;
@@ -165,6 +205,8 @@ export function Broadcast({
   readonly motion: boolean;
   /** The player's speed: 2x stages every beat in half the time, matching its hold. */
   readonly speed: number;
+  /** Lower-third cards for shots on target and key duels: live broadcasts only, never Quick. */
+  readonly cutIns?: boolean;
   /** The live frame source; without it the pitch stands where the props put it. */
   readonly feed?: FrameFeed;
   /** Hears where the staged ball is along the pitch, 0 to 100, after each render (about 10 Hz). */
@@ -177,18 +219,19 @@ export function Broadcast({
     [match.opponent.roster],
   );
 
-  const stageAt = (f: LiveFrame): PitchStage =>
-    stagePitch(timeline, {
+  const frameAt = (f: LiveFrame) =>
+    stageFrame(timeline, {
       clock: f.clock,
-      active: activeBeat(timeline, f.fired, f.now, motion, f.clock, f.speed),
+      fired: f.fired,
+      now: f.now,
       kicks: f.kicks,
       motion,
+      speed: f.speed,
       userSlots,
       oppSlots,
       oppLabels,
     });
-  const active = activeBeat(timeline, fired, now, motion, clock, speed);
-  const stage = stageAt({ clock, now, fired, kicks, speed });
+  const { active, stage } = frameAt({ clock, now, fired, kicks, speed });
 
   const players = useRef(new Map<HTMLElement, { side: Side; slot: number }>());
   const ballRef = useRef<HTMLDivElement>(null);
@@ -204,7 +247,8 @@ export function Broadcast({
   }, []);
 
   // After every commit, and then on every frame the feed publishes while motion is on, the pitch
-  // moves to the newest frame. React renders which things are on the pitch; this places them.
+  // moves to the newest frame. React renders which things are on the pitch; this places them, and
+  // asks for a render when the newest frame shows something this render does not.
   useLayoutEffect(() => {
     const nodes: PitchNodes = {
       players: players.current,
@@ -214,7 +258,12 @@ export function Broadcast({
       playBadge: playBadgeRef,
     };
     const props: LiveFrame = { clock, now, fired, kicks, speed };
-    const draw = () => paint(nodes, stageAt(feed?.latest() ?? props));
+    const rendered = screenKey(active, stage, cutIns);
+    const draw = () => {
+      const latest = frameAt(feed?.latest() ?? props);
+      paint(nodes, latest.stage);
+      return screenKey(latest.active, latest.stage, cutIns) !== rendered;
+    };
     draw();
     if (feed === undefined || !motion) return;
     return feed.subscribe(draw);
@@ -224,6 +273,7 @@ export function Broadcast({
     onBall?.(ballX);
   }, [onBall, ballX]);
   const goal = active?.beat.kind === "goal" ? active.beat : null;
+  const cutIn = cutIns ? cutInAt(active, stage.playCallout) : null;
   const progress = active?.progress ?? 0;
   const shown = (from: number, to = 1) => !motion || (progress >= from && progress <= to);
   const kickList = timeline.kicks.slice(0, kicks);
@@ -277,6 +327,7 @@ export function Broadcast({
       data-testid="broadcast"
       data-motion={motion ? "on" : "off"}
       data-goals-only={timeline.goalsOnly || undefined}
+      style={TYPE_VARS}
     >
       <div className={s.pitch} aria-hidden="true">
         {PITCH_LINES}
@@ -379,12 +430,52 @@ export function Broadcast({
       </div>
 
       <div className={s.overlay}>
-        {goal !== null && shown(0.25, 1) ? (
+        {cutIn !== null ? (
+          <div
+            className={s.cutIn}
+            data-testid="cut-in"
+            data-kind={cutIn.kind}
+            data-side={cutIn.side}
+            data-effect={cutIn.callout.effect}
+          >
+            <span className={s.cutInSprite}>
+              {cutIn.species !== null ? (
+                <PlayerImage dexId={cutIn.species} size={80} alt="" eager />
+              ) : null}
+            </span>
+            <span className={s.cutInText}>
+              <span className={s.cutInKind}>{CUT_IN_LABEL[cutIn.kind]}</span>
+              <span
+                className={s.cutInMove}
+                data-testid={
+                  cutIn.kind === "goal"
+                    ? "move-callout"
+                    : cutIn.kind === "save"
+                      ? "save-callout"
+                      : "duel-callout"
+                }
+              >
+                {cutIn.callout.text}
+              </span>
+            </span>
+            {cutIn.callout.type !== null ? (
+              <span
+                className={s.cutInType}
+                data-testid="cut-in-type"
+                data-type={cutIn.callout.type}
+              >
+                <TypeIcon type={cutIn.callout.type} size={16} decorative />
+                <span className={s.cutInTypeName}>{typeLabel(cutIn.callout.type)}</span>
+              </span>
+            ) : null}
+          </div>
+        ) : null}
+        {!cutIns && goal !== null && shown(0.25, 1) ? (
           <p className={s.callout} data-effect={goal.callout.effect} data-testid="move-callout">
             {goal.callout.text}
           </p>
         ) : null}
-        {active?.beat.kind === "save" ? (
+        {!cutIns && active?.beat.kind === "save" ? (
           <p
             className={s.callout}
             data-effect={active.beat.callout.effect}

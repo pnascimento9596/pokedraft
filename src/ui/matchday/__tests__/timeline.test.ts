@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { movesetFor } from "@/data/movesets";
-import type { FullLineup, Incident, MatchResult, Opponent, SpeciesId } from "@/engine/types";
+import { applyAction, createDraft, runCup } from "@/engine";
+import { slotRefs, toFullLineup } from "@/engine/draft";
+import type {
+  DraftSettings,
+  FullLineup,
+  Incident,
+  MatchResult,
+  Opponent,
+  Seed,
+  SpeciesId,
+} from "@/engine/types";
 import {
   ambientBall,
   buildTimeline,
@@ -8,6 +18,7 @@ import {
   frameAt,
   goalBall,
   saveBall,
+  SHOW,
   slotPoint,
   stagePitch,
   xiAt,
@@ -110,11 +121,15 @@ describe("buildTimeline (catches choreography that changes between two viewings 
     const generic = shape(null);
     const canon = shape(movesetFor);
     expect(canon).toEqual(generic);
+    // Phase 10 is the kickoff after the user's 12' goal: the opponent's holding midfielder.
     expect([canon[3], canon[10], canon[30]]).toEqual([
       { side: "opp", fromSlot: 9, toSlot: 10, kind: "cross" },
-      { side: "user", fromSlot: 9, toSlot: 10, kind: "pass" },
-      { side: "user", fromSlot: 9, toSlot: 10, kind: "through" },
+      { side: "opp", fromSlot: 5, toSlot: 5, kind: "dribble" },
+      { side: "opp", fromSlot: 10, toSlot: 6, kind: "duel" },
     ]);
+    const moments = (movesOf: typeof movesetFor | null) =>
+      buildTimeline(match(), { ...input, movesOf }).plays.map((p) => p.moment);
+    expect(moments(movesetFor)).toEqual(moments(null));
   });
 
   it("draws different ambient drift for another match index", () => {
@@ -275,13 +290,15 @@ describe("pitch geometry (catches sprites that leave the pitch or move with redu
     expect(goalBall(from, scorer, mouth, 0.9)).toEqual(mouth);
   });
 
-  it("runs a save from the shooter to the keeper and parries the ball clear", () => {
+  it("runs a save from the live ball to the shooter to the keeper and parries the ball clear", () => {
+    const live = { x: 60, y: 30 };
     const attacker = { x: 76, y: 38 };
     const mouth = { x: 98, y: 50 };
     const deflect = { x: 84, y: 24 };
-    expect(saveBall(attacker, mouth, deflect, 0)).toEqual(attacker);
-    expect(saveBall(attacker, mouth, deflect, 0.45)).toEqual(mouth);
-    expect(saveBall(attacker, mouth, deflect, 1)).toEqual(deflect);
+    expect(saveBall(live, attacker, mouth, deflect, 0)).toEqual(live);
+    expect(saveBall(live, attacker, mouth, deflect, 0.3)).toEqual(attacker);
+    expect(saveBall(live, attacker, mouth, deflect, 0.55)).toEqual(mouth);
+    expect(saveBall(live, attacker, mouth, deflect, 1)).toEqual(deflect);
   });
 
   it("chains open-play phases with connected passes and canon move callouts", () => {
@@ -328,7 +345,8 @@ describe("pitch geometry (catches sprites that leave the pitch or move with redu
     const saveBeat = t.beats.find((b) => b.kind === "save")!;
     const onSave = stagePitch(t, {
       clock: 12,
-      active: { beat: saveBeat, progress: 0.2 },
+      active: null,
+      shot: { beat: saveBeat, age: 0.2 * SHOW.save },
       kicks: 0,
       motion: true,
       userSlots: LINEUP.formation,
@@ -361,6 +379,63 @@ describe("pitch geometry (catches sprites that leave the pitch or move with redu
     });
     // The taker stands on the drawn penalty spot (Broadcast's cx 89), not 3 units short of it.
     expect(pens.players.user[9]?.point).toEqual({ x: 89, y: 50 });
+  });
+});
+
+// A real cup's first match: seed "a1", 4-2-3-1, every pick the first offer.
+function pinnedCupMatch(): { match: PlayedMatch; lineup: FullLineup } {
+  const settings: DraftSettings = {
+    mode: "cup8",
+    formation: "4-2-3-1",
+    gens: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    style: "classic3",
+    order: "squadFirst",
+  };
+  let state = createDraft(settings, "a1" as Seed);
+  for (const slot of slotRefs()) {
+    const roll = state.phase.kind === "choosing" ? state.phase.roll : null;
+    if (roll === null) throw new Error("expected a roll");
+    const species = roll.kind === "species" ? roll.species : roll.offers![0]!;
+    state = applyAction(state, { type: "pick", species, slot });
+  }
+  const lineup = toFullLineup(state);
+  const first = runCup(lineup, "a1" as Seed, "cup8").matches[0];
+  if (first?.status !== "played") throw new Error("expected a played match");
+  return { match: first, lineup };
+}
+
+describe("callout budget (catches open play that calls a move on most phases instead of the big moments)", () => {
+  it("a pinned seed yields between 10 and 18 open-play callouts (60 before the budget)", () => {
+    const { match: m, lineup } = pinnedCupMatch();
+    const t = buildTimeline(m, { matchIndex: 0, seed: "a1", lineup, movesOf: movesetFor });
+    const calls = t.plays.filter((p) => p.callout !== null).length;
+    expect(t.plays.length).toBe(72);
+    expect(calls).toBeGreaterThanOrEqual(10);
+    expect(calls).toBeLessThanOrEqual(18);
+    expect(calls).toBe(12);
+  });
+
+  it("calls a move only on final-third through balls, crosses, key duels and build-up", () => {
+    const t = buildTimeline(match(), input);
+    const called = t.plays.filter((p) => p.callout !== null);
+    expect(called.length).toBeGreaterThanOrEqual(10);
+    expect(called.length).toBeLessThanOrEqual(18);
+    for (const p of t.plays) expect(p.moment === null).toBe(p.callout === null);
+    const allowed: Record<string, readonly string[]> = {
+      through: ["through"],
+      cross: ["cross"],
+      duel: ["key-duel"],
+      pass: ["build-up"],
+      dribble: ["build-up"],
+    };
+    for (const p of called) expect(allowed[p.kind]).toContain(p.moment);
+    const chance = (from: number, to: number) =>
+      t.beats.some(
+        (b) => (b.kind === "goal" || b.kind === "save") && b.minute > from && b.minute <= to,
+      );
+    for (const p of called.filter((q) => q.moment === "key-duel")) {
+      expect(chance(p.from, p.to)).toBe(true);
+    }
   });
 });
 

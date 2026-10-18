@@ -704,7 +704,7 @@
 }
 
 .callout {
-  border-left: 4px solid var(--fx-impact-core);
+  border-left: 4px solid var(--fx, var(--fx-impact-core));
 }
 .callout[data-effect="fire"] {
   border-left-color: var(--fx-fire);
@@ -726,6 +726,192 @@
 }
 .callout[data-effect="shield"] {
   border-left-color: var(--fx-shield);
+}
+
+/* The twelve types without a hand-tuned effect draw in their palette colour (TYPE_VARS). */
+.broadcast [data-effect="normal"] {
+  --fx: var(--type-normal);
+  --fx-core: color-mix(in srgb, var(--type-normal) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-normal);
+}
+.broadcast [data-effect="fighting"] {
+  --fx: var(--type-fighting);
+  --fx-core: color-mix(in srgb, var(--type-fighting) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-fighting);
+}
+.broadcast [data-effect="poison"] {
+  --fx: var(--type-poison);
+  --fx-core: color-mix(in srgb, var(--type-poison) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-poison);
+}
+.broadcast [data-effect="ground"] {
+  --fx: var(--type-ground);
+  --fx-core: color-mix(in srgb, var(--type-ground) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-ground);
+}
+.broadcast [data-effect="flying"] {
+  --fx: var(--type-flying);
+  --fx-core: color-mix(in srgb, var(--type-flying) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-flying);
+}
+.broadcast [data-effect="bug"] {
+  --fx: var(--type-bug);
+  --fx-core: color-mix(in srgb, var(--type-bug) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-bug);
+}
+.broadcast [data-effect="rock"] {
+  --fx: var(--type-rock);
+  --fx-core: color-mix(in srgb, var(--type-rock) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-rock);
+}
+.broadcast [data-effect="ghost"] {
+  --fx: var(--type-ghost);
+  --fx-core: color-mix(in srgb, var(--type-ghost) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-ghost);
+}
+.broadcast [data-effect="dragon"] {
+  --fx: var(--type-dragon);
+  --fx-core: color-mix(in srgb, var(--type-dragon) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-dragon);
+}
+.broadcast [data-effect="dark"] {
+  --fx: var(--type-dark);
+  --fx-core: color-mix(in srgb, var(--type-dark) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-dark);
+}
+.broadcast [data-effect="steel"] {
+  --fx: var(--type-steel);
+  --fx-core: color-mix(in srgb, var(--type-steel) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-steel);
+}
+.broadcast [data-effect="fairy"] {
+  --fx: var(--type-fairy);
+  --fx-core: color-mix(in srgb, var(--type-fairy) 35%, var(--fx-core-tint));
+  --ball-glow: var(--type-fairy);
+}
+
+.cutIn {
+  --fx: var(--fx-impact-core);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  justify-self: stretch;
+  max-width: 100%;
+  padding: 4px 10px 4px 4px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--fx);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--fx) 30%, var(--bc-shade-strong)),
+    var(--bc-shade-strong) 55%
+  );
+  color: var(--bc-ink);
+  animation: cutInSlide 0.32s ease-out both;
+}
+.cutIn[data-effect="fire"] {
+  --fx: var(--fx-fire);
+}
+.cutIn[data-effect="water"] {
+  --fx: var(--fx-water);
+}
+.cutIn[data-effect="electric"] {
+  --fx: var(--fx-electric);
+}
+.cutIn[data-effect="grass"] {
+  --fx: var(--fx-grass);
+}
+.cutIn[data-effect="ice"] {
+  --fx: var(--fx-ice);
+}
+.cutIn[data-effect="psychic"] {
+  --fx: var(--fx-psychic);
+}
+.cutIn[data-effect="shield"] {
+  --fx: var(--fx-shield);
+}
+.cutIn[data-effect="dive"] {
+  --fx: var(--fx-dive);
+}
+
+.cutInSprite {
+  display: grid;
+  place-items: center;
+  width: clamp(36px, 9cqi, 56px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--fx) 45%, transparent),
+    transparent 70%
+  );
+  box-shadow: inset 0 0 0 2px var(--fx);
+}
+
+.cutInSprite > * {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cutInText {
+  display: grid;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.cutInKind {
+  color: var(--fx);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cutInMove {
+  font-size: clamp(13px, 3.4cqi, 18px);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.cutInType {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 3px;
+  border-radius: 999px;
+  background: var(--bc-shade);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* On the narrowest phones the type keeps its icon and gives its name's width to the move. */
+@container (max-width: 300px) {
+  .cutInType {
+    padding: 2px;
+  }
+
+  .cutInTypeName {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@keyframes cutInSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .banner {
@@ -828,7 +1014,8 @@
 .broadcast[data-motion="off"] .playEffect,
 .broadcast[data-motion="off"] .playBadge,
 .broadcast[data-motion="off"] .effect,
-.broadcast[data-motion="off"] .flash {
+.broadcast[data-motion="off"] .flash,
+.broadcast[data-motion="off"] .cutIn {
   transition: none;
   animation: none;
 }
@@ -840,7 +1027,8 @@
   .playEffect,
   .playBadge,
   .effect,
-  .flash {
+  .flash,
+  .cutIn {
     transition: none;
     animation: none;
   }

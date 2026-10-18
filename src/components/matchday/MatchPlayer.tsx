@@ -139,8 +139,9 @@ export function MatchPlayer({
     setState(next);
   };
 
-  // What the match screen shows that time alone changes: the goals that have landed, the play the
-  // phase sounds follow, and the beat on the pitch. A change renders at once, not on the next gap.
+  // What the match screen shows that time alone changes: the minute on the clock, the goals that
+  // have landed, the play the phase sounds follow, and the beat on the pitch. A change renders at
+  // once, not on the next gap.
   const glanceRef = useRef<(st: PlayState, t: number) => string>(() => "");
   useEffect(() => {
     glanceRef.current = (st, t) => {
@@ -151,7 +152,7 @@ export function MatchPlayer({
       }
       const on = activeBeat(timeline, st.fired, t, motion, st.minute, st.speed);
       const phase = view === "live" ? Math.floor(st.minute / PHASE_LEN) : 0;
-      return `${goals}|${phase}|${on === null ? "" : beatKey(on.beat)}`;
+      return `${Math.floor(st.minute)}|${goals}|${phase}|${on === null ? "" : beatKey(on.beat)}`;
     };
   }, [timeline, motion, view]);
 
@@ -169,9 +170,9 @@ export function MatchPlayer({
       const prev = live.current;
       const next = play(prev, { type: "tick", now: t, dt, env: envRef.current });
       live.current = next;
-      feed.publish(frameOf(next, t));
+      const asked = feed.publish(frameOf(next, t));
       const seen = glanceRef.current(next, t);
-      if (changed(prev, next) || seen !== glance || t - shownAt >= COMMIT_GAP) {
+      if (asked || changed(prev, next) || seen !== glance || t - shownAt >= COMMIT_GAP) {
         glance = seen;
         shownAt = t;
         setState(next);
@@ -190,9 +191,9 @@ export function MatchPlayer({
     let shownAt = -Infinity;
     let glance = "";
     const frame = (t: number) => {
-      feed.publish(frameOf(live.current, t));
+      const asked = feed.publish(frameOf(live.current, t));
       const seen = glanceRef.current(live.current, t);
-      if (seen !== glance || t - shownAt >= COMMIT_GAP) {
+      if (asked || seen !== glance || t - shownAt >= COMMIT_GAP) {
         glance = seen;
         shownAt = t;
         setNow(t);
@@ -404,6 +405,7 @@ export function MatchPlayer({
         motion={motion}
         speed={state.speed}
         feed={feed}
+        cutIns={view === "live"}
         onBall={crowd ? onBall : undefined}
       />
 

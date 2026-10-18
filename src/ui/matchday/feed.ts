@@ -10,18 +10,22 @@ export interface LiveFrame {
 /** What the broadcast reads: the newest frame, and a call after each one is published. */
 export interface FrameFeed {
   latest(): LiveFrame | null;
-  /** Calls `paint` after every published frame until the returned function runs. */
-  subscribe(paint: () => void): () => void;
+  /**
+   * Calls `paint` after every published frame until the returned function runs. `paint` returns
+   * true when the frame shows something the last render does not.
+   */
+  subscribe(paint: () => boolean): () => void;
 }
 
 /** What the match player's frame loop writes to. */
 export interface FrameSource extends FrameFeed {
-  publish(frame: LiveFrame): void;
+  /** Paints the frame; true when a painter asks for a render. */
+  publish(frame: LiveFrame): boolean;
 }
 
 export function frameSource(): FrameSource {
   let frame: LiveFrame | null = null;
-  const painters = new Set<() => void>();
+  const painters = new Set<() => boolean>();
   return {
     latest: () => frame,
     subscribe(paint) {
@@ -32,7 +36,9 @@ export function frameSource(): FrameSource {
     },
     publish(next) {
       frame = next;
-      for (const paint of painters) paint();
+      let asked = false;
+      for (const paint of painters) asked = paint() || asked;
+      return asked;
     },
   };
 }
