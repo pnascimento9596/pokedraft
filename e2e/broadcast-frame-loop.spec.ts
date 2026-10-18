@@ -23,7 +23,8 @@ for (const width of [390, 360, 320]) {
 
     const sample = () =>
       broadcast.evaluate((root) => {
-        const pitch = root.firstElementChild!.getBoundingClientRect();
+        // The pitch layer itself: under the follow camera it is larger than the broadcast's view.
+        const pitch = root.querySelector('[data-testid="pitch"]')!.getBoundingClientRect();
         const ball = root.querySelector<HTMLElement>('[data-testid="broadcast-ball"]')!;
         return {
           pitch: { left: pitch.left, right: pitch.right, top: pitch.top, bottom: pitch.bottom },

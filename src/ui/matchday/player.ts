@@ -253,12 +253,22 @@ export interface FrameView {
   readonly windows?: StageInput["windows"];
 }
 
-/** The beat on the pitch and the staged pitch for one frame, as the broadcast draws it. */
+/**
+ * The beat on the pitch, the goal or save the ball is acting out or settling back from, and the
+ * staged pitch for one frame, as the broadcast draws it.
+ */
 export function stageFrame(
   timeline: Timeline,
   view: FrameView,
-): { readonly active: Active | null; readonly stage: PitchStage } {
+): {
+  readonly active: Active | null;
+  readonly shot: Shot | null;
+  readonly stage: PitchStage;
+} {
   const active = activeBeat(timeline, view.fired, view.now, view.motion, view.clock, view.speed);
+  const shot = view.motion
+    ? shotOnPitch(timeline, view.fired, view.now, view.speed, view.clock)
+    : null;
   const stage = stagePitch(timeline, {
     clock: view.clock,
     active,
@@ -268,11 +278,11 @@ export function stageFrame(
     userSlots: view.userSlots,
     oppSlots: view.oppSlots,
     oppLabels: view.oppLabels,
-    shot: view.motion ? shotOnPitch(timeline, view.fired, view.now, view.speed, view.clock) : null,
+    shot,
     walks: view.motion ? walksAt(timeline, view.fired, view.now, view.speed, view.clock) : [],
     windows: view.windows,
   });
-  return { active, stage };
+  return { active, shot, stage };
 }
 
 export type Stage = "play" | "pens" | "done";

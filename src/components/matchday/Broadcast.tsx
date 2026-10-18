@@ -4,6 +4,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -17,6 +18,16 @@ import { TypeIcon } from "@/components/TypeIcon";
 import { TYPE_PALETTE } from "@/design/stadium";
 import { typeLabel } from "@/ui/labels";
 import { badgeCorner, type Size } from "@/ui/matchday/badge";
+import {
+  cameraAt,
+  cameraTransform,
+  framesWhole,
+  projectPoint,
+  seeks,
+  stepCamera,
+  type Camera,
+  type CameraMode,
+} from "@/ui/matchday/camera";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
 import { cutInAt, type CutIn } from "@/ui/matchday/cutin";
 import { isSpent, isTired } from "@/ui/matchday/fatigue";
@@ -132,6 +143,7 @@ interface Tracked {
 }
 
 interface PitchNodes {
+  readonly pitch: RefObject<HTMLDivElement | null>;
   readonly players: Map<HTMLElement, Tracked>;
   readonly ball: RefObject<HTMLDivElement | null>;
   readonly trail: RefObject<SVGSVGElement | null>;
@@ -141,8 +153,17 @@ interface PitchNodes {
 
 const UNMEASURED: Size = { w: 0, h: 0 };
 
-/** Moves every staged thing on the pitch to where `stage` puts it. */
-function paint(nodes: PitchNodes, stage: PitchStage, badge: Size, pitch: Size): void {
+/**
+ * Moves every staged thing on the pitch to where `stage` puts it. The play badge sits outside the
+ * zoomed pitch at its own size, so its player's spot goes through the follow camera `cam` first.
+ */
+function paint(
+  nodes: PitchNodes,
+  stage: PitchStage,
+  badge: Size,
+  pitch: Size,
+  cam: Camera | null,
+): void {
   for (const [el, { side, slot, leaving }] of nodes.players) {
     const p = leaving
       ? stage.leaving?.find((w) => w.side === side && w.slot === slot)
@@ -158,15 +179,14 @@ function paint(nodes: PitchNodes, stage: PitchStage, badge: Size, pitch: Size): 
   const trail = nodes.trail.current;
   if (trail !== null && stage.trail !== null) {
     const d = trailPath(stage.trail);
-    const [glow, line, origin] = trail.children;
-    put(glow ?? null, "d", d);
-    put(line ?? null, "d", d);
+    const [defs, , , origin] = trail.children;
+    put(defs?.firstElementChild ?? null, "d", d);
     put(origin ?? null, "cx", fixed(stage.trail.from.x));
     put(origin ?? null, "cy", fixed(stage.trail.from.y * TRAIL_Y));
   }
   if (stage.playCallout !== null) {
     const { point } = stage.playCallout;
-    const corner = badgeCorner(point, badge, pitch);
+    const corner = badgeCorner(cam === null ? point : projectPoint(cam, point), badge, pitch);
     put(nodes.playEffect.current, "style", `left: ${fixed(point.x)}%; top: ${fixed(point.y)}%`);
     put(nodes.playBadge.current, "style", `left: ${fixed(corner.x)}%; top: ${fixed(corner.y)}%`);
   }
@@ -206,6 +226,14 @@ const PITCH_LINES = (
   </svg>
 );
 
+/** Where the follow camera was on the last frame it painted, and for which match. */
+interface CameraTrack {
+  readonly timeline: Timeline;
+  readonly clock: number;
+  readonly now: number;
+  readonly cam: Camera;
+}
+
 const Sprite = memo(function Sprite({ dexId }: { readonly dexId: SpeciesId }) {
   return <PlayerImage dexId={dexId} size={80} alt="" eager />;
 });
@@ -223,6 +251,7 @@ export function Broadcast({
   speed,
   feed,
   cutIns = false,
+  camera = "full",
   onBall,
 }: {
   readonly match: PlayedMatch;
@@ -242,6 +271,8 @@ export function Broadcast({
   readonly cutIns?: boolean;
   /** The live frame source; without it the pitch stands where the props put it. */
   readonly feed?: FrameFeed;
+  /** Follow zooms in on the ball; Full shows the whole pitch. */
+  readonly camera?: CameraMode;
   /** Hears where the staged ball is along the pitch, 0 to 100, after each render (about 10 Hz). */
   readonly onBall?: (x: number) => void;
 }) {
@@ -273,6 +304,8 @@ export function Broadcast({
   const { active, stage } = frameAt({ clock, now, fired, kicks, kickProgress, speed });
 
   const pitchRef = useRef<HTMLDivElement>(null);
+  const trailId = `trail${useId().replace(/\W/g, "")}`;
+  const cameraRef = useRef<CameraTrack | null>(null);
   const players = useRef(new Map<HTMLElement, Tracked>());
   const ballRef = useRef<HTMLDivElement>(null);
   const trailRef = useRef<SVGSVGElement>(null);
@@ -295,6 +328,7 @@ export function Broadcast({
   // asks for a render when the newest frame shows something this render does not.
   useLayoutEffect(() => {
     const nodes: PitchNodes = {
+      pitch: pitchRef,
       players: players.current,
       ball: ballRef,
       trail: trailRef,
@@ -315,10 +349,29 @@ export function Broadcast({
       badgeEl === null || pitchEl === null
         ? UNMEASURED
         : { w: pitchEl.clientWidth, h: pitchEl.clientHeight };
+    // The camera springs after the ball frame by frame; with motion off it cuts. A new match, a
+    // seek or a switch from Full starts it settled on the ball.
+    const aim = (f: LiveFrame, latest: ReturnType<typeof frameAt>): Camera | null => {
+      if (camera === "full") {
+        cameraRef.current = null;
+        put(pitchRef.current, "style", "");
+        return null;
+      }
+      const target = latest.stage.ball;
+      const wide = framesWhole(timeline, f.clock, latest.active, latest.shot);
+      const last = cameraRef.current;
+      const cam =
+        !motion || last === null || last.timeline !== timeline || seeks(last.clock, f.clock)
+          ? cameraAt(target, wide)
+          : stepCamera(last.cam, target, wide, f.now - last.now);
+      cameraRef.current = { timeline, clock: f.clock, now: f.now, cam };
+      put(pitchRef.current, "style", `transform: ${cameraTransform(cam)}`);
+      return cam;
+    };
     const draw = () => {
       const f = feed?.latest() ?? props;
       const latest = frameAt(f);
-      paint(nodes, latest.stage, badge, pitch);
+      paint(nodes, latest.stage, badge, pitch, aim(f, latest));
       return screenKey(latest.active, latest.stage, cutIns, f.kicks, shotsOf(f)) !== rendered;
     };
     draw();
@@ -413,105 +466,112 @@ export function Broadcast({
       data-testid="broadcast"
       data-motion={motion ? "on" : "off"}
       data-goals-only={timeline.goalsOnly || undefined}
+      data-camera={camera}
       style={kitStyle}
     >
-      <div ref={pitchRef} className={s.pitch} aria-hidden="true">
-        {PITCH_LINES}
+      <div className={s.view} data-testid="pitch-view">
+        <div ref={pitchRef} className={s.pitch} aria-hidden="true" data-testid="pitch">
+          {PITCH_LINES}
 
-        {trail !== null ? (
-          <svg
-            ref={trailRef}
-            className={s.trails}
-            viewBox="0 0 100 64"
-            data-testid="pitch-trails"
-            data-kind={trail.kind}
-            data-effect={trail.effect ?? undefined}
-          >
-            <path className={s.trailGlow} />
-            <path className={s.trailLine} />
-            <circle r={1.1} className={s.trailOrigin} />
-          </svg>
-        ) : null}
+          {trail !== null ? (
+            <svg
+              ref={trailRef}
+              className={s.trails}
+              viewBox="0 0 100 64"
+              data-testid="pitch-trails"
+              data-kind={trail.kind}
+              data-effect={trail.effect ?? undefined}
+            >
+              {/* One shape drawn twice, so a moving trail writes its path once a frame. */}
+              <defs>
+                <path id={trailId} className={s.trailShape} />
+              </defs>
+              <use href={`#${trailId}`} className={s.trailGlow} />
+              <use href={`#${trailId}`} className={s.trailLine} />
+              <circle r={1.1} className={s.trailOrigin} />
+            </svg>
+          ) : null}
 
-        {stage.players.user.map((p) => renderPlayer(p, "u"))}
-        {stage.players.opp.map((p) => renderPlayer(p, "o"))}
-        {stage.leaving?.map((p) => renderPlayer(p, `off-${p.side}-`, true))}
+          {stage.players.user.map((p) => renderPlayer(p, "u"))}
+          {stage.players.opp.map((p) => renderPlayer(p, "o"))}
+          {stage.leaving?.map((p) => renderPlayer(p, `off-${p.side}-`, true))}
 
-        {stage.playCallout !== null ? (
-          <>
+          {stage.playCallout !== null ? (
             <div
               ref={playEffectRef}
               className={s.playEffect}
               data-effect={stage.playCallout.callout.effect}
             />
+          ) : null}
+
+          <div
+            ref={ballRef}
+            className={s.ball}
+            data-effect={stage.ball.effect ?? undefined}
+            data-testid="broadcast-ball"
+          >
+            <span className={s.ballShadow} />
+            <svg viewBox="0 0 32 32" className={s.ballSvg} data-testid="soccer-ball-svg">
+              <circle cx="16" cy="16" r="14.5" className={s.ballSphere} />
+              <circle cx="11.5" cy="11" r="9.5" className={s.ballHighlight} />
+              <path
+                className={s.ballSeam}
+                d="M16 9.2 L16 2.2 M22.4 13.8 L29.2 11.4 M20 21.4 L24.6 27.2 M12 21.4 L7.4 27.2 M9.6 13.8 L2.8 11.4"
+              />
+              <polygon className={s.ballPanel} points="16,9.2 22.4,13.8 20,21.4 12,21.4 9.6,13.8" />
+              <path
+                className={s.ballPanel}
+                d="M11.8 2.4 L16 5.4 L20.2 2.4 A14.2 14.2 0 0 0 11.8 2.4 Z"
+              />
+              <path
+                className={s.ballPanel}
+                d="M27.6 7.8 L25.8 12.6 L29.8 15.8 A14.2 14.2 0 0 0 27.6 7.8 Z"
+              />
+              <path
+                className={s.ballPanel}
+                d="M27.2 24.6 L22.2 24.2 L20.2 29.2 A14.2 14.2 0 0 0 27.2 24.6 Z"
+              />
+              <path
+                className={s.ballPanel}
+                d="M11.8 29.2 L9.8 24.2 L4.8 24.6 A14.2 14.2 0 0 0 11.8 29.2 Z"
+              />
+              <path
+                className={s.ballPanel}
+                d="M2.2 15.8 L6.2 12.6 L4.4 7.8 A14.2 14.2 0 0 0 2.2 15.8 Z"
+              />
+              <circle cx="16" cy="16" r="14.5" className={s.ballRim} />
+            </svg>
+          </div>
+
+          {goal !== null && shown(0.35, 0.75) ? (
             <div
-              ref={playBadgeRef}
-              className={s.playBadge}
-              data-side={stage.playCallout.side}
-              data-effect={stage.playCallout.callout.effect}
-              data-testid="pitch-ability"
-            >
-              {stage.playCallout.callout.text}
+              className={s.effect}
+              data-effect={goal.callout.effect}
+              style={pct(goalMouth(goal.side))}
+            />
+          ) : null}
+          {active?.beat.kind === "save" ? (
+            <div
+              className={s.effect}
+              data-effect={active.beat.callout.effect}
+              style={pct(goalMouth(active.beat.side === "user" ? "opp" : "user"))}
+            />
+          ) : null}
+          {goal !== null && shown(GOAL_LANDS, 0.9) ? (
+            <div className={s.flash} data-side={goal.side} data-testid="goal-flash">
+              GOAL
             </div>
-          </>
-        ) : null}
-
-        <div
-          ref={ballRef}
-          className={s.ball}
-          data-effect={stage.ball.effect ?? undefined}
-          data-testid="broadcast-ball"
-        >
-          <span className={s.ballShadow} />
-          <svg viewBox="0 0 32 32" className={s.ballSvg} data-testid="soccer-ball-svg">
-            <circle cx="16" cy="16" r="14.5" className={s.ballSphere} />
-            <circle cx="11.5" cy="11" r="9.5" className={s.ballHighlight} />
-            <path
-              className={s.ballSeam}
-              d="M16 9.2 L16 2.2 M22.4 13.8 L29.2 11.4 M20 21.4 L24.6 27.2 M12 21.4 L7.4 27.2 M9.6 13.8 L2.8 11.4"
-            />
-            <polygon className={s.ballPanel} points="16,9.2 22.4,13.8 20,21.4 12,21.4 9.6,13.8" />
-            <path
-              className={s.ballPanel}
-              d="M11.8 2.4 L16 5.4 L20.2 2.4 A14.2 14.2 0 0 0 11.8 2.4 Z"
-            />
-            <path
-              className={s.ballPanel}
-              d="M27.6 7.8 L25.8 12.6 L29.8 15.8 A14.2 14.2 0 0 0 27.6 7.8 Z"
-            />
-            <path
-              className={s.ballPanel}
-              d="M27.2 24.6 L22.2 24.2 L20.2 29.2 A14.2 14.2 0 0 0 27.2 24.6 Z"
-            />
-            <path
-              className={s.ballPanel}
-              d="M11.8 29.2 L9.8 24.2 L4.8 24.6 A14.2 14.2 0 0 0 11.8 29.2 Z"
-            />
-            <path
-              className={s.ballPanel}
-              d="M2.2 15.8 L6.2 12.6 L4.4 7.8 A14.2 14.2 0 0 0 2.2 15.8 Z"
-            />
-            <circle cx="16" cy="16" r="14.5" className={s.ballRim} />
-          </svg>
+          ) : null}
         </div>
-
-        {goal !== null && shown(0.35, 0.75) ? (
+        {stage.playCallout !== null ? (
           <div
-            className={s.effect}
-            data-effect={goal.callout.effect}
-            style={pct(goalMouth(goal.side))}
-          />
-        ) : null}
-        {active?.beat.kind === "save" ? (
-          <div
-            className={s.effect}
-            data-effect={active.beat.callout.effect}
-            style={pct(goalMouth(active.beat.side === "user" ? "opp" : "user"))}
-          />
-        ) : null}
-        {goal !== null && shown(GOAL_LANDS, 0.9) ? (
-          <div className={s.flash} data-side={goal.side} data-testid="goal-flash">
-            GOAL
+            ref={playBadgeRef}
+            className={s.playBadge}
+            data-side={stage.playCallout.side}
+            data-effect={stage.playCallout.callout.effect}
+            data-testid="pitch-ability"
+          >
+            {stage.playCallout.callout.text}
           </div>
         ) : null}
       </div>

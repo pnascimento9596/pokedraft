@@ -24,6 +24,31 @@ Gates at `49c1ef2` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/haptics.md`. Browser proof: `docs/reports/haptics/`.
 
+## Follow camera
+
+Branch `feat/follow-camera` off `feat/team-readability` at `d656db7`. Wave 3 row 3b, matchday pitch and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- In Watch live the pitch can follow the ball. Follow zooms to 1.6 and chases the ball on a critically damped spring that settles in about 0.5 s. Goals of every kind (penalties and free kicks included), saves, a settling shot and the shootout ease out to the full pitch over 400 ms. The view never shows past the touchlines or goal lines.
+- "Full pitch" and "Follow" buttons (44 px targets) sit after the sound toggle. Follow is the default below 600 px and Full from 600 px. Reduced motion opens on Full and can still choose Follow. The choice is kept in `localStorage`. Quick has no camera and no toggle.
+- The play badge stays at its own size outside the zoomed pitch and is placed through the camera, so it stays in view at 390, 360 and 320 (13 badges, none clipped).
+- The camera writes one transform on the pitch, 23 times a second. The trail now draws its glow and line from one shared path, which saves 34 writes a second, so mutations per second are below main's.
+- 2a perf rerun against origin/main at `02e45cd`: frame pacing, long tasks, mutations and style recalc not worse. Main-thread task time rose 3 to 12%, in compositing (Layerize). Headless numbers exclude GPU raster.
+
+RED commits: `3251033` (15 of 19 failed in 4 of 4 unit files; `follow-camera.spec.ts` failed 4 of 4 on a `d656db7` build) and `59c844e` (2 of 15 failed).
+
+Gates at `99ec77b` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 13 touched code and test files.
+- Unit tests: 1,572 passed in 182 files.
+- Playwright (`CI=1`, fresh build at `99ec77b`): `follow-camera`, `broadcast-frame-loop`, `continuous-ball`, `team-readability`, `callouts-type-effects`, `set-pieces`, `shootout-suspense`, `touchline-sheet`, `pitch-card-containment`, `mobile-targets` and `mobile-acceptance` 415 passed, 56 skipped by their own project gates, 0 failed.
+- Review, hosted CI, the full e2e suite and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/follow-camera.md`. Browser proof and perf JSON: `docs/reports/follow-camera/`.
+
+Review round 1 at `be5a86f`: GLM 5.3 Flash APPROVE (canary `follow-camera-9b2e38e8dd010e1cef2629ff5a51a022`), but hosted e2e shard 2 failed `mobile-pitch-fixes.spec.ts` at 390, 360 and 320 (carrier badge scale expected 1, received 1.6; run 39171973319), because Follow is now the phone default and zooms the pitch. The spec now switches to Full pitch before pinning the unzoomed sizes; locally (`CI=1`, chromium, fresh build) `mobile-pitch-fixes` and `follow-camera` passed 8 of 8, carrier 11px at scale 1 and the pip 9x13 at all three widths. The receipt from `be5a86f` is void; the reviewed head is the next one.
+
+PR #106 (row 3b, follow camera) merged as squash `1e417e3`, reviewed head `7e8b503`, GLM 5.3 Flash APPROVE in round 2 with canary `follow-camera-r2-789a6edce25ae0d736d1e2507fe1bbfc` echoed (round 1 at `be5a86f` approved, but hosted shard 2 failed `mobile-pitch-fixes` under the new phone zoom; the spec now pins its sizes in Full pitch). At `7e8b503` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,572 unit tests passed in 182 files and Prettier passed on 18 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `1e417e3` with `db.status` ok, and `follow-camera`, `mobile-pitch-fixes` and `broadcast-frame-loop` against production (chromium) passed 11 of 11. NOT RUN: physical phone check (owner action), including stutter from the 10 Hz pose floor under zoom.
+
 ## Team readability
 
 Branch `feat/team-readability` off `c33fa17`. Wave 3 row 3d, matchday pitch only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `MatchPlayer.tsx` and `Touchline.tsx` are untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -47,6 +72,8 @@ Gates at `1303a58` (code identical at the docs commit that adds this section):
 Measurements and decisions are in `docs/decisions/team-readability.md`. Browser proof: `docs/reports/team-readability/`.
 
 Merged origin/main after PR #102 (row 3a) at `ce9e48a`; only STATE.md conflicted. After the merge typecheck and build exited 0, 358 matchday, UI and design unit tests passed in 54 files, and `team-readability`, `touchline-sheet`, `pitch-card-containment` and `callouts-type-effects` passed 31 of 31 locally (`CI=1`, chromium, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #104 (row 3d, team readability) merged as squash `40221a8`, reviewed head `d656db7`, GLM 5.3 Flash APPROVE in round 1 with canary `team-readability-c4febf2ba9dcf8c27c441e9403fc4047` echoed. At `d656db7` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,545 unit tests passed in 179 files and Prettier passed on 14 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `40221a8` with `db.status` ok, and `team-readability.spec.ts` plus `pitch-card-containment.spec.ts` against production (chromium) passed 19 of 19. NOT RUN: physical phone check (owner action). PR #105 (mute e2e browser audio, Green) was closed without merging: GLM 5.3 Flash approved it (canary `mute-e2e-audio-cd1c52994b884f093ca3e1029dfcb679`), but hosted e2e shards 1 and 2 failed because specs that call `webkit.launch()` inside the chromium project inherit its launch args and WebKit rejects `--mute-audio` ("Cannot parse arguments: Unknown option --mute-audio", run 39170166703). Playwright 1.64.0 already mutes every headless Chromium launch, so nothing ran on production and nothing changed.
 
 ## Touchline bottom sheet
 
