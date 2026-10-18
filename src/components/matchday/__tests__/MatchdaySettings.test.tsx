@@ -44,3 +44,33 @@ describe("MatchdaySettings (catches a start screen that misses a change made in 
     expect(screen.getByTestId("match-view-live").getAttribute("aria-pressed")).toBe("true");
   });
 });
+
+describe("MatchdaySettings with manager mode (catches a Quick choice a manager can make but cannot coach)", () => {
+  it("treats the view as Live and disables Quick with the hint, keeping the saved Quick choice", () => {
+    localStorage.setItem(KEY, JSON.stringify({ managerMode: true, matchView: "quick" }));
+    render(<MatchdaySettings />);
+    const quick = screen.getByTestId("match-view-quick") as HTMLButtonElement;
+    expect(quick.disabled).toBe(true);
+    expect(quick.getAttribute("aria-pressed")).toBe("false");
+    expect(screen.getByTestId("match-view-live").getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByText("Manager mode plays live")).toBeTruthy();
+    expect(JSON.parse(localStorage.getItem(KEY)!).matchView).toBe("quick");
+  });
+
+  it("restores the saved Quick choice when manager mode goes off", () => {
+    localStorage.setItem(KEY, JSON.stringify({ managerMode: false, matchView: "quick" }));
+    render(<MatchdaySettings />);
+    fireEvent.click(screen.getByTestId("manager-mode"));
+    expect(JSON.parse(localStorage.getItem(KEY)!)).toMatchObject({
+      managerMode: true,
+      matchView: "quick",
+    });
+    expect(screen.getByTestId("match-view-live").getAttribute("aria-pressed")).toBe("true");
+
+    fireEvent.click(screen.getByTestId("manager-mode"));
+    const quick = screen.getByTestId("match-view-quick") as HTMLButtonElement;
+    expect(quick.disabled).toBe(false);
+    expect(quick.getAttribute("aria-pressed")).toBe("true");
+    expect(screen.queryByText("Manager mode plays live")).toBeNull();
+  });
+});

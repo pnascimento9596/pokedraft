@@ -56,8 +56,10 @@ async function flush() {
   await act(async () => {});
 }
 
-// Bulbasaur (#001) at LCB, Charmander (#004) at ST, shared through the ?b= URL token.
-function openWithTwoPlaced() {
+// Bulbasaur (#001) at LCB, Charmander (#004) at ST, shared through the ?b= URL token. The ?b= link
+// loads the builder engine with import(), and the first import in a file transforms its modules: on
+// a loaded four-worker run this wait took up to 2.7 s, past findBy's 1 s default.
+async function openWithTwoPlaced() {
   let state = createDraft(GEN1, BUILDER_URL_SEED);
   state = applyAction(state, {
     type: "place",
@@ -80,12 +82,12 @@ function openWithTwoPlaced() {
       <Announcer />
     </>,
   );
+  await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
 }
 
 describe("builder announcements", () => {
   it("Randomize says the Team Score the screen shows", async () => {
-    openWithTwoPlaced();
-    await screen.findByRole("button", { name: /LCB Bulbasaur/ });
+    await openWithTwoPlaced();
     fireEvent.click(screen.getByRole("button", { name: "Randomize" }));
     await flush();
     const shown = screen.getByTestId("team-score").querySelector(".scorebug__value")?.textContent;
@@ -94,24 +96,22 @@ describe("builder announcements", () => {
   });
 
   it("Clear all says the slots are empty", async () => {
-    openWithTwoPlaced();
-    await screen.findByRole("button", { name: /LCB Bulbasaur/ });
+    await openWithTwoPlaced();
     fireEvent.click(screen.getByRole("button", { name: "Clear all" }));
     await flush();
     expect(said()).toBe("Cleared all slots.");
   });
 
   it("Reset says what it did", async () => {
-    openWithTwoPlaced();
-    await screen.findByRole("button", { name: /LCB Bulbasaur/ });
+    await openWithTwoPlaced();
     fireEvent.click(screen.getByRole("button", { name: "Reset" }));
     await flush();
     expect(said()).toBe("Reset the builder settings and cleared all slots.");
   });
 
   it("a drag swap says who moved where", async () => {
-    openWithTwoPlaced();
-    const from = await screen.findByRole("button", { name: /LCB Bulbasaur/ });
+    await openWithTwoPlaced();
+    const from = screen.getByRole("button", { name: /LCB Bulbasaur/ });
     const to = screen.getByRole("button", { name: /ST Charmander/ });
     document.elementFromPoint = () => to;
     fireEvent.pointerDown(from, { pointerId: 1, button: 0, clientX: 10, clientY: 10 });
@@ -124,8 +124,7 @@ describe("builder announcements", () => {
 
 describe("Picker focus return (SC-12)", () => {
   it("a pick gives focus back to the slot that opened the Picker", async () => {
-    openWithTwoPlaced();
-    await screen.findByRole("button", { name: /LCB Bulbasaur/ });
+    await openWithTwoPlaced();
     fireEvent.click(screen.getByRole("button", { name: /Empty GK slot/ }));
     const dialog = screen.getByRole("dialog");
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pikachu" } });
@@ -135,8 +134,8 @@ describe("Picker focus return (SC-12)", () => {
   });
 
   it("Clear slot gives focus back to the slot that opened the Picker", async () => {
-    openWithTwoPlaced();
-    fireEvent.click(await screen.findByRole("button", { name: /ST Charmander/ }));
+    await openWithTwoPlaced();
+    fireEvent.click(screen.getByRole("button", { name: /ST Charmander/ }));
     const dialog = screen.getByRole("dialog");
     fireEvent.click(within(dialog).getByRole("button", { name: "Clear slot" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());

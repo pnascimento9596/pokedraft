@@ -98,7 +98,11 @@ export interface Kick {
 export interface Frame {
   readonly from: number;
   readonly to: number;
-  /** -1 (pinned in the user's half) to 1 (camped in the opponent's). */
+  /**
+   * -1 (pinned in the user's half) to 1 (camped in the opponent's), from the goals and saves of the
+   * window that just finished, so it never leans toward a chance before it happens. The first
+   * window reads 0.
+   */
   readonly ball: number;
   /** Pitch-length percent each side's shape sits above its default. */
   readonly line: { readonly user: number; readonly opp: number };
@@ -362,7 +366,7 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
   const frames: Frame[] = [];
   for (let from = 0; from < finalMinute; from += WINDOW) {
     const to = from + WINDOW;
-    const inside = (m: number) => m > from && m <= to;
+    const inside = (m: number) => m > from - WINDOW && m <= from;
     const pressure = (side: Side) =>
       match.goals.filter((g) => g.side === side && inside(g.minute)).length +
       (match.saves ?? []).filter((s) => s.side !== side && inside(s.minute)).length;
@@ -382,6 +386,8 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
   const plays: PlayPhase[] = [];
   if (!goalsOnly) {
     const playRng = createRng(`broadcast:${input.seed}:${input.matchIndex}:plays`);
+    // Callouts draw from their own stream so the choreography never depends on movesets.
+    const calloutRng = createRng(`broadcast:${input.seed}:${input.matchIndex}:callouts`);
     let curSide: Side = "user";
     let curSlot = 5;
     let chain = 0;
@@ -469,7 +475,7 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
         kind === "through" || kind === "cross" || kind === "duel" || playRng.next() < 0.45;
       const role = kind === "duel" ? "duel" : kind === "dribble" ? "dribble" : "pass";
       const moveset = actor.species === null || movesOf === null ? null : movesOf(actor.species);
-      const callout = useAbility ? playCallout(actor.name, moveset, role, playRng) : null;
+      const callout = useAbility ? playCallout(actor.name, moveset, role, calloutRng) : null;
 
       plays.push({
         from,
@@ -543,7 +549,7 @@ export function driftPoint(home: Point, d: Drift, minute: number, motion: boolea
   };
 }
 
-/** The ball between events: it sways toward the side making chances in this window. */
+/** The ball between events: it sways toward the side that made chances in the last window. */
 export function ambientBall(timeline: Timeline, minute: number, motion: boolean): Point {
   if (!motion) return { x: 50, y: 50 };
   const lean = frameAt(timeline, minute)?.ball ?? 0;
@@ -575,10 +581,24 @@ function smoothstep(t: number): number {
   return k * k * (3 - 2 * k);
 }
 
+/** How long each beat stays on the pitch, in real milliseconds. */
+export const SHOW: Readonly<Record<Beat["kind"], number>> = {
+  whistle: 1_200,
+  goal: 2_600,
+  save: 1_100,
+  card: 1_600,
+  injury: 1_800,
+  sub: 1_800,
+  tactic: 2_000,
+};
+
+/** The share of a goal's staging at which the ball crosses the line. */
+export const GOAL_LANDS = 0.6;
+
 /** A goal move as it plays: assist to scorer, the shot, then the ball in the net. */
 export function goalBall(from: Point, scorer: Point, mouth: Point, progress: number): Point {
   if (progress < 0.35) return lerp(from, scorer, progress / 0.35);
-  if (progress < 0.6) return lerp(scorer, mouth, (progress - 0.35) / 0.25);
+  if (progress < GOAL_LANDS) return lerp(scorer, mouth, (progress - 0.35) / (GOAL_LANDS - 0.35));
   return mouth;
 }
 
@@ -754,8 +774,13 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   const oppSlots = resolveSlots(input.oppSlots);
   const frame = frameAt(timeline, clock);
   const line = frame?.line ?? { user: 0, opp: 0 };
-  const userXI = xiAt(timeline, "user", clock);
+  const b = active?.beat;
+  const userXI = [...xiAt(timeline, "user", clock)];
+  // The injured player stays down in the slot until the replacement's own beat walks them on.
+  if (b?.kind === "injury" && b.player.slot !== null) userXI[b.player.slot] = b.player.species;
   const oppXI = xiAt(timeline, "opp", clock);
+  const injured = (side: Side, slot: number): boolean =>
+    b?.kind === "injury" && side === "user" && b.player.slot === slot;
 
   const yellows = { user: new Array<number>(11).fill(0), opp: new Array<number>(11).fill(0) };
   for (const b of timeline.beats) {
@@ -771,7 +796,6 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     return side === "user" ? `Slot ${slot + 1}` : `No. ${slot + 1}`;
   };
 
-  const b = active?.beat;
   const isHighlighted = (side: Side, slot: number): boolean => {
     if (b === undefined) return false;
     if (b.kind === "goal")
@@ -801,7 +825,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
           name: labelOf(side, slot, id),
           point: slotPoint(side, slots[slot] ?? { x: 50, y: 50 }, line[side]),
           facing: side === "user" ? "right" : "left",
-          pose: "idle",
+          pose: injured(side, slot) ? "down" : "idle",
           hasBall: false,
           hot: isHighlighted(side, slot),
           yellowCards: yellows[side][slot] ?? 0,
@@ -827,7 +851,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     const kick = timeline.kicks[kickIdx]!;
     const attSide = kick.side;
     const defSide: Side = attSide === "user" ? "opp" : "user";
-    const spot: Point = attSide === "user" ? { x: 86, y: 50 } : { x: 14, y: 50 };
+    const spot: Point = attSide === "user" ? { x: 89, y: 50 } : { x: 11, y: 50 };
     const mouth = goalMouth(attSide);
     const takerSlot =
       kick.taker.slot ??
@@ -1150,7 +1174,7 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         (playCalloutStage?.side === side && playCalloutStage.slot === slot);
 
       let pose: PlayerPose = dist > 9 ? "sprint" : dist > 2.5 ? "run" : "idle";
-      if (b?.kind === "injury" && side === "user" && b.player.slot === slot) {
+      if (injured(side, slot)) {
         pose = "down";
       } else if (
         b?.kind === "goal" &&

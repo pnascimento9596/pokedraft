@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { FORMATIONS } from "@/engine";
 import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
-import type { Moveset } from "@/data/movesets";
 import { PlayerImage } from "@/components/PlayerImage";
-import { TACTIC_LABEL } from "@/ui/matchday/copy";
-import { beatKey } from "@/ui/matchday/player";
+import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
+import { activeBeat } from "@/ui/matchday/player";
 import {
-  buildTimeline,
+  GOAL_LANDS,
   goalMouth,
   stagePitch,
-  type Beat,
   type Point,
   type StagedPlayer,
   type Timeline,
@@ -19,74 +17,12 @@ import {
 import s from "./Broadcast.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
-type MovesOf = (id: number) => Moveset | null;
 
 // Bosses without a recorded shape line up in a 4-3-3.
 const OPP_SHAPE: FormationId = "4-3-3";
 
-// How long each beat stays on the pitch, in real milliseconds.
-const SHOW: Readonly<Record<Beat["kind"], number>> = {
-  whistle: 1_200,
-  goal: 2_600,
-  save: 1_100,
-  card: 1_600,
-  injury: 1_800,
-  sub: 1_800,
-  tactic: 2_000,
-};
-
-function useMovesets(): MovesOf | null {
-  const [movesOf, setMovesOf] = useState<MovesOf | null>(null);
-  useEffect(() => {
-    let live = true;
-    void import("@/data/movesets").then((m) => {
-      if (!live) return;
-      setMovesOf(() => (id: number) => {
-        try {
-          return m.movesetFor(id);
-        } catch {
-          return null;
-        }
-      });
-    });
-    return () => {
-      live = false;
-    };
-  }, []);
-  return movesOf;
-}
-
-interface Active {
-  readonly beat: Beat;
-  /** 0 to 1 through its time on screen; 1 when motion is reduced. */
-  readonly progress: number;
-}
-
-/** The latest beat still on screen. With reduced motion, the latest beat shown at all. */
-function activeBeat(
-  timeline: Timeline,
-  fired: Readonly<Record<string, number>>,
-  now: number,
-  motion: boolean,
-): Active | null {
-  let best: Active | null = null;
-  let bestAt = -Infinity;
-  for (const beat of timeline.beats) {
-    const at = fired[beatKey(beat)];
-    if (at === undefined) continue;
-    if (!motion) {
-      if (beat.kind !== "whistle" || best === null) best = { beat, progress: 1 };
-      continue;
-    }
-    const age = now - at;
-    if (age < 0 || age > SHOW[beat.kind]) continue;
-    if (at >= bestAt) {
-      bestAt = at;
-      best = { beat, progress: age / SHOW[beat.kind] };
-    }
-  }
-  return best;
-}
+// Stage points are percent of width and height; the trails draw in the pitch's own 100 by 64 box.
+const TRAIL_Y = 0.64;
 
 function pct(p: Point) {
   return { left: `${p.x}%`, top: `${p.y}%` } as const;
@@ -94,30 +30,27 @@ function pct(p: Point) {
 
 export function Broadcast({
   match,
-  matchIndex,
-  seed,
+  timeline,
   lineup,
   clock,
   now,
   fired,
   kicks,
   motion,
+  speed,
 }: {
   readonly match: PlayedMatch;
-  readonly matchIndex: number;
-  readonly seed: string;
+  /** The one timeline the match player clocks, sounds and stages from. */
+  readonly timeline: Timeline;
   readonly lineup: FullLineup;
   readonly clock: number;
   readonly now: number;
   readonly fired: Readonly<Record<string, number>>;
   readonly kicks: number;
   readonly motion: boolean;
+  /** The player's speed: 2x stages every beat in half the time, matching its hold. */
+  readonly speed: number;
 }) {
-  const movesOf = useMovesets();
-  const timeline = useMemo(
-    () => buildTimeline(match, { matchIndex, seed, lineup, movesOf }),
-    [match, matchIndex, seed, lineup, movesOf],
-  );
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
   const oppLabels = useMemo(
@@ -125,7 +58,7 @@ export function Broadcast({
     [match.opponent.roster],
   );
 
-  const active = activeBeat(timeline, fired, now, motion);
+  const active = activeBeat(timeline, fired, now, motion, clock, speed);
   const stage = stagePitch(timeline, {
     clock,
     active,
@@ -156,12 +89,14 @@ export function Broadcast({
         data-effect={p.callout?.effect ?? undefined}
         style={pct(p.point)}
       >
-        <span className={s.playerSprite}>
-          {p.species !== null ? (
-            <PlayerImage dexId={p.species} size={80} alt="" />
-          ) : (
-            <span className={s.shirt}>{ref?.kind === "shirt" ? ref.number : ""}</span>
-          )}
+        <span className={s.body}>
+          <span className={s.playerSprite}>
+            {p.species !== null ? (
+              <PlayerImage dexId={p.species} size={80} alt="" eager />
+            ) : (
+              <span className={s.shirt}>{ref?.kind === "shirt" ? ref.number : ""}</span>
+            )}
+          </span>
         </span>
         {p.yellowCards > 0 ? (
           <span
@@ -172,7 +107,7 @@ export function Broadcast({
         ) : null}
         {p.hasBall ? (
           <span className={s.carrierBadge} data-testid="ball-carrier">
-            {p.name}
+            {nameplate(p.name)}
           </span>
         ) : null}
       </div>
@@ -188,7 +123,7 @@ export function Broadcast({
   const trailPath =
     trail === null
       ? ""
-      : `M ${trail.from.x} ${trail.from.y} Q ${(trail.from.x + trail.to.x) / 2} ${trailMidY} ${trail.to.x} ${trail.to.y}`;
+      : `M ${trail.from.x} ${trail.from.y * TRAIL_Y} Q ${(trail.from.x + trail.to.x) / 2} ${trailMidY * TRAIL_Y} ${trail.to.x} ${trail.to.y * TRAIL_Y}`;
 
   return (
     <div
@@ -232,15 +167,19 @@ export function Broadcast({
         {trail !== null ? (
           <svg
             className={s.trails}
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
+            viewBox="0 0 100 64"
             data-testid="pitch-trails"
             data-kind={trail.kind}
             data-effect={trail.effect ?? undefined}
           >
             <path d={trailPath} className={s.trailGlow} />
             <path d={trailPath} className={s.trailLine} />
-            <circle cx={trail.from.x} cy={trail.from.y} r={1.1} className={s.trailOrigin} />
+            <circle
+              cx={trail.from.x}
+              cy={trail.from.y * TRAIL_Y}
+              r={1.1}
+              className={s.trailOrigin}
+            />
           </svg>
         ) : null}
 
@@ -332,7 +271,7 @@ export function Broadcast({
             style={pct(goalMouth(active.beat.side === "user" ? "opp" : "user"))}
           />
         ) : null}
-        {goal !== null && shown(0.6, 0.9) ? (
+        {goal !== null && shown(GOAL_LANDS, 0.9) ? (
           <div className={s.flash} data-side={goal.side} data-testid="goal-flash">
             GOAL
           </div>
