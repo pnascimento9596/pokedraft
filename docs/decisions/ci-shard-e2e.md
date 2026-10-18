@@ -31,8 +31,9 @@ under a minute per job because `--with-deps` still installs the system packages.
 
 ## Measurement
 
-Before: 28.6 min test step, about 31 min job (PR #80). After: read from this PR's own run and
-recorded in the next STATE update.
+Before: 28.6 min test step, about 31 min job (PR #80). After, on this PR's first run (head
+`a380010`): shards 1 to 4 took 6.9, 6.9, 9.1 and 6.7 min end to end, all green. The slowest
+shard sets the job time, about 9 min.
 
 ## NOT RUN
 
