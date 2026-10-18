@@ -106,31 +106,30 @@ function largestMoves(index: number, seed: string, speed: 1 | 2): { ball: number
 describe("motion bounds (catches the 59' save and duel passes jumping further in one frame than the 4% bound, 4.94% at 1x and 9.85% at 2x before)", () => {
   for (const seed of SWEEP) {
     it(`never moves the ball 4% of the pitch length or more in one 60 Hz frame at 1x on broadcast seed ${seed} (catches a duel pass riding its sprinting winner, 4.41% before)`, () => {
-      const over = PLAYED.flatMap((i) => {
-        const { ball } = largestMoves(i, seed, 1);
-        return ball >= 4 ? [{ match: i, ball: Number(ball.toFixed(2)) }] : [];
-      });
-      expect(over).toEqual([]);
+      const balls = PLAYED.map((i) => largestMoves(i, seed, 1).ball);
+      expect(balls.flatMap((ball, i) => (ball >= 4 ? [{ match: i, ball }] : []))).toEqual([]);
+      // Play carries the ball over 2.69% in some frame of every swept match, so a run that staged
+      // no play cannot pass.
+      expect(Math.min(...balls)).toBeGreaterThan(2);
     });
   }
 
   it("never moves a player 4% of the pitch length or more in one 60 Hz frame at 1x, in any match of the golden cup (catches the 59' save settle, 4.94% before)", () => {
-    const over = PLAYED.flatMap((i) => {
-      const { player } = largestMoves(i, cup.seed, 1);
-      return player >= 4 ? [{ match: i, player: Number(player.toFixed(2)) }] : [];
-    });
-    expect(over).toEqual([]);
+    const players = PLAYED.map((i) => largestMoves(i, cup.seed, 1).player);
+    expect(players.flatMap((player, i) => (player >= 4 ? [{ match: i, player }] : []))).toEqual([]);
+    expect(Math.min(...players)).toBeGreaterThan(2);
   });
 
   it("at 2x never moves the ball or a player 8% of the pitch length or more in one 60 Hz frame, in any match of the golden cup (catches the 59' save, ball 8.84% and player 9.85% before)", () => {
     // At 2x the clock and every staging run twice as fast, so 4% of the pitch per 1x frame is 8%
     // per real frame: the same speed on the pitch per match minute.
-    const over = PLAYED.flatMap((i) => {
-      const { ball, player } = largestMoves(i, cup.seed, 2);
-      return ball >= 8 || player >= 8
-        ? [{ match: i, ball: Number(ball.toFixed(2)), player: Number(player.toFixed(2)) }]
-        : [];
-    });
-    expect(over).toEqual([]);
+    const moves = PLAYED.map((i) => largestMoves(i, cup.seed, 2));
+    expect(
+      moves.flatMap(({ ball, player }, i) =>
+        ball >= 8 || player >= 8 ? [{ match: i, ball, player }] : [],
+      ),
+    ).toEqual([]);
+    // Every golden match tops 3% at 1x, so over 4% shows the run really played at twice the speed.
+    expect(Math.min(...moves.map((m) => Math.min(m.ball, m.player)))).toBeGreaterThan(4);
   });
 });
