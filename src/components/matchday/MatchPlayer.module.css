@@ -154,6 +154,46 @@
   }
 }
 
+.pitch {
+  min-width: 0;
+}
+
+/* From 600px up the sheet's prompts and touchline sit in the page as before. */
+.sheet {
+  display: contents;
+}
+
+.sheetSpacer {
+  display: none;
+}
+
+@media (max-width: 599.98px) {
+  .sheet {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    display: grid;
+    max-height: min(55svh, var(--sheet-room, 55svh));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    border-top: 1px solid var(--border-emphasis);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: var(--surface);
+    box-shadow: var(--shadow-raised);
+  }
+
+  .sheet > .prompt {
+    margin: 10px 12px 0;
+  }
+
+  .sheetSpacer {
+    display: block;
+  }
+}
+
 .broadcastLoading {
   display: grid;
   place-items: center;

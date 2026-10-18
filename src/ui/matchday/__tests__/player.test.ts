@@ -5,12 +5,14 @@ import {
   START,
   beatKey,
   decisionMinute,
+  frameNow,
   play,
   revealed,
   type PlayEnv,
   type PlayState,
 } from "../player";
-import { buildTimeline } from "../timeline";
+import { kickProgress } from "../shootout";
+import { buildTimeline, type Kick } from "../timeline";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 const id = (n: number) => n as SpeciesId;
@@ -132,5 +134,75 @@ describe("revealed and decisionMinute (catches a decision that erases a change a
 
   it("names beats the same way across replays", () => {
     expect(beatKey(card)).toBe("card:60:user:2:yellow");
+  });
+});
+
+describe("the touchline sheet holds the clock apart from the player's own pause", () => {
+  // 5,600 ms of live play is 5,600 * 45 / 25,000 = 10.08 minutes.
+  const atTen = () => run({ ...START, running: true }, live, 5600);
+
+  it("opening the sheet freezes the clock (catches a sheet that lets the match run while the manager decides): 10.08' before and 2 s after", () => {
+    const before = atTen();
+    expect(before.minute).toBeCloseTo(10.08, 9);
+    const open = play(before, { type: "sheet", open: true, now: 5600 });
+    const after = run(open, live, 2000, 5600);
+    expect(after.minute).toBeCloseTo(10.08, 9);
+    expect(after.running).toBe(true);
+  });
+
+  it("closing the sheet once the sub is confirmed resumes the clock (catches a sheet that leaves the match stopped): 13.68' 2 s later", () => {
+    const open = play(atTen(), { type: "sheet", open: true, now: 5600 });
+    const closed = play(run(open, live, 2000, 5600), { type: "sheet", open: false, now: 7600 });
+    expect(closed.uiHold).toBe(false);
+    expect(run(closed, live, 2000, 7600).minute).toBeCloseTo(13.68, 9);
+  });
+
+  it("a player who paused stays paused after the sheet closes (catches a sheet that reuses the play toggle)", () => {
+    const paused = play(atTen(), { type: "toggle", now: 5600 });
+    const open = play(paused, { type: "sheet", open: true, now: 6000 });
+    const closed = play(open, { type: "sheet", open: false, now: 7000 });
+    expect(closed.running).toBe(false);
+    expect(run(closed, live, 2000, 7000).minute).toBeCloseTo(10.08, 9);
+  });
+});
+
+describe("a pause stops the broadcast where it is (catches the 2e carryover: a paused kick plays out and the next starts on resume)", () => {
+  const kicks = Array.from({ length: 10 }, (_, index) => ({ index }) as unknown as Kick);
+  const pens: PlayEnv = { ...live, timeline: { ...timeline, kicks } };
+  const kicking: PlayState = { ...START, running: true, stage: "pens", kickAt: 1000 };
+
+  it("pause at kick progress 0.4 resumes at 0.4: kickAt moves from 1000 to 11000 after a 10 s pause", () => {
+    const paused = play(kicking, { type: "toggle", now: 1480 });
+    const resumed = play(paused, { type: "toggle", now: 11480 });
+    expect(resumed.kickAt).toBe(11000);
+    expect(kickProgress(resumed, 11480, PACE.live)).toBeCloseTo(0.4, 9);
+    expect(play(resumed, { type: "tick", now: 11496, dt: 16, env: pens }).kicks).toBe(0);
+    expect(play(resumed, { type: "tick", now: 12200, dt: 16, env: pens }).kicks).toBe(1);
+  });
+
+  it("while paused the broadcast's frame stays at the pause: kick progress 0.4 at 1480, and still 0.4 at 5000", () => {
+    const paused = play(kicking, { type: "toggle", now: 1480 });
+    expect(frameNow(paused, 5000)).toBe(1480);
+    expect(kickProgress(paused, frameNow(paused, 5000), PACE.live)).toBeCloseTo(0.4, 9);
+    expect(frameNow(kicking, 5000)).toBe(5000);
+  });
+
+  it("the sheet pauses a kick the same way: open at 1480, close at 4480, kickAt 4000", () => {
+    const open = play(kicking, { type: "sheet", open: true, now: 1480 });
+    expect(frameNow(open, 3000)).toBe(1480);
+    expect(play(open, { type: "sheet", open: false, now: 4480 }).kickAt).toBe(4000);
+  });
+
+  it("a goal's hold and its staging resume where the pause left them: hold until 19272 becomes 29272", () => {
+    // The 30' goal fires on the tick at 16,672 ms (the first 16 ms tick past 30 * 25,000 / 45) and
+    // holds the clock 2,600 ms.
+    const held = run({ ...START, running: true }, live, 30 * PACE.live.regulation + 32);
+    expect(held.hold).toEqual({ key: "goal:30:user:Charizard", until: 19272 });
+    expect(held.fired["goal:30:user:Charizard"]).toBe(16672);
+    const paused = play(held, { type: "toggle", now: 17000 });
+    const resumed = play(paused, { type: "toggle", now: 27000 });
+    expect(resumed.hold).toEqual({ key: "goal:30:user:Charizard", until: 29272 });
+    expect(resumed.fired["goal:30:user:Charizard"]).toBe(26672);
+    expect(resumed.pausedAt).toBeNull();
   });
 });

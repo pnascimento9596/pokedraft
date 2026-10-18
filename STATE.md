@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Touchline bottom sheet
+
+Branch `feat/touchline-sheet` off `b08c68c`. Wave 3 row 3a, matchday UI and the pure play reducer (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- On a phone (below 600px) the touchline is a sheet fixed to the bottom of the screen. Closed, it shows the five tactics, "Subs n of 5", the half-time or injury question when there is one, and a "Bench and energy" button. It is 115 px high at 390, 360 and 320 px wide.
+- Opening it shows the bench, the sub form and the energy rows, and stops the match. Confirming a sub, answering the stop or tapping "Back to the match" closes it and the match runs on. The pitch stays above the open sheet at 390x844, 360x780 and 320x640.
+- A player who paused the match stays paused when the sheet closes.
+- Pausing now stops the whole broadcast where it is, so a penalty or a goal no longer plays out while paused and resumes from the same point (the 2e carryover).
+- At 600px and up the touchline is unchanged: the 1280 px crop matches the old one pixel for pixel.
+
+RED commits: `7579d8b` (12 of 27 failed) and `ca4a99f` (1 of 7 failed).
+
+Gates at `e094fc8` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 15 touched files.
+- Unit tests: 1,526 passed in 174 files.
+- Playwright (`CI=1`, fresh build at `e094fc8`): `touchline-sheet`, `prematch-merge`, `manager-mode`, `injury-staging`, `shootout-suspense`, `builder-matchday`, `watch-live`, `quick-not-broadcast`, `mobile-pitch-fixes` and `audio-polish` 40 passed; `mobile-targets` and `mobile-acceptance` 370 passed, 56 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, `env(safe-area-inset-bottom)` on a device and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/touchline-sheet.md`. Browser proof: `docs/reports/touchline-sheet/`.
+
+Merged origin/main after PRs #100 and #101 at `14a9e70`; only STATE.md conflicted, and `MatchdayFlow.tsx` merged cleanly with 3h's full-time card. After the merge typecheck and build exited 0, 344 matchday and UI unit tests passed in 50 files, and `your-calls`, `touchline-sheet`, `manager-mode` and `prematch-merge` passed 28 of 28 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
 ## Your calls card
 
 Branch `feat/your-calls` off `20e34f6`. Wave 3 row 3h, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed; the card only calls `runCup`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -23,6 +46,8 @@ Gates at `3ac4b9b` (code identical at the docs commit that adds this section):
 - Review, hosted CI, the full e2e suite, 360 and 320 proof (no new fixed width) and a physical phone: NOT RUN at the time of writing.
 
 Measurements and decisions are in `docs/decisions/your-calls.md`. Browser proof: `docs/reports/your-calls/`.
+
+PR #101 (row 3h, "Your calls" card) merged as squash `c33fa17`, reviewed head `2df3889`, GLM 5.3 Flash APPROVE in round 1 with canary `your-calls-29b3f5ee29e3e8fe73d47f7ded60c35f` echoed. At `2df3889` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,517 unit tests passed in 175 files and Prettier passed on 11 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `c33fa17` with `db.status` ok, and `your-calls.spec.ts` plus `manager-mode.spec.ts` against production (chromium) passed 8 of 8. 3h landed before 3a because it was ready first and touches none of 3a's files (owner's leave to choose the order). NOT RUN: physical phone check (owner action).
 
 ## Test flakes and retained replays in CI
 

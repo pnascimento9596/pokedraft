@@ -402,6 +402,27 @@ export const SCENES: readonly Scene[] = [
     primary: (page) => page.getByTestId("play-toggle"),
   },
   {
+    id: "matchday touchline sheet open",
+    route: "/play",
+    open: async (page) => {
+      await seedStorage(page, { "pokedraft:panel": { managerMode: true, matchView: "live" } });
+      await startRun(page, PLAY_8_0);
+      await draftRounds(page, 16);
+      await page.getByTestId("see-results").click();
+      await page.getByTestId("prematch-go").click();
+      await expect(page.getByTestId("broadcast")).toBeVisible();
+      await expect
+        .poll(async () =>
+          Number(await page.getByTestId("match-player").getAttribute("data-minute")),
+        )
+        .toBeGreaterThan(0);
+      await page.getByTestId("sheet-toggle").click();
+      await expect(page.getByTestId("sheet-toggle")).toHaveAttribute("aria-expanded", "true");
+      await settle(page);
+    },
+    primary: (page) => page.getByTestId("sub-confirm"),
+  },
+  {
     id: "daily results",
     route: "/daily",
     open: dailyResults,

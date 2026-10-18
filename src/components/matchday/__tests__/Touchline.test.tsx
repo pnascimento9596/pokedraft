@@ -86,3 +86,51 @@ describe("Touchline (catches a panel that offers used players or records nothing
     expect(screen.getByRole("alert").textContent).toBe("The match is over.");
   });
 });
+
+describe("Touchline as a phone sheet (catches a collapsed sheet without its tactics, sub count or toggle)", () => {
+  it("collapsed: the five tactics, Subs 2 of 5 and a closed toggle that asks to open", () => {
+    const onExpand = vi.fn();
+    render(
+      <Touchline
+        line={LINE}
+        formation="4-3-3"
+        onDecide={() => {}}
+        error={null}
+        sheet={{ expanded: false, onExpand }}
+      />,
+    );
+    const tactics = screen.getByRole("group", { name: "Tactic" });
+    expect(tactics.querySelectorAll("button")).toHaveLength(5);
+    expect(screen.getByTestId("subs-count").textContent).toBe("Subs 2 of 5");
+    const toggle = screen.getByTestId("sheet-toggle");
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(toggle.textContent).toBe("Bench and energy");
+    expect(screen.getByTestId("touchline").hasAttribute("data-expanded")).toBe(false);
+    fireEvent.click(toggle);
+    expect(onExpand).toHaveBeenCalledWith(true);
+  });
+
+  it("expanded: the toggle goes back to the match", () => {
+    const onExpand = vi.fn();
+    render(
+      <Touchline
+        line={LINE}
+        formation="4-3-3"
+        onDecide={() => {}}
+        error={null}
+        sheet={{ expanded: true, onExpand }}
+      />,
+    );
+    const toggle = screen.getByTestId("sheet-toggle");
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(toggle.textContent).toBe("Back to the match");
+    expect(screen.getByTestId("touchline").hasAttribute("data-expanded")).toBe(true);
+    fireEvent.click(toggle);
+    expect(onExpand).toHaveBeenCalledWith(false);
+  });
+
+  it("has no toggle without a sheet", () => {
+    render(<Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} />);
+    expect(screen.queryByTestId("sheet-toggle")).toBeNull();
+  });
+});

@@ -173,3 +173,46 @@
 .energyValue {
   text-align: right;
 }
+
+.toggle {
+  display: none;
+}
+
+@media (max-width: 599.98px) {
+  .touchline[data-sheet] {
+    gap: 8px;
+    padding: 8px 10px 10px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .touchline[data-sheet] .head {
+    align-items: center;
+  }
+
+  .touchline[data-sheet] .energy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The sheet keeps its accessible name from the section; the heading would cost a row at 320px. */
+  .touchline[data-sheet] .title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .touchline[data-sheet] .toggle {
+    display: inline-flex;
+    align-items: center;
+    margin-left: auto;
+    min-height: 44px;
+  }
+
+  .touchline[data-sheet]:not([data-expanded]) .extra {
+    display: none;
+  }
+}

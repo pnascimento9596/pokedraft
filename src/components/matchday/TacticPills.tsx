@@ -8,15 +8,18 @@ export function TacticPills({
   label,
   value,
   disabled = false,
+  dense = false,
   onPick,
 }: {
   readonly label: string;
   readonly value: Tactic;
   readonly disabled?: boolean;
+  /** One row of names without hints below 600px, for the collapsed touchline sheet. */
+  readonly dense?: boolean;
   readonly onPick: (tactic: Tactic) => void;
 }) {
   return (
-    <div className={s.tactics} role="group" aria-label={label}>
+    <div className={s.tactics} role="group" aria-label={label} data-dense={dense || undefined}>
       {TACTICS.map((t) => (
         <button
           key={t}

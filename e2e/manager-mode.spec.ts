@@ -82,6 +82,9 @@ test.describe("manager mode", () => {
     await expect(page.getByTestId("touchline-minute")).toHaveText("45'");
     const before = await page.getByTestId("subs-count").textContent();
     const used = Number(/Subs (\d) of 5/.exec(before ?? "")?.[1]);
+    // On a phone the bench and energy rows are in the touchline sheet.
+    const sheet = page.getByTestId("sheet-toggle");
+    if (await sheet.isVisible()) await sheet.click();
     await page.getByTestId("energy-slot-4").click();
     await expect(page.getByTestId("sub-off")).toHaveValue("4");
     await page.getByTestId("sub-confirm").click();

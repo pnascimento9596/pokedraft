@@ -17,6 +17,7 @@ export function Touchline({
   onDecide,
   error,
   busy = false,
+  sheet,
 }: {
   readonly line: TouchlineState;
   readonly formation: FormationId;
@@ -24,6 +25,8 @@ export function Touchline({
   readonly onDecide: (d: Decision) => void;
   readonly error: string | null;
   readonly busy?: boolean;
+  /** Below 600px the touchline is a bottom sheet: collapsed to the tactics until it is opened. */
+  readonly sheet?: { readonly expanded: boolean; readonly onExpand: (open: boolean) => void };
 }) {
   const offId = useId();
   const onId = useId();
@@ -40,7 +43,13 @@ export function Touchline({
   const closed = !line.open || busy;
 
   return (
-    <section className={s.touchline} aria-label="Touchline" data-testid="touchline">
+    <section
+      className={s.touchline}
+      aria-label="Touchline"
+      data-testid="touchline"
+      data-sheet={sheet !== undefined || undefined}
+      data-expanded={sheet?.expanded || undefined}
+    >
       <header className={s.head}>
         <h3 className={s.title}>Touchline</h3>
         <span className={s.meta} data-testid="touchline-minute">
@@ -49,10 +58,21 @@ export function Touchline({
         <span className={s.meta} data-testid="subs-count">
           Subs {line.subsUsed} of {MAX_SUBS}
         </span>
+        {sheet !== undefined ? (
+          <button
+            type="button"
+            className={`btn btn--sm ${s.toggle}`}
+            aria-expanded={sheet.expanded}
+            data-testid="sheet-toggle"
+            onClick={() => sheet.onExpand(!sheet.expanded)}
+          >
+            {sheet.expanded ? "Back to the match" : "Bench and energy"}
+          </button>
+        ) : null}
       </header>
 
       {line.managed ? (
-        <p className={s.takeover} role="status" data-testid="takeover">
+        <p className={`${s.takeover} ${s.extra}`} role="status" data-testid="takeover">
           {TAKEOVER_COPY}
         </p>
       ) : null}
@@ -60,13 +80,14 @@ export function Touchline({
       <TacticPills
         label="Tactic"
         value={line.tactic}
+        dense={sheet !== undefined}
         disabled={closed}
         onPick={(t) => {
           if (line.tactic !== t) onDecide({ kind: "tactic", tactic: t });
         }}
       />
 
-      <div className={s.sub}>
+      <div className={`${s.sub} ${s.extra}`}>
         <div className={s.field}>
           <label htmlFor={offId}>Take off</label>
           <span className={s.select}>
@@ -127,7 +148,7 @@ export function Touchline({
         </p>
       ) : null}
 
-      <ul className={s.energy} aria-label="Energy">
+      <ul className={`${s.energy} ${s.extra}`} aria-label="Energy">
         {line.onPitch.map((id, slot) => {
           const energy = line.energy[slot];
           const canPick = !closed && subsLeft && id !== null;
