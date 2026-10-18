@@ -753,8 +753,10 @@ export interface BallTrail {
   readonly to: Point;
   readonly effect: Effect | null;
   readonly type: PokemonType | null;
-  readonly kind: "pass" | "shot" | "save" | "dribble";
+  readonly kind: "pass" | "cross" | "shot" | "save" | "dribble";
   readonly progress: number;
+  /** The control point of the curve drawn from `from` to `to`, when the ball bends. */
+  readonly via?: Point;
 }
 
 export interface PitchStage {

@@ -144,10 +144,14 @@ export function Broadcast({
       ? 50
       : (trail.from.y + trail.to.y) / 2 -
         (trail.kind === "shot" || trail.kind === "pass" ? 3.5 : 0);
+  const bend = trail?.via ?? {
+    x: trail === null ? 50 : (trail.from.x + trail.to.x) / 2,
+    y: trailMidY,
+  };
   const trailPath =
     trail === null
       ? ""
-      : `M ${trail.from.x} ${trail.from.y * TRAIL_Y} Q ${(trail.from.x + trail.to.x) / 2} ${trailMidY * TRAIL_Y} ${trail.to.x} ${trail.to.y * TRAIL_Y}`;
+      : `M ${trail.from.x} ${trail.from.y * TRAIL_Y} Q ${bend.x} ${bend.y * TRAIL_Y} ${trail.to.x} ${trail.to.y * TRAIL_Y}`;
 
   return (
     <div
