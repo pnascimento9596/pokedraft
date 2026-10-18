@@ -26,6 +26,29 @@ Gates at `491e0ee` (code identical at the docs commit that updates this section)
 
 Measurements and decisions are in `docs/decisions/smooth-movement.md`.
 
+Merged origin/main after PR #93 (set pieces). Row 2d moved goal staging into `stageGoal`, so this row's eased keeper (dive from the strike over REACT) and eased open-play assist moved into it. Poses combine both rows: speed-based run and sprint, the walk-on run, the wall's run then idle, and the beaten defender's press. A wall keeps its side's facing; everyone else faces by velocity. After the merge: lint, typecheck and build exited 0, 159 matchday unit tests passed in 25 files (the set-pieces and smooth-movement guards included), and `smooth-movement`, `set-pieces`, `continuous-ball`, `broadcast-frame-loop`, `score-lands-with-ball`, `shootout-suspense` and `injury-staging` passed 13 of 13 locally, the ball's fastest 100 ms speed reading 2.70% per frame.
+
+## Set pieces
+
+Branch `feat/set-pieces` off `458c56e`, with `origin/main` merged in at `85b292e` (PR #92). Matchday staging only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, so goal kinds and outcomes are untouched and the goldens pass. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+For the player, a goal now plays out by the kind the engine recorded (`Beat.goalKind`). A penalty freezes the shape: the ball rolls to the spot, the taker steps up, pauses and kicks. A free kick lines three defenders up in a wall and curls the shot around it. A header comes off a cross from the wing and is met at loft 0.85. A solo goal dribbles a chain of touches past the defender who steps in. Every kind starts from the live ball and still puts the ball over the line, and the score on the board, at `GOAL_LANDS` (0.6). Quick and reduced motion stay still. Open play is unchanged.
+
+RED commit: `77a9454` (4 of 7 guards failed; the landing, still-motion and free-kick continuity guards pin kept behaviour and passed), after the no-behaviour prefactor `4540e14`. GREEN: `39c3c07`.
+
+Gates at `2cbb5f1` (the merge of `origin/main` at `85b292e`):
+
+- Lint, typecheck, build and `check:mirrors` exited 0. Unit tests: 1,452 passed in 166 files. Prettier passed on every touched file.
+- Playwright on a fresh build, port 3527: `set-pieces`, `continuous-ball`, `shootout-suspense`, `score-lands-with-ball`, `speed-aware-staging`, `watch-live`, `callouts-type-effects`, `quick-not-broadcast`, `one-shared-timeline`, `mobile-targets` and `mobile-acceptance`: 377 passed, 54 skipped by their own project gates. The continuous-ball scene sampled 2,249 frames with a fastest ball speed of 2.68% of the pitch length per frame.
+- Every goal kind is reached by a pinned replay at 390x844 with touch: cup8 G1 49' solo, cup8 R32 9' header and 84' penalty, kanto151 R32 17' free kick.
+- NOT RUN: the full local Playwright suite, a continuity guard at 2x, browser proof at 360 and 320 (no layout change), the review and the physical phone check.
+
+Measurements and decisions are in `docs/decisions/set-pieces.md`. Screenshots are in `docs/reports/set-pieces/`.
+
+PR #91 (row 2a, broadcast frame loop) merged as squash `e3d0e95`, reviewed head `b420c85`, GLM 5.3 Flash APPROVE in round 1 with canary `frame-loop-4779394b5c662377c3cb98465e2d752e` echoed. At `b420c85` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,453 unit tests passed in 166 files and Prettier passed on 13 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `e3d0e95` with `db.status` ok, and `broadcast-frame-loop`, `continuous-ball`, `shootout-suspense` and `callouts-type-effects` against production (chromium) passed 9 of 9, the ball's fastest 100 ms speed reading 2.68% per frame. NOT RUN: physical phone check (owner action); the perf harness after the #92 merge. Carryover: style recalc rose (257 to 484 ms per 10 s at 4x throttle) while total main-thread time fell; pose and facing update at the 10 Hz render floor.
+
+Merged origin/main after PR #91. Row 2a moved the trail drawing into `trailPath` in `Broadcast.tsx`, so the free kick's curl (`trail.via`) now bends that helper's control point; `trailPath` is exported and `Broadcast.trailPath.test.ts` pins both the curled and the plain path (it fails with `via` ignored: `Q 87.50 29.76` instead of `Q 80.75 27.52`). After the merge: lint, typecheck and build exited 0, 149 matchday unit tests passed in 24 files, and `set-pieces`, `continuous-ball`, `broadcast-frame-loop`, `score-lands-with-ball`, `shootout-suspense` and `callouts-type-effects` passed 14 of 14 locally.
+
 ## Broadcast frame loop
 
 Branch `perf/broadcast-frame-loop` off `fe6d183`, with `origin/main` merged in, last at `85b292e`
