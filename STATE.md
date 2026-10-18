@@ -27,6 +27,27 @@ PR #88 (row 2h, audio polish) merged as squash `e7f2012`, reviewed head `f46ef6c
 
 Hosted CI round 1 on `4b79214` (GLM APPROVE, canary `callouts-344a4b0b787bd0aea50929c2fa8d5bb1`) failed `pnpm check:theme-colors`: the twelve palette-type rules mixed toward a literal `#fff`. The colour now comes from a new `--fx-core-tint` token in `src/design/stadium.css` (same `#ffffff`, no visual change). `check:theme-colors`, `check:theme-contrast`, `check:theme-cvd`, `check:mirrors` and `check:image-seam` exit 0.
 
+## Shootout with suspense
+
+Branch `feat/shootout-suspense` off `e7f2012`, with `origin/main` merged in at `ae8ee22` (PR #89). UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Each live shootout kick now plays out: the taker runs up (0 to 0.35 of the kick), the ball flies with a trail (0.35 to 0.60), then the keeper reacts. A save dives the ball's way; a goal beats a keeper who went the wrong way or too late.
+- Waiting players stand on a two-row arc either side of halfway instead of a stacked column.
+- Each live kick sounds a whistle, the strike and a crowd roar or the glove. Quick and reduced motion stay still and hear only the outcome (goal horn or glove).
+- A "Sudden death" banner shows from kick 11 (the engine takes five regulation kicks a side).
+- The kick dot and pens score land when the keeper reacts, not after.
+
+RED commit: `b6005f1` (11 tests failed in 3 files; `shootout.test.ts` failed to import `../shootout`).
+
+Gates at `0d17adc` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. Prettier passed on every touched file.
+- Unit tests: 1,441 passed in 164 files.
+- Playwright (port 3525, `CI=1`): `shootout-suspense`, `mobile-targets`, `mobile-acceptance`, `watch-live`, `audio-polish`, `one-shared-timeline`, `speed-aware-staging`, `quick-not-broadcast`, `mobile-pitch-fixes`, `engine-v4`, `manager-mode`, `callouts-type-effects`: 394 passed, 54 skipped by their own project gates.
+- Review, hosted CI and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/shootout-suspense.md`.
+
 ## Audio polish
 
 Branch `feat/audio-polish` off `fe6d183`. UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
