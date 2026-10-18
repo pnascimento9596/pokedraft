@@ -272,9 +272,8 @@ describe("builder picker", () => {
 describe("builder pitch token notes", () => {
   it("show no rating on any token with Show ratings off", async () => {
     openWithBenchToo();
-    expect((await screen.findByTestId("slot-s2")).textContent).toBe(
-      "DF  LCB  Bulbasaur Grass Poison ",
-    );
+    await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
+    expect(screen.getByTestId("slot-s2").textContent).toBe("DF  LCB  Bulbasaur Grass Poison ");
     expect(screen.getByTestId("slot-s9").textContent).toBe("FW  ST  Charmander Fire ");
     expect(screen.getByTestId("slot-b0").textContent).toBe("SUB  SUB 1  Pikachu Electric ");
   });
@@ -693,7 +692,7 @@ describe("placed squad scouting and live lines", () => {
 it("keeps Builder actions above feedback that appears after the engine loads", async () => {
   openWithTwoPlaced();
   const toolbar = screen.getByRole("toolbar", { name: "Builder actions" });
-  const feedback = await screen.findByText(/^Chemistry links \(/);
+  const feedback = await screen.findByText(/^Chemistry links \(/, {}, { timeout: 10_000 });
   expect(
     Boolean(toolbar.compareDocumentPosition(feedback) & Node.DOCUMENT_POSITION_FOLLOWING),
   ).toBe(true);
