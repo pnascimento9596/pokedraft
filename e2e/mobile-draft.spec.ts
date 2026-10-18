@@ -466,6 +466,8 @@ test("pointer drag from candidate card directly drops onto empty slot", async ({
   await start(page, PLAY_8_0);
   const firstCard = page.locator('[data-testid^="candidate-"]').first();
   await expect(firstCard).toBeVisible();
+  // The open picker's backdrop takes taps, so this drag only lands while it stays inert mid-drag.
+  await expect(page.locator("[data-choosing][data-drawer]")).toHaveCount(1);
 
   const emptySlot = page.locator('[data-testid^="slot-s"][data-filled="false"]').first();
   await emptySlot.evaluate((el) => el.scrollIntoView({ block: "end", behavior: "instant" }));

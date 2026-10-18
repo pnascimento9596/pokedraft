@@ -9,7 +9,7 @@ Branch `fix/draft-safety` off `f4489cb` (PR #69), with `origin/main` merged in, 
 
 - New run with any player signed asks "Start over? The N players you signed will be lost." with Start over and Keep drafting, focus on Keep drafting. With nothing signed, one tap still starts over.
 - Keys 1 to 3 and the draft's Escape do nothing while the scouting dossier, any open dialog or the New run question is open.
-- html and body clip sideways overflow (`overflow-x: clip`) instead of hiding it, so `position: sticky` sticks. Home Control desk measured at `top: 16` after a 1000px scroll once its main column is taller than it.
+- body clips sideways overflow (`overflow-x: clip`) instead of hiding it, so `position: sticky` sticks. Home Control desk measured at `top: 16` after a 1000px scroll once its main column is taller than it.
 - Pitch cards default to `touch-action: pan-y` (`none` only while dragging), so a vertical swipe on a card scrolls the page. A touch drag that starts vertically now scrolls instead of swapping; the two-tap swap stays.
 - The open picker is modal: a tap on its dimmed backdrop closes it, and a swipe down on its top bar closes it. Taps no longer pass through to the pitch or hub around it.
 - A dragged starter's vertical move is stretched by 1/cos(26deg) so it stays under the pointer on the tilted field.
@@ -22,6 +22,7 @@ Gates at `681cd5e` (later commits change only docs):
 - Unit tests: 1,314 passed in 144 files.
 - Playwright on a fresh build, full suite: 823 passed, 0 failed, 61 skipped.
 - Browser proof at 390x844, 360 and 320: `docs/reports/draft-safety/`.
+- Review round 1 (GLM, `904951a`) asked for proof that a drag from the open picker still lands, since the backdrop now takes taps. The inert-while-dragging rule predates this PR (`DraftBoard.module.css` line 399). `e2e/mobile-draft.spec.ts` now asserts the picker is open before its candidate drag: 3 of 3 passed on the phone projects, and 3 of 3 failed with that rule's `pointer-events: none` removed.
 - After the `origin/main` merge the coordinator reruns lint, typecheck, unit tests, build and the format check on the reviewed head; the counts are in the PR's review comment and the next STATE update. Hosted CI runs the full Playwright suite.
 - Physical phone check, real touch on WebKit and the GLM review: NOT RUN.
 

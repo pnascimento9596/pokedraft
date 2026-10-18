@@ -15,7 +15,8 @@ Six fixes from the row, each re-verified at `f4489cb` before editing (the audits
 2. **Draft keys behind a modal.** The window `keydown` listener now returns when the dossier is
    open (`inspectId !== null`), when any `dialog[open]` exists, or while the New run question is
    open (Escape there cancels the question). This gates 1 to 3 and the draft's own Escape.
-3. **Sticky.** `globals.css` html and body `overflow-x: hidden` became `clip`, so body is no longer
+3. **Sticky.** `globals.css` body `overflow-x: hidden` became `clip` (html has no `overflow-x`
+   rule), so body is no longer
    a scroll container and `position: sticky` works. Measured on the home Control desk. The results
    pitch column uses the same rule; inferred, not measured.
 4. **Card scroll.** `.token` defaults to `touch-action: pan-y`; `.token[data-dragging]` is `none`.
@@ -24,7 +25,12 @@ Six fixes from the row, each re-verified at `f4489cb` before editing (the audits
 5. **Picker backdrop.** After #69 the "drawer" is a centered pop-up at every width, not a bottom
    sheet. Its backdrop now takes taps (`pointer-events` default) and a tap closes the picker. The
    backdrop still drops to `pointer-events: none` while a candidate is dragged, so drag to place
-   is unchanged. Swipe down to close sits on the pop-up's top bar ("Minimize draft picker"), which
+   is unchanged. That rule predates this PR
+   (`.board[data-dragging-candidate] .drawerBackdrop`, `DraftBoard.module.css` line 399), so it is
+   not in the diff. `e2e/mobile-draft.spec.ts` "pointer drag from candidate card directly drops onto
+   empty slot" now asserts the picker is open before it drags. On a fresh build at `904951a` plus that assertion it passed
+   3 of 3 (iphone-14, iphone-se, pixel-7, no retries). With the `pointer-events: none` line removed
+   from that rule it failed 3 of 3 (`Expected: "Round 2 of 16"`, `Received: "Round 1 of 16"`). Swipe down to close sits on the pop-up's top bar ("Minimize draft picker"), which
    gets `touch-action: none` while open, following the builder Picker's header swipe (80px).
 6. **Drag drift.** A dragged starter's `translate` y is divided by `cos(26deg)`, rounded to 0.01px.
    Bench tokens sit outside the tilted field and keep the raw delta.
