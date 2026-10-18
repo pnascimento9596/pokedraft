@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import {
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -52,6 +53,7 @@ import {
   useSoundEnabled,
 } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
+import { buzz } from "./haptics";
 import { Touchline } from "./Touchline";
 import { useMovesets } from "./useMovesets";
 import s from "./MatchPlayer.module.css";
@@ -246,6 +248,8 @@ export function MatchPlayer({
   }, [crowd]);
   const onBall = useCallback((x: number) => setCrowdLevel(crowdGain(x)), []);
 
+  // Haptics ride on the beat sounds' fired sets, so a beat already played never buzzes again.
+  const haptics = soundOn && view === "live";
   const sounded = useRef(new Set<string>());
   const horned = useRef(new Set<string>());
   useEffect(() => {
@@ -270,11 +274,14 @@ export function MatchPlayer({
     if (fresh.length === 0 && scored.length === 0) return;
     if (state.stage === "done" && fresh.length > 4) {
       playWhistle("fulltime");
+      if (haptics) buzz("final");
       return;
     }
     for (const b of scored) {
-      if (b.side === "user") playGoalHorn();
-      else playOppGoal();
+      if (b.side === "user") {
+        playGoalHorn();
+        if (haptics) buzz("goal");
+      } else playOppGoal();
       if (view === "live") crowdRoar(roarFor(b, state.speed));
     }
     for (const b of fresh) {
@@ -284,6 +291,7 @@ export function MatchPlayer({
         playSaveSound();
       } else if (b.kind === "card") {
         playCardSound(b.color);
+        if (haptics && b.color === "red" && b.side === "user") buzz("red");
       } else if (b.kind === "sub") {
         playSubSound();
       } else if (b.kind === "whistle") {
@@ -294,9 +302,10 @@ export function MatchPlayer({
               ? "halftime"
               : "fulltime";
         playWhistle(wKind);
+        if (haptics && (b.label === "Full time" || b.label === "End of extra time")) buzz("final");
       }
     }
-  }, [state.fired, state.stage, state.speed, timeline, now, motion, view]);
+  }, [state.fired, state.stage, state.speed, timeline, now, motion, view, haptics]);
 
   const lastPhase = useRef(-1);
   const lastKick = useRef<number | null>(null);
@@ -399,6 +408,7 @@ export function MatchPlayer({
   const userMomentum = Math.round(50 + lean * 28);
   const oppMomentum = 100 - userMomentum;
 
+  const hintId = useId();
   const stop = state.stop;
   const injury =
     stop?.kind === "injury"
@@ -514,6 +524,7 @@ export function MatchPlayer({
           type="button"
           className="btn btn--ghost btn--sm"
           aria-pressed={soundOn}
+          aria-describedby={hintId}
           data-testid="sound-toggle"
           onClick={() => {
             const next = !soundOn;
@@ -521,8 +532,11 @@ export function MatchPlayer({
             if (next) unlockAudio();
           }}
         >
-          {soundOn ? "Sound on" : "Sound off"}
+          {soundOn ? "Sound and haptics on" : "Sound and haptics off"}
         </button>
+        <p id={hintId} className={s.controlHint} data-testid="haptics-hint">
+          Haptics work on Android phones only.
+        </p>
       </div>
 
       {sheet ? (

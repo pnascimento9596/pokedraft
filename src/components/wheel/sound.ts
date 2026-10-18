@@ -16,23 +16,34 @@ function soundEnabled(): boolean {
   return enabled;
 }
 
+function notify(): void {
+  for (const l of listeners) l();
+}
+
+function subscribe(l: () => void): () => void {
+  listeners.add(l);
+  return () => listeners.delete(l);
+}
+
 export function setSoundEnabled(on: boolean): void {
   enabled = on;
   writeJson(SOUND_KEY, on);
   if (on) unlockAudio();
   else stopCrowdBed();
-  for (const l of listeners) l();
+  notify();
 }
 
 export function useSoundEnabled(): boolean {
-  return useSyncExternalStore(
-    (l) => {
-      listeners.add(l);
-      return () => listeners.delete(l);
-    },
-    soundEnabled,
-    () => false,
-  );
+  return useSyncExternalStore(subscribe, soundEnabled, () => false);
+}
+
+function audioLocked(): boolean {
+  return soundEnabled() && ctx?.state !== "running";
+}
+
+/** True while sound is on but the browser has not let audio start, for example after a reload. */
+export function useAudioLocked(): boolean {
+  return useSyncExternalStore(subscribe, audioLocked, () => false);
 }
 
 // Browsers only start an AudioContext inside a user gesture, so callers invoke this from click
@@ -46,6 +57,7 @@ export function unlockAudio(): void {
         (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (Ctor === undefined) return;
       ctx = new Ctor();
+      ctx.onstatechange = notify;
     }
     if (ctx.state === "suspended") void ctx.resume();
   } catch {

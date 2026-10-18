@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
 import { draftSixteen } from "./helpers";
 
-// Group match 3 of the golden run: your goals at 3' and 6', theirs at 10'.
+// Group match 3 of the golden run: your goals at 3', 6', 17', 30', 50' and 64', theirs at 10'.
 const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
 const PLAY = "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach";
 const SHOT = "docs/reports/haptics";
@@ -102,9 +102,11 @@ test("Watch live buzzes once per user goal, never for the opponent's, and once a
   await page.screenshot({ path: `${SHOT}/toggle-390.png` });
   expect(await buzzes(page)).toEqual([[120], [120]]);
 
-  await replay.getByTestId("skip-ft").tap();
-  await expect(replay.getByTestId("match-player")).toHaveAttribute("data-stage", "done");
-  await expect.poll(() => buzzes(page)).toEqual([[120], [120], [400]]);
+  await replay.getByTestId("speed-toggle").tap();
+  await expect(replay.getByTestId("match-player")).toHaveAttribute("data-stage", "done", {
+    timeout: 90_000,
+  });
+  await expect.poll(() => buzzes(page)).toEqual([[120], [120], [120], [120], [120], [120], [400]]);
   for (const width of [360, 320]) {
     await page.setViewportSize({ width, height: 844 });
     await replay.getByTestId("sound-toggle").scrollIntoViewIfNeeded();

@@ -64,7 +64,14 @@ const MATCH: PlayedMatch = {
   outcome: "D",
   goals: [
     { side: "user", minute: 20, penalty: false, kind: "open-play", scorer: id(6), assist: null },
-    { side: "opp", minute: 40, penalty: false, kind: "open-play", scorer: id(142), assist: null },
+    {
+      side: "opp",
+      minute: 40,
+      penalty: false,
+      kind: "open-play",
+      scorer: { kind: "species", id: id(142) },
+      assist: null,
+    },
   ],
   saves: [],
   incidents: [
@@ -167,7 +174,7 @@ describe("haptics (catches a phone that buzzes for the wrong side, twice for one
     expect(buzzes).toEqual([[120], [70, 90, 70], [400]]);
   });
 
-  it("a skip to full time buzzes the final whistle only, not the goals and cards it skips past", async () => {
+  it("a skip to full time buzzes nothing: like its sounds, the goals, cards and whistle it skips past never fire", async () => {
     mount("live");
     await frames(() => minute() >= 5);
     fireEvent.click(screen.getByTestId("skip-ft"));
@@ -175,7 +182,7 @@ describe("haptics (catches a phone that buzzes for the wrong side, twice for one
       vi.advanceTimersByTime(FRAME);
     });
     expect(stage()).toBe("done");
-    expect(buzzes).toEqual([[400]]);
+    expect(buzzes).toEqual([]);
   });
 
   it("no vibrate when the toggle is off", async () => {

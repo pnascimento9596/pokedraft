@@ -214,6 +214,13 @@
   min-width: 44px;
 }
 
+.controlHint {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 .prompt {
   display: grid;
   gap: 10px;
