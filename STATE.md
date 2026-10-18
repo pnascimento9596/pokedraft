@@ -28,6 +28,18 @@ Measurements and decisions are in `docs/decisions/smooth-movement.md`.
 
 Merged origin/main after PR #93 (set pieces). Row 2d moved goal staging into `stageGoal`, so this row's eased keeper (dive from the strike over REACT) and eased open-play assist moved into it. Poses combine both rows: speed-based run and sprint, the walk-on run, the wall's run then idle, and the beaten defender's press. A wall keeps its side's facing; everyone else faces by velocity. After the merge: lint, typecheck and build exited 0, 159 matchday unit tests passed in 25 files (the set-pieces and smooth-movement guards included), and `smooth-movement`, `set-pieces`, `continuous-ball`, `broadcast-frame-loop`, `score-lands-with-ball`, `shootout-suspense` and `injury-staging` passed 13 of 13 locally, the ball's fastest 100 ms speed reading 2.70% per frame.
 
+PR #95 (review verdict line, Green) merged as squash `2b2bb0f`, reviewed head `18f25af`, GLM 5.3 Flash APPROVE in round 1 with canary `verdict-line-1d059dc9254aafe1e1ecbe42fbf77377` echoed; that reply was the first built with the new preamble and its verdict line parsed. At `18f25af` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,462 unit tests passed in 168 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `2b2bb0f` with `db.status` ok. No runtime change, so no live spec.
+
+## Review verdict line
+
+Branch `chore/review-verdict-line` off `20fe868`. Review tooling only (Green). No runtime change.
+
+The review packet's preamble (`tools/review/review-packet.py`) now asks GLM to put the verdict alone on its own line. `strip-verdict.py` counts a reply only when a line holds nothing but the verdict, and three GLM replies that read APPROVE did not count because the verdict shared its line with other text: PR #89 (`60dc61d`), PR #92 (`5b2229a`) and PR #93 (`fc9bae8`). Each needed a rerun at the same head. The parser is unchanged, so a reply that still breaks the rule still does not count. `tools/review/README.md` records why.
+
+Gates: Prettier on the touched files, and `python3 -I tools/review/review-packet.py --help` exited 0. Lint, typecheck, unit tests and build run in hosted CI. Effect on GLM replies is measured on the next reviews, not here.
+
+PR #93 (row 2d, set pieces from `goalKind`) merged as squash `20fe868`, reviewed head `fc9bae8`. At `fc9bae8` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,462 unit tests passed in 168 files and Prettier passed on 7 touched files; hosted check and all eight e2e shards green. GLM 5.3 Flash: the first reply (canary `set-pieces-fdd94a834a80b70d1e8168971ba9fcc1`) read APPROVE with no blockers but put the verdict on a heading line with other text, so it was not counted; the rerun at the same head with canary `set-pieces-b-900e7ce5e2601c4636cc2a19708608ac` approved. Production `/api/health?db=1` served `20fe868` with `db.status` ok, and `set-pieces.spec.ts` plus `continuous-ball.spec.ts` against production (chromium) passed 5 of 5. NOT RUN: physical phone check (owner action); a continuity guard at 2x.
+
 ## Set pieces
 
 Branch `feat/set-pieces` off `458c56e`, with `origin/main` merged in at `85b292e` (PR #92). Matchday staging only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, so goal kinds and outcomes are untouched and the goldens pass. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
