@@ -83,6 +83,8 @@ function screenKey(
     play === null ? "" : `${play.side}${play.slot}:${play.callout.text}`,
     stage.ball.effect ?? "",
     carrier === null ? "" : `${carrier.side}${carrier.slot}`,
+    // Who is walking off: a walk starting or ending adds or drops a sprite.
+    (stage.leaving ?? []).map((p) => `${p.side}${p.slot}:${p.species ?? p.name}`).join(","),
     // The shootout: the kick in progress (and with it the sudden-death banner) and the kick dots.
     `${kicks}:${shots}`,
   ].join("|");
@@ -114,8 +116,15 @@ function put(el: Element | null, name: string, value: string): void {
   el.setAttribute(name, value);
 }
 
+/** A player sprite: their slot, and whether they are walking off rather than playing in it. */
+interface Tracked {
+  readonly side: Side;
+  readonly slot: number;
+  readonly leaving: boolean;
+}
+
 interface PitchNodes {
-  readonly players: Map<HTMLElement, { readonly side: Side; readonly slot: number }>;
+  readonly players: Map<HTMLElement, Tracked>;
   readonly ball: RefObject<HTMLDivElement | null>;
   readonly trail: RefObject<SVGSVGElement | null>;
   readonly playEffect: RefObject<HTMLDivElement | null>;
@@ -124,8 +133,10 @@ interface PitchNodes {
 
 /** Moves every staged thing on the pitch to where `stage` puts it. */
 function paint(nodes: PitchNodes, stage: PitchStage): void {
-  for (const [el, { side, slot }] of nodes.players) {
-    const p = stage.players[side][slot];
+  for (const [el, { side, slot, leaving }] of nodes.players) {
+    const p = leaving
+      ? stage.leaving?.find((w) => w.side === side && w.slot === slot)
+      : stage.players[side][slot];
     if (p) put(el, "style", place(p.point, "translate(-50%, -70%)"));
   }
   const { ball } = stage;
@@ -246,14 +257,18 @@ export function Broadcast({
     });
   const { active, stage } = frameAt({ clock, now, fired, kicks, kickProgress, speed });
 
-  const players = useRef(new Map<HTMLElement, { side: Side; slot: number }>());
+  const players = useRef(new Map<HTMLElement, Tracked>());
   const ballRef = useRef<HTMLDivElement>(null);
   const trailRef = useRef<SVGSVGElement>(null);
   const playEffectRef = useRef<HTMLDivElement>(null);
   const playBadgeRef = useRef<HTMLDivElement>(null);
   const track = useCallback((el: HTMLDivElement) => {
     const map = players.current;
-    map.set(el, { side: el.dataset.side as Side, slot: Number(el.dataset.slot) });
+    map.set(el, {
+      side: el.dataset.side as Side,
+      slot: Number(el.dataset.slot),
+      leaving: el.dataset.leaving !== undefined,
+    });
     return () => {
       map.delete(el);
     };
