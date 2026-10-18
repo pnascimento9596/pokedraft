@@ -41,3 +41,18 @@ describe("play badge placement (catches badges clipped at the pitch edge)", () =
     expect(badgeCorner({ x: 97, y: 3 }, { w: 0, h: 0 }, { w: 0, h: 0 })).toEqual({ x: 97, y: 3 });
   });
 });
+
+describe("play badge under the follow camera (catches a badge clamped to the whole pitch while the camera shows only part of it)", () => {
+  // At 1.6x zoom on the far corner flag the camera shows the pitch from 37.5% to 100% each way.
+  const VIEW = { left: 37.5, top: 37.5, right: 100, bottom: 100 };
+
+  it("a badge over a player at the view's left edge moves right into the view: left 121.5px", () => {
+    const corner = badgeCorner({ x: 40, y: 60 }, BADGE, PITCH, VIEW);
+    expect((corner.x / 100) * PITCH.w).toBeCloseTo(121.5, 3);
+  });
+
+  it("a badge over a player at the view's top edge moves down into the view: top 77.76px", () => {
+    const corner = badgeCorner({ x: 70, y: 40 }, BADGE, PITCH, VIEW);
+    expect((corner.y / 100) * PITCH.h).toBeCloseTo(77.76, 3);
+  });
+});
