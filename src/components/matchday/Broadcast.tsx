@@ -1,6 +1,14 @@
 "use client";
 
-import { memo, useCallback, useLayoutEffect, useMemo, useRef, type RefObject } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  type RefObject,
+} from "react";
 import { FORMATIONS } from "@/engine";
 import type { FormationId, FullLineup, MatchResult, Side, SpeciesId } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
@@ -144,6 +152,7 @@ export function Broadcast({
   motion,
   speed,
   feed,
+  onBall,
 }: {
   readonly match: PlayedMatch;
   /** The one timeline the match player clocks, sounds and stages from. */
@@ -158,6 +167,8 @@ export function Broadcast({
   readonly speed: number;
   /** The live frame source; without it the pitch stands where the props put it. */
   readonly feed?: FrameFeed;
+  /** Hears where the staged ball is along the pitch, 0 to 100, after each render (about 10 Hz). */
+  readonly onBall?: (x: number) => void;
 }) {
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
@@ -208,6 +219,10 @@ export function Broadcast({
     if (feed === undefined || !motion) return;
     return feed.subscribe(draw);
   });
+  const ballX = stage.ball.x;
+  useEffect(() => {
+    onBall?.(ballX);
+  }, [onBall, ballX]);
   const goal = active?.beat.kind === "goal" ? active.beat : null;
   const progress = active?.progress ?? 0;
   const shown = (from: number, to = 1) => !motion || (progress >= from && progress <= to);
