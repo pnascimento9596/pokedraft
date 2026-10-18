@@ -31,7 +31,7 @@ afterEach(() => {
 const FRAME = 16;
 const player = () => screen.getByTestId("match-player");
 
-/** Opens the first match, kicks off and plays 1600 ms of real time. */
+/** Kicks off the first match from the pre-match card and plays 1600 ms of real time. */
 async function kickOffAndPlay(view: MatchView, managerMode: boolean): Promise<number> {
   render(
     <MatchdayFlow
@@ -46,12 +46,6 @@ async function kickOffAndPlay(view: MatchView, managerMode: boolean): Promise<nu
   await act(async () => {
     await vi.dynamicImportSettled();
   });
-  if (managerMode) {
-    await act(async () => {
-      vi.advanceTimersByTime(FRAME);
-    });
-    fireEvent.click(screen.getByTestId("stop-go"));
-  }
   for (let i = 0; i < 100; i++) {
     await act(async () => {
       vi.advanceTimersByTime(FRAME);
