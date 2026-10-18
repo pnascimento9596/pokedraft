@@ -11,7 +11,14 @@ import {
   type ReactNode,
 } from "react";
 import { speciesById } from "@/engine";
-import type { BenchIndex, FullLineup, ManagerAction, MatchResult, Tactic } from "@/engine/types";
+import type {
+  BenchIndex,
+  FullLineup,
+  ManagerAction,
+  MatchResult,
+  Score,
+  Tactic,
+} from "@/engine/types";
 import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
@@ -108,6 +115,7 @@ export function MatchPlayer({
   manager,
   autoStart = false,
   footer,
+  aside,
 }: {
   readonly match: PlayedMatch;
   readonly matchIndex: number;
@@ -119,6 +127,8 @@ export function MatchPlayer({
   readonly autoStart?: boolean;
   /** Shown under the scoreboard once the match is over. */
   readonly footer?: ReactNode;
+  /** Shown under the ticker, from the minute on the clock and the score that has landed. */
+  readonly aside?: (minute: number, score: Score) => ReactNode;
 }) {
   // Quick is a still pitch with beat sounds only, so only a live broadcast with motion stages.
   const motion = !useReducedMotion() && view === "live";
@@ -622,6 +632,7 @@ export function MatchPlayer({
       {done && footer !== undefined ? <div className={s.footer}>{footer}</div> : null}
 
       <Ticker shown={shown} teams={teams} kicks={kicks} />
+      {aside?.(Math.floor(clock), score)}
       {sheet ? <div ref={spacerRef} className={s.sheetSpacer} aria-hidden="true" /> : null}
     </section>
   );

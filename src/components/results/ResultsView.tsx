@@ -28,7 +28,6 @@ import { isCoached } from "@/ui/manager/coached";
 import { toRecord } from "@/ui/runs";
 import { contributionLine, dragLabel } from "./format";
 import { FitReveal } from "./FitReveal";
-import { MatchdayLive } from "./MatchdayLive";
 import { MatchHighlights } from "./MatchHighlights";
 import { MatchList } from "./MatchList";
 import { ShareActions } from "./ShareActions";
@@ -91,7 +90,6 @@ export function ResultsView({
   const [selectedHighlightRound, setSelectedHighlightRound] = useState<CupRound | "mvp" | null>(
     null,
   );
-  const [showMatchday, setShowMatchday] = useState(false);
   const [watching, setWatching] = useState<number | null>(null);
   const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
 
@@ -145,25 +143,7 @@ export function ResultsView({
 
       <div className={s.actions}>
         <SoundToggle />
-        <button
-          type="button"
-          className="btn btn--ghost"
-          data-testid="toggle-matchday"
-          aria-expanded={showMatchday}
-          onClick={() => setShowMatchday((v) => !v)}
-        >
-          {showMatchday ? (
-            "Hide Matchday Broadcast"
-          ) : (
-            <>
-              <span aria-hidden="true">▶</span> Watch Matchday Broadcast
-            </>
-          )}
-        </button>
       </div>
-      {showMatchday ? (
-        <MatchdayLive cup={cup} draft={draft} onClose={() => setShowMatchday(false)} />
-      ) : null}
       {watching !== null ? (
         <MatchReplay
           cup={cup}

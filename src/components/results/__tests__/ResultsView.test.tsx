@@ -316,9 +316,8 @@ describe("ResultsView", () => {
     expect(label.nextElementSibling!.textContent).toBe("-12");
   });
 
-  it("hides the match star badge emoji and the broadcast play glyph from screen readers", async () => {
+  it("hides the match star badge emoji from screen readers", async () => {
     await view(FLAWLESS);
-    expect(screen.getByRole("button", { name: "Watch Matchday Broadcast" })).toBeTruthy();
     const badge = screen.getByTestId("match-star-G1");
     const spoken = badge.cloneNode(true) as HTMLElement;
     spoken.querySelectorAll('[aria-hidden="true"]').forEach((el) => el.remove());
