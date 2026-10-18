@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Test flakes and retained replays in CI
+
+Branch `chore/test-flakes-retained-replays` off `bcf5493`. Tests, one build check and the CI workflow only (Green). No product code, and no file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The Quick cut-in unit test no longer steps 16 ms frames from kickoff. It jumps to 28' in 100 ms frames and steps only through the 30' goal. It took 7.7 to 14.1 s on hosted runners against a 15 s limit and timed out once; locally it fell from about 1.3 s to 0.3 s.
+- The Builder test that flaked on `main` (run 39080199806) waits for the shared squad before it reads the pitch tokens, the fix #80 used for the same lazy-import race. A probe that delays the lazy import reproduced the CI failure exactly before the fix and passed after.
+- `check-retained-replays.mts` now replays the v1 to v5 bundles and the engine-6 golden through the emitted `replayAnyVersion`, requires the emitted bundles to match `RETAINED_TOKEN_VERSIONS`, and requires a golden case for every retained and live version. It runs in the `check` job after `pnpm build` in about 0.7 s.
+- `fatigue.spec.ts` encodes its squad for the live engine instead of a literal `pd6.` token. On engine 6 the token is byte-identical.
+
+RED: no RED commit; the changes are tests and a check. The old replay check passed on a build with a tampered or missing v5 bundle, and the new one failed on both, on a tampered live engine and on a wrong expected hash. Output verbatim in the decision log.
+
+Gates at `b941966` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 5 touched files.
+- Unit tests: 1,481 passed in 171 files.
+- `check-retained-replays.mts` after the build: 10 emitted golden replays passed; 0.64 to 0.65 s over three runs. `measure-retained-json.mjs` exited 0.
+- Playwright (`CI=1`, fresh build): `fatigue.spec.ts` 1 of 1 passed.
+- Review, hosted CI, the full e2e suite and a loaded full unit suite: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/test-chores.md`. No browser proof: no UI changed.
+
 ## Wave 2 summary
 
 Branch `docs/wave2-summary` off `87e7d51`. Docs only (Green). Appends the Wave 2 entry to `docs/reports/audits-2026-10-17/program-log.md`: every PR with its squash and reviewed head, the production checks, the measurements that moved, brief-vs-code notes and open carryovers. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
