@@ -159,6 +159,7 @@ test("two tabs keep independent runs and New run clears only its own checkpoint"
   await expect(first.getByTestId("round-header")).toContainText("Round 3 of 16");
   expect(await squad(first)).toEqual(firstSquad);
   await first.getByRole("button", { name: "New run" }).click();
+  await first.getByRole("button", { name: "Start over" }).click();
   await first.reload();
   await expect(first.getByTestId("run-start")).toBeVisible();
   await second.close();

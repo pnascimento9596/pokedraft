@@ -59,6 +59,9 @@ const REROLL_BUTTONS: Readonly<Record<"cup8" | "kanto151", readonly [RerollTarge
   kanto151: [["species", "Reroll"]],
 };
 
+// A downward drag on the open picker's toggle longer than this closes it, as on the builder Picker.
+const SWIPE_CLOSE_PX = 80;
+
 // How long a hint for a tap that did nothing stays up.
 const HINT_MS = 4000;
 
@@ -128,6 +131,13 @@ function ActiveDraftBoard({
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [hubOpen, setHubOpen] = useState(false);
   const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
+  const [askNewRun, setAskNewRun] = useState(false);
+  const newRunRef = useRef<HTMLButtonElement>(null);
+  const keepDraftingRef = useRef<HTMLButtonElement>(null);
+  const askNewRunId = useId();
+  const [swipeY, setSwipeY] = useState(0);
+  const swipe = useRef<{ readonly pointerId: number; readonly y0: number } | null>(null);
+  const swipeClosed = useRef(false);
   const [selection, setSelection] = useState<Selection | null>(null);
   const [dragCandidate, setDragCandidate] = useState<{
     id: SpeciesId;
@@ -363,8 +373,21 @@ function ActiveDraftBoard({
     };
   }, [dragCandidate, state.lineup, act, choosing?.slot]);
 
+  const cancelNewRun = useCallback(() => setAskNewRun(false), []);
+  const askedNewRun = useRef(false);
+  useEffect(() => {
+    if (askNewRun) keepDraftingRef.current?.focus({ preventScroll: true });
+    else if (askedNewRun.current) newRunRef.current?.focus({ preventScroll: true });
+    askedNewRun.current = askNewRun;
+  }, [askNewRun]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (inspectId !== null || document.querySelector("dialog[open]") !== null) return;
+      if (askNewRun) {
+        if (e.key === "Escape") cancelNewRun();
+        return;
+      }
       if (e.key === "Escape") {
         if (swapFrom !== null) {
           setSwapFrom(null);
@@ -391,7 +414,7 @@ function ActiveDraftBoard({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [swapFrom, selection, revealed, candidates, tapCandidate]);
+  }, [swapFrom, selection, revealed, candidates, tapCandidate, inspectId, askNewRun, cancelNewRun]);
 
   const tapSlot = (ref: SlotRef) => {
     const id = valueAt(state.lineup, ref);
@@ -458,7 +481,12 @@ function ActiveDraftBoard({
       data-dragging-candidate={dragCandidate?.moved || undefined}
     >
       {drawerOpen && phase.kind === "choosing" && selected === null ? (
-        <div className={s.drawerBackdrop} aria-hidden="true" />
+        <div
+          className={s.drawerBackdrop}
+          aria-hidden="true"
+          data-testid="draft-backdrop"
+          onClick={() => setDrawerOpen(false)}
+        />
       ) : null}
       <div className={s.hub}>
         <div className={s.hubControls}>
@@ -526,11 +554,46 @@ function ActiveDraftBoard({
         ) : null}
 
         {phase.kind === "choosing" ? (
-          <div ref={drawerRef} className={s.drawer} data-testid="draft-drawer">
+          <div
+            ref={drawerRef}
+            className={s.drawer}
+            data-testid="draft-drawer"
+            style={drawerOpen && swipeY > 0 ? { transform: `translateY(${swipeY}px)` } : undefined}
+          >
             <button
               type="button"
               className={`btn btn--ghost ${s.drawerToggle}`}
-              onClick={() => setDrawerOpen(!drawerOpen)}
+              onClick={() => {
+                if (swipeClosed.current) {
+                  swipeClosed.current = false;
+                  return;
+                }
+                setDrawerOpen(!drawerOpen);
+              }}
+              onPointerDown={(e) => {
+                swipeClosed.current = false;
+                if (!drawerOpen || e.button !== 0) return;
+                e.currentTarget.setPointerCapture(e.pointerId);
+                swipe.current = { pointerId: e.pointerId, y0: e.clientY };
+              }}
+              onPointerMove={(e) => {
+                if (swipe.current?.pointerId !== e.pointerId) return;
+                setSwipeY(Math.max(0, e.clientY - swipe.current.y0));
+              }}
+              onPointerUp={(e) => {
+                if (swipe.current?.pointerId !== e.pointerId) return;
+                const moved = e.clientY - swipe.current.y0;
+                swipe.current = null;
+                setSwipeY(0);
+                if (moved > SWIPE_CLOSE_PX) {
+                  swipeClosed.current = true;
+                  setDrawerOpen(false);
+                }
+              }}
+              onPointerCancel={() => {
+                swipe.current = null;
+                setSwipeY(0);
+              }}
               aria-expanded={drawerOpen}
             >
               {drawerOpen ? "Minimize draft picker" : revealed ? "Choose a player" : "View spinner"}
@@ -606,14 +669,44 @@ function ActiveDraftBoard({
               Ratings are 0 to 100, vs other players in the same role.
             </p>
           ) : null}
-          <button
-            type="button"
-            className="btn btn--ghost btn--sm"
-            data-testid="new-run"
-            onClick={onNewRun}
-          >
-            New run
-          </button>
+          {askNewRun ? (
+            <div className={s.askNewRun} role="group" aria-labelledby={askNewRunId}>
+              <p id={askNewRunId}>
+                Start over? The {filledCount(state.lineup)}{" "}
+                {filledCount(state.lineup) === 1 ? "player" : "players"} you signed will be lost.
+              </p>
+              <button
+                type="button"
+                className="btn btn--sm"
+                data-testid="new-run-confirm"
+                onClick={onNewRun}
+              >
+                Start over
+              </button>
+              <button
+                ref={keepDraftingRef}
+                type="button"
+                className="btn btn--primary btn--sm"
+                data-testid="new-run-cancel"
+                onClick={cancelNewRun}
+              >
+                Keep drafting
+              </button>
+            </div>
+          ) : (
+            <button
+              ref={newRunRef}
+              type="button"
+              className="btn btn--ghost btn--sm"
+              data-testid="new-run"
+              onClick={() => {
+                if (filledCount(state.lineup) === 0) onNewRun();
+                else setAskNewRun(true);
+              }}
+            >
+              New run
+            </button>
+          )}
         </div>
       </section>
 

@@ -220,6 +220,7 @@
 }
 .footer {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   align-items: center;
 }
@@ -357,6 +358,8 @@
 }
 .board[data-choosing][data-drawer] .drawerToggle {
   color: var(--stadium-ink);
+  /* The open picker's toggle is its drag area: a downward drag moves the picker, not the page. */
+  touch-action: none;
 }
 .board[data-choosing][data-drawer] .candidates > :global(.kicker),
 .board[data-choosing][data-drawer] .wheels p {
@@ -369,7 +372,6 @@
   background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(2px);
   z-index: 45;
-  pointer-events: none;
 }
 .board[data-choosing][data-drawer] .drawer {
   position: fixed;
@@ -466,4 +468,19 @@
   font-size: 11px;
   font-weight: 700;
   color: var(--stadium-ink);
+}
+
+.askNewRun {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+.askNewRun p {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 13px;
+  text-align: right;
 }

@@ -3,6 +3,33 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Draft safety (Wave 1, 1i)
+
+Branch `fix/draft-safety` off `f4489cb` (PR #69), with `origin/main` merged in, last at `b7f28d6` (PR #83). Only STATE.md conflicted. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- New run with any player signed asks "Start over? The N players you signed will be lost." with Start over and Keep drafting, focus on Keep drafting. With nothing signed, one tap still starts over.
+- Keys 1 to 3 and the draft's Escape do nothing while the scouting dossier, any open dialog or the New run question is open.
+- body clips sideways overflow (`overflow-x: clip`) instead of hiding it, so `position: sticky` sticks. Home Control desk measured at `top: 16` after a 1000px scroll once its main column is taller than it.
+- Pitch cards default to `touch-action: pan-y` (`none` only while dragging), so a vertical swipe on a card scrolls the page. A touch drag that starts vertically now scrolls instead of swapping; the two-tap swap stays.
+- The open picker is modal: a tap on its dimmed backdrop closes it, and a swipe down on its top bar closes it. Taps no longer pass through to the pitch or hub around it.
+- A dragged starter's vertical move is stretched by 1/cos(26deg) so it stays under the pointer on the tilted field.
+
+RED commits: `8660698`, `e8ef69d` and `b3faa46` (harness fix for the sticky and backdrop guards; all six Playwright guards and the drift unit guard fail on `f4489cb` code).
+
+Gates at `681cd5e` (later commits change only docs):
+
+- Lint, typecheck, build and Prettier on changed files exited 0.
+- Unit tests: 1,314 passed in 144 files.
+- Playwright on a fresh build, full suite: 823 passed, 0 failed, 61 skipped.
+- Browser proof at 390x844, 360 and 320: `docs/reports/draft-safety/`.
+- Review round 1 (GLM, `904951a`) asked for proof that a drag from the open picker still lands, since the backdrop now takes taps. The inert-while-dragging rule predates this PR (`DraftBoard.module.css` line 399). `e2e/mobile-draft.spec.ts` now asserts the picker is open before its candidate drag: 3 of 3 passed on the phone projects, and 3 of 3 failed with that rule's `pointer-events: none` removed.
+- After the `origin/main` merge the coordinator reruns lint, typecheck, unit tests, build and the format check on the reviewed head; the counts are in the PR's review comment and the next STATE update. Hosted CI runs the full Playwright suite.
+- Physical phone check, real touch on WebKit and the GLM review: NOT RUN.
+
+Decisions and RED output are in `docs/decisions/draft-safety.md`.
+
+PR #83 (row 1k, security and integrity quick fixes) merged as squash `b7f28d6`, reviewed head `8307dbe`, GLM 5.3 Flash APPROVE with canary `security-fixes-r2-7b878c9c50de4aa8db1f8d37ffdff8f3` echoed. The first reply on the same head also approved but mistyped its canary, so the checker did not count it and the review ran again. At `8307dbe` lint, typecheck, build and the format check exited 0 and 1,375 unit tests passed in 153 files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `b7f28d6` with `db.status` ok. On production a JSON and a text POST to `/gate/unlock` each answered 303 to `/gate?next=%2F&error=1`, `/gate?next=/..//evil.com` rendered `next` as `/`, `/api/leaderboard?mode=cup8&scope=all&coach=uncoached` answered 200, and `e2e/leaderboard.spec.ts` tests at lines 103 and 134 (stubbed board) passed 2 of 2 (chromium). NOT RUN: a real IPv6 client and a real hung Neon query.
+
 ## Security and integrity quick fixes (W1k)
 
 Branch `fix/security-integrity-quick-fixes`, off `f4489cb`, with `origin/main` (`754d838`, PR #82) merged in. Tier Red (gate, rate limits, database client, leaderboard). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
