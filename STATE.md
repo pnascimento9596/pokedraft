@@ -3,11 +3,34 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Motion bounds
+
+Branch `fix/motion-bounds` off `bcf5493`. Wave 3 row 3-0, pure staging in `src/ui/matchday/timeline.ts` (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- After a save, players the shot pulled upfield ease back into play over 600 ms instead of 300 ms, the same as after a goal. The keeper's parry now carries the ball half way back toward play and the settle carries the rest, so the ball no longer crosses the whole pitch in a third of a second.
+- When a player wins the ball in a duel and passes, the pass leaves from where they won it. Before, the ball rode along with the winner as they sprinted away.
+- At 2x everything still moves twice as far per frame (the bound is 4% of the pitch per frame at 1x and 8% at 2x), but no single frame goes past it any more.
+- Golden cup, largest one-frame move at 1x: ball 3.61% (was 3.88%), player 3.53% (was 4.94%). At 2x: ball 6.77% (was 8.84%), player 6.26% (was 9.85%). Over the 20 sweep seeds the ball's worst 1x frame is 3.97% (was 4.41%), with no view at 4% (was 6 of 120).
+- Measured first: both golden 2x maxima come from the one 59' save in match 0 (the player from the settle, the ball from the parry), not from duel turnovers. The sweep's 4.41% comes from the duel's pass after the tackle (0.33 to 0.44 of the phase), not from the 0.24 tackle window.
+
+RED commit: `e847c38` (8 of 22 failed). Contract pin, not a RED guard: `364b537` (painter and `stageFrame` parity). It passed before the fix and fails 3 of 3 when the painter paints the rendered props instead of the feed's frame.
+
+Gates at `d758f67` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 4 touched code files.
+- Unit tests: 1,506 passed in 172 files.
+- Playwright at `2e7d125` (`d758f67` changes only the unit guard; port 3611, `CI=1`, fresh build): `callouts-type-effects`, `set-pieces`, `smooth-movement`, `continuous-ball`, `broadcast-frame-loop`, `fatigue`, `shootout-suspense`, `mobile-targets`, `mobile-acceptance`, `injury-staging`, `speed-aware-staging`, `score-lands-with-ball`, `watch-live`, `quick-not-broadcast`: 384 passed, 54 skipped by their own project gates. The new 2x case read 5.67% per frame (bound 8); a build with `bcf5493`'s staging read 7.91%.
+- Review, hosted CI, the full e2e suite, 360 and 320 proof (no layout change) and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/motion-bounds.md`. Browser proof: `docs/reports/motion-bounds/`.
+
 ## Wave 2 summary
 
 Branch `docs/wave2-summary` off `87e7d51`. Docs only (Green). Appends the Wave 2 entry to `docs/reports/audits-2026-10-17/program-log.md`: every PR with its squash and reviewed head, the production checks, the measurements that moved, brief-vs-code notes and open carryovers. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 PR #96 (row 2f, fatigue on the pitch) merged as squash `87e7d51`, reviewed head `2d67b2e`, GLM 5.3 Flash APPROVE in round 1 with canary `fatigue-b84b3eb34bb7cb7683a5940fd3f3ecb2` echoed. At `2d67b2e` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,481 unit tests passed in 171 files and Prettier passed on 11 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `87e7d51` with `db.status` ok, and `fatigue.spec.ts` plus `continuous-ball.spec.ts` against production (chromium) passed 2 of 2. NOT RUN: physical phone check (owner action); a per-frame guard at 2x.
+
+PR #97 (Wave 2 summary, Green) merged as squash `bcf5493`, reviewed head `4b55aef`, GLM 5.3 Flash APPROVE in round 1 with canary `wave2-summary-5326c9df154f05e6123128adc28d221e` echoed. At `4b55aef` lint, typecheck and build exited 0 and 1,481 unit tests passed in 171 files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `bcf5493` with `db.status` ok. No runtime change.
 
 ## Fatigue on the pitch
 
