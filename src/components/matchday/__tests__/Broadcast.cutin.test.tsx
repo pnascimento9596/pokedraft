@@ -123,7 +123,8 @@ describe("cut-ins (catches a big lower-third card that is missing on a goal, or 
 
   it("keeps an ordinary open-play callout on the pitch with no cut-in", () => {
     expect(show(5.5, {}, 1000, true)).toBeNull();
-    expect(screen.getByTestId("pitch-ability").textContent).toBe("Dragonite used Hurricane!");
+    // Row 2b hands a turnover to the nearest player, so this phase's actor is the opponent's.
+    expect(screen.getByTestId("pitch-ability").textContent).toBe("Kabutops used Absorb!");
   });
 
   it("shows no cut-in for a card", () => {

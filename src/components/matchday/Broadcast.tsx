@@ -9,12 +9,11 @@ import { TYPE_PALETTE } from "@/design/stadium";
 import { typeLabel } from "@/ui/labels";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
 import { cutInAt, type CutIn } from "@/ui/matchday/cutin";
-import { activeBeat } from "@/ui/matchday/player";
+import { stageFrame } from "@/ui/matchday/player";
 import {
   GOAL_LANDS,
   OPP_SHAPE,
   goalMouth,
-  stagePitch,
   type Point,
   type StagedPlayer,
   type Timeline,
@@ -77,12 +76,13 @@ export function Broadcast({
     [match.opponent.roster],
   );
 
-  const active = activeBeat(timeline, fired, now, motion, clock, speed);
-  const stage = stagePitch(timeline, {
+  const { active, stage } = stageFrame(timeline, {
     clock,
-    active,
+    fired,
+    now,
     kicks,
     motion,
+    speed,
     userSlots,
     oppSlots,
     oppLabels,
