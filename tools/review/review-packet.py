@@ -19,6 +19,7 @@ import tempfile
 PREAMBLE = (
     "Independent Pokedraft dispatch review. Read all supplied diff and evidence. "
     "Return APPROVE or REQUEST_CHANGES, exact head SHA and canary. "
+    "Put the verdict alone on its own line, for example **APPROVE**, with nothing else on it. "
     "Separate blockers from optional polish. Do not invent tool execution. "
     "This is GLM-first packet review per repo overrides. "
     "A commit after this head voids this receipt.\n"
