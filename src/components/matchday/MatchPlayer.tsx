@@ -16,7 +16,7 @@ import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Pace, type Stop } from "@/ui/matchday/clock";
-import { TACTIC_LABEL, beatLine, kickLine, type Teams } from "@/ui/matchday/copy";
+import { TACTIC_LABEL, beatLine, clubShort, kickLine, type Teams } from "@/ui/matchday/copy";
 import {
   START,
   activeBeat,
@@ -54,6 +54,7 @@ import {
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { Touchline } from "./Touchline";
 import { setCamera, useCamera } from "./useCamera";
+import { exitFullscreen, toggleFullscreen, useFullscreen } from "./useFullscreen";
 import { useMovesets } from "./useMovesets";
 import s from "./MatchPlayer.module.css";
 
@@ -377,6 +378,22 @@ export function MatchPlayer({
     state.stop?.key ?? null,
     closeSheet,
   );
+  const fullscreen = useFullscreen(pitchRef);
+  const fullscreenOn = fullscreen.active;
+  const fullscreenButton = useRef<HTMLButtonElement>(null);
+  const wasFullscreen = useRef(fullscreenOn);
+  useEffect(() => {
+    if (wasFullscreen.current === fullscreenOn) return;
+    wasFullscreen.current = fullscreenOn;
+    // The button moves between the control row and the full-screen pitch; keep the focus on it.
+    if (document.activeElement === null || document.activeElement === document.body)
+      fullscreenButton.current?.focus({ preventScroll: true });
+  }, [fullscreenOn]);
+  // A stop asks its question below the pitch, where full screen cannot show it.
+  const stopKey = state.stop?.key ?? null;
+  useEffect(() => {
+    if (stopKey !== null && fullscreenOn) exitFullscreen();
+  }, [stopKey, fullscreenOn]);
 
   const snapWindow =
     match.windows?.find((w) => w.minute >= Math.max(5, Math.ceil(clock / 5) * 5)) ??
@@ -402,6 +419,22 @@ export function MatchPlayer({
   const oppMomentum = 100 - userMomentum;
 
   const stop = state.stop;
+  const fullscreenToggle =
+    view === "live" && fullscreen.supported ? (
+      <button
+        ref={fullscreenButton}
+        type="button"
+        className={`btn btn--sm ${s.fullscreen}`}
+        data-testid="fullscreen-toggle"
+        onClick={() => {
+          if (!fullscreenOn) closeSheet();
+          toggleFullscreen(pitchRef.current);
+        }}
+      >
+        {fullscreenOn ? "Exit full screen" : "Full screen"}
+      </button>
+    ) : null;
+
   const injury =
     stop?.kind === "injury"
       ? (injuries(match, lineup).find((c) => `injury:${c.minute}:${c.slot}` === stop.key) ?? null)
@@ -460,23 +493,36 @@ export function MatchPlayer({
         </div>
       </div>
 
-      <div ref={pitchRef} className={s.pitch}>
-        <Broadcast
-          match={match}
-          timeline={timeline}
-          lineup={lineup}
-          clock={clock}
-          now={now}
-          fired={state.fired}
-          kicks={state.kicks}
-          kickProgress={progress}
-          motion={motion}
-          speed={state.speed}
-          feed={feed}
-          cutIns={view === "live"}
-          camera={view === "live" ? cameraChoice : "full"}
-          onBall={crowd ? onBall : undefined}
-        />
+      <div ref={pitchRef} className={s.pitch} data-fullscreen={fullscreenOn || undefined}>
+        <div className={s.frame}>
+          <Broadcast
+            match={match}
+            timeline={timeline}
+            lineup={lineup}
+            clock={clock}
+            now={now}
+            fired={state.fired}
+            kicks={state.kicks}
+            kickProgress={progress}
+            motion={motion}
+            speed={state.speed}
+            feed={feed}
+            cutIns={view === "live"}
+            camera={view === "live" ? cameraChoice : "full"}
+            onBall={crowd ? onBall : undefined}
+            scoreBug={
+              fullscreenOn ? (
+                <ScoreBug
+                  opp={match.opponent.name}
+                  score={score}
+                  minute={state.stage === "pens" ? null : minuteLabel}
+                  pens={pens}
+                />
+              ) : undefined
+            }
+          />
+        </div>
+        {fullscreenOn ? fullscreenToggle : null}
       </div>
 
       <div className={s.controls}>
@@ -548,6 +594,7 @@ export function MatchPlayer({
             </button>
           </div>
         ) : null}
+        {fullscreenOn ? null : fullscreenToggle}
       </div>
 
       {sheet ? (
@@ -624,6 +671,35 @@ export function MatchPlayer({
       <Ticker shown={shown} teams={teams} kicks={kicks} />
       {sheet ? <div ref={spacerRef} className={s.sheetSpacer} aria-hidden="true" /> : null}
     </section>
+  );
+}
+
+/** The TV-style corner score, shown over the pitch in full screen only. */
+function ScoreBug({
+  opp,
+  score,
+  minute,
+  pens,
+}: {
+  readonly opp: string;
+  readonly score: { readonly user: number; readonly opp: number };
+  readonly minute: string | null;
+  readonly pens: { readonly user: number; readonly opp: number } | null;
+}) {
+  return (
+    <div className={s.bug} data-testid="score-bug" aria-hidden="true">
+      <span>{TEAMS_USER}</span>
+      <span className={`num ${s.bugScore}`}>
+        {score.user}-{score.opp}
+      </span>
+      <span>{clubShort(opp)}</span>
+      {minute !== null ? <span className="num">{minute}</span> : null}
+      {pens !== null ? (
+        <span className="num">
+          Pens {pens.user}-{pens.opp}
+        </span>
+      ) : null}
+    </div>
   );
 }
 

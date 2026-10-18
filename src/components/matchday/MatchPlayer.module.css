@@ -6,7 +6,8 @@
 
 .scoreboard {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  /* A side is never narrower than its longest word, so a name wraps between words only. */
+  grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
@@ -18,7 +19,6 @@
 .team {
   min-width: 0;
   font-weight: 700;
-  overflow-wrap: anywhere;
 }
 
 .teamOpp {
@@ -155,7 +155,73 @@
 }
 
 .pitch {
+  position: relative;
   min-width: 0;
+}
+
+/* The whole pitch stays on screen, at most 70svh high; a landscape phone letterboxes it. */
+.frame {
+  width: 100%;
+  max-width: calc(70svh * 100 / 64);
+  margin-inline: auto;
+}
+
+.pitch[data-fullscreen] {
+  display: grid;
+  place-items: center;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+    env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+}
+
+.pitch[data-fullscreen] .frame {
+  max-width: none;
+  width: min(
+    100%,
+    calc((100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * 100 / 64)
+  );
+}
+
+.fullscreen {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.pitch[data-fullscreen] .fullscreen {
+  position: absolute;
+  top: calc(8px + env(safe-area-inset-top, 0px));
+  right: calc(8px + env(safe-area-inset-right, 0px));
+  z-index: 1;
+}
+
+.bug {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bc-shade-strong);
+  color: var(--bc-ink);
+  font-size: clamp(12px, 2.4cqi, 20px);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.bug > span {
+  padding: 0.5em 0.6em;
+}
+
+.bug > span + span {
+  border-left: 1px solid var(--bc-line-faint);
+}
+
+.bugScore {
+  font-size: 1.15em;
+  font-weight: 800;
 }
 
 /* From 600px up the sheet's prompts and touchline sit in the page as before. */
