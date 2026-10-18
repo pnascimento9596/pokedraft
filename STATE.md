@@ -12,7 +12,7 @@ Branch `feat/audio-polish` off `fe6d183`. UI and synthesized audio only (Yellow)
 - The crowd stops on pause, manager stops, full time, Sound off, closing Watch live and leaving the matchday. Quick has no crowd, no roar and no kick thud.
 - The kick thud never sounds twice in any three phases.
 
-RED commit: `da0bcc8` (11 guards failed across 5 files).
+RED commit: `da0bcc8` (11 tests failed in 4 files and `crowd.test.ts` failed to import `../crowd`).
 
 Gates at `b8b8d14` (code identical at `41a7fe1`, which adds the spec and docs):
 
