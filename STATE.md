@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Replay and deep links
+
+Branch `feat/replay-deep-links` off `origin/main` at `1e417e3`. Wave 3 row 3i, results and the matchday replay (Yellow, bundle). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The MatchdayLive text studio is gone. Watch live on a group match now has a "Group table" that counts this match live and adds the other fixture at full time.
+- In a replay, or after full time in a managed match, each goal has a 44 px pip on the progress bar. Tapping it plays from a minute before that goal. Earlier goals do not sound or buzz again.
+- In Live with motion, each of your goals gets an instant replay at half speed, about 5.2 s, with a REPLAY bug and Skip replay. Quick, reduced motion and the opponent's goals have none.
+- Your goals on the result line and in the ticker have "Share this goal". It copies `/r/pd6?t=<payload>&watch=<n>&at=<minute>`, which opens the shared run in that match a minute before the goal. A bad `watch` or `at` opens the normal shared run. With sound on, the link shows "Tap for sound".
+
+RED commits: `74ce17b` (2 of 25 failed), `aaafd4d` (7 of 7 failed), `6382ea2` (5 of 6 failed) and `c2bd956` (17 of 36 failed).
+
+Gates at `d90ef2f` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on 33 touched files.
+- Unit tests: 1,595 passed in 186 files.
+- Playwright (`CI=1`, fresh build at `d90ef2f`), full suite: 896 passed, 64 skipped by their own project gates, 0 failed.
+- Review, hosted CI and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/replay-deep-links.md`. Browser proof: `docs/reports/replay-deep-links/`.
+
 ## Follow camera
 
 Branch `feat/follow-camera` off `feat/team-readability` at `d656db7`. Wave 3 row 3b, matchday pitch and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
