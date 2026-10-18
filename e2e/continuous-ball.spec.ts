@@ -20,11 +20,17 @@ test("the ball never teleports through the first goal and its kickoff, at 390px 
   await page.addInitScript(() => {
     const w = window as unknown as { samples: Sample[] };
     w.samples = [];
+    // The ball's spot in percent of the pitch. The frame loop writes it as a transform in units
+    // of the pitch width, where the pitch is 64 units tall; builds before it wrote left and top.
+    const spot = (ball: HTMLElement) => {
+      const moved = /translate3d\(([-\d.]+)cqi, ([-\d.]+)cqi/.exec(ball.style.transform);
+      if (moved !== null) return { x: Number(moved[1]), y: Number(moved[2]) / 0.64 };
+      return { x: Number.parseFloat(ball.style.left), y: Number.parseFloat(ball.style.top) };
+    };
     const read = (t: number) => {
       const ball = document.querySelector<HTMLElement>('[data-testid="broadcast-ball"]');
       if (ball !== null) {
-        const x = Number.parseFloat(ball.style.left);
-        const y = Number.parseFloat(ball.style.top);
+        const { x, y } = spot(ball);
         if (Number.isFinite(x) && Number.isFinite(y)) w.samples.push({ t, x, y });
       }
       requestAnimationFrame(read);

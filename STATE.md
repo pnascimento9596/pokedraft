@@ -20,6 +20,58 @@ Gates at `2cbb5f1` (the merge of `origin/main` at `85b292e`):
 
 Measurements and decisions are in `docs/decisions/set-pieces.md`. Screenshots are in `docs/reports/set-pieces/`.
 
+PR #91 (row 2a, broadcast frame loop) merged as squash `e3d0e95`, reviewed head `b420c85`, GLM 5.3 Flash APPROVE in round 1 with canary `frame-loop-4779394b5c662377c3cb98465e2d752e` echoed. At `b420c85` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,453 unit tests passed in 166 files and Prettier passed on 13 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `e3d0e95` with `db.status` ok, and `broadcast-frame-loop`, `continuous-ball`, `shootout-suspense` and `callouts-type-effects` against production (chromium) passed 9 of 9, the ball's fastest 100 ms speed reading 2.68% per frame. NOT RUN: physical phone check (owner action); the perf harness after the #92 merge. Carryover: style recalc rose (257 to 484 ms per 10 s at 4x throttle) while total main-thread time fell; pose and facing update at the 10 Hz render floor.
+
+Merged origin/main after PR #91. Row 2a moved the trail drawing into `trailPath` in `Broadcast.tsx`, so the free kick's curl (`trail.via`) now bends that helper's control point; `trailPath` is exported and `Broadcast.trailPath.test.ts` pins both the curled and the plain path (it fails with `via` ignored: `Q 87.50 29.76` instead of `Q 80.75 27.52`). After the merge: lint, typecheck and build exited 0, 149 matchday unit tests passed in 24 files, and `set-pieces`, `continuous-ball`, `broadcast-frame-loop`, `score-lands-with-ball`, `shootout-suspense` and `callouts-type-effects` passed 14 of 14 locally.
+
+## Broadcast frame loop
+
+Branch `perf/broadcast-frame-loop` off `fe6d183`, with `origin/main` merged in, last at `85b292e`
+(PRs #89, #90 and #92). UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting`
+changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+For the player, a live match looks the same and does less work per frame. Before, React re-rendered
+the whole match screen on every animation frame (62 commits in 62 frames). Now the clock,
+scoreboard, ticker and touchline render about every 100 ms (12 commits in the same 62 frames). They
+also render at once on a new minute, a fired beat, a landed goal, or a frame whose pitch shows a new
+cut-in, trail, play badge or carrier. A frame loop moves the 22 players and the ball with
+`translate3d` transforms from row 2b's `stageFrame`. Quick and reduced motion stay still. The score
+lands at goal progress 0.6, and 1x/2x staging, manager stops, injury staging and row 2g's cut-ins
+keep their timings. Row 2e's penalty moves per frame at that frame's `kickProgress`. The
+sudden-death banner, the kick dots, the shootout score and the kick sounds render on the frame that
+reaches them.
+
+RED commits: `3129582`, `6c06799` (5 of 5 guard tests fail on `origin/main` code). The cut-in timing
+guard fails when the painter is forced never to ask for a render (mutation proof on the merged
+code). `continuous-ball` now reads the transform and still fails on an `ae8ee22` build (9.00).
+
+Measured at 390x844 with a 4x CPU throttle in headless Chromium, 2 batches of 5 alternated runs per
+side, before `458c56e` and after `6e9d509` (medians, batch 1 then batch 2):
+
+- p50 frame interval was 16.7 ms on both sides in both batches.
+- p95 was 16.7/16.7 ms before and 16.8/16.7 ms after. Across the 10 runs per side, 3 before and
+  4 after read 16.8. That is one tick of the 0.1 ms timer.
+- Every run on both sides had 0 dropped frames, 0 long tasks and a 16.8 ms largest gap.
+- DOM mutations fell from about 2207 to 1164 per second.
+- Main-thread task time fell from 3022/4167 to 2824/3764 ms per 10 s.
+- Style recalc rose from 257/397 to 484/676 ms.
+
+Headless numbers do not include GPU raster. Details are in `docs/decisions/broadcast-frame-loop.md`.
+
+Gates at `f0f73b9` (after the #92 merge):
+
+- Lint, typecheck and build exited 0.
+- Unit tests: 1453 passed in 166 files.
+- `check:mirrors`, `image-seam`, `image-packs`, `theme-contrast`, `theme-colors`, `theme-cvd` and
+  `client-bundle` exited 0.
+- Playwright (`broadcast-frame-loop`, `continuous-ball`, `callouts-type-effects`, `audio-polish`,
+  `score-lands-with-ball`, `speed-aware-staging`, `mobile-pitch-fixes`, `injury-staging`,
+  `one-shared-timeline`, `quick-not-broadcast`, `shootout-suspense`) gave 20 passed and 0 failed.
+- NOT RUN: physical phone check, full local Playwright suite, review, hosted CI, and a perf rerun
+  at `f0f73b9`. The numbers above are from `6e9d509`, before #92.
+
+PR #92 (row 2e, shootout with suspense) merged as squash `85b292e`, reviewed head `5b2229a`. At `5b2229a` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,445 unit tests passed in 165 files and Prettier passed on 12 touched files. GLM 5.3 Flash: the first reply (canary `shootout-2449282c14c0d19c6b0cf507e6718bb0`) read APPROVE but put the verdict on a line with other text, so it was not counted; the full rerun at the same head with canary `shootout-b-186b4fc0bd2aa36934fd3fe7f08420d2` approved. Hosted `check` first failed on a timeout in `MatchPlayer.quick.test.tsx` ("Quick shows no cut-in through the 30' goal", over 15 s), a row 2g test that takes about 1.9 s locally both on `main` at `458c56e` and on `5b2229a` (3 runs each); the failed job was rerun with no commit and passed, and all eight e2e shards were green. Production `/api/health?db=1` served `85b292e` with `db.status` ok, and `shootout-suspense.spec.ts` plus `continuous-ball.spec.ts` against production (chromium) passed 2 of 2. NOT RUN: physical phone check and on-device sound (owner action). Carryover: that Quick test is the heaviest matchday unit test and has hit the 15 s limit once on a hosted runner.
+
 ## Shootout with suspense
 
 Branch `feat/shootout-suspense` off `e7f2012`, with `origin/main` merged in at `ae8ee22` (PR #89). UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
