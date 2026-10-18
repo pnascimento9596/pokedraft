@@ -260,6 +260,28 @@ moves the energies, instead of passing on the frozen engine.
 I kept the token in the spec rather than in `e2e/helpers.ts` or the `e2e/pins.ts` generator,
 because the spec is its only user.
 
+## 5. `callouts-type-effects.spec.ts` typed badge race (added after PR #98)
+
+PR #98's hosted run 39157333456, shard 1, failed "a live goal shows the lower-third cut-in and
+open play shows a typed badge at 320px" twice (first try and retry):
+
+```
+Error: expect(locator).toHaveText(expected) failed
+Locator: getByTestId('match-replay').getByTestId('pitch-ability').first()
+Expected pattern: / (used .+!|threads a pass!|surges forward!|wins the tackle!)$/
+Timeout: 5000ms
+Error: element(s) not found
+```
+
+`Broadcast.tsx` renders `pitch-ability` only while `stage.playCallout` is set, so a badge lives
+for its phase. The spec waited for the first badge to be visible and then, as a second step,
+read its text. A slow runner saw a badge, lost it before the text check, and found none within
+5 s. It passed 3 of 3 locally at the same head and on rerun with no commit. The spec now filters
+`pitch-ability` by the same text pattern and waits once for a visible match (60 s), so a badge
+that vanishes is replaced by the next one rather than failing the test. The assertion keeps its
+meaning: a typed badge with that wording appears in open play. RED is the hosted failure; it did
+not reproduce locally.
+
 ## Brief vs code
 
 - The hand-off says the Quick test hit 15 s on #92. The only timeout found is run 39097585976,
