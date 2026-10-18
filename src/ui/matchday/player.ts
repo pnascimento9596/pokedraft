@@ -195,6 +195,7 @@ export interface FrameView {
   readonly fired: Readonly<Record<string, number>>;
   readonly now: number;
   readonly kicks: number;
+  readonly kickProgress?: number;
   readonly motion: boolean;
   readonly speed: number;
   readonly userSlots: StageInput["userSlots"];
@@ -212,6 +213,7 @@ export function stageFrame(
     clock: view.clock,
     active,
     kicks: view.kicks,
+    kickProgress: view.kickProgress,
     motion: view.motion,
     userSlots: view.userSlots,
     oppSlots: view.oppSlots,

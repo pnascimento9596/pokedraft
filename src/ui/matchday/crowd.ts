@@ -50,6 +50,18 @@ export function roarFor(
   };
 }
 
+const ROAR_PENALTY = { hold: 500, release: 700 } as const;
+
+/** The crowd's roar for a scored shootout kick: shorter than a goal's, so the next run-up is heard. */
+export function penRoar(side: Side, speed: number): Roar {
+  return {
+    peak: ROAR_PEAK[side],
+    attackMs: ROAR_ATTACK / speed,
+    holdMs: ROAR_PENALTY.hold / speed,
+    releaseMs: ROAR_PENALTY.release / speed,
+  };
+}
+
 /** Phases between kick thuds, counting the phase that thudded. */
 const KICK_GAP = 3;
 
