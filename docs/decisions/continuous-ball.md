@@ -191,8 +191,8 @@ Robustness sweeps, measured with throwaway scripts and not part of the guard:
 - At 2x the per-frame moves roughly double. The guard pins 1x.
 
 In the browser, at 390x844 in chromium, watching group match 1 live through its first goal and
-the kickoff after it: 2,259 rendered frames, largest move between rendered frames 2.70% of pitch
-length (2.70% scaled to one 60 Hz frame).
+the kickoff after it, at `c52a10a`: 2,251 rendered frames, largest move between rendered frames 2.68% of pitch
+length (2.68% scaled to one 60 Hz frame). Before the merge, at `0ea0c23`: 2,259 frames, 2.70%.
 
 ## Decisions
 

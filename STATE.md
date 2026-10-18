@@ -11,11 +11,11 @@ For the player, the broadcast ball no longer teleports. A tackle carries the bal
 
 RED commit: `e7b7ece` (4 of 4 guards failed), after the prefactor `a4e7e66` that adds the `stageFrame` seam with no behaviour change. GREEN: `0ea0c23`.
 
-Gates at `0ea0c23`:
+Gates at `c52a10a` (the merge of `origin/main` at `e7f2012`, PR #88):
 
-- Lint, typecheck and build exited 0. Unit tests: 1,391 passed in 156 files.
+- Lint, typecheck and build exited 0. Unit tests: 1,414 passed in 160 files (1,391 in 156 at `0ea0c23` before the merge).
 - Prettier passed on every touched file.
-- Playwright on a fresh build, port 3532 (3522 was held by another dispatch's server). `e2e/continuous-ball.spec.ts` passed 1 of 1 in its own run (2,259 frames, largest rendered move 2.70%). A second run of `mobile-targets`, `mobile-acceptance`, `watch-live`, `one-shared-timeline`, `recorded-saves`, `score-lands-with-ball`, `injury-staging`, `speed-aware-staging` and `quick-not-broadcast` had 371 passed and 54 skipped of 425.
+- Playwright on a fresh build, port 3532 (3522 was held by another dispatch's server). `continuous-ball`, `audio-polish`, `mobile-targets`, `mobile-acceptance`, `watch-live`, `one-shared-timeline`, `recorded-saves`, `score-lands-with-ball`, `injury-staging`, `speed-aware-staging`, `quick-not-broadcast` and `manager-mode`: 388 passed, 54 skipped by their own project gates. The continuous-ball scene sampled 2,251 frames with a largest rendered ball move of 2.68% of the pitch length.
 - NOT RUN: the full local Playwright suite, the review, and browser proof at 360 and 320 (no layout change).
 
 Measurements and decisions are in `docs/decisions/continuous-ball.md`. Screenshots are in `docs/reports/continuous-ball/`.
