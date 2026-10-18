@@ -60,6 +60,8 @@ The HMAC literals in `ip-key.test.ts` come from `printf '%s' <key> | openssl dgs
 - IPv4-mapped IPv6 keys as IPv4. Keying it by /64 would put every mapped client in `0:0:0:0::/64`, one shared bucket.
 - Existing IPv6 `ip_hash` values and rate-limit history stop matching new requests. That only resets IPv6 rate-limit history, the same effect CLAUDE.md names for a secret rotation.
 - `coach` stays on a mode or date switch, the way the in-memory filter did.
+- The 4 s budget against Neon cold starts: the coordinator timed production `/api/health?db=1` once after 7 minutes idle (past the 300 s suspend timeout, 0.25 CU) at 0.90 s, then 0.16 s warm. One sample, so a slower wake is possible, but 4 s leaves over 4x headroom on the one measured. A cold start that does pass 4 s reads as "leaderboard is offline", and a retry finds a warm endpoint.
+- Abort is client side. A query that reaches Neon and commits after the 4 s abort still counts: an admitted submit or gate attempt can be recorded in `rate_limit_events` while the player sees the offline reply. The admission CTE in `drizzleStore.admitSubmission` (`store.ts`) records the attempt before the run row is written, so a timed-out admission spends one attempt with no row, and the retry spends another. That fails closed. If instead the later row insert commits after its abort, the retry finds the run by token in the same CTE and is answered without spending an attempt.
 
 ## Gates at `5b7ca8d`
 
