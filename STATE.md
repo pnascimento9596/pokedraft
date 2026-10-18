@@ -3,6 +3,35 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Broadcast frame loop
+
+Branch `perf/broadcast-frame-loop` off `fe6d183`. UI only (Yellow). No file under `src/engine`,
+`src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into
+the next STATE update.
+
+For the player, a live match looks the same and does less work per frame. Before, React re-rendered
+the whole match screen on every animation frame (62 commits in 62 frames). Now the clock,
+scoreboard, ticker and touchline render about every 100 ms, and at once when a beat fires or a goal
+lands. A frame loop moves the 22 players and the ball with `translate3d` transforms from `stagePitch`
+output. Quick and reduced motion stay still. The score lands at goal progress 0.6, and 1x/2x
+staging, manager stops and injury staging keep their timings.
+
+RED commits: `3129582`, `6c06799` (5 of 5 guard tests fail on `origin/main` code).
+
+Measured at 390x844 with a 4x CPU throttle in headless Chromium, 5 alternated runs per side, before
+`fe6d183` and after `513d113`. p50 frame interval was 16.7 ms on both sides. p95 was 16.7 ms on both
+sides, with 0 dropped frames and 0 long tasks. DOM mutations fell from 2329 to 1229 per second, and
+main-thread task time fell from 5356 to 3755 ms per 10 s. Style recalc rose from 601 to 715 ms.
+Headless numbers do not include GPU raster. Details are in `docs/decisions/broadcast-frame-loop.md`.
+
+Gates at `513d113` plus the harness and e2e files that the next commit adds:
+
+- Lint, typecheck and build exited 0, and Prettier passed on touched files.
+- Unit tests: 1392 passed in 156 files.
+- Playwright (matchday specs, `mobile-targets`, `mobile-acceptance`): 423 passed, 54 skipped by
+  project filters, 0 failed.
+- Physical phone check, full local Playwright suite, review and hosted CI: NOT RUN.
+
 ## Wave 1 summary
 
 Branch `docs/wave1-summary` off `4173b94`. Docs only (Green). Appends the Wave 1 entry to `docs/reports/audits-2026-10-17/program-log.md`: every PR with its squash and reviewed head, the production checks, the measurements that moved, brief-vs-code notes and open carryovers. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
