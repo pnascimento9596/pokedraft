@@ -390,6 +390,7 @@ export function MatchPlayer({
         kickProgress={progress}
         motion={motion}
         speed={state.speed}
+        cutIns={view === "live"}
         onBall={crowd ? onBall : undefined}
       />
 

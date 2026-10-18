@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Callouts and type effects
+
+Branch `feat/callouts-type-effects` off `fe6d183`, with `origin/main` merged in at `e7f2012` (PR #88). UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- A live match calls a move only on big moments: final-third through balls, crosses into the box, key duels that win the ball for a goal or a save, and 15% of build-up, at least 5 minutes apart (key duels exempt). Real cups average 13.81 open-play callouts a match, down from 54.83 (84 matches of 90 minutes).
+- Every one of the 18 types draws its own effect colour (the twelve without a tuned effect take `TYPE_PALETTE`) and sounds in one of ten synthesized families.
+- Goals, saves and key duels get a lower-third card with the sprite, the move and a type badge. Quick shows no card and no per-phase sound. Reduced motion shows the card without animation.
+
+RED commit: `e6401fe` (9 of 62 failed in the five touched test files; the pinned seed gave 60 callouts).
+
+Gates at `f755466`:
+
+- Lint, typecheck and build exited 0. Prettier passed on every touched file.
+- Unit tests: 1,421 passed in 161 files.
+- Playwright (`PLAYWRIGHT_PORT=3523 CI=1`): `callouts-type-effects`, `one-shared-timeline`, `score-lands-with-ball`, `speed-aware-staging`, `manager-mode`, `audio-polish`, `mobile-targets` and `mobile-acceptance`: 383 passed, 54 skipped, 0 failed.
+- Pinned seed (`a1`, 4-2-3-1, match 1): 12 open-play callouts (was 60).
+- Full local Playwright suite, physical phone check and review: NOT RUN.
+
+Browser proof: `docs/reports/callouts-type-effects/` (goal cut-in and callout badge at 390, 360 and 320, and the reduced-motion goal card at 390). Measurements and decisions are in `docs/decisions/callouts-type-effects.md`.
+
+PR #88 (row 2h, audio polish) merged as squash `e7f2012`, reviewed head `f46ef6c`, GLM 5.3 Flash APPROVE in round 1 with canary `audio-polish-dcd1218ec61c1a8e038774952dbb605e` echoed. At `f46ef6c` lint, typecheck and build exited 0, 1,410 unit tests passed in 159 files and Prettier passed on 14 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `e7f2012` with `db.status` ok, and `e2e/audio-polish.spec.ts` against production (chromium) passed 2 of 2. NOT RUN: iOS Safari audio on a real device (owner action).
+
+Hosted CI round 1 on `4b79214` (GLM APPROVE, canary `callouts-344a4b0b787bd0aea50929c2fa8d5bb1`) failed `pnpm check:theme-colors`: the twelve palette-type rules mixed toward a literal `#fff`. The colour now comes from a new `--fx-core-tint` token in `src/design/stadium.css` (same `#ffffff`, no visual change). `check:theme-colors`, `check:theme-contrast`, `check:theme-cvd`, `check:mirrors` and `check:image-seam` exit 0.
+
 ## Audio polish
 
 Branch `feat/audio-polish` off `fe6d183`. UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
