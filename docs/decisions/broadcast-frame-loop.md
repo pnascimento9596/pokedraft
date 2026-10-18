@@ -74,61 +74,76 @@ Harness `scripts/perf/broadcast-frames.mts`. Each run opens a fresh headless Chr
 390x844 (DPR 3, touch, mobile) with a 4x CPU throttle through CDP. It watches group match 1 of the
 golden cup8 run live at 1x, waits 1 s, then records 10 s of play (about minute 2 to 15). It records
 every rAF timestamp, long tasks over 50 ms, MutationObserver records, and Chrome's task, script,
-layout and style time. Before is a `pnpm build` of `fe6d183`; after is a `pnpm build` of `513d113`.
-There were 5 runs per side, alternated A B B A. The machine load average was 7 to 13 on 12 cores,
-because other Wave 2 lanes were building. Raw runs are in
-`docs/reports/broadcast-frame-loop/frames.json`.
+layout and style time. Each side ran 5 times, alternated A B B A, with `pnpm build` served by
+`next start`. Other Wave 2 lanes were building on the same machine, with a load average of 6 to 13
+on 12 cores. Raw runs are in `docs/reports/broadcast-frame-loop/frames.json`.
 
-| Metric (median of 5, range)      | before (`fe6d183`)  | after (`513d113`)   |
-| -------------------------------- | ------------------- | ------------------- |
-| p50 frame interval               | 16.7 ms (16.7-16.7) | 16.7 ms (16.7-16.7) |
-| p95 frame interval               | 16.7 ms (16.7-16.8) | 16.7 ms (16.7-16.7) |
-| largest gap / dropped frames     | 16.8 ms / 0         | 16.8 ms / 0         |
-| long tasks (> 50 ms)             | 0 (0-0)             | 0 (0-0)             |
-| DOM mutations per second         | 2329 (2290-2344)    | 1229 (1224-1233)    |
-| main thread task time in 10 s    | 5356 ms (4741-5785) | 3755 ms (3595-4059) |
-| script                           | 1234 ms (1089-1342) | 574 ms (538-622)    |
-| layout                           | 307 ms (273-329)    | 118 ms (110-130)    |
-| style recalc                     | 601 ms (517-692)    | 715 ms (702-813)    |
+At the merged head, before is `origin/main` `e7f2012` (PR #88 audio polish) and after is `f511c73`:
+
+| Metric (median of 5, range)  | before (`e7f2012`)  | after (`f511c73`)   |
+| ---------------------------- | ------------------- | ------------------- |
+| p50 frame interval           | 16.7 ms (16.7-16.7) | 16.7 ms (16.7-16.7) |
+| p95 frame interval           | 16.8 ms (16.7-16.8) | 16.7 ms (16.7-16.8) |
+| largest gap / dropped frames | 16.8 ms / 0         | 16.8 ms / 0         |
+| long tasks (> 50 ms)         | 0 (0-0)             | 0 (0-0)             |
+| DOM mutations per second     | 2336 (2323-2340)    | 1229 (1224-1232)    |
+| main thread task time, 10 s  | 2385 ms (2339-2827) | 1970 ms (1770-2104) |
+| script                       | 555 ms (526-651)    | 267 ms (234-297)    |
+| layout                       | 92 ms (89-131)      | 72 ms (61-77)       |
+| style recalc                 | 211 ms (197-252)    | 351 ms (309-382)    |
+
+Before the merge, `fe6d183` against `513d113` (same harness, under heavier load) read:
+
+- p50 16.7 against 16.7 ms, and p95 16.7 against 16.7 ms.
+- 0 dropped frames and 0 long tasks on both sides.
+- Mutations 2329 against 1229 per second.
+- Task time 5356 against 3755 ms.
+- Script 1234 against 574 ms.
+- Layout 307 against 118 ms.
+- Style 601 against 715 ms.
 
 Verdict. Not worse on any of the four gating metrics. Frame pacing shows no measurable difference.
-Mutations per second fell 47% and main-thread task time fell 30%.
+Mutations per second fell 47%, main-thread task time fell 17 to 30% depending on load, and script
+time halved.
 
 - Frame intervals cannot separate the sides here. Headless Chromium paces rAF to 60 Hz, and every
   run on both sides drew all frames with a 16.8 ms largest gap. `performance.now()` is coarsened
-  to 0.1 ms, so p95 moves between 16.7 and 16.8 on timer resolution alone. Two earlier batches of
-  the same code read p95 medians of 16.7 before and 16.8 after. In those batches 3 of 10 before runs
-  and 6 of 10 after runs read 16.8. That gap is one timer tick, and neither side dropped a frame.
+  to 0.1 ms, so p95 moves between 16.7 and 16.8 on timer resolution alone. Over the four batches of
+  the final code (20 runs per side), 8 before runs and 7 after runs read 16.8. Any gap is one timer
+  tick, and neither side dropped a frame.
 - Headless numbers do not include GPU raster. Chromium rasterises in software here.
 
 Trace (`scripts/perf/broadcast-trace.mts`, 4 s at 4x throttle, three alternated pairs, raw in
-`docs/reports/broadcast-frame-loop/trace.txt`):
+`docs/reports/broadcast-frame-loop/trace.txt`). The load fell during this run, so absolute times
+drift by pair. The pre-merge pairs, run under steadier load, were:
 
-| Event (ms in 4 s)          | before      | after       |
-| -------------------------- | ----------- | ----------- |
-| FunctionCall (script)      | 517-533     | 235-244     |
-| UpdateLayoutTree (style)   | 209-236     | 279-295     |
-| elements restyled          | 9249-9283   | 10314-10351 |
-| Layout                     | 106-122     | 48-50       |
-| PrePaint                   | 261-285     | 183-191     |
-| Paint                      | 464-500     | 169-176     |
-| Layerize                   | 172-182     | 159-170     |
+| Event (ms in 4 s)        | before (`fe6d183`) | after (`513d113`) |
+| ------------------------ | ------------------ | ----------------- |
+| FunctionCall (script)    | 517-533            | 235-244           |
+| UpdateLayoutTree (style) | 209-236            | 279-295           |
+| elements restyled        | 9249-9283          | 10314-10351       |
+| Layout                   | 106-122            | 48-50             |
+| PrePaint                 | 261-285            | 183-191           |
+| Paint                    | 464-500            | 169-176           |
+| Layerize                 | 172-182            | 159-170           |
 
 Limiter. Before, React reconciliation (script) and paint led the frame: every frame re-rendered
 the screen and moved players by `left`/`top`, which invalidated layout and repainted them. After,
 style recalc is the largest single cost. Paint fell to about a third, because composited
 transforms move players without repainting them.
 
-Style recalc rose about 60 ms per 4 s, and this is a known cost. The ball's inherited `--loft` and
-`--spin` restyle its SVG subtree every frame, which accounts for the extra elements. A variant that
-wrote the ball's children directly restyled 8,860 elements, but its style time did not drop
-(median 615 vs 509 ms before, in a separate 5-run batch). So per-element style cost also rose. The
-cause is not proven. The likely candidates are container-relative units in transforms and
-`setAttribute("style")` reparsing. The kept version writes 1 mutation per ball frame instead of 3.
+Style recalc rose, and this is a known cost: about 60 ms per 4 s in the trace and 140 ms per 10 s in
+the merged-head harness. The ball's inherited `--loft` and `--spin` restyle its SVG subtree every
+frame, which accounts for the extra elements. A variant that wrote the ball's children directly
+restyled 8,860 elements, but its style time did not drop (median 615 vs 509 ms before, in a separate
+5-run batch). So per-element style cost also rose. The cause is not proven. The likely candidates
+are container-relative units in transforms and `setAttribute("style")` reparsing. The kept version
+writes 1 mutation per ball frame instead of 3. Total main-thread time still falls because script,
+layout and paint fall by more.
 
-Benchmark checklist. Both sides ran production builds served by `next start`. The work happened:
-the clock advanced from minute 2 to 15 in every run, and the in-page rAF probe drew 600 or 601
-frames. No run errored.
+Benchmark checklist. Both sides ran production builds. The work happened: the clock advanced from
+minute 1 or 2 to minute 14 or 15 in every run, and the in-page rAF probe drew 600 or 601 frames. No
+run errored.
 
 ## Product decisions applied
 
@@ -138,21 +153,25 @@ frames. No run errored.
 
 ## Gates
 
-At `513d113` plus the uncommitted harness and e2e files that the next commit adds:
+At the merged head `f511c73`:
 
-- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `pnpm test`: 1392 passed in 156 files.
-  Prettier check passed on every touched file.
-- Playwright with a fresh build, `PLAYWRIGHT_PORT=3521 CI=1`: 423 passed, 54 skipped by project
-  filters, 0 failed. The run covered the new `broadcast-frame-loop`, `one-shared-timeline`,
-  `score-lands-with-ball`, `speed-aware-staging`, `quick-not-broadcast`, `injury-staging`,
-  `watch-live`, `manager-mode`, `mobile-pitch-fixes`, `pitch-card-containment`,
+- `pnpm lint` and `pnpm typecheck` exited 0. `pnpm test`: 1415 passed in 160 files.
+- Playwright with a fresh build of `f511c73`, `PLAYWRIGHT_PORT=3521 CI=1`: 425 passed, 54 skipped
+  by project filters, 0 failed. The run covered the new `broadcast-frame-loop`, `audio-polish`,
+  `one-shared-timeline`, `score-lands-with-ball`, `speed-aware-staging`, `quick-not-broadcast`,
+  `injury-staging`, `watch-live`, `manager-mode`, `mobile-pitch-fixes`, `pitch-card-containment`,
   `pitch-ci-regressions`, `pitch-request-acceptance`, `honest-momentum`, `recorded-saves`,
   `highlights-honesty`, `builder-matchday`, `exhibition-two-legs`, `layout-shift`, `mobile-targets`
   and `mobile-acceptance`.
-- Browser proof: `docs/reports/broadcast-frame-loop/{390,360,320}-live.png`.
-  `e2e/broadcast-frame-loop.spec.ts` checks at each width with touch that all 22 players carry
-  `translate3d` transforms and that their centers sit inside the pitch. It also checks that the
-  ball moves between samples and that the page has no horizontal overflow.
+- `pnpm build` exited 0 at `f511c73`.
+
+Before the merge, at `513d113`: lint, typecheck and build exited 0, 1392 tests passed in 156 files,
+and the same Playwright set without `audio-polish` gave 423 passed, 54 skipped and 0 failed.
+
+Browser proof is in `docs/reports/broadcast-frame-loop/{390,360,320}-live.png`, taken at `f511c73`.
+`e2e/broadcast-frame-loop.spec.ts` checks at each width with touch that all 22 players carry
+`translate3d` transforms and that their centers sit inside the pitch. It also checks that the ball
+moves between samples and that the page has no horizontal overflow.
 
 ## NOT RUN
 

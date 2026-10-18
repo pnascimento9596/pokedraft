@@ -19,17 +19,23 @@ staging, manager stops and injury staging keep their timings.
 RED commits: `3129582`, `6c06799` (5 of 5 guard tests fail on `origin/main` code).
 
 Measured at 390x844 with a 4x CPU throttle in headless Chromium, 5 alternated runs per side, before
-`fe6d183` and after `513d113`. p50 frame interval was 16.7 ms on both sides. p95 was 16.7 ms on both
-sides, with 0 dropped frames and 0 long tasks. DOM mutations fell from 2329 to 1229 per second, and
-main-thread task time fell from 5356 to 3755 ms per 10 s. Style recalc rose from 601 to 715 ms.
+`e7f2012` and after `f511c73`:
+
+- p50 frame interval was 16.7 ms on both sides.
+- p95 was 16.8 ms before and 16.7 ms after. This is one tick of the 0.1 ms timer.
+- Both sides had 0 dropped frames and 0 long tasks.
+- DOM mutations fell from 2336 to 1229 per second.
+- Main-thread task time fell from 2385 to 1970 ms per 10 s.
+- Style recalc rose from 211 to 351 ms.
+
 Headless numbers do not include GPU raster. Details are in `docs/decisions/broadcast-frame-loop.md`.
 
-Gates at `513d113` plus the harness and e2e files that the next commit adds:
+Gates at `f511c73`:
 
-- Lint, typecheck and build exited 0, and Prettier passed on touched files.
-- Unit tests: 1392 passed in 156 files.
-- Playwright (matchday specs, `mobile-targets`, `mobile-acceptance`): 423 passed, 54 skipped by
-  project filters, 0 failed.
+- Lint, typecheck and build exited 0.
+- Unit tests: 1415 passed in 160 files.
+- Playwright (matchday specs including `audio-polish`, `mobile-targets` and `mobile-acceptance`):
+  425 passed, 54 skipped by project filters, 0 failed.
 - Physical phone check, full local Playwright suite, review and hosted CI: NOT RUN.
 
 ## Audio polish
