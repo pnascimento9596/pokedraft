@@ -40,12 +40,14 @@ export function passcodeMatches(attempt: string, passcode: string): boolean {
 const ORIGIN = "https://gate.invalid";
 
 // Resolve exactly as the browser will, so tabs, newlines or backslashes cannot turn a path
-// into a protocol-relative URL on another host.
+// into a protocol-relative URL on another host. Dot segments can still normalize the pathname
+// to one (`/..//evil.com` becomes `//evil.com`), so a leading `//` is refused after parsing.
 export function safeNext(next: string | null | undefined): string {
   if (!next || !next.startsWith("/")) return "/";
   try {
     const url = new URL(next, ORIGIN);
-    return url.origin === ORIGIN ? `${url.pathname}${url.search}${url.hash}` : "/";
+    if (url.origin !== ORIGIN || url.pathname.startsWith("//")) return "/";
+    return `${url.pathname}${url.search}${url.hash}`;
   } catch {
     return "/";
   }

@@ -48,9 +48,9 @@ describe("SubmitPanel", () => {
     typeAndSubmit("  Misty  ");
 
     const success = await screen.findByTestId("submit-success");
-    expect(success.textContent).toBe("#3Misty is on the daily board.");
+    expect(success.textContent).toBe("#3Misty is on the daily board, among uncoached runs.");
     expect(screen.getByRole("link", { name: "View leaderboard" }).getAttribute("href")).toBe(
-      "/leaderboard?mode=cup8&scope=daily&date=2026-10-09",
+      "/leaderboard?mode=cup8&scope=daily&date=2026-10-09&coach=uncoached",
     );
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
@@ -60,6 +60,7 @@ describe("SubmitPanel", () => {
       nickname: "Misty",
       token: "pd1.abc",
       engineVersion: "pokedraft-engine-6",
+      coach: "uncoached",
     });
     expect(localStorage.getItem("pokedraft:nickname")).toBe('"Misty"');
 
@@ -79,7 +80,7 @@ describe("SubmitPanel", () => {
     render(<SubmitPanel token="pd1.abc" daily />);
     typeAndSubmit("Misty");
     const success = await screen.findByTestId("submit-success");
-    expect(success.textContent).toBe("Misty is on the daily board.");
+    expect(success.textContent).toBe("Misty is on the daily board, among uncoached runs.");
     expect(screen.getByTestId("rank-unavailable").textContent).toBe(
       "Rank unavailableYour rank could not be loaded right now.",
     );
@@ -95,7 +96,7 @@ describe("SubmitPanel", () => {
     typeAndSubmit("Brock");
     await screen.findByTestId("submit-success");
     expect(screen.getByRole("link", { name: "View leaderboard" }).getAttribute("href")).toBe(
-      "/leaderboard?mode=kanto151&scope=all",
+      "/leaderboard?mode=kanto151&scope=all&coach=uncoached",
     );
   });
 
@@ -119,7 +120,7 @@ describe("SubmitPanel", () => {
     render(<SubmitPanel token="pd1.abc" daily />);
     typeAndSubmit("Misty");
     expect((await screen.findByTestId("submit-success")).textContent).toBe(
-      "#3Misty is on the daily board.",
+      "#3Misty is on the daily board, among uncoached runs.",
     );
   });
 

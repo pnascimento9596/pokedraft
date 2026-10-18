@@ -5,7 +5,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Announcer } from "@/components/Announcer";
-import { Board } from "@/components/leaderboard/Board";
+import { StatefulBoard } from "./board-harness";
 import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
 import type { BoardEntry } from "@/leaderboard/contract";
 
@@ -56,7 +56,7 @@ describe("Board", () => {
     );
     render(
       <>
-        <Board view={DAILY} />
+        <StatefulBoard view={DAILY} />
         <Announcer />
       </>,
     );
@@ -74,7 +74,7 @@ describe("Board", () => {
     vi.stubGlobal("fetch", fetchMock);
     const { rerender } = render(
       <>
-        <Board view={DAILY} />
+        <StatefulBoard view={DAILY} />
         <Announcer />
       </>,
     );
@@ -83,7 +83,7 @@ describe("Board", () => {
     const one = said();
     rerender(
       <>
-        <Board view={{ ...DAILY, date: "2026-10-08" }} />
+        <StatefulBoard view={{ ...DAILY, date: "2026-10-08" }} />
         <Announcer />
       </>,
     );
@@ -102,7 +102,7 @@ describe("Board", () => {
     );
     render(
       <>
-        <Board view={DAILY} />
+        <StatefulBoard view={DAILY} />
         <Announcer />
       </>,
     );
@@ -125,7 +125,7 @@ describe("Board", () => {
     );
     render(
       <>
-        <Board view={DAILY} />
+        <StatefulBoard view={DAILY} />
         <Announcer />
       </>,
     );
@@ -167,7 +167,7 @@ describe("SubmitPanel", () => {
     await waitFor(() => expect(document.activeElement).toBe(success));
     expect({ role: success.getAttribute("role"), text: success.textContent }).toEqual({
       role: null,
-      text: "#3Misty is on the daily board.",
+      text: "#3Misty is on the daily board, among uncoached runs.",
     });
   });
 });

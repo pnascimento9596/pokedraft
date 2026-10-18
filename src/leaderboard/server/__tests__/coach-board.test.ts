@@ -89,6 +89,24 @@ describe("coach filter is its own ranked top 50 (catches an Uncoached view cut s
     await db.insert(leaderboardEntries).values([...coached, row("Plain", token("plain"), 1, 300)]);
   });
 
+  it("rankOf ranks the uncoached #1 at 1 on the uncoached board and 52 on All (catches a submit reply saying #52 for the uncoached leader)", async () => {
+    const [plain] = await db
+      .select()
+      .from(leaderboardEntries)
+      .where(sql`${leaderboardEntries.nickname} = 'Plain'`);
+    const all = { mode: "cup8", dailyDate: null } as const;
+    expect(await store.rankOf(plain!, all, "uncoached")).toBe(1);
+    expect(await store.rankOf(plain!, all, "all")).toBe(52);
+  });
+
+  it("rankOf ranks the last coached run at 51 on the coached board", async () => {
+    const [last] = await db
+      .select()
+      .from(leaderboardEntries)
+      .where(sql`${leaderboardEntries.nickname} = 'Coach 50'`);
+    expect(await store.rankOf(last!, { mode: "cup8", dailyDate: null }, "coached")).toBe(51);
+  });
+
   it("coach=uncoached returns the one uncoached run at rank 1", async () => {
     const { status, body } = await board("uncoached");
     expect(status).toBe(200);
