@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Landscape, full screen and score bug
+
+Branch `feat/fullscreen-score-bug` off `feat/follow-camera` at `be5a86f`. Wave 3 row 3c, matchday player, scoreboard and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The pitch is never taller than 70% of the screen. On a phone turned to landscape (844x390) it is 427 by 273 px, wholly on screen and letterboxed, where it was 778 by 498 and ran off the screen. Portrait phones are unchanged. On a 1280x720 desktop the pitch is 788 px wide instead of 1214.
+- In Watch live a "Full screen" button (44 px target) ends the control row on browsers with the Fullscreen API. In full screen the same button reads "Exit full screen" in the corner; Esc also leaves. The broadcast is centred and padded by the safe-area insets.
+- iPhone Safari has no Fullscreen API for a page element, so the button is hidden there instead of doing nothing. The phone check confirms it.
+- In full screen only, a TV-style score bug sits in the top left corner over the pitch, outside the follow camera's zoom: "Your XI", the score as 1-0, the club's town ("Goldenrod"), the clock, and "Pens 3-2" in a shootout.
+- A half-time, injury or extra-time question leaves full screen, so it can be answered.
+- In landscape the touchline sits in the page under the pitch, every control at least 44 px, and a substitution goes through.
+- The 320 px scoreboard no longer breaks "Goldenrod United" mid-word (the Wave 1 carryover); a name wraps between words only.
+
+RED commits: `139417f` (6 of 8 failed in the unit file; `fullscreen-score-bug.spec.ts` failed 4 of 4 on a `be5a86f` build) and `cd472f4` (the stop step; it failed 1 of 4 on a build of the fix with the stop effect disabled).
+
+Gates at `3d76f09` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 7 touched code and test files.
+- Unit tests: 1,580 passed in 183 files.
+- Playwright (`CI=1`, fresh build of the `3d76f09` code): `fullscreen-score-bug`, `follow-camera`, `touchline-sheet`, `team-readability`, `broadcast-frame-loop`, `manager-mode`, `mobile-targets`, `mobile-acceptance` and `mobile-pitch-fixes` 411 passed, 56 skipped by their own project gates, 3 failed. The 3 are `mobile-pitch-fixes` at 390, 360 and 320 (carrier nameplate scale 1.6, not 1), and a `be5a86f` build fails the same 3: they come from row 3b's Follow default, not this row.
+- Review, hosted CI, the full e2e suite, real safe-area insets and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/fullscreen-score-bug.md`. Browser proof: `docs/reports/fullscreen-score-bug/`.
+
 ## Follow camera
 
 Branch `feat/follow-camera` off `feat/team-readability` at `d656db7`. Wave 3 row 3b, matchday pitch and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
