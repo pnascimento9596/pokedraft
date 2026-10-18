@@ -3,6 +3,31 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Shootout with suspense
+
+Branch `feat/shootout-suspense` off `e7f2012`, with `origin/main` merged in at `ae8ee22` (PR #89). UI and synthesized audio only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Each live shootout kick now plays out: the taker runs up (0 to 0.35 of the kick), the ball flies with a trail (0.35 to 0.60), then the keeper reacts. A save dives the ball's way; a goal beats a keeper who went the wrong way or too late.
+- Waiting players stand on a two-row arc either side of halfway instead of a stacked column.
+- Each live kick sounds a whistle, the strike and a crowd roar or the glove. Quick and reduced motion stay still and hear only the outcome (goal horn or glove).
+- A "Sudden death" banner shows from kick 11 (the engine takes five regulation kicks a side).
+- The kick dot and pens score land when the keeper reacts, not after.
+
+RED commit: `b6005f1` (11 tests failed in 3 files; `shootout.test.ts` failed to import `../shootout`).
+
+Gates at `0d17adc` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. Prettier passed on every touched file.
+- Unit tests: 1,441 passed in 164 files.
+- Playwright (port 3525, `CI=1`): `shootout-suspense`, `mobile-targets`, `mobile-acceptance`, `watch-live`, `audio-polish`, `one-shared-timeline`, `speed-aware-staging`, `quick-not-broadcast`, `mobile-pitch-fixes`, `engine-v4`, `manager-mode`, `callouts-type-effects`: 394 passed, 54 skipped by their own project gates.
+- Review, hosted CI and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/shootout-suspense.md`.
+
+PR #90 (row 2b, continuous ball) merged as squash `458c56e`, reviewed head `18c0fb0`. The first reviewed head `d70c71a` (GLM APPROVE, canary `continuous-ball-1eb739e91836294d83ee5654d3381587`) failed hosted e2e shard 1 on the one-frame ball bound under runner load; the browser spec moved to a 100 ms windowed speed with a bound of 6 (fails on `main` at 9.00, 2 of 2), and the 4% choreography bound stays in the unit test. At `18c0fb0` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,425 unit tests passed in 162 files and Prettier passed on 10 touched files; hosted check and all eight e2e shards green. GLM 5.3 Flash APPROVE in round 2 with canary `continuous-ball-r2-c9805a76e9cd4934cc9e15b35b1dc030` echoed. Production `/api/health?db=1` served `458c56e` with `db.status` ok, and `continuous-ball.spec.ts` plus `callouts-type-effects.spec.ts` against production (chromium) passed 5 of 5, the ball's fastest 100 ms speed reading 2.68% per frame. NOT RUN: physical phone check (owner action).
+
+Merged origin/main after PR #90 with no textual conflict. Row 2b routes the broadcast through `stageFrame` in `player.ts`, so `FrameView` gained the optional `kickProgress` and passes it to `stagePitch`; without it typecheck failed on `Broadcast.tsx`. After the merge: typecheck and build exited 0, 132 matchday unit tests passed in 21 files, and the shootout, continuous-ball, callouts and audio specs passed 8 of 8 locally.
+
 ## Continuous ball
 
 Branch `feat/continuous-ball` off `fe6d183`. Matchday staging only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
