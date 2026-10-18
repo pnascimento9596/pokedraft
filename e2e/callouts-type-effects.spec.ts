@@ -25,11 +25,11 @@ for (const width of [390, 360, 320]) {
     await page.setViewportSize({ width, height: 844 });
     const replay = await watchLive(page);
 
-    const badge = replay.getByTestId("pitch-ability");
+    // A badge lives only for its phase, so wait for one carrying the text in a single locator.
+    const badge = replay
+      .getByTestId("pitch-ability")
+      .filter({ hasText: / (used .+!|threads a pass!|surges forward!|wins the tackle!)$/ });
     await expect(badge.first()).toBeVisible({ timeout: 60_000 });
-    await expect(badge.first()).toHaveText(
-      / (used .+!|threads a pass!|surges forward!|wins the tackle!)$/,
-    );
     await page.screenshot({ path: `${SHOT}/${width}-callout-badge.png` });
 
     const goal = replay.locator('[data-testid="cut-in"][data-kind="goal"]');
