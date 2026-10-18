@@ -32,5 +32,7 @@ test("results highlights show each star's own type and no activated ability at 3
   await chips.first().click();
   await highlights.screenshot({ path: "output/playwright/highlights-honesty/highlights-390.png" });
   await chips.last().click();
-  await highlights.screenshot({ path: "output/playwright/highlights-honesty/highlights-mvp-390.png" });
+  await highlights.screenshot({
+    path: "output/playwright/highlights-honesty/highlights-mvp-390.png",
+  });
 });
