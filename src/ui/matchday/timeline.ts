@@ -726,6 +726,20 @@ export function penaltySpot(side: Side): Point {
   return side === "user" ? { x: 89, y: 50 } : { x: 11, y: 50 };
 }
 
+/** How long a player takes to walk on or off the pitch, in real milliseconds at 1x. */
+export const WALK = 1_800;
+
+/** A player walking on from the bench or off to the touchline, timed by their own beat. */
+export interface Walk {
+  readonly side: Side;
+  readonly slot: number;
+  readonly species: SpeciesId | null;
+  readonly name: string;
+  readonly dir: "on" | "off";
+  /** 0 to 1 through the walk; an injury's replacement waits at 0 until the injured player is seen. */
+  readonly progress: number;
+}
+
 /** A free kick's fixed spot, a quarter of the pitch out from the goal it aims at. */
 export function freeKickSpot(side: Side): Point {
   return side === "user" ? { x: 75, y: 50 } : { x: 25, y: 50 };
@@ -771,6 +785,8 @@ export interface PitchStage {
     readonly carrier: PitchRef | null;
   };
   readonly trail: BallTrail | null;
+  /** Players walking off after a red card or a substitution, until they reach the touchline. */
+  readonly leaving?: readonly StagedPlayer[];
   readonly playCallout: {
     readonly side: Side;
     readonly slot: number;
@@ -792,6 +808,8 @@ export interface StageInput {
   readonly oppLabels?: readonly string[];
   /** The goal or save the ball is acting out, or settling back from; null in open play. */
   readonly shot?: Shot | null;
+  /** Players walking on or off; none with motion off. */
+  readonly walks?: readonly Walk[];
 }
 
 export type ShotBeat = Extract<Beat, { kind: "goal" | "save" }>;
