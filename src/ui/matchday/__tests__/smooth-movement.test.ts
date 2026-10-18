@@ -154,6 +154,21 @@ describe("smooth movement (catches players stopping dead at every phase, stackin
     expect(openPlay(timeline, 0, 38.11)).toEqual(stage);
   });
 
+  it("parts the kickoff shape too, where two central players used to share one spot (catches a stacked kickoff after a goal)", () => {
+    const timeline = timelineAt(1);
+    expect(timeline.beats.some((b) => b.kind === "goal" && b.minute === 7)).toBe(true);
+    expect(crowded(openPlay(timeline, 1, 7.2))).toEqual([]);
+  });
+
+  it("leaves a sub the clock skipped past in their slot, not waiting on the touchline (catches substitutes stranded at the bench after Skip)", () => {
+    const timeline = timelineAt(1);
+    const stage = stageFrame(timeline, viewFor(1, { clock: 90, fired: {}, now: 0 })).stage;
+    expect(stage.leaving ?? []).toEqual([]);
+    expect(stage.players.user[7]?.species).toBe(784);
+    expect(stage.players.user[7]?.point).not.toEqual({ x: 50, y: 94 });
+    expect(stage.players.user[4]?.point).not.toEqual({ x: 50, y: 94 });
+  });
+
   it("walks a red-carded player to the touchline over 1,800 ms at 1x and 900 ms at 2x (catches the player vanishing on the frame of the card)", () => {
     const timeline = timelineAt(5);
     const card = timeline.beats.find((b) => b.kind === "card" && b.color === "red")!;
