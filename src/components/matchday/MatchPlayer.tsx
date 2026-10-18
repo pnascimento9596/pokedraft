@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { speciesById } from "@/engine";
 import type { BenchIndex, FullLineup, ManagerAction, MatchResult, Tactic } from "@/engine/types";
 import { ROUND_LABEL } from "@/ui/labels";
@@ -11,13 +11,17 @@ import { PACE, stopsFor, type Stop } from "@/ui/matchday/clock";
 import { TACTIC_LABEL, beatLine, kickLine, type Teams } from "@/ui/matchday/copy";
 import {
   START,
+  activeBeat,
   beatKey,
   decisionMinute,
   landed,
   play,
   revealed,
+  type PlayAction,
   type PlayEnv,
+  type PlayState,
 } from "@/ui/matchday/player";
+import { frameSource, type LiveFrame } from "@/ui/matchday/feed";
 import { PHASE_LEN, buildTimeline, frameAt, type Beat } from "@/ui/matchday/timeline";
 import {
   playAbilitySound,
@@ -52,6 +56,11 @@ export interface ManagerControls {
 }
 
 const TEAMS_USER = "Your XI";
+
+// While the clock runs, React renders the match screen this often; the broadcast moves the pitch on
+// every frame in between. A beat that fires, a goal that lands, a new play or a new beat on the
+// pitch renders at once.
+const COMMIT_GAP = 100;
 
 // The screen reader hears at most one announcement this often, and at most this many lines in it.
 const ANNOUNCE_GAP = 1_500;
@@ -104,16 +113,42 @@ export function MatchPlayer({
     () => ({ timeline, stops, pace: PACE[view] }),
     [timeline, stops, view],
   );
-  const [state, dispatch] = useReducer(play, {
+  const [state, setState] = useState<PlayState>(() => ({
     ...START,
     running: autoStart || manager !== undefined,
-  });
+  }));
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(0);
+  // The play state of the newest frame, ahead of `state` between renders.
+  const live = useRef(state);
+  const [feed] = useState(frameSource);
   const envRef = useRef(env);
   useEffect(() => {
     envRef.current = env;
   }, [env]);
+
+  const send = (action: PlayAction) => {
+    const next = play(live.current, action);
+    live.current = next;
+    feed.publish(frameOf(next, feed.latest()?.now ?? 0));
+    setState(next);
+  };
+
+  // What the match screen shows that time alone changes: the goals that have landed, the play the
+  // phase sounds follow, and the beat on the pitch. A change renders at once, not on the next gap.
+  const glanceRef = useRef<(st: PlayState, t: number) => string>(() => "");
+  useEffect(() => {
+    glanceRef.current = (st, t) => {
+      let goals = 0;
+      for (const b of timeline.beats) {
+        if (b.kind === "goal" && revealed(b, st.minute) && landed(b, st.fired, t, motion, st.speed))
+          goals++;
+      }
+      const on = activeBeat(timeline, st.fired, t, motion, st.minute, st.speed);
+      const phase = view === "live" ? Math.floor(st.minute / PHASE_LEN) : 0;
+      return `${goals}|${phase}|${on === null ? "" : beatKey(on.beat)}`;
+    };
+  }, [timeline, motion, view]);
 
   // The clock holds at kickoff until the movesets settle, so every callout and sound is canon.
   const moving = movesOf !== null && state.running && state.stage !== "done" && state.stop === null;
@@ -121,23 +156,42 @@ export function MatchPlayer({
     if (!moving) return;
     let raf = 0;
     let last = performance.now();
+    let shownAt = last;
+    let glance = glanceRef.current(live.current, last);
     const frame = (t: number) => {
       const dt = Math.min(100, t - last);
       last = t;
-      dispatch({ type: "tick", now: t, dt, env: envRef.current });
-      setNow(t);
+      const prev = live.current;
+      const next = play(prev, { type: "tick", now: t, dt, env: envRef.current });
+      live.current = next;
+      feed.publish(frameOf(next, t));
+      const seen = glanceRef.current(next, t);
+      if (changed(prev, next) || seen !== glance || t - shownAt >= COMMIT_GAP) {
+        glance = seen;
+        shownAt = t;
+        setState(next);
+        setNow(t);
+      }
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [moving]);
+  }, [moving, feed]);
 
   // The broadcast keeps staging effects while a stop or a pause holds the clock.
   useEffect(() => {
     if (moving || !motion) return;
     let raf = 0;
+    let shownAt = -Infinity;
+    let glance = "";
     const frame = (t: number) => {
-      setNow(t);
+      feed.publish(frameOf(live.current, t));
+      const seen = glanceRef.current(live.current, t);
+      if (seen !== glance || t - shownAt >= COMMIT_GAP) {
+        glance = seen;
+        shownAt = t;
+        setNow(t);
+      }
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
@@ -146,7 +200,7 @@ export function MatchPlayer({
       cancelAnimationFrame(raf);
       window.clearTimeout(stopAt);
     };
-  }, [moving, motion]);
+  }, [moving, motion, feed]);
 
   const sounded = useRef(new Set<string>());
   const horned = useRef(new Set<string>());
@@ -331,6 +385,7 @@ export function MatchPlayer({
         kicks={state.kicks}
         motion={motion}
         speed={state.speed}
+        feed={feed}
       />
 
       <div className={s.controls}>
@@ -343,7 +398,7 @@ export function MatchPlayer({
               disabled={stop !== null}
               onClick={() => {
                 unlockAudio();
-                dispatch({ type: "toggle" });
+                send({ type: "toggle" });
               }}
             >
               {state.running ? "Pause" : clock === 0 ? "Kick off" : "Resume"}
@@ -353,7 +408,7 @@ export function MatchPlayer({
               className="btn btn--sm"
               aria-pressed={state.speed === 2}
               data-testid="speed-toggle"
-              onClick={() => dispatch({ type: "speed" })}
+              onClick={() => send({ type: "speed" })}
             >
               2x speed
             </button>
@@ -361,7 +416,7 @@ export function MatchPlayer({
               type="button"
               className="btn btn--ghost btn--sm"
               data-testid="skip-ft"
-              onClick={() => dispatch({ type: "skip", env })}
+              onClick={() => send({ type: "skip", env })}
             >
               Skip to full time
             </button>
@@ -397,7 +452,7 @@ export function MatchPlayer({
             onClick={() => {
               unlockAudio();
               setError(null);
-              dispatch({ type: "answer", key: stop.key });
+              send({ type: "answer", key: stop.key });
             }}
           >
             {STOP_COPY[stop.kind]!.go}
@@ -421,7 +476,7 @@ export function MatchPlayer({
               setError(why);
               if (why !== null) return;
             }
-            dispatch({ type: "answer", key: stop.key });
+            send({ type: "answer", key: stop.key });
           }}
           error={error}
         />
@@ -441,6 +496,21 @@ export function MatchPlayer({
 
       <Ticker shown={shown} teams={teams} kicks={kicks} />
     </section>
+  );
+}
+
+function frameOf(st: PlayState, now: number): LiveFrame {
+  return { clock: st.minute, now, fired: st.fired, kicks: st.kicks, speed: st.speed };
+}
+
+// Whether a tick changed anything but the minute: a beat fired, a hold, a stop, the shootout.
+function changed(prev: PlayState, next: PlayState): boolean {
+  return (
+    prev.fired !== next.fired ||
+    prev.hold !== next.hold ||
+    prev.stop !== next.stop ||
+    prev.stage !== next.stage ||
+    prev.kicks !== next.kicks
   );
 }
 

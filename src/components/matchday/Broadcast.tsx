@@ -1,15 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
+import { memo, useCallback, useLayoutEffect, useMemo, useRef, type RefObject } from "react";
 import { FORMATIONS } from "@/engine";
-import type { FormationId, FullLineup, MatchResult } from "@/engine/types";
+import type { FormationId, FullLineup, MatchResult, Side, SpeciesId } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
+import type { FrameFeed, LiveFrame } from "@/ui/matchday/feed";
 import { activeBeat } from "@/ui/matchday/player";
 import {
   GOAL_LANDS,
   goalMouth,
   stagePitch,
+  type PitchStage,
   type Point,
   type StagedPlayer,
   type Timeline,
@@ -28,6 +30,109 @@ function pct(p: Point) {
   return { left: `${p.x}%`, top: `${p.y}%` } as const;
 }
 
+const fixed = (n: number) => n.toFixed(2);
+
+// One unit of the pitch's width is 1cqi of the broadcast; its height is 64 of those units.
+function place(p: Point, anchor: string): string {
+  return `transform: translate3d(${fixed(p.x)}cqi, ${fixed(p.y * TRAIL_Y)}cqi, 0) ${anchor}`;
+}
+
+function trailPath(trail: NonNullable<PitchStage["trail"]>): string {
+  const midY =
+    (trail.from.y + trail.to.y) / 2 - (trail.kind === "shot" || trail.kind === "pass" ? 3.5 : 0);
+  return `M ${fixed(trail.from.x)} ${fixed(trail.from.y * TRAIL_Y)} Q ${fixed((trail.from.x + trail.to.x) / 2)} ${fixed(midY * TRAIL_Y)} ${fixed(trail.to.x)} ${fixed(trail.to.y * TRAIL_Y)}`;
+}
+
+const written = new WeakMap<Element, Map<string, string>>();
+
+// Writes an attribute only when it changed, so a still player costs no DOM mutation.
+function put(el: Element | null, name: string, value: string): void {
+  if (el === null) return;
+  let mine = written.get(el);
+  if (mine === undefined) {
+    mine = new Map();
+    written.set(el, mine);
+  }
+  if (mine.get(name) === value) return;
+  mine.set(name, value);
+  el.setAttribute(name, value);
+}
+
+interface PitchNodes {
+  readonly players: Map<HTMLElement, { readonly side: Side; readonly slot: number }>;
+  readonly ball: RefObject<HTMLDivElement | null>;
+  readonly trail: RefObject<SVGSVGElement | null>;
+  readonly playEffect: RefObject<HTMLDivElement | null>;
+  readonly playBadge: RefObject<HTMLDivElement | null>;
+}
+
+/** Moves every staged thing on the pitch to where `stage` puts it. */
+function paint(nodes: PitchNodes, stage: PitchStage): void {
+  for (const [el, { side, slot }] of nodes.players) {
+    const p = stage.players[side][slot];
+    if (p) put(el, "style", place(p.point, "translate(-50%, -70%)"));
+  }
+  const { ball } = stage;
+  put(
+    nodes.ball.current,
+    "style",
+    `${place(ball, "translate(-50%, -50%)")}; --loft: ${fixed(ball.loft)}; --spin: ${ball.spin}`,
+  );
+  const trail = nodes.trail.current;
+  if (trail !== null && stage.trail !== null) {
+    const d = trailPath(stage.trail);
+    const [glow, line, origin] = trail.children;
+    put(glow ?? null, "d", d);
+    put(line ?? null, "d", d);
+    put(origin ?? null, "cx", fixed(stage.trail.from.x));
+    put(origin ?? null, "cy", fixed(stage.trail.from.y * TRAIL_Y));
+  }
+  if (stage.playCallout !== null) {
+    const { point } = stage.playCallout;
+    const at = `left: ${fixed(point.x)}%; top: ${fixed(point.y)}%`;
+    put(nodes.playEffect.current, "style", at);
+    put(nodes.playBadge.current, "style", at);
+  }
+}
+
+// The lines and stripes never change, so React never diffs them again.
+const PITCH_LINES = (
+  <svg className={s.lines} viewBox="0 0 100 64" preserveAspectRatio="none">
+    {Array.from({ length: 10 }, (_, i) => (
+      <rect
+        key={i}
+        x={i * 10}
+        y={0}
+        width={10}
+        height={64}
+        className={i % 2 ? s.stripeB : s.stripeA}
+      />
+    ))}
+    <rect x={1.5} y={1.5} width={97} height={61} className={s.mark} />
+    <line x1={50} y1={1.5} x2={50} y2={62.5} className={s.mark} />
+    <circle cx={50} cy={32} r={8} className={s.mark} />
+    <circle cx={50} cy={32} r={0.55} className={s.spot} />
+    <rect x={1.5} y={14} width={14.5} height={36} className={s.mark} />
+    <rect x={84} y={14} width={14.5} height={36} className={s.mark} />
+    <rect x={1.5} y={23} width={5.2} height={18} className={s.mark} />
+    <rect x={93.3} y={23} width={5.2} height={18} className={s.mark} />
+    <circle cx={11} cy={32} r={0.5} className={s.spot} />
+    <circle cx={89} cy={32} r={0.5} className={s.spot} />
+    <path d="M 16 25.5 A 7.5 7.5 0 0 1 16 38.5" className={s.mark} />
+    <path d="M 84 25.5 A 7.5 7.5 0 0 0 84 38.5" className={s.mark} />
+    <path d="M 1.5 3.3 A 1.8 1.8 0 0 0 3.3 1.5" className={s.mark} />
+    <path d="M 96.7 1.5 A 1.8 1.8 0 0 0 98.5 3.3" className={s.mark} />
+    <path d="M 1.5 60.7 A 1.8 1.8 0 0 1 3.3 62.5" className={s.mark} />
+    <path d="M 98.5 60.7 A 1.8 1.8 0 0 0 96.7 62.5" className={s.mark} />
+    <rect x={0} y={26.5} width={1.5} height={11} className={s.goal} />
+    <rect x={98.5} y={26.5} width={1.5} height={11} className={s.goal} />
+  </svg>
+);
+
+const Sprite = memo(function Sprite({ dexId }: { readonly dexId: SpeciesId }) {
+  return <PlayerImage dexId={dexId} size={80} alt="" eager />;
+});
+
 export function Broadcast({
   match,
   timeline,
@@ -38,6 +143,7 @@ export function Broadcast({
   kicks,
   motion,
   speed,
+  feed,
 }: {
   readonly match: PlayedMatch;
   /** The one timeline the match player clocks, sounds and stages from. */
@@ -50,6 +156,8 @@ export function Broadcast({
   readonly motion: boolean;
   /** The player's speed: 2x stages every beat in half the time, matching its hold. */
   readonly speed: number;
+  /** The live frame source; without it the pitch stands where the props put it. */
+  readonly feed?: FrameFeed;
 }) {
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
@@ -58,15 +166,47 @@ export function Broadcast({
     [match.opponent.roster],
   );
 
+  const stageAt = (f: LiveFrame): PitchStage =>
+    stagePitch(timeline, {
+      clock: f.clock,
+      active: activeBeat(timeline, f.fired, f.now, motion, f.clock, f.speed),
+      kicks: f.kicks,
+      motion,
+      userSlots,
+      oppSlots,
+      oppLabels,
+    });
   const active = activeBeat(timeline, fired, now, motion, clock, speed);
-  const stage = stagePitch(timeline, {
-    clock,
-    active,
-    kicks,
-    motion,
-    userSlots,
-    oppSlots,
-    oppLabels,
+  const stage = stageAt({ clock, now, fired, kicks, speed });
+
+  const players = useRef(new Map<HTMLElement, { side: Side; slot: number }>());
+  const ballRef = useRef<HTMLDivElement>(null);
+  const trailRef = useRef<SVGSVGElement>(null);
+  const playEffectRef = useRef<HTMLDivElement>(null);
+  const playBadgeRef = useRef<HTMLDivElement>(null);
+  const track = useCallback((el: HTMLDivElement) => {
+    const map = players.current;
+    map.set(el, { side: el.dataset.side as Side, slot: Number(el.dataset.slot) });
+    return () => {
+      map.delete(el);
+    };
+  }, []);
+
+  // After every commit, and then on every frame the feed publishes while motion is on, the pitch
+  // moves to the newest frame. React renders which things are on the pitch; this places them.
+  useLayoutEffect(() => {
+    const nodes: PitchNodes = {
+      players: players.current,
+      ball: ballRef,
+      trail: trailRef,
+      playEffect: playEffectRef,
+      playBadge: playBadgeRef,
+    };
+    const props: LiveFrame = { clock, now, fired, kicks, speed };
+    const draw = () => paint(nodes, stageAt(feed?.latest() ?? props));
+    draw();
+    if (feed === undefined || !motion) return;
+    return feed.subscribe(draw);
   });
   const goal = active?.beat.kind === "goal" ? active.beat : null;
   const progress = active?.progress ?? 0;
@@ -79,6 +219,7 @@ export function Broadcast({
     return (
       <div
         key={`${keyPrefix}${p.slot}`}
+        ref={track}
         className={s.player}
         data-side={p.side}
         data-slot={p.slot}
@@ -87,12 +228,11 @@ export function Broadcast({
         data-ball={p.hasBall || undefined}
         data-hot={p.hot || undefined}
         data-effect={p.callout?.effect ?? undefined}
-        style={pct(p.point)}
       >
         <span className={s.body}>
           <span className={s.playerSprite}>
             {p.species !== null ? (
-              <PlayerImage dexId={p.species} size={80} alt="" eager />
+              <Sprite dexId={p.species} />
             ) : (
               <span className={s.shirt}>{ref?.kind === "shirt" ? ref.number : ""}</span>
             )}
@@ -115,15 +255,6 @@ export function Broadcast({
   };
 
   const trail = stage.trail;
-  const trailMidY =
-    trail === null
-      ? 50
-      : (trail.from.y + trail.to.y) / 2 -
-        (trail.kind === "shot" || trail.kind === "pass" ? 3.5 : 0);
-  const trailPath =
-    trail === null
-      ? ""
-      : `M ${trail.from.x} ${trail.from.y * TRAIL_Y} Q ${(trail.from.x + trail.to.x) / 2} ${trailMidY * TRAIL_Y} ${trail.to.x} ${trail.to.y * TRAIL_Y}`;
 
   return (
     <div
@@ -133,53 +264,20 @@ export function Broadcast({
       data-goals-only={timeline.goalsOnly || undefined}
     >
       <div className={s.pitch} aria-hidden="true">
-        <svg className={s.lines} viewBox="0 0 100 64" preserveAspectRatio="none">
-          {Array.from({ length: 10 }, (_, i) => (
-            <rect
-              key={i}
-              x={i * 10}
-              y={0}
-              width={10}
-              height={64}
-              className={i % 2 ? s.stripeB : s.stripeA}
-            />
-          ))}
-          <rect x={1.5} y={1.5} width={97} height={61} className={s.mark} />
-          <line x1={50} y1={1.5} x2={50} y2={62.5} className={s.mark} />
-          <circle cx={50} cy={32} r={8} className={s.mark} />
-          <circle cx={50} cy={32} r={0.55} className={s.spot} />
-          <rect x={1.5} y={14} width={14.5} height={36} className={s.mark} />
-          <rect x={84} y={14} width={14.5} height={36} className={s.mark} />
-          <rect x={1.5} y={23} width={5.2} height={18} className={s.mark} />
-          <rect x={93.3} y={23} width={5.2} height={18} className={s.mark} />
-          <circle cx={11} cy={32} r={0.5} className={s.spot} />
-          <circle cx={89} cy={32} r={0.5} className={s.spot} />
-          <path d="M 16 25.5 A 7.5 7.5 0 0 1 16 38.5" className={s.mark} />
-          <path d="M 84 25.5 A 7.5 7.5 0 0 0 84 38.5" className={s.mark} />
-          <path d="M 1.5 3.3 A 1.8 1.8 0 0 0 3.3 1.5" className={s.mark} />
-          <path d="M 96.7 1.5 A 1.8 1.8 0 0 0 98.5 3.3" className={s.mark} />
-          <path d="M 1.5 60.7 A 1.8 1.8 0 0 1 3.3 62.5" className={s.mark} />
-          <path d="M 98.5 60.7 A 1.8 1.8 0 0 0 96.7 62.5" className={s.mark} />
-          <rect x={0} y={26.5} width={1.5} height={11} className={s.goal} />
-          <rect x={98.5} y={26.5} width={1.5} height={11} className={s.goal} />
-        </svg>
+        {PITCH_LINES}
 
         {trail !== null ? (
           <svg
+            ref={trailRef}
             className={s.trails}
             viewBox="0 0 100 64"
             data-testid="pitch-trails"
             data-kind={trail.kind}
             data-effect={trail.effect ?? undefined}
           >
-            <path d={trailPath} className={s.trailGlow} />
-            <path d={trailPath} className={s.trailLine} />
-            <circle
-              cx={trail.from.x}
-              cy={trail.from.y * TRAIL_Y}
-              r={1.1}
-              className={s.trailOrigin}
-            />
+            <path className={s.trailGlow} />
+            <path className={s.trailLine} />
+            <circle r={1.1} className={s.trailOrigin} />
           </svg>
         ) : null}
 
@@ -189,16 +287,16 @@ export function Broadcast({
         {stage.playCallout !== null ? (
           <>
             <div
+              ref={playEffectRef}
               className={s.playEffect}
               data-effect={stage.playCallout.callout.effect}
-              style={pct(stage.playCallout.point)}
             />
             <div
+              ref={playBadgeRef}
               className={s.playBadge}
               data-side={stage.playCallout.side}
               data-effect={stage.playCallout.callout.effect}
               data-testid="pitch-ability"
-              style={pct(stage.playCallout.point)}
             >
               {stage.playCallout.callout.text}
             </div>
@@ -206,26 +304,13 @@ export function Broadcast({
         ) : null}
 
         <div
+          ref={ballRef}
           className={s.ball}
-          style={pct(stage.ball)}
           data-effect={stage.ball.effect ?? undefined}
           data-testid="broadcast-ball"
         >
-          <span
-            className={s.ballShadow}
-            style={{
-              transform: `translate(-50%, -50%) scale(${(1 - stage.ball.loft * 0.25).toFixed(2)})`,
-              opacity: Math.max(0.28, 0.72 - stage.ball.loft * 0.35),
-            }}
-          />
-          <svg
-            viewBox="0 0 32 32"
-            className={s.ballSvg}
-            data-testid="soccer-ball-svg"
-            style={{
-              transform: `translateY(${(-stage.ball.loft * 11).toFixed(1)}px) scale(${(1 + stage.ball.loft * 0.28).toFixed(2)}) rotate(${stage.ball.spin}deg)`,
-            }}
-          >
+          <span className={s.ballShadow} />
+          <svg viewBox="0 0 32 32" className={s.ballSvg} data-testid="soccer-ball-svg">
             <circle cx="16" cy="16" r="14.5" className={s.ballSphere} />
             <circle cx="11.5" cy="11" r="9.5" className={s.ballHighlight} />
             <path
