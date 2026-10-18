@@ -1,7 +1,7 @@
 # Smooth movement (Wave 2, row 2c)
 
 Tier Yellow. Branch `feat/smooth-movement` off `458c56e`, with `origin/main` merged in at `85b292e`
-(PR #92, shootout). No file under `src/engine`, `src/data` or `src/scouting` changed, so the engine
+(PR #92, shootout) and `e3d0e95` (PR #91, frame loop). No file under `src/engine`, `src/data` or `src/scouting` changed, so the engine
 goldens are untouched. The pens block of `stagePitch` (row 2e) is untouched.
 
 ## Scope
@@ -31,7 +31,9 @@ The change, all in pure staging (`src/ui/matchday/timeline.ts`, `player.ts`):
   speed, over `WALK = 1800` ms. A player going off leaves from their spot at the beat's minute in a
   straight line to the nearer touchline (chosen from the formation slot). A substitute walks on
   from the bench. `PitchStage.leaving` carries the walkers; `Broadcast.tsx` renders them after the
-  slot players with `data-leaving`.
+  slot players with `data-leaving`. After the frame loop (#91), `paint` places a walker from
+  `stage.leaving` instead of their old slot, and `screenKey` includes the walkers so a walk
+  starting or ending asks for a render.
 - The goal assist and both keepers ease in over the first 20% of the staging instead of snapping.
 - An injured player stays down where the injury found them.
 
@@ -66,6 +68,17 @@ RED 3, commit `a846a3f` (1 of 10 failed), found by the browser proof:
      × walks a red-carded player straight off from where the card found them while the clock runs on (catches the walker drifting 7% sideways with play they left) 5ms
 AssertionError: expected [ { x: 10.15, y: 31.12 } ] to deeply equal [ { x: 17.2, y: 28.29 } ]
       Tests  1 failed | 9 passed (10)
+```
+
+RED 4, commit `eb746df`, browser, after merging #91 (the walker got no transform at all):
+
+```
+walk-off y every 400 ms: NaN, NaN, NaN, NaN
+    Error: expect(received).toBeLessThan(expected)
+    Expected: < NaN
+    Received:   NaN
+  1 failed
+  1 passed (8.7s)
 ```
 
 ## Measurements
@@ -111,6 +124,10 @@ cup8 under `pd6.`, in percent of the pitch length (y scaled by 0.64). Walkers co
   were the largest per-frame jumps left after the spline.
 - Velocity reads the open-play path (spline plus push), not the staged point, so a set piece does
   not flip facing.
+- The #91 unit pins in `Broadcast.frameLoop.test.tsx` were copied from `stagePitch` at `458c56e`.
+  This row moves open play, so they now pin this row's staged spots (slot 5 at 25.26%, 50.17%;
+  the ball in the net at 89.88%, 50.49%). They still check that paint writes exactly what
+  `stagePitch` staged.
 - Decision 1 holds: Quick and reduced motion get no walks, stand on their slots and do not move
   between frames.
 

@@ -5,22 +5,23 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Smooth movement
 
-Branch `feat/smooth-movement` off `458c56e`, with `origin/main` merged in at `85b292e` (PR #92). Pure staging plus a thin `Broadcast.tsx` change (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+Branch `feat/smooth-movement` off `458c56e`, with `origin/main` merged in, last at `e3d0e95` (PRs #92 and #91). Pure staging plus a thin `Broadcast.tsx` change (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 - Players glide through each phase on a Catmull-Rom spline instead of stopping dead at every waypoint.
 - Facing and pose follow how a player moves now, not where they started the phase.
 - Teammates no longer stack on one spot: one push-apart pass keeps same-side players about 4% apart, and the kickoff shape no longer puts two central players on one spot.
 - A red-carded or substituted player walks to the near touchline over 1.8 s (0.9 s at 2x) instead of vanishing; the substitute walks on from the bench. An injured player stays down where the injury found them.
 - Quick and reduced motion stay still (decision 1).
+- After the frame loop (#91), a walker going off reads their spot from the leaving list, not their old slot, and a walk starting or ending asks for a render. The #91 unit pins moved to this row's staged spots.
 - The largest one-frame move of any player at 1x over the golden cup fell from 35.08% to 4.94% of the pitch length; the ball stays under 4%.
 
-RED commits: `9b8a0ca` (6 of 7 failed), `8fa9c1f` (2 of 9 failed), `a846a3f` (1 of 10 failed).
+RED commits: `9b8a0ca` (6 of 7 failed), `8fa9c1f` (2 of 9 failed), `a846a3f` (1 of 10 failed), `eb746df` (browser, 1 of 2 failed).
 
-Gates at `716ab22` (code identical at the docs commit that adds this section):
+Gates at `491e0ee` (code identical at the docs commit that updates this section):
 
 - Lint, typecheck and build exited 0.
-- Unit tests: 1,455 passed in 166 files.
-- Playwright (port 3526, `CI=1`, fresh build): `smooth-movement`, `continuous-ball`, `injury-staging`, `shootout-suspense`, `mobile-targets`, `mobile-acceptance`, `watch-live`, `speed-aware-staging`, `score-lands-with-ball`, `quick-not-broadcast`: 371 passed, 54 skipped by their own project gates.
+- Unit tests: 1,463 passed in 167 files.
+- Playwright (port 3526, `CI=1`, fresh build): `smooth-movement`, `continuous-ball`, `broadcast-frame-loop`, `injury-staging`, `shootout-suspense`, `mobile-targets`, `mobile-acceptance`, `watch-live`, `speed-aware-staging`, `score-lands-with-ball`, `quick-not-broadcast`: 374 passed, 54 skipped by their own project gates.
 - Review, hosted CI, the full e2e suite and a physical phone: NOT RUN at the time of writing.
 
 Measurements and decisions are in `docs/decisions/smooth-movement.md`.
