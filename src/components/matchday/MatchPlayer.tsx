@@ -736,8 +736,9 @@ const MIN_SHEET_ROOM = 120;
 
 /**
  * Below 600px the touchline is a fixed bottom sheet. The spacer under the page keeps the ticker
- * reachable above it, and opening the sheet or a stop brings the pitch back into view. Turning the
- * phone to a layout without the sheet closes it, since nothing there could close it again.
+ * reachable above it, and the first fit, opening the sheet or a stop brings the pitch back into
+ * view. Turning the phone to a layout without the sheet closes it, since nothing there could close
+ * it again.
  */
 function useSheet(present: boolean, expanded: boolean, stopKey: string | null, close: () => void) {
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -745,6 +746,7 @@ function useSheet(present: boolean, expanded: boolean, stopKey: string | null, c
   const playerRef = useRef<HTMLElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
   const wasFixed = useRef(false);
+  const placed = useRef(false);
   const closeRef = useRef(close);
   useEffect(() => {
     closeRef.current = close;
@@ -785,9 +787,16 @@ function useSheet(present: boolean, expanded: boolean, stopKey: string | null, c
       }
     };
     fit(expanded || stopKey !== null);
+    // The match opens wherever the prematch screen was scrolled, which can leave the pitch above
+    // it. Its layout settles only after the first commit, so the first placement waits a frame.
+    const first = placed.current ? 0 : requestAnimationFrame(() => fit(true));
+    placed.current = true;
     const onResize = () => fit(false);
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(first);
+      window.removeEventListener("resize", onResize);
+    };
   }, [present, expanded, stopKey]);
 
   return { sheetRef, pitchRef, playerRef, spacerRef };

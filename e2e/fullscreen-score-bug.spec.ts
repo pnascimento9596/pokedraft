@@ -190,5 +190,6 @@ test("in manager mode at 844x390 the touchline sits in the page under a pitch no
   await expect.poll(() => page.evaluate(() => document.fullscreenElement !== null)).toBe(true);
   await page.screenshot({ path: `${SHOT}/844x390-fullscreen.png` });
   await expect(page.getByTestId("stop-halftime")).toBeVisible({ timeout: 60_000 });
-  expect(await page.evaluate(() => document.fullscreenElement)).toBeNull();
+  // Leaving full screen settles a moment after the question shows.
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement === null)).toBe(true);
 });
