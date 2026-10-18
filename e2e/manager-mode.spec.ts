@@ -28,7 +28,7 @@ async function untilStop(page: Page, kind: "halftime" | "extraTime"): Promise<vo
   const wanted = page.getByTestId(`stop-${kind}`);
   const injury = page.getByTestId("stop-injury");
   for (let i = 0; i < 12; i++) {
-    await expect(wanted.or(injury)).toBeVisible({ timeout: 20_000 });
+    await expect(wanted.or(injury)).toBeVisible({ timeout: 40_000 });
     if (await wanted.isVisible()) return;
     await page.getByTestId("injury-confirm").click();
   }
@@ -72,6 +72,8 @@ test.describe("manager mode", () => {
       "You have the touchline. Your assistant stops making changes this match.",
     );
     await page.getByTestId("stop-go").click();
+    // Manager mode plays live; 2x keeps the wait for half time near 13 s.
+    await page.getByTestId("speed-toggle").click();
 
     // Half time: one substitution from the bench.
     await untilStop(page, "halftime");

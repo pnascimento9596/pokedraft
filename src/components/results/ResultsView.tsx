@@ -26,7 +26,7 @@ import {
 import { recordCompletedRun } from "@/ui/lifetime";
 import { isCoached } from "@/ui/manager/coached";
 import { toRecord } from "@/ui/runs";
-import { contributionLine } from "./format";
+import { contributionLine, dragLabel } from "./format";
 import { FitReveal } from "./FitReveal";
 import { MatchdayLive } from "./MatchdayLive";
 import { MatchHighlights } from "./MatchHighlights";
@@ -152,7 +152,13 @@ export function ResultsView({
           aria-expanded={showMatchday}
           onClick={() => setShowMatchday((v) => !v)}
         >
-          {showMatchday ? "Hide Matchday Broadcast" : "▶ Watch Matchday Broadcast"}
+          {showMatchday ? (
+            "Hide Matchday Broadcast"
+          ) : (
+            <>
+              <span aria-hidden="true">▶</span> Watch Matchday Broadcast
+            </>
+          )}
         </button>
       </div>
       {showMatchday ? (
@@ -306,7 +312,7 @@ export function ResultsView({
           </div>
           <div className={s.breakdownItem}>
             <span className="kicker">Weak-spot drag</span>
-            <span className="num">-{Math.round(cup.rating.drag * 100)}</span>
+            <span className="num">{dragLabel(cup.rating.drag)}</span>
           </div>
         </div>
         <div className={s.fitGrid}>
