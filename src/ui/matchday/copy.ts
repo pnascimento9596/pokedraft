@@ -57,6 +57,11 @@ export interface CardTeams {
 }
 
 /** The one line for an incident, shared by the match ticker and the results list. */
+/** A pitch nameplate: names over 10 characters keep their first 9 and an ellipsis. */
+export function nameplate(name: string): string {
+  return name.length > 10 ? `${name.slice(0, 9)}…` : name;
+}
+
 export function incidentText(c: IncidentCopy, teams: CardTeams): string {
   const at = `${c.minute}'`;
   switch (c.kind) {

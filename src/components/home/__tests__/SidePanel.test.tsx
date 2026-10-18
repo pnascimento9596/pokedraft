@@ -66,3 +66,37 @@ describe("the Show ratings (challenges) switch (catches a challenge setting that
     expect(screen.getByText("Trainer Dugout")).toBeTruthy();
   });
 });
+
+describe("the home Matchday settings with manager mode (catches a Quick choice a manager can make but cannot coach)", () => {
+  const managerSwitch = () => screen.getByRole("switch", { name: /Manager mode/ });
+  const quick = () => screen.getByRole("button", { name: "Quick sim" }) as HTMLButtonElement;
+  const live = () => screen.getByRole("button", { name: "Live match" });
+
+  it("treats the view as Live and disables Quick with the hint, keeping the saved Quick choice", () => {
+    localStorage.setItem(
+      "pokedraft:panel",
+      JSON.stringify({ managerMode: true, matchView: "quick" }),
+    );
+    render(<HomeScreen />);
+    expect(quick().disabled).toBe(true);
+    expect(quick().getAttribute("aria-pressed")).toBe("false");
+    expect(live().getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByText("Manager mode plays live")).toBeTruthy();
+    expect(saved().matchView).toBe("quick");
+  });
+
+  it("restores the saved Quick choice when manager mode goes off", () => {
+    render(<HomeScreen />);
+    act(() => {
+      fireEvent.click(managerSwitch());
+    });
+    expect(saved()).toMatchObject({ managerMode: true, matchView: "quick" });
+    expect(live().getAttribute("aria-pressed")).toBe("true");
+    act(() => {
+      fireEvent.click(managerSwitch());
+    });
+    expect(quick().disabled).toBe(false);
+    expect(quick().getAttribute("aria-pressed")).toBe("true");
+    expect(screen.queryByText("Manager mode plays live")).toBeNull();
+  });
+});

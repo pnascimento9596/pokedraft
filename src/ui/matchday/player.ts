@@ -1,5 +1,5 @@
 import { advanceClock, nextStop, type Pace, type Stop } from "./clock";
-import type { Beat, Timeline } from "./timeline";
+import { GOAL_LANDS, SHOW, type Beat, type Timeline } from "./timeline";
 
 /** A stable name for a beat, the same across the replays a coach decision triggers. */
 export function beatKey(b: Beat): string {
@@ -32,6 +32,103 @@ function assistantBoundary(b: Beat): boolean {
 
 export function revealed(b: Beat, clock: number): boolean {
   return b.minute < clock || (b.minute === clock && !assistantBoundary(b));
+}
+
+/**
+ * Whether a revealed beat counts yet on the scoreboard, the ticker and the goal horn. A staged goal
+ * waits for the ball to cross the line, which comes sooner at 2x; a beat that never fired (a skip
+ * to full time) counts.
+ */
+export function landed(
+  b: Beat,
+  fired: Readonly<Record<string, number>>,
+  now: number,
+  staged: boolean,
+  speed: number,
+): boolean {
+  if (b.kind !== "goal" || !staged) return true;
+  const at = fired[beatKey(b)];
+  return at === undefined || now - at >= (GOAL_LANDS * SHOW.goal) / speed;
+}
+
+/** A beat on the pitch: 0 to 1 through its staging, and 1 when motion is reduced. */
+export interface Active {
+  readonly beat: Beat;
+  readonly progress: number;
+}
+
+type InjuryBeat = Extract<Beat, { kind: "injury" }>;
+type SubBeat = Extract<Beat, { kind: "sub" }>;
+
+function replacementFor(timeline: Timeline, injury: InjuryBeat): SubBeat | undefined {
+  return timeline.beats.find(
+    (b): b is SubBeat =>
+      b.kind === "sub" &&
+      b.reason === "injury" &&
+      b.minute === injury.minute &&
+      b.slot === injury.player.slot,
+  );
+}
+
+function injuryFor(timeline: Timeline, sub: SubBeat): InjuryBeat | undefined {
+  return timeline.beats.find(
+    (b): b is InjuryBeat =>
+      b.kind === "injury" && b.minute === sub.minute && b.player.slot === sub.slot,
+  );
+}
+
+/**
+ * When a beat comes onto the pitch. An injury's replacement waits for the injured player's own
+ * staging, so the pitch shows who went down before who comes on.
+ */
+function startOf(
+  timeline: Timeline,
+  fired: Readonly<Record<string, number>>,
+  b: Beat,
+  speed: number,
+): number | undefined {
+  const at = fired[beatKey(b)];
+  if (at === undefined || b.kind !== "sub" || b.reason !== "injury") return at;
+  const injury = injuryFor(timeline, b);
+  const down = injury === undefined ? undefined : fired[beatKey(injury)];
+  return down === undefined ? at : Math.max(at, down + SHOW.injury / speed);
+}
+
+/**
+ * The latest beat still on the pitch. With reduced motion, the latest beat shown at all. An injury
+ * stays on while the clock waits at its minute for the replacement to come on.
+ */
+export function activeBeat(
+  timeline: Timeline,
+  fired: Readonly<Record<string, number>>,
+  now: number,
+  motion: boolean,
+  clock: number,
+  speed: number,
+): Active | null {
+  let best: Active | null = null;
+  let bestAt = -Infinity;
+  for (const beat of timeline.beats) {
+    const at = startOf(timeline, fired, beat, speed);
+    if (at === undefined) continue;
+    if (!motion) {
+      if (beat.kind !== "whistle" || best === null) best = { beat, progress: 1 };
+      continue;
+    }
+    const age = now - at;
+    const show = SHOW[beat.kind] / speed;
+    const replacement = beat.kind === "injury" ? replacementFor(timeline, beat) : undefined;
+    const waiting =
+      replacement !== undefined &&
+      beat.minute === clock &&
+      fired[beatKey(replacement)] === undefined;
+    if (age < 0 || (age > show && !waiting)) continue;
+    if (at >= bestAt) {
+      bestAt = at;
+      best = { beat, progress: Math.min(1, age / show) };
+    }
+  }
+  return best;
 }
 
 export type Stage = "play" | "pens" | "done";
@@ -87,12 +184,21 @@ function holdFor(b: Beat, pace: Pace): number {
   return 0;
 }
 
+// An injury's replacement stays off the pitch until the manager answers that injury's stop.
+function awaitingAnswer(b: Beat, state: PlayState, env: PlayEnv): boolean {
+  if (b.kind !== "sub" || b.reason !== "injury") return false;
+  const key = `injury:${b.minute}:${b.slot}`;
+  return env.stops.some((s) => s.key === key) && !state.answered.includes(key);
+}
+
 function fire(state: PlayState, env: PlayEnv, clock: number, now: number): PlayState["fired"] {
   let fired = state.fired;
   for (const b of env.timeline.beats) {
     if (b.minute > clock) break;
     const key = beatKey(b);
-    if (fired[key] === undefined && revealed(b, clock)) fired = { ...fired, [key]: now };
+    if (fired[key] === undefined && revealed(b, clock) && !awaitingAnswer(b, state, env)) {
+      fired = { ...fired, [key]: now };
+    }
   }
   return fired;
 }

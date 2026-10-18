@@ -9,8 +9,16 @@ import type { MatchView } from "@/ui/settings";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Stop } from "@/ui/matchday/clock";
 import { TACTIC_LABEL, beatLine, kickLine, type Teams } from "@/ui/matchday/copy";
-import { START, beatKey, decisionMinute, play, revealed, type PlayEnv } from "@/ui/matchday/player";
-import { PHASE_LEN, buildTimeline, frameAt } from "@/ui/matchday/timeline";
+import {
+  START,
+  beatKey,
+  decisionMinute,
+  landed,
+  play,
+  revealed,
+  type PlayEnv,
+} from "@/ui/matchday/player";
+import { PHASE_LEN, buildTimeline, frameAt, type Beat } from "@/ui/matchday/timeline";
 import {
   playAbilitySound,
   playCardSound,
@@ -26,11 +34,12 @@ import {
 } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { Touchline } from "./Touchline";
+import { useMovesets } from "./useMovesets";
 import s from "./MatchPlayer.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
-// The broadcast and the canon movesets it reads load only when a live match mounts.
+// The broadcast loads only when a live match mounts.
 const Broadcast = dynamic(() => import("./Broadcast").then((m) => m.Broadcast), {
   ssr: false,
   loading: () => <div className={s.broadcastLoading}>Loading the broadcast</div>,
@@ -43,6 +52,10 @@ export interface ManagerControls {
 }
 
 const TEAMS_USER = "Your XI";
+
+// The screen reader hears at most one announcement this often, and at most this many lines in it.
+const ANNOUNCE_GAP = 1_500;
+const ANNOUNCE_MAX = 3;
 
 const STOP_COPY: Readonly<Record<Stop["kind"], { title: string; go: string } | null>> = {
   kickoff: { title: "Pick a tactic, then kick off.", go: "Kick off" },
@@ -75,11 +88,13 @@ export function MatchPlayer({
   /** Shown under the scoreboard once the match is over. */
   readonly footer?: ReactNode;
 }) {
-  const motion = !useReducedMotion();
+  // Quick is a still pitch with beat sounds only, so only a live broadcast with motion stages.
+  const motion = !useReducedMotion() && view === "live";
   const soundOn = useSoundEnabled();
+  const movesOf = useMovesets();
   const timeline = useMemo(
-    () => buildTimeline(match, { matchIndex, seed, lineup }),
-    [match, matchIndex, seed, lineup],
+    () => buildTimeline(match, { matchIndex, seed, lineup, movesOf }),
+    [match, matchIndex, seed, lineup, movesOf],
   );
   const stops = useMemo(
     () => (manager === undefined ? [] : stopsFor(match, lineup)),
@@ -100,7 +115,8 @@ export function MatchPlayer({
     envRef.current = env;
   }, [env]);
 
-  const moving = state.running && state.stage !== "done" && state.stop === null;
+  // The clock holds at kickoff until the movesets settle, so every callout and sound is canon.
+  const moving = movesOf !== null && state.running && state.stage !== "done" && state.stop === null;
   useEffect(() => {
     if (!moving) return;
     let raf = 0;
@@ -133,24 +149,37 @@ export function MatchPlayer({
   }, [moving, motion]);
 
   const sounded = useRef(new Set<string>());
+  const horned = useRef(new Set<string>());
   useEffect(() => {
-    const fresh: ReturnType<typeof buildTimeline>["beats"][number][] = [];
+    const fresh: Beat[] = [];
+    const scored: Extract<Beat, { kind: "goal" }>[] = [];
     for (const b of timeline.beats) {
       const key = beatKey(b);
-      if (state.fired[key] !== undefined && !sounded.current.has(key)) {
+      if (state.fired[key] === undefined) continue;
+      if (!sounded.current.has(key)) {
         sounded.current.add(key);
         fresh.push(b);
       }
+      if (
+        b.kind === "goal" &&
+        !horned.current.has(key) &&
+        landed(b, state.fired, now, motion, state.speed)
+      ) {
+        horned.current.add(key);
+        scored.push(b);
+      }
     }
-    if (fresh.length === 0) return;
+    if (fresh.length === 0 && scored.length === 0) return;
     if (state.stage === "done" && fresh.length > 4) {
       playWhistle("fulltime");
       return;
     }
+    for (const b of scored) {
+      if (b.side === "user") playGoalHorn();
+      else playOppGoal();
+    }
     for (const b of fresh) {
       if (b.kind === "goal") {
-        if (b.side === "user") playGoalHorn();
-        else playOppGoal();
         playAbilitySound(b.callout.effect);
       } else if (b.kind === "save") {
         playSaveSound();
@@ -168,11 +197,11 @@ export function MatchPlayer({
         playWhistle(wKind);
       }
     }
-  }, [state.fired, state.stage, timeline]);
+  }, [state.fired, state.stage, state.speed, timeline, now, motion]);
 
   const lastPhase = useRef(-1);
   useEffect(() => {
-    if (!moving) return;
+    if (!moving || view !== "live") return;
     const idx = Math.floor(state.minute / PHASE_LEN);
     if (idx === lastPhase.current || idx < 0 || idx >= timeline.plays.length) return;
     lastPhase.current = idx;
@@ -183,11 +212,13 @@ export function MatchPlayer({
     } else if (phase.kind !== "dribble") {
       playKickPass();
     }
-  }, [moving, state.minute, timeline.plays]);
+  }, [moving, view, state.minute, timeline.plays]);
 
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
-  const shown = timeline.beats.filter((b) => revealed(b, clock));
+  const shown = timeline.beats.filter(
+    (b) => revealed(b, clock) && landed(b, state.fired, now, motion, state.speed),
+  );
   const goals = shown.filter((b) => b.kind === "goal");
   const score = goals.at(-1)?.kind === "goal" ? goals.at(-1)!.score : { user: 0, opp: 0 };
   const kicks = timeline.kicks.slice(0, state.kicks);
@@ -253,7 +284,7 @@ export function MatchPlayer({
           <span className={`num ${s.clock}`} data-testid="matchday-clock">
             {minuteLabel}
           </span>
-          <span className={`num ${s.score}`} data-testid="matchday-score">
+          <span className={`num ${s.score}`} role="status" data-testid="matchday-score">
             {score.user} - {score.opp}
           </span>
           {pens !== null ? (
@@ -292,14 +323,14 @@ export function MatchPlayer({
 
       <Broadcast
         match={match}
-        matchIndex={matchIndex}
-        seed={seed}
+        timeline={timeline}
         lineup={lineup}
         clock={clock}
         now={now}
         fired={state.fired}
         kicks={state.kicks}
         motion={motion}
+        speed={state.speed}
       />
 
       <div className={s.controls}>
@@ -436,7 +467,7 @@ function Ticker({
       text: kickLine(k, teams),
     })),
   ].reverse();
-  const latest = lines[0]?.text ?? "";
+  const latest = useAnnouncement(lines);
   return (
     <div className={s.ticker}>
       <p className={s.srOnly} aria-live="polite" data-testid="ticker-latest">
@@ -509,4 +540,37 @@ function InjuryPrompt({
       </button>
     </div>
   );
+}
+
+/**
+ * The live region's text: every event line not yet announced, oldest first, at most one
+ * announcement per gap so a fast replay does not flood the screen reader.
+ */
+function useAnnouncement(lines: readonly { readonly key: string; readonly text: string }[]) {
+  const [text, setText] = useState("");
+  const said = useRef({ keys: new Set<string>(), at: -Infinity });
+  const latest = useRef(lines);
+  useEffect(() => {
+    latest.current = lines;
+  });
+  const count = lines.length;
+  useEffect(() => {
+    if (count === 0) return;
+    const wait = Math.max(0, said.current.at + ANNOUNCE_GAP - performance.now());
+    const timer = window.setTimeout(() => {
+      const fresh = latest.current.filter((l) => !said.current.keys.has(l.key));
+      if (fresh.length === 0) return;
+      for (const l of fresh) said.current.keys.add(l.key);
+      said.current.at = performance.now();
+      setText(
+        fresh
+          .slice(0, ANNOUNCE_MAX)
+          .reverse()
+          .map((l) => l.text)
+          .join(" "),
+      );
+    }, wait);
+    return () => window.clearTimeout(timer);
+  }, [count]);
+  return text;
 }
