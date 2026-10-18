@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { HomeScreen } from "../HomeScreen";
 
@@ -68,9 +68,12 @@ describe("the Show ratings (challenges) switch (catches a challenge setting that
 });
 
 describe("the home Matchday settings with manager mode (catches a Quick choice a manager can make but cannot coach)", () => {
-  const managerSwitch = () => screen.getByRole("switch", { name: /Manager mode/ });
-  const quick = () => screen.getByRole("button", { name: "Quick sim" }) as HTMLButtonElement;
-  const live = () => screen.getByRole("button", { name: "Live match" });
+  // The builder's friendly card shows the same settings, so read the Control desk's own copy.
+  const desk = () => within(screen.getByRole("complementary", { name: "Control desk" }));
+  const managerSwitch = () => desk().getByRole("switch", { name: /Manager mode/ });
+  const quick = () => desk().getByRole("button", { name: "Quick sim" }) as HTMLButtonElement;
+  const live = () => desk().getByRole("button", { name: "Live match" });
+  const builderQuick = () => screen.getByTestId("match-view-quick") as HTMLButtonElement;
 
   it("treats the view as Live and disables Quick with the hint, keeping the saved Quick choice", () => {
     localStorage.setItem(
@@ -81,7 +84,8 @@ describe("the home Matchday settings with manager mode (catches a Quick choice a
     expect(quick().disabled).toBe(true);
     expect(quick().getAttribute("aria-pressed")).toBe("false");
     expect(live().getAttribute("aria-pressed")).toBe("true");
-    expect(screen.getByText("Manager mode plays live")).toBeTruthy();
+    expect(desk().getByText("Manager mode plays live")).toBeTruthy();
+    expect(builderQuick().disabled).toBe(true);
     expect(saved().matchView).toBe("quick");
   });
 
@@ -97,6 +101,7 @@ describe("the home Matchday settings with manager mode (catches a Quick choice a
     });
     expect(quick().disabled).toBe(false);
     expect(quick().getAttribute("aria-pressed")).toBe("true");
+    expect(builderQuick().getAttribute("aria-pressed")).toBe("true");
     expect(screen.queryByText("Manager mode plays live")).toBeNull();
   });
 });

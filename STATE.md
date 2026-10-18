@@ -5,13 +5,14 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Builder matchday
 
-Branch `feat/builder-matchday` off `f4489cb`. UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+Branch `feat/builder-matchday` off `f4489cb`, with `origin/main` merged in (first at `b7f28d6`, PR #83). UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 - A friendly cup from the home builder now follows Manager mode and Live match. With either on it opens the matchday, and Manager mode reaches the touchline. With both off it goes straight to the results, as before.
 - The Matchday toggles sit above Play a friendly cup and stay in step with the side panel's Matchday switches.
 - A reload during a friendly matchday comes back to the same match from the builder run slot. Friendly results still do not survive a reload.
 - Friendlies stay unranked. The results show no submit panel, and the server rejects a coached builder token as `BUILDER_NOT_RANKED`.
 - The `PlayScreen` and `LiveRun` builder gates are gone, but `/play` never runs a builder cup, so the player path was the home friendly in `HomeScreen`.
+- With PR #78's rule merged in, Manager mode plays a friendly live too: `MatchdayFlow` applies `matchdayView`, and the builder's toggles disable Quick with the same hint. The merge made `SidePanel.test.tsx` find two Quick sim buttons (the desk's and the builder's). Its two manager-mode guards now read the Control desk's copy and also assert the builder copy is disabled under Manager mode and pressed after it goes off. Forcing Quick enabled in `MatchdaySettings` fails the new assertion (`expected false to be true`).
 
 RED commit: `aff6f7a` (5 failing tests in `builder-matchday.test.tsx`).
 
