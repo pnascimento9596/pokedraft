@@ -12,10 +12,11 @@ After this change:
 - `MatchPlayer` runs the `play` reducer every frame in a ref and publishes each frame to a
   `FrameSource` (`src/ui/matchday/feed.ts`). It hands the frame to React at most every 100 ms. It
   also hands it over at once when a beat fires, a hold or stop starts or ends, the stage or kick
-  count changes, a goal lands, a new play starts (live phase sounds) or the beat on the pitch
-  changes. The guard counts 10 commits in the same 62 frames.
+  count changes, the whole minute on the clock changes, a goal lands, a new play starts (live
+  phase sounds) or the beat on the pitch changes. It also renders at once when the broadcast's
+  painter asks (see "Merge of rows 2g and 2b"). The guard counts 12 commits in the same 62 frames.
 - `Broadcast` subscribes to the feed while motion is on. On each published frame it runs
-  `activeBeat` and `stagePitch` for that frame. It then writes `transform: translate3d(x cqi, y cqi, 0)`
+  `stageFrame` (row 2b's `activeBeat` plus `stagePitch`) for that frame. It then writes `transform: translate3d(x cqi, y cqi, 0)`
   to the 22 players and the ball through refs. It also writes the ball's `--loft` and `--spin`, the
   trail path and the play badge position. It writes an attribute only when its value changed. React
   still renders which elements are on the pitch and their data attributes. A layout effect repaints
@@ -29,6 +30,38 @@ After this change:
   `Broadcast.injury` and the matchday e2e specs pass unchanged.
 
 `src/engine` and `src/ui/matchday/timeline.ts` are untouched.
+
+## Merge of rows 2g and 2b
+
+`origin/main` `458c56e` (PR #89 callouts and cut-ins, PR #90 continuous ball) merged in at
+`6e9d509`.
+
+- The painter calls row 2b's `stageFrame(timeline, {clock, fired, now, kicks, motion, speed, ...})`
+  with the frame's values, and the render calls it with the props. `stageFrame` is pure, so the two
+  never share state.
+- Row 2g's `cutIns` prop, `cutInAt`, `TYPE_VARS`, `CUT_IN_LABEL` and the goal, save and duel cards
+  are kept beside `feed`. A cut-in is rendered by React, so on its own it would wait up to 100 ms for
+  the next gap render. To put it on the right frame, the painter computes a screen key per frame:
+  the beat on the pitch, the goal's 0.25, 0.35, 0.6, 0.75 and 0.9 windows, the cut-in, the trail,
+  the play badge, the ball effect and the carrier. When the key differs from the last render's,
+  `publish` returns true and `MatchPlayer` renders on that frame. The guard `the frame where the
+  goal reaches 0.25 of its staging asks for a render` checks this. With the painter forced to
+  never ask, it fails (`expected false to be true`), and the commit count reads 10 instead of 12.
+  That is a mutation proof on the merged code, not a separate RED commit, because the timing
+  rule only exists once the merge brings in cut-ins.
+- The whole minute joined MatchPlayer's glance. Row 2g's `MatchPlayer.quick` test watches the
+  clock reach 35' exactly. At 10 Hz the minute label skipped from 34' to 36', so the clock now
+  renders at once on each new minute.
+- Player pose and facing remain React-rendered at the 10 Hz floor. Their positions move per frame.
+- The frame-loop guard is re-pinned to `458c56e`'s own `left`/`top` for the same fixture and clocks.
+  Row 2b moved the players and the goal ball. The commit count is re-pinned to 12, which was measured
+  as 5 renders on the gap alone, 2 on the clock or play alone, 3 asked by the pitch alone, and 2 on
+  both.
+- `e2e/continuous-ball.spec.ts` reads the ball's spot from its `translate3d(x cqi, y cqi)`, with y
+  divided by 0.64. On builds without the transform it falls back to `left`/`top`. Its metric is
+  unchanged: the fastest speed over at least 100 ms, scaled to one 60 Hz frame, with a bound of 6.
+  On this branch it reads 2.68 and passes. On a fresh build of `ae8ee22` it reads 9.00 and fails
+  (`Received: 8.997818670370082`), so its RED still holds.
 
 ## Brief vs code
 
@@ -78,7 +111,27 @@ layout and style time. Each side ran 5 times, alternated A B B A, with `pnpm bui
 `next start`. Other Wave 2 lanes were building on the same machine, with a load average of 6 to 13
 on 12 cores. Raw runs are in `docs/reports/broadcast-frame-loop/frames.json`.
 
-At the merged head, before is `origin/main` `e7f2012` (PR #88 audio polish) and after is `f511c73`:
+At the merged head, before is `origin/main` `458c56e` (PR #90 continuous ball) and after is
+`6e9d509`. Two batches ran (load average 3 to 8 on 12 cores). Batch 1 is
+`frames.json` and batch 2 is `frames-batch2.json`:
+
+| Metric (median of 5, range)  | before batch 1      | after batch 1       | before batch 2      | after batch 2       |
+| ---------------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
+| p50 frame interval           | 16.7 ms (16.7-16.7) | 16.7 ms (16.7-16.7) | 16.7 ms (16.7-16.7) | 16.7 ms (16.7-16.7) |
+| p95 frame interval           | 16.7 ms (16.7-16.8) | 16.8 ms (16.7-16.8) | 16.7 ms (16.7-16.8) | 16.7 ms (16.7-16.8) |
+| largest gap / dropped frames | 16.8 ms / 0         | 16.8 ms / 0         | 16.8 ms / 0         | 16.8 ms / 0         |
+| long tasks (> 50 ms)         | 0 (0-0)             | 0 (0-0)             | 0 (0-0)             | 0 (0-0)             |
+| DOM mutations per second     | 2206 (2201-2216)    | 1164 (1164-1165)    | 2208 (2205-2214)    | 1163 (1161-1164)    |
+| main thread task time, 10 s  | 3022 ms (2915-4261) | 2824 ms (2478-3113) | 4167 ms (2764-5337) | 3764 ms (2464-3988) |
+| script                       | 688 ms (650-936)    | 430 ms (372-473)    | 942 ms (618-1189)   | 584 ms (371-633)    |
+| layout                       | 130 ms (114-216)    | 87 ms (78-90)       | 212 ms (101-304)    | 108 ms (79-126)     |
+| style recalc                 | 257 ms (252-426)    | 484 ms (414-536)    | 397 ms (225-523)    | 676 ms (411-701)    |
+
+p95 read 16.8 in 1 of 5 before runs and 3 of 5 after runs in batch 1, and in 2 before runs and 1
+after run in batch 2. Over both batches that is 3 of 10 before and 4 of 10 after. Every run on both
+sides had a 16.8 ms largest gap and no dropped frame, so the difference is one 0.1 ms timer tick.
+
+Earlier, before `e7f2012` and after `f511c73` (PR #88 merged):
 
 | Metric (median of 5, range)  | before (`e7f2012`)  | after (`f511c73`)   |
 | ---------------------------- | ------------------- | ------------------- |
@@ -114,8 +167,19 @@ time halved.
 - Headless numbers do not include GPU raster. Chromium rasterises in software here.
 
 Trace (`scripts/perf/broadcast-trace.mts`, 4 s at 4x throttle, three alternated pairs, raw in
-`docs/reports/broadcast-frame-loop/trace.txt`). The load fell during this run, so absolute times
-drift by pair. The pre-merge pairs, run under steadier load, were:
+`docs/reports/broadcast-frame-loop/trace.txt`). At the merged head, `458c56e` against `6e9d509`:
+
+| Event (ms in 4 s)        | before (`458c56e`) | after (`6e9d509`) |
+| ------------------------ | ------------------ | ----------------- |
+| FunctionCall (script)    | 443-465            | 236-249           |
+| UpdateLayoutTree (style) | 169-186            | 243-256           |
+| elements restyled        | 9643-9726          | 11390-11548       |
+| Layout                   | 146-155            | 54-56             |
+| PrePaint                 | 241-254            | 160-176           |
+| Paint                    | 505-521            | 257-271           |
+| Layerize                 | 251-259            | 240-248           |
+
+The pre-merge pairs were:
 
 | Event (ms in 4 s)        | before (`fe6d183`) | after (`513d113`) |
 | ------------------------ | ------------------ | ----------------- |
@@ -153,7 +217,19 @@ run errored.
 
 ## Gates
 
-At the merged head `f511c73`:
+At the merged head `6e9d509` (rows 2g and 2b):
+
+- `pnpm lint` and `pnpm typecheck` exited 0. `pnpm test`: 1431 passed in 163 files. `pnpm build`
+  exited 0.
+- `pnpm check:mirrors`, `check:image-seam`, `check:image-packs`, `check:theme-contrast`,
+  `check:theme-colors`, `check:theme-cvd` and `check:client-bundle` exited 0. Prettier `--check`
+  passed on the touched files.
+- Playwright with a fresh build, `PLAYWRIGHT_PORT=3521 CI=1`, on `broadcast-frame-loop`,
+  `continuous-ball`, `callouts-type-effects`, `audio-polish`, `score-lands-with-ball`,
+  `speed-aware-staging`, `mobile-pitch-fixes`, `injury-staging`, `one-shared-timeline` and
+  `quick-not-broadcast`: 19 passed, 0 failed. `continuous-ball` read 2.68 per 60 Hz frame.
+
+At the earlier merged head `f511c73`:
 
 - `pnpm lint` and `pnpm typecheck` exited 0. `pnpm test`: 1415 passed in 160 files.
 - Playwright with a fresh build of `f511c73`, `PLAYWRIGHT_PORT=3521 CI=1`: 425 passed, 54 skipped
@@ -168,7 +244,7 @@ At the merged head `f511c73`:
 Before the merge, at `513d113`: lint, typecheck and build exited 0, 1392 tests passed in 156 files,
 and the same Playwright set without `audio-polish` gave 423 passed, 54 skipped and 0 failed.
 
-Browser proof is in `docs/reports/broadcast-frame-loop/{390,360,320}-live.png`, taken at `f511c73`.
+Browser proof is in `docs/reports/broadcast-frame-loop/{390,360,320}-live.png`, taken at `6e9d509`.
 `e2e/broadcast-frame-loop.spec.ts` checks at each width with touch that all 22 players carry
 `translate3d` transforms and that their centers sit inside the pitch. It also checks that the ball
 moves between samples and that the page has no horizontal overflow.
@@ -178,3 +254,7 @@ moves between samples and that the page has no horizontal overflow.
 - Physical phone check (owner action, requested in the PR body).
 - Full local Playwright suite. Hosted CI runs all eight shards.
 - Independent review (the coordinator runs GLM).
+- PR #92's `kickProgress` is not wired into the per-frame painter. #92 had not landed at the last
+  fetch (`origin/main` `458c56e`). Once it lands, `LiveFrame` needs a `kickProgress`, which
+  `MatchPlayer` computes per frame from `kickProgress(state, now, pace)`, and the painter passes it
+  to `stageFrame`.

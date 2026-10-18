@@ -5,38 +5,47 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Broadcast frame loop
 
-Branch `perf/broadcast-frame-loop` off `fe6d183`, with `origin/main` merged in, last at `e7f2012`
-(PR #88). UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge
-status, the squash SHA and the reviewer receipt go into the next STATE update.
+Branch `perf/broadcast-frame-loop` off `fe6d183`, with `origin/main` merged in, last at `458c56e`
+(PRs #89 and #90). UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting`
+changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 For the player, a live match looks the same and does less work per frame. Before, React re-rendered
 the whole match screen on every animation frame (62 commits in 62 frames). Now the clock,
-scoreboard, ticker and touchline render about every 100 ms, and at once when a beat fires or a goal
-lands. A frame loop moves the 22 players and the ball with `translate3d` transforms from `stagePitch`
-output. Quick and reduced motion stay still. The score lands at goal progress 0.6, and 1x/2x
-staging, manager stops and injury staging keep their timings.
+scoreboard, ticker and touchline render about every 100 ms (12 commits in the same 62 frames). They
+also render at once on a new minute, a fired beat, a landed goal, or a frame whose pitch shows a new
+cut-in, trail, play badge or carrier. A frame loop moves the 22 players and the ball with
+`translate3d` transforms from row 2b's `stageFrame`. Quick and reduced motion stay still. The score
+lands at goal progress 0.6, and 1x/2x staging, manager stops, injury staging and row 2g's cut-ins
+keep their timings.
 
-RED commits: `3129582`, `6c06799` (5 of 5 guard tests fail on `origin/main` code).
+RED commits: `3129582`, `6c06799` (5 of 5 guard tests fail on `origin/main` code). The cut-in timing
+guard fails when the painter is forced never to ask for a render (mutation proof on the merged
+code). `continuous-ball` now reads the transform and still fails on an `ae8ee22` build (9.00).
 
-Measured at 390x844 with a 4x CPU throttle in headless Chromium, 5 alternated runs per side, before
-`e7f2012` and after `f511c73`:
+Measured at 390x844 with a 4x CPU throttle in headless Chromium, 2 batches of 5 alternated runs per
+side, before `458c56e` and after `6e9d509` (medians, batch 1 then batch 2):
 
-- p50 frame interval was 16.7 ms on both sides.
-- p95 was 16.8 ms before and 16.7 ms after. This is one tick of the 0.1 ms timer.
-- Both sides had 0 dropped frames and 0 long tasks.
-- DOM mutations fell from 2336 to 1229 per second.
-- Main-thread task time fell from 2385 to 1970 ms per 10 s.
-- Style recalc rose from 211 to 351 ms.
+- p50 frame interval was 16.7 ms on both sides in both batches.
+- p95 was 16.7/16.7 ms before and 16.8/16.7 ms after. Across the 10 runs per side, 3 before and
+  4 after read 16.8. That is one tick of the 0.1 ms timer.
+- Every run on both sides had 0 dropped frames, 0 long tasks and a 16.8 ms largest gap.
+- DOM mutations fell from about 2207 to 1164 per second.
+- Main-thread task time fell from 3022/4167 to 2824/3764 ms per 10 s.
+- Style recalc rose from 257/397 to 484/676 ms.
 
 Headless numbers do not include GPU raster. Details are in `docs/decisions/broadcast-frame-loop.md`.
 
-Gates at `f511c73`:
+Gates at `6e9d509`:
 
 - Lint, typecheck and build exited 0.
-- Unit tests: 1415 passed in 160 files.
-- Playwright (matchday specs including `audio-polish`, `mobile-targets` and `mobile-acceptance`):
-  425 passed, 54 skipped by project filters, 0 failed.
-- Physical phone check, full local Playwright suite, review and hosted CI: NOT RUN.
+- Unit tests: 1431 passed in 163 files.
+- `check:mirrors`, `image-seam`, `image-packs`, `theme-contrast`, `theme-colors`, `theme-cvd` and
+  `client-bundle` exited 0.
+- Playwright (`broadcast-frame-loop`, `continuous-ball`, `callouts-type-effects`, `audio-polish`,
+  `score-lands-with-ball`, `speed-aware-staging`, `mobile-pitch-fixes`, `injury-staging`,
+  `one-shared-timeline`, `quick-not-broadcast`) gave 19 passed and 0 failed.
+- NOT RUN: physical phone check, full local Playwright suite, review, hosted CI, and PR #92's
+  `kickProgress` in the per-frame painter (#92 not landed at the last fetch).
 
 ## Continuous ball
 
