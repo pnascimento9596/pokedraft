@@ -1,3 +1,4 @@
+import { FORMATIONS } from "@/engine/formations";
 import type { FullLineup, MatchResult } from "@/engine/types";
 import type { MatchView } from "@/ui/settings";
 import { injuries } from "@/ui/manager/touchline";
@@ -36,7 +37,12 @@ export const PACE: Readonly<Record<MatchView, Pace>> = {
   },
 };
 
-export type StopKind = "halftime" | "extraTime" | "injury";
+export type StopKind = "halftime" | "fatigue" | "extraTime" | "injury";
+
+// Interim until engine 7 (W6b): engine 6 switches the assistant's fatigue subs off with the
+// user's first decision, so a managed side gets a stop to check its legs instead.
+const FATIGUE_STOP = 65;
+const FATIGUE_ENERGY = 65;
 
 /** A minute where manager mode stops the clock and hands the touchline to the player. */
 export interface Stop {
@@ -47,9 +53,10 @@ export interface Stop {
 
 /**
  * Half-time, the break before extra time and each user injury the manager can answer, in minute
- * order. The starting tactic is picked before kickoff, so the clock never stops at 0'.
+ * order. The starting tactic is picked before kickoff, so the clock never stops at 0'. A side the
+ * manager has taken over (`managed`) also stops at 65' when an outfield player is below 65 energy.
  */
-export function stopsFor(match: PlayedMatch, lineup: FullLineup): readonly Stop[] {
+export function stopsFor(match: PlayedMatch, lineup: FullLineup, managed = false): readonly Stop[] {
   if (match.windows === undefined) return [];
   const stops: Stop[] = [
     { key: "halftime", kind: "halftime", minute: 45 },
@@ -61,10 +68,22 @@ export function stopsFor(match: PlayedMatch, lineup: FullLineup): readonly Stop[
         minute: call.minute,
       })),
   ];
+  if (managed && tiredAt(match, lineup, FATIGUE_STOP)) {
+    stops.push({ key: `fatigue:${FATIGUE_STOP}`, kind: "fatigue", minute: FATIGUE_STOP });
+  }
   if (match.extraTime) stops.push({ key: "extraTime", kind: "extraTime", minute: 90 });
   // An injury at 45 happens before the half-time whistle, so its prompt comes first.
   const order = (s: Stop) => (s.kind === "injury" ? 0 : 1);
   return stops.sort((a, b) => a.minute - b.minute || order(a) - order(b));
+}
+
+function tiredAt(match: PlayedMatch, lineup: FullLineup, minute: number): boolean {
+  const window = match.windows?.find((w) => w.minute === minute);
+  if (window === undefined) return false;
+  const slots = FORMATIONS[lineup.formation].slots;
+  return window.energy.some(
+    (e, slot) => e !== null && slots[slot]!.role !== "GK" && e < FATIGUE_ENERGY,
+  );
 }
 
 /** The next stop at or after `minute` that the player has not answered yet. */

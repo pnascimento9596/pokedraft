@@ -72,6 +72,16 @@
   color: var(--text-muted);
 }
 
+.scout {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--info-bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 20px;
+}
+
 .xi {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

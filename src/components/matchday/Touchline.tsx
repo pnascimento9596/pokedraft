@@ -4,7 +4,10 @@ import { useId, useState } from "react";
 import { FORMATIONS, speciesById } from "@/engine";
 import type { BenchIndex, FormationId, StarterIndex } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
+import { assistantStatus, type OpponentStyle } from "@/ui/manager/intel";
 import { MAX_SUBS, type Decision, type Touchline as TouchlineState } from "@/ui/manager/touchline";
+import { SUITABILITY_LABEL } from "@/ui/labels";
+import { getSlotSuitability } from "@/ui/suitability";
 import { TacticPills } from "./TacticPills";
 import s from "./Touchline.module.css";
 
@@ -18,6 +21,8 @@ export function Touchline({
   error,
   busy = false,
   sheet,
+  ratings = false,
+  style,
 }: {
   readonly line: TouchlineState;
   readonly formation: FormationId;
@@ -27,6 +32,10 @@ export function Touchline({
   readonly busy?: boolean;
   /** Below 600px the touchline is a bottom sheet: collapsed to the tactics until it is opened. */
   readonly sheet?: { readonly expanded: boolean; readonly onExpand: (open: boolean) => void };
+  /** Ratings are on: bench cards add fit scores and STA. Off, they keep the fit glyph only. */
+  readonly ratings?: boolean;
+  /** The opponent's style, for the edge badge on each tactic pill. */
+  readonly style?: OpponentStyle;
 }) {
   const offId = useId();
   const onId = useId();
@@ -71,6 +80,10 @@ export function Touchline({
         ) : null}
       </header>
 
+      <p className={s.assistant} data-testid="assistant-status">
+        {assistantStatus(line.managed)}
+      </p>
+
       {line.managed ? (
         <p className={`${s.takeover} ${s.extra}`} role="status" data-testid="takeover">
           {TAKEOVER_COPY}
@@ -80,6 +93,7 @@ export function Touchline({
       <TacticPills
         label="Tactic"
         value={line.tactic}
+        style={style}
         dense={sheet !== undefined}
         disabled={closed}
         onPick={(t) => {
@@ -87,47 +101,120 @@ export function Touchline({
         }}
       />
 
-      <div className={`${s.sub} ${s.extra}`}>
-        <div className={s.field}>
-          <label htmlFor={offId}>Take off</label>
-          <span className={s.select}>
-            <select
-              id={offId}
-              value={takeOff ?? ""}
-              disabled={closed || !subsLeft || onPitch.length === 0}
-              data-testid="sub-off"
-              onChange={(e) => setOff(Number(e.target.value) as StarterIndex)}
-            >
-              {onPitch.map(({ slot, id }) => (
-                <option key={slot} value={slot}>
-                  {slots[slot]!.label} {speciesById(id).name}
-                </option>
-              ))}
-            </select>
-          </span>
-        </div>
-        <div className={s.field}>
-          <label htmlFor={onId}>Bring on</label>
-          <span className={s.select}>
-            <select
-              id={onId}
-              value={bringOn ?? ""}
-              disabled={closed || !subsLeft || bench.length === 0}
-              data-testid="sub-on"
-              onChange={(e) => setOn(Number(e.target.value) as BenchIndex)}
-            >
-              {bench.length === 0 ? <option value="">Nobody left</option> : null}
-              {bench.map((b) => (
-                <option key={b.index} value={b.index}>
-                  {speciesById(b.species).name}
-                </option>
-              ))}
-            </select>
-          </span>
-        </div>
+      {error !== null ? (
+        <p className={s.error} role="alert">
+          {error}
+        </p>
+      ) : null}
+
+      <div className={`${s.pick} ${s.extra}`}>
+        <h4 className={s.pickTitle} id={offId}>
+          Take off
+        </h4>
+        <ul className={s.energy} aria-labelledby={offId}>
+          {line.onPitch.map((id, slot) => {
+            const energy = line.energy[slot];
+            const canPick = !closed && subsLeft && id !== null;
+            const selected = takeOff === slot && id !== null;
+            const tired = energy != null && energy < 65;
+            return (
+              <li
+                key={slot}
+                className={s.energyRow}
+                data-testid={`energy-slot-${slot}`}
+                data-empty={id === null || undefined}
+                data-selected={selected || undefined}
+                data-tired={tired || undefined}
+                data-interactive={canPick || undefined}
+                role={canPick ? "button" : undefined}
+                aria-pressed={canPick ? selected : undefined}
+                tabIndex={canPick ? 0 : undefined}
+                onClick={canPick ? () => setOff(slot as StarterIndex) : undefined}
+                onKeyDown={
+                  canPick
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setOff(slot as StarterIndex);
+                        }
+                      }
+                    : undefined
+                }
+              >
+                <span className={s.energyRole}>{slots[slot]!.label}</span>
+                <span className={s.energyPlayer}>
+                  {id !== null ? <PlayerImage dexId={id} size={22} alt="" /> : null}
+                  <span className={s.energyName}>
+                    {id === null ? "Empty" : speciesById(id).name}
+                  </span>
+                  {line.yellow[slot] && id !== null ? (
+                    <span className={s.yellow} data-yellow role="img" aria-label="Yellow card" />
+                  ) : null}
+                </span>
+                <meter
+                  className={s.meter}
+                  min={0}
+                  max={100}
+                  low={45}
+                  high={70}
+                  optimum={100}
+                  value={energy ?? 0}
+                  aria-label={`${id === null ? "Empty" : speciesById(id).name} energy`}
+                />
+                <span className={`num ${s.energyValue}`}>{energy ?? "-"}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      <div className={`${s.pick} ${s.extra}`}>
+        <h4 className={s.pickTitle} id={onId}>
+          Bring on
+        </h4>
+        {bench.length === 0 ? (
+          <p className={s.empty}>Nobody left on the bench.</p>
+        ) : (
+          <ul className={s.bench} aria-labelledby={onId}>
+            {bench.map((b) => {
+              const species = speciesById(b.species);
+              const fit =
+                takeOff === null
+                  ? null
+                  : getSlotSuitability(species, formation, { kind: "starter", index: takeOff });
+              const role = takeOff === null ? null : slots[takeOff]!.role;
+              return (
+                <li key={b.index}>
+                  <button
+                    type="button"
+                    className={s.benchCard}
+                    aria-pressed={bringOn === b.index}
+                    disabled={closed || !subsLeft}
+                    data-testid={`bench-card-${b.index}`}
+                    onClick={() => setOn(b.index)}
+                  >
+                    <PlayerImage dexId={b.species} size={28} alt="" />
+                    <span className={s.benchName}>{species.name}</span>
+                    {fit !== null ? (
+                      <span className={s.benchFit} data-fit={fit}>
+                        {SUITABILITY_LABEL[fit]}
+                      </span>
+                    ) : null}
+                    {ratings ? (
+                      <span className={`num ${s.benchNumbers}`} data-numbers>
+                        {role === null ? "" : `Fit ${species.fits[role]}, `}STA {species.attrs.STA}
+                      </span>
+                    ) : null}
+                    <span className={s.benchFresh}>Fresh</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
         <button
           type="button"
-          className="btn"
+          className={`btn ${s.confirm}`}
           disabled={closed || !subsLeft || takeOff === null || bringOn === null}
           data-testid="sub-confirm"
           onClick={() => {
@@ -141,62 +228,6 @@ export function Touchline({
           Make substitution
         </button>
       </div>
-
-      {error !== null ? (
-        <p className={s.error} role="alert">
-          {error}
-        </p>
-      ) : null}
-
-      <ul className={`${s.energy} ${s.extra}`} aria-label="Energy">
-        {line.onPitch.map((id, slot) => {
-          const energy = line.energy[slot];
-          const canPick = !closed && subsLeft && id !== null;
-          const selected = takeOff === slot && id !== null;
-          const tired = energy != null && energy < 65;
-          return (
-            <li
-              key={slot}
-              className={s.energyRow}
-              data-testid={`energy-slot-${slot}`}
-              data-empty={id === null || undefined}
-              data-selected={selected || undefined}
-              data-tired={tired || undefined}
-              data-interactive={canPick || undefined}
-              role={canPick ? "button" : undefined}
-              tabIndex={canPick ? 0 : undefined}
-              onClick={canPick ? () => setOff(slot as StarterIndex) : undefined}
-              onKeyDown={
-                canPick
-                  ? (e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        setOff(slot as StarterIndex);
-                      }
-                    }
-                  : undefined
-              }
-            >
-              <span className={s.energyRole}>{slots[slot]!.label}</span>
-              <span className={s.energyPlayer}>
-                {id !== null ? <PlayerImage dexId={id} size={22} alt="" /> : null}
-                <span className={s.energyName}>{id === null ? "Empty" : speciesById(id).name}</span>
-              </span>
-              <meter
-                className={s.meter}
-                min={0}
-                max={100}
-                low={45}
-                high={70}
-                optimum={100}
-                value={energy ?? 0}
-                aria-label={`${id === null ? "Empty" : speciesById(id).name} energy`}
-              />
-              <span className={`num ${s.energyValue}`}>{energy ?? "-"}</span>
-            </li>
-          );
-        })}
-      </ul>
     </section>
   );
 }

@@ -14,7 +14,7 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
-import { speciesById } from "@/engine";
+import { FORMATIONS, speciesById } from "@/engine";
 import type {
   BenchIndex,
   FullLineup,
@@ -25,12 +25,14 @@ import type {
 } from "@/engine/types";
 import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
+import { fatigueLine, scoutLine } from "@/ui/manager/intel";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Pace, type Stop } from "@/ui/matchday/clock";
 import { TACTIC_LABEL, beatLine, clubShort, kickLine, type Teams } from "@/ui/matchday/copy";
 import {
   START,
   activeBeat,
+  awaitingAnswer,
   beatKey,
   decisionMinute,
   frameNow,
@@ -110,6 +112,7 @@ const STOP_COPY: Readonly<Record<Stop["kind"], { title: string; go: string } | n
     title: "Half time. Make your changes for the second half.",
     go: "Start the second half",
   },
+  fatigue: { title: "Make a change or play on.", go: "Play on" },
   extraTime: { title: "Level after 90 minutes. Extra time is next.", go: "Start extra time" },
   injury: null,
 };
@@ -122,6 +125,7 @@ export function MatchPlayer({
   view,
   manager,
   autoStart = false,
+  ratings = false,
   footer,
   aside,
   startAt,
@@ -135,6 +139,8 @@ export function MatchPlayer({
   /** Present in manager mode: the touchline, its stops and the decisions so far. */
   readonly manager?: ManagerControls;
   readonly autoStart?: boolean;
+  /** Ratings are on, so the touchline may show fit scores and STA. */
+  readonly ratings?: boolean;
   /** Shown under the scoreboard once the match is over. */
   readonly footer?: ReactNode;
   /** Shown under the ticker, from the minute on the clock and the score that has landed. */
@@ -154,8 +160,15 @@ export function MatchPlayer({
     [match, matchIndex, seed, lineup, movesOf],
   );
   const stops = useMemo(
-    () => (manager === undefined ? [] : stopsFor(match, lineup)),
-    [manager, match, lineup],
+    () =>
+      manager === undefined
+        ? []
+        : stopsFor(
+            match,
+            lineup,
+            manager.actions.some((a) => a.match === matchIndex && a.minute <= 65),
+          ),
+    [manager, match, matchIndex, lineup],
   );
   const env: PlayEnv = useMemo(
     () => ({ timeline, stops, pace: PACE[view], replays: motion }),
@@ -395,7 +408,10 @@ export function MatchPlayer({
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
   const shown = timeline.beats.filter(
-    (b) => revealed(b, clock) && landed(b, state.fired, now, motion, state.speed),
+    (b) =>
+      revealed(b, clock) &&
+      landed(b, state.fired, now, motion, state.speed) &&
+      !awaitingAnswer(b, state.answered, stops),
   );
   const goals = shown.filter((b) => b.kind === "goal");
   const score = goals.at(-1)?.kind === "goal" ? goals.at(-1)!.score : { user: 0, opp: 0 };
@@ -477,6 +493,16 @@ export function MatchPlayer({
   const onPitch = staged(state, now);
   const hintId = useId();
   const stop = state.stop;
+  const breather = stop?.kind === "halftime" || stop?.kind === "fatigue" ? stop.minute : null;
+  const actions = manager?.actions;
+  const tired = useMemo(
+    () =>
+      breather === null || actions === undefined
+        ? null
+        : fatigueLine(touchlineAt(match, matchIndex, lineup, actions, breather), lineup.formation),
+    [breather, actions, match, matchIndex, lineup],
+  );
+
   const fullscreenToggle =
     view === "live" && fullscreen.supported ? (
       <button
@@ -780,7 +806,23 @@ export function MatchPlayer({
               aria-label={STOP_COPY[stop.kind]!.go}
               data-testid={`stop-${stop.kind}`}
             >
-              <p className={s.promptTitle}>{STOP_COPY[stop.kind]!.title}</p>
+              <p className={s.promptTitle}>
+                {stop.kind === "fatigue" && tired !== null
+                  ? `${stop.minute}'. ${tired} ${STOP_COPY.fatigue!.title}`
+                  : STOP_COPY[stop.kind]!.title}
+              </p>
+              {stop.kind === "halftime" ? (
+                <>
+                  <p className={s.promptLine} data-testid="halftime-scout">
+                    {scoutLine(match.opponent.tacticalStyle)}
+                  </p>
+                  {tired !== null ? (
+                    <p className={s.promptLine} data-testid="halftime-fatigue">
+                      {tired}
+                    </p>
+                  ) : null}
+                </>
+              ) : null}
               <button
                 type="button"
                 className="btn btn--primary"
@@ -801,6 +843,7 @@ export function MatchPlayer({
             <InjuryPrompt
               key={stop.key}
               name={speciesById(injury.player).name}
+              role={FORMATIONS[lineup.formation].slots[injury.slot]!.label}
               minute={injury.minute}
               autoPick={injury.autoPick}
               options={injury.options.map((b) => ({
@@ -831,6 +874,8 @@ export function MatchPlayer({
               formation={lineup.formation}
               onDecide={decide}
               error={stop?.kind === "injury" ? null : error}
+              ratings={ratings}
+              style={match.opponent.tacticalStyle}
               sheet={{
                 expanded: state.uiHold,
                 onExpand: (open) => send({ type: "sheet", open, now: performance.now() }),
@@ -1063,6 +1108,7 @@ function Ticker({
 
 function InjuryPrompt({
   name,
+  role,
   minute,
   autoPick,
   options,
@@ -1070,6 +1116,8 @@ function InjuryPrompt({
   error,
 }: {
   readonly name: string;
+  /** The injured player's position label, such as LB. */
+  readonly role: string;
   readonly minute: number;
   readonly autoPick: BenchIndex | null;
   readonly options: readonly { readonly index: BenchIndex; readonly name: string }[];
@@ -1080,7 +1128,7 @@ function InjuryPrompt({
   return (
     <div className={s.prompt} role="dialog" aria-label="Injury" data-testid="stop-injury">
       <p className={s.promptTitle}>
-        {minute}&apos; {name} is injured. Choose who comes on.
+        {minute}&apos; {role} {name} is injured. Choose who comes on.
       </p>
       <fieldset className={s.choices}>
         <legend className={s.srOnly}>Replacement for {name}</legend>

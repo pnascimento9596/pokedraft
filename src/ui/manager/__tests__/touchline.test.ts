@@ -147,6 +147,26 @@ describe("touchlineAt (catches a touchline that offers a used bench player or co
     expect(touchlineAt(m, 0, LINEUP, [], 0).energy[0]).toBe(100);
   });
 
+  it("marks the user's booked players, not the opponent's, and clears a slot when its player goes off (catches energy rows without yellow cards)", () => {
+    const m = match([
+      { kind: "yellow", side: "user", minute: 20, slot: 3, player: id(4), secondYellow: false },
+      { kind: "yellow", side: "opp", minute: 22, slot: 5, player: id(150), secondYellow: false },
+      {
+        kind: "sub",
+        side: "user",
+        minute: 50,
+        slot: 3,
+        out: id(4),
+        in: id(21),
+        reason: "tactical",
+        by: "manager",
+      },
+    ]);
+    const booked = [false, false, false, true, false, false, false, false, false, false, false];
+    expect(touchlineAt(m, 0, LINEUP, [], 30).yellow).toEqual(booked);
+    expect(touchlineAt(m, 0, LINEUP, [], 60).yellow).toEqual(booked.map(() => false));
+  });
+
   it("knows the assistant is off once the user has decided anything in this match", () => {
     const m = match([]);
     const actions: ManagerAction[] = [{ type: "tactic", match: 2, minute: 30, tactic: "press" }];

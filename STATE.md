@@ -3,6 +3,32 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Touchline intelligence
+
+Branch `feat/touchline-intel` off `bee9acf` (row 3a's branch, PR #102). Wave 3 row 3g, matchday UI (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- In manager mode the pre-match card has a scout line ("Scout: a pressing side. Best edge: Counter, then Press. Avoid Defend.") and each tactic pill carries an Edge, Even or Avoid badge against the opponent's style, worked out from the engine's own style multipliers. A balanced opponent gets no badges.
+- Half time repeats the scout line and names the two most tired outfield players.
+- The touchline says what the assistant does: "Assistant: subs on, tactics on" until you decide anything in the match, then "Assistant: subs off, tactics off" (engine 6 behaviour).
+- Subs are picked by tapping: an energy row for who goes off, a bench card for who comes on. Bench cards show the Best, OK or Poor fit glyph for that position, plus "Fit n, STA n" when ratings are on. The Take off and Bring on selects are gone.
+- A booked player's energy row shows a yellow card. The injury prompt names the position.
+- During an unanswered injury stop the ticker no longer shows the assistant's replacement (the 1d carryover).
+- A managed match stops at 65' when an outfield player is below 65 energy. Engine 6 cannot get anyone that low by 65' (the measured minimum is 67), so this stop never shows in a real match yet. The owner chose on 2026-10-18 to ship it as written; see the decision log.
+- The closed phone sheet is 143 px high, up from 115 px, to fit the assistant line.
+
+RED commit: `1005614` (24 of 60 failed).
+
+Gates at `1efeb35` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck, test and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 1,554 passed in 177 files.
+- Playwright (`CI=1`, fresh build at `1efeb35`): `touchline-intel` 6 passed; with `touchline-sheet`, `manager-mode`, `prematch-merge`, `injury-staging`, `builder-matchday`, `mobile-targets` and `mobile-acceptance` the run was 405 passed, 56 skipped by their own project gates, exit 0.
+- The 65' stop in a browser (unreachable in engine 6), review, hosted CI, the full e2e suite, `env(safe-area-inset-bottom)` on a device and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/touchline-intel.md`. Browser proof: `docs/reports/touchline-intel/`.
+
+Merged origin/main twice. At `57b772c` (PRs #104, #106, #107): the branch was cut from row 3a's branch, so 3a's squash conflicted with its own commits in seven files; the six code files were re-merged against `bee9acf`, where they equal the squash, leaving one real hunk in `MatchPlayer.tsx` (the fatigue line and 3c's full-screen toggle, both kept). `74f2e55` then plays the intel tests' matches at the frame loop's 100 ms step and 1 s per `act()` (a loaded run had timed one out at 15,000 ms; back to back the two slow tests fell from 2,384 and 2,221 ms to 368 and 308 ms). At `ba878a2` (PRs #108, #110, #109) only an import line and STATE.md conflicted; 3i's seek already refuses the new 65' stop while unanswered. After the second merge lint, typecheck, build and all seven `check:*` scripts exited 0, 1,645 unit tests passed in 192 files, `touchline-intel`, `manager-mode`, `touchline-sheet`, `fullscreen-score-bug`, `replay-deep-links`, `injury-staging`, `prematch-merge`, `fatigue`, `your-calls` and `haptics` passed 41 of 41 and `mobile-targets` 93 of 93 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
 ## Replay and deep links
 
 Branch `feat/replay-deep-links` off `origin/main` at `1e417e3`. Wave 3 row 3i, results and the matchday replay (Yellow, bundle). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -26,6 +52,8 @@ Measurements and decisions are in `docs/decisions/replay-deep-links.md`. Browser
 Merged origin/main after PRs #107 and #108 at `6bc2d89`. `MatchPlayer.tsx`, its CSS and STATE.md conflicted. MatchPlayer keeps 3c's pitch frame, score bug and full-screen toggle, 3e's haptics and hint, and this row's staged pitch, REPLAY bug and pips. The REPLAY bug moved to the pitch's foot so it clears the score bug and the full-screen toggle. The replay's Tap for sound now reads 3e's `useAudioLocked`, and the seek and instant replay tests now also check that nothing buzzes again (`f712dca`). At `f712dca` lint, typecheck, build and all seven `check:*` scripts exited 0, and Prettier passed on the 6 touched files. The first `pnpm test` had 2 of 1,614 tests fail: both were `MatchPlayer.haptics.test.tsx` timing out at 15,000 ms, which row 3k owns. That file then passed 8 of 8 twice on its own, and a full rerun passed 1,614 in 189 files. Playwright (`CI=1`, fresh build): `replay-deep-links`, `haptics`, `fullscreen-score-bug`, `touchline-sheet`, `follow-camera`, `mobile-pitch-fixes`, `continuous-ball`, `audio-polish`, `manager-mode`, `your-calls` and `mobile-targets` passed 140, 0 failed.
 
 Merged origin/main after PR #110 (row 3k) at `ec886ff`; only STATE.md conflicted, and `Broadcast.tsx` merged cleanly with 3k's still key-duel cut-in. Round 1 at `03a5f6b` was approved, but the hosted check timed out four `MatchPlayer.haptics.test.tsx` tests on two runs (run 39181516463); 3k's fix brings that file's slowest test to 414 ms here. After the merge lint, typecheck, build and all seven `check:*` scripts exited 0, 1,617 unit tests passed in 189 files, and `replay-deep-links`, `broadcast-follow-ups`, `score-lands-with-ball`, `haptics`, `fullscreen-score-bug`, `continuous-ball`, `callouts-type-effects`, `follow-camera` and `manager-mode` passed 31 of 31 locally (`CI=1`, chromium, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #109 (row 3i, replay and deep links) merged as squash `eef865e`, reviewed head `46d7641`, GLM 5.3 Flash APPROVE in round 2 with canary `replay-deep-links-r2-5b08a51e0f35b7e5129414783acfdc44` echoed (round 1 at `03a5f6b` approved, but the hosted check timed out four `MatchPlayer.haptics.test.tsx` tests on two runs; PR #110 landed that fix first, and the merge of it voided the round 1 receipt). At `46d7641` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,617 unit tests passed in 189 files and Prettier passed on 35 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `eef865e` with `db.status` ok, and `replay-deep-links.spec.ts` plus `haptics.spec.ts` against production (chromium) passed 8 of 8. NOT RUN: physical phone check (owner action).
 
 ## Broadcast follow-ups
 
