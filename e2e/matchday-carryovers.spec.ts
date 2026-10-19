@@ -19,59 +19,71 @@ async function watchLive(page: Page) {
   return replay;
 }
 
-test("cut-in sprite is not empty: the key duel's Remoraid fills its circle at 390px (catches the 80px picture box cropped to its transparent middle)", async ({
-  page,
-}) => {
-  test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
-  test.setTimeout(150_000);
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  // The page pauses the match in the same task that draws the first duel card.
-  await page.addInitScript(() => {
-    const w = window as unknown as { duelAt: number | null };
-    w.duelAt = null;
-    new MutationObserver(() => {
-      if (w.duelAt !== null) return;
-      if (document.querySelector('[data-testid="cut-in"][data-kind="duel"]') === null) return;
-      w.duelAt = performance.now();
-      document.querySelector<HTMLButtonElement>('[data-testid="play-toggle"]')?.click();
-    }).observe(document, { subtree: true, childList: true, attributes: true });
+// The circle is clamp(36px, 9cqi, 56px): 36 on every phone, 56 on the 787.5px desktop pitch.
+for (const [width, height, circle] of [
+  [390, 844, 36],
+  [360, 740, 36],
+  [320, 640, 36],
+  [1280, 720, 56],
+] as const) {
+  test(`cut-in sprite is not empty: the key duel's Remoraid fills its ${circle}px circle at ${width}px (catches the 80px picture box cropped to its transparent middle)`, async ({
+    page,
+  }) => {
+    test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
+    test.setTimeout(150_000);
+    await page.setViewportSize({ width, height });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    // The page pauses the match in the same task that draws the first duel card.
+    await page.addInitScript(() => {
+      const w = window as unknown as { duelAt: number | null };
+      w.duelAt = null;
+      new MutationObserver(() => {
+        if (w.duelAt !== null) return;
+        if (document.querySelector('[data-testid="cut-in"][data-kind="duel"]') === null) return;
+        w.duelAt = performance.now();
+        document.querySelector<HTMLButtonElement>('[data-testid="play-toggle"]')?.click();
+      }).observe(document, { subtree: true, childList: true, attributes: true });
+    });
+    const replay = await watchLive(page);
+    await page.waitForFunction(
+      () => (window as unknown as { duelAt: number | null }).duelAt !== null,
+      null,
+      { timeout: 90_000 },
+    );
+    const duel = replay.locator('[data-testid="cut-in"][data-kind="duel"]');
+    await expect(duel.getByTestId("duel-callout")).toHaveText("Remoraid used Hyper Beam!");
+    await expect
+      .poll(() => duel.locator("img").evaluate((el: HTMLImageElement) => el.naturalWidth))
+      .toBeGreaterThan(0);
+    const boxes = await duel.evaluate((card) => {
+      const circle = card.firstElementChild!.getBoundingClientRect();
+      const picture = card.querySelector('[data-testid="player-image"]')!.getBoundingClientRect();
+      const img = card.querySelector("img")!.getBoundingClientRect();
+      const round = (r: DOMRect) => [r.width, r.height].map((n) => Math.round(n * 10) / 10);
+      return { circle: round(circle), picture: round(picture), img: round(img) };
+    });
+    console.log(`${width} duel cut-in boxes: ${JSON.stringify(boxes)}`);
+    expect(boxes.circle).toEqual([circle, circle]);
+    expect(boxes.picture).toEqual([circle, circle]);
+    expect(boxes.img[0]).toBeGreaterThan(0);
+    expect(boxes.img[0]).toBeLessThanOrEqual(circle);
+    expect(boxes.img[1]).toBeLessThanOrEqual(circle);
+    await duel.scrollIntoViewIfNeeded();
+    await page.screenshot({ path: `${SHOT}/${width}-duel-cut-in.png` });
   });
-  const replay = await watchLive(page);
-  await page.waitForFunction(
-    () => (window as unknown as { duelAt: number | null }).duelAt !== null,
-    null,
-    { timeout: 90_000 },
-  );
-  const duel = replay.locator('[data-testid="cut-in"][data-kind="duel"]');
-  await expect(duel.getByTestId("duel-callout")).toHaveText("Remoraid used Hyper Beam!");
-  await expect
-    .poll(() => duel.locator("img").evaluate((el: HTMLImageElement) => el.naturalWidth))
-    .toBeGreaterThan(0);
-  const boxes = await duel.evaluate((card) => {
-    const circle = card.firstElementChild!.getBoundingClientRect();
-    const picture = card.querySelector('[data-testid="player-image"]')!.getBoundingClientRect();
-    const img = card.querySelector("img")!.getBoundingClientRect();
-    const round = (r: DOMRect) => [r.width, r.height].map((n) => Math.round(n * 10) / 10);
-    return { circle: round(circle), picture: round(picture), img: round(img) };
-  });
-  console.log(`390 duel cut-in boxes: ${JSON.stringify(boxes)}`);
-  expect(boxes.circle).toEqual([36, 36]);
-  expect(boxes.picture).toEqual([36, 36]);
-  expect(boxes.img[0]).toBeGreaterThan(0);
-  expect(boxes.img[0]).toBeLessThanOrEqual(36);
-  expect(boxes.img[1]).toBeLessThanOrEqual(36);
-  await duel.scrollIntoViewIfNeeded();
-  await page.screenshot({ path: `${SHOT}/390-duel-cut-in.png` });
-});
+}
 
-for (const width of [360, 320]) {
+for (const [width, height] of [
+  [390, 844],
+  [360, 740],
+  [320, 640],
+] as const) {
   test(`nameplate stays inside the pitch at ${width}px: the carrier's name at the left edge is not clipped (catches the nameplate cut off by the pitch's left edge)`, async ({
     page,
   }) => {
     test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
     test.setTimeout(150_000);
-    await page.setViewportSize({ width, height: 740 });
+    await page.setViewportSize({ width, height });
     // Pause on the first frame where the ball carrier stands in the pitch's leftmost 6%.
     await page.addInitScript(() => {
       const w = window as unknown as { edgeAt: number | null };
@@ -195,6 +207,8 @@ test("Space after Kick off pauses: the keyboard lands on the play toggle (catche
   const toggle = page.getByTestId("play-toggle");
   await expect(toggle).toHaveText("Pause");
   await expect(toggle).toBeFocused();
+  // Paused at 0' the toggle reads "Kick off", so the first press waits for the clock to move.
+  await expect(page.getByTestId("match-player")).not.toHaveAttribute("data-minute", "0");
   const scrolled = await page.evaluate(() => scrollY);
   await page.keyboard.press(" ");
   await expect(toggle).toHaveText("Resume");

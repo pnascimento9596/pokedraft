@@ -535,12 +535,15 @@ function tick(state: PlayState, env: PlayEnv, now: number, dt: number): PlayStat
   }
 
   const stop = nextStop(env.stops, new Set(state.answered), state.minute);
-  if (stop !== null && stop.minute <= state.minute) {
-    return { ...state, stop, fired: fire(state, env, state.minute, now) };
-  }
   const holdBeat = timeline.beats.find(
     (b) => b.minute >= state.minute && holdFor(b, pace) > 0 && !state.held.includes(beatKey(b)),
   );
+  // A goal or save on the stop's own minute plays out, instant replay included, before the stop
+  // opens: the frame loop stands still under a stop, so a goal fired with it would never be seen.
+  const holdHere = holdBeat !== undefined && holdBeat.minute <= state.minute;
+  if (stop !== null && stop.minute <= state.minute && !holdHere) {
+    return { ...state, stop, fired: fire(state, env, state.minute, now) };
+  }
   const limit = Math.min(
     stop?.minute ?? Infinity,
     holdBeat?.minute ?? Infinity,
@@ -556,8 +559,9 @@ function tick(state: PlayState, env: PlayEnv, now: number, dt: number): PlayStat
       held: [...next.held, key],
     };
   }
-  if (stop !== null && minute >= stop.minute) next = { ...next, stop };
-  if (minute >= timeline.finalMinute && next.stop === null) {
+  const stopsHere = stop !== null && minute >= stop.minute;
+  if (stopsHere && next.hold === null) next = { ...next, stop };
+  if (minute >= timeline.finalMinute && !stopsHere) {
     next =
       timeline.kicks.length > 0
         ? { ...next, stage: "pens", kickAt: now }

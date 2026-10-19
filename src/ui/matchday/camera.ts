@@ -74,6 +74,17 @@ export function cameraTransform(cam: Camera): string {
   return `translate(${fixed(tx)}%, ${fixed(ty)}%) scale(${zoom.toFixed(3)})`;
 }
 
+/** The part of the pitch the camera shows, in percent of the pitch. */
+export function visibleRect(cam: Camera): {
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+} {
+  const { zoom, tx, ty } = frame(cam);
+  return { x: -tx / zoom, y: -ty / zoom, w: 100 / zoom, h: 100 / zoom };
+}
+
 /** Where a pitch point shows, in percent of the camera's view. */
 export function projectPoint(cam: Camera, p: Point): Point {
   const { zoom, tx, ty } = frame(cam);
