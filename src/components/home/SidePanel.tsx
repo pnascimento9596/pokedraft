@@ -7,7 +7,12 @@ import { FORMATION_IDS, GENS, type FormationId, type Gen, type IsoDate } from "@
 import { dailyDate } from "@/leaderboard/daily";
 import { DAILY_RULE, MODE_LABEL, ORDER_LABEL, STYLE_LABEL, genLabel, record } from "@/ui/labels";
 import { BUCKET_LABEL, STAT_BUCKETS, type BucketStats, type StatBucket } from "@/ui/runs";
-import { playTarget, type ChallengeMode, type PanelSettings } from "@/ui/settings";
+import {
+  SPIN_SPEED_LABEL,
+  playTarget,
+  type ChallengeMode,
+  type PanelSettings,
+} from "@/ui/settings";
 import { RUN_CLEARED, runSlotKey, writeRunCheckpoint, writeSession } from "@/ui/storage";
 import { longDate } from "@/components/leaderboard/format";
 import { MatchdaySettings } from "@/components/matchday/MatchdaySettings";
@@ -263,6 +268,12 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
                   ))}
                 </div>
               </div>
+              <Segmented
+                label="Spin speed"
+                value={panel.spinSpeed}
+                options={SPIN_SPEED_LABEL}
+                onChange={(spinSpeed) => set({ spinSpeed })}
+              />
             </section>
 
             <section className={s.section}>

@@ -29,6 +29,7 @@ import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { REGION_LABEL } from "@/ui/labels";
 import { filledCount, refFromKey, sameRef, slotLabel, valueAt } from "@/ui/lineup";
 import { ratingFor, type Rating } from "@/ui/rating";
+import type { SpinSpeed } from "@/ui/settings";
 import { swapMessage } from "@/ui/swap-message";
 import { RoadStrip } from "./RoadStrip";
 import { NavIcon } from "@/components/ui/nav-icons";
@@ -59,6 +60,7 @@ export interface DraftBoardProps {
   readonly onSeeResults: () => void;
   // The cup plays a matchday after the draft, so the button kicks off instead of showing results.
   readonly kickOff: boolean;
+  readonly spinSpeed: SpinSpeed;
 }
 
 const REROLL_BUTTONS: Readonly<Record<"cup8" | "kanto151", readonly [RerollTarget, string][]>> = {
@@ -135,6 +137,7 @@ function ActiveDraftBoard({
   onNewRun,
   onSeeResults,
   kickOff,
+  spinSpeed,
   settings,
 }: DraftBoardProps & { readonly settings: ActiveDraftSettings }) {
   const { state, rollId } = run;
@@ -653,6 +656,7 @@ function ActiveDraftBoard({
                   key={`reveal-${rollId}`}
                   stages={stagesFor(roll, settings, run.cause)}
                   instant={reduced}
+                  speed={spinSpeed}
                   onDone={onRevealDone}
                 />
               </div>
