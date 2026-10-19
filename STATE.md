@@ -50,6 +50,8 @@ Decision log: `docs/decisions/live-team-score.md`. Proof: `docs/reports/live-tea
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #116 (row 4c, live Team Score in the draft) merged as squash `63462b3`, reviewed head `ef1244a` after one fix round (merge of #115, no code change), GLM 5.3 Flash APPROVE in round 1 with canary `live-team-score-77cfb24e6188d06252c9a5342d5c9e51` echoed. At `ef1244a` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,720 unit tests passed in 201 files and Prettier passed on 8 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `63462b3` with `db.status` ok, and `live-team-score`, `challenge-ratings` and `draft-flow` against production (chromium) passed 31 of 31. NOT RUN: physical phone check (owner action), a real screen reader.
+
 ## One-tap play
 
 Branch `feat/one-tap-play` off `origin/main` at `34af10e`, with `origin/main` merged at `d48aa0f` (PRs #113 and #114) in fix round 1. Wave 4 row 4a, home and start card (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
