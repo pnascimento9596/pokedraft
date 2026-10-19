@@ -206,8 +206,8 @@ export function HomeScreen() {
       filledCount(draft.lineup) === 0
         ? null
         : engine.builderToken(draft.settings, draft.lineup, BUILDER_URL_SEED);
-    const url =
-      token === null ? window.location.pathname : `${window.location.pathname}?b=${token}`;
+    const { pathname, hash } = window.location;
+    const url = token === null ? `${pathname}${hash}` : `${pathname}?b=${token}${hash}`;
     window.history.replaceState(window.history.state, "", url);
   }, [live]);
 

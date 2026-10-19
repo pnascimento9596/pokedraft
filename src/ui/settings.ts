@@ -84,14 +84,16 @@ export function savePanel(panel: PanelSettings): void {
   writeJson(PANEL_KEY, panel);
 }
 
+export type Matchday = Pick<PanelSettings, "managerMode" | "matchView">;
+
 // With manager mode off and the quick view, the cup goes straight to the results as it always has.
-export function playsMatchday(panel: Pick<PanelSettings, "managerMode" | "matchView">): boolean {
+export function playsMatchday(panel: Matchday): boolean {
   return panel.managerMode || panel.matchView === "live";
 }
 
 // Nobody can coach a five-second match, so manager mode plays live. The saved view stays as chosen
 // and comes back when manager mode goes off.
-export function matchdayView(panel: Pick<PanelSettings, "managerMode" | "matchView">): MatchView {
+export function matchdayView(panel: Matchday): MatchView {
   return panel.managerMode ? "live" : panel.matchView;
 }
 
@@ -119,6 +121,17 @@ export function playHref(mode: ChallengeMode, panel: PanelSettings, seed?: strin
   }
   if (seed !== undefined) q.set("seed", seed);
   return `/play?${q.toString()}`;
+}
+
+// The settings are read back from the /play link, so Play clears the run slot /play will open.
+export function playTarget(
+  mode: ChallengeMode,
+  panel: PanelSettings,
+): { readonly href: string; readonly settings: DraftSettings } {
+  const href = playHref(mode, panel);
+  const parsed = parsePlayQuery(new URL(href, "http://pokedraft.invalid").searchParams);
+  if (parsed === null) throw new Error(`home panel produced an unreadable play link: ${href}`);
+  return { href, settings: parsed.settings };
 }
 
 export function parsePlayQuery(q: URLSearchParams): {

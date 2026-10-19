@@ -14,7 +14,7 @@ import { settingsSummary } from "@/ui/settingsSummary";
 import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
 import type { Restored } from "./savedRun";
-import { MatchdaySettings } from "@/components/matchday/MatchdaySettings";
+import { MatchdaySettings, useStoredMatchday } from "@/components/matchday/MatchdaySettings";
 import { RoadStrip } from "./RoadStrip";
 import { SettingsSummary } from "@/components/SettingsSummary";
 import { ModuleCard, StatusNote } from "@/components/ui/primitives";
@@ -98,6 +98,7 @@ export function Challenge({
   const [loadFailed, setLoadFailed] = useState(false);
   const [useQuerySeed, setUseQuerySeed] = useState(true);
   const wasLive = useRef(live !== null);
+  const [matchday, setMatchday] = useStoredMatchday();
 
   // New run swaps the whole screen back to Start; its heading takes focus.
   useEffect(() => {
@@ -204,9 +205,12 @@ export function Challenge({
         icon={<NavIcon family={daily !== undefined ? "daily" : "play"} />}
         data-testid={daily !== undefined ? "daily-kicker" : undefined}
       >
-        <SettingsSummary items={settingsSummary(settings)} />
+        <SettingsSummary
+          items={settingsSummary(settings, matchday)}
+          editHref={daily === undefined ? "/#settings" : undefined}
+        />
         {renderSetup?.(loading)}
-        <MatchdaySettings />
+        <MatchdaySettings value={matchday} onChange={setMatchday} />
         <button
           type="button"
           className="btn btn--primary"

@@ -26,7 +26,7 @@ test("manager mode plays live over a saved Quick choice, at 390px", async ({ pag
   await seedManagerQuick(page);
 
   await page.goto("/");
-  // The builder's friendly card shows the same settings, so read the Control desk's own copy.
+  // The builder's friendly card shows the same settings, so read the Play card's own copy.
   const desk = page.getByRole("complementary", { name: "Control desk" });
   const homeView = desk.getByRole("group", { name: "Match view" });
   await expect(homeView.getByRole("button", { name: "Quick sim" })).toBeDisabled();
@@ -35,7 +35,7 @@ test("manager mode plays live over a saved Quick choice, at 390px", async ({ pag
     "true",
   );
   await expect(desk.getByText("Manager mode plays live")).toBeVisible();
-  await expect(page.getByTestId("match-view-quick")).toBeDisabled();
+  await expect(desk.getByTestId("match-view-quick")).toBeDisabled();
   await homeView.scrollIntoViewIfNeeded();
   await page.screenshot({ path: `${SHOT}/390-home-manager-plays-live.png` });
 
