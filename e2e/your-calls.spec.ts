@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { draftSixteen } from "./helpers";
+import { draftSixteen, skipManaged } from "./helpers";
 import { YOUR_CALLS } from "./pins";
 
 // Row 3h: at full time of a coached match, the card compares the assistant's score with the
@@ -52,7 +52,7 @@ test("Attack at the 45' stop: the full-time card reads the assistant's score, yo
   await page.getByTestId("stop-go").click();
   await expect(page.getByTestId("your-calls")).toHaveCount(0);
 
-  await page.getByTestId("skip-ft").click();
+  await skipManaged(page);
   await expect(page.getByTestId("your-calls-score")).toHaveText(
     `Assistant ${YOUR_CALLS.assistant}, You ${YOUR_CALLS.you}`,
   );
@@ -78,7 +78,7 @@ test("Attack at the 45' stop: the full-time card reads the assistant's score, yo
   // The next match has no call of the player's, so its full time has no card.
   await page.getByTestId("fulltime-next").click();
   await page.getByTestId("prematch-go").click();
-  await page.getByTestId("skip-ft").click();
+  await skipManaged(page);
   await expect(page.getByTestId("fulltime")).toBeVisible();
   await expect(page.getByTestId("your-calls")).toHaveCount(0);
 });

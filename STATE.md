@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Accessible stops and controls
+
+Branch `feat/accessible-controls` off `origin/main` at `eef865e`, with origin/main merged after PR #103 at `d6476b5`. Wave 3 row 3j, matchday controls (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- When the clock stops for an injury, half time, extra time or the 65' fatigue check, the focus moves to the question: the assistant's pick for an injury, else the stop's button. Once answered, the focus goes back where it was, or to Pause.
+- On the match player, Space pauses and resumes and `2` turns 2x speed on and off. A focused button keeps Space as its own click, and an input, a modifier or a held key does nothing.
+- The momentum bar is a meter a screen reader reads as "Match momentum, Your side 58%".
+- In manager mode, Skip to full time first says "Skip to full time? Your assistant answers every stop left in this match, injuries included." with Skip anyway and Keep watching. It never says whether an injury is coming. Replays still skip at once.
+- Turning 2x on or off mid-goal no longer jumps the goal, the hold or a penalty (the 1e carryover). Switched on 301 ms into a goal's callout, the callout stays 1,133 ms, where the old build cut it to 665 ms.
+
+RED commit: `4301fca` (10 of 13 failed in 2 files). GREEN `074dc39`. A build of the pre-fix sources failed the new speed-toggle e2e (665 ms against a bound above 1,000).
+
+Gates at `119c971` (after the merge; the docs commit that adds this section changes only docs and one comment in `e2e/a11y.spec.ts`):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 15 touched code and test files.
+- Unit tests: 1,659 passed in 194 files.
+- Playwright (`CI=1`, fresh build at `119c971`), full suite: 916 passed, 64 skipped by their own project gates, 0 failed. `keyboard` passed 6 of 6, the `a11y` matchday scan 2 of 2 (dark and light) and `speed-aware-staging` 2 of 2.
+- Review, hosted CI, a real screen reader and a physical phone check: NOT RUN at the time of writing.
+
+The axe scan of the matchday excludes the touchline panel, whose energy list fails `list`, `aria-allowed-role` and `heading-order`. Those predate this row and are left to Wave 4 (4g). Measurements and decisions are in `docs/decisions/accessible-controls.md`. Browser proof: `docs/reports/accessible-controls/`.
+
 ## Touchline intelligence
 
 Branch `feat/touchline-intel` off `bee9acf` (row 3a's branch, PR #102). Wave 3 row 3g, matchday UI (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -28,6 +49,8 @@ Gates at `1efeb35` (code identical at the docs commit that adds this section):
 Measurements and decisions are in `docs/decisions/touchline-intel.md`. Browser proof: `docs/reports/touchline-intel/`.
 
 Merged origin/main twice. At `57b772c` (PRs #104, #106, #107): the branch was cut from row 3a's branch, so 3a's squash conflicted with its own commits in seven files; the six code files were re-merged against `bee9acf`, where they equal the squash, leaving one real hunk in `MatchPlayer.tsx` (the fatigue line and 3c's full-screen toggle, both kept). `74f2e55` then plays the intel tests' matches at the frame loop's 100 ms step and 1 s per `act()` (a loaded run had timed one out at 15,000 ms; back to back the two slow tests fell from 2,384 and 2,221 ms to 368 and 308 ms). At `ba878a2` (PRs #108, #110, #109) only an import line and STATE.md conflicted; 3i's seek already refuses the new 65' stop while unanswered. After the second merge lint, typecheck, build and all seven `check:*` scripts exited 0, 1,645 unit tests passed in 192 files, `touchline-intel`, `manager-mode`, `touchline-sheet`, `fullscreen-score-bug`, `replay-deep-links`, `injury-staging`, `prematch-merge`, `fatigue`, `your-calls` and `haptics` passed 41 of 41 and `mobile-targets` 93 of 93 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #103 (row 3g, touchline intelligence) merged as squash `6fb14b7`, reviewed head `834cfea`, GLM 5.3 Flash APPROVE in round 1 with canary `touchline-intel-294e0338bd178e92de5f038a287e818e` echoed. At `834cfea` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,645 unit tests passed in 192 files and Prettier passed on 26 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `6fb14b7` with `db.status` ok, and `touchline-intel.spec.ts` plus `manager-mode.spec.ts` against production (chromium) passed 13 of 13. The 65' managed stop cannot appear in engine 6 (lowest energy at 65' is 67); the owner chose on 2026-10-18 to ship it as written and revisit at W6b. NOT RUN: physical phone check (owner action), the 65' stop in a browser.
 
 ## Replay and deep links
 

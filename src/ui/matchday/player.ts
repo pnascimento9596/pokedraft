@@ -379,7 +379,7 @@ export type PlayAction =
   | { readonly type: "tick"; readonly now: number; readonly dt: number; readonly env: PlayEnv }
   | { readonly type: "toggle"; readonly now: number }
   | { readonly type: "sheet"; readonly open: boolean; readonly now: number }
-  | { readonly type: "speed" }
+  | { readonly type: "speed"; readonly now: number }
   | { readonly type: "answer"; readonly key: string }
   | { readonly type: "skip"; readonly env: PlayEnv }
   | { readonly type: "seek"; readonly minute: number; readonly now: number; readonly env: PlayEnv }
@@ -484,6 +484,26 @@ function holdTime(prev: PlayState, next: PlayState, now: number): PlayState {
   };
 }
 
+/**
+ * The other speed, with every staging time rebased about the frame on screen. The broadcast reads
+ * each beat, the hold and the penalty as real time elapsed times speed, so all of them stay where
+ * they are and only what is left plays faster or slower.
+ */
+function toggleSpeed(state: PlayState, now: number): PlayState {
+  const speed = state.speed === 1 ? 2 : 1;
+  const t = frameNow(state, now);
+  const rebase = (at: number) => t - ((t - at) * state.speed) / speed;
+  const fired: Record<string, number> = {};
+  for (const [key, at] of Object.entries(state.fired)) fired[key] = rebase(at);
+  return {
+    ...state,
+    speed,
+    fired,
+    kickAt: state.stage === "pens" ? rebase(state.kickAt) : state.kickAt,
+    hold: state.hold === null ? null : { ...state.hold, until: rebase(state.hold.until) },
+  };
+}
+
 function endReplay(state: PlayState, now: number): PlayState {
   return holdTime(state, { ...state, replay: null }, now);
 }
@@ -556,7 +576,7 @@ export function play(state: PlayState, action: PlayAction): PlayState {
     case "sheet":
       return holdTime(state, { ...state, uiHold: action.open }, action.now);
     case "speed":
-      return { ...state, speed: state.speed === 1 ? 2 : 1 };
+      return toggleSpeed(state, action.now);
     case "answer":
       return {
         ...state,

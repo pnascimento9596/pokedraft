@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { skipManaged } from "./helpers";
 
 const SHOTS = "output/builder-matchday";
 
@@ -50,7 +51,7 @@ test("a builder friendly with Manager mode on reaches the touchline, resumes aft
     if (await page.getByTestId("results-record").isVisible()) break;
     const pre = page.getByTestId("prematch-go");
     if (await pre.isVisible()) await pre.click();
-    await page.getByTestId("skip-ft").click();
+    await skipManaged(page);
     await page.getByTestId("fulltime-next").click();
     await expect(page.getByTestId("prematch").or(page.getByTestId("results-record"))).toBeVisible();
   }

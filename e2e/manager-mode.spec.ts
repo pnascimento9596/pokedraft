@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { draftSixteen } from "./helpers";
+import { draftSixteen, skipManaged } from "./helpers";
 import { SHARE_LINK } from "./pins";
 
 // Manager mode and the Live match broadcast. The settings are seeded before the app loads, the
@@ -41,7 +41,7 @@ async function finishCup(page: Page): Promise<void> {
     if (await page.getByTestId("results-record").isVisible()) return;
     const pre = page.getByTestId("prematch-go");
     if (await pre.isVisible()) await pre.click();
-    await page.getByTestId("skip-ft").click();
+    await skipManaged(page);
     await page.getByTestId("fulltime-next").click();
     await expect(page.getByTestId("prematch").or(page.getByTestId("results-record"))).toBeVisible();
   }
@@ -91,7 +91,7 @@ test.describe("manager mode", () => {
     await expect(page.getByTestId("subs-count")).toHaveText(`Subs ${used + 1} of 5`);
     await page.getByTestId("stop-go").click();
 
-    await page.getByTestId("skip-ft").click();
+    await skipManaged(page);
     await expect(page.getByTestId("fulltime")).toBeVisible();
     await expect(page.getByTestId("ticker")).toContainText("Kick off: you play Attack");
     await expect(page.getByTestId("ticker")).toContainText("(tactical, your call)");
@@ -123,7 +123,7 @@ test.describe("manager mode", () => {
     await page.getByTestId("tactic-attack").click();
     await expect(page.getByTestId("tactic-attack")).toHaveAttribute("aria-pressed", "true");
     await page.getByTestId("prematch-go").click();
-    await page.getByTestId("skip-ft").click();
+    await skipManaged(page);
     await page.getByTestId("fulltime-next").click();
     await expect(page.getByTestId("matchday")).toHaveAttribute("data-match", "1");
     const title = await page.getByTestId("matchday-title").textContent();
