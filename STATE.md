@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Live Team Score in the draft
+
+Branch `feat/live-team-score` off `origin/main` at `d48aa0f`. Wave 4 row 4c (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- With ratings on, the draft hub shows a Team Score scorebug from the first starter on. It reads "Team Score (so far)" during the draft and "Team Score" with the exact engine value once all 16 are signed. Chemistry stays beside it.
+- The selected candidate shows its signed change, "Team Score +281", for its best empty slot. While dragging, the preview shows the change for the slot under the finger ("+24" over GK).
+- With two legendaries or mythicals signed, picking a third warns "Last legendary or mythical slot. A third fills the cap." In Position First the warning sits above the offers. It shows with ratings on or off.
+- With ratings off, the scorebug and the change are hidden. Fit glyphs and glow stay.
+- The live score is `provisionalTeamScore` in `src/ui/partial-rating.ts`: `rateTeam`'s formula over the filled slots. For a full squad it equals `rateTeam` on both engine goldens (593, 480) and 20 seeded random squads.
+
+RED commit: `32316d1`, 12 of 13 failed in 2 files. The one pass is a regression guard with no RED (ratings off shows no scorebug). GREEN `09f3e46`. `3fb839c` moves the drag proof to a three-offer roll and keeps the delta line on one line at 320 px.
+
+Gates at `3fb839c` (the docs commit that follows changes only docs and proof PNGs):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All eight `check:*` scripts exited 0, `check:client-bundle` and `check:dashes` among them. Prettier passed on the 6 changed source files.
+- Unit tests: 1,705 passed in 200 files.
+- Playwright (`CI=1`, headless, build at `3fb839c`): chromium ran 14 specs and 143 passed, `live-team-score` 11 of 11, `challenge-ratings`, `draft-flow`, `draft-modes`, `pitch-card-containment`, `a11y`, `contrast` and `keyboard` among them. `mobile-draft` on `iphone-se`, `iphone-14` and `pixel-7`: 74 passed, 4 skipped by their own project gates.
+- NOT RUN: the full Playwright suite and hosted CI; review; a physical phone check and a screen reader pass (owner actions).
+
+Decision log: `docs/decisions/live-team-score.md`. Proof: `docs/reports/live-team-score/` (390x844, 360x800 and 320x568, ratings on and off, cap warning, drag delta, full draft).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Copy pass and dash lint
 
 Branch `fix/copy-pass` off `origin/main` at `34af10e`, with `origin/main` merged at `124afab` (PR #113) in fix round 1. Wave 4 row 4e, copy and labels (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
