@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## One-tap play
+
+Branch `feat/one-tap-play` off `origin/main` at `34af10e`. Wave 4 row 4a, home and start card (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Play 8-0 Challenge and Play 151 Challenge go straight to the challenge. The "Settings confirmed?" dialog is gone. Play still starts a fresh run.
+- The Matchday choice (Manager mode and Match view) is in the home Play card, so every player sees it before a cup. It left Settings and records. The builder keeps its own copy beside "Play a friendly cup", bound to the same setting.
+- The challenge start card lists Matchday ("Sim, Quick", "Sim, Live" or "Manager, Live") with the other settings, and it follows the start card's own switches. An Edit link opens the home settings, scrolled into view with focus on their heading. The Daily has no Edit link.
+- A finished draft says Kick off when the cup plays a matchday, and See results for a quick sim.
+- Coming back to home at `/#settings` keeps the hash after the builder loads.
+
+RED commits: `616ee23` (23 of 27 failed in 3 files) and `8dd0a64` (1 of 13 failed). The first RED's e2e spec failed 9 of 11 against a build of the pre-fix sources.
+
+Gates at `565e78e` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 1,674 passed in 195 files.
+- Playwright (`CI=1`, fresh build at `565e78e`), full suite: 901 passed, 63 skipped by their own project gates, 0 failed, 0 flaky. `one-tap-play` passed 18 of 18 across `chromium` and `iphone-14`.
+- NOT RUN: review, hosted CI, a physical phone check and a real screen reader pass (owner actions).
+
+Measurements and decisions are in `docs/decisions/one-tap-play.md`. Browser proof: `docs/reports/one-tap-play/` (Play card and start card at 390, 360 and 320).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 3 summary
 
 Branch `docs/wave3-summary` off `88f6f72`. Green: docs and evidence only, no change under `src/` or `e2e/`.
