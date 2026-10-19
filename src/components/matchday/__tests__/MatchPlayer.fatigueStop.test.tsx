@@ -118,6 +118,20 @@ describe("65' managed stop (catches a managed match that runs past 65' with a ti
     expect(await until("stop-fatigue-never")).toBeNull();
   });
 
+  it("the 65' stop takes focus on Play on, and hands it back to 2x speed once answered (catches a stop kind the focus logic misses)", async () => {
+    await mount([PRESS_AT_KICKOFF]);
+    screen.getByTestId("speed-toggle").focus();
+    const stop = await until("stop-fatigue");
+    expect(document.activeElement).toBe(screen.getByTestId("stop-go"));
+    expect(stop!.contains(document.activeElement)).toBe(true);
+    fireEvent.click(screen.getByTestId("stop-go"));
+    await act(async () => {
+      vi.advanceTimersByTime(16);
+    });
+    expect(screen.queryByTestId("stop-fatigue")).toBeNull();
+    expect(document.activeElement).toBe(screen.getByTestId("speed-toggle"));
+  });
+
   it("does not stop at 65' while the assistant still runs the side", async () => {
     await mount([]);
     expect(await until("stop-fatigue")).toBeNull();
