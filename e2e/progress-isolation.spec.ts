@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { accessibleName } from "./helpers";
 import { ready } from "./mobile/scenes";
 import { RUN_151 } from "./pins";
 
@@ -19,10 +20,13 @@ async function pick(page: Page, from: number, to: number): Promise<void> {
   }
 }
 
-const squad = (page: Page) =>
-  page
-    .locator('[data-testid^="slot-"][data-filled="true"]')
-    .evaluateAll((els) => els.map((el) => el.getAttribute("aria-label")));
+const squad = async (page: Page) => {
+  const names: string[] = [];
+  for (const slot of await page.locator('[data-testid^="slot-"][data-filled="true"]').all()) {
+    names.push(await accessibleName(slot));
+  }
+  return names;
+};
 
 test("an ordinary random run keeps its first roll and progress on refresh", async ({ page }) => {
   await page.goto(PLAY);

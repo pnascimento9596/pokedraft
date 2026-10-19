@@ -186,7 +186,7 @@ for (const width of [1280, 320]) {
       );
       await page.goto("/leaderboard?mode=cup8&scope=all");
       await expect(page.getByTestId("board-row")).toHaveCount(2);
-      await expect(page.getByAltText("Squad species 1025")).toBeVisible();
+      await expect(page.getByAltText("Pecharunt", { exact: true })).toBeVisible();
       await expect(page.getByText("Squad preview unavailable.", { exact: true })).toBeVisible();
       await expect(
         page.getByRole("link", { name: "Challenge this Seed", exact: true }),
@@ -249,7 +249,7 @@ for (const width of [1280, 320]) {
       await hall.getByRole("searchbox").fill("1025");
       await expect(hall).toContainText("#1025 Pecharunt");
       await expect(hall).toContainText("1 drafted squad, 0 champion squads");
-      await expect(page.getByAltText("Squad species 25")).toBeVisible();
+      await expect(page.getByAltText("Pikachu", { exact: true })).toBeVisible();
       await expect(page.getByText("Squad preview unavailable for this older run.")).toBeVisible();
       await expect(page.getByRole("link", { name: "Challenge this Seed" })).toHaveAttribute(
         "href",

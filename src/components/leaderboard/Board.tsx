@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { challengeHref } from "@/ui/challenge-href";
 import { PlayerImage } from "@/components/PlayerImage";
+import { pokedexById } from "@/data/pokedex";
 import { StatusNote } from "@/components/ui/primitives";
 import { announce } from "@/components/Announcer";
 import { record } from "@/ui/labels";
@@ -213,7 +214,12 @@ export function Board({
                 <span className={s.squad}>
                   {e.squadSpeciesIds ? (
                     e.squadSpeciesIds.map((id) => (
-                      <PlayerImage key={id} dexId={id} size={24} alt={`Squad species ${id}`} />
+                      <PlayerImage
+                        key={id}
+                        dexId={id}
+                        size={24}
+                        alt={pokedexById(id)?.name ?? `#${id}`}
+                      />
                     ))
                   ) : (
                     <span className={s.meta}>Squad preview unavailable.</span>

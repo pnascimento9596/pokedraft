@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LADDER_SHAPE } from "@/ui/labels";
+import { DAILY_RULE, LADDER_SHAPE } from "@/ui/labels";
 import { ModuleCard, Pill } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./page.module.css";
@@ -35,6 +35,15 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
     ],
   },
   {
+    id: "daily",
+    title: "Daily",
+    body: [
+      DAILY_RULE,
+      "The Daily is an 8-0 Challenge in Open and Squad First with every generation switched on. You choose the formation before you start.",
+      "A new Daily starts at midnight New York time. Each nickname can put one run on each day's board.",
+    ],
+  },
+  {
     id: "cup",
     title: "The cup",
     body: [
@@ -44,12 +53,37 @@ const SECTIONS: readonly { id: string; title: string; body: readonly string[] }[
     ],
   },
   {
+    id: "live",
+    title: "Live match",
+    body: [
+      "With Manager mode off, Quick sim takes you straight to your results. Live match plays every game out on the pitch.",
+      "A live half takes about 25 seconds, and the clock holds on each goal and save so you can see it.",
+    ],
+  },
+  {
+    id: "manager",
+    title: "Manager mode",
+    body: [
+      "Switch on Manager mode to make tactics and substitutions from the touchline during each match.",
+      "You pick a starting tactic before kickoff. The clock stops at half-time, before extra time and when an injury needs your answer.",
+      "Manager mode always plays the match live. A run with at least one touchline decision is marked Coached, and the leaderboard can show coached and uncoached runs apart.",
+    ],
+  },
+  {
     id: "score",
     title: "Team Score",
     body: [
-      "Team Score sums up how good your squad is. It mostly comes from how well each player suits the spot they play, so a natural striker up front beats a goalkeeper played out of position.",
+      "Team Score sums up how good your squad is, on a scale from 0 to 1000. It mostly comes from how well each player suits the spot they play, so a natural striker up front beats a goalkeeper played out of position.",
       "On the results screen each player gets a rating from 0 to 100 for their spot. It ranks them against every other Pokémon for that job, so 78 vs other CBs means better than about 78 of every 100 other CBs. The three lowest ratings in your eleven are flagged as weak spots.",
       "Each line counts, your weak spots pull the score down, and neighbours who link up (shared type, same evolution line, same generation, or covering each other's weaknesses) add a bonus. A strong bench helps a little too.",
+    ],
+  },
+  {
+    id: "leaderboard",
+    title: "Leaderboard",
+    body: [
+      "Finished 8-0 and 151 Challenge runs can go on the leaderboard under a nickname. Friendlies never do.",
+      "There is a board for each day's Daily and an all-time board for each challenge. Runs rank by wins, then draws, then Team Score, and the earlier run wins a tie. Each board shows its top 50.",
     ],
   },
   {

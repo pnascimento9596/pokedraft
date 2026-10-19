@@ -5,7 +5,7 @@
 
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { draftSixteen } from "./helpers";
+import { accessibleName, draftSixteen } from "./helpers";
 import { PLAY_8_0, ready, stubLeaderboard } from "./mobile/scenes";
 
 test.use({ reducedMotion: "reduce" });
@@ -30,7 +30,7 @@ const focused = (page: Page) =>
   });
 
 const species = async (page: Page, key: string) =>
-  ((await page.getByTestId(`slot-${key}`).getAttribute("aria-label")) ?? "").replace(/^\S+ /, "");
+  (await accessibleName(page.getByTestId(`slot-${key}`))).replace(/^\S+ /, "");
 
 test("with the keyboard alone, Enter on one player and Space on another swaps them after the draft", async ({
   page,
@@ -163,7 +163,7 @@ test("the Picker gives focus back to the slot after a pick and after Clear slot 
   await dialog.getByTestId("pick-25").focus();
   await page.keyboard.press("Enter");
   await expect(dialog).toHaveCount(0);
-  const afterPick = await page.evaluate(() => document.activeElement?.getAttribute("aria-label"));
+  const afterPick = await accessibleName(page.locator("*:focus"));
 
   await page.keyboard.press("Enter");
   await expect(slot).toHaveAttribute("aria-pressed", "true");
@@ -172,7 +172,7 @@ test("the Picker gives focus back to the slot after a pick and after Clear slot 
   await dialog.getByRole("button", { name: "Clear slot" }).focus();
   await page.keyboard.press("Enter");
   await expect(dialog).toHaveCount(0);
-  const slotName = await page.evaluate(() => document.activeElement?.getAttribute("aria-label"));
+  const slotName = await accessibleName(page.locator("*:focus"));
   expect({ afterPick, afterClear: slotName }).toEqual({
     afterPick: "LCM Pikachu",
     afterClear: "Empty LCM slot",

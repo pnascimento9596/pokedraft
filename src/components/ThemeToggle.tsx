@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { readJson, writeJson } from "@/ui/storage";
-import { THEME_KEY, type Theme } from "@/ui/theme";
+import { THEME_KEY, applyTheme, type Theme } from "@/ui/theme";
 
 const NEXT: Readonly<Record<Theme, Theme>> = { system: "dark", dark: "light", light: "system" };
 const LABEL: Readonly<Record<Theme, string>> = {
@@ -11,21 +11,26 @@ const LABEL: Readonly<Record<Theme, string>> = {
   light: "Day",
 };
 
-function apply(theme: Theme): void {
-  if (theme === "system") document.documentElement.removeAttribute("data-theme");
-  else document.documentElement.setAttribute("data-theme", theme);
+const listeners = new Set<() => void>();
+// The last choice made in this tab, so the toggle still moves when storage is blocked.
+let chosen: Theme = "system";
+
+function subscribe(onChange: () => void): () => void {
+  listeners.add(onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    listeners.delete(onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+function storedChoice(): Theme {
+  const saved = readJson<unknown>(THEME_KEY, chosen);
+  return typeof saved === "string" && saved in NEXT ? (saved as Theme) : "system";
 }
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("system");
-
-  useEffect(() => {
-    const saved = readJson<Theme>(THEME_KEY, "system");
-    const valid: Theme = saved in NEXT ? saved : "system";
-    apply(valid);
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync from localStorage after hydration
-    setTheme(valid);
-  }, []);
+  const theme = useSyncExternalStore(subscribe, storedChoice, () => "system" as const);
 
   return (
     <button
@@ -34,9 +39,10 @@ export function ThemeToggle() {
       aria-label={`Theme: ${LABEL[theme].toLowerCase()}. Change theme`}
       onClick={() => {
         const next = NEXT[theme];
-        apply(next);
+        chosen = next;
         writeJson(THEME_KEY, next);
-        setTheme(next);
+        applyTheme(next);
+        for (const notify of listeners) notify();
       }}
     >
       {LABEL[theme]}

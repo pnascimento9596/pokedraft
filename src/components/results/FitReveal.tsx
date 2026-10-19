@@ -43,7 +43,7 @@ export function FitReveal({
             >
               <div className={s.top}>
                 <span className={s.slot}>{slotLabel}</span>
-                <PlayerImage dexId={species.id} size={36} alt={species.name} />
+                <PlayerImage dexId={species.id} size={36} alt="" />
                 <span className={s.name}>
                   {species.name}
                   {r.familiarity < 1 ? <span className={s.oop}>Out of position</span> : null}
@@ -102,7 +102,7 @@ export function FitReveal({
               return (
                 <li key={id} className={s.row}>
                   <div className={s.benchPlayer}>
-                    <PlayerImage dexId={id} size={36} alt={species.name} />
+                    <PlayerImage dexId={id} size={36} alt="" />
                     <span className={s.name}>{species.name}</span>
                   </div>
                   <p className={s.bestRoles}>Best roles: {species.bestRoles.join(", ")}</p>

@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { Announcer } from "@/components/Announcer";
 import { ImageSettings } from "@/components/ImageSettings";
+import { NavLinkList, NavLinks } from "@/components/NavLinks";
 import { SiteNav } from "@/components/SiteNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { NAV_ICONS, NavIcon, type NavFamily } from "@/components/ui/nav-icons";
-import { THEME_COLOR_DARK, THEME_COLOR_LIGHT } from "@/design/theme-color";
 import { THEME_BOOT_SCRIPT } from "@/ui/theme";
 import { Inter } from "@/design/fonts/inter";
 import "./globals.css";
@@ -20,14 +20,10 @@ export const metadata: Metadata = {
 };
 
 // The page draws under the notch and the home indicator; globals.css pads the edges with the
-// safe-area insets.
+// safe-area insets. THEME_BOOT_SCRIPT writes the theme-color meta, so it follows an in-app choice.
 export const viewport: Viewport = {
   viewportFit: "cover",
   colorScheme: "light dark",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: THEME_COLOR_LIGHT },
-    { media: "(prefers-color-scheme: dark)", color: THEME_COLOR_DARK },
-  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -37,22 +33,24 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>
       <body>
+        <a className="skip-link" href="#content">
+          Skip to content
+        </a>
         <header className="site-header">
           <Link href="/" className="site-header__brand" aria-label="PokeDraft">
             pokedraft
           </Link>
           <SiteNav>
-            {(Object.keys(NAV_ICONS) as NavFamily[]).map((family) => (
-              <Link key={family} href={NAV_ICONS[family].href}>
-                <NavIcon family={family} />
-                {NAV_ICONS[family].label}
-              </Link>
-            ))}
+            <Suspense fallback={<NavLinkList pathname={null} />}>
+              <NavLinks />
+            </Suspense>
             <ImageSettings />
             <ThemeToggle />
           </SiteNav>
         </header>
-        {children}
+        <div id="content" tabIndex={-1}>
+          {children}
+        </div>
         <Announcer />
       </body>
     </html>

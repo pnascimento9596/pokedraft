@@ -8,6 +8,7 @@ import { freshSeed } from "@/ui/settings";
 import { Challenge, PlayScreen } from "../PlayScreen";
 import { DAILY_2026_10_10_CUP8, GOLDEN_1_KANTO151 } from "./ladders";
 import { playSignCard } from "@/components/wheel/sound";
+import { computeAccessibleName } from "dom-accessibility-api";
 
 vi.mock("@/components/wheel/sound", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/components/wheel/sound")>()),
@@ -96,7 +97,7 @@ describe("challenge run screen", () => {
     expect(gulpin.getAttribute("aria-pressed")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: /Empty ST slot/ }));
 
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Gulpin");
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
   });
 
@@ -143,7 +144,7 @@ describe("challenge run screen", () => {
     fireEvent.click(screen.getByRole("button", { name: /ST Gulpin/ }));
     expect({
       hint: screen.getByTestId("draft-hint").textContent,
-      st: screen.getByTestId("slot-s9").getAttribute("aria-label"),
+      st: computeAccessibleName(screen.getByTestId("slot-s9")),
       round: screen.getByTestId("round-header").textContent,
     }).toEqual({
       hint: "Tap another slot to swap Gulpin, or tap it again to cancel.",
@@ -372,7 +373,7 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
     await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
     expect(screen.queryByTestId("run-start")).toBeNull();
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Gulpin");
   });
 
   it("resumes an unseeded route without drawing a different fresh seed and restarting the squad", async () => {
@@ -387,7 +388,7 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
 
     await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Gulpin");
     expect(sessionStorage.getItem("pokedraft.run.cup8")).toBe(saved);
     expect(freshSeed).toHaveBeenCalledTimes(1);
   });
@@ -423,7 +424,7 @@ describe("a run survives a reload (SA-08, SB-06)", () => {
 
     await screen.findByTestId("round-header", undefined, { timeout: 10_000 });
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Gulpin");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Gulpin");
     expect(sessionStorage.getItem("pokedraft.run.cup8")).toBe(saved);
   });
 

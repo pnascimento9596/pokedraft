@@ -70,3 +70,30 @@ for (const width of [390, 1440]) {
     }
   });
 }
+
+for (const speed of ["normal", "fast"] as const) {
+  test(`focus after wheel skip is on a candidate at ${speed} speed`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    if (speed === "fast") {
+      await page.addInitScript(() => {
+        localStorage.setItem("pokedraft:panel", JSON.stringify({ spinSpeed: "fast" }));
+      });
+    }
+    await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+    await page.goto(
+      "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-rr",
+    );
+    await page.clock.pauseAt(new Date("2026-01-01T01:00:00Z"));
+    await page.getByTestId("run-start").click();
+    const skip = page.getByRole("button", { name: "Tap to skip" });
+    await expect(skip).toHaveCount(1);
+    await skip.focus();
+    await page.keyboard.press("Enter");
+    await expect(skip).toHaveCount(0);
+    await page.clock.resume();
+    await expect(page.getByTestId("wheel-result")).toHaveCount(2, { timeout: 10_000 });
+    const first = page.locator('[data-testid^="candidate-"]').first();
+    await expect(first).toBeVisible();
+    await expect(first).toBeFocused();
+  });
+}

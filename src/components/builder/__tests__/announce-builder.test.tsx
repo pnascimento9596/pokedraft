@@ -8,6 +8,7 @@ import { HomeScreen } from "@/components/home/HomeScreen";
 import { applyAction, createDraft, type DraftSettings, type SpeciesId } from "@/engine";
 import { builderToken } from "@/ui/builder-token";
 import { BUILDER_URL_SEED } from "@/ui/lineup";
+import { computeAccessibleName } from "dom-accessibility-api";
 
 // The home Play buttons navigate with the app router.
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), prefetch: vi.fn() }) }));
@@ -133,7 +134,7 @@ describe("Picker focus return (SC-12)", () => {
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pikachu" } });
     fireEvent.click(within(dialog).getByTestId("pick-25"));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(document.activeElement?.getAttribute("aria-label")).toBe("GK Pikachu");
+    expect(computeAccessibleName(document.activeElement!)).toBe("GK Pikachu");
   });
 
   it("Clear slot gives focus back to the slot that opened the Picker", async () => {
@@ -144,6 +145,6 @@ describe("Picker focus return (SC-12)", () => {
     const dialog = screen.getByRole("dialog");
     fireEvent.click(within(dialog).getByRole("button", { name: "Clear slot" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(document.activeElement?.getAttribute("aria-label")).toBe("Empty ST slot");
+    expect(computeAccessibleName(document.activeElement!)).toBe("Empty ST slot");
   });
 });

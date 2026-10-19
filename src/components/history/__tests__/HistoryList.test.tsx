@@ -150,7 +150,8 @@ it("shows match win rate by formation and all species with honest missing-histor
       "Squad coverage: 1 of 2 ranked stored runs. Species from older runs without squad metadata are unknown.",
     ),
   ).toBeTruthy();
-  expect(screen.getByRole("img", { name: "Squad species 25" })).toBeTruthy();
+  expect(screen.getByRole("img", { name: "Pikachu" })).toBeTruthy();
+  expect(screen.queryByRole("img", { name: /^Squad species/ })).toBeNull();
   fireEvent.change(screen.getByRole("searchbox", { name: "Find a Hall of Fame species" }), {
     target: { value: "Pecharunt" },
   });

@@ -39,6 +39,7 @@
 // group 6 is not an iOS keyboard. Taps are real touches on every project.
 
 import { expect, test as base, type Locator, type Page } from "@playwright/test";
+import { accessibleName } from "./helpers";
 import {
   IOS_BUTTON_FOCUS_SCRIPT,
   ReachError,
@@ -1171,10 +1172,7 @@ test("5 drag and scroll: a drag swaps two tokens (real touch on pixel-7, mouse P
     const check = await inViewport(page, token);
     if (!check.ok) throw new Error(`harness: a token to drag is not on screen: ${check.problem}`);
   }
-  const before = [
-    speciesOf((await a.getAttribute("aria-label"))!),
-    speciesOf((await b.getAttribute("aria-label"))!),
-  ];
+  const before = [speciesOf(await accessibleName(a)), speciesOf(await accessibleName(b))];
   expect(before[0]).not.toBe(before[1]);
 
   const method = await drag(
@@ -1183,10 +1181,7 @@ test("5 drag and scroll: a drag swaps two tokens (real touch on pixel-7, mouse P
     centre((await b.boundingBox())!),
   );
 
-  const read = async () => [
-    speciesOf((await a.getAttribute("aria-label"))!),
-    speciesOf((await b.getAttribute("aria-label"))!),
-  ];
+  const read = async () => [speciesOf(await accessibleName(a)), speciesOf(await accessibleName(b))];
   let after = await read();
   try {
     await expect.poll(read, { timeout: 3_000 }).toEqual([before[1], before[0]]);
@@ -1315,17 +1310,14 @@ test("5 drag and scroll: on the finished draft, a tap on one player and then ano
   await settle(page);
   const gk = page.getByTestId("slot-s0");
   const lf = page.getByTestId("slot-s9");
-  const before = [
-    speciesOf((await gk.getAttribute("aria-label"))!),
-    speciesOf((await lf.getAttribute("aria-label"))!),
-  ];
+  const before = [speciesOf(await accessibleName(gk)), speciesOf(await accessibleName(lf))];
   await scrollDraftControlToView(page, gk);
   await tapNow(page, gk, "slot-s0");
   await scrollDraftControlToView(page, lf);
   await tapNow(page, lf, "slot-s9");
   const read = async () => [
-    speciesOf((await gk.getAttribute("aria-label"))!),
-    speciesOf((await lf.getAttribute("aria-label"))!),
+    speciesOf(await accessibleName(gk)),
+    speciesOf(await accessibleName(lf)),
   ];
   let after = await read();
   try {

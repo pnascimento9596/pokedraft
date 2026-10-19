@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Resilience, onboarding and a11y
+
+Branch `feat/resilience-a11y` off `origin/main` at `da44d4b`, with `origin/main` merged at `3d59cee` (PR #120) in `69cc0b7`. Wave 4 row 4g (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- If a page crashes, players see "Something went wrong." and "Your run is saved; reload to continue." with Reload and Home, instead of a blank screen. A crash of the whole layout gets the same page.
+- Keyboard players get a "Skip to content" link first, and the menu marks the page they are on.
+- The phone status bar colour now follows a Day or Night choice, and Auto follows the phone switching between light and dark while the page is open.
+- A first-time player sees a one-line tip in their first draft, worded for that draft ("Watch the spin, pick one that matches, place it on the pitch. Fill all 16 to play the cup."). It goes away at the first pick or on Got it and does not come back.
+- Skipping the wheel with the keyboard no longer drops focus to the top of the page: it lands on the first player, at Normal and Fast speed.
+- Screen readers hear a pitch token as "LCB Bulbasaur" or "Empty LCB slot", then the fit, rating and types. Pictures next to a written name are no longer read twice; leaderboard and History squad pictures are read by species name.
+- How to play now explains Daily, Live match, Manager mode and the leaderboard, and says the Team Score runs from 0 to 1000. The "Trainer Dugout" label on the desktop draft is gone.
+
+RED commit: `a8d94cf` (30 of 122 unit tests failed in 11 files, and the error page test file failed to load; `e2e` failed 10 of 25 against a build of the pre-fix sources, the `/r` server HTML case passing as a labelled regression guard). GREEN `e0503e4`. Fix `43647ef` (44px skip link, spec churn from the full run).
+
+Gates at `43647ef`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All eight `check:*` scripts exited 0. Prettier passed on the 63 text files changed against `origin/main` and the decision log.
+- Unit tests: 1,779 passed in 210 files.
+- Playwright (`CI=1`, headless, fresh build at `43647ef`), full suite: 965 passed, 67 skipped by their own project gates, 0 failed, 1 flaky (`mobile-acceptance` "7 landscape: draft 151 round 1" on iphone-14, a Playwright "Cannot find parent object browser" harness error, passed on retry). `resilience-a11y`, `wheel-results` and `server-html` passed 25 of 25 alone.
+- NOT RUN: review and hosted CI; the error page screenshot (by design, no production route throws; the unit test renders both pages); a physical phone check and a real screen reader pass (owner actions).
+
+Decision log: `docs/decisions/resilience-a11y.md`. Browser proof: `docs/reports/resilience-a11y/{how-to-play,coach-mark,skip-link-focused}-390.png`.
+
 ## Colour tokens and CVD
 
 Branch `refactor/colour-tokens` off `origin/main` at `3d59cee`. Wave 4 row 4h1 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -24,6 +47,8 @@ Gates at `958219b` (the commits after it change only `scripts/audit/pixel-diff.m
 Decision log: `docs/decisions/colour-tokens.md`. Proof: `docs/reports/colour-tokens/` (pitch and matchday before, after and change masks in both themes, the results pitch mask, three pixel diff files, the palette search output).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #121 (row 4h1, colour lint, tokens and CVD) merged as squash `ff7c893`, reviewed head `00a2d81`, GLM 5.3 Flash APPROVE in round 1 with canary `colour-tokens-bd6eeebd56e36ff0b38ade4ed20ec3e1` echoed. At `00a2d81` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,767 unit tests passed in 207 files and Prettier passed on 26 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `ff7c893` with `db.status` ok, and `team-readability`, `contrast`, `theme-draft` and `theme-builder` against production (chromium) passed 47 of 47. NOT RUN: physical phone check (owner action), a real screen reader.
 
 ## Pitch density and drag
 

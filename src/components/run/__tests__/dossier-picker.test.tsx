@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayScreen } from "../PlayScreen";
+import { computeAccessibleName } from "dom-accessibility-api";
 
 const query = { current: "" };
 
@@ -81,7 +82,7 @@ describe("position-first Scout (4f)", () => {
     expect(screen.getByRole("button", { name: "Scout Dewott" })).toBeTruthy();
     fireEvent.click(screen.getByTestId("candidate-502"));
     expect(screen.getByTestId("round-header").textContent).toBe("Round 2 of 16");
-    expect(screen.getByTestId("slot-s0").getAttribute("aria-label")).toBe("GK Dewott");
+    expect(computeAccessibleName(screen.getByTestId("slot-s0"))).toBe("GK Dewott");
   });
 
   it("squad first has no Scout button on the cards (regression guard, no RED: the selection bar keeps its Scout)", async () => {

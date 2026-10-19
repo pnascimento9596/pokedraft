@@ -254,7 +254,7 @@ export function ScoutingDossier({
         <header className={s.header}>
           <div className={s.identity}>
             <div className={s.artWrap}>
-              <PlayerImage dexId={sp.id} size={56} alt={sp.name} />
+              <PlayerImage dexId={sp.id} size={56} alt="" />
             </div>
             <div className={s.titleGroup}>
               <div className={s.nameRow}>

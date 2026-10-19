@@ -412,7 +412,7 @@ function Award({
         <span className={s.awardEmpty}>{empty}</span>
       ) : (
         <div className={s.awardBody}>
-          <PlayerImage dexId={species.id} size={44} alt={species.name} />
+          <PlayerImage dexId={species.id} size={44} alt="" />
           <div>
             <div className={s.awardName}>{species.name}</div>
             <div className={s.awardStat}>{value}</div>

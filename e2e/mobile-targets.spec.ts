@@ -138,7 +138,9 @@ async function openMenu(page: Page): Promise<void> {
   const menu = page.getByRole("button", { name: "Menu" });
   await ready(page, menu);
   await menu.click();
-  await expect(page.getByRole("link", { name: "Leaderboard" })).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Leaderboard" }),
+  ).toBeVisible();
   await settle(page);
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { speciesById, type SaveEvent } from "@/engine";
+import type { SaveEvent } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { SIDE_COPY, saveLine, type ResultsVariant } from "./format";
 import s from "./RecordedSaves.module.css";
@@ -43,13 +43,9 @@ export function RecordedSaves({
       )}
       {selected !== null ? (
         <figure className={s.illustration} data-testid="save-illustration">
-          <PlayerImage
-            dexId={selected.attacker}
-            size={48}
-            alt={speciesById(selected.attacker).name}
-          />
+          <PlayerImage dexId={selected.attacker} size={48} alt="" />
           <span aria-hidden="true">⚽ → 🧤</span>
-          <PlayerImage dexId={selected.keeper} size={64} alt={speciesById(selected.keeper).name} />
+          <PlayerImage dexId={selected.keeper} size={64} alt="" />
           <figcaption>Illustration of recorded save. {saveLine(selected)}.</figcaption>
         </figure>
       ) : null}

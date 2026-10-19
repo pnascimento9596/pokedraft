@@ -21,8 +21,10 @@ export function Blank({
 }) {
   return (
     <div
-      role="img"
-      aria-label={alt}
+      // An empty alt marks the picture as decorative beside a visible name, as it does on <img>.
+      role={alt === "" ? undefined : "img"}
+      aria-label={alt === "" ? undefined : alt}
+      aria-hidden={alt === "" ? true : undefined}
       data-dex={dexId}
       data-player-image=""
       data-testid="player-image"

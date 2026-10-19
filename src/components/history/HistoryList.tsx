@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { POKEDEX } from "@/data/pokedex";
+import { POKEDEX, pokedexById } from "@/data/pokedex";
 import { challengeHref } from "@/ui/challenge-href";
 import { careerSummary } from "@/ui/career";
 import { PlayerImage } from "@/components/PlayerImage";
@@ -219,7 +219,12 @@ export function HistoryList() {
                   <span className={s.squad}>
                     {r.squadSpeciesIds ? (
                       r.squadSpeciesIds.map((id) => (
-                        <PlayerImage key={id} dexId={id} size={24} alt={`Squad species ${id}`} />
+                        <PlayerImage
+                          key={id}
+                          dexId={id}
+                          size={24}
+                          alt={pokedexById(id)?.name ?? `#${id}`}
+                        />
                       ))
                     ) : (
                       <span className={s.scope}>Squad preview unavailable for this older run.</span>

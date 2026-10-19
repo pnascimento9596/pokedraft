@@ -77,6 +77,87 @@ describe("How to play", () => {
     expect(section.textContent).not.toMatch(/a new region and a new type/);
   });
 
+  it("states the Team Score scale of 0 to 1000 and keeps the 0 to 100 line for player ratings (catches a page that never says how big a Team Score is)", () => {
+    render(<HowToPlayPage />);
+    const section = screen.getByRole("heading", { name: "Team Score" }).closest("section")!;
+    expect(
+      within(section).getByText(
+        "Team Score sums up how good your squad is, on a scale from 0 to 1000. It mostly comes from how well each player suits the spot they play, so a natural striker up front beats a goalkeeper played out of position.",
+      ),
+    ).toBeTruthy();
+    expect(section.textContent).toMatch(/a rating from 0 to 100 for their spot/);
+  });
+
+  it("explains the Daily from its real rules (catches a guide with no Daily section)", () => {
+    render(<HowToPlayPage />);
+    const section = screen.getByRole("heading", { name: "Daily" }).closest("section")!;
+    expect(
+      within(section).getByText(
+        "Everyone plays the same seed today, and your run can go on the daily board.",
+      ),
+    ).toBeTruthy();
+    expect(
+      within(section).getByText(
+        "The Daily is an 8-0 Challenge in Open and Squad First with every generation switched on. You choose the formation before you start.",
+      ),
+    ).toBeTruthy();
+    expect(
+      within(section).getByText(
+        "A new Daily starts at midnight New York time. Each nickname can put one run on each day's board.",
+      ),
+    ).toBeTruthy();
+  });
+
+  it("explains Manager mode, its stops and the Coached mark (catches a guide with no Manager mode section)", () => {
+    render(<HowToPlayPage />);
+    const section = screen.getByRole("heading", { name: "Manager mode" }).closest("section")!;
+    expect(
+      within(section).getByText(
+        "Switch on Manager mode to make tactics and substitutions from the touchline during each match.",
+      ),
+    ).toBeTruthy();
+    expect(
+      within(section).getByText(
+        "You pick a starting tactic before kickoff. The clock stops at half-time, before extra time and when an injury needs your answer.",
+      ),
+    ).toBeTruthy();
+    expect(
+      within(section).getByText(
+        "Manager mode always plays the match live. A run with at least one touchline decision is marked Coached, and the leaderboard can show coached and uncoached runs apart.",
+      ),
+    ).toBeTruthy();
+  });
+
+  it("explains Quick sim and Live match with the live pace (catches a guide with no Live match section)", () => {
+    render(<HowToPlayPage />);
+    const section = screen.getByRole("heading", { name: "Live match" }).closest("section")!;
+    expect(
+      within(section).getByText(
+        "With Manager mode off, Quick sim takes you straight to your results. Live match plays every game out on the pitch.",
+      ),
+    ).toBeTruthy();
+    expect(
+      within(section).getByText(
+        "A live half takes about 25 seconds, and the clock holds on each goal and save so you can see it.",
+      ),
+    ).toBeTruthy();
+  });
+
+  it("explains who goes on the leaderboard and how runs rank (catches a guide that mentions the board only in passing)", () => {
+    render(<HowToPlayPage />);
+    const section = screen.getByRole("heading", { name: "Leaderboard" }).closest("section")!;
+    expect(
+      within(section).getByText(
+        "Finished 8-0 and 151 Challenge runs can go on the leaderboard under a nickname. Friendlies never do.",
+      ),
+    ).toBeTruthy();
+    expect(
+      within(section).getByText(
+        "There is a board for each day's Daily and an all-time board for each challenge. Runs rank by wins, then draws, then Team Score, and the earlier run wins a tie. Each board shows its top 50.",
+      ),
+    ).toBeTruthy();
+  });
+
   it("uses no em or en dash anywhere on the page", () => {
     const { container } = render(<HowToPlayPage />);
     expect(container.textContent).not.toMatch(DASHES);
