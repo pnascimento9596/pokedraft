@@ -9,6 +9,9 @@ import { applyAction, createDraft, type DraftSettings, type SpeciesId } from "@/
 import { builderToken } from "@/ui/builder-token";
 import { BUILDER_URL_SEED } from "@/ui/lineup";
 
+// The home Play buttons navigate with the app router.
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), prefetch: vi.fn() }) }));
+
 const GEN1: DraftSettings = { mode: "builder", formation: "4-3-3", gens: [1], legendaries: false };
 const realElementFromPoint = document.elementFromPoint;
 

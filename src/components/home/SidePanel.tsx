@@ -1,23 +1,18 @@
 "use client";
 
-import { useId, useState } from "react";
-import { flushSync } from "react-dom";
+import { useRouter } from "next/navigation";
+import { useEffect, useId, useState } from "react";
 import { FORMATION_IDS, GENS, type FormationId, type Gen } from "@/engine/types";
 import { ORDER_LABEL, STYLE_LABEL, genLabel, record } from "@/ui/labels";
 import { BUCKET_LABEL, STAT_BUCKETS, type BucketStats, type StatBucket } from "@/ui/runs";
-import {
-  MANAGER_MODE_HINT,
-  MANAGER_MODE_LABEL,
-  MANAGER_PLAYS_LIVE,
-  MATCH_VIEW_LABEL,
-  matchdayView,
-  type ChallengeMode,
-  type PanelSettings,
-} from "@/ui/settings";
+import { playTarget, type ChallengeMode, type PanelSettings } from "@/ui/settings";
+import { RUN_CLEARED, runSlotKey, writeRunCheckpoint, writeSession } from "@/ui/storage";
+import { MatchdaySettings } from "@/components/matchday/MatchdaySettings";
 import { ModuleCard, Table } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
-import { ConfirmPlay } from "./ConfirmPlay";
 import s from "./SidePanel.module.css";
+
+const SETTINGS_ID = "settings";
 
 export interface SidePanelProps {
   readonly panel: PanelSettings;
@@ -62,44 +57,28 @@ function Segmented<T extends string>({
   value,
   options,
   onChange,
-  disabled,
-  hint,
 }: {
   readonly label: string;
   readonly value: T;
   readonly options: Readonly<Record<T, string>>;
   readonly onChange: (next: T) => void;
-  readonly disabled?: T;
-  readonly hint?: string;
 }) {
-  const hintId = useId();
   return (
     <div className={s.field}>
       <span className={s.fieldLabel}>{label}</span>
-      <div
-        className={s.segmented}
-        role="group"
-        aria-label={label}
-        aria-describedby={hint ? hintId : undefined}
-      >
+      <div className={s.segmented} role="group" aria-label={label}>
         {(Object.keys(options) as T[]).map((k) => (
           <button
             key={k}
             type="button"
             className={s.segment}
             aria-pressed={value === k}
-            disabled={disabled === k}
             onClick={() => onChange(k)}
           >
             {options[k]}
           </button>
         ))}
       </div>
-      {hint ? (
-        <p className={s.hint} id={hintId}>
-          {hint}
-        </p>
-      ) : null}
     </div>
   );
 }
@@ -115,21 +94,39 @@ export function SidePanel({
   const set = (patch: Partial<PanelSettings>) => onChange({ ...panel, ...patch });
   const allGens = panel.gens.length === GENS.length;
   const [open, setOpen] = useState(true);
-  const [confirming, setConfirming] = useState<ChallengeMode | null>(null);
-  const moreId = useId();
+  const router = useRouter();
 
-  const editSettings = () => {
-    flushSync(() => {
-      setConfirming(null);
+  // The start card's Edit link lands here. The settings open first, then their heading scrolls into
+  // view and takes focus once the open panel has rendered.
+  const [revealed, setRevealed] = useState(0);
+  useEffect(() => {
+    const reveal = () => {
+      if (window.location.hash !== `#${SETTINGS_ID}`) return;
       setOpen(true);
-    });
-    const select = document.getElementById(formationId);
-    if (select) {
-      const { top, bottom } = select.getBoundingClientRect();
-      if (top < 0 || bottom > window.innerHeight) select.scrollIntoView({ block: "center" });
-    }
-    select?.focus({ preventScroll: true });
+      setRevealed((n) => n + 1);
+    };
+    reveal();
+    window.addEventListener("hashchange", reveal);
+    return () => window.removeEventListener("hashchange", reveal);
+  }, []);
+  useEffect(() => {
+    if (revealed === 0) return;
+    const heading = document.getElementById(SETTINGS_ID)?.querySelector<HTMLElement>("h2");
+    if (heading === null || heading === undefined) return;
+    heading.setAttribute("tabindex", "-1");
+    heading.scrollIntoView({ block: "start" });
+    heading.focus({ preventScroll: true });
+  }, [revealed]);
+
+  // Play always starts a fresh run, so the slot /play would restore is cleared first.
+  const play = (mode: ChallengeMode) => {
+    const { href, settings } = playTarget(mode, panel);
+    const slot = { settings, seed: null, daily: null };
+    writeRunCheckpoint(slot, null);
+    writeSession(runSlotKey(slot), RUN_CLEARED);
+    router.push(href);
   };
+  const prefetch = (mode: ChallengeMode) => router.prefetch(playTarget(mode, panel).href);
 
   const toggleGen = (g: Gen) => {
     const on = panel.gens.includes(g);
@@ -144,7 +141,7 @@ export function SidePanel({
           type="button"
           className="btn btn--ghost"
           aria-expanded={open}
-          aria-controls={moreId}
+          aria-controls={SETTINGS_ID}
           onClick={() => setOpen(!open)}
         >
           Challenge Hub
@@ -167,14 +164,18 @@ export function SidePanel({
               <button
                 type="button"
                 className={`btn btn--primary ${s.cta}`}
-                onClick={() => setConfirming("cup8")}
+                onClick={() => play("cup8")}
+                onPointerEnter={() => prefetch("cup8")}
+                onFocus={() => prefetch("cup8")}
               >
                 Play 8-0 Challenge
               </button>
               <button
                 type="button"
                 className={`btn btn--primary ${s.cta}`}
-                onClick={() => setConfirming("kanto151")}
+                onClick={() => play("kanto151")}
+                onPointerEnter={() => prefetch("kanto151")}
+                onFocus={() => prefetch("kanto151")}
               >
                 Play 151 Challenge
               </button>
@@ -185,11 +186,15 @@ export function SidePanel({
               ? "Challenge runs show ratings. Turn them off in Settings to play blind."
               : "Challenge runs keep ratings hidden."}
           </p>
+          <MatchdaySettings
+            value={{ managerMode: panel.managerMode, matchView: panel.matchView }}
+            onChange={(next) => set(next)}
+          />
           <button
             type="button"
             className={`btn btn--ghost btn--sm ${s.moreToggle}`}
             aria-expanded={open}
-            aria-controls={moreId}
+            aria-controls={SETTINGS_ID}
             onClick={() => setOpen(!open)}
           >
             {open ? "Hide settings and records" : "Settings and records"}
@@ -197,7 +202,7 @@ export function SidePanel({
         </div>
       </ModuleCard>
 
-      <div id={moreId} className={s.more} data-open={open}>
+      <div id={SETTINGS_ID} className={s.more} data-open={open}>
         <ModuleCard
           eyebrow="Your game"
           title="Settings and records"
@@ -283,24 +288,6 @@ export function SidePanel({
           </section>
 
           <section className={s.section}>
-            <h2 className={s.heading}>Matchday</h2>
-            <Switch
-              label={MANAGER_MODE_LABEL}
-              hint={MANAGER_MODE_HINT}
-              checked={panel.managerMode}
-              onChange={(managerMode) => set({ managerMode })}
-            />
-            <Segmented
-              label="Match view"
-              value={matchdayView(panel)}
-              options={MATCH_VIEW_LABEL}
-              onChange={(matchView) => set({ matchView })}
-              disabled={panel.managerMode ? "quick" : undefined}
-              hint={panel.managerMode ? MANAGER_PLAYS_LIVE : undefined}
-            />
-          </section>
-
-          <section className={s.section}>
             <h2 className={s.heading}>Your records</h2>
             <Table className={s.stats}>
               <thead>
@@ -345,14 +332,6 @@ export function SidePanel({
           </section>
         </ModuleCard>
       </div>
-      {confirming !== null && (
-        <ConfirmPlay
-          mode={confirming}
-          panel={panel}
-          onEdit={editSettings}
-          onDone={() => setConfirming(null)}
-        />
-      )}
     </aside>
   );
 }

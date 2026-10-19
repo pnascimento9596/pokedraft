@@ -49,6 +49,8 @@ export interface DraftBoardProps {
   readonly onRun: (run: Run) => void;
   readonly onNewRun: () => void;
   readonly onSeeResults: () => void;
+  // The cup plays a matchday after the draft, so the button kicks off instead of showing results.
+  readonly kickOff: boolean;
 }
 
 const REROLL_BUTTONS: Readonly<Record<"cup8" | "kanto151", readonly [RerollTarget, string][]>> = {
@@ -122,6 +124,7 @@ function ActiveDraftBoard({
   onRun,
   onNewRun,
   onSeeResults,
+  kickOff,
   settings,
 }: DraftBoardProps & { readonly settings: ActiveDraftSettings }) {
   const { state, rollId } = run;
@@ -658,7 +661,7 @@ function ActiveDraftBoard({
               data-testid="see-results"
               onClick={onSeeResults}
             >
-              See results
+              {kickOff ? "Kick off" : "See results"}
             </button>
           </div>
         ) : null}

@@ -74,7 +74,6 @@ test("the home Start link carries the chosen order into the run", async ({ page 
     .getByRole("button", { name: "Position First" })
     .click();
   await page.getByRole("button", { name: "Play 151 Challenge" }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Yes, play" }).click();
   await expect(page).toHaveURL(/\/play\?mode=kanto151&f=4-3-3&order=positionFirst$/);
   await page.getByTestId("run-start").click();
   await expect(page.getByTestId("round-prompt")).toHaveText("Pick a slot for round 1");
