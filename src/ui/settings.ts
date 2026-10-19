@@ -22,6 +22,18 @@ export const MATCH_VIEW_LABEL: Readonly<Record<MatchView, string>> = {
   live: "Live match",
 };
 
+export const SPIN_SPEEDS = ["normal", "fast"] as const;
+export type SpinSpeed = (typeof SPIN_SPEEDS)[number];
+export const SPIN_SPEED_LABEL: Readonly<Record<SpinSpeed, string>> = {
+  normal: "Normal",
+  fast: "Fast",
+};
+export const SPIN_FAST_FACTOR = 0.4;
+
+export function spinMs(ms: number, speed: SpinSpeed): number {
+  return speed === "fast" ? Math.round(ms * SPIN_FAST_FACTOR) : ms;
+}
+
 // Everything the home panel controls. Challenge settings are derived from it. `managerMode` and
 // `matchView` are how the player watches the cup; they never reach the run token's settings.
 export interface PanelSettings {
@@ -34,6 +46,7 @@ export interface PanelSettings {
   readonly showChallengeRatings: boolean;
   readonly managerMode: boolean;
   readonly matchView: MatchView;
+  readonly spinSpeed: SpinSpeed;
 }
 
 export const DEFAULT_PANEL: PanelSettings = {
@@ -46,6 +59,7 @@ export const DEFAULT_PANEL: PanelSettings = {
   showChallengeRatings: false,
   managerMode: false,
   matchView: "quick",
+  spinSpeed: "normal",
 };
 
 const PANEL_KEY = "pokedraft:panel";
@@ -73,6 +87,9 @@ function parsePanel(raw: unknown): PanelSettings {
     matchView: (MATCH_VIEWS as readonly unknown[]).includes(r.matchView)
       ? (r.matchView as MatchView)
       : DEFAULT_PANEL.matchView,
+    spinSpeed: (SPIN_SPEEDS as readonly unknown[]).includes(r.spinSpeed)
+      ? (r.spinSpeed as SpinSpeed)
+      : DEFAULT_PANEL.spinSpeed,
   };
 }
 

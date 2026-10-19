@@ -175,3 +175,33 @@ describe("managerMode and matchView (catches a saved panel that silently turns o
     });
   });
 });
+
+describe("spinSpeed (catches a saved panel that resets on upgrade or turns fast spins on by accident)", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("an old panel without spinSpeed parses as normal", () => {
+    storedPanel('{"formation":"4-4-2","managerMode":true,"matchView":"live"}');
+    expect(loadPanel()).toMatchObject({
+      formation: "4-4-2",
+      managerMode: true,
+      matchView: "live",
+      spinSpeed: "normal",
+    });
+  });
+
+  it("loads a stored fast and drops values of the wrong type", () => {
+    storedPanel('{"spinSpeed":"fast"}');
+    expect(loadPanel().spinSpeed).toBe("fast");
+    for (const bad of ['"Fast"', '"turbo"', "1", "true", "null"]) {
+      storedPanel(`{"spinSpeed":${bad}}`);
+      expect(loadPanel().spinSpeed).toBe("normal");
+    }
+  });
+
+  it("round-trips through savePanel", () => {
+    const store = storedPanel(null);
+    savePanel({ ...DEFAULT_PANEL, spinSpeed: "fast" });
+    expect(JSON.parse(store.get("pokedraft:panel")!)).toMatchObject({ spinSpeed: "fast" });
+    expect(loadPanel().spinSpeed).toBe("fast");
+  });
+});

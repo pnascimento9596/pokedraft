@@ -106,7 +106,9 @@ describe("randomizer wheel", () => {
         const roll: Roll = { kind: "combo", region: "hoenn", type: "water", offers: null };
         const stage = stagesFor(roll, SETTINGS[0]!, "new")[stageIndex]!;
         const onSettle = vi.fn();
-        const { rerender } = render(<Wheel stage={stage} state="spinning" onSettle={onSettle} />);
+        const { rerender } = render(
+          <Wheel stage={stage} state="spinning" speed="normal" onSettle={onSettle} />,
+        );
         advance(0);
         advance(200);
         const animatedReel = screen.getByTestId("wheel").querySelector<HTMLElement>(".reel")!;
@@ -116,7 +118,7 @@ describe("randomizer wheel", () => {
         else fireEvent.click(screen.getByRole("button", { name: "Tap to skip" }));
         expect(onSettle).toHaveBeenCalledWith(reason);
 
-        rerender(<Wheel stage={stage} state="settled" onSettle={onSettle} />);
+        rerender(<Wheel stage={stage} state="settled" speed="normal" onSettle={onSettle} />);
 
         const result = screen.getByTestId("wheel-result");
         expect(result.textContent).toBe(label);
@@ -136,7 +138,9 @@ describe("randomizer wheel", () => {
     for (const { settings, roll, cause } of CASES) {
       const stages = stagesFor(roll, settings, cause);
       const values = stages.map((stage) => {
-        const { unmount } = render(<Wheel stage={stage} state="settled" onSettle={() => {}} />);
+        const { unmount } = render(
+          <Wheel stage={stage} state="settled" speed="normal" onSettle={() => {}} />,
+        );
         const value = screen.getByTestId("wheel-result").getAttribute("data-value");
         unmount();
         return value;
@@ -193,6 +197,7 @@ describe("randomizer wheel", () => {
       <RollReveal
         stages={stagesFor(roll, SETTINGS[0]!, "new")}
         instant={false}
+        speed="normal"
         onDone={() => {}}
       />,
     );
