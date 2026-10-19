@@ -94,7 +94,8 @@ test.describe("one-tap play on a phone", () => {
     await expect(page).toHaveURL("/play?mode=kanto151&f=4-3-3&order=squadFirst");
     await expect(page.locator("dl dt")).toHaveText(["Formation", "Order", "Matchday"]);
     await expect(page.locator("dl dd")).toHaveText(["4-3-3", "Squad First", "Manager, Live"]);
-    await page.getByTestId("manager-mode").click();
+    // The home page stays mounted, hidden, behind /play, so pick the start card's own switch.
+    await page.locator('[data-testid="manager-mode"]:visible').click();
     await expect(page.locator("dl dd").last()).toHaveText("Sim, Quick");
   });
 
