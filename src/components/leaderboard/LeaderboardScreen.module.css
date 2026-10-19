@@ -91,7 +91,7 @@
 .dateField[data-font-ready="true"] .dateLoading {
   display: none;
 }
-@media (max-width: 359px) {
+@media (max-width: 479.98px) {
   .caption {
     min-height: 126px;
   }
@@ -101,7 +101,7 @@
     min-height: 54px;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 720px) {
   .caption {
     min-height: 36px;
   }

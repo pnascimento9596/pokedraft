@@ -24,7 +24,7 @@ export function TacticPills({
   /** The opponent's style; each pill shows its edge against it, when the style has edges. */
   readonly style?: OpponentStyle;
   readonly disabled?: boolean;
-  /** One row of names without hints below 600px, for the collapsed touchline sheet. */
+  /** One row of names without hints below 720px, for the collapsed touchline sheet. */
   readonly dense?: boolean;
   readonly onPick: (tactic: Tactic) => void;
 }) {

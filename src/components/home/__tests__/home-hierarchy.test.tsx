@@ -123,7 +123,7 @@ describe("one control for the settings region (catches the duplicate Challenge H
   });
 });
 
-describe("settings start unset, so CSS collapses them below 1024px (catches settings open on phones by default)", () => {
+describe("settings start unset, so CSS collapses them below 960px (catches settings open on phones by default)", () => {
   it("renders the toggle collapsed and the region without data-open in the server HTML", () => {
     const html = renderToString(
       <SidePanel panel={DEFAULT_PANEL} onChange={() => {}} stats={null} />,

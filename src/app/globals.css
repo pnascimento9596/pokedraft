@@ -350,7 +350,7 @@ body:has(.page-loading) .site-footer {
   gap: 2px;
 }
 
-@media (max-width: 479px) {
+@media (max-width: 479.98px) {
   .site-header {
     padding-inline: 12px;
   }
@@ -497,7 +497,7 @@ body:has([data-draft-board]) {
 
 /* Phones: every control is at least 44x44 CSS px and the header is one row (dispatch 7 GATE 4).
    Wider screens keep the denser desktop sizes above. */
-@media (max-width: 480px) {
+@media (max-width: 479.98px) {
   .btn,
   .btn--sm,
   .chip {
@@ -618,7 +618,7 @@ body:has([data-draft-board]) {
   font-size: 16px;
   min-height: 44px;
 }
-@media (min-width: 768px) {
+@media (min-width: 720px) {
   body {
     font-size: 14px;
     line-height: 21px;
@@ -635,7 +635,7 @@ body:has([data-draft-board]) {
   font-size: 13px;
   font-weight: 600;
 }
-@media (max-width: 480px) {
+@media (max-width: 479.98px) {
   .site-header nav a {
     display: flex;
     font-size: 15px;

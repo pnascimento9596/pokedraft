@@ -24,7 +24,31 @@ Gates at `2434ddb` (code-identical to `171688a` outside `e2e/` and `docs/`):
 
 Decision log: `docs/decisions/pwa-viewport.md`. Browser proof: `docs/reports/pwa-viewport/{home-notch,draft-toast-notch,how-to-play-bottom-notch}-390.png`.
 
+## Dark palette and breakpoints
+
+Branch `refactor/theme-breakpoints` off `origin/main` at `5c7d4fb`. Wave 4 row 4h2 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- In Day mode the dark floodlight glow behind the page is gone, panel edges use the light theme's edge colour, and the open player picker is a cream sheet with dark text instead of a navy one. The pitch, the player cards on it, the logo plate, the match highlights and the broadcast keep their night stadium look in both themes.
+- On a computer window from 960 to 1023px wide, the home page shows the two-column layout (challenges on the left, the builder on the right) with settings open, as it already did from 1024px.
+- On a tablet or window from 720 to 767px wide, the wider layouts that started at 768px now start at 720px. From 600 to 719px the match touchline is the bottom sheet and the camera starts on Follow, as on a phone; both switched at 600px before.
+- A few rules that applied only to the narrowest phones now apply to every phone under 480px: 11px tactic names in the match sheet (under 360 before), the leaderboard caption's reserved height (under 360) and the momentum bar on its own row (under 420).
+- A broken share link now follows a Night or Day choice. Before, that page followed only the phone's own light or dark setting.
+- Every screen width rule uses one scale, 480, 720, 960 and 1200px, and `pnpm check:breakpoints` fails CI on any other width.
+
+RED commits: `58cc2ae` (5 of 57 unit tests failed in 2 of 3 files; `check:breakpoints` found 47 off-scale widths in 43 queries; `e2e/theme-breakpoints.spec.ts` failed 3 of 30 against a build of `5c7d4fb`, the first paint cases passing as labelled regression guards) and `8cce85c` (2 of 5 `ThemeToggle` unit tests failed; 2 of 2 new 404 theme e2e cases failed against a build of `00ab013`). GREEN `00ab013`, fix `769b134`, `7e39085` (card grid without a query, CTA spec waits for the resized layout).
+
+Gates at `7e39085`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0, `check:breakpoints` included. Prettier passed on the changed files (`src/design/tokens.css` is in `.prettierignore`).
+- Unit tests: 1,802 passed in 213 files.
+- Full Playwright suite at `7e39085` (`CI=1`, headless): 998 passed, 67 skipped, 0 failed. The first run at `00ab013` failed 4 (the 404 page lost the dark theme, fixed by booting the theme on mount) with 1 flaky (the CTA column test, now polled).
+- NOT RUN: review and hosted CI; a physical phone check and a real screen reader pass (owner actions); WebKit and Firefox screenshots (the suite's WebKit projects ran); a results page pixel diff against the base.
+
+Decision log: `docs/decisions/theme-breakpoints.md`. Browser proof: `docs/reports/theme-breakpoints/` (home, draft, results and matchday at 320, 360, 390, 720, 960 and 1280, light and dark).
+
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #124 (row 4h2, dark palette, vignette and breakpoints) merged as squash `6e0a34a`, reviewed head `4f01365`, GLM 5.3 Flash APPROVE in round 1 with canary `theme-breakpoints-fc4d3da4626c5ce313b9a26a2d90f13f` echoed. At `4f01365` lint, typecheck, build and all nine `check:*` scripts (now including `check:breakpoints`) exited 0, 1,802 unit tests passed in 213 files and Prettier passed on 47 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `6e0a34a` with `db.status` ok, and `theme-breakpoints`, `theme-choice`, `home-hierarchy` and `contrast` against production (chromium) passed 70 of 70. NOT RUN: physical phone check (owner action), a real screen reader, WebKit and Firefox proof screenshots.
 
 ## Resilience, onboarding and a11y
 

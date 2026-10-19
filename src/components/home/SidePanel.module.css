@@ -1,4 +1,4 @@
-@media (max-width: 1023px) {
+@media (max-width: 959.98px) {
   .panel {
     display: contents !important;
   }
@@ -23,18 +23,15 @@
   font-size: 15px;
   line-height: 22px;
 }
+/* Two cards side by side only when each gets 152px: not on a phone under 380px, and not in the
+   320px desktop panel. Never more than two, because each column is at least half the row. */
 .cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(max(152px, calc(50% - 5px)), 1fr));
   gap: 10px;
 }
 .cards > :last-child {
   grid-column: 1 / -1;
-}
-@media (max-width: 379px), (min-width: 1024px) {
-  .cards {
-    grid-template-columns: 1fr;
-  }
 }
 .card {
   display: flex;
@@ -262,12 +259,12 @@
   font-size: 15px;
   line-height: 20px;
 }
-@media (max-width: 1023px) {
+@media (max-width: 959.98px) {
   .more:not([data-open="true"]) {
     display: none;
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: 960px) {
   .moreToggle {
     display: none;
   }

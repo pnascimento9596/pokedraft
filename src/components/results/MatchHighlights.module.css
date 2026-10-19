@@ -679,7 +679,7 @@
 }
 
 /* Mobile responsive layout */
-@media (max-width: 640px) {
+@media (max-width: 719.98px) {
   .highlights {
     padding: 12px;
     gap: 10px;

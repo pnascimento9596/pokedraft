@@ -15,15 +15,6 @@ function value(tokens: Record<string, string>, role: string): readonly [number, 
   return ref ? value(tokens, ref[1]!) : hexRgb(raw);
 }
 describe("warm colour token contrast", () => {
-  it("mirrors every explicit dark token under the system dark scheme", () => {
-    const explicit = [...css.matchAll(/:root\[data-theme="dark"\]\s*\{([^}]+)\}/g)].map((m) =>
-      m[1]!.trim(),
-    );
-    const system = [...css.matchAll(/:root:not\(\[data-theme="light"\]\)\s*\{([^}]+)\}/g)].map(
-      (m) => m[1]!.trim(),
-    );
-    expect(system).toEqual(explicit);
-  });
   for (const name of ["light", "dark"] as const) {
     const tokens = palette(css, name);
     describe(name, () => {

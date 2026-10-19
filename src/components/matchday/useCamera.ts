@@ -5,7 +5,7 @@ import { defaultCamera, type CameraMode } from "@/ui/matchday/camera";
 import { readJson, writeJson } from "@/ui/storage";
 
 const CAMERA_KEY = "pokedraft:camera";
-const WIDE = "(min-width: 600px)";
+const WIDE = "(min-width: 720px)";
 const REDUCED = "(prefers-reduced-motion: reduce)";
 
 const listeners = new Set<() => void>();

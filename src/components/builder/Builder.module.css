@@ -132,7 +132,7 @@
 .friendly {
   margin-top: 12px;
 }
-@media (min-width: 768px) {
+@media (min-width: 720px) {
   .scoreValue {
     font-size: 28px;
   }
