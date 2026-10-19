@@ -98,7 +98,7 @@ function MatchReplay({
           <small>{own}</small>
         </span>
         <strong className={`num ${s.score}`} data-testid={scoreTestId}>
-          {score.user} - {score.opp}
+          {score.user}-{score.opp}
         </strong>
         <span>
           Shared squad
@@ -345,7 +345,7 @@ export function ExhibitionMatchModal({
                       <p>
                         Aggregate{" "}
                         <strong className="num" data-testid="exhibition-aggregate">
-                          {played.tie.aggregate.user} - {played.tie.aggregate.opp}
+                          {played.tie.aggregate.user}-{played.tie.aggregate.opp}
                         </strong>
                       </p>
                       <p>

@@ -17,6 +17,39 @@ import { incidentText, type IncidentCopy } from "@/ui/matchday/copy";
 
 export type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
+/** `live` is the player's own run; `shared` is a run opened from someone's /r/ link. */
+export type ResultsVariant = "live" | "shared";
+
+// A shared token carries no nickname, so a friend's squad is "This squad", never "You".
+export const SIDE_COPY = {
+  live: {
+    side: "You",
+    team: "Your team",
+    xi: "Your XI",
+    ourSide: "Your side",
+    switchesTo: "Your side switch to",
+    squad: "Your squad",
+    lineup: "Your lineup",
+    goals: "Your goals",
+    fullTeamScore: "your full Team Score",
+    summary: "Your record, Team Score and cup finish.",
+    squadSummary: "Your lineup, Synergy links and ratings for each role.",
+  },
+  shared: {
+    side: "This squad",
+    team: "This squad",
+    xi: "This squad",
+    ourSide: "This squad",
+    switchesTo: "This squad switches to",
+    squad: "This squad",
+    lineup: "This lineup",
+    goals: "This squad's goals",
+    fullTeamScore: "this squad's full Team Score",
+    summary: "This squad's record, Team Score and cup finish.",
+    squadSummary: "This lineup, Synergy links and ratings for each role.",
+  },
+} as const satisfies Record<ResultsVariant, Record<string, string>>;
+
 // Engine-1 and engine-2 awarded the user a shootout still level after 20 sudden-death pairs.
 export const SHOOTOUT_CAP_LINE = "Won on penalties (decided after 20 rounds)";
 
@@ -133,6 +166,6 @@ function incidentCopy(i: Incident): IncidentCopy {
  * One line for an injury, substitution, card or tactic change. `team` names the opponent; the
  * user's own cards go unnamed in the results.
  */
-export function incidentLine(i: Incident, team: string): string {
-  return incidentText(incidentCopy(i), { user: null, opp: team });
+export function incidentLine(i: Incident, team: string, variant: ResultsVariant = "live"): string {
+  return incidentText(incidentCopy(i), { user: null, opp: team }, variant === "shared");
 }

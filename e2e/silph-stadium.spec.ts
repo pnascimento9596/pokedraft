@@ -74,9 +74,9 @@ for (const width of [375, 390]) {
       "/play?mode=cup8&f=3-5-2&order=squadFirst&g=123456789&style=classic3&seed=silph-touch",
     );
     await page.getByTestId("run-start").tap();
-    await page.getByRole("button", { name: "Minimize draft picker" }).tap();
+    await page.getByRole("button", { name: "Hide players" }).tap();
     await page.getByTestId("slot-s5").tap();
-    await expect(page.getByRole("button", { name: "Minimize draft picker" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Hide players" })).toBeVisible();
     await page.locator('[data-testid^="candidate-"]').first().tap();
     await expect(page.locator('[data-testid^="candidate-"]').first()).not.toBeVisible();
     await page.getByTestId("slot-s5").tap();

@@ -71,8 +71,8 @@ test("at 2x the first goal stages in half the time and the score lands with the 
   console.log(`move callout on screen for ${Math.round(onScreen)} ms`);
   expect(onScreen).toBeGreaterThan(800);
   expect(onScreen).toBeLessThan(1_300);
-  expect([...new Set(marks.slice(0, flash).map((m) => m.score))]).toEqual(["0 - 0"]);
-  expect(["1 - 0", "0 - 1"]).toContain(marks[flash]!.score);
+  expect([...new Set(marks.slice(0, flash).map((m) => m.score))]).toEqual(["0-0"]);
+  expect(["1-0", "0-1"]).toContain(marks[flash]!.score);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 

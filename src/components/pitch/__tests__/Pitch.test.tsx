@@ -214,6 +214,31 @@ describe("Pitch", () => {
     expect(screen.getByTestId("slot-s0").getAttribute("data-suitability")).toBe("bad");
     expect(screen.getByTestId("slot-s2").getAttribute("data-suitability")).toBe("ok");
   });
+
+  it("names an empty slot's fit as Best, OK or Poor (catches the raw recommended, ok or bad enum)", () => {
+    render(
+      <Pitch
+        formation="4-3-3"
+        lineup={empty}
+        speciesOf={speciesById}
+        onSlotTap={() => {}}
+        suitabilityOf={(ref) => {
+          if (ref.kind === "starter" && ref.index === 9) return "recommended";
+          if (ref.kind === "starter" && ref.index === 0) return "bad";
+          return "ok";
+        }}
+      />,
+    );
+    expect(screen.getByTestId("slot-s0").getAttribute("aria-label")).toBe(
+      "Empty GK slot (Poor fit)",
+    );
+    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe(
+      "Empty LCB slot (OK fit)",
+    );
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe(
+      "Empty ST slot (Best fit)",
+    );
+  });
 });
 
 it("orders a visible rating before the tactical label in a filled card accessible name", () => {

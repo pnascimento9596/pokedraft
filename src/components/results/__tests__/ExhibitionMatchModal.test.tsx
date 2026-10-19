@@ -39,20 +39,20 @@ afterEach(() => {
 describe("exhibition highlights", () => {
   it("replays only genuine goals when their minutes arrive and restores the recorded final score", () => {
     render(<ExhibitionMatchModal opponent={opponent} onClose={() => {}} />);
-    // Engine 6: 4 - 1, goals at 23', 37' (Shared squad), 44', 78' and 85'.
-    expect(screen.getByTestId("exhibition-score").textContent).toBe("4 - 1");
+    // Engine 6: 4-1, goals at 23', 37' (Shared squad), 44', 78' and 85'.
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("4-1");
     expect(screen.getByRole("list", { name: "Exhibition goals" }).textContent).toContain(
       "37' Caterpie, assist Charmeleon",
     );
     fireEvent.click(screen.getByRole("button", { name: "Replay highlights" }));
-    expect(screen.getByTestId("exhibition-score").textContent).toBe("0 - 0");
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("0-0");
     expect(screen.getByRole("list", { name: "Exhibition goals" }).textContent).toBe("");
     for (let i = 0; i < 25; i++)
       act(() => {
         vi.advanceTimersByTime(80);
       });
     // 25 ticks of 3 minutes reach 75': the 78' and 85' goals are not revealed yet.
-    expect(screen.getByTestId("exhibition-score").textContent).toBe("2 - 1");
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("2-1");
     expect(screen.getByRole("list", { name: "Exhibition goals" }).textContent).toBe(
       "Your squad23' Charizard (solo run)Shared squad37' Caterpie, assist CharmeleonYour squad44' Venusaur",
     );
@@ -60,9 +60,9 @@ describe("exhibition highlights", () => {
     act(() => {
       vi.advanceTimersByTime(800);
     });
-    expect(screen.getByTestId("exhibition-score").textContent).toBe("2 - 1");
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("2-1");
     fireEvent.click(screen.getByRole("button", { name: "Show full time" }));
-    expect(screen.getByTestId("exhibition-score").textContent).toBe("4 - 1");
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("4-1");
     expect(screen.getByRole("status").textContent).toBe("Full time. Your squad wins.");
     expect(localStorage.length).toBe(1);
     expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(saved));
@@ -106,10 +106,10 @@ it.each([
 );
 
 it("keeps scoreless draws honest and finishes the replay without creating events", () => {
-  // Engine 6 has no goalless mirror match; opponent seed scoreless-9 is the first 0 - 0.
+  // Engine 6 has no goalless mirror match; opponent seed scoreless-9 is the first 0-0.
   const scoreless = draftFromBuilderToken(builderToken(settings, lineup, "scoreless-9" as Seed))!;
   render(<ExhibitionMatchModal opponent={scoreless} onClose={() => {}} />);
-  expect(screen.getByTestId("exhibition-score").textContent).toBe("0 - 0");
+  expect(screen.getByTestId("exhibition-score").textContent).toBe("0-0");
   expect(screen.getByRole("status").textContent).toBe("Full time. Honours even.");
   fireEvent.click(screen.getByRole("button", { name: "Replay highlights" }));
   for (let i = 0; i < 30; i++)
@@ -149,14 +149,14 @@ describe("two-leg exhibition", () => {
     );
     // Rematch 1 is the first tie of these squads that goes to penalties under engine 6.
     fireEvent.click(screen.getByRole("button", { name: "Play rematch" }));
-    expect(screen.getByTestId("exhibition-score").textContent).toBe("0 - 1");
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("0-1");
     fireEvent.click(screen.getByRole("button", { name: "Two legs" }));
-    expect(screen.getByTestId("exhibition-leg-1-score").textContent).toBe("0 - 2");
-    expect(screen.getByTestId("exhibition-leg-2-score").textContent).toBe("2 - 0");
-    expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("2 - 2");
+    expect(screen.getByTestId("exhibition-leg-1-score").textContent).toBe("0-2");
+    expect(screen.getByTestId("exhibition-leg-2-score").textContent).toBe("2-0");
+    expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("2-2");
     expect(screen.getByTestId("exhibition-decided").textContent).toBe("On penalties");
     expect(screen.getByRole("region", { name: "Aggregate" }).textContent).toBe(
-      "Aggregate 2 - 2On penalties. Shared squad wins the tie.",
+      "Aggregate 2-2On penalties. Shared squad wins the tie.",
     );
     expect(screen.getAllByRole("status").map((status) => status.textContent)).toEqual([
       "Leg 1 full time. Shared squad wins the leg.",
@@ -164,7 +164,7 @@ describe("two-leg exhibition", () => {
     ]);
     expect(screen.queryByTestId("exhibition-score")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "One match" }));
-    expect(screen.getByTestId("exhibition-score").textContent).toBe("0 - 1");
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("0-1");
     expect(localStorage.length).toBe(1);
   });
 
@@ -186,7 +186,7 @@ describe("two-leg exhibition", () => {
     expect(leg2.getByRole("status").textContent).toBe(
       "Leg 2 after extra time. Penalties: 4-5 on pens.",
     );
-    expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("2 - 2");
+    expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("2-2");
     expect(vi.getTimerCount()).toBe(0);
   });
 
@@ -196,10 +196,10 @@ describe("two-leg exhibition", () => {
     fireEvent.click(screen.getByRole("button", { name: "Play rematch" }));
     fireEvent.click(screen.getByRole("button", { name: "Play rematch" }));
     fireEvent.click(screen.getByRole("button", { name: "Play rematch" }));
-    // Rematch 3: 0 - 0, then 0 - 1, so leg 2 settles the tie inside 90 minutes.
-    expect(screen.getByTestId("exhibition-leg-1-score").textContent).toBe("0 - 0");
-    expect(screen.getByTestId("exhibition-leg-2-score").textContent).toBe("0 - 1");
-    expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("0 - 1");
+    // Rematch 3: 0-0, then 0-1, so leg 2 settles the tie inside 90 minutes.
+    expect(screen.getByTestId("exhibition-leg-1-score").textContent).toBe("0-0");
+    expect(screen.getByTestId("exhibition-leg-2-score").textContent).toBe("0-1");
+    expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("0-1");
     expect(screen.getByTestId("exhibition-decided").textContent).toBe("On aggregate");
     expect(screen.getAllByRole("status")[1]!.textContent).toBe(
       "Leg 2 full time. Shared squad wins the leg.",

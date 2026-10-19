@@ -118,7 +118,7 @@ test("a tap on a taken slot shows the swap hint on screen without a scroll, and 
   await expect(keeper).toHaveAttribute("data-filled", "true");
   await expect(page.getByTestId("round-header")).toContainText("Round 2 of 16");
   expect((await inViewport(page, page.getByTestId("draft-wheel"))).problem).toBeNull();
-  await page.getByRole("button", { name: "Minimize draft picker" }).click();
+  await page.getByRole("button", { name: "Hide players" }).click();
   await keeper.evaluate((element) =>
     element.scrollIntoView({ block: "center", behavior: "instant" }),
   );
@@ -157,7 +157,7 @@ for (const size of [
     // The open picker is modal: the first tap on the dimmed pitch closes it, the next one acts.
     const covered = (await keeper.boundingBox())!;
     await page.touchscreen.tap(covered.x + covered.width / 2, covered.y + covered.height / 2);
-    await expect(page.getByRole("button", { name: "Choose a player" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Show players" })).toBeVisible();
     expect((await inViewport(page, keeper)).problem).toBeNull();
     await tapNow(page, keeper, "select keeper to swap");
     await expect(page.locator('[data-testid^="candidate-"]').first()).not.toBeVisible();
@@ -300,7 +300,7 @@ test.describe("landscape", () => {
       test.skip(test.info().project.name !== "iphone-14", "landscape is specified for iPhone 14");
       await start(page, PLAY_8_0);
       await resizeTo(page, size);
-      await page.getByRole("button", { name: "Minimize draft picker" }).click();
+      await page.getByRole("button", { name: "Hide players" }).click();
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
         size.width,
       );
@@ -430,7 +430,7 @@ for (const formation of [
   });
 }
 
-test("tap candidate dismisses drawer, renders selection bar with suitability on empty slots, reopens via Spin results, and places on slot tap", async ({
+test("tap candidate dismisses drawer, renders selection bar with suitability on empty slots, reopens via Show roll, and places on slot tap", async ({
   page,
 }) => {
   await start(page, PLAY_8_0);
@@ -448,8 +448,8 @@ test("tap candidate dismisses drawer, renders selection bar with suitability on 
   const recSlots = page.locator('[data-testid^="slot-"][data-suitability="recommended"]');
   expect(await recSlots.count()).toBeGreaterThan(0);
 
-  // Reopen via "Spin results"
-  await page.getByRole("button", { name: "Back to spin results" }).tap();
+  // Reopen via "Show roll"
+  await page.getByRole("button", { name: "Back to the roll" }).tap();
   await expect(firstCard).toBeVisible();
   await expect(selectionBar).toHaveCount(0);
 
@@ -504,7 +504,7 @@ test("desktop candidate selection is cleared on reroll without leaving stale sui
   const recSlots = page.locator('[data-testid^="slot-"][data-suitability="recommended"]');
   expect(await recSlots.count()).toBeGreaterThan(0);
 
-  await page.getByRole("button", { name: "Choose a player", exact: true }).click();
+  await page.getByRole("button", { name: "Show players", exact: true }).click();
   const reroll = page.getByRole("button", { name: /^Reroll type/ });
   await reroll.click();
 

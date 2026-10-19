@@ -34,6 +34,7 @@ jobs:
       - run: pnpm check:image-packs
       - run: pnpm check:theme-contrast
       - run: pnpm check:theme-colors
+      - run: pnpm check:dashes
       - run: pnpm check:theme-cvd
       - run: pnpm lint
       - run: pnpm typecheck

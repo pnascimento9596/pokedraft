@@ -1,5 +1,5 @@
 import type { Incident } from "@/engine";
-import { incidentLine } from "./format";
+import { incidentLine, type ResultsVariant } from "./format";
 import s from "./MatchIncidents.module.css";
 
 const MARK: Readonly<Record<Incident["kind"], string>> = {
@@ -14,9 +14,11 @@ const MARK: Readonly<Record<Incident["kind"], string>> = {
 export function MatchIncidents({
   incidents,
   team,
+  variant = "live",
 }: {
   readonly incidents: readonly Incident[] | undefined;
   readonly team: string;
+  readonly variant?: ResultsVariant;
 }) {
   if (incidents === undefined || incidents.length === 0) return null;
   return (
@@ -28,7 +30,7 @@ export function MatchIncidents({
             <span className={s.mark} data-kind={i.kind}>
               {MARK[i.kind]}
             </span>
-            <span>{incidentLine(i, team)}</span>
+            <span>{incidentLine(i, team, variant)}</span>
           </li>
         ))}
       </ol>

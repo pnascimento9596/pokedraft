@@ -60,7 +60,7 @@ export function Touchline({
       data-expanded={sheet?.expanded || undefined}
     >
       <header className={s.head}>
-        <h3 className={s.title}>Touchline</h3>
+        <h2 className={s.title}>Touchline</h2>
         <span className={s.meta} data-testid="touchline-minute">
           {line.minute === 0 ? "Before kickoff" : `${line.minute}'`}
         </span>
@@ -108,9 +108,9 @@ export function Touchline({
       ) : null}
 
       <div className={`${s.pick} ${s.extra}`}>
-        <h4 className={s.pickTitle} id={offId}>
+        <h3 className={s.pickTitle} id={offId}>
           Take off
-        </h4>
+        </h3>
         <ul className={s.energy} aria-labelledby={offId}>
           {line.onPitch.map((id, slot) => {
             const energy = line.energy[slot];
@@ -118,50 +118,40 @@ export function Touchline({
             const selected = takeOff === slot && id !== null;
             const tired = energy != null && energy < 65;
             return (
-              <li
-                key={slot}
-                className={s.energyRow}
-                data-testid={`energy-slot-${slot}`}
-                data-empty={id === null || undefined}
-                data-selected={selected || undefined}
-                data-tired={tired || undefined}
-                data-interactive={canPick || undefined}
-                role={canPick ? "button" : undefined}
-                aria-pressed={canPick ? selected : undefined}
-                tabIndex={canPick ? 0 : undefined}
-                onClick={canPick ? () => setOff(slot as StarterIndex) : undefined}
-                onKeyDown={
-                  canPick
-                    ? (e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          setOff(slot as StarterIndex);
-                        }
-                      }
-                    : undefined
-                }
-              >
-                <span className={s.energyRole}>{slots[slot]!.label}</span>
-                <span className={s.energyPlayer}>
-                  {id !== null ? <PlayerImage dexId={id} size={22} alt="" /> : null}
-                  <span className={s.energyName}>
-                    {id === null ? "Empty" : speciesById(id).name}
+              <li key={slot}>
+                <button
+                  type="button"
+                  className={s.energyRow}
+                  data-testid={`energy-slot-${slot}`}
+                  data-empty={id === null || undefined}
+                  data-selected={selected || undefined}
+                  data-tired={tired || undefined}
+                  aria-pressed={canPick ? selected : undefined}
+                  disabled={!canPick}
+                  onClick={() => setOff(slot as StarterIndex)}
+                >
+                  <span className={s.energyRole}>{slots[slot]!.label}</span>
+                  <span className={s.energyPlayer}>
+                    {id !== null ? <PlayerImage dexId={id} size={22} alt="" /> : null}
+                    <span className={s.energyName}>
+                      {id === null ? "Empty" : speciesById(id).name}
+                    </span>
+                    {line.yellow[slot] && id !== null ? (
+                      <span className={s.yellow} data-yellow role="img" aria-label="Yellow card" />
+                    ) : null}
                   </span>
-                  {line.yellow[slot] && id !== null ? (
-                    <span className={s.yellow} data-yellow role="img" aria-label="Yellow card" />
-                  ) : null}
-                </span>
-                <meter
-                  className={s.meter}
-                  min={0}
-                  max={100}
-                  low={45}
-                  high={70}
-                  optimum={100}
-                  value={energy ?? 0}
-                  aria-label={`${id === null ? "Empty" : speciesById(id).name} energy`}
-                />
-                <span className={`num ${s.energyValue}`}>{energy ?? "-"}</span>
+                  <meter
+                    className={s.meter}
+                    min={0}
+                    max={100}
+                    low={45}
+                    high={70}
+                    optimum={100}
+                    value={energy ?? 0}
+                    aria-label={`${id === null ? "Empty" : speciesById(id).name} energy`}
+                  />
+                  <span className={`num ${s.energyValue}`}>{energy ?? "-"}</span>
+                </button>
               </li>
             );
           })}
@@ -169,9 +159,9 @@ export function Touchline({
       </div>
 
       <div className={`${s.pick} ${s.extra}`}>
-        <h4 className={s.pickTitle} id={onId}>
+        <h3 className={s.pickTitle} id={onId}>
           Bring on
-        </h4>
+        </h3>
         {bench.length === 0 ? (
           <p className={s.empty}>Nobody left on the bench.</p>
         ) : (
@@ -197,6 +187,11 @@ export function Touchline({
                     <span className={s.benchName}>{species.name}</span>
                     {fit !== null ? (
                       <span className={s.benchFit} data-fit={fit}>
+                        {fit === "recommended" ? (
+                          <>
+                            <span aria-hidden="true">★</span>{" "}
+                          </>
+                        ) : null}
                         {SUITABILITY_LABEL[fit]}
                       </span>
                     ) : null}

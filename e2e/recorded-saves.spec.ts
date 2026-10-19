@@ -17,7 +17,7 @@ for (const width of [320, 1280]) {
     await saves.getByText("Recorded saves (8)", { exact: true }).click();
     const items = saves.getByRole("list", { name: "Recorded saves" }).getByRole("listitem");
     await expect(items).toHaveCount(8);
-    await expect(items.first()).toHaveText("Your XI: 16' Toxtricity saves Wishiwashi's shot");
+    await expect(items.first()).toHaveText("This squad: 16' Toxtricity saves Wishiwashi's shot");
     await expect(items.last()).toHaveText("Opponent: 82' Spheal saves Tapu Koko's shot");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,

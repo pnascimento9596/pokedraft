@@ -99,7 +99,7 @@ for (const [width, height] of [
       await expect(toggle).toHaveAttribute("aria-expanded", "true");
       const cards = page.locator('[data-testid^="bench-card-"]');
       expect(await cards.count()).toBeGreaterThan(0);
-      await expect(cards.first().locator("[data-fit]")).toHaveText(/^(★ Best|OK Fit|Poor Fit)$/);
+      await expect(cards.first().locator("[data-fit]")).toHaveText(/^(★ Best|OK|Poor)$/);
       for (const text of await cards.allTextContents()) expect(text).not.toMatch(/\d/);
       await expect(cards.first().locator("[data-numbers]")).toHaveCount(0);
       const sheet = page.getByTestId("touchline-sheet");

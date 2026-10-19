@@ -7,6 +7,7 @@ import { replayAnyVersion as replay } from "@/engine/versions";
 import { loadHistory } from "@/ui/runs";
 import { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
 import { BUILDER_URL_SEED } from "@/ui/lineup";
+import { GOLDEN_CUP8_V5 } from "@/engine/versions/__tests__/fixtures";
 
 afterEach(cleanup);
 beforeEach(() => {
@@ -33,12 +34,65 @@ const ELIMINATED =
 const FRIENDLY =
   "pd1.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiZnJpZW5kbHktMSIsW1sibCIsNjMwLCJzMCJdLFsibCIsODkzLCJzMSJdLFsibCIsNTU4LCJzMiJdLFsibCIsNjgxLCJzMyJdLFsibCIsNjUyLCJzNCJdLFsibCIsNDY4LCJzNSJdLFsibCIsMjMzLCJzNiJdLFsibCIsNzE3LCJzNyJdLFsibCIsNTczLCJzOCJdLFsibCIsNjYzLCJzOSJdLFsibCIsNjk3LCJzMTAiXSxbImwiLDIwMCwiYjAiXSxbImwiLDQ0NSwiYjEiXSxbImwiLDI1NywiYjIiXSxbImwiLDcyNCwiYjMiXSxbImwiLDg2NiwiYjQiXV1d";
 
+// The engine-5 golden cup8 draft under the live engine-6 prefix, the one e2e/pins.ts DEEP_LINK
+// opens: its matches log the assistant's tactic changes.
+const LIVE_V6 = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+
 async function view(token: string, variant: "live" | "shared" = "shared", cupOverride?: CupResult) {
   const { draft, cup } = await replay(token);
   return render(
     <ResultsView token={token} draft={draft} cup={cupOverride ?? cup} variant={variant} />,
   );
 }
+
+describe("ResultsView side copy (catches a shared link that calls a friend's squad You)", () => {
+  it("shared view never says You or Your", async () => {
+    await view(FLAWLESS, "shared");
+    const results = screen.getByTestId("results");
+    const walker = document.createTreeWalker(results, NodeFilter.SHOW_TEXT);
+    const said: string[] = [];
+    for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+      said.push(node.textContent!);
+    }
+    for (const el of results.querySelectorAll("[aria-label]")) {
+      said.push(el.getAttribute("aria-label")!);
+    }
+    expect(said.filter((t) => /\b(You|Your)\b/.test(t))).toEqual([]);
+    const text = results.textContent!;
+    expect(text).toContain("This squad's record, Team Score and cup finish.");
+    expect(text).toContain("This lineup, Synergy links and ratings for each role.");
+    expect(within(screen.getByTestId("match-G1")).getAllByText("This squad")).toHaveLength(2);
+    expect(screen.getAllByRole("list", { name: "This squad's goals" })).toHaveLength(7);
+    expect(screen.getByRole("group", { name: "This lineup" })).toBeTruthy();
+    expect([...document.querySelectorAll("tr[data-user] th")].map((th) => th.textContent)).toEqual([
+      "1This squad",
+    ]);
+  });
+
+  it("a shared engine-6 run with assistant tactic changes never says You or Your (catches the match events list)", async () => {
+    await view(LIVE_V6, "shared");
+    const results = screen.getByTestId("results");
+    const walker = document.createTreeWalker(results, NodeFilter.SHOW_TEXT);
+    const said: string[] = [];
+    for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+      said.push(node.textContent!);
+    }
+    // Only the viewer is addressed: the Play your own button and the grading explainer.
+    expect(said.filter((t) => /\b(You|Your|you|your)\b/.test(t))).toEqual([
+      "Play your own",
+      "Team Score blends a few things. The biggest is how well each player fits the slot they play, and a player away from their usual position fits worse. Each player's rating is a score from 0 to 100 against every other Pokémon for that job, and the three lowest are flagged as weak spots. Each line, from goalkeeper to attack, is weighed on its own, and the weak spots drag the score down, so one bad hole costs more than you might expect.",
+    ]);
+    expect(said).toContain("75' This squad's assistant switches to Defend");
+  });
+
+  it("a live run still says You and Your team (regression guard, no RED: behaviour already correct)", async () => {
+    await view(FLAWLESS, "live");
+    expect(within(screen.getByTestId("match-G1")).getAllByText("You")).toHaveLength(2);
+    expect([...document.querySelectorAll("tr[data-user] th")].map((th) => th.textContent)).toEqual([
+      "1Your team",
+    ]);
+  });
+});
 
 describe("ResultsView", () => {
   it("lets a player scout every starter and all five bench members from the scouting rows", async () => {
@@ -164,7 +218,7 @@ describe("ResultsView", () => {
     const details = screen.getByText("Season details: how grading works").closest("details")!;
     expect(
       within(details).getByText(
-        /Matches are simulated from your Team Score against a ladder of opponents\. The group games are the gentle start\. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test\./,
+        /Matches are simulated from the Team Score against a ladder of opponents\. The group games are the gentle start\. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test\./,
       ),
     ).toBeTruthy();
     expect(details.textContent).not.toMatch(/hard from the quarter-final/);
@@ -284,7 +338,7 @@ describe("ResultsView", () => {
     fireEvent.click(screen.getByTestId("play-exhibition"));
     const modal = screen.getByTestId("exhibition-modal");
     expect(modal.textContent).toContain("Exhibition Match");
-    expect(screen.getByTestId("exhibition-score").textContent).toMatch(/^\d+ - \d+$/);
+    expect(screen.getByTestId("exhibition-score").textContent).toMatch(/^\d+-\d+$/);
     expect(loadHistory()).toEqual([]);
   });
 

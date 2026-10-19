@@ -38,7 +38,7 @@ for (const width of [390, 1440])
       await type(page.getByRole("list", { name: "Cup rounds" }).getByRole("button"), 15, 20, "600");
       await page.getByTestId("run-start").click();
       if (width === 390) {
-        await page.getByRole("button", { name: "Minimize draft picker" }).click();
+        await page.getByRole("button", { name: "Hide players" }).click();
         await page.getByRole("button", { name: /Challenge Hub/ }).click();
       }
       await type(

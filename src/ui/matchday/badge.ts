@@ -20,3 +20,21 @@ export function badgeCorner(point: Point, badge: Size, pitch: Size): Point {
   const top = within((point.y / 100) * pitch.h - badge.h * (1 + LIFT), pitch.h - badge.h);
   return { x: (left / pitch.w) * 100, y: (top / pitch.h) * 100 };
 }
+
+/** A box in pixels: its top left corner and its size. */
+export interface Box {
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+}
+
+const between = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
+
+/** The least move, in pixels, that keeps the whole of `box` inside `bounds`, as `badgeCorner` does. */
+export function keepInside(box: Box, bounds: Box): Point {
+  return {
+    x: between(box.x, bounds.x, bounds.x + bounds.w - box.w) - box.x,
+    y: between(box.y, bounds.y, bounds.y + bounds.h - box.h) - box.y,
+  };
+}

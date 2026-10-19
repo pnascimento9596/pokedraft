@@ -18,7 +18,7 @@ import {
 import { PlayerImage } from "@/components/PlayerImage";
 import { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
 import { TypeChip } from "@/components/TypeChip";
-import { genLabel, typeLabel } from "@/ui/labels";
+import { genLabel, SUITABILITY_LABEL, typeLabel } from "@/ui/labels";
 import { ALL_REFS, valueAt } from "@/ui/lineup";
 import { ratingFor } from "@/ui/rating";
 import { getSlotSuitability } from "@/ui/suitability";
@@ -328,8 +328,8 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   <option value="dex">Sort: #Dex</option>
                   {showRatings ? (
                     <>
-                      <option value="rating">Sort: Role Rating</option>
-                      <option value="fit">Sort: Raw Fit</option>
+                      <option value="rating">Sort: role rating</option>
+                      <option value="fit">Sort: raw fit</option>
                       <option value="pac">Sort: Pace (PAC)</option>
                       <option value="sho">Sort: Shooting (SHO)</option>
                       <option value="pas">Sort: Passing (PAS)</option>
@@ -416,7 +416,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
               at !== undefined ? ALL_REFS.find((ref) => valueAt(lineup, ref) === sp.id) : undefined;
             const swapFit =
               source && current !== null && current !== sp.id
-                ? `${sp.name} to ${slotLabel}: ${getSlotSuitability(sp, lineup.formation, slot)} fit. ${speciesById(current).name} to ${at}: ${getSlotSuitability(speciesById(current), lineup.formation, source)} fit.`
+                ? `${sp.name} to ${slotLabel}: ${SUITABILITY_LABEL[getSlotSuitability(sp, lineup.formation, slot)]} fit. ${speciesById(current).name} to ${at}: ${SUITABILITY_LABEL[getSlotSuitability(speciesById(current), lineup.formation, source)]} fit.`
                 : null;
             const here = current === sp.id;
             const rating = showRatings ? ratingFor(sp, role, slotLabel) : null;

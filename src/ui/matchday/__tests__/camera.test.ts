@@ -6,6 +6,7 @@ import {
   projectPoint,
   seeks,
   stepCamera,
+  visibleRect,
   zoomOf,
   type Camera,
 } from "../camera";
@@ -119,5 +120,18 @@ describe("follow camera seek (catches a camera that pans across the pitch after 
     expect(seeks(30, 30.2)).toBe(false);
     expect(seeks(30, 29.5)).toBe(true);
     expect(seeks(30, 90)).toBe(true);
+  });
+});
+
+describe("follow camera window (catches a nameplate kept inside the whole pitch while the camera shows a part)", () => {
+  const near = (r: { x: number; y: number; w: number; h: number }) =>
+    [r.x, r.y, r.w, r.h].map((n) => Math.round(n * 1000) / 1000 + 0);
+
+  it("shows the whole pitch at full zoom-out", () => {
+    expect(near(visibleRect(cameraAt({ x: 50, y: 50 }, true)))).toEqual([0, 0, 100, 100]);
+  });
+
+  it("zoomed 1.6x on the left touchline, shows the left 62.5% of the pitch, centred on the ball's height", () => {
+    expect(near(visibleRect(cameraAt({ x: 2, y: 50 }, false)))).toEqual([0, 18.75, 62.5, 62.5]);
   });
 });

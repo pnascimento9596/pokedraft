@@ -98,7 +98,7 @@ test("Watch live buzzes once per user goal, never for the opponent's, and once a
   await expect(replay.getByTestId("haptics-hint")).toHaveText(
     "Haptics work on Android phones only.",
   );
-  await expect(replay.getByTestId("matchday-score")).toHaveText("2 - 1", { timeout: 60_000 });
+  await expect(replay.getByTestId("matchday-score")).toHaveText("2-1", { timeout: 60_000 });
   await page.screenshot({ path: `${SHOT}/toggle-390.png` });
   expect(await buzzes(page)).toEqual([[120], [120]]);
 
@@ -121,7 +121,7 @@ test("with Sound and haptics off Watch live never buzzes", async ({ page }) => {
   await phone(page, false);
   const replay = await watchG3(page);
   await expect(replay.getByTestId("sound-toggle")).toHaveText("Sound and haptics off");
-  await expect(replay.getByTestId("matchday-score")).toHaveText("2 - 1", { timeout: 60_000 });
+  await expect(replay.getByTestId("matchday-score")).toHaveText("2-1", { timeout: 60_000 });
   await replay.getByTestId("skip-ft").tap();
   await expect(replay.getByTestId("match-player")).toHaveAttribute("data-stage", "done");
   expect(await buzzes(page)).toEqual([]);

@@ -35,6 +35,7 @@
     "test:live": "playwright test -c playwright.live.config.ts",
     "check:theme-contrast": "tsx scripts/audit/theme-contrast.mts",
     "check:theme-colors": "node scripts/audit/theme-color-lint.mjs",
+    "check:dashes": "node scripts/audit/dash-lint.mjs",
     "check:theme-cvd": "tsx scripts/audit/theme-cvd.mts"
   },
   "dependencies": {

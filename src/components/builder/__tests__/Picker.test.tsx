@@ -124,7 +124,7 @@ describe("Picker", () => {
     );
     fireEvent.change(screen.getByRole("searchbox"), { target: { value: "Pikachu" } });
     expect(screen.getByLabelText("Swap suitability for Pikachu").textContent).toBe(
-      "Pikachu to GK: bad fit. Blastoise to SUB 1: ok fit.",
+      "Pikachu to GK: Poor fit. Blastoise to SUB 1: OK fit.",
     );
     fireEvent.click(screen.getByRole("button", { name: "Scout Pikachu" }));
     expect(screen.queryByLabelText("Slot role rating comparison")).toBeNull();
@@ -264,6 +264,33 @@ describe("Picker", () => {
     fireEvent.click(loadMoreBtn);
     const expandedItems = screen.getAllByTestId(/^pick-/);
     expect(expandedItems.length).toBe(240);
+  });
+
+  it("writes the sort options in sentence case (catches Sort: Role Rating and Sort: Raw Fit)", () => {
+    render(
+      <Picker
+        state={createDraft(ALL_GENS, "test" as Seed)}
+        slot={{ kind: "starter", index: 0 }}
+        showRatings={true}
+        onPick={vi.fn()}
+        onClear={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+    expect(
+      Array.from(screen.getByTestId("picker-sort").querySelectorAll("option")).map(
+        (o) => o.textContent,
+      ),
+    ).toEqual([
+      "Sort: #Dex",
+      "Sort: role rating",
+      "Sort: raw fit",
+      "Sort: Pace (PAC)",
+      "Sort: Shooting (SHO)",
+      "Sort: Passing (PAS)",
+      "Sort: Defense (DEF)",
+      "Sort: Physical (PHY)",
+    ]);
   });
 
   it("sorts candidates by role rating, filters by recommended fit, and opens the Scouting Dossier", () => {

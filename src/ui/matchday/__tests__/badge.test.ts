@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { badgeCorner } from "../badge";
+import { badgeCorner, keepInside } from "../badge";
 
 // The pitch at 390px is 324 by 207.36; a long badge there is about 150 by 18.
 const PITCH = { w: 324, h: 207.36 };
@@ -39,5 +39,30 @@ describe("play badge placement (catches badges clipped at the pitch edge)", () =
 
   it("leaves the badge on the player before the pitch is measured", () => {
     expect(badgeCorner({ x: 97, y: 3 }, { w: 0, h: 0 }, { w: 0, h: 0 })).toEqual({ x: 97, y: 3 });
+  });
+});
+
+describe("nameplate kept inside the view (catches the carrier's nameplate clipped at the pitch edge)", () => {
+  const VIEW = { x: 0, y: 0, w: 360, h: 230.4 };
+
+  it("moves a nameplate 23.4px off the left edge 23.4px right, and leaves its height alone", () => {
+    expect(keepInside({ x: -23.4, y: 120, w: 70, h: 18 }, VIEW)).toEqual({ x: 23.4, y: 0 });
+  });
+
+  it("moves a nameplate past the right and bottom edges back by exactly the overlap", () => {
+    const move = keepInside({ x: 300, y: 220, w: 70, h: 18 }, VIEW);
+    expect(move.x).toBe(-10);
+    expect(move.y).toBeCloseTo(-7.6, 10);
+  });
+
+  it("keeps the nameplate inside a zoomed view's window, not the whole pitch", () => {
+    expect(keepInside({ x: 100, y: 50, w: 70, h: 18 }, { x: 120, y: 40, w: 225, h: 144 })).toEqual({
+      x: 20,
+      y: 0,
+    });
+  });
+
+  it("does not move a nameplate already inside", () => {
+    expect(keepInside({ x: 10, y: 10, w: 70, h: 18 }, VIEW)).toEqual({ x: 0, y: 0 });
   });
 });

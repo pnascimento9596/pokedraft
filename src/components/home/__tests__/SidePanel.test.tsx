@@ -17,11 +17,16 @@ const builderSwitch = () => screen.getByRole("switch", { name: /Show ratings \(b
 const saved = () => JSON.parse(localStorage.getItem("pokedraft:panel") ?? "{}");
 
 describe("the Show ratings (challenges) switch (catches a challenge setting that does not persist, or flips the builder one)", () => {
-  it("starts off with the blind hint, and the hint text in the Play card is the unchanged sentence", () => {
+  it("starts off with the blind hints from decision 3 (catches the old Off keeps challenges blind and sighted mode copy)", () => {
     render(<HomeScreen />);
     expect(challengeSwitch().getAttribute("aria-checked")).toBe("false");
-    expect(screen.getByText("Off keeps challenges blind")).toBeTruthy();
-    expect(screen.getByText("Challenge runs keep ratings hidden.")).toBeTruthy();
+    expect(
+      screen.getByText("Off hides scores and ratings during challenges. Position fit hints stay."),
+    ).toBeTruthy();
+    expect(screen.getByText("Ratings on")).toBeTruthy();
+    expect(
+      screen.getByText("Challenge runs hide scores and ratings. Position fit hints stay."),
+    ).toBeTruthy();
   });
 
   it("turns on, saves showChallengeRatings to pokedraft:panel, and says challenges show ratings", () => {
@@ -32,10 +37,10 @@ describe("the Show ratings (challenges) switch (catches a challenge setting that
     expect(challengeSwitch().getAttribute("aria-checked")).toBe("true");
     expect(saved().showChallengeRatings).toBe(true);
     expect(saved().showRatings).toBe(false);
+    expect(screen.getByText("Challenge runs show scores and ratings.")).toBeTruthy();
     expect(
-      screen.getByText("Challenge runs show ratings. Turn them off in Settings to play blind."),
-    ).toBeTruthy();
-    expect(screen.queryByText("Challenge runs keep ratings hidden.")).toBeNull();
+      screen.queryByText("Challenge runs hide scores and ratings. Position fit hints stay."),
+    ).toBeNull();
   });
 
   it("turns back off and restores the blind sentence", () => {
@@ -46,7 +51,9 @@ describe("the Show ratings (challenges) switch (catches a challenge setting that
       fireEvent.click(challengeSwitch());
     });
     expect(saved().showChallengeRatings).toBe(false);
-    expect(screen.getByText("Challenge runs keep ratings hidden.")).toBeTruthy();
+    expect(
+      screen.getByText("Challenge runs hide scores and ratings. Position fit hints stay."),
+    ).toBeTruthy();
   });
 
   it("leaves the builder switch alone in both directions", () => {

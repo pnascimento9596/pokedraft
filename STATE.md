@@ -26,6 +26,66 @@ Measurements and decisions are in `docs/decisions/one-tap-play.md`. Browser proo
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Copy pass and dash lint
+
+Branch `fix/copy-pass` off `origin/main` at `34af10e`, with `origin/main` merged at `124afab` (PR #113) in fix round 1. Wave 4 row 4e, copy and labels (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Position fit reads "★ Best", "OK" and "Poor" everywhere (pitch cards, slot names, the picker swap line and the touchline bench), from one `SUITABILITY_LABEL` table. The star is hidden from screen readers, so a slot reads "Empty LW slot (Best fit)".
+- The draft drawer says "Hide players", "Show players" and "Show roll" (it said "Minimize draft picker" and "View spinner"). Empty slots say "Tap to draft".
+- Every score uses a hyphen with no spaces: "1-0" on the scoreboard, "Pens 4-3", "Full time. Win, 3-1." and the exhibition result.
+- A shared run (`/r/[token]`) names the side "This squad" in the record, standings, match list, highlights, saves and match events ("Kick off: this squad plays Attack", "manager's call"). Its match replay says "This squad" too: the scoreboard, the full screen score bug, the momentum meter, the ticker and the tactic banner ("This squad switches to Defend"). The live run still says "You", "Your XI" and "Your side". The share payload carries no nickname, so none is shown.
+- The match list meter labels sit in a grid, so "THIS SQUAD" no longer wraps. For a "You" label the geometry is unchanged (label 51.0 px left and 33.8 px wide, track 92.8 px left and 215.5 px wide, before and after).
+- Settings and Play card hints say "ratings" for the hidden numbers, the road tooltip says "Rating", the history page reads its 50 from `HISTORY_LIMIT`.
+- New `pnpm check:dashes` (`scripts/audit/dash-lint.mjs`) fails on an em or en dash, or its escape or HTML entity, in any string, template or JSX text under `src` and in CSS `content`. It skips tests and `src/engine/versions`. CI runs it after `check:theme-colors`.
+
+RED commits: `84aec88` (31 of 166 failed in 19 files, plus `dash-lint.test.ts` failed to load), `1449ed8` (2 of 41 failed in 2 files, shared match events) and `8d5558d` (2 of 7 failed in 2 files, the shared match player). GREEN `18cf3e2`, `028b6f3` and `3af2e35`.
+
+Gates at `3af2e35` (fix round 1, after the merge of `124afab`; the commits after it change only e2e specs, docs and one proof PNG): `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `pnpm test` passed 1,692 in 198 files. All eight `check:*` scripts exited 0, and Prettier passed on all 79 files changed against `origin/main`. Playwright full suite (`CI=1`, headless, fresh build at `3af2e35`): 932 passed, 64 skipped, 1 failed, `fullscreen-score-bug.spec.ts:101` (chromium) expecting the old "Your XI" in a shared run's score bug. `fcc6eb9` updates that literal in the spec only, and `copy-pass.spec.ts` with `fullscreen-score-bug.spec.ts` then passed 11 of 11 on the same build. The full suite was not re-run after `fcc6eb9`.
+
+Round 0 gates follow.
+
+Gates at `287150e`: `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `pnpm test` passed 1,678 in 195 files. All eight `check:*` scripts exited 0, as did `check-retained-replays.mts` (10 golden replays) and `measure-retained-json.mjs`. Playwright full suite (`CI=1`, headless, fresh build): 921 passed, 64 skipped, 2 failed, both `manager-mode.spec.ts:54` (chromium and pixel-7) expecting the old shared line "Kick off: you play Attack". `429b448` updates that literal in the spec only, and `manager-mode.spec.ts` then passed 14 of 14 on the same build. `e2e/copy-pass.spec.ts` passed 7 of 7. At `429b448`: lint and typecheck exited 0, `pnpm test` passed 1,678 in 195 files, `check:dashes` exited 0, Prettier passed.
+
+NOT RUN: review, hosted CI and the live check (coordinator); the full Playwright suite after `fcc6eb9`; `check-retained-replays.mts` and `measure-retained-json.mjs` in fix round 1; `pnpm data:pokedex` and `pnpm data:scouting` (no data change); the physical phone check and a screen reader pass (owner actions).
+
+Decision log: `docs/decisions/copy-pass.md`. Proof: `docs/reports/copy-pass/`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #114 (row 4e, copy pass and dash lint) merged as squash `d48aa0f`, reviewed head `1d05a87` after one fix round (merge of #113 and the shared replay's "This squad" copy), GLM 5.3 Flash APPROVE in round 1 with canary `copy-pass-e9ce9264afe43902f5afee88da784f34` echoed. At `1d05a87` lint, typecheck, build and all eight `check:*` scripts (with the new `check:dashes`) exited 0, 1,692 unit tests passed in 198 files and Prettier passed on 71 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `d48aa0f` with `db.status` ok, and `copy-pass`, `manager-mode` and `fullscreen-score-bug` against production (chromium) passed 18 of 18. NOT RUN: physical phone check (owner action), a real screen reader. Carryover: a shared ticker goal line reads "Goal for This squad!" with a capital T.
+
+## Matchday carryovers
+
+Branch `fix/matchday-carryovers` off `origin/main` at `34af10e`. Wave 4 row 4-0, the Wave 3 matchday carryovers (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- A goal on the minute of a half-time or injury stop now plays live, and so does its instant replay when replays are on. The stop opens after that. Before, the stop froze the clock first, so the goal was never seen live. With replays on it showed only as a replay after the answer.
+- The key duel cut-in shows its sprite again. Remoraid fills its 36px circle on phones and its 56px circle at 1280, where before an 80px picture box showed its empty middle.
+- The ball carrier's nameplate stays inside the visible pitch at the left edge. At 360 and 320 it was cut off by 23.4 and 24.8 px.
+- In full screen the exit button is a 44px icon in the screen's corner, named "Exit full screen". It no longer covers the field at 1280x720 or 844x390.
+- After Kick off the keyboard lands on Pause, so Space pauses straight away.
+- The touchline energy rows are real buttons with a pressed state, and its headings follow the page outline. The axe scan now covers the touchline too.
+
+RED commit: `d83bc1a`. Unit: 2 of 2 failed. E2E: 8 of 8 failed (6 carryover instances, plus the managed a11y scan in dark and light). The follow camera guard (`ee397e0`, `4% x zoom`) is a regression guard with no RED. It passes at the base: worst 3.36% at 1x, 6.77% at 2x. GREEN `5399d1e`.
+
+Gates at `5399d1e` (the docs commit that follows changes only docs and proof PNGs):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 16 changed files.
+- Unit tests: 1,669 passed in 196 files.
+- Playwright (`CI=1`, headless, build at `5399d1e`):
+  - chromium ran 16 related specs, 88 passed: `matchday-carryovers` 10, `a11y` 22, `keyboard` 6, `touchline-sheet` 8 and `fullscreen-score-bug` 4, among others.
+  - The `iphone-se`, `iphone-14` and `pixel-7` projects ran `mobile-targets`, `mobile-acceptance` and `manager-mode`: 377 passed, 56 skipped by their own project gates.
+- NOT RUN:
+  - the full Playwright suite and hosted CI;
+  - the widened guard instances against a pre-fix build;
+  - review;
+  - a real screen reader and a physical phone check (owner actions).
+
+The 70svh cap and the 20 callouts in one 120' match are closed with evidence, with no change. Measurements and decisions are in `docs/decisions/matchday-carryovers.md`. Browser proof: `docs/reports/matchday-carryovers/`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #113 (row 4-0, matchday carryovers) merged as squash `124afab`, reviewed head `54619a0`, GLM 5.3 Flash APPROVE in round 1 with canary `matchday-carryovers-ae496dc5b9f327576ee8e1457cb76944` echoed. At `54619a0` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,669 unit tests passed in 196 files and Prettier passed on 18 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `124afab` with `db.status` ok, and `matchday-carryovers`, `keyboard`, `touchline-sheet` and `fullscreen-score-bug` against production (chromium) passed 28 of 28, and `a11y` 22 of 22. NOT RUN: physical phone check (owner action), a real screen reader.
+
 ## Wave 3 summary
 
 Branch `docs/wave3-summary` off `88f6f72`. Green: docs and evidence only, no change under `src/` or `e2e/`.
@@ -37,6 +97,8 @@ Branch `docs/wave3-summary` off `88f6f72`. Green: docs and evidence only, no cha
 Gates: Prettier passed on the touched Markdown. CI runs the rest. NOT RUN: unit tests and e2e locally (no code changed), the physical phone check (owner action).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #112 (Wave 3 summary, Green) merged as squash `34af10e`, reviewed head `bdd5e26`, GLM 5.3 Flash APPROVE in round 1 with canary `wave3-summary-98dc69f012d979759aff800c602c1770` echoed. At `bdd5e26` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,659 unit tests passed in 194 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `34af10e` with `db.status` ok. No runtime change.
 
 ## Accessible stops and controls
 

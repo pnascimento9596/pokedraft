@@ -105,9 +105,7 @@ test("the home Settings switch turns ratings on for the next challenge, and off 
   await expect(toggle).toHaveAttribute("aria-checked", "false");
   await toggle.click();
   await expect(toggle).toHaveAttribute("aria-checked", "true");
-  await expect(
-    page.getByText("Challenge runs show ratings. Turn them off in Settings to play blind."),
-  ).toBeVisible();
+  await expect(page.getByText("Challenge runs show scores and ratings.")).toBeVisible();
 
   await page.getByRole("button", { name: "Play 8-0 Challenge" }).click();
   await startOrResume(page);

@@ -85,8 +85,9 @@ export function MatchdayFlow({
   const [phase, setPhase] = useState<"pre" | "play">("pre");
   const locked = useAudioLocked();
 
+  // Kick off hands the focus to the match player's play toggle instead.
   useEffect(() => {
-    focusHeading();
+    if (phase === "pre") focusHeading();
   }, [index, phase]);
 
   useEffect(() => {
@@ -165,13 +166,14 @@ export function MatchdayFlow({
           manager={managerMode ? { actions, decide: onDecide } : undefined}
           ratings={showRatings}
           autoStart
+          takeFocus
           footer={
             <div className={s.fulltime} data-testid="fulltime">
               <p className={s.ftLine}>
-                Full time. {resultWord(match)}, {finalScore(match).user} - {finalScore(match).opp}
+                Full time. {resultWord(match)}, {finalScore(match).user}-{finalScore(match).opp}
                 {match.extraTime !== null ? " after extra time" : ""}
                 {match.shootout !== null
-                  ? `, ${match.shootout.user} - ${match.shootout.opp} on penalties`
+                  ? `, ${match.shootout.user}-${match.shootout.opp} on penalties`
                   : ""}
                 .
               </p>

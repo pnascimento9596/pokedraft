@@ -134,9 +134,9 @@ export function record(w: number, d: number, l: number): string {
   return `${w}-${d}-${l}`;
 }
 
-/** The qualitative position fit glyph, shown whether ratings are on or off. */
+/** The qualitative position fit, shown whether ratings are on or off. Best also gets a ★ glyph. */
 export const SUITABILITY_LABEL: Readonly<Record<"recommended" | "ok" | "bad", string>> = {
-  recommended: "★ Best",
-  ok: "OK Fit",
-  bad: "Poor Fit",
+  recommended: "Best",
+  ok: "OK",
+  bad: "Poor",
 };

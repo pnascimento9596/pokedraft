@@ -21,6 +21,19 @@ const rows = () =>
     .map((r) => [...r.querySelectorAll("th, td")].map((c) => c.textContent));
 
 describe("MatchReplay group standings (decision 13: MatchdayLive's table folds into the replay)", () => {
+  it("names the shared run's side This squad in the table (catches Your team on a friend's link)", () => {
+    const { draft, cup } = replay(LIVE);
+    render(
+      <MatchReplay cup={cup} draft={draft} matchIndex={0} variant="shared" onClose={() => {}} />,
+    );
+    expect(rows().map(([team]) => team)).toEqual([
+      "Goldenrod United",
+      "Santalune Town",
+      "Veilstone United",
+      "This squad",
+    ]);
+  });
+
   it("shows the group at kickoff of G1 with nothing played, then the table after the 1-0 at full time", () => {
     const { draft, cup } = replay(LIVE);
     render(<MatchReplay cup={cup} draft={draft} matchIndex={0} onClose={() => {}} />);
@@ -44,5 +57,36 @@ describe("MatchReplay group standings (decision 13: MatchdayLive's table folds i
     render(<MatchReplay cup={cup} draft={draft} matchIndex={4} onClose={() => {}} />);
     expect(screen.getByTestId("match-replay-title").textContent).toContain("Coumarine United");
     expect(screen.queryByTestId("replay-standings")).toBeNull();
+  });
+});
+
+describe("MatchReplay on a shared run (catches the shared match player still saying Your XI and Your assistant)", () => {
+  const scoreboardTeam = () =>
+    screen.getByTestId("matchday-scoreboard").querySelector("span")?.textContent;
+  const momentum = () =>
+    screen.getByRole("meter", { name: "Match momentum" }).getAttribute("aria-valuetext");
+
+  it("names the shared side This squad on the scoreboard, the momentum meter and the ticker", () => {
+    const { draft, cup } = replay(LIVE);
+    render(
+      <MatchReplay cup={cup} draft={draft} matchIndex={0} variant="shared" onClose={() => {}} />,
+    );
+    expect(scoreboardTeam()).toBe("This squad");
+    expect(momentum()).toBe("This squad 50%");
+    fireEvent.click(screen.getByTestId("skip-ft"));
+    const ticker = screen.getByTestId("ticker").textContent ?? "";
+    expect(ticker).toContain("75' This squad's assistant switches to Defend");
+    expect(ticker).not.toContain("Your");
+  });
+
+  it("keeps Your XI, Your side and Your assistant on the live run", () => {
+    const { draft, cup } = replay(LIVE);
+    render(<MatchReplay cup={cup} draft={draft} matchIndex={0} onClose={() => {}} />);
+    expect(scoreboardTeam()).toBe("Your XI");
+    expect(momentum()).toBe("Your side 50%");
+    fireEvent.click(screen.getByTestId("skip-ft"));
+    expect(screen.getByTestId("ticker").textContent).toContain(
+      "75' Your assistant switches to Defend",
+    );
   });
 });

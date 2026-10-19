@@ -53,7 +53,7 @@ test("each shootout kick runs up, flies and gets a keeper reaction, with a sudde
   await page.clock.runFor(KICK_MS * 0.3);
   await expect(keeper).toHaveAttribute("data-pose", "dive");
   await expect(ball).toHaveAttribute("data-effect", "impact");
-  await expect(replay.getByTestId("matchday-pens")).toHaveText("Pens 1 - 0");
+  await expect(replay.getByTestId("matchday-pens")).toHaveText("Pens 1-0");
   await page.screenshot({ path: `${SHOT}/390-kick1-goal-reaction.png` });
 
   // Kick 2: the opponent's, saved by the user's keeper.

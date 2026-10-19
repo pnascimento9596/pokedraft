@@ -144,13 +144,13 @@ describe("MatchPlayer score (catches a scoreboard, ticker and goal horn that cal
 
     // 81 frames is 1296 ms of the 2600 ms goal staging: progress 0.498, the ball still in flight.
     await frames(81);
-    expect(score()).toBe("0 - 0");
+    expect(score()).toBe("0-0");
     expect(ticker()).not.toContain("Goal for");
     expect(sound.calls.filter((c) => c === "horn")).toEqual([]);
 
     // 17 more frames is 1568 ms: progress 0.603, the ball has crossed the line.
     await frames(17);
-    expect(score()).toBe("1 - 0");
+    expect(score()).toBe("1-0");
     expect(ticker()).toContain("12' Goal for Your XI! Charizard");
     expect(sound.calls.filter((c) => c === "horn")).toEqual(["horn"]);
   });
@@ -159,20 +159,20 @@ describe("MatchPlayer score (catches a scoreboard, ticker and goal horn that cal
     reduced = true;
     await mount(ONE_GOAL, "live");
     await toGoalMinute(12);
-    expect(score()).toBe("1 - 0");
+    expect(score()).toBe("1-0");
     expect(sound.calls.filter((c) => c === "horn")).toEqual(["horn"]);
   });
 
   it("counts the goal at once in Quick view", async () => {
     await mount(ONE_GOAL, "quick");
     await toGoalMinute(12);
-    expect(score()).toBe("1 - 0");
+    expect(score()).toBe("1-0");
     expect(sound.calls.filter((c) => c === "horn")).toEqual(["horn"]);
   });
 
   it("puts the score in a status region", async () => {
     await mount(ONE_GOAL, "live");
-    expect(screen.getByRole("status").textContent).toBe("0 - 0");
+    expect(screen.getByRole("status").textContent).toBe("0-0");
   });
 });
 
@@ -185,14 +185,14 @@ describe("MatchPlayer pause (catches a goal that plays out and is counted while 
     await frames(81);
     toggle();
     await frames(313);
-    expect(score()).toBe("0 - 0");
+    expect(score()).toBe("0-0");
     expect(ticker()).not.toContain("Goal for");
     expect(sound.calls.filter((c) => c === "horn")).toEqual([]);
     toggle();
     await frames(16);
-    expect(score()).toBe("0 - 0");
+    expect(score()).toBe("0-0");
     await frames(1);
-    expect(score()).toBe("1 - 0");
+    expect(score()).toBe("1-0");
     expect(sound.calls.filter((c) => c === "horn")).toEqual(["horn"]);
   });
 
@@ -200,13 +200,13 @@ describe("MatchPlayer pause (catches a goal that plays out and is counted while 
     await mount(ONE_GOAL, "live");
     await toGoalMinute(12);
     await frames(200);
-    expect(score()).toBe("1 - 0");
+    expect(score()).toBe("1-0");
     toggle();
     await frames(200);
     toggle();
-    expect(score()).toBe("1 - 0");
+    expect(score()).toBe("1-0");
     await frames(1);
-    expect(score()).toBe("1 - 0");
+    expect(score()).toBe("1-0");
   });
 });
 

@@ -8,6 +8,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
   type CSSProperties,
   type ReactNode,
   type RefObject,
@@ -16,9 +17,10 @@ import { FORMATIONS } from "@/engine";
 import type { FullLineup, MatchResult, Side, SpeciesId } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeIcon } from "@/components/TypeIcon";
+import { SIDE_COPY, type ResultsVariant } from "@/components/results/format";
 import { TYPE_PALETTE } from "@/design/stadium";
 import { typeLabel } from "@/ui/labels";
-import { badgeCorner, type Size } from "@/ui/matchday/badge";
+import { badgeCorner, keepInside, type Box, type Size } from "@/ui/matchday/badge";
 import {
   cameraAt,
   cameraTransform,
@@ -26,6 +28,7 @@ import {
   projectPoint,
   seeks,
   stepCamera,
+  visibleRect,
   type Camera,
   type CameraMode,
 } from "@/ui/matchday/camera";
@@ -153,9 +156,21 @@ interface PitchNodes {
 
 const UNMEASURED: Size = { w: 0, h: 0 };
 
+/** The ball carrier's nameplate, measured in its player's box when it renders. */
+interface Plate {
+  readonly el: HTMLElement;
+  readonly player: HTMLElement;
+  /** The nameplate's box from its player's top left corner, untransformed. */
+  readonly box: Box;
+  readonly playerSize: Size;
+}
+
+const WHOLE_PITCH = { x: 0, y: 0, w: 100, h: 100 };
+
 /**
  * Moves every staged thing on the pitch to where `stage` puts it. The play badge sits outside the
  * zoomed pitch at its own size, so its player's spot goes through the follow camera `cam` first.
+ * The carrier's nameplate moves the least that keeps it on the part of the pitch in view.
  */
 function paint(
   nodes: PitchNodes,
@@ -163,6 +178,7 @@ function paint(
   badge: Size,
   pitch: Size,
   cam: Camera | null,
+  plate: Plate | null,
 ): void {
   for (const [el, { side, slot, leaving }] of nodes.players) {
     const p = leaving
@@ -189,6 +205,27 @@ function paint(
     const corner = badgeCorner(cam === null ? point : projectPoint(cam, point), badge, pitch);
     put(nodes.playEffect.current, "style", `left: ${fixed(point.x)}%; top: ${fixed(point.y)}%`);
     put(nodes.playBadge.current, "style", `left: ${fixed(corner.x)}%; top: ${fixed(corner.y)}%`);
+  }
+  const holder = plate === null ? undefined : nodes.players.get(plate.player);
+  const carrier = holder?.leaving === false ? stage.players[holder.side][holder.slot] : null;
+  if (plate !== null && carrier && pitch.w > 0) {
+    const { point } = carrier;
+    const box = {
+      ...plate.box,
+      x: (point.x / 100) * pitch.w - plate.playerSize.w / 2 + plate.box.x,
+      y: (point.y / 100) * pitch.h - plate.playerSize.h * 0.7 + plate.box.y,
+    };
+    const view = cam === null ? WHOLE_PITCH : visibleRect(cam);
+    const left = Math.max(0, view.x);
+    const top = Math.max(0, view.y);
+    const bounds = {
+      x: (left / 100) * pitch.w,
+      y: (top / 100) * pitch.h,
+      w: ((Math.min(100, view.x + view.w) - left) / 100) * pitch.w,
+      h: ((Math.min(100, view.y + view.h) - top) / 100) * pitch.h,
+    };
+    const move = keepInside(box, bounds);
+    put(plate.el, "style", `translate: ${fixed(move.x)}px ${fixed(move.y)}px`);
   }
 }
 
@@ -238,6 +275,32 @@ const Sprite = memo(function Sprite({ dexId }: { readonly dexId: SpeciesId }) {
   return <PlayerImage dexId={dexId} size={80} alt="" eager />;
 });
 
+// The smallest the cut-in's circle gets (`.cutInSprite`), for a box that has no layout yet.
+const CUT_IN_SPRITE_MIN = 36;
+
+/** The cut-in's sprite drawn at its circle's own size, which a container query sets. */
+function CutInSprite({ species }: { readonly species: SpeciesId | null }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [size, setSize] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (el === null) return;
+    const measure = () => setSize(Math.round(el.clientWidth) || CUT_IN_SPRITE_MIN);
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <span ref={ref} className={s.cutInSprite}>
+      {species !== null && size !== null ? (
+        <PlayerImage dexId={species} size={size} alt="" eager />
+      ) : null}
+    </span>
+  );
+}
+
 export function Broadcast({
   match,
   timeline,
@@ -254,6 +317,7 @@ export function Broadcast({
   camera = "full",
   onBall,
   scoreBug,
+  variant = "live",
 }: {
   readonly match: PlayedMatch;
   /** The one timeline the match player clocks, sounds and stages from. */
@@ -278,6 +342,7 @@ export function Broadcast({
   readonly onBall?: (x: number) => void;
   /** Drawn over the camera's window, outside the zoomed pitch (the full-screen score bug). */
   readonly scoreBug?: ReactNode;
+  readonly variant?: ResultsVariant;
 }) {
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
@@ -318,6 +383,7 @@ export function Broadcast({
   const trailRef = useRef<SVGSVGElement>(null);
   const playEffectRef = useRef<HTMLDivElement>(null);
   const playBadgeRef = useRef<HTMLDivElement>(null);
+  const plateRef = useRef<HTMLSpanElement>(null);
   const track = useCallback((el: HTMLDivElement) => {
     const map = players.current;
     map.set(el, {
@@ -346,16 +412,32 @@ export function Broadcast({
     const shotsOf = (f: LiveFrame) =>
       kicksShown(timeline.kicks.length, f.kicks, f.kickProgress, motion);
     const rendered = screenKey(active, stage, cutInOf(active, stage, clock), kicks, shotsOf(props));
-    // Measured once per render, and only while a badge shows, so frames between renders read no
-    // layout.
+    // Measured once per render, and only while a badge or a nameplate shows, so frames between
+    // renders read no layout.
     const badgeEl = playBadgeRef.current;
+    const plateEl = plateRef.current;
     const pitchEl = pitchRef.current;
     const badge =
       badgeEl === null ? UNMEASURED : { w: badgeEl.offsetWidth, h: badgeEl.offsetHeight };
     const pitch =
-      badgeEl === null || pitchEl === null
+      (badgeEl === null && plateEl === null) || pitchEl === null
         ? UNMEASURED
         : { w: pitchEl.clientWidth, h: pitchEl.clientHeight };
+    const playerEl = plateEl?.parentElement ?? null;
+    const plate: Plate | null =
+      plateEl === null || playerEl === null
+        ? null
+        : {
+            el: plateEl,
+            player: playerEl,
+            box: {
+              x: plateEl.offsetLeft,
+              y: plateEl.offsetTop,
+              w: plateEl.offsetWidth,
+              h: plateEl.offsetHeight,
+            },
+            playerSize: { w: playerEl.offsetWidth, h: playerEl.offsetHeight },
+          };
     // The camera springs after the ball frame by frame; with motion off it cuts. A new match, a
     // seek or a switch from Full starts it settled on the ball.
     const aim = (f: LiveFrame, latest: ReturnType<typeof frameAt>): Camera | null => {
@@ -378,7 +460,7 @@ export function Broadcast({
     const draw = () => {
       const f = feed?.latest() ?? props;
       const latest = frameAt(f);
-      paint(nodes, latest.stage, badge, pitch, aim(f, latest));
+      paint(nodes, latest.stage, badge, pitch, aim(f, latest), plate);
       const cut = cutInOf(latest.active, latest.stage, f.clock);
       return screenKey(latest.active, latest.stage, cut, f.kicks, shotsOf(f)) !== rendered;
     };
@@ -458,7 +540,7 @@ export function Broadcast({
           />
         ) : null}
         {p.hasBall ? (
-          <span className={s.carrierBadge} data-testid="ball-carrier">
+          <span ref={plateRef} className={s.carrierBadge} data-testid="ball-carrier">
             {nameplate(p.name)}
           </span>
         ) : null}
@@ -594,11 +676,7 @@ export function Broadcast({
             data-side={cutIn.side}
             data-effect={cutIn.callout.effect}
           >
-            <span className={s.cutInSprite}>
-              {cutIn.species !== null ? (
-                <PlayerImage dexId={cutIn.species} size={80} alt="" eager />
-              ) : null}
-            </span>
+            <CutInSprite species={cutIn.species} />
             <span className={s.cutInText}>
               <span className={s.cutInKind}>{CUT_IN_LABEL[cutIn.kind]}</span>
               <span
@@ -662,7 +740,9 @@ export function Broadcast({
         ) : null}
         {active?.beat.kind === "tactic" ? (
           <p className={s.banner} data-testid="tactic-banner">
-            {active.beat.side === "user" ? "Your side" : match.opponent.name} switch to{" "}
+            {active.beat.side === "user"
+              ? SIDE_COPY[variant].switchesTo
+              : `${match.opponent.name} switch to`}{" "}
             {TACTIC_LABEL[active.beat.tactic]}
           </p>
         ) : null}

@@ -67,13 +67,14 @@ export function clubShort(name: string): string {
   return name.split(" ")[0] || name;
 }
 
-export function incidentText(c: IncidentCopy, teams: CardTeams): string {
+/** `shared` is a run opened from someone else's link: the user's side is "this squad", not "you". */
+export function incidentText(c: IncidentCopy, teams: CardTeams, shared = false): string {
   const at = `${c.minute}'`;
   switch (c.kind) {
     case "injury":
       return `${at} ${c.player.name} is injured`;
     case "sub":
-      return `${at} ${c.in.name} on for ${c.out.name} (${REASON[c.reason]}, ${c.by === "manager" ? "your call" : "assistant"})`;
+      return `${at} ${c.in.name} on for ${c.out.name} (${REASON[c.reason]}, ${c.by === "manager" ? (shared ? "manager's call" : "your call") : "assistant"})`;
     case "card": {
       const card =
         c.color === "yellow"
@@ -91,6 +92,12 @@ export function incidentText(c: IncidentCopy, teams: CardTeams): string {
           ? `Kick off: ${teams.opp} play ${label}`
           : `${at} ${teams.opp} switch to ${label}`;
       }
+      if (shared) {
+        if (c.minute === 0) return `Kick off: this squad plays ${label}`;
+        return c.by === "manager"
+          ? `${at} This squad switches to ${label}`
+          : `${at} This squad's assistant switches to ${label}`;
+      }
       if (c.minute === 0) return `Kick off: you play ${label}`;
       return c.by === "manager"
         ? `${at} You switch to ${label}`
@@ -104,7 +111,7 @@ function team(teams: Teams, side: Side): string {
 }
 
 /** The ticker line for one broadcast beat. */
-export function beatLine(b: Beat, teams: Teams): string {
+export function beatLine(b: Beat, teams: Teams, shared = false): string {
   const at = `${b.minute}'`;
   switch (b.kind) {
     case "whistle":
@@ -117,7 +124,7 @@ export function beatLine(b: Beat, teams: Teams): string {
     case "save":
       return `${at} ${b.keeper.name} saves from ${b.attacker.name}`;
     default:
-      return incidentText(b, teams);
+      return incidentText(b, teams, shared);
   }
 }
 
