@@ -205,5 +205,37 @@ It stays inside the viewport at every width.
 ## Carryovers
 
 - 4b: collapse the settings below 1024 px. The `#settings` reveal already opens a collapsed panel.
-- PR #114 rewrites the ratings hints in `SidePanel.tsx` and `SidePanel.test.tsx`. This row leaves
-  those strings alone; the coordinator merges.
+- PR #114 rewrote the ratings hints in `SidePanel.tsx` and `SidePanel.test.tsx`. Merged in fix
+  round 1 (below); closed.
+
+## Fix round 1: merge of origin/main
+
+`git merge origin/main` at `d48aa0f` (PR #113 `124afab` and PR #114 `d48aa0f`), merge commit
+`1b0e673`. No rebase.
+
+- Only `STATE.md` conflicted, in one hunk. It was resolved with the coordinator's
+  `resolve-state.py` and the #114 merged paragraph: this row's section on top, then "Copy pass and
+  dash lint" ending with the #114 paragraph, then "Matchday carryovers" ending with its #113
+  paragraph. One copy of each.
+- `SidePanel.tsx`, `SidePanel.test.tsx`, `DraftBoard.tsx` and `challenge-ratings.spec.ts` merged
+  without conflict. The Play card keeps 4e's hint ("Challenge runs hide scores and ratings.
+  Position fit hints stay.") above this row's Matchday selector. Settings keeps 4e's "Ratings on"
+  and the long blind-mode hint. The draft drawer keeps 4e's "Hide players", "Show players" and
+  "Show roll", and the finished draft button keeps this row's Kick off or See results.
+- No main-side file referenced the retired dialog. `grep -rnE "Yes, play|Settings confirmed|ConfirmPlay|confirmPlay|play-confirm"` over
+  `src` and `e2e` finds only the guard's own describe name.
+- No code change was needed after the merge, so no new RED. `pnpm check:dashes` exits 0 on this
+  row's copy.
+- The three Play card proof PNGs were re-shot by `one-tap-play.spec.ts` on the merged build, so
+  they show 4e's hint. The start card PNGs did not change. Every other PNG the suite rewrote was
+  reverted.
+
+Gates at `1b0e673`: lint, typecheck and build exited 0. All eight `check:*` scripts exited 0.
+`pnpm test` passed 1,707 in 199 files. Prettier passed on the 31 files changed against
+`origin/main`. Playwright full suite (`CI=1`, headless, fresh build at `1b0e673`): 918 passed, 63
+skipped, 0 failed, 0 retries. `one-tap-play` passed 18 of 18.
+
+NOT RUN in fix round 1: the measurements table was not re-taken. 4e's longer Play card hint wraps
+to two lines at 390 in the re-shot proof, so the Play card and Formation tops in the table may now
+be off by about one line. Also NOT RUN: review, hosted CI, a physical phone check and a screen
+reader pass.

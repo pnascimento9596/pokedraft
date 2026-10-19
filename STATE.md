@@ -5,7 +5,7 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## One-tap play
 
-Branch `feat/one-tap-play` off `origin/main` at `34af10e`. Wave 4 row 4a, home and start card (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+Branch `feat/one-tap-play` off `origin/main` at `34af10e`, with `origin/main` merged at `d48aa0f` (PRs #113 and #114) in fix round 1. Wave 4 row 4a, home and start card (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
 
 - Play 8-0 Challenge and Play 151 Challenge go straight to the challenge. The "Settings confirmed?" dialog is gone. Play still starts a fresh run.
 - The Matchday choice (Manager mode and Match view) is in the home Play card, so every player sees it before a cup. It left Settings and records. The builder keeps its own copy beside "Play a friendly cup", bound to the same setting.
@@ -15,11 +15,12 @@ Branch `feat/one-tap-play` off `origin/main` at `34af10e`. Wave 4 row 4a, home a
 
 RED commits: `616ee23` (23 of 27 failed in 3 files) and `8dd0a64` (1 of 13 failed). The first RED's e2e spec failed 9 of 11 against a build of the pre-fix sources.
 
-Gates at `565e78e` (code identical at the docs commit that adds this section):
+Gates at `1b0e673` (fix round 1, the merge of `d48aa0f`; the docs commit that follows changes only docs and the three Play card proof PNGs):
 
-- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the touched files.
-- Unit tests: 1,674 passed in 195 files.
-- Playwright (`CI=1`, fresh build at `565e78e`), full suite: 901 passed, 63 skipped by their own project gates, 0 failed, 0 flaky. `one-tap-play` passed 18 of 18 across `chromium` and `iphone-14`.
+- Lint, typecheck and build exited 0. All eight `check:*` scripts exited 0, with the new `check:dashes`. Prettier passed on the 31 files changed against `origin/main`.
+- Unit tests: 1,707 passed in 199 files.
+- Playwright (`CI=1`, headless, fresh build at `1b0e673`), full suite: 918 passed, 63 skipped by their own project gates, 0 failed, 0 flaky. `one-tap-play` passed 18 of 18 across `chromium` and `iphone-14`.
+- Round 0, at `565e78e`: 1,674 unit tests in 195 files, seven `check:*` scripts, full Playwright 901 passed, 63 skipped, 0 failed.
 - NOT RUN: review, hosted CI, a physical phone check and a real screen reader pass (owner actions).
 
 Measurements and decisions are in `docs/decisions/one-tap-play.md`. Browser proof: `docs/reports/one-tap-play/` (Play card and start card at 390, 360 and 320).
