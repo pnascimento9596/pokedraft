@@ -27,6 +27,7 @@ import {
   emptyLineup,
   filledCount,
   refKey,
+  sameRef,
   slotLabel,
   valueAt,
 } from "@/ui/lineup";
@@ -81,6 +82,8 @@ interface Cascade {
 
 const SQUAD = 16;
 
+const SWAP_HINT = "Tap another player to swap, or tap again to change";
+
 export function Builder({
   desk,
   ensureLive,
@@ -92,6 +95,8 @@ export function Builder({
 }: BuilderProps) {
   const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
   const [picking, setPicking] = useState<SlotRef | null>(null);
+  // The player picked for a tap swap: a tap on a placed player, then a tap on another slot.
+  const [swapFrom, setSwapFrom] = useState<SlotRef | null>(null);
   const [cascade, setCascade] = useState<Cascade | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [status, setStatus] = useState("");
@@ -149,6 +154,42 @@ export function Builder({
   const synergy = (teamRating ?? partialRating)?.synergy ?? null;
   const chemistry = filled > 0 && synergy !== null ? Math.round(synergy * 100) : null;
   const shown = cascade === null ? lineup : cascadeFrame(cascade.target, cascade.pool, elapsed);
+  const picked =
+    swapFrom !== null && !animating && valueAt(lineup, swapFrom) !== null ? swapFrom : null;
+
+  useEffect(() => {
+    if (picked === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || document.querySelector("dialog[open]") !== null) return;
+      setSwapFrom(null);
+      announce("Swap cancelled.");
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [picked]);
+
+  const tapSlot = (ref: SlotRef) =>
+    withLive(({ engine, draft }) => {
+      setSwapFrom(null);
+      if (picked !== null && sameRef(picked, ref)) {
+        openPicker(ref);
+        return;
+      }
+      if (picked !== null) {
+        onChange(engine.applyAction(draft, { type: "swap", a: picked, b: ref }));
+        announce(engine.swapMessage(draft.lineup, picked, ref));
+        return;
+      }
+      const id = valueAt(draft.lineup, ref);
+      if (id === null) {
+        openPicker(ref);
+        return;
+      }
+      setSwapFrom(ref);
+      announce(
+        `${slotLabel(draft.lineup, ref)} ${engine.speciesById(id).name} selected. ${SWAP_HINT}.`,
+      );
+    });
 
   const preload = () => {
     if (desk.kind === "idle") ensureLive().catch(() => {});
@@ -275,11 +316,13 @@ export function Builder({
             lineup={shown}
             speciesOf={desk.kind === "live" ? desk.engine.speciesById : noSpecies}
             label={`${lineup.formation} lineup`}
-            onSlotTap={animating ? () => {} : (ref) => withLive(() => openPicker(ref))}
+            onSlotTap={animating ? () => {} : tapSlot}
+            selected={desk.kind === "live" ? picked : undefined}
             onSwap={
               animating || desk.kind !== "live"
                 ? undefined
                 : (a, b) => {
+                    setSwapFrom(null);
                     onChange(desk.engine.applyAction(desk.draft, { type: "swap", a, b }));
                     announce(desk.engine.swapMessage(lineup, a, b));
                   }
@@ -290,6 +333,11 @@ export function Builder({
                 : undefined
             }
           />
+          {picked !== null ? (
+            <p className={s.swapHint} data-testid="builder-swap-hint">
+              {SWAP_HINT}
+            </p>
+          ) : null}
           {/* Below an 800 px pitch each pill is the number alone, so this line says what it compares
             against. The CSS hides it where every pill carries its own "vs other <role>s" label. Its
             line is reserved even with ratings off: the saved setting loads after hydration, and
@@ -387,6 +435,7 @@ export function Builder({
         <desk.engine.ScoutingDossier
           speciesId={inspectId}
           showRatings={showRatings}
+          lineup={lineup}
           onClose={() => setInspectId(null)}
         />
       ) : null}

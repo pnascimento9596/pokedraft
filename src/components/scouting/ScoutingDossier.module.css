@@ -382,3 +382,76 @@
 .miniRole[data-tier="worst"] {
   border-color: var(--risk-mark);
 }
+
+.offerNav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.offerNav :global(.btn) {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.offerCount {
+  min-width: 4.5em;
+  text-align: center;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+
+.radarOffer {
+  fill: none;
+  stroke: var(--offer-line, var(--viz-1));
+  stroke-width: 2;
+}
+
+.radarOffer[data-current] {
+  stroke-width: 3.5;
+}
+
+.offerLegend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-soft);
+}
+
+.offerLegend line {
+  stroke: var(--offer-line, var(--viz-1));
+  stroke-width: 2.5;
+}
+
+.radarOffer[data-index="0"],
+.offerLegend[data-index="0"] {
+  --offer-line: var(--viz-1);
+}
+.radarOffer[data-index="1"],
+.offerLegend[data-index="1"] {
+  --offer-line: var(--viz-2);
+}
+.radarOffer[data-index="2"],
+.offerLegend[data-index="2"] {
+  --offer-line: var(--viz-4);
+}
+.radarOffer[data-index="3"],
+.offerLegend[data-index="3"] {
+  --offer-line: var(--viz-6);
+}
+.radarOffer[data-index="4"],
+.offerLegend[data-index="4"] {
+  --offer-line: var(--viz-5);
+}
+.radarOffer[data-index="5"],
+.offerLegend[data-index="5"] {
+  --offer-line: var(--viz-7);
+}
+
+.review {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  font-weight: 600;
+}

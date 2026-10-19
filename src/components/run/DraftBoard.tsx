@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNod
 import {
   DRAFT_ROUNDS,
   FORMATIONS,
+  applyAction,
   REROLLS,
   SPECIAL_CAP,
   speciesById,
@@ -671,6 +672,7 @@ function ActiveDraftBoard({
                   committed={choosing?.slot !== null}
                   rate={showRatings ? rateOffer : null}
                   onTap={tapCandidate}
+                  onScout={committed !== null ? setInspectId : undefined}
                   onCandidatePointerDown={onCandidatePointerDown}
                 />
                 <div className={s.rerolls}>
@@ -862,6 +864,23 @@ function ActiveDraftBoard({
         <ScoutingDossier
           speciesId={inspectId}
           showRatings={showRatings}
+          lineup={state.lineup}
+          slotContext={
+            committed !== null && candidates.includes(inspectId)
+              ? {
+                  slot: committed,
+                  lineup: state.lineup,
+                  candidateLineup: applyAction(state, {
+                    type: "pick",
+                    species: inspectId,
+                    slot: committed,
+                  }).lineup,
+                }
+              : undefined
+          }
+          offers={
+            candidates.includes(inspectId) ? { ids: candidates, onShow: setInspectId } : undefined
+          }
           onClose={() => setInspectId(null)}
         />
       ) : null}
@@ -892,6 +911,7 @@ function Candidates({
   committed,
   rate,
   onTap,
+  onScout,
   onCandidatePointerDown,
 }: {
   readonly ids: readonly SpeciesId[];
@@ -899,6 +919,7 @@ function Candidates({
   readonly committed: boolean;
   readonly rate: ((id: SpeciesId) => Rating) | null;
   readonly onTap: (id: SpeciesId) => void;
+  readonly onScout?: (id: SpeciesId) => void;
   readonly onCandidatePointerDown?: (id: SpeciesId, e: React.PointerEvent) => void;
 }) {
   const rawFitId = useId();
@@ -957,6 +978,20 @@ function Candidates({
                 <span id={`${rawFitId}-${id}`} className="visually-hidden">
                   {rating.raw}
                 </span>
+              ) : null}
+              {onScout !== undefined ? (
+                <button
+                  type="button"
+                  className={s.cardScout}
+                  data-testid={`scout-${id}`}
+                  aria-label={`Scout ${sp.name}`}
+                  onClick={() => onScout(id)}
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <circle cx="10.5" cy="10.5" r="6" />
+                    <line x1="15" y1="15" x2="20" y2="20" />
+                  </svg>
+                </button>
               ) : null}
             </li>
           );

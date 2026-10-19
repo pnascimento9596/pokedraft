@@ -347,6 +347,7 @@ export function ResultsView({
         <ScoutingDossier
           speciesId={inspectId}
           showRatings={true}
+          lineup={draft.lineup}
           onClose={() => setInspectId(null)}
         />
       ) : null}

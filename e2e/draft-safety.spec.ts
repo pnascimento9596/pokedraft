@@ -65,6 +65,18 @@ test('"2" with the scouting dossier open signs nothing (catches draft keys reach
 
   await page.keyboard.press("Escape");
   await expect(dossier).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Show players" }).click();
+  await page.locator('[data-testid^="scout-"]').first().click();
+  await expect(dossier.getByTestId("dossier-offer-count")).toHaveText(/^1 of \d+$/);
+  await page.keyboard.press("2");
+  await page.keyboard.press("ArrowRight");
+  await expect(dossier.getByTestId("dossier-offer-count")).toHaveText(/^2 of \d+$/);
+  await expect(header).toHaveText("Round 2 of 16");
+  await expect(filled(page)).toHaveCount(1);
+  await page.keyboard.press("Escape");
+  await expect(dossier).toHaveCount(0);
+
   await page.keyboard.press("2");
   await expect(header).toHaveText("Round 3 of 16");
   await expect(filled(page)).toHaveCount(2);

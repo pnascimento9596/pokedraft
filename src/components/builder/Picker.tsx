@@ -48,6 +48,15 @@ const SHEET_ENTRY = "pokedraftSheet";
 // A downward drag on the sheet's header longer than this closes it.
 const SWIPE_CLOSE_PX = 80;
 
+// Search ignores case, accents and punctuation: "flabebe" finds Flabébé, "mr mime" Mr. Mime.
+function fold(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
 function onSheetEntry(): boolean {
   const state: unknown = window.history.state;
   return typeof state === "object" && state !== null && SHEET_ENTRY in state;
@@ -98,6 +107,8 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
       window.history.pushState({ ...window.history.state, [SHEET_ENTRY]: true }, "");
     }
     const onPop = () => {
+      // Back from the dossier over the sheet lands on the sheet's own entry and leaves it open.
+      if (onSheetEntry()) return;
       const then = pending.current ?? onCloseRef.current;
       pending.current = null;
       then();
@@ -135,8 +146,9 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
 
   const filter = useMemo(() => {
     const q = query.trim().toLowerCase();
+    const folded = fold(q);
     return (sp: Species) =>
-      (q === "" || sp.name.toLowerCase().includes(q) || dex(sp.id).includes(q)) &&
+      (q === "" || (folded !== "" && fold(sp.name).includes(folded)) || dex(sp.id).includes(q)) &&
       (type === null || (sp.types as readonly PokemonType[]).includes(type)) &&
       (gen === null || sp.gen === gen) &&
       (!recommendedOnly ||
@@ -498,6 +510,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           speciesId={inspectId}
           compareTo={current !== null && current !== inspectId ? speciesById(current) : undefined}
           showRatings={showRatings}
+          historyEntry
           slotContext={{
             slot,
             lineup,
