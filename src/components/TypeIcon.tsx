@@ -29,7 +29,7 @@ export function TypeIcon({ type, size = 16, className, style, decorative = false
         width: size,
         height: size,
         borderRadius: "50%",
-        background: `color-mix(in srgb, ${color} 28%, rgba(0, 0, 0, 0.75))`,
+        background: `color-mix(in srgb, ${color} 28%, var(--type-icon-shade))`,
         border: `1.5px solid ${color}`,
         boxShadow: `0 0 6px color-mix(in srgb, ${color} 50%, transparent)`,
         color,
