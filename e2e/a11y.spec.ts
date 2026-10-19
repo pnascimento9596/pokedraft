@@ -54,10 +54,8 @@ const MUST_RUN = [
 
 // axe cannot score text over the pitch grass, the results hero gradient or the creature images.
 // Those nodes land in "incomplete", and the manual contrast table in the audit covers them.
-async function scan(page: Page, exclude: readonly string[] = []): Promise<void> {
-  const builder = new AxeBuilder({ page }).options(AXE_OPTIONS);
-  for (const selector of exclude) builder.exclude(selector);
-  const results = await builder.analyze();
+async function scan(page: Page): Promise<void> {
+  const results = await new AxeBuilder({ page }).options(AXE_OPTIONS).analyze();
   const ran = new Set(
     [...results.passes, ...results.violations, ...results.incomplete, ...results.inapplicable].map(
       (r) => r.id,
@@ -73,7 +71,6 @@ async function scan(page: Page, exclude: readonly string[] = []): Promise<void> 
 const PAGES: {
   name: string;
   open: (page: Page) => Promise<void>;
-  exclude?: readonly string[];
 }[] = [
   ...["/", "/how-to-play", "/history", `/r/${TOKEN}`, "/r/garbage-not-a-token", "/nope-404"].map(
     (route) => ({
@@ -120,10 +117,9 @@ const PAGES: {
     },
   },
   {
+    // The touchline is scanned too (catches the energy rows' li role=button and the h3 below the
+    // h1 that failed aria-allowed-role, list and heading-order).
     name: "a managed live match at an injury stop with the skip warning open",
-    // The touchline's energy list (li role=button in a ul) and its h3 fail list, aria-allowed-role
-    // and heading-order. They predate row 3j and are left to the Wave 4 a11y bundle.
-    exclude: ['[data-testid="touchline"]'],
     open: async (page) => {
       await page.addInitScript(() => {
         if (localStorage.getItem("pokedraft:panel") === null)
@@ -159,14 +155,14 @@ for (const colorScheme of ["dark", "light"] as const) {
   test.describe(`${colorScheme} theme`, () => {
     test.use({ colorScheme, reducedMotion: "reduce" });
 
-    for (const { name, open, exclude } of PAGES) {
+    for (const { name, open } of PAGES) {
       test(`no axe violations on ${name}`, async ({ page }) => {
         await open(page);
         await expect(page.locator("body")).toHaveCSS(
           "background-color",
           BODY_BACKGROUND[colorScheme],
         );
-        await scan(page, exclude);
+        await scan(page);
       });
     }
   });
