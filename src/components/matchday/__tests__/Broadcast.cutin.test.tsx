@@ -142,4 +142,19 @@ describe("cut-ins (catches a big lower-third card that is missing on a goal, or 
     expect(card.getAttribute("data-kind")).toBe("goal");
     expect(screen.getByTestId("broadcast").getAttribute("data-motion")).toBe("off");
   });
+
+  it("shows the key duel's card, still, with reduced motion (catches reduced motion dropping the duel card it keeps for goals)", () => {
+    const card = show(39.2, { "card:5:user:2:yellow": 1000 }, 2200, true, false)!;
+    expect(card).not.toBeNull();
+    expect(card.getAttribute("data-kind")).toBe("duel");
+    expect(card.getAttribute("data-side")).toBe("opp");
+    expect(screen.getByTestId("duel-callout").textContent).toBe("Moltres used Peck!");
+    expect(screen.queryByTestId("pitch-ability")).toBeNull();
+  });
+
+  it("with reduced motion the duel's goal takes the card over once it fires", () => {
+    const card = show(40, { "goal:40:opp:Dragonite": 1000 }, 2200, true, false)!;
+    expect(card.getAttribute("data-kind")).toBe("goal");
+    expect(screen.getByTestId("move-callout").textContent).toBe("Dragonite used Outrage!");
+  });
 });
