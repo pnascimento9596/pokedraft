@@ -568,29 +568,28 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
     expect(screen.getByRole("button", { name: /Empty LCB slot/ })).toBeTruthy();
   });
 
-  it("Copy link writes the share URL and says so, and says when the copy fails", async () => {
+  it("Share link copies the lineup URL on a desktop and says so, and shows the link in a Link field when the copy fails (catches a dead end when the clipboard is blocked)", async () => {
     const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
     openWithTwoPlaced();
     await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
 
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
+      fireEvent.click(screen.getByRole("button", { name: "Share link" }));
     });
     expect(writeText.mock.calls).toEqual([[`http://localhost:3000/?b=${TWO_PLACED_TOKEN}`]]);
-    expect(
-      within(screen.getByRole("group", { name: "Builder actions" })).getByRole("status")
-        .textContent,
-    ).toBe("Link copied");
+    const actions = screen.getByRole("group", { name: "Builder actions" });
+    expect(within(actions).getByRole("status").textContent).toBe("Link copied");
+    expect(within(actions).queryByRole("textbox", { name: "Link" })).toBeNull();
 
     writeText.mockRejectedValueOnce(new Error("denied"));
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
+      fireEvent.click(screen.getByRole("button", { name: "Share link" }));
     });
-    expect(
-      within(screen.getByRole("group", { name: "Builder actions" })).getByRole("status")
-        .textContent,
-    ).toBe("Could not copy the link");
+    expect(within(actions).getByRole("status").textContent).toBe("Could not copy the link");
+    expect(within(actions).getByRole<HTMLInputElement>("textbox", { name: "Link" }).value).toBe(
+      `http://localhost:3000/?b=${TWO_PLACED_TOKEN}`,
+    );
   });
 
   it("Download image requests the builder card and saves it as pokedraft-lineup.png", async () => {
