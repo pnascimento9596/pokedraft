@@ -8,7 +8,6 @@
   flex-direction: column;
   gap: 12px;
   padding: 16px;
-  container-type: inline-size;
 }
 .title {
   margin: 0;
@@ -24,19 +23,15 @@
   font-size: 15px;
   line-height: 22px;
 }
+/* Two cards side by side only when each gets 152px: not on a phone under 380px, and not in the
+   320px desktop panel. Never more than two, because each column is at least half the row. */
 .cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(max(152px, calc(50% - 5px)), 1fr));
   gap: 10px;
 }
 .cards > :last-child {
   grid-column: 1 / -1;
-}
-/* The cards stack below two 152px columns: on a phone under 380px and in the 320px desktop panel. */
-@container (max-width: 313.98px) {
-  .cards {
-    grid-template-columns: 1fr;
-  }
 }
 .card {
   display: flex;
