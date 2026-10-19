@@ -1,6 +1,7 @@
 # Live Team Score in the draft (Wave 4, row 4c)
 
-Branch `feat/live-team-score` off `origin/main` at `d48aa0f` (after rows 4-0 and 4e). Yellow.
+Branch `feat/live-team-score` off `origin/main` at `d48aa0f` (after rows 4-0 and 4e), with
+`origin/main` merged at `fb03b7a` (PR #115, row 4a) in fix round 1. Yellow.
 No file under `src/engine`, `src/data` or `src/scouting` changed, so the goldens are untouched.
 
 ## Scope
@@ -158,9 +159,24 @@ From hand-off 4.3, row 4c, and brief decision 3:
   has no score. The hand-off's `provisionalTeamScore` fills the gap, as applied.
 - The decision's selection-bar-only warning does not reach Position First (see above).
 
+## Fix round 1 (merge of `fb03b7a`)
+
+- `git merge origin/main` (no rebase) brought in PR #115. Git merged `DraftBoard.tsx` on its own:
+  #115's `{kickOff ? "Kick off" : "See results"}` label and this row's scorebug, delta and cap
+  warning sit side by side. The only conflict was `STATE.md`, resolved with this row's section on
+  top, then "One-tap play" ending with the #115 merged paragraph, then the older sections, each
+  once. Merge commit `c617d85`. No code change, so no new RED.
+- Gates at `c617d85`. Lint, typecheck and build exited 0. All eight `check:*` scripts exited 0.
+  Unit tests: 1,720 passed in 201 files (1,707 on `main` plus this row's 13). Prettier passed on
+  the 8 changed text files.
+- Full Playwright suite (`CI=1`, headless, fresh build at `c617d85`): 929 passed, 63 skipped by
+  their own project gates, 0 failed, 0 flaky, in 17.7 minutes. `live-team-score` passed 11 of 11.
+  The run rewrote proof PNGs of earlier rows under `docs/reports`. Those were reverted with
+  `git checkout --`. This row's proof PNGs came out byte-identical.
+
 ## NOT RUN
 
-- The full Playwright suite and hosted CI.
+- Hosted CI on the new head.
 - The review (coordinator runs GLM).
 - `pnpm data:pokedex` and `pnpm data:scouting` (no data change).
 - A physical phone check and a screen reader pass (owner actions).
