@@ -237,11 +237,29 @@
   min-width: 44px;
 }
 
+/* A 44px square 8px from the screen's top right corner. When the pitch leaves a band at least 52px
+   wide at the side or tall at the top, that corner is in the band, off the field; when the pitch
+   fills the screen, it is in the score bug's row. */
 .pitch[data-fullscreen] .fullscreen {
   position: absolute;
   top: calc(8px + env(safe-area-inset-top, 0px));
   right: calc(8px + env(safe-area-inset-right, 0px));
   z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+}
+
+.exitIcon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .bug {

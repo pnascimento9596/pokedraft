@@ -23,7 +23,37 @@ NOT RUN: review, hosted CI and the live check (coordinator); `pnpm data:pokedex`
 
 Decision log: `docs/decisions/copy-pass.md`. Proof: `docs/reports/copy-pass/`.
 
+## Matchday carryovers
+
+Branch `fix/matchday-carryovers` off `origin/main` at `34af10e`. Wave 4 row 4-0, the Wave 3 matchday carryovers (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- A goal on the minute of a half-time or injury stop now plays live, and so does its instant replay when replays are on. The stop opens after that. Before, the stop froze the clock first, so the goal was never seen live. With replays on it showed only as a replay after the answer.
+- The key duel cut-in shows its sprite again. Remoraid fills its 36px circle on phones and its 56px circle at 1280, where before an 80px picture box showed its empty middle.
+- The ball carrier's nameplate stays inside the visible pitch at the left edge. At 360 and 320 it was cut off by 23.4 and 24.8 px.
+- In full screen the exit button is a 44px icon in the screen's corner, named "Exit full screen". It no longer covers the field at 1280x720 or 844x390.
+- After Kick off the keyboard lands on Pause, so Space pauses straight away.
+- The touchline energy rows are real buttons with a pressed state, and its headings follow the page outline. The axe scan now covers the touchline too.
+
+RED commit: `d83bc1a`. Unit: 2 of 2 failed. E2E: 8 of 8 failed (6 carryover instances, plus the managed a11y scan in dark and light). The follow camera guard (`ee397e0`, `4% x zoom`) is a regression guard with no RED. It passes at the base: worst 3.36% at 1x, 6.77% at 2x. GREEN `5399d1e`.
+
+Gates at `5399d1e` (the docs commit that follows changes only docs and proof PNGs):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 16 changed files.
+- Unit tests: 1,669 passed in 196 files.
+- Playwright (`CI=1`, headless, build at `5399d1e`):
+  - chromium ran 16 related specs, 88 passed: `matchday-carryovers` 10, `a11y` 22, `keyboard` 6, `touchline-sheet` 8 and `fullscreen-score-bug` 4, among others.
+  - The `iphone-se`, `iphone-14` and `pixel-7` projects ran `mobile-targets`, `mobile-acceptance` and `manager-mode`: 377 passed, 56 skipped by their own project gates.
+- NOT RUN:
+  - the full Playwright suite and hosted CI;
+  - the widened guard instances against a pre-fix build;
+  - review;
+  - a real screen reader and a physical phone check (owner actions).
+
+The 70svh cap and the 20 callouts in one 120' match are closed with evidence, with no change. Measurements and decisions are in `docs/decisions/matchday-carryovers.md`. Browser proof: `docs/reports/matchday-carryovers/`.
+
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #113 (row 4-0, matchday carryovers) merged as squash `124afab`, reviewed head `54619a0`, GLM 5.3 Flash APPROVE in round 1 with canary `matchday-carryovers-ae496dc5b9f327576ee8e1457cb76944` echoed. At `54619a0` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,669 unit tests passed in 196 files and Prettier passed on 18 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `124afab` with `db.status` ok, and `matchday-carryovers`, `keyboard`, `touchline-sheet` and `fullscreen-score-bug` against production (chromium) passed 28 of 28, and `a11y` 22 of 22. NOT RUN: physical phone check (owner action), a real screen reader.
 
 ## Wave 3 summary
 
@@ -36,6 +66,8 @@ Branch `docs/wave3-summary` off `88f6f72`. Green: docs and evidence only, no cha
 Gates: Prettier passed on the touched Markdown. CI runs the rest. NOT RUN: unit tests and e2e locally (no code changed), the physical phone check (owner action).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #112 (Wave 3 summary, Green) merged as squash `34af10e`, reviewed head `bdd5e26`, GLM 5.3 Flash APPROVE in round 1 with canary `wave3-summary-98dc69f012d979759aff800c602c1770` echoed. At `bdd5e26` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,659 unit tests passed in 194 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `34af10e` with `db.status` ok. No runtime change.
 
 ## Accessible stops and controls
 

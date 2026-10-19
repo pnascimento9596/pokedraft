@@ -125,6 +125,7 @@ export function MatchPlayer({
   view,
   manager,
   autoStart = false,
+  takeFocus = false,
   ratings = false,
   footer,
   aside,
@@ -139,6 +140,8 @@ export function MatchPlayer({
   /** Present in manager mode: the touchline, its stops and the decisions so far. */
   readonly manager?: ManagerControls;
   readonly autoStart?: boolean;
+  /** Focus the play toggle on mount, so Space pauses straight after Kick off. */
+  readonly takeFocus?: boolean;
   /** Ratings are on, so the touchline may show fit scores and STA. */
   readonly ratings?: boolean;
   /** Shown under the scoreboard once the match is over. */
@@ -466,6 +469,9 @@ export function MatchPlayer({
   }, [stopKey, fullscreenOn]);
   const playToggle = useRef<HTMLButtonElement>(null);
   useStopFocus(stopKey, sheetRef, playToggle);
+  useEffect(() => {
+    if (takeFocus) playToggle.current?.focus({ preventScroll: true });
+  }, [takeFocus]);
 
   const snapWindow =
     match.windows?.find((w) => w.minute >= Math.max(5, Math.ceil(clock / 5) * 5)) ??
@@ -515,7 +521,16 @@ export function MatchPlayer({
           toggleFullscreen(pitchRef.current);
         }}
       >
-        {fullscreenOn ? "Exit full screen" : "Full screen"}
+        {fullscreenOn ? (
+          <>
+            <svg className={s.exitIcon} viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6" />
+            </svg>
+            <span className="visually-hidden">Exit full screen</span>
+          </>
+        ) : (
+          "Full screen"
+        )}
       </button>
     ) : null;
 
