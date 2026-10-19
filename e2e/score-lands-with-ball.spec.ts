@@ -18,15 +18,19 @@ test("the score holds while the first goal is in flight and lands with the ball,
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.addInitScript(() => {
-    const w = window as unknown as { snaps: Snap[]; seenFlash: boolean };
+    const w = window as unknown as { snaps: Snap[]; seenFlash: boolean; flashGone: boolean };
     w.snaps = [];
     w.seenFlash = false;
+    w.flashGone = false;
     new MutationObserver(() => {
       const score = document.querySelector('[data-testid="matchday-score"]');
-      if (score === null) return;
+      if (score === null || w.flashGone) return;
       const flash = document.querySelector('[data-testid="goal-flash"]') !== null;
       const flight = document.querySelector('[data-testid="move-callout"]') !== null && !flash;
-      if (w.seenFlash && !flash) return;
+      if (w.seenFlash && !flash) {
+        w.flashGone = true;
+        return;
+      }
       w.seenFlash ||= flash;
       const snap = { score: score.textContent ?? "", flight, flash };
       const last = w.snaps.at(-1);
@@ -43,11 +47,21 @@ test("the score holds while the first goal is in flight and lands with the ball,
   await expect(replay.getByTestId("broadcast")).toBeVisible();
   await expect(replay.getByRole("status")).toHaveText("0 - 0");
 
-  await expect(replay.getByTestId("move-callout")).toBeVisible({ timeout: 60_000 });
+  // The flash lives about 0.8 s at 1x, so a visibility poll can miss it on a busy runner. The
+  // page's own mutation log records every frame that drew the callout and the flash.
+  const logged = (key: "flight" | "flash") =>
+    page.waitForFunction(
+      (k) => (window as unknown as { snaps: Snap[] }).snaps.some((s) => s[k]),
+      key,
+      { timeout: 60_000 },
+    );
+  await logged("flight");
   await page.screenshot({ path: `${SHOT}/390-goal-in-flight.png` });
-  await expect(replay.getByTestId("goal-flash")).toBeVisible({ timeout: 5_000 });
+  await logged("flash");
   await page.screenshot({ path: `${SHOT}/390-goal-landed.png` });
-  await expect(replay.getByTestId("goal-flash")).toBeHidden({ timeout: 5_000 });
+  await page.waitForFunction(() => (window as unknown as { flashGone: boolean }).flashGone, null, {
+    timeout: 10_000,
+  });
 
   const snaps = await page.evaluate(() => (window as unknown as { snaps: Snap[] }).snaps);
   console.log(`score snapshots to the first goal: ${JSON.stringify(snaps)}`);
