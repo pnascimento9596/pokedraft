@@ -59,3 +59,34 @@ describe("MatchReplay group standings (decision 13: MatchdayLive's table folds i
     expect(screen.queryByTestId("replay-standings")).toBeNull();
   });
 });
+
+describe("MatchReplay on a shared run (catches the shared match player still saying Your XI and Your assistant)", () => {
+  const scoreboardTeam = () =>
+    screen.getByTestId("matchday-scoreboard").querySelector("span")?.textContent;
+  const momentum = () =>
+    screen.getByRole("meter", { name: "Match momentum" }).getAttribute("aria-valuetext");
+
+  it("names the shared side This squad on the scoreboard, the momentum meter and the ticker", () => {
+    const { draft, cup } = replay(LIVE);
+    render(
+      <MatchReplay cup={cup} draft={draft} matchIndex={0} variant="shared" onClose={() => {}} />,
+    );
+    expect(scoreboardTeam()).toBe("This squad");
+    expect(momentum()).toBe("This squad 50%");
+    fireEvent.click(screen.getByTestId("skip-ft"));
+    const ticker = screen.getByTestId("ticker").textContent ?? "";
+    expect(ticker).toContain("75' This squad's assistant switches to Defend");
+    expect(ticker).not.toContain("Your");
+  });
+
+  it("keeps Your XI, Your side and Your assistant on the live run", () => {
+    const { draft, cup } = replay(LIVE);
+    render(<MatchReplay cup={cup} draft={draft} matchIndex={0} onClose={() => {}} />);
+    expect(scoreboardTeam()).toBe("Your XI");
+    expect(momentum()).toBe("Your side 50%");
+    fireEvent.click(screen.getByTestId("skip-ft"));
+    expect(screen.getByTestId("ticker").textContent).toContain(
+      "75' Your assistant switches to Defend",
+    );
+  });
+});
