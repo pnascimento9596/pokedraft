@@ -97,6 +97,7 @@ export function MatchReplay({
         aside={standings}
         startAt={goal === undefined ? undefined : goal - 1}
         shareGoal={shareGoal}
+        variant={variant}
       />
     </section>
   );

@@ -111,7 +111,7 @@ function team(teams: Teams, side: Side): string {
 }
 
 /** The ticker line for one broadcast beat. */
-export function beatLine(b: Beat, teams: Teams): string {
+export function beatLine(b: Beat, teams: Teams, shared = false): string {
   const at = `${b.minute}'`;
   switch (b.kind) {
     case "whistle":
@@ -124,7 +124,7 @@ export function beatLine(b: Beat, teams: Teams): string {
     case "save":
       return `${at} ${b.keeper.name} saves from ${b.attacker.name}`;
     default:
-      return incidentText(b, teams);
+      return incidentText(b, teams, shared);
   }
 }
 

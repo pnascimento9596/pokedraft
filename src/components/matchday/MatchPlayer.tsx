@@ -25,6 +25,7 @@ import type {
 } from "@/engine/types";
 import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
+import { SIDE_COPY, type ResultsVariant } from "@/components/results/format";
 import { fatigueLine, scoutLine } from "@/ui/manager/intel";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Pace, type Stop } from "@/ui/matchday/clock";
@@ -96,8 +97,6 @@ export interface ManagerControls {
   readonly decide: (minute: number, d: Decision) => string | null;
 }
 
-const TEAMS_USER = "Your XI";
-
 // While the clock runs, React renders the match screen this often; the broadcast moves the pitch on
 // every frame in between. A beat that fires, a goal that lands, a new play or a new beat on the
 // pitch renders at once.
@@ -131,6 +130,7 @@ export function MatchPlayer({
   aside,
   startAt,
   shareGoal,
+  variant = "live",
 }: {
   readonly match: PlayedMatch;
   readonly matchIndex: number;
@@ -152,6 +152,7 @@ export function MatchPlayer({
   readonly startAt?: number;
   /** The link a user goal's ticker line offers to share. */
   readonly shareGoal?: (minute: number) => string;
+  readonly variant?: ResultsVariant;
 }) {
   // Quick is a still pitch with beat sounds only, so only a live broadcast with motion stages.
   const motion = !useReducedMotion() && view === "live";
@@ -408,7 +409,8 @@ export function MatchPlayer({
     cued.current.clear();
   };
 
-  const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
+  const side = SIDE_COPY[variant];
+  const teams: Teams = { user: side.xi, opp: match.opponent.name };
   const clock = state.minute;
   const shown = timeline.beats.filter(
     (b) =>
@@ -586,7 +588,7 @@ export function MatchPlayer({
       data-minute={Math.floor(clock)}
     >
       <div className={s.scoreboard} data-testid="matchday-scoreboard">
-        <span className={s.team}>{TEAMS_USER}</span>
+        <span className={s.team}>{side.xi}</span>
         <span className={s.center}>
           <span className={`num ${s.clock}`} data-testid="matchday-clock">
             {minuteLabel}
@@ -642,7 +644,7 @@ export function MatchPlayer({
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={userMomentum}
-          aria-valuetext={`Your side ${userMomentum}%`}
+          aria-valuetext={`${side.ourSide} ${userMomentum}%`}
         >
           <span className={`num ${s.momentumPct}`}>{userMomentum}%</span>
           <span className={s.momentumTrack} aria-hidden="true">
@@ -675,9 +677,11 @@ export function MatchPlayer({
             cutIns={view === "live"}
             camera={view === "live" ? cameraChoice : "full"}
             onBall={crowd ? onBall : undefined}
+            variant={variant}
             scoreBug={
               fullscreenOn ? (
                 <ScoreBug
+                  team={side.xi}
                   opp={match.opponent.name}
                   score={score}
                   minute={state.stage === "pens" ? null : minuteLabel}
@@ -902,7 +906,13 @@ export function MatchPlayer({
 
       {ended && footer !== undefined ? <div className={s.footer}>{footer}</div> : null}
 
-      <Ticker shown={shown} teams={teams} kicks={kicks} shareGoal={shareGoal} />
+      <Ticker
+        shown={shown}
+        teams={teams}
+        shared={variant === "shared"}
+        kicks={kicks}
+        shareGoal={shareGoal}
+      />
       {aside?.(Math.floor(clock), score)}
       {sheet ? <div ref={spacerRef} className={s.sheetSpacer} aria-hidden="true" /> : null}
     </section>
@@ -911,11 +921,13 @@ export function MatchPlayer({
 
 /** The TV-style corner score, shown over the pitch in full screen only. */
 function ScoreBug({
+  team,
   opp,
   score,
   minute,
   pens,
 }: {
+  readonly team: string;
   readonly opp: string;
   readonly score: { readonly user: number; readonly opp: number };
   readonly minute: string | null;
@@ -923,7 +935,7 @@ function ScoreBug({
 }) {
   return (
     <div className={s.bug} data-testid="score-bug" aria-hidden="true">
-      <span>{TEAMS_USER}</span>
+      <span>{team}</span>
       <span className={`num ${s.bugScore}`}>
         {score.user}-{score.opp}
       </span>
@@ -1074,11 +1086,13 @@ function changed(prev: PlayState, next: PlayState): boolean {
 function Ticker({
   shown,
   teams,
+  shared,
   kicks,
   shareGoal,
 }: {
   readonly shown: readonly ReturnType<typeof buildTimeline>["beats"][number][];
   readonly teams: Teams;
+  readonly shared: boolean;
   readonly kicks: readonly ReturnType<typeof buildTimeline>["kicks"][number][];
   readonly shareGoal?: (minute: number) => string;
 }) {
@@ -1087,7 +1101,7 @@ function Ticker({
       key: beatKey(b),
       kind: b.kind,
       side: "side" in b ? b.side : undefined,
-      text: beatLine(b, teams),
+      text: beatLine(b, teams, shared),
       minute: b.minute,
       share:
         shareGoal !== undefined && b.kind === "goal" && b.side === "user"
