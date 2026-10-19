@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Broadcast follow-ups
+
+Branch `feat/broadcast-follow-ups` off `8247f20`. Wave 3 row 3k, matchday broadcast only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `MatchPlayer.tsx` is untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Extra-time matches no longer call a third more moves. The build-up share and the gap between callouts scale with match length, so 44 measured 120' matches average 13.34 callouts (17.32 before) against 13.54 for 90' matches, which are unchanged.
+- With reduced motion a key duel now shows its lower-third card, still, the way goals and saves already did. The pitch badge stays off.
+- A missed penalty's short trail (Wave 1 carryover) no longer reproduces: every miss draws 9.43 units from the spot to the keeper, against 11.18 for a goal, in 87 staged misses. Closed in the decision log.
+- `score-lands-with-ball.spec.ts` now waits on its own mutation log, as `speed-aware-staging.spec.ts` does, instead of polling the goal flash. Under a 6x CPU throttle the old and new spec both passed 4 of 4, so the old flake did not reproduce here.
+- `MatchPlayer.haptics.test.tsx` runs its matches in 100 ms frames, a second per step, instead of one 16 ms frame per step. Two of its tests timed out at 15 s on a hosted runner (run 39178857787). Locally the file dropped from 15.5 s to 2.7 to 3.0 s; the assertions are unchanged.
+
+RED commit: `cb990d0` (2 of 33 unit tests failed in 2 files; `broadcast-follow-ups.spec.ts` failed 1 of 1 on a `cb990d0` build). The haptics item's RED is the hosted run 39178857787 (2 of 8 timed out).
+
+Gates at `5e4b90d` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 8 touched code and test files.
+- Unit tests: 1,585 passed in 184 files.
+- Playwright (`CI=1`, fresh build at `099ddc7`, app code identical to `5e4b90d`): chromium `broadcast-follow-ups`, `score-lands-with-ball`, `speed-aware-staging`, `callouts-type-effects`, `one-shared-timeline`, `shootout-suspense`, `haptics`, `follow-camera`, `broadcast-frame-loop`, `set-pieces`, `pitch-card-containment`, `team-readability`, `quick-not-broadcast` and `watch-live` 46 passed; `mobile-targets` and `mobile-acceptance` 370 passed, 56 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, the hosted haptics test duration and a physical phone check: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/broadcast-follow-ups.md`. Browser proof: `docs/reports/broadcast-follow-ups/`.
+
 ## Haptics and tap for sound
 
 Branch `feat/haptics` off `40221a8`. Wave 3 row 3e, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `Broadcast.tsx` is untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
