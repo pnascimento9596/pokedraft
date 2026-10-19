@@ -133,3 +133,10 @@ export function tagLabel(tag: string): string {
 export function record(w: number, d: number, l: number): string {
   return `${w}-${d}-${l}`;
 }
+
+/** The qualitative position fit glyph, shown whether ratings are on or off. */
+export const SUITABILITY_LABEL: Readonly<Record<"recommended" | "ok" | "bad", string>> = {
+  recommended: "★ Best",
+  ok: "OK Fit",
+  bad: "Poor Fit",
+};

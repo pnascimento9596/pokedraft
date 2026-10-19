@@ -91,6 +91,8 @@ export interface Touchline {
   readonly subsUsed: number;
   readonly onPitch: readonly (SpeciesId | null)[];
   readonly energy: readonly (number | null)[];
+  /** The player in each slot is on a yellow card. */
+  readonly yellow: readonly boolean[];
   readonly bench: readonly BenchSeat[];
   /** A decision at this minute would still be played: the match has minutes after it. */
   readonly open: boolean;
@@ -99,6 +101,7 @@ export interface Touchline {
 function sideState(fielded: Fielded, incidents: readonly Incident[]) {
   const onPitch: (SpeciesId | null)[] = [...fielded.starters];
   const since: number[] = fielded.starters.map(() => 0);
+  const yellow: boolean[] = fielded.starters.map(() => false);
   const used = new Set<SpeciesId>();
   let subs = 0;
   let tactic: Tactic = "balanced";
@@ -108,16 +111,21 @@ function sideState(fielded: Fielded, incidents: readonly Incident[]) {
     else if (i.kind === "sub") {
       onPitch[i.slot] = i.in;
       since[i.slot] = i.minute;
+      yellow[i.slot] = false;
       used.add(i.in);
       subs++;
-    } else if (i.kind === "red" || i.kind === "injury") onPitch[i.slot] = null;
+    } else if (i.kind === "yellow") yellow[i.slot] = true;
+    else if (i.kind === "red" || i.kind === "injury") {
+      onPitch[i.slot] = null;
+      yellow[i.slot] = false;
+    }
   }
   const bench = fielded.bench.map((species, index): BenchSeat => ({
     index: index as BenchIndex,
     species,
     available: index !== fielded.benchOut && !used.has(species),
   }));
-  return { onPitch, since, subs, tactic, bench };
+  return { onPitch, since, yellow, subs, tactic, bench };
 }
 
 function managedAt(actions: readonly ManagerAction[], matchIndex: number, minute: number): boolean {
@@ -145,6 +153,7 @@ export function touchlineAt(
     subsUsed: state.subs,
     onPitch: state.onPitch,
     energy,
+    yellow: state.yellow,
     bench: state.bench,
     open:
       Number.isInteger(minute) &&

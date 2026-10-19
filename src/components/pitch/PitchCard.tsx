@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from "react";
 import type { Species } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeIcon } from "@/components/TypeIcon";
-import { typeLabel } from "@/ui/labels";
+import { SUITABILITY_LABEL, typeLabel } from "@/ui/labels";
 import s from "./Pitch.module.css";
 
 export function PitchCard({
@@ -50,13 +50,7 @@ export function PitchCard({
           className={s.emptyPrompt}
           data-suitability={suitability ?? undefined}
         >
-          {suitability === "recommended"
-            ? "★ Best"
-            : suitability === "bad"
-              ? "Poor Fit"
-              : suitability === "ok"
-                ? "OK Fit"
-                : "Tap to Draft!"}
+          {suitability ? SUITABILITY_LABEL[suitability] : "Tap to Draft!"}
         </span>
       ) : (
         <>

@@ -427,11 +427,18 @@ function holdFor(b: Beat, pace: Pace): number {
   return 0;
 }
 
-// An injury's replacement stays off the pitch until the manager answers that injury's stop.
-function awaitingAnswer(b: Beat, state: PlayState, env: PlayEnv): boolean {
+/**
+ * An injury's replacement stays off the pitch and out of the ticker until the manager answers
+ * that injury's stop.
+ */
+export function awaitingAnswer(
+  b: Beat,
+  answered: readonly string[],
+  stops: readonly Stop[],
+): boolean {
   if (b.kind !== "sub" || b.reason !== "injury") return false;
   const key = `injury:${b.minute}:${b.slot}`;
-  return env.stops.some((s) => s.key === key) && !state.answered.includes(key);
+  return stops.some((s) => s.key === key) && !answered.includes(key);
 }
 
 function fire(state: PlayState, env: PlayEnv, clock: number, now: number): PlayState["fired"] {
@@ -439,7 +446,11 @@ function fire(state: PlayState, env: PlayEnv, clock: number, now: number): PlayS
   for (const b of env.timeline.beats) {
     if (b.minute > clock) break;
     const key = beatKey(b);
-    if (fired[key] === undefined && revealed(b, clock) && !awaitingAnswer(b, state, env)) {
+    if (
+      fired[key] === undefined &&
+      revealed(b, clock) &&
+      !awaitingAnswer(b, state.answered, env.stops)
+    ) {
       fired = { ...fired, [key]: now };
     }
   }

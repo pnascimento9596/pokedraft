@@ -111,6 +111,11 @@ export function LiveRun({
   );
   const [failure, setFailure] = useState<string | null>(null);
   const [showRatings] = useState(() => loadPanel().showChallengeRatings);
+  // A friendly from the builder follows the builder's own ratings switch.
+  const [matchRatings] = useState(() => {
+    const panel = loadPanel();
+    return settings.mode === "builder" ? panel.showRatings : panel.showChallengeRatings;
+  });
   const unsavedStart = useRef(initial === null && screen.kind === "draft" ? screen.run : null);
 
   useEffect(() => {
@@ -198,6 +203,7 @@ export function LiveRun({
         initialMatch={screen.match}
         view={screen.view}
         managerMode={screen.managerMode}
+        showRatings={matchRatings}
         onProgress={progressMatchday}
         onFinish={finishMatchday}
       />
