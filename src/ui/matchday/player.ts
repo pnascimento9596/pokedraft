@@ -307,12 +307,55 @@ export interface PlayState {
   readonly fired: Readonly<Record<string, number>>;
   readonly kicks: number;
   readonly kickAt: number;
+  /** The user's goal playing again at half speed while the live clock waits. */
+  readonly replay: InstantReplay | null;
+}
+
+/** A goal staged again from `at` (real time), at the goal's minute. */
+export interface InstantReplay {
+  readonly key: string;
+  readonly minute: number;
+  readonly at: number;
 }
 
 export interface PlayEnv {
   readonly timeline: Timeline;
   readonly stops: readonly Stop[];
   readonly pace: Pace;
+  /** Each user goal plays again at half speed once its hold ends: Live with motion only. */
+  readonly replays?: boolean;
+}
+
+export const REPLAY_SPEED = 0.5;
+
+/** How far the instant replay is through the goal's staging at real time `now`, 0 to 1. */
+export function replayProgress(r: InstantReplay, now: number): number {
+  return Math.min(1, Math.max(0, ((now - r.at) * REPLAY_SPEED) / SHOW.goal));
+}
+
+/**
+ * The clock, beat times and speed the broadcast stages at real time `now`. While an instant replay
+ * plays, that is the goal's minute with the goal fired at the replay's start, at half speed.
+ */
+export function staged(
+  state: PlayState,
+  now: number,
+): {
+  readonly clock: number;
+  readonly now: number;
+  readonly fired: Readonly<Record<string, number>>;
+  readonly speed: number;
+} {
+  const r = state.replay;
+  if (r === null) {
+    return {
+      clock: state.minute,
+      now: frameNow(state, now),
+      fired: state.fired,
+      speed: state.speed,
+    };
+  }
+  return { clock: r.minute, now, fired: { ...state.fired, [r.key]: r.at }, speed: REPLAY_SPEED };
 }
 
 export const START: PlayState = {
@@ -329,6 +372,7 @@ export const START: PlayState = {
   fired: {},
   kicks: 0,
   kickAt: 0,
+  replay: null,
 };
 
 export type PlayAction =
@@ -337,7 +381,45 @@ export type PlayAction =
   | { readonly type: "sheet"; readonly open: boolean; readonly now: number }
   | { readonly type: "speed" }
   | { readonly type: "answer"; readonly key: string }
-  | { readonly type: "skip"; readonly env: PlayEnv };
+  | { readonly type: "skip"; readonly env: PlayEnv }
+  | { readonly type: "seek"; readonly minute: number; readonly now: number; readonly env: PlayEnv }
+  | { readonly type: "endReplay"; readonly now: number };
+
+// A beat a seek passes counts as shown this long ago: landed, staged and settled, so it neither
+// plays on the pitch nor sounds.
+const SEEN_LONG_AGO = 3_600_000;
+
+/**
+ * The clock moved to `minute` and running. Every beat it passes counts as shown long ago and every
+ * later beat waits to fire again. A manager stop nobody answered before `minute` refuses the seek,
+ * so a seek never answers one.
+ */
+function seek(state: PlayState, env: PlayEnv, minute: number, now: number): PlayState {
+  const { timeline } = env;
+  const to = Math.min(timeline.finalMinute, Math.max(0, minute));
+  const skipped = env.stops.some((s) => s.minute <= to && !state.answered.includes(s.key));
+  if (skipped) return state;
+  const fired: Record<string, number> = {};
+  for (const b of timeline.beats) {
+    if (b.minute > to) break;
+    if (revealed(b, to)) fired[beatKey(b)] = now - SEEN_LONG_AGO;
+  }
+  return {
+    ...state,
+    minute: to,
+    stage: "play",
+    running: true,
+    uiHold: false,
+    pausedAt: null,
+    stop: null,
+    hold: null,
+    held: Object.keys(fired),
+    fired,
+    kicks: 0,
+    kickAt: 0,
+    replay: null,
+  };
+}
 
 function holdFor(b: Beat, pace: Pace): number {
   if (b.kind === "goal") return pace.holdGoal;
@@ -364,7 +446,7 @@ function fire(state: PlayState, env: PlayEnv, clock: number, now: number): PlayS
   return fired;
 }
 
-const frozen = (s: PlayState) => !s.running || s.uiHold;
+const frozen = (s: PlayState) => !s.running || s.uiHold || s.replay !== null;
 
 /** The time the broadcast stages at: while a pause or the sheet holds the clock, the moment it stopped. */
 export function frameNow(state: PlayState, now: number): number {
@@ -391,13 +473,25 @@ function holdTime(prev: PlayState, next: PlayState, now: number): PlayState {
   };
 }
 
+function endReplay(state: PlayState, now: number): PlayState {
+  return holdTime(state, { ...state, replay: null }, now);
+}
+
 function tick(state: PlayState, env: PlayEnv, now: number, dt: number): PlayState {
+  if (state.replay !== null) {
+    return replayProgress(state.replay, now) < 1 ? state : endReplay(state, now);
+  }
   if (state.stage === "done" || frozen(state) || state.stop !== null) return state;
+  const { timeline, pace } = env;
   if (state.hold !== null) {
     if (now < state.hold.until) return state;
+    const key = state.hold.key;
     state = { ...state, hold: null };
+    const goal = timeline.beats.find((b) => b.kind === "goal" && beatKey(b) === key);
+    if (env.replays === true && goal?.kind === "goal" && goal.side === "user") {
+      return holdTime(state, { ...state, replay: { key, minute: goal.minute, at: now } }, now);
+    }
   }
-  const { timeline, pace } = env;
   if (state.stage === "pens") {
     if (now - state.kickAt < pace.kick / state.speed) return state;
     const kicks = state.kicks + 1;
@@ -446,7 +540,8 @@ export function play(state: PlayState, action: PlayAction): PlayState {
     case "tick":
       return tick(state, action.env, action.now, action.dt);
     case "toggle":
-      return holdTime(state, { ...state, running: !state.running }, action.now);
+      // Pausing during an instant replay ends it; the live clock resumes from the goal.
+      return holdTime(state, { ...state, running: !state.running, replay: null }, action.now);
     case "sheet":
       return holdTime(state, { ...state, uiHold: action.open }, action.now);
     case "speed":
@@ -470,10 +565,15 @@ export function play(state: PlayState, action: PlayAction): PlayState {
         hold: null,
         uiHold: false,
         pausedAt: null,
+        replay: null,
         kicks: timeline.kicks.length,
         answered: [...new Set([...state.answered, ...stops.map((s) => s.key)])],
       };
     }
+    case "seek":
+      return seek(state, action.env, action.minute, action.now);
+    case "endReplay":
+      return state.replay === null ? state : endReplay(state, action.now);
   }
 }
 

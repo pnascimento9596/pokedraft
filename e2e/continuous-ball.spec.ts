@@ -10,6 +10,8 @@ interface Sample {
   readonly t: number;
   readonly x: number;
   readonly y: number;
+  /** Bumps at each instant replay's start and end, which cut away from the live ball. */
+  readonly cut: number;
 }
 
 /** Records the ball's spot on every animation frame into `window.samples`. */
@@ -17,6 +19,8 @@ async function sampleBall(page: Page): Promise<void> {
   await page.addInitScript(() => {
     const w = window as unknown as { samples: Sample[] };
     w.samples = [];
+    let cut = 0;
+    let replaying = false;
     // The ball's spot in percent of the pitch. The frame loop writes it as a transform in units
     // of the pitch width, where the pitch is 64 units tall; builds before it wrote left and top.
     const spot = (ball: HTMLElement) => {
@@ -26,9 +30,12 @@ async function sampleBall(page: Page): Promise<void> {
     };
     const read = (t: number) => {
       const ball = document.querySelector<HTMLElement>('[data-testid="broadcast-ball"]');
-      if (ball !== null) {
+      const now = document.querySelector('[data-testid="instant-replay"]') !== null;
+      if (now !== replaying) cut++;
+      replaying = now;
+      if (ball !== null && !replaying) {
         const { x, y } = spot(ball);
-        if (Number.isFinite(x) && Number.isFinite(y)) w.samples.push({ t, x, y });
+        if (Number.isFinite(x) && Number.isFinite(y)) w.samples.push({ t, x, y, cut });
       }
       requestAnimationFrame(read);
     };
@@ -52,6 +59,10 @@ async function ballSpeed(page: Page): Promise<{ count: number; perFrameMax: numb
   for (let i = 1, j = 0; i < samples.length; i++) {
     const a = samples[i - 1]!;
     const b = samples[i]!;
+    if (a.cut !== b.cut) {
+      j = i;
+      continue;
+    }
     rawMax = Math.max(rawMax, Math.hypot(b.x - a.x, (b.y - a.y) * 0.64));
     while (j + 1 < i && b.t - samples[j + 1]!.t >= WINDOW) j++;
     const w = samples[j]!;
@@ -83,6 +94,7 @@ test("the ball never teleports through the first goal and its kickoff, at 390px 
   await page.screenshot({ path: `${SHOT}/390-goal-from-live-ball.png` });
   await expect(replay.getByTestId("goal-flash")).toBeVisible({ timeout: 5_000 });
   await expect(replay.getByTestId("goal-flash")).toBeHidden({ timeout: 5_000 });
+  await replay.getByTestId("replay-skip").click({ timeout: 5_000 });
   // The walk back to kickoff shape, then the conceding side on the ball at the centre spot.
   await page.waitForTimeout(700);
   await page.screenshot({ path: `${SHOT}/390-kickoff-after-goal.png` });

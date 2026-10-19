@@ -10,12 +10,12 @@ export async function generateMetadata({ params }: PageProps<"/r/[token]">): Pro
   return { title, openGraph: { title }, twitter: { card: "summary_large_image", title } };
 }
 
-export default function RunPage({ params }: PageProps<"/r/[token]">) {
+export default function RunPage({ params, searchParams }: PageProps<"/r/[token]">) {
   return (
     <main className="page">
       <Suspense fallback={<p className="kicker page-loading">Loading run</p>}>
-        {params.then(async ({ token }) => (
-          <SharedRun token={token} run={await loadRun(token)} />
+        {Promise.all([params, searchParams]).then(async ([{ token }, query]) => (
+          <SharedRun token={token} run={await loadRun(token)} watch={query.watch} at={query.at} />
         ))}
       </Suspense>
     </main>

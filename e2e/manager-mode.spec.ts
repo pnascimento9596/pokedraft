@@ -102,7 +102,7 @@ test.describe("manager mode", () => {
     const record = await page.getByTestId("results-record").textContent();
     const score = await page.getByTestId("results-score").textContent();
 
-    await page.getByRole("button", { name: "Share" }).click();
+    await page.getByRole("button", { name: "Share", exact: true }).click();
     const link = await page.evaluate(() => navigator.clipboard.readText());
     expect(link).toMatch(SHARE_LINK);
     await page.goto(link);

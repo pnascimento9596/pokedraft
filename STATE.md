@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Replay and deep links
+
+Branch `feat/replay-deep-links` off `origin/main` at `1e417e3`. Wave 3 row 3i, results and the matchday replay (Yellow, bundle). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The MatchdayLive text studio is gone. Watch live on a group match now has a "Group table" that counts this match live and adds the other fixture at full time.
+- In a replay, or after full time in a managed match, each goal has a 44 px pip on the progress bar. Tapping it plays from a minute before that goal. Earlier goals do not sound or buzz again.
+- In Live with motion, each of your goals gets an instant replay at half speed, about 5.2 s, with a REPLAY bug and Skip replay. Quick, reduced motion and the opponent's goals have none.
+- Your goals on the result line and in the ticker have "Share this goal". It copies `/r/pd6?t=<payload>&watch=<n>&at=<minute>`, which opens the shared run in that match a minute before the goal. A bad `watch` or `at` opens the normal shared run. With sound on, the link shows "Tap for sound".
+
+RED commits: `74ce17b` (2 of 25 failed), `aaafd4d` (7 of 7 failed), `6382ea2` (5 of 6 failed) and `c2bd956` (17 of 36 failed).
+
+Gates at `d90ef2f` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on 33 touched files.
+- Unit tests: 1,595 passed in 186 files.
+- Playwright (`CI=1`, fresh build at `d90ef2f`), full suite: 896 passed, 64 skipped by their own project gates, 0 failed.
+- Review, hosted CI and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/replay-deep-links.md`. Browser proof: `docs/reports/replay-deep-links/`.
+
+Merged origin/main after PRs #107 and #108 at `6bc2d89`. `MatchPlayer.tsx`, its CSS and STATE.md conflicted. MatchPlayer keeps 3c's pitch frame, score bug and full-screen toggle, 3e's haptics and hint, and this row's staged pitch, REPLAY bug and pips. The REPLAY bug moved to the pitch's foot so it clears the score bug and the full-screen toggle. The replay's Tap for sound now reads 3e's `useAudioLocked`, and the seek and instant replay tests now also check that nothing buzzes again (`f712dca`). At `f712dca` lint, typecheck, build and all seven `check:*` scripts exited 0, and Prettier passed on the 6 touched files. The first `pnpm test` had 2 of 1,614 tests fail: both were `MatchPlayer.haptics.test.tsx` timing out at 15,000 ms, which row 3k owns. That file then passed 8 of 8 twice on its own, and a full rerun passed 1,614 in 189 files. Playwright (`CI=1`, fresh build): `replay-deep-links`, `haptics`, `fullscreen-score-bug`, `touchline-sheet`, `follow-camera`, `mobile-pitch-fixes`, `continuous-ball`, `audio-polish`, `manager-mode`, `your-calls` and `mobile-targets` passed 140, 0 failed.
+
+Merged origin/main after PR #110 (row 3k) at `ec886ff`; only STATE.md conflicted, and `Broadcast.tsx` merged cleanly with 3k's still key-duel cut-in. Round 1 at `03a5f6b` was approved, but the hosted check timed out four `MatchPlayer.haptics.test.tsx` tests on two runs (run 39181516463); 3k's fix brings that file's slowest test to 414 ms here. After the merge lint, typecheck, build and all seven `check:*` scripts exited 0, 1,617 unit tests passed in 189 files, and `replay-deep-links`, `broadcast-follow-ups`, `score-lands-with-ball`, `haptics`, `fullscreen-score-bug`, `continuous-ball`, `callouts-type-effects`, `follow-camera` and `manager-mode` passed 31 of 31 locally (`CI=1`, chromium, fresh build). The full gates at the reviewed head are in the review receipt.
+
 ## Broadcast follow-ups
 
 Branch `feat/broadcast-follow-ups` off `8247f20`. Wave 3 row 3k, matchday broadcast only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `MatchPlayer.tsx` is untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -25,6 +49,8 @@ Gates at `5e4b90d` (code identical at the docs commit that adds this section):
 Measurements and decisions are in `docs/decisions/broadcast-follow-ups.md`. Browser proof: `docs/reports/broadcast-follow-ups/`.
 
 Merged origin/main after PRs #107 and #108 at `816917d`; only STATE.md conflicted. Row 3k lands before 3i (PR #109) because 3i's hosted check timed out four haptics tests twice and this row carries that fix. After the merge lint, typecheck and build exited 0, 405 matchday and UI unit tests passed in 59 files (the haptics file's slowest test 373 ms), and `broadcast-follow-ups`, `score-lands-with-ball`, `haptics`, `fullscreen-score-bug`, `callouts-type-effects` and `follow-camera` passed 17 of 17 locally (`CI=1`, chromium, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #110 (row 3k, broadcast follow-ups) merged as squash `cf4efeb`, reviewed head `2952e09`, GLM 5.3 Flash APPROVE in round 1 with canary `broadcast-follow-ups-4938fc7285e297f4ae580dffc75ab05f` echoed. At `2952e09` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,593 unit tests passed in 185 files and Prettier passed on 10 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `cf4efeb` with `db.status` ok, and `broadcast-follow-ups`, `score-lands-with-ball` and `callouts-type-effects` against production (chromium) passed 6 of 6. 3k landed before 3i because PR #109's hosted check timed out four `MatchPlayer.haptics.test.tsx` tests on two runs (run 39181516463) and 3k carries that fix. NOT RUN: physical phone check (owner action).
 
 ## Landscape, full screen and score bug
 

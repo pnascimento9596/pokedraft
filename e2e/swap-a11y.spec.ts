@@ -131,7 +131,7 @@ test("no live region is added with its text already in it during a draft, its re
   await page.getByTestId("slot-s0").click();
   await page.getByTestId("slot-s9").click();
   await page.getByTestId("see-results").click();
-  await page.getByRole("button", { name: "Share" }).click();
+  await page.getByRole("button", { name: "Share", exact: true }).click();
   await expect(page.getByText("Link copied")).toBeVisible();
   expect(
     await page.evaluate(() => (window as unknown as { liveAdded: string[] }).liveAdded),

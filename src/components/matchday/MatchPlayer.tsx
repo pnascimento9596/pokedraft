@@ -9,10 +9,18 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from "react";
 import { speciesById } from "@/engine";
-import type { BenchIndex, FullLineup, ManagerAction, MatchResult, Tactic } from "@/engine/types";
+import type {
+  BenchIndex,
+  FullLineup,
+  ManagerAction,
+  MatchResult,
+  Score,
+  Tactic,
+} from "@/engine/types";
 import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
@@ -27,6 +35,7 @@ import {
   landed,
   play,
   revealed,
+  staged,
   type PlayAction,
   type PlayEnv,
   type PlayState,
@@ -53,6 +62,7 @@ import {
   useSoundEnabled,
 } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
+import { ShareGoalButton } from "@/components/share/ShareGoalButton";
 import { buzz } from "./haptics";
 import { Touchline } from "./Touchline";
 import { setCamera, useCamera } from "./useCamera";
@@ -111,6 +121,9 @@ export function MatchPlayer({
   manager,
   autoStart = false,
   footer,
+  aside,
+  startAt,
+  shareGoal,
 }: {
   readonly match: PlayedMatch;
   readonly matchIndex: number;
@@ -122,6 +135,12 @@ export function MatchPlayer({
   readonly autoStart?: boolean;
   /** Shown under the scoreboard once the match is over. */
   readonly footer?: ReactNode;
+  /** Shown under the ticker, from the minute on the clock and the score that has landed. */
+  readonly aside?: (minute: number, score: Score) => ReactNode;
+  /** Opens the match seeked to this minute, as a goal link does. */
+  readonly startAt?: number;
+  /** The link a user goal's ticker line offers to share. */
+  readonly shareGoal?: (minute: number) => string;
 }) {
   // Quick is a still pitch with beat sounds only, so only a live broadcast with motion stages.
   const motion = !useReducedMotion() && view === "live";
@@ -137,14 +156,19 @@ export function MatchPlayer({
     [manager, match, lineup],
   );
   const env: PlayEnv = useMemo(
-    () => ({ timeline, stops, pace: PACE[view] }),
-    [timeline, stops, view],
+    () => ({ timeline, stops, pace: PACE[view], replays: motion }),
+    [timeline, stops, view, motion],
   );
-  const [state, setState] = useState<PlayState>(() => ({
-    ...START,
-    running: autoStart || manager !== undefined,
-  }));
+  const [state, setState] = useState<PlayState>(() => {
+    const start = { ...START, running: autoStart || manager !== undefined };
+    return startAt === undefined
+      ? start
+      : play(start, { type: "seek", minute: startAt, now: 0, env });
+  });
   const [error, setError] = useState<string | null>(null);
+  // Once the match has been played to the end it stays over: a seek replays it, with no touchline.
+  const [ended, setEnded] = useState(false);
+  if (state.stage === "done" && !ended) setEnded(true);
   const [now, setNow] = useState(0);
   // The play state of the newest frame, ahead of `state` between renders.
   const live = useRef(state);
@@ -252,9 +276,10 @@ export function MatchPlayer({
   const onBall = useCallback((x: number) => setCrowdLevel(crowdGain(x)), []);
 
   // Haptics ride on the beat sounds' fired sets, so a beat already played never buzzes again.
+  // A match opened at a minute has heard every beat before it.
   const haptics = soundOn && view === "live";
-  const sounded = useRef(new Set<string>());
-  const horned = useRef(new Set<string>());
+  const sounded = useRef(new Set(startAt === undefined ? [] : Object.keys(state.fired)));
+  const horned = useRef(new Set(startAt === undefined ? [] : Object.keys(state.fired)));
   useEffect(() => {
     const fresh: Beat[] = [];
     const scored: Extract<Beat, { kind: "goal" }>[] = [];
@@ -347,6 +372,24 @@ export function MatchPlayer({
     for (const { kick, cue } of due) KICK_SOUND[cue](kick, state.speed);
   }, [timeline, state.stage, state.kicks, state.speed, progress, motion]);
 
+  // A replay, or a match already played to full time, can seek; a live managed match cannot, so a
+  // seek never jumps a stop.
+  const seekable = manager === undefined || ended;
+  const seekTo = (minute: number) => {
+    unlockAudio();
+    send({ type: "seek", minute, now: performance.now(), env });
+    // The beats the seek passed count as heard, so none sounds again; later ones sound as they fire.
+    for (const b of timeline.beats) {
+      const key = beatKey(b);
+      const passed = live.current.fired[key] !== undefined;
+      for (const heard of [sounded.current, horned.current]) {
+        if (passed) heard.add(key);
+        else heard.delete(key);
+      }
+    }
+    cued.current.clear();
+  };
+
   const teams: Teams = { user: TEAMS_USER, opp: match.opponent.name };
   const clock = state.minute;
   const shown = timeline.beats.filter(
@@ -380,7 +423,7 @@ export function MatchPlayer({
     setError(why);
     if (why === null && d.kind === "sub") closeSheet();
   };
-  const sheet = manager !== undefined && !done;
+  const sheet = manager !== undefined && !ended;
   const { sheetRef, pitchRef, playerRef, spacerRef } = useSheet(
     sheet,
     state.uiHold,
@@ -427,6 +470,7 @@ export function MatchPlayer({
   const userMomentum = Math.round(50 + lean * 28);
   const oppMomentum = 100 - userMomentum;
 
+  const onPitch = staged(state, now);
   const hintId = useId();
   const stop = state.stop;
   const fullscreenToggle =
@@ -477,8 +521,30 @@ export function MatchPlayer({
         </span>
         <span className={`${s.team} ${s.teamOpp}`}>{match.opponent.name}</span>
       </div>
-      <div className={s.progress} aria-hidden="true">
-        <span style={{ width: `${Math.min(100, (clock / timeline.finalMinute) * 100)}%` }} />
+      <div className={s.bar} data-pips={seekable || undefined}>
+        <div className={s.progress} aria-hidden="true">
+          <span style={{ width: `${Math.min(100, (clock / timeline.finalMinute) * 100)}%` }} />
+        </div>
+        {seekable ? (
+          <div className={s.pips} role="group" aria-label="Goals">
+            {timeline.beats.map((b) =>
+              b.kind === "goal" ? (
+                <button
+                  key={beatKey(b)}
+                  type="button"
+                  className={s.pip}
+                  data-testid="goal-pip"
+                  data-side={b.side}
+                  style={{ "--at": `${(b.minute / timeline.finalMinute) * 100}%` } as CSSProperties}
+                  aria-label={`Watch the ${b.minute}' goal`}
+                  onClick={() => seekTo(b.minute - 1)}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              ) : null,
+            )}
+          </div>
+        ) : null}
       </div>
 
       <div className={s.hud} data-testid="match-hud">
@@ -509,13 +575,13 @@ export function MatchPlayer({
             match={match}
             timeline={timeline}
             lineup={lineup}
-            clock={clock}
-            now={now}
-            fired={state.fired}
+            clock={onPitch.clock}
+            now={onPitch.now}
+            fired={onPitch.fired}
             kicks={state.kicks}
             kickProgress={progress}
             motion={motion}
-            speed={state.speed}
+            speed={onPitch.speed}
             feed={feed}
             cutIns={view === "live"}
             camera={view === "live" ? cameraChoice : "full"}
@@ -532,6 +598,19 @@ export function MatchPlayer({
             }
           />
         </div>
+        {state.replay !== null ? (
+          <div className={s.replayBug} data-testid="instant-replay">
+            <span className={s.replayTag}>REPLAY</span>
+            <button
+              type="button"
+              className="btn btn--sm"
+              data-testid="replay-skip"
+              onClick={() => send({ type: "endReplay", now: performance.now() })}
+            >
+              Skip replay
+            </button>
+          </div>
+        ) : null}
         {fullscreenOn ? fullscreenToggle : null}
       </div>
 
@@ -680,9 +759,10 @@ export function MatchPlayer({
         </div>
       ) : null}
 
-      {done && footer !== undefined ? <div className={s.footer}>{footer}</div> : null}
+      {ended && footer !== undefined ? <div className={s.footer}>{footer}</div> : null}
 
-      <Ticker shown={shown} teams={teams} kicks={kicks} />
+      <Ticker shown={shown} teams={teams} kicks={kicks} shareGoal={shareGoal} />
+      {aside?.(Math.floor(clock), score)}
       {sheet ? <div ref={spacerRef} className={s.sheetSpacer} aria-hidden="true" /> : null}
     </section>
   );
@@ -718,15 +798,8 @@ function ScoreBug({
 }
 
 function frameOf(st: PlayState, now: number, pace: Pace): LiveFrame {
-  const at = frameNow(st, now);
-  return {
-    clock: st.minute,
-    now: at,
-    fired: st.fired,
-    kicks: st.kicks,
-    kickProgress: kickProgress(st, at, pace),
-    speed: st.speed,
-  };
+  const view = staged(st, now);
+  return { ...view, kicks: st.kicks, kickProgress: kickProgress(st, view.now, pace) };
 }
 
 // Under an open sheet or a stop the scoreboard, the HUD and the pitch stay in view, so the sheet
@@ -817,10 +890,12 @@ function Ticker({
   shown,
   teams,
   kicks,
+  shareGoal,
 }: {
   readonly shown: readonly ReturnType<typeof buildTimeline>["beats"][number][];
   readonly teams: Teams;
   readonly kicks: readonly ReturnType<typeof buildTimeline>["kicks"][number][];
+  readonly shareGoal?: (minute: number) => string;
 }) {
   const lines = [
     ...shown.map((b) => ({
@@ -828,6 +903,11 @@ function Ticker({
       kind: b.kind,
       side: "side" in b ? b.side : undefined,
       text: beatLine(b, teams),
+      minute: b.minute,
+      share:
+        shareGoal !== undefined && b.kind === "goal" && b.side === "user"
+          ? shareGoal(b.minute)
+          : undefined,
     })),
     ...kicks.map((k) => ({
       key: `kick:${k.index}`,
@@ -846,6 +926,9 @@ function Ticker({
         {lines.map((l, i) => (
           <li key={l.key} data-kind={l.kind} data-side={l.side} data-latest={i === 0 || undefined}>
             {l.text}
+            {"share" in l && l.share !== undefined ? (
+              <ShareGoalButton path={l.share} minute={l.minute} className={s.tickerShare} />
+            ) : null}
           </li>
         ))}
       </ol>
