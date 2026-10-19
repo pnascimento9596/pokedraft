@@ -9,6 +9,7 @@ import {
   useMemo,
   useRef,
   type CSSProperties,
+  type ReactNode,
   type RefObject,
 } from "react";
 import { FORMATIONS } from "@/engine";
@@ -252,6 +253,7 @@ export function Broadcast({
   cutIns = false,
   camera = "full",
   onBall,
+  scoreBug,
 }: {
   readonly match: PlayedMatch;
   /** The one timeline the match player clocks, sounds and stages from. */
@@ -274,6 +276,8 @@ export function Broadcast({
   readonly camera?: CameraMode;
   /** Hears where the staged ball is along the pitch, 0 to 100, after each render (about 10 Hz). */
   readonly onBall?: (x: number) => void;
+  /** Drawn over the camera's window, outside the zoomed pitch (the full-screen score bug). */
+  readonly scoreBug?: ReactNode;
 }) {
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
@@ -578,6 +582,7 @@ export function Broadcast({
             {stage.playCallout.callout.text}
           </div>
         ) : null}
+        {scoreBug}
       </div>
 
       <div className={s.overlay}>

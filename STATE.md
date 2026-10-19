@@ -24,6 +24,33 @@ Gates at `5e4b90d` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/broadcast-follow-ups.md`. Browser proof: `docs/reports/broadcast-follow-ups/`.
 
+## Landscape, full screen and score bug
+
+Branch `feat/fullscreen-score-bug` off `feat/follow-camera` at `be5a86f`. Wave 3 row 3c, matchday player, scoreboard and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The pitch is never taller than 70% of the screen. On a phone turned to landscape (844x390) it is 427 by 273 px, wholly on screen and letterboxed, where it was 778 by 498 and ran off the screen. Portrait phones are unchanged. On a 1280x720 desktop the pitch is 788 px wide instead of 1214.
+- In Watch live a "Full screen" button (44 px target) ends the control row on browsers with the Fullscreen API. In full screen the same button reads "Exit full screen" in the corner; Esc also leaves. The broadcast is centred and padded by the safe-area insets.
+- iPhone Safari has no Fullscreen API for a page element, so the button is hidden there instead of doing nothing. The phone check confirms it.
+- In full screen only, a TV-style score bug sits in the top left corner over the pitch, outside the follow camera's zoom: "Your XI", the score as 1-0, the club's town ("Goldenrod"), the clock, and "Pens 3-2" in a shootout.
+- A half-time, injury or extra-time question leaves full screen, so it can be answered.
+- In landscape the touchline sits in the page under the pitch, every control at least 44 px, and a substitution goes through.
+- The 320 px scoreboard no longer breaks "Goldenrod United" mid-word (the Wave 1 carryover); a name wraps between words only.
+
+RED commits: `139417f` (6 of 8 failed in the unit file; `fullscreen-score-bug.spec.ts` failed 4 of 4 on a `be5a86f` build) and `cd472f4` (the stop step; it failed 1 of 4 on a build of the fix with the stop effect disabled).
+
+Gates at `3d76f09` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 7 touched code and test files.
+- Unit tests: 1,580 passed in 183 files.
+- Playwright (`CI=1`, fresh build of the `3d76f09` code): `fullscreen-score-bug`, `follow-camera`, `touchline-sheet`, `team-readability`, `broadcast-frame-loop`, `manager-mode`, `mobile-targets`, `mobile-acceptance` and `mobile-pitch-fixes` 411 passed, 56 skipped by their own project gates, 3 failed. The 3 are `mobile-pitch-fixes` at 390, 360 and 320 (carrier nameplate scale 1.6, not 1), and a `be5a86f` build fails the same 3: they come from row 3b's Follow default, not this row.
+- Review, hosted CI, the full e2e suite, real safe-area insets and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/fullscreen-score-bug.md`. Browser proof: `docs/reports/fullscreen-score-bug/`.
+
+Merged origin/main after PRs #106 and #107 at `d29858d`. `MatchPlayer.tsx` and its CSS conflicted in the control row and the pitch wrapper; all three rows' controls stay (camera group, full-screen button, then the haptics hint on its own line). Two specs failed after the merge: at 320x640 the match opened with the pitch top 41 px above the screen (`touchline-sheet`, the prematch screen's scroll carried into the match), and `fullscreen-score-bug` read `document.fullscreenElement` before the async exit settled. `1bc8259` brings the pitch into view a frame after the match mounts and makes the spec poll. At `1bc8259` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,590 unit tests passed in 185 files (a first run failed 2 tests that three reruns passed; recorded as a flake), `touchline-sheet` passed 8 of 8, `fullscreen-score-bug`, `mobile-pitch-fixes`, `follow-camera`, `haptics`, `audio-polish`, `injury-staging`, `manager-mode`, `prematch-merge`, `your-calls` and `shootout-suspense` 32 of 32, and `mobile-targets` 93 of 93 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #108 (row 3c, landscape, full screen and score bug) merged as squash `b9c9113`, reviewed head `4bc15fd`, GLM 5.3 Flash APPROVE in round 1 with canary `fullscreen-score-bug-56dd14693a0c5177c59f07c565ead175` echoed. At `4bc15fd` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,590 unit tests passed in 185 files and Prettier passed on 9 touched files; all eight e2e shards green, and the hosted check passed on a rerun of the failed job after `MatchPlayer.haptics.test.tsx` timed out twice at 15,000 ms (run 39178857787; it stepped every frame, fixed in this row). Production `/api/health?db=1` served `b9c9113` with `db.status` ok, and `fullscreen-score-bug.spec.ts` plus `touchline-sheet.spec.ts` against production (chromium) passed 12 of 12. NOT RUN: physical phone check (owner action), real safe-area insets.
+
 ## Haptics and tap for sound
 
 Branch `feat/haptics` off `40221a8`. Wave 3 row 3e, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `Broadcast.tsx` is untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -46,6 +73,8 @@ Gates at `49c1ef2` (code identical at the docs commit that adds this section):
 Measurements and decisions are in `docs/decisions/haptics.md`. Browser proof: `docs/reports/haptics/`.
 
 Merged origin/main after PR #106 (row 3b) at `1d337d5`. `MatchPlayer.tsx` and its CSS conflicted where both rows added a control after the sound toggle; both stay, the camera group on the controls row and the haptics hint on its own line below. After the merge lint, typecheck and build exited 0, 394 matchday and UI unit tests passed in 58 files, `haptics`, `follow-camera`, `audio-polish` and `mobile-pitch-fixes` passed 13 of 13 and `mobile-targets` 93 of 93 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #107 (row 3e, haptics and tap for sound) merged as squash `8247f20`, reviewed head `f729d11`, GLM 5.3 Flash APPROVE in round 1 with canary `haptics-1568e86cb64bdbbb152c99156adf2c7d` echoed. At `f729d11` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,582 unit tests passed in 184 files and Prettier passed on 11 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `8247f20` with `db.status` ok, and `haptics.spec.ts` plus `audio-polish.spec.ts` against production (chromium) passed 5 of 5. NOT RUN: physical phone check (owner action), including a real Android vibration.
 
 ## Follow camera
 
