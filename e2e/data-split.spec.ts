@@ -59,7 +59,7 @@ test("the builder home does not download the species data during load, and the p
 }) => {
   const data = watchDataChunk(page);
   await coldLoad(page, "/");
-  await expect(page.getByRole("heading", { name: "Build your XI" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Friendly builder" })).toBeVisible();
   expect(await requestedBeforeLoad(page, await data.requested())).toEqual([]);
 
   await page.getByTestId("slot-s0").click();

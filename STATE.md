@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Home hierarchy
+
+Branch `feat/home-hierarchy` off `origin/main` at `fb03b7a`, with `origin/main` merged at `63462b3` (PR #116) in `b9e8225`. Wave 4 row 4b, home page (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Home opens on the heading "Draft a Pokémon XI and win the cup." with "Spin for players, fill a formation, then play the cup." under it.
+- Three cards follow: 8-0 Challenge, 151 Challenge and Daily. Each has one rule line and its Play button. The 8-0 card shows the draft style. The Daily card shows the date the daily plays (New York date, as on `/daily`) and Play Daily opens `/daily`.
+- On phones and tablets (below 1024px) Settings and records start closed behind one button. On a desktop they show beside the builder. The Edit link from a start card still opens them. The Challenge Hub button is gone.
+- The builder is now "Friendly builder" with "Build your XI, then play a Friendly cup." under it, and its header shows chemistry (for example "4% chemistry") beside the fill count.
+- The cards sit two across from 380px and stack in one column on narrower phones.
+
+RED commit: `a6f9b9a` (8 of 8 unit tests failed in 1 file; `e2e/home-hierarchy.spec.ts` failed 6 of 6 against a build of that commit). GREEN `f3b9b40`.
+
+Gates at `b9e8225` (the merge of `63462b3`; the docs commit that follows changes only docs and proof PNGs):
+
+- Lint, typecheck and build exited 0. All eight `check:*` scripts exited 0. Prettier passed on the 26 code files changed since `fb03b7a` (this row's and #116's).
+- Unit tests: 1,726 passed in 202 files.
+- Playwright (`CI=1`, headless, fresh build at `b9e8225`), full suite: 935 passed, 63 skipped by their own project gates, 0 failed, 0 retries. `home-hierarchy` passed 6 of 6.
+- NOT RUN: review, hosted CI, a physical phone check and a real screen reader pass (owner actions), home first-load JS and CLS.
+
+Decision log: `docs/decisions/home-hierarchy.md`. Browser proof: `docs/reports/home-hierarchy/` (home at 390, 360, 320 and 1280).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Live Team Score in the draft
 
 Branch `feat/live-team-score` off `origin/main` at `d48aa0f`, with `origin/main` merged at `fb03b7a` (PR #115) in fix round 1. Wave 4 row 4c (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -26,6 +49,8 @@ Gates at `c617d85` (fix round 1, the merge of `fb03b7a`; the docs commit that fo
 Decision log: `docs/decisions/live-team-score.md`. Proof: `docs/reports/live-team-score/` (390x844, 360x800 and 320x568, ratings on and off, cap warning, drag delta, full draft).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #116 (row 4c, live Team Score in the draft) merged as squash `63462b3`, reviewed head `ef1244a` after one fix round (merge of #115, no code change), GLM 5.3 Flash APPROVE in round 1 with canary `live-team-score-77cfb24e6188d06252c9a5342d5c9e51` echoed. At `ef1244a` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,720 unit tests passed in 201 files and Prettier passed on 8 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `63462b3` with `db.status` ok, and `live-team-score`, `challenge-ratings` and `draft-flow` against production (chromium) passed 31 of 31. NOT RUN: physical phone check (owner action), a real screen reader.
 
 ## One-tap play
 

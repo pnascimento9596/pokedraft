@@ -7,8 +7,16 @@
 
 .score {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  gap: 4px 12px;
   min-height: 44px;
+}
+
+.chemistry {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-soft);
 }
 
 .score :global(.scorebug) {

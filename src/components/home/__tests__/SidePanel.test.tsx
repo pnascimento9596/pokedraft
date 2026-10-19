@@ -69,16 +69,12 @@ describe("the Show ratings (challenges) switch (catches a challenge setting that
     expect(saved()).toMatchObject({ showRatings: true, showChallengeRatings: true });
     expect(builderSwitch().getAttribute("aria-checked")).toBe("true");
   });
-
-  it("renders the Trainer Dugout eyebrow on the Play module card", () => {
-    render(<HomeScreen />);
-    expect(screen.getByText("Trainer Dugout")).toBeTruthy();
-  });
 });
 
 describe("the home Matchday settings with manager mode (catches a Quick choice a manager can make but cannot coach)", () => {
-  // The builder's friendly card shows the same settings, so read the Control desk's own copy.
-  const desk = () => within(screen.getByRole("complementary", { name: "Control desk" }));
+  // The builder's friendly card shows the same settings, so read the challenge cards' own copy.
+  const desk = () =>
+    within(screen.getByRole("region", { name: "Draft a Pokémon XI and win the cup." }));
   const managerSwitch = () => desk().getByRole("switch", { name: /Manager mode/ });
   const quick = () => desk().getByRole("button", { name: "Quick sim" }) as HTMLButtonElement;
   const live = () => desk().getByRole("button", { name: "Live match" });

@@ -151,6 +151,8 @@ export function Builder({
       ? desk.engine.ratePartialLineup(lineup)
       : null;
   const score = teamRating?.score ?? null;
+  const synergy = (teamRating ?? partialRating)?.synergy ?? null;
+  const chemistry = filled > 0 && synergy !== null ? Math.round(synergy * 100) : null;
   const shown = cascade === null ? lineup : cascadeFrame(cascade.target, cascade.pool, elapsed);
   const picked =
     swapFrom !== null && !animating && valueAt(lineup, swapFrom) !== null ? swapFrom : null;
@@ -281,10 +283,8 @@ export function Builder({
       onFocus={preload}
     >
       <ModuleCard
-        eyebrow="Friendly builder"
-        title="Build your XI"
-        description="Choose your players, then play a Friendly cup."
-        headingLevel={1}
+        title="Friendly builder"
+        description="Build your XI, then play a Friendly cup."
         variant="emphasis"
         icon={<NavIcon family="play" />}
         meta={
@@ -302,6 +302,9 @@ export function Builder({
                 <span>Fill all 16 to see your Team Score</span>
               </span>
             )}
+            {chemistry !== null ? (
+              <span className={s.chemistry}>{chemistry}% chemistry</span>
+            ) : null}
           </div>
         }
       >
