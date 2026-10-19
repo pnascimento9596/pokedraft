@@ -79,6 +79,17 @@ describe("MatchReplay on a shared run (catches the shared match player still say
     expect(ticker).not.toContain("Your");
   });
 
+  it("writes Goal for this squad! in lower case mid-sentence (catches Goal for This squad!)", () => {
+    const { draft, cup } = replay(LIVE);
+    render(
+      <MatchReplay cup={cup} draft={draft} matchIndex={0} variant="shared" onClose={() => {}} />,
+    );
+    fireEvent.click(screen.getByTestId("skip-ft"));
+    const ticker = screen.getByTestId("ticker").textContent ?? "";
+    expect(ticker).toContain("49' Goal for this squad!");
+    expect(ticker).not.toContain("This squad!");
+  });
+
   it("keeps Your XI, Your side and Your assistant on the live run", () => {
     const { draft, cup } = replay(LIVE);
     render(<MatchReplay cup={cup} draft={draft} matchIndex={0} onClose={() => {}} />);

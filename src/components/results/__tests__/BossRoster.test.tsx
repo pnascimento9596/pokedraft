@@ -102,7 +102,14 @@ describe("BossRoster", () => {
     expect(within(roster).getByText("Flareon")).toBeTruthy();
     expect(within(roster).getByText("GK")).toBeTruthy();
     expect(within(roster).getByText("RW")).toBeTruthy();
-    expect(within(roster).getAllByRole("img", { hidden: true })).toHaveLength(11);
+    expect(roster.querySelectorAll("[data-player-image]")).toHaveLength(11);
+  });
+
+  it("names each Boss XI player once, by the visible name, not again by the picture (catches Charmander read twice)", () => {
+    render(<BossRoster opponent={boss} />);
+    const roster = screen.getByRole("list", { name: "Fire Club starting eleven", hidden: true });
+    expect(within(roster).getByText("Charmander")).toBeTruthy();
+    expect(within(roster).queryAllByRole("img", { hidden: true })).toEqual([]);
   });
 
   it("labels retained opponents as shirt numbers without inventing species, theme or formation", () => {

@@ -191,6 +191,15 @@ describe("randomizer wheel", () => {
     ]);
   });
 
+  it("reads the landed species once, by its visible name, not again as the picture's alt (catches Pikachu read twice)", () => {
+    const roll: Roll = { kind: "species", species: 25 as never };
+    const [stage] = stagesFor(roll, SETTINGS[2]!, "new");
+    render(<Wheel stage={stage!} state="settled" speed="normal" onSettle={() => {}} />);
+    const result = screen.getByTestId("wheel-result");
+    expect(result.textContent).toBe("Pikachu#025");
+    expect(screen.queryAllByRole("img", { name: "Pikachu" })).toEqual([]);
+  });
+
   it("skips straight to the landing faces on tap and announces them, so tap-to-skip never strands a half-spun reel", () => {
     const roll: Roll = { kind: "combo", region: "hoenn", type: "water", offers: null };
     render(
