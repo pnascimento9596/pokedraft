@@ -1278,7 +1278,7 @@ test("5 drag and scroll: a vertical swipe that starts on the pitch's grass scrol
   conclude("5 drag and scroll: swipe on the pitch", problems);
 });
 
-test("5 drag and scroll: after a touch drag, the next tap on a slot still opens the Picker (real touch on pixel-7)", async ({
+test("5 drag and scroll: after a touch drag, the next tap on a slot still selects it (real touch on pixel-7)", async ({
   page,
 }) => {
   test.skip(
@@ -1293,14 +1293,13 @@ test("5 drag and scroll: after a touch drag, the next tap on a slot still opens 
   await touchDrag(page, centre((await a.boundingBox())!), centre((await b.boundingBox())!));
   await settle(page);
   await tapNow(page, page.getByTestId("slot-s9"), "slot-s9 after the drag");
-  const opened = await page
-    .locator("dialog[open]")
-    .waitFor({ state: "visible", timeout: 3_000 })
+  const selected = await expect(page.getByTestId("slot-s9"))
+    .toHaveAttribute("aria-pressed", "true", { timeout: 3_000 })
     .then(() => true)
     .catch(() => false);
   conclude(
     "5 drag and scroll: tap after a touch drag",
-    opened ? [] : ["the first tap on a slot after a touch drag did not open the Picker"],
+    selected ? [] : ["the first tap on a slot after a touch drag did not select it"],
   );
 });
 

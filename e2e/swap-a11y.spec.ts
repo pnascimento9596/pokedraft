@@ -166,6 +166,8 @@ test("the Picker gives focus back to the slot after a pick and after Clear slot 
   const afterPick = await page.evaluate(() => document.activeElement?.getAttribute("aria-label"));
 
   await page.keyboard.press("Enter");
+  await expect(slot).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("Enter");
   await expect(dialog).toBeVisible();
   await dialog.getByRole("button", { name: "Clear slot" }).focus();
   await page.keyboard.press("Enter");
