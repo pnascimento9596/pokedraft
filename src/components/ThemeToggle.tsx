@@ -1,8 +1,8 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { readJson, writeJson } from "@/ui/storage";
-import { THEME_KEY, applyTheme, type Theme } from "@/ui/theme";
+import { THEME_KEY, applyTheme, bootTheme, type Theme } from "@/ui/theme";
 
 const NEXT: Readonly<Record<Theme, Theme>> = { system: "dark", dark: "light", light: "system" };
 const LABEL: Readonly<Record<Theme, string>> = {
@@ -31,6 +31,11 @@ function storedChoice(): Theme {
 
 export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, storedChoice, () => "system" as const);
+
+  useEffect(() => {
+    if (document.documentElement.hasAttribute("data-theme")) return;
+    return bootTheme(storedChoice);
+  }, []);
 
   return (
     <button
