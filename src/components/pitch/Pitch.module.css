@@ -24,7 +24,7 @@
   background: var(--stadium-turf);
   box-shadow:
     0 24px 0 var(--stadium-edge),
-    0 35px 50px rgba(0, 0, 0, 0.85);
+    0 35px 50px var(--pitch-field-shadow);
 }
 .lines {
   position: absolute;
@@ -101,7 +101,7 @@
   color: var(--stadium-ink);
   box-shadow:
     0 0 10px color-mix(in srgb, var(--card-type, var(--stadium-empty)) 50%, transparent),
-    0 4px 6px rgba(0, 0, 0, 0.5);
+    0 4px 6px var(--pitch-token-shadow);
   cursor: pointer;
   transition: scale 200ms ease-out;
   /* A vertical swipe on a card scrolls the page; a drag that starts sideways still swaps. */
@@ -176,21 +176,21 @@
   box-shadow:
     0 0 0 2px var(--stadium-suitability-best),
     0 0 16px var(--stadium-suitability-best-glow),
-    0 4px 6px rgba(0, 0, 0, 0.5);
+    0 4px 6px var(--pitch-token-shadow);
 }
 .token[data-suitability="ok"] {
   border-color: var(--stadium-suitability-ok);
   box-shadow:
     0 0 0 2px var(--stadium-suitability-ok),
     0 0 10px var(--stadium-suitability-ok-glow),
-    0 4px 6px rgba(0, 0, 0, 0.5);
+    0 4px 6px var(--pitch-token-shadow);
 }
 .token[data-suitability="bad"] {
   border-color: var(--stadium-suitability-bad);
   box-shadow:
     0 0 0 2px var(--stadium-suitability-bad),
     0 0 16px var(--stadium-suitability-bad-glow),
-    0 4px 6px rgba(0, 0, 0, 0.5);
+    0 4px 6px var(--pitch-token-shadow);
 }
 .token[data-weak] {
   box-shadow: 0 0 0 3px var(--stadium-ring);
@@ -212,7 +212,7 @@
   font-weight: 800;
 }
 .cardRole {
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--pitch-role-fill);
   padding: 1px 3px;
   border-radius: 3px;
   letter-spacing: 0.02em;
@@ -233,7 +233,7 @@
   color: var(--stadium-ink);
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 4px var(--pitch-token-shadow);
 }
 .tokenImage {
   display: flex;
@@ -242,7 +242,7 @@
   width: 100%;
   height: 32px;
   flex: none;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 4px 6px var(--pitch-token-shadow));
 }
 .tokenImage > :global([data-player-image]) {
   width: min(30px, 100cqi) !important;

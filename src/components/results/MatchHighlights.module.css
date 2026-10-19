@@ -6,16 +6,16 @@
   gap: 12px;
   background: radial-gradient(
     circle at 50% 0%,
-    rgba(30, 41, 59, 0.7) 0%,
-    rgba(15, 23, 42, 0.95) 100%
+    var(--highlights-panel-top) 0%,
+    var(--highlights-panel-bottom) 100%
   );
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--highlights-line);
   border-radius: var(--radius-xl, 18px);
   padding: 16px;
   margin-bottom: 20px;
   box-shadow:
-    0 10px 30px -10px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 10px 30px -10px var(--highlights-shadow),
+    inset 0 1px 0 var(--highlights-line);
   position: relative;
   overflow: hidden;
 }
@@ -39,7 +39,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--accent-light, rgb(56, 189, 248));
+  color: var(--highlights-star);
 }
 
 .matchTitle {
@@ -59,26 +59,26 @@
   font-weight: 800;
   border-radius: 9999px;
   letter-spacing: 0.04em;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--highlights-pill-fill);
+  border: 1px solid var(--highlights-line-strong);
 }
 
 .scorePill[data-outcome="W"] {
-  color: rgb(74, 222, 128);
-  border-color: rgba(74, 222, 128, 0.4);
-  background: rgba(34, 197, 94, 0.12);
+  color: var(--highlights-win);
+  border-color: var(--highlights-win-edge);
+  background: var(--highlights-win-fill);
 }
 
 .scorePill[data-outcome="D"] {
-  color: rgb(250, 204, 21);
-  border-color: rgba(250, 204, 21, 0.4);
-  background: rgba(234, 179, 8, 0.12);
+  color: var(--highlights-gold);
+  border-color: var(--highlights-draw-edge);
+  background: var(--highlights-draw-fill);
 }
 
 .scorePill[data-outcome="L"] {
-  color: rgb(248, 113, 113);
-  border-color: rgba(248, 113, 113, 0.4);
-  background: rgba(239, 68, 68, 0.12);
+  color: var(--highlights-loss);
+  border-color: var(--highlights-loss-edge);
+  background: var(--highlights-loss-fill);
 }
 
 /* Match navigation strip */
@@ -101,8 +101,8 @@
   width: 44px;
   height: 44px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--highlights-button-fill);
+  border: 1px solid var(--highlights-line);
   color: var(--stadium-muted);
   font-size: 13px;
   cursor: pointer;
@@ -111,8 +111,8 @@
 }
 
 .navArrow:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.15);
-  color: rgb(255, 255, 255);
+  background: var(--highlights-line-strong);
+  color: var(--highlights-ink-bright);
 }
 
 .navArrow:disabled {
@@ -137,24 +137,29 @@
   border-radius: 9999px;
   font-size: 12px;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgb(148, 163, 184);
+  background: var(--highlights-chip-fill);
+  border: 1px solid var(--highlights-chip-edge);
+  color: var(--highlights-ink-muted);
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s ease;
 }
 
 .matchChip:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgb(241, 245, 249);
+  background: var(--highlights-line);
+  color: var(--highlights-ink-hover);
 }
 
 .matchChip[data-active="true"] {
-  background: color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 22%, rgba(15, 23, 42, 0.9));
-  border-color: var(--star-color, rgb(56, 189, 248));
-  color: rgb(255, 255, 255);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 35%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--star-color, var(--highlights-star)) 22%,
+    var(--highlights-chip-active-base)
+  );
+  border-color: var(--star-color, var(--highlights-star));
+  color: var(--highlights-ink-bright);
+  box-shadow: 0 0 10px
+    color-mix(in srgb, var(--star-color, var(--highlights-star)) 35%, transparent);
 }
 
 .outcomeDot {
@@ -165,16 +170,16 @@
 }
 
 .outcomeDot[data-outcome="W"] {
-  background: rgb(74, 222, 128);
-  box-shadow: 0 0 4px rgb(74, 222, 128);
+  background: var(--highlights-win);
+  box-shadow: 0 0 4px var(--highlights-win);
 }
 
 .outcomeDot[data-outcome="D"] {
-  background: rgb(250, 204, 21);
+  background: var(--highlights-gold);
 }
 
 .outcomeDot[data-outcome="L"] {
-  background: rgb(248, 113, 113);
+  background: var(--highlights-loss);
 }
 
 /* Stage Arena */
@@ -186,18 +191,18 @@
   gap: 16px;
   background: radial-gradient(
     ellipse at 35% 75%,
-    rgba(16, 185, 129, 0.18) 0%,
-    rgba(6, 78, 59, 0.28) 50%,
-    rgba(15, 23, 42, 0.95) 100%
+    var(--highlights-turf-top) 0%,
+    var(--highlights-turf-mid) 50%,
+    var(--highlights-panel-bottom) 100%
   );
   border: 1px solid
-    color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 40%, rgba(255, 255, 255, 0.1));
+    color-mix(in srgb, var(--star-color, var(--highlights-star)) 40%, var(--highlights-line));
   border-radius: var(--radius-lg, 14px);
   padding: 16px 20px;
   min-height: 200px;
   box-shadow:
-    inset 0 0 40px rgba(0, 0, 0, 0.6),
-    0 0 20px color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 15%, transparent);
+    inset 0 0 40px var(--highlights-stage-shade),
+    0 0 20px color-mix(in srgb, var(--star-color, var(--highlights-star)) 15%, transparent);
   overflow: hidden;
 }
 
@@ -209,7 +214,7 @@
   left: 20%;
   width: 140px;
   height: 240px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, var(--highlights-line-strong) 0%, transparent 70%);
   transform: rotate(-15deg);
   pointer-events: none;
   opacity: 0.7;
@@ -224,7 +229,7 @@
   height: 240px;
   background: radial-gradient(
     ellipse at 50% 0%,
-    color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 30%, transparent) 0%,
+    color-mix(in srgb, var(--star-color, var(--highlights-star)) 30%, transparent) 0%,
     transparent 70%
   );
   transform: rotate(15deg);
@@ -239,7 +244,7 @@
   left: 24px;
   width: 160px;
   height: 48px;
-  border: 1.5px dashed rgba(255, 255, 255, 0.15);
+  border: 1.5px dashed var(--highlights-line-strong);
   border-radius: 50%;
   pointer-events: none;
   transform: rotateX(60deg);
@@ -264,8 +269,8 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 35%, transparent) 0%,
-    color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 10%, transparent) 60%,
+    color-mix(in srgb, var(--star-color, var(--highlights-star)) 35%, transparent) 0%,
+    color-mix(in srgb, var(--star-color, var(--highlights-star)) 10%, transparent) 60%,
     transparent 80%
   );
   filter: blur(8px);
@@ -278,7 +283,7 @@
   z-index: 2;
   transform-origin: bottom center;
   animation: spriteIdle 1.2s ease-in-out infinite alternate;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 6px 10px var(--highlights-shadow));
   transition: transform 0.2s ease;
 }
 
@@ -303,7 +308,7 @@
   left: 50%;
   width: 22px;
   height: 8px;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--highlights-stage-shade);
   border-radius: 50%;
   transform: translateX(-50%);
   animation: shadowPulse 1.2s ease-in-out infinite;
@@ -319,7 +324,7 @@
   left: 50%;
   transform-origin: center center;
   animation: dribbleCrossover 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 2px 4px var(--highlights-ball-shadow));
 }
 
 .ball[data-striking="true"] {
@@ -346,16 +351,16 @@
   font-weight: 800;
   padding: 2px 7px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--highlights-line);
   color: var(--stadium-ink);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--highlights-pill-edge);
   letter-spacing: 0.05em;
 }
 
 .starName {
   font-size: 20px;
   font-weight: 800;
-  color: rgb(255, 255, 255);
+  color: var(--highlights-ink-bright);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -364,7 +369,7 @@
 .headlineText {
   font-size: 14px;
   font-weight: 700;
-  color: var(--star-color, rgb(56, 189, 248));
+  color: var(--star-color, var(--highlights-star));
   display: flex;
   align-items: center;
   gap: 4px;
@@ -372,7 +377,7 @@
 
 .statSummary {
   font-size: 12px;
-  color: rgb(148, 163, 184);
+  color: var(--highlights-ink-muted);
   font-weight: 500;
 }
 
@@ -381,10 +386,10 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: rgba(15, 23, 42, 0.65);
+  background: var(--highlights-ability-fill);
   border: 1px solid
-    color-mix(in srgb, var(--star-color, rgb(56, 189, 248)) 28%, rgba(255, 255, 255, 0.08));
-  border-left: 3px solid var(--star-color, rgb(56, 189, 248));
+    color-mix(in srgb, var(--star-color, var(--highlights-star)) 28%, var(--highlights-chip-edge));
+  border-left: 3px solid var(--star-color, var(--highlights-star));
   border-radius: 8px;
   padding: 6px 10px;
   margin-top: 2px;
@@ -396,13 +401,13 @@
   gap: 6px;
   font-size: 11px;
   font-weight: 700;
-  color: rgb(226, 232, 240);
+  color: var(--highlights-ink-soft);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .abilityTag {
-  color: var(--star-color, rgb(56, 189, 248));
+  color: var(--star-color, var(--highlights-star));
 }
 
 .abilityFlavor {
@@ -429,18 +434,18 @@
   min-height: 44px;
   font-size: 13px;
   font-weight: 700;
-  color: var(--stadium-card, rgb(15, 23, 42));
-  background: linear-gradient(135deg, rgb(250, 204, 21) 0%, rgb(245, 158, 11) 100%);
+  color: var(--stadium-card);
+  background: linear-gradient(135deg, var(--highlights-gold) 0%, var(--highlights-amber) 100%);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 4px 12px var(--highlights-strike-glow);
   transition: all 0.15s ease;
 }
 
 .strikeButton:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45);
+  box-shadow: 0 6px 16px var(--highlights-strike-glow-hover);
   filter: brightness(1.08);
 }
 
@@ -462,17 +467,17 @@
   min-height: 44px;
   font-size: 11px;
   font-weight: 600;
-  color: rgb(148, 163, 184);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--highlights-ink-muted);
+  background: var(--highlights-chip-fill);
+  border: 1px solid var(--highlights-line);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .motionToggle:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgb(241, 245, 249);
+  background: var(--highlights-line);
+  color: var(--highlights-ink-hover);
 }
 
 /* Goal Celebration Overlay */
@@ -483,7 +488,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 23, 42, 0.85);
+  background: var(--highlights-overlay);
   backdrop-filter: blur(4px);
   z-index: 10;
   animation: goalBannerEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -493,16 +498,16 @@
 .goalTitle {
   font-size: 32px;
   font-weight: 900;
-  color: rgb(250, 204, 21);
+  color: var(--highlights-gold);
   letter-spacing: 0.05em;
-  text-shadow: 0 0 20px rgba(250, 204, 21, 0.7);
+  text-shadow: 0 0 20px var(--highlights-goal-glow);
   animation: goalPop 0.4s ease-out;
 }
 
 .goalSubtitle {
   font-size: 14px;
   font-weight: 700;
-  color: rgb(255, 255, 255);
+  color: var(--highlights-ink-bright);
   margin-top: 4px;
 }
 
@@ -513,15 +518,15 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--stadium-muted);
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--highlights-reset-fill);
+  border: 1px solid var(--highlights-reset-edge);
   border-radius: 8px;
   cursor: pointer;
 }
 
 .goalResetBtn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: rgb(255, 255, 255);
+  background: var(--highlights-reset-edge);
+  color: var(--highlights-ink-bright);
 }
 
 /* Keyframe Animations */

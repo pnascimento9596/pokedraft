@@ -44,8 +44,8 @@
   padding: 10px 12px 12px;
   border-radius: var(--radius);
   background: var(--stadium-rainbow);
-  border: 1.5px solid rgba(116, 229, 173, 0.35);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  border: 1.5px solid var(--side-card-border);
+  box-shadow: 0 4px 16px var(--side-panel-shadow);
   color: var(--stadium-ink);
 }
 .cardTitle {
@@ -100,8 +100,8 @@
   color: var(--stadium-card);
   border: 1px solid var(--action-border);
   box-shadow:
-    0 0 12px rgba(244, 206, 82, 0.25),
-    0 2px 6px rgba(0, 0, 0, 0.25);
+    0 0 12px var(--side-cta-glow),
+    0 2px 6px var(--side-panel-shadow);
   transition:
     transform var(--dur-1) ease,
     box-shadow var(--dur-1) ease;
@@ -110,8 +110,8 @@
   .cta:hover {
     transform: translateY(-2px);
     box-shadow:
-      0 0 18px rgba(244, 206, 82, 0.4),
-      0 4px 10px rgba(0, 0, 0, 0.3);
+      0 0 18px var(--side-cta-glow-hover),
+      0 4px 10px var(--side-panel-shadow-hover);
   }
 }
 .hint {

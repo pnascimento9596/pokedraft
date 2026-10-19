@@ -1,0 +1,19 @@
+pnpm exec tsx scripts/audit/cvd-nudge.mts dark-tokens   (tree at b4ffd13, 8.1 s)
+failing pairs: --type-ground/--type-grass, --type-rock/--type-fire
+0.218 total: --type-fire #D9D792 -> #D9D791 (0.119), --type-grass #5BC355 -> #5BC354 (0.099)
+0.226 total: --type-grass #5BC355 -> #5BC354 (0.099), --type-rock #DDE3B0 -> #DDE3B1 (0.127)
+0.237 total: --type-fire #D9D792 -> #D9D791 (0.119), --type-ground #CEB173 -> #CEB174 (0.118)
+0.245 total: --type-ground #CEB173 -> #CEB174 (0.118), --type-rock #DDE3B0 -> #DDE3B1 (0.127)
+
+pnpm exec tsx scripts/audit/cvd-nudge.mts type-palette   (tree at b4ffd13, 91.6 s)
+failing pairs: normal/psychic, fire/grass, fire/bug, fire/rock, water/flying, grass/ground, grass/bug, poison/ghost
+12.992 total: fire #EE8130 -> #DD730F (4.740), flying #A98FF3 -> #AA96F6 (1.726), grass #7AC74C -> #89BC5F (4.384), poison #A33EA1 -> #A63EAA (1.493), psychic #F95587 -> #F65589 (0.648)
+13.024 total: fire #EE8130 -> #DD730F (4.740), flying #A98FF3 -> #AA96F6 (1.726), ghost #735797 -> #70568E (1.525), grass #7AC74C -> #89BC5F (4.384), psychic #F95587 -> #F65589 (0.648)
+13.038 total: fire #EE8130 -> #DD730F (4.740), grass #7AC74C -> #89BC5F (4.384), poison #A33EA1 -> #A63EAA (1.493), psychic #F95587 -> #F65589 (0.648), water #6390F0 -> #6689EE (1.773)
+13.070 total: fire #EE8130 -> #DD730F (4.740), ghost #735797 -> #70568E (1.525), grass #7AC74C -> #89BC5F (4.384), psychic #F95587 -> #F65589 (0.648), water #6390F0 -> #6689EE (1.773)
+13.447 total: fire #EE8130 -> #DD730F (4.740), flying #A98FF3 -> #AA96F6 (1.726), grass #7AC74C -> #89BC5F (4.384), normal #A8A77A -> #ABAA80 (1.104), poison #A33EA1 -> #A63EAA (1.493)
+13.480 total: fire #EE8130 -> #DD730F (4.740), flying #A98FF3 -> #AA96F6 (1.726), ghost #735797 -> #70568E (1.525), grass #7AC74C -> #89BC5F (4.384), normal #A8A77A -> #ABAA80 (1.104)
+13.494 total: fire #EE8130 -> #DD730F (4.740), grass #7AC74C -> #89BC5F (4.384), normal #A8A77A -> #ABAA80 (1.104), poison #A33EA1 -> #A63EAA (1.493), water #6390F0 -> #6689EE (1.773)
+13.526 total: fire #EE8130 -> #DD730F (4.740), ghost #735797 -> #70568E (1.525), grass #7AC74C -> #89BC5F (4.384), normal #A8A77A -> #ABAA80 (1.104), water #6390F0 -> #6689EE (1.773)
+
+The first line of each run shipped. Changes are Oklab distance x 100 from the original, normal vision.

@@ -44,3 +44,9 @@ export const CARD_THEME = {
   radiusMd: 10,
   radiusSm: 8,
 } as const;
+
+// The blank creature picture, drawn by Satori on the share card as well as in the page.
+export const BLANK_PICTURE = {
+  border: "rgba(128, 140, 132, 0.55)",
+  fill: "rgba(128, 140, 132, 0.16)",
+} as const;
