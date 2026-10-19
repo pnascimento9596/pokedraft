@@ -1,4 +1,5 @@
 import { PGlite } from "@electric-sql/pglite";
+import type { Logger } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import path from "node:path";
@@ -41,10 +42,10 @@ async function snapshot(): Promise<Blob> {
   }
 }
 
-export async function migratedDb(): Promise<{ db: Db; client: PGlite }> {
+export async function migratedDb(logger?: Logger): Promise<{ db: Db; client: PGlite }> {
   emptySnapshot ??= snapshot();
   const client = await PGlite.create({ loadDataDir: await emptySnapshot });
-  return { db: drizzle({ client, schema }) as unknown as Db, client };
+  return { db: drizzle({ client, schema, logger }) as unknown as Db, client };
 }
 
 const SLOTS: SlotRef[] = [

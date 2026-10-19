@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { PGlite } from "@electric-sql/pglite";
+import { eq } from "drizzle-orm";
 import {
   ENGINE_VERSION,
   dailySeed,
@@ -733,6 +734,46 @@ describe("stored run identity (catches a submit that leaves coached or run_finge
       true,
       "7e21b3d9e68a0b6437de6cd1f7cfa7fd8b3b0d1a125e7aa45767db835eda3262",
     ]);
+  });
+});
+
+describe("insert plus rank (catches a saved run that needs a second round trip for its rank)", () => {
+  it("saves and ranks a run in one statement after admission: rank 1 on an empty board, rank 2 behind a better row", async () => {
+    const queries: string[] = [];
+    const logged = await migratedDb({ logQuery: (query) => void queries.push(query) });
+    const using = drizzleStore(() => logged.db);
+    try {
+      const first = await submit(
+        { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
+        undefined,
+        using,
+      );
+      expect([first.status, first.body.entry.rank, queries.length]).toEqual([201, 1, 2]);
+
+      await logged.db.insert(leaderboardEntries).values({
+        nickname: "Leader",
+        mode: "cup8",
+        variant: "classic3.squadFirst.g123456789",
+        seed: "leader",
+        token: "pd6.leader",
+        teamScore: 900,
+        wins: 8,
+        draws: 0,
+        losses: 0,
+        engineVersion: ENGINE_VERSION,
+        ipHash: "test",
+      });
+      await logged.db.delete(leaderboardEntries).where(eq(leaderboardEntries.nickname, "Ash"));
+      queries.length = 0;
+      const second = await submit(
+        { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
+        "203.0.113.8",
+        using,
+      );
+      expect([second.status, second.body.entry.rank, queries.length]).toEqual([201, 2, 2]);
+    } finally {
+      await logged.client.close();
+    }
   });
 });
 
