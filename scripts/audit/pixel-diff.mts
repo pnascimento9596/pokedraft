@@ -1,12 +1,14 @@
 // Compares every PNG in two directories pixel by pixel and prints one JSON row per file: changed
 // pixels, their share, the largest channel difference and the bounding box of the change.
-//   pnpm exec tsx scripts/audit/pixel-diff.mts BEFORE_DIR AFTER_DIR
+//   pnpm exec tsx scripts/audit/pixel-diff.mts BEFORE_DIR AFTER_DIR [MASK_DIR]
+// With MASK_DIR it also writes, for each changed file, the before shot dimmed with every changed
+// pixel in magenta.
 // Exits 1 when any file differs in size or pixels, or is missing on one side.
-import { readdirSync } from "node:fs";
+import { mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
 
-const [before, after] = process.argv.slice(2);
+const [before, after, masks] = process.argv.slice(2);
 if (!before || !after) throw new Error("usage: pixel-diff.mts BEFORE_DIR AFTER_DIR");
 
 const pngs = (dir: string) => readdirSync(dir).filter((f) => f.endsWith(".png"));
@@ -33,12 +35,18 @@ for (const name of names) {
   }
   let changed = 0;
   let maxDelta = 0;
+  const mask = Buffer.alloc(width * height * 4, 255);
   const box = [width, height, -1, -1];
   for (let i = 0; i < width * height; i++) {
     let delta = 0;
     for (let c = 0; c < 4; c++)
       delta = Math.max(delta, Math.abs(a.data[i * 4 + c]! - b.data[i * 4 + c]!));
-    if (delta === 0) continue;
+    if (delta === 0) {
+      const grey = Math.round((a.data[i * 4]! + a.data[i * 4 + 1]! + a.data[i * 4 + 2]!) / 9);
+      mask.fill(grey, i * 4, i * 4 + 3);
+      continue;
+    }
+    mask[i * 4 + 1] = 0;
     changed++;
     maxDelta = Math.max(maxDelta, delta);
     const x = i % width;
@@ -48,7 +56,15 @@ for (const name of names) {
     box[2] = Math.max(box[2]!, x);
     box[3] = Math.max(box[3]!, y);
   }
-  if (changed > 0) failed = true;
+  if (changed > 0) {
+    failed = true;
+    if (masks) {
+      mkdirSync(masks, { recursive: true });
+      await sharp(mask, { raw: { width, height, channels: 4 } })
+        .png()
+        .toFile(path.join(masks, name));
+    }
+  }
   console.log(
     JSON.stringify({
       name,
