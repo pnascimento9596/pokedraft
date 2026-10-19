@@ -1,7 +1,8 @@
 # Copy pass and dash lint (Wave 4, row 4e)
 
-Branch `fix/copy-pass` off `origin/main` at `34af10e`. Yellow. No file under `src/engine`,
-`src/data` or `src/scouting` changed, so the goldens are untouched.
+Branch `fix/copy-pass` off `origin/main` at `34af10e`, with `origin/main` merged at `124afab`
+(PR #113, row 4-0) in fix round 1. Yellow. No file under `src/engine`, `src/data` or
+`src/scouting` changed, so the goldens are untouched.
 
 ## Scope
 
@@ -15,7 +16,9 @@ Branch `fix/copy-pass` off `origin/main` at `34af10e`. Yellow. No file under `sr
 - The blind-mode hints follow decision 3.
 - A shared run says "This squad" and "This lineup" where a live run says "You", "Your team",
   "Your XI", "Your squad" and "Your lineup". That covers the result card, the group table, the
-  replay's group table, the recorded saves and the match events.
+  replay's group table, the recorded saves and the match events. Since fix round 1 it also covers
+  the shared match player: the scoreboard, the full screen score bug, the momentum meter, the
+  tactic banner and the ticker.
 - Scores are "1-0" on the scoreboard, the penalties line, the full-time line and the exhibition.
 - The history page interpolates `HISTORY_LIMIT`.
 - `check:dashes` (`scripts/audit/dash-lint.mjs`) fails on an em or en dash in copy under `src`,
@@ -102,6 +105,59 @@ events, which the engine-1 unit fixture has none of.
 Regression guards, no RED (behaviour already correct): "a live run still says You and Your team",
 the history heading "Your last 50 runs" in `copy-pass.spec.ts`, and `lintDashes` finding no dash
 in `src` today.
+
+## Fix round 1
+
+`git merge origin/main` (never a rebase) brought in PR #113 (`124afab`) as merge commit `9353da8`.
+Only `STATE.md` conflicted, and `resolve-state.py` resolved it with the #113 paragraph. Git merged
+`MatchPlayer.tsx`, `MatchdayFlow.tsx` and `Touchline.tsx` on its own. After the merge no spaced
+score is left in them, and `pnpm check:dashes` passes with 4-0's new copy included.
+
+The carryover reproduced at the merge head. A shared run's replay still said "Your XI" on the
+scoreboard and score bug, "Your side 50%" on the momentum meter, "Your side switch to Defend" on
+the tactic banner and "75' Your assistant switches to Defend" in the ticker.
+
+RED `8d5558d`: 2 of 7 failed in 2 files. GREEN `3af2e35`.
+
+```
+ FAIL  src/components/matchday/__tests__/Broadcast.sharedSide.test.tsx > Broadcast tactic banner (catches a shared run's banner saying Your side) > a shared run says This squad switches to Defend
+AssertionError: expected 'Your side switch to Defend' to be 'This squad switches to Defend' // Object.is equality
+
+Expected: "This squad switches to Defend"
+Received: "Your side switch to Defend"
+
+ FAIL  src/components/results/__tests__/MatchReplay.test.tsx > MatchReplay on a shared run (catches the shared match player still saying Your XI and Your assistant) > names the shared side This squad on the scoreboard, the momentum meter and the ticker
+AssertionError: expected 'Your XI' to be 'This squad' // Object.is equality
+
+Expected: "This squad"
+Received: "Your XI"
+
+     × a shared run says This squad switches to Defend 37ms
+     × names the shared side This squad on the scoreboard, the momentum meter and the ticker 16ms
+ Test Files  2 failed (2)
+      Tests  2 failed | 5 passed (7)
+```
+
+The two live guards ("the live run still says Your side switch to Defend" and "keeps Your XI,
+Your side and Your assistant on the live run") passed at RED. They are regression guards with no
+RED.
+
+Decisions:
+
+- **Variant through props.** `MatchReplay` passes its `variant` to `MatchPlayer`, and
+  `MatchPlayer` passes it to `Broadcast`. Both default to `"live"`, so `MatchdayFlow` and the
+  exhibition replay keep "Your XI". The strings come from `SIDE_COPY`, which gains `ourSide`
+  ("Your side" or "This squad") and `switchesTo` (Model the Domain: one table, no new branches in
+  the components). The `TEAMS_USER` constant is gone.
+- **Ticker.** `beatLine` takes the same `shared` flag that `incidentText` already took, so the
+  ticker says what the results' match events say: "75' This squad's assistant switches to Defend".
+- **Banner grammar.** The live banner keeps "Your side switch to Defend", and an opponent keeps
+  "Goldenrod United switch to Defend". The shared banner reads "This squad switches to Defend",
+  the same verb the shared match events already use. The two shared lines read alike.
+- **Guard placement.** The scoreboard, meter and ticker guard renders `MatchReplay`, so it fails
+  if the replay stops passing `variant`. The banner guard renders `Broadcast` with only the 75'
+  switch marked as fired. In the golden G1 a sub fires on the same tick and would take the
+  banner.
 
 ## Measurements
 
@@ -194,8 +250,32 @@ All from hand-off 4.3, row 4e:
   it only shows where `aria-labelledby` is absent.
 - `ScoutingDossier.tsx:355` renders its own `"★ Best"`, `"OK"` and `"Poor"`. The visible words
   already match, so it is left to row 4f, which rewrites the dossier.
+- Fix round 1, at `9353da8`: the "Your side" banner is at `Broadcast.tsx:740`, not about `:665`.
+  `TEAMS_USER` also fed the full screen score bug (`MatchPlayer.tsx:926`) and the ticker, and the
+  momentum meter's `aria-valuetext` said "Your side" (`:645`). The fix brief named only the side
+  label and the banner. The decision "Shared view never says You" covers all four, so all four
+  changed.
 
 ## Gates
+
+Fix round 1 gates are at `3af2e35`, the code-identical head (the docs commit that follows changes
+only docs and proof PNGs):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0.
+- `pnpm test`: 1,692 passed in 198 files.
+- All eight `check:*` scripts exited 0.
+- Prettier passed on all 79 files changed against `origin/main`.
+- Playwright full suite (`CI=1`, headless, default workers, fresh build at `3af2e35`): 932
+  passed, 64 skipped, 1 failed. The failure was `fullscreen-score-bug.spec.ts:101` (chromium,
+  also on its retry). It opens a shared `/r/` run and expected "Your XI" in the score bug, which
+  now says "This squad0-0Goldenrod7'". That is this round's intended change. `fcc6eb9` updates that
+  literal and adds the side label and momentum checks to `copy-pass.spec.ts` (e2e only, no `src`
+  change). `copy-pass.spec.ts` and `fullscreen-score-bug.spec.ts` then passed 11 of 11 on the same
+  build. The full suite was not re-run after `fcc6eb9`.
+- Browser proof: `docs/reports/copy-pass/scoreboard-390.png` now shows "This squad 1-0" at 49'
+  on the shared replay.
+
+Round 0 gates follow.
 
 At `287150e` (code identical at the docs commit):
 
@@ -224,8 +304,7 @@ At `429b448`: `pnpm lint` and `pnpm typecheck` exited 0, `pnpm test` passed 1,67
 
 ## Carryovers
 
-- A shared run's match replay still says "Your XI" on the scoreboard and ticker
-  (`MatchPlayer.tsx:99` `TEAMS_USER`) and "Your side" in a Broadcast callout
-  (`Broadcast.tsx:665`). The brief limited this row's `MatchPlayer.tsx` edits to the score strings
-  because row 4-0 edits that file. A follow-up passes the side name into `MatchPlayer`.
+- Closed in fix round 1: the shared match player's "Your XI" and "Your side" (see Fix round 1).
+- A shared ticker goal line reads "Goal for This squad!", the side's name in title case, as the
+  live line reads "Goal for Your XI!".
 - `ScoutingDossier.tsx:355` keeps an inline "★ Best" (row 4f).

@@ -5,23 +5,29 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Copy pass and dash lint
 
-Branch `fix/copy-pass` off `origin/main` at `34af10e`. Wave 4 row 4e, copy and labels (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+Branch `fix/copy-pass` off `origin/main` at `34af10e`, with `origin/main` merged at `124afab` (PR #113) in fix round 1. Wave 4 row 4e, copy and labels (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
 
 - Position fit reads "★ Best", "OK" and "Poor" everywhere (pitch cards, slot names, the picker swap line and the touchline bench), from one `SUITABILITY_LABEL` table. The star is hidden from screen readers, so a slot reads "Empty LW slot (Best fit)".
 - The draft drawer says "Hide players", "Show players" and "Show roll" (it said "Minimize draft picker" and "View spinner"). Empty slots say "Tap to draft".
 - Every score uses a hyphen with no spaces: "1-0" on the scoreboard, "Pens 4-3", "Full time. Win, 3-1." and the exhibition result.
-- A shared run (`/r/[token]`) names the side "This squad" in the record, standings, match list, highlights, saves and match events ("Kick off: this squad plays Attack", "manager's call"). The live run still says "You" and "Your". The share payload carries no nickname, so none is shown.
+- A shared run (`/r/[token]`) names the side "This squad" in the record, standings, match list, highlights, saves and match events ("Kick off: this squad plays Attack", "manager's call"). Its match replay says "This squad" too: the scoreboard, the full screen score bug, the momentum meter, the ticker and the tactic banner ("This squad switches to Defend"). The live run still says "You", "Your XI" and "Your side". The share payload carries no nickname, so none is shown.
 - The match list meter labels sit in a grid, so "THIS SQUAD" no longer wraps. For a "You" label the geometry is unchanged (label 51.0 px left and 33.8 px wide, track 92.8 px left and 215.5 px wide, before and after).
 - Settings and Play card hints say "ratings" for the hidden numbers, the road tooltip says "Rating", the history page reads its 50 from `HISTORY_LIMIT`.
 - New `pnpm check:dashes` (`scripts/audit/dash-lint.mjs`) fails on an em or en dash, or its escape or HTML entity, in any string, template or JSX text under `src` and in CSS `content`. It skips tests and `src/engine/versions`. CI runs it after `check:theme-colors`.
 
-RED commits: `84aec88` (31 of 166 failed in 19 files, plus `dash-lint.test.ts` failed to load) and `1449ed8` (2 of 41 failed in 2 files, shared match events). GREEN `18cf3e2` and `028b6f3`.
+RED commits: `84aec88` (31 of 166 failed in 19 files, plus `dash-lint.test.ts` failed to load), `1449ed8` (2 of 41 failed in 2 files, shared match events) and `8d5558d` (2 of 7 failed in 2 files, the shared match player). GREEN `18cf3e2`, `028b6f3` and `3af2e35`.
+
+Gates at `3af2e35` (fix round 1, after the merge of `124afab`; the commits after it change only e2e specs, docs and one proof PNG): `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `pnpm test` passed 1,692 in 198 files. All eight `check:*` scripts exited 0, and Prettier passed on all 79 files changed against `origin/main`. Playwright full suite (`CI=1`, headless, fresh build at `3af2e35`): 932 passed, 64 skipped, 1 failed, `fullscreen-score-bug.spec.ts:101` (chromium) expecting the old "Your XI" in a shared run's score bug. `fcc6eb9` updates that literal in the spec only, and `copy-pass.spec.ts` with `fullscreen-score-bug.spec.ts` then passed 11 of 11 on the same build. The full suite was not re-run after `fcc6eb9`.
+
+Round 0 gates follow.
 
 Gates at `287150e`: `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `pnpm test` passed 1,678 in 195 files. All eight `check:*` scripts exited 0, as did `check-retained-replays.mts` (10 golden replays) and `measure-retained-json.mjs`. Playwright full suite (`CI=1`, headless, fresh build): 921 passed, 64 skipped, 2 failed, both `manager-mode.spec.ts:54` (chromium and pixel-7) expecting the old shared line "Kick off: you play Attack". `429b448` updates that literal in the spec only, and `manager-mode.spec.ts` then passed 14 of 14 on the same build. `e2e/copy-pass.spec.ts` passed 7 of 7. At `429b448`: lint and typecheck exited 0, `pnpm test` passed 1,678 in 195 files, `check:dashes` exited 0, Prettier passed.
 
-NOT RUN: review, hosted CI and the live check (coordinator); `pnpm data:pokedex` and `pnpm data:scouting` (no data change); the physical phone check and a screen reader pass (owner actions).
+NOT RUN: review, hosted CI and the live check (coordinator); the full Playwright suite after `fcc6eb9`; `check-retained-replays.mts` and `measure-retained-json.mjs` in fix round 1; `pnpm data:pokedex` and `pnpm data:scouting` (no data change); the physical phone check and a screen reader pass (owner actions).
 
 Decision log: `docs/decisions/copy-pass.md`. Proof: `docs/reports/copy-pass/`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 ## Matchday carryovers
 
