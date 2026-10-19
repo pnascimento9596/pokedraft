@@ -3,6 +3,18 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wave 4 summary
+
+Branch `docs/wave4-summary` off `b4f8ca7`. Green: docs only, no change under `src/` or `e2e/`.
+
+- Wave 4 is closed: all twelve rows merged and live-checked, one PR each (#113 to #124). The entry with the PR table, order, measurements, brief vs code and open carryovers is in `docs/reports/audits-2026-10-17/program-log.md`.
+- A read-only leaderboard query on 2026-10-19 found 3 rows and 0 identical squads under different nicknames, so 5f stays the first row of Wave 5.
+- The owner phone check, screen reader pass and three account items (Vercel MCP access, credential rotation, WAF rate limit) are in `docs/decisions/wave4-summary.md`.
+
+Gates: Prettier passed on the touched Markdown. CI runs the rest. NOT RUN: unit tests and e2e locally (no code changed), the physical phone check and screen reader pass (owner actions).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## PWA and viewport
 
 Branch `feat/pwa-viewport` off `origin/main` at `5c7d4fb`. Wave 4 row 4i (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -23,6 +35,8 @@ Gates at `2434ddb` (code-identical to `171688a` outside `e2e/` and `docs/`):
 - NOT RUN: review and hosted CI; WebKit and Firefox safe-area checks (no inset override outside Chromium); landscape side insets (carryover); Add to Home Screen and real notch insets on a phone, and a screen reader pass (owner actions).
 
 Decision log: `docs/decisions/pwa-viewport.md`. Browser proof: `docs/reports/pwa-viewport/{home-notch,draft-toast-notch,how-to-play-bottom-notch}-390.png`.
+
+PR #123 (row 4i, PWA and viewport) merged as squash `b4f8ca7`, reviewed head `e9cbbdc` (the coordinator's merge of #124, a STATE-only conflict, on top of `1732326`), GLM 5.3 Flash APPROVE in round 1 with canary `pwa-viewport-67902a18eb8dea802e6a53349094fe83` echoed. At `e9cbbdc` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,805 unit tests passed in 214 files and Prettier passed on 12 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `b4f8ca7` with `db.status` ok; `pwa-viewport`, `theme-breakpoints` and `mobile-acceptance` against production (chromium) passed 38 of 38, and a cookieless fetch of `/manifest.webmanifest`, `/icons/icon-192.png` and `/apple-icon.png` returned 200 each. NOT RUN: physical phone check including Add to Home Screen and real notch insets (owner action), a real screen reader, WebKit and Firefox safe-area checks, landscape side insets.
 
 ## Dark palette and breakpoints
 

@@ -245,3 +245,92 @@ the row's decision log.
   behind the keyboard and axe scenes; `e2e/pins.ts`'s deep link (the golden v5 draft's 49' goal).
 - A physical phone check and on-device sound and haptics were not run for any row (owner action;
   the checklist is in the Wave 3 summary's decision log).
+
+## Wave 4. The first five minutes
+
+All twelve rows (4-0, 4a to 4j, with 4h split into 4h1 and 4h2) merged, one PR each, each
+live-checked on production before the next landed. Production serves `b4f8ca7` (PR #123), engine 6,
+token versions 1 to 6, `db.status` ok. No file under `src/engine`, `src/data` or `src/scouting`
+changed in the wave, and the engine goldens are untouched.
+
+| Row | PR | Squash | Reviewed head | Review | Production check |
+| --- | --- | --- | --- | --- | --- |
+| 4-0 matchday carryovers | #113 | `124afab` | `54619a0` | GLM APPROVE, round 1 | `matchday-carryovers`, `keyboard`, `touchline-sheet`, `fullscreen-score-bug` 28 of 28, `a11y` 22 of 22 |
+| 4e copy pass and dash lint | #114 | `d48aa0f` | `1d05a87` | GLM APPROVE, round 1 (after one fix round) | 18 of 18 |
+| 4a one-tap play | #115 | `fb03b7a` | `e2bf503` | GLM APPROVE, round 1 | 21 of 21 |
+| 4c live Team Score | #116 | `63462b3` | `ef1244a` | GLM APPROVE, round 1 | 31 of 31 |
+| 4b home hierarchy | #117 | `337f9df` | `40779df` | GLM APPROVE, round 1 | 20 of 20 |
+| 4f dossier and picker | #118 | `168a8f3` | `93dfb66` | GLM APPROVE, round 1 | 25 of 25 |
+| 4d fast spins | #119 | `da44d4b` | `96acb86` | GLM APPROVE, round 1 | 15 of 15 |
+| 4j pitch density and drag | #120 | `3d59cee` | `f3d112e` | GLM APPROVE, round 1 | 39 passed, 2 skipped by project gate |
+| 4h1 colour tokens and CVD | #121 | `ff7c893` | `00a2d81` | GLM APPROVE, round 1 | `team-readability`, `contrast`, `theme-draft`, `theme-builder` 47 of 47 |
+| 4g resilience, onboarding, a11y | #122 | `5c7d4fb` | `c0bcd07` | GLM APPROVE, round 1 | `resilience-a11y`, `wheel-results`, `server-html`, `a11y`, `theme-choice` 41 of 41 |
+| 4h2 dark palette and breakpoints | #124 | `6e0a34a` | `4f01365` | GLM APPROVE, round 1 | `theme-breakpoints`, `theme-choice`, `home-hierarchy`, `contrast` 70 of 70 |
+| 4i PWA and viewport | #123 | `b4f8ca7` | `e9cbbdc` | GLM APPROVE, round 1 | `pwa-viewport`, `theme-breakpoints`, `mobile-acceptance` 38 of 38, plus a cookieless 200 on the manifest and icons |
+
+All reviews were GLM 5.3 Flash with an echoed per-head canary; no fallback reviewer ran. Every merge
+had all eight e2e shards and the hosted check green on the first run. Production checks ran on
+chromium against `https://pokedraft-woad.vercel.app`. 4e's fix round came from the coordinator's
+read of the diff, not a review finding: the shared replay still said "Your XI" and "Your side". The
+other "after merge" heads (#115, #116, #119, #120, #122, #123) are merges of `origin/main` into the
+branch after the previous landing; #117 and #118 carry a STATE-only commit adding the previous PR's
+merged paragraph.
+
+Order: the hand-off's order, with four swaps inside the owner's leave, each recorded in the
+coordinator notes. 4c landed before 4b and 4f before 4d, because each was ready first and the files
+were disjoint. In the platform lane 4h1 was built beside 4g (disjoint: 4h1 kept off the theme boot
+script, layout and toggle) and landed first; 4h2, which relies on 4g's boot script, landed after
+it. 4i was built beside 4h2 and landed after it, as planned, so the manifest reads the final
+palette. Building two platform rows at once broke the hand-off's "next in a lane only after the
+previous merged" rule; the price was one expected merge per pair, both STATE-only conflicts.
+
+### Measurements that moved
+
+- 4d: a full 8-0 cup draft takes 29.8 s of spins instead of 77.7 s (47.9 s saved); a 151 draft
+  saves 24.0 s. `SPIN_FAST_FACTOR = 0.4`.
+- 4j: candidate drag script time at 4x CPU throttle 132 ms to 36 ms; phone sprites 48 px with a
+  3 px top bar and one-line names.
+- 4c: the provisional Team Score matches `rateTeam` exactly on a full XI; early picks swing (869 to
+  240 on the second pick) by the decided formula.
+- 4h1: 129 colour literal lines moved to 71 tokens; five type colours moved to clear the 4.01 CVD
+  minimum, now enforced by `theme-cvd`.
+- 4h2: 47 media query widths off the scale (in 43 queries) to none, on a 480, 720, 960 and 1200
+  scale enforced by `check:breakpoints`. The home page is two columns from 960. 46 of 48 proof shots
+  were pixel-identical across the final refactor commit.
+- 4i: with a 47 px notch and a 34 px home bar at 390x844 the phone header grows 57 to 104 px, the
+  page bottom gap 32 to 66 px, the draft toast top 8 to 55 px.
+- `check:*` scripts, 7 to 9 (`check:dashes` in 4e, `check:breakpoints` in 4h2). Unit tests, 1,669
+  in 196 files at 4-0's head to 1,805 in 214 at 4i's. Full local Playwright at 4i's branch head
+  before its last merge: 972 passed, 67 skipped by project gates; at 4h2's: 998 passed, 67 skipped.
+
+### Brief vs code
+
+- 4a: the builder's Matchday setting already shared the panel state, so two controls bind one value.
+- 4f: the engine's `place` action throws outside builder mode, so the draft dossier uses `pick`.
+  Ability and move contributions need breakdowns in `scouting.json`, a Red data change, and were
+  deferred.
+- 4g: Next's media `themeColor` entries fought the boot script, so the boot script owns the one
+  theme-color meta and always sets `data-theme`.
+- 4h1: `MatchHighlights` is live, so it was tokenised, not removed.
+- 4h2: the brief counted 11 ad-hoc breakpoints; the tree had 47 widths in 43 queries, including 4b's
+  379 px card rule and a camera `matchMedia` string. The hard-coded dark gradients the code map
+  placed in `MatchHighlights` and `Broadcast` already read tokens. The full suite found that Next's
+  notFound shell renders the layout on the client without the boot script; the deleted
+  `prefers-color-scheme` copies had hidden it, and the theme now also boots on mount.
+- 4i: at 480 px and below the header is a fixed 57 px row, so the general inset rule never reached
+  phones; the phone rule now adds the inset too. Chromium's CDP safe-area override works, so the
+  guards assert real computed values. There is no `public/favicon.ico`.
+
+### Open carryovers
+
+- "Goal for This squad!" capitalises "This" on the shared replay (4e).
+- The draft drawer swipe and the builder picker swipe still set React state on every move (4j).
+- `Wheel.tsx:57` and `BossRoster.tsx:56` keep picture alt text that repeats the visible name (4g).
+- Dossier ability and move contributions wait on a Red data change (4f).
+- Landscape side insets are not handled, and the home footer adds the bottom inset on top of the
+  page's (about 34 px of extra space on a notched phone, `/` only) (4i).
+- 4h2's two 4 px frame-noise diffs inside the frozen broadcast frame were not traced.
+- A few rules once scoped under 360 or 420 px now apply to every phone under 480 (4h2, intended).
+- Engine 7 (W6b) checklist from Wave 3 stands unchanged.
+- A physical phone check, Add to Home Screen, on-device sound and a real screen reader were not run
+  for any row (owner action; the checklist is in the Wave 4 summary's decision log).
