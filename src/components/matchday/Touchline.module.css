@@ -171,20 +171,24 @@
   grid-template-columns: 34px minmax(0, 1fr) 50px 26px;
   align-items: center;
   gap: 6px;
+  width: 100%;
   min-height: 44px;
   padding: 4px 8px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--surface-sunken);
+  color: inherit;
+  font: inherit;
   font-size: 12px;
   line-height: 16px;
+  text-align: start;
 }
 
-.energyRow[data-interactive] {
+.energyRow:enabled {
   cursor: pointer;
 }
 
-.energyRow[data-interactive]:focus-visible {
+.energyRow:focus-visible {
   outline: 2px solid var(--focus, var(--accent));
   outline-offset: 2px;
 }

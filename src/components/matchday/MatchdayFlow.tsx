@@ -85,8 +85,9 @@ export function MatchdayFlow({
   const [phase, setPhase] = useState<"pre" | "play">("pre");
   const locked = useAudioLocked();
 
+  // Kick off hands the focus to the match player's play toggle instead.
   useEffect(() => {
-    focusHeading();
+    if (phase === "pre") focusHeading();
   }, [index, phase]);
 
   useEffect(() => {
@@ -165,6 +166,7 @@ export function MatchdayFlow({
           manager={managerMode ? { actions, decide: onDecide } : undefined}
           ratings={showRatings}
           autoStart
+          takeFocus
           footer={
             <div className={s.fulltime} data-testid="fulltime">
               <p className={s.ftLine}>
