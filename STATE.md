@@ -51,6 +51,8 @@ Decision log: `docs/decisions/home-hierarchy.md`. Browser proof: `docs/reports/h
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #117 (row 4b, home hierarchy) merged as squash `337f9df`, reviewed head `40779df` (a STATE-only commit recording #116 on top of code head `b9e8225`), GLM 5.3 Flash APPROVE in round 1 with canary `home-hierarchy-26bebf429ef785764f6bb7a3203ccb74` echoed. At `40779df` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,726 unit tests passed in 202 files and Prettier passed on 22 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `337f9df` with `db.status` ok, and `home-hierarchy`, `one-tap-play` and `ui-foundation` against production (chromium) passed 20 of 20. NOT RUN: physical phone check (owner action), a real screen reader.
+
 ## Live Team Score in the draft
 
 Branch `feat/live-team-score` off `origin/main` at `d48aa0f`, with `origin/main` merged at `fb03b7a` (PR #115) in fix round 1. Wave 4 row 4c (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
