@@ -700,3 +700,60 @@ it("keeps Builder actions above feedback that appears after the engine loads", a
     Boolean(toolbar.compareDocumentPosition(feedback) & Node.DOCUMENT_POSITION_FOLLOWING),
   ).toBe(true);
 });
+
+describe("builder two-tap swap and dossier Back (4f)", () => {
+  const hint = () => screen.queryByTestId("builder-swap-hint")?.textContent ?? null;
+
+  it("builder tap A then B swaps A and B (catches a tap on a filled token opening the Picker)", async () => {
+    openWithTwoPlaced();
+    const a = await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
+    fireEvent.click(a);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(a.getAttribute("aria-pressed")).toBe("true");
+    expect(hint()).toBe("Tap another player to swap, or tap again to change");
+    fireEvent.click(screen.getByRole("button", { name: /ST Charmander/ }));
+    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Charmander");
+    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Bulbasaur");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(hint()).toBeNull();
+  });
+
+  it("builder tap on the selected token again opens the Picker for that slot", async () => {
+    openWithTwoPlaced();
+    const a = await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
+    fireEvent.click(a);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    fireEvent.click(a);
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByRole("heading").textContent).toBe("Pick for LCB");
+  });
+
+  it("builder Escape clears the selection, and an empty slot still opens the Picker at once", async () => {
+    openWithTwoPlaced();
+    const a = await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
+    fireEvent.click(a);
+    expect(a.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(a.getAttribute("aria-pressed")).toBe("false");
+    expect(hint()).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /^Empty RCB slot/ }));
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByRole("heading").textContent).toBe("Pick for RCB");
+  });
+
+  it("Back closes only the dossier over the Picker, and a second Back closes the Picker (catches one Back closing both)", async () => {
+    render(<HomeScreen />);
+    const picker = await openPicker("Empty LCB slot");
+    fireEvent.change(within(picker).getByRole("searchbox"), { target: { value: "pika" } });
+    fireEvent.click(within(picker).getByRole("button", { name: "Scout Pikachu" }));
+    expect(screen.getByRole("dialog", { name: "Pikachu" })).toBeTruthy();
+
+    act(() => window.history.back());
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Pikachu" })).toBeNull());
+    expect(screen.getByRole("dialog", { name: "Pick for LCB" })).toBe(picker);
+
+    act(() => window.history.back());
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(window.location.pathname).toBe("/");
+  });
+});

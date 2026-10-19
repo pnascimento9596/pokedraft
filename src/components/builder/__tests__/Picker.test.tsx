@@ -324,3 +324,48 @@ describe("Picker", () => {
     expect(dossier.textContent).toContain("Static");
   });
 });
+
+describe("Picker search folding (4f)", () => {
+  const openPicker = () =>
+    render(
+      <Picker
+        state={createDraft(ALL_GENS, "search" as Seed)}
+        slot={{ kind: "starter", index: 0 }}
+        showRatings={false}
+        onPick={vi.fn()}
+        onClear={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+  const search = (value: string) => {
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value } });
+    return screen
+      .queryAllByTestId(/^pick-\d+$/)
+      .map((row) => row.getAttribute("data-testid"))
+      .filter((id) => id !== null);
+  };
+
+  it.each([
+    ["flabebe", "pick-669"],
+    ["mr mime", "pick-122"],
+    ["farfetchd", "pick-83"],
+  ])("search %s finds %s (catches accents and punctuation blocking a match)", (query, row) => {
+    openPicker();
+    expect(search(query)).toContain(row);
+  });
+
+  it("search flabebe finds Flabébé and nothing else", () => {
+    openPicker();
+    expect(search("flabebe")).toEqual(["pick-669"]);
+  });
+
+  it("search nidoran finds both Nidoran (regression guard, no RED: behaviour already correct)", () => {
+    openPicker();
+    expect(search("nidoran")).toEqual(["pick-29", "pick-32"]);
+  });
+
+  it("search by dex number still matches (regression guard, no RED: #025 finds Pikachu)", () => {
+    openPicker();
+    expect(search("#025")).toEqual(["pick-25"]);
+  });
+});
