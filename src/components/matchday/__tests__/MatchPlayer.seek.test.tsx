@@ -170,6 +170,7 @@ describe("goal pips seek the replay (catches a seek that replays every old goal'
     await mountReplay({ actions: [], decide: () => null });
     expect(screen.queryAllByTestId("goal-pip")).toEqual([]);
     fireEvent.click(screen.getByTestId("skip-ft"));
+    fireEvent.click(screen.getByTestId("skip-confirm"));
     await frames(2);
     expect(screen.getAllByTestId("goal-pip")).toHaveLength(2);
     fireEvent.click(screen.getByRole("button", { name: "Watch the 12' goal" }));

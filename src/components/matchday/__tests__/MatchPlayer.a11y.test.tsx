@@ -139,6 +139,7 @@ async function until(done: () => boolean): Promise<void> {
 describe("match keys (catches a player with no keyboard pause or speed, and keys that fight a focused control)", () => {
   it("Space toggles running: Pause, then Resume, then Pause, and the page does not scroll", async () => {
     await mount(false);
+    await until(() => Number(player().getAttribute("data-minute")) >= 1);
     expect(toggle().textContent).toBe("Pause");
     expect(fireEvent.keyDown(player(), { key: " " })).toBe(false);
     expect(toggle().textContent).toBe("Resume");

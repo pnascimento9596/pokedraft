@@ -10,7 +10,9 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type KeyboardEvent,
   type ReactNode,
+  type RefObject,
 } from "react";
 import { speciesById } from "@/engine";
 import type {
@@ -446,6 +448,8 @@ export function MatchPlayer({
   useEffect(() => {
     if (stopKey !== null && fullscreenOn) exitFullscreen();
   }, [stopKey, fullscreenOn]);
+  const playToggle = useRef<HTMLButtonElement>(null);
+  useStopFocus(stopKey, sheetRef, playToggle);
 
   const snapWindow =
     match.windows?.find((w) => w.minute >= Math.max(5, Math.ceil(clock / 5) * 5)) ??
@@ -489,6 +493,40 @@ export function MatchPlayer({
       </button>
     ) : null;
 
+  const togglePlay = () => {
+    unlockAudio();
+    send({ type: "toggle", now: performance.now() });
+  };
+  const toggleSpeed = () => send({ type: "speed", now: performance.now() });
+  const onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+    if (done || e.repeat || e.altKey || e.ctrlKey || e.metaKey) return;
+    const target = e.target as HTMLElement;
+    if (target.closest("input, select, textarea") !== null) return;
+    if (e.key === " ") {
+      // A focused button or link takes Space as its own click.
+      if (stop !== null || target.closest("button, a[href]") !== null) return;
+      e.preventDefault();
+      togglePlay();
+    } else if (e.key === "2") {
+      e.preventDefault();
+      toggleSpeed();
+    }
+  };
+
+  // In manager mode a skip lets the assistant answer every stop still to come, so it asks first.
+  const [askSkip, setAskSkip] = useState(false);
+  if (done && askSkip) setAskSkip(false);
+  const skipButton = useRef<HTMLButtonElement>(null);
+  const skipConfirm = useRef<HTMLButtonElement>(null);
+  const skipWarnId = useId();
+  useEffect(() => {
+    if (askSkip) skipConfirm.current?.focus();
+  }, [askSkip]);
+  const skip = () => {
+    setAskSkip(false);
+    send({ type: "skip", env });
+  };
+
   const injury =
     stop?.kind === "injury"
       ? (injuries(match, lineup).find((c) => `injury:${c.minute}:${c.slot}` === stop.key) ?? null)
@@ -498,6 +536,8 @@ export function MatchPlayer({
     <section
       ref={playerRef}
       className={s.player}
+      tabIndex={-1}
+      onKeyDown={onKeyDown}
       aria-label={`${ROUND_LABEL[match.round]} against ${match.opponent.name}`}
       data-testid="match-player"
       data-view={view}
@@ -554,7 +594,15 @@ export function MatchPlayer({
           </span>
           <span className={`num ${s.hudStat}`}>{userShots} SoT</span>
         </div>
-        <div className={s.momentum} aria-label="Match momentum">
+        <div
+          className={s.momentum}
+          role="meter"
+          aria-label="Match momentum"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={userMomentum}
+          aria-valuetext={`Your side ${userMomentum}%`}
+        >
           <span className={`num ${s.momentumPct}`}>{userMomentum}%</span>
           <span className={s.momentumTrack} aria-hidden="true">
             <span className={s.momentumFill} style={{ width: `${userMomentum}%` }} />
@@ -618,14 +666,12 @@ export function MatchPlayer({
         {!done ? (
           <>
             <button
+              ref={playToggle}
               type="button"
               className="btn btn--primary btn--sm"
               data-testid="play-toggle"
               disabled={stop !== null}
-              onClick={() => {
-                unlockAudio();
-                send({ type: "toggle", now: performance.now() });
-              }}
+              onClick={togglePlay}
             >
               {state.running ? "Pause" : clock === 0 ? "Kick off" : "Resume"}
             </button>
@@ -634,18 +680,53 @@ export function MatchPlayer({
               className="btn btn--sm"
               aria-pressed={state.speed === 2}
               data-testid="speed-toggle"
-              onClick={() => send({ type: "speed" })}
+              onClick={toggleSpeed}
             >
               2x speed
             </button>
             <button
+              ref={skipButton}
               type="button"
               className="btn btn--ghost btn--sm"
               data-testid="skip-ft"
-              onClick={() => send({ type: "skip", env })}
+              aria-expanded={sheet ? askSkip : undefined}
+              onClick={() => (sheet ? setAskSkip(true) : skip())}
             >
               Skip to full time
             </button>
+            {askSkip ? (
+              <div
+                className={s.skipWarn}
+                role="group"
+                aria-labelledby={skipWarnId}
+                data-testid="skip-warning"
+              >
+                <p id={skipWarnId} className={s.skipWarnText}>
+                  Skip to full time? Your assistant answers every stop left in this match, injuries
+                  included.
+                </p>
+                <button
+                  ref={skipConfirm}
+                  type="button"
+                  className="btn btn--sm"
+                  data-testid="skip-confirm"
+                  onClick={skip}
+                >
+                  Skip anyway
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--ghost btn--sm"
+                  data-testid="skip-cancel"
+                  onClick={() => {
+                    setAskSkip(false);
+                    skipButton.current?.focus();
+                  }}
+                >
+                  Keep watching
+                </button>
+              </div>
+            ) : null}
           </>
         ) : null}
         <button
@@ -873,6 +954,50 @@ function useSheet(present: boolean, expanded: boolean, stopKey: string | null, c
   }, [present, expanded, stopKey]);
 
   return { sheetRef, pitchRef, playerRef, spacerRef };
+}
+
+/**
+ * A stop's prompt takes the focus when it opens, on its selected choice or its first control, so a
+ * keyboard or screen reader user lands on the question. Answering removes that control; the focus
+ * goes back where it was, or to the play toggle, unless the player has already moved it.
+ */
+function useStopFocus(
+  stopKey: string | null,
+  sheetRef: RefObject<HTMLDivElement | null>,
+  fallback: RefObject<HTMLButtonElement | null>,
+) {
+  const back = useRef<Element | null>(null);
+  const open = useRef(false);
+  useEffect(() => {
+    if (stopKey === null) {
+      if (!open.current) return;
+      open.current = false;
+      const before = back.current;
+      back.current = null;
+      const active = document.activeElement;
+      if (active !== null && active !== document.body) return;
+      if (
+        before instanceof HTMLElement &&
+        before !== document.body &&
+        before.isConnected &&
+        !before.matches(":disabled")
+      ) {
+        before.focus();
+      } else {
+        fallback.current?.focus();
+      }
+      return;
+    }
+    if (!open.current) {
+      open.current = true;
+      back.current = document.activeElement;
+    }
+    const prompt = sheetRef.current?.querySelector('[role="dialog"]');
+    const first =
+      prompt?.querySelector<HTMLElement>("input:checked") ??
+      prompt?.querySelector<HTMLElement>("button:not(:disabled), input, select");
+    first?.focus();
+  }, [stopKey, sheetRef, fallback]);
 }
 
 // Whether a tick changed anything but the minute: a beat fired, a hold, a stop, the shootout.

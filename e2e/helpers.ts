@@ -2,6 +2,12 @@ import { expect, type Download, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { SHARE_LINK } from "./pins";
 
+/** Skips a manager-mode match to full time, through the warning that the assistant answers the rest. */
+export async function skipManaged(page: Page): Promise<void> {
+  await page.getByTestId("skip-ft").click();
+  await page.getByTestId("skip-confirm").click();
+}
+
 export async function draftSixteen(page: Page): Promise<void> {
   const header = page.getByTestId("round-header");
   for (let round = 1; round <= 16; round++) {

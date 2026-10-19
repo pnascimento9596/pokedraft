@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { draftSixteen } from "./helpers";
+import { draftSixteen, skipManaged } from "./helpers";
 
 // Row 3f: the starting tactic is picked on the pre-match card and Kick off goes straight into
 // running play, with no stop at 0'.
@@ -98,7 +98,7 @@ test("keeping Balanced kicks off with the assistant still on, at 390px (catches 
   await expect(page.locator('[data-testid^="stop-"]')).toHaveCount(0);
   await expect(page.getByTestId("touchline")).toBeVisible();
   await expect(page.getByTestId("takeover")).toHaveCount(0);
-  await page.getByTestId("skip-ft").click();
+  await skipManaged(page);
   await expect(page.getByTestId("fulltime")).toBeVisible();
   await expect(page.getByTestId("ticker")).not.toContainText("Kick off: you play");
 });
