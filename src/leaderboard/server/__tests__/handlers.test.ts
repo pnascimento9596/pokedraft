@@ -710,6 +710,32 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
   });
 });
 
+describe("stored run identity (catches a submit that leaves coached or run_fingerprint unwritten)", () => {
+  it("writes coached false and the pdfp1 fingerprint for an uncoached run", async () => {
+    const res = await submit({ nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") });
+    expect(res.status).toBe(201);
+    const [row] = await rows();
+    expect([row!.coached, row!.runFingerprint]).toEqual([
+      false,
+      "34615bd71749325c79a1bab9a3c4d820fdd96b08dd461c0f6bc57e7f5d7b3f87",
+    ]);
+  });
+
+  it("writes coached true and the pdfp1 fingerprint for a run with a manager decision", async () => {
+    const token = encodeToken({
+      ...decodeToken(scriptedToken(CUP8, "lb-coach")),
+      manager: [{ type: "tactic", match: 0, minute: 30, tactic: "attack" }],
+    });
+    const res = await submit({ nickname: "Misty", token });
+    expect(res.status).toBe(201);
+    const [row] = await rows();
+    expect([row!.coached, row!.runFingerprint]).toEqual([
+      true,
+      "7e21b3d9e68a0b6437de6cd1f7cfa7fd8b3b0d1a125e7aa45767db835eda3262",
+    ]);
+  });
+});
+
 describe("GET /api/leaderboard (catches a wrong board order or a read that writes)", () => {
   async function board(qs: string, s: LeaderboardStore = store) {
     const res = await handleBoard(new URL(`http://local/api/leaderboard?${qs}`), s);
