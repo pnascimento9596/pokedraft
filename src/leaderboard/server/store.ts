@@ -30,7 +30,6 @@ export interface LeaderboardStore {
     rule: RateLimitRule,
   ): Promise<SubmissionAdmission>;
   byToken(token: string): Promise<LeaderboardRow | null>;
-  dailyTaken(nickname: string, board: Board): Promise<boolean>;
   /** Saves the row and ranks it in one coach view of its board, in a single statement. */
   insert(row: NewLeaderboardRow, coach: CoachFilter): Promise<InsertResult>;
   /** The row's rank in one coach view of its board, counted the way `top` orders that view. */
@@ -146,8 +145,11 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
     async admitSubmission(token, nickname, board, keyHash, now, rule) {
       // A retry or a conflict is answered without spending an attempt, so only a run that goes on
       // to the replay is counted.
-      const dailyTaken = sql`EXISTS(SELECT 1 FROM ${t} WHERE nickname = ${nickname}
-        AND mode = ${board.mode} AND daily_date = ${board.dailyDate}::date)`;
+      const dailyTaken =
+        board.dailyDate === null
+          ? sql`false`
+          : sql`EXISTS(SELECT 1 FROM ${t} WHERE nickname = ${nickname}
+              AND mode = ${board.mode} AND daily_date = ${board.dailyDate}::date)`;
       const result = await getDb().execute(sql`
         WITH existing AS MATERIALIZED (
           SELECT * FROM ${t}
@@ -182,15 +184,6 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
         .where(and(sql`md5(${t.token}) = md5(${token})`, eq(t.token, token)))
         .limit(1);
       return row ?? null;
-    },
-    async dailyTaken(nickname, board) {
-      if (board.dailyDate === null) return false;
-      const hit = await getDb()
-        .select({ id: t.id })
-        .from(t)
-        .where(and(eq(t.nickname, nickname), boardFilter(board)))
-        .limit(1);
-      return hit.length > 0;
     },
     async insert(row, coach) {
       const board: Board = { mode: row.mode, dailyDate: row.dailyDate ?? null };
