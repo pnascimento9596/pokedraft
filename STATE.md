@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Run fingerprint and coached column, expand
+
+Branch `feat/leaderboard-fingerprint` off `origin/main` at `5932775`. Wave 5 row 5f1 (Red). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Players see no change: the board, its ranking, the Coached chip and the counts stay as they were.
+- Every new board entry now records whether it was coached and a fingerprint of the run (squad, results and goals), which 5f2 will use to refuse a copied run. A command, `pnpm db:backfill-runs`, fills both for entries that already exist and refuses rather than guesses when an entry does not replay.
+- Submitting a run takes 2 database queries instead of 3, and a board row reads its stored run once instead of twice.
+- Migration `0004_run_fingerprint_coached` adds the two nullable columns and drops the unused `leaderboard_entries_ip_recent_idx`, with a paired down file.
+
+RED commits: `8b879af` migration (2 of 5 failed), `179186a` fingerprint (file failed to load), `4d5f87b` submit writes (2 of 2 selected failed), `3e52136` insert plus rank (1 of 1 selected failed), `873b148` daily probe (1 of 2 selected failed), `021feba` one decode per row (2 of 3 failed), `688a5b9` backfill (file failed to load). Each GREEN follows its RED.
+
+Gates at `1cf9c77`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0, `check-retained-replays` with "10 emitted golden replays passed". Prettier passed on the 22 touched non-SQL files.
+- Unit tests: 1,824 passed in 217 files.
+- Playwright (`CI=1`, headless, chromium): the five leaderboard and board-theme specs passed 30 of 30.
+- `backfillRuns` under `node --conditions=react-server --import tsx` on a migrated PGlite: dry run 2 rows, real run "updated 2 row(s)", second run "updated 0 row(s)", 0 NULLs, 0 duplicate fingerprints. The `db:smoke` SQL passed on PGlite.
+- NOT RUN: every Neon step (preview and production migrate, smoke, rollback, backfill, NULL check and duplicate query; the coordinator runs them), review and hosted CI, the full Playwright suite, the CI data rebuild, the phone check and screen reader pass. No UI change; browser proof not applicable.
+
+Decision log: `docs/decisions/leaderboard-fingerprint.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 4 summary
 
 Branch `docs/wave4-summary` off `b4f8ca7`. Green: docs only, no change under `src/` or `e2e/`.
@@ -14,6 +35,8 @@ Branch `docs/wave4-summary` off `b4f8ca7`. Green: docs only, no change under `sr
 Gates: Prettier passed on the touched Markdown. CI runs the rest. NOT RUN: unit tests and e2e locally (no code changed), the physical phone check and screen reader pass (owner actions).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #125 (Wave 4 summary, Green) merged as squash `5932775`, reviewed head `4605872`, GLM 5.3 Flash APPROVE in round 1 with canary `wave4-summary-c9a240051fa41dd01a1bfa8e31bba22f` echoed. At `4605872` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,805 unit tests passed in 214 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `5932775` with `db.status` ok. No runtime change.
 
 ## PWA and viewport
 

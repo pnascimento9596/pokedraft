@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { PGlite } from "@electric-sql/pglite";
+import { eq } from "drizzle-orm";
 import {
   ENGINE_VERSION,
   dailySeed,
@@ -568,11 +569,11 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     return {
       ...store,
       inserts,
-      insert: async (row) => {
+      insert: async (row, coach) => {
         inserts.push("held");
         if (inserts.length === 2) release();
         await bothThere;
-        const out = await store.insert(row);
+        const out = await store.insert(row, coach);
         inserts.push(out.ok ? "saved" : `conflict:${out.conflict}`);
         return out;
       },
@@ -681,10 +682,10 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     async (_, err) => {
       const failing: LeaderboardStore = {
         ...store,
-        insert: (row) =>
+        insert: (row, coach) =>
           drizzleStore(() => {
             throw err;
-          }).insert(row),
+          }).insert(row, coach),
       };
       const token = scriptedToken(CUP8, "lb-cup8");
       const res = await submit({ nickname: "Ash", token }, undefined, failing);
@@ -696,10 +697,10 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
   it("maps any other insert failure to 503 DB_UNAVAILABLE", async () => {
     const failing: LeaderboardStore = {
       ...store,
-      insert: (row) =>
+      insert: (row, coach) =>
         drizzleStore(() => {
           throw Object.assign(new Error("connection reset"), { code: "08006" });
-        }).insert(row),
+        }).insert(row, coach),
     };
     const res = await submit(
       { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
@@ -708,6 +709,96 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     );
     expect([res.status, res.body.error.code]).toEqual([503, "DB_UNAVAILABLE"]);
   });
+});
+
+describe("stored run identity (catches a submit that leaves coached or run_fingerprint unwritten)", () => {
+  it("writes coached false and the pdfp1 fingerprint for an uncoached run", async () => {
+    const res = await submit({ nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") });
+    expect(res.status).toBe(201);
+    const [row] = await rows();
+    expect([row!.coached, row!.runFingerprint]).toEqual([
+      false,
+      "34615bd71749325c79a1bab9a3c4d820fdd96b08dd461c0f6bc57e7f5d7b3f87",
+    ]);
+  });
+
+  it("writes coached true and the pdfp1 fingerprint for a run with a manager decision", async () => {
+    const token = encodeToken({
+      ...decodeToken(scriptedToken(CUP8, "lb-coach")),
+      manager: [{ type: "tactic", match: 0, minute: 30, tactic: "attack" }],
+    });
+    const res = await submit({ nickname: "Misty", token });
+    expect(res.status).toBe(201);
+    const [row] = await rows();
+    expect([row!.coached, row!.runFingerprint]).toEqual([
+      true,
+      "7e21b3d9e68a0b6437de6cd1f7cfa7fd8b3b0d1a125e7aa45767db835eda3262",
+    ]);
+  });
+});
+
+describe("insert plus rank (catches a saved run that needs a second round trip for its rank)", () => {
+  it("saves and ranks a run in one statement after admission: rank 1 on an empty board, rank 2 behind a better row", async () => {
+    const queries: string[] = [];
+    const logged = await migratedDb({ logQuery: (query) => void queries.push(query) });
+    const using = drizzleStore(() => logged.db);
+    try {
+      const first = await submit(
+        { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
+        undefined,
+        using,
+      );
+      expect([first.status, first.body.entry.rank, queries.length]).toEqual([201, 1, 2]);
+
+      await logged.db.insert(leaderboardEntries).values({
+        nickname: "Leader",
+        mode: "cup8",
+        variant: "classic3.squadFirst.g123456789",
+        seed: "leader",
+        token: "pd6.leader",
+        teamScore: 900,
+        wins: 8,
+        draws: 0,
+        losses: 0,
+        engineVersion: ENGINE_VERSION,
+        ipHash: "test",
+      });
+      await logged.db.delete(leaderboardEntries).where(eq(leaderboardEntries.nickname, "Ash"));
+      queries.length = 0;
+      const second = await submit(
+        { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
+        "203.0.113.8",
+        using,
+      );
+      expect([second.status, second.body.entry.rank, queries.length]).toEqual([201, 2, 2]);
+    } finally {
+      await logged.client.close();
+    }
+  });
+});
+
+describe("admission SQL (catches an all-time submit paying for the daily nickname probe)", () => {
+  it.each([
+    ["an all-time", false, () => scriptedToken(CUP8, "lb-cup8")],
+    ["a daily", true, () => scriptedToken(dailySettings("4-3-3"), dailySeed(TODAY))],
+  ] as const)(
+    "%s run has the daily_date probe in its admission SQL: %s",
+    async (_, daily, token) => {
+      const queries: string[] = [];
+      const logged = await migratedDb({ logQuery: (query) => void queries.push(query) });
+      try {
+        const res = await submit(
+          { nickname: "Ash", token: token() },
+          undefined,
+          drizzleStore(() => logged.db),
+        );
+        expect(res.status).toBe(201);
+        expect(queries[0]!.includes("daily_date =")).toBe(daily);
+      } finally {
+        await logged.client.close();
+      }
+    },
+  );
 });
 
 describe("GET /api/leaderboard (catches a wrong board order or a read that writes)", () => {

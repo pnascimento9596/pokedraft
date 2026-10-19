@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   date,
   index,
@@ -27,6 +28,8 @@ export const leaderboardEntries = pgTable(
     draws: integer("draws").notNull(),
     losses: integer("losses").notNull(),
     engineVersion: text("engine_version").notNull(),
+    coached: boolean("coached"),
+    runFingerprint: text("run_fingerprint"),
     ipHash: text("ip_hash").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).notNull().defaultNow(),
   },
@@ -50,7 +53,6 @@ export const leaderboardEntries = pgTable(
       t.teamScore.desc(),
       t.createdAt,
     ),
-    index("leaderboard_entries_ip_recent_idx").on(t.ipHash, t.createdAt),
     check("leaderboard_entries_mode_chk", sql`${t.mode} IN ('cup8', 'kanto151')`),
     check(
       "leaderboard_entries_nickname_chk",
