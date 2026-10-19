@@ -232,13 +232,41 @@ on `expect(badge!.scale).toBe(1)` with `Received: 1.6`. They are not from this r
 the carrier nameplate inside the camera layer reads 1.6 times its layout size. The 3b gates did
 not list this spec. Left for 3b's owner; not changed here.
 
+## Merge with main (3b squash and 3e)
+
+Merged origin/main at `d29858d` (PR #106 squash `1e417e3` and PR #107 squash `8247f20`).
+`MatchPlayer.tsx` and its CSS conflicted in three places: the full-screen import, the pitch
+wrapper (main's Broadcast props are a subset of this row's, so this row's frame and score bug
+stay) and the control row (the full-screen button, then 3e's haptics hint on its own line).
+`mobile-pitch-fixes` passes after the merge with main's Full pitch fix, which closes the carryover
+below.
+
+Two specs then failed at `d29858d` (`CI=1`, chromium, fresh build, 2 of 2 attempts each):
+
+- `touchline-sheet.spec.ts:83` at 320x640: "the pitch top is on screen", `Expected: >= 0`,
+  `Received: -41`. Tapping "Start the match" scrolls the prematch screen to 416; the match keeps
+  that scroll, and with the camera group and the full-screen button each on their own line the
+  pitch sits 41 px above the screen. On main it cleared by 11 px. The sheet fit only brought the
+  pitch into view when the sheet opened or a stop arrived, and a probe showed the mount-time
+  measurement (pitch top 74) differs from the settled one (-67) at the same scroll, so the first
+  placement now runs one animation frame after mount with the same "pitch not clear" test. After
+  the fix the match opens at 320x640 with the pitch at 166 to 330; 390 and 360 are unchanged
+  (166 and 126). RED is that existing spec at `d29858d`; GREEN at `1bc8259`.
+- `fullscreen-score-bug.spec.ts:142`: `expect(document.fullscreenElement).toBeNull()` received a
+  node. A probe sampling every 250 ms from the moment the half-time question showed read `null`
+  from the first sample, so leaving full screen works and the spec raced the async exit. It now
+  polls.
+
+At `1bc8259` the first `pnpm test` reported 2 failed of 1,590 in 1 of 185 files; I did not
+capture their names, and three reruns passed 1,590 of 1,590. Recorded as an unidentified flake.
+
 ## NOT RUN
 
 - Physical phone check (owner action): iPhone Safari hides the button; Android Chrome full screen
   in portrait and landscape, the score bug visible, the safe-area padding under a notch.
 - `env(safe-area-inset-*)` with real insets. Playwright cannot emulate them.
 - WebKit for the new spec (chromium only, like the other pitch specs).
-- Review (GLM), hosted CI and the full e2e suite.
+- Review (GLM), hosted CI and the full e2e suite (at the time of writing).
 
 ## Carryovers
 
@@ -247,5 +275,5 @@ not list this spec. Left for 3b's owner; not changed here.
   conflict in the control row and a recheck of its wrap.
 - With the goals-only note (runs recorded before match events) the broadcast is taller than its
   pitch, so in landscape full screen the note can sit below the screen's edge. Not measured.
-- `mobile-pitch-fixes` fails at 390, 360 and 320 on the 3b base (above).
+- `mobile-pitch-fixes` failed at 390, 360 and 320 on the 3b base (above); closed by the merge.
 - At 1280 wide on a 720 high desktop the exit button overlaps the pitch's top right corner.
