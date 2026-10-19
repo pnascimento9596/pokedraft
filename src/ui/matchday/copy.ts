@@ -62,6 +62,11 @@ export function nameplate(name: string): string {
   return name.length > 10 ? `${name.slice(0, 9)}…` : name;
 }
 
+/** A club's name on the score bug: its first word, the town ("Goldenrod United" is "Goldenrod"). */
+export function clubShort(name: string): string {
+  return name.split(" ")[0] || name;
+}
+
 export function incidentText(c: IncidentCopy, teams: CardTeams): string {
   const at = `${c.minute}'`;
   switch (c.kind) {

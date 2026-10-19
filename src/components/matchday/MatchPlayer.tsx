@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import {
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -24,7 +25,7 @@ import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
 import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Pace, type Stop } from "@/ui/matchday/clock";
-import { TACTIC_LABEL, beatLine, kickLine, type Teams } from "@/ui/matchday/copy";
+import { TACTIC_LABEL, beatLine, clubShort, kickLine, type Teams } from "@/ui/matchday/copy";
 import {
   START,
   activeBeat,
@@ -62,8 +63,10 @@ import {
 } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { ShareGoalButton } from "@/components/share/ShareGoalButton";
+import { buzz } from "./haptics";
 import { Touchline } from "./Touchline";
 import { setCamera, useCamera } from "./useCamera";
+import { exitFullscreen, toggleFullscreen, useFullscreen } from "./useFullscreen";
 import { useMovesets } from "./useMovesets";
 import s from "./MatchPlayer.module.css";
 
@@ -272,7 +275,9 @@ export function MatchPlayer({
   }, [crowd]);
   const onBall = useCallback((x: number) => setCrowdLevel(crowdGain(x)), []);
 
+  // Haptics ride on the beat sounds' fired sets, so a beat already played never buzzes again.
   // A match opened at a minute has heard every beat before it.
+  const haptics = soundOn && view === "live";
   const sounded = useRef(new Set(startAt === undefined ? [] : Object.keys(state.fired)));
   const horned = useRef(new Set(startAt === undefined ? [] : Object.keys(state.fired)));
   useEffect(() => {
@@ -297,11 +302,14 @@ export function MatchPlayer({
     if (fresh.length === 0 && scored.length === 0) return;
     if (state.stage === "done" && fresh.length > 4) {
       playWhistle("fulltime");
+      if (haptics) buzz("final");
       return;
     }
     for (const b of scored) {
-      if (b.side === "user") playGoalHorn();
-      else playOppGoal();
+      if (b.side === "user") {
+        playGoalHorn();
+        if (haptics) buzz("goal");
+      } else playOppGoal();
       if (view === "live") crowdRoar(roarFor(b, state.speed));
     }
     for (const b of fresh) {
@@ -311,6 +319,7 @@ export function MatchPlayer({
         playSaveSound();
       } else if (b.kind === "card") {
         playCardSound(b.color);
+        if (haptics && b.color === "red" && b.side === "user") buzz("red");
       } else if (b.kind === "sub") {
         playSubSound();
       } else if (b.kind === "whistle") {
@@ -321,9 +330,10 @@ export function MatchPlayer({
               ? "halftime"
               : "fulltime";
         playWhistle(wKind);
+        if (haptics && (b.label === "Full time" || b.label === "End of extra time")) buzz("final");
       }
     }
-  }, [state.fired, state.stage, state.speed, timeline, now, motion, view]);
+  }, [state.fired, state.stage, state.speed, timeline, now, motion, view, haptics]);
 
   const lastPhase = useRef(-1);
   const lastKick = useRef<number | null>(null);
@@ -420,6 +430,22 @@ export function MatchPlayer({
     state.stop?.key ?? null,
     closeSheet,
   );
+  const fullscreen = useFullscreen(pitchRef);
+  const fullscreenOn = fullscreen.active;
+  const fullscreenButton = useRef<HTMLButtonElement>(null);
+  const wasFullscreen = useRef(fullscreenOn);
+  useEffect(() => {
+    if (wasFullscreen.current === fullscreenOn) return;
+    wasFullscreen.current = fullscreenOn;
+    // The button moves between the control row and the full-screen pitch; keep the focus on it.
+    if (document.activeElement === null || document.activeElement === document.body)
+      fullscreenButton.current?.focus({ preventScroll: true });
+  }, [fullscreenOn]);
+  // A stop asks its question below the pitch, where full screen cannot show it.
+  const stopKey = state.stop?.key ?? null;
+  useEffect(() => {
+    if (stopKey !== null && fullscreenOn) exitFullscreen();
+  }, [stopKey, fullscreenOn]);
 
   const snapWindow =
     match.windows?.find((w) => w.minute >= Math.max(5, Math.ceil(clock / 5) * 5)) ??
@@ -445,7 +471,24 @@ export function MatchPlayer({
   const oppMomentum = 100 - userMomentum;
 
   const onPitch = staged(state, now);
+  const hintId = useId();
   const stop = state.stop;
+  const fullscreenToggle =
+    view === "live" && fullscreen.supported ? (
+      <button
+        ref={fullscreenButton}
+        type="button"
+        className={`btn btn--sm ${s.fullscreen}`}
+        data-testid="fullscreen-toggle"
+        onClick={() => {
+          if (!fullscreenOn) closeSheet();
+          toggleFullscreen(pitchRef.current);
+        }}
+      >
+        {fullscreenOn ? "Exit full screen" : "Full screen"}
+      </button>
+    ) : null;
+
   const injury =
     stop?.kind === "injury"
       ? (injuries(match, lineup).find((c) => `injury:${c.minute}:${c.slot}` === stop.key) ?? null)
@@ -526,23 +569,35 @@ export function MatchPlayer({
         </div>
       </div>
 
-      <div ref={pitchRef} className={s.pitch}>
-        <Broadcast
-          match={match}
-          timeline={timeline}
-          lineup={lineup}
-          clock={onPitch.clock}
-          now={onPitch.now}
-          fired={onPitch.fired}
-          kicks={state.kicks}
-          kickProgress={progress}
-          motion={motion}
-          speed={onPitch.speed}
-          feed={feed}
-          cutIns={view === "live"}
-          camera={view === "live" ? cameraChoice : "full"}
-          onBall={crowd ? onBall : undefined}
-        />
+      <div ref={pitchRef} className={s.pitch} data-fullscreen={fullscreenOn || undefined}>
+        <div className={s.frame}>
+          <Broadcast
+            match={match}
+            timeline={timeline}
+            lineup={lineup}
+            clock={onPitch.clock}
+            now={onPitch.now}
+            fired={onPitch.fired}
+            kicks={state.kicks}
+            kickProgress={progress}
+            motion={motion}
+            speed={onPitch.speed}
+            feed={feed}
+            cutIns={view === "live"}
+            camera={view === "live" ? cameraChoice : "full"}
+            onBall={crowd ? onBall : undefined}
+            scoreBug={
+              fullscreenOn ? (
+                <ScoreBug
+                  opp={match.opponent.name}
+                  score={score}
+                  minute={state.stage === "pens" ? null : minuteLabel}
+                  pens={pens}
+                />
+              ) : undefined
+            }
+          />
+        </div>
         {state.replay !== null ? (
           <div className={s.replayBug} data-testid="instant-replay">
             <span className={s.replayTag}>REPLAY</span>
@@ -556,6 +611,7 @@ export function MatchPlayer({
             </button>
           </div>
         ) : null}
+        {fullscreenOn ? fullscreenToggle : null}
       </div>
 
       <div className={s.controls}>
@@ -596,6 +652,7 @@ export function MatchPlayer({
           type="button"
           className="btn btn--ghost btn--sm"
           aria-pressed={soundOn}
+          aria-describedby={hintId}
           data-testid="sound-toggle"
           onClick={() => {
             const next = !soundOn;
@@ -603,7 +660,7 @@ export function MatchPlayer({
             if (next) unlockAudio();
           }}
         >
-          {soundOn ? "Sound on" : "Sound off"}
+          {soundOn ? "Sound and haptics on" : "Sound and haptics off"}
         </button>
         {view === "live" ? (
           <div className={s.camera} role="group" aria-label="Camera">
@@ -627,6 +684,10 @@ export function MatchPlayer({
             </button>
           </div>
         ) : null}
+        {fullscreenOn ? null : fullscreenToggle}
+        <p id={hintId} className={s.controlHint} data-testid="haptics-hint">
+          Haptics work on Android phones only.
+        </p>
       </div>
 
       {sheet ? (
@@ -707,6 +768,35 @@ export function MatchPlayer({
   );
 }
 
+/** The TV-style corner score, shown over the pitch in full screen only. */
+function ScoreBug({
+  opp,
+  score,
+  minute,
+  pens,
+}: {
+  readonly opp: string;
+  readonly score: { readonly user: number; readonly opp: number };
+  readonly minute: string | null;
+  readonly pens: { readonly user: number; readonly opp: number } | null;
+}) {
+  return (
+    <div className={s.bug} data-testid="score-bug" aria-hidden="true">
+      <span>{TEAMS_USER}</span>
+      <span className={`num ${s.bugScore}`}>
+        {score.user}-{score.opp}
+      </span>
+      <span>{clubShort(opp)}</span>
+      {minute !== null ? <span className="num">{minute}</span> : null}
+      {pens !== null ? (
+        <span className="num">
+          Pens {pens.user}-{pens.opp}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
 function frameOf(st: PlayState, now: number, pace: Pace): LiveFrame {
   const view = staged(st, now);
   return { ...view, kicks: st.kicks, kickProgress: kickProgress(st, view.now, pace) };
@@ -719,8 +809,9 @@ const MIN_SHEET_ROOM = 120;
 
 /**
  * Below 600px the touchline is a fixed bottom sheet. The spacer under the page keeps the ticker
- * reachable above it, and opening the sheet or a stop brings the pitch back into view. Turning the
- * phone to a layout without the sheet closes it, since nothing there could close it again.
+ * reachable above it, and the first fit, opening the sheet or a stop brings the pitch back into
+ * view. Turning the phone to a layout without the sheet closes it, since nothing there could close
+ * it again.
  */
 function useSheet(present: boolean, expanded: boolean, stopKey: string | null, close: () => void) {
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -728,6 +819,7 @@ function useSheet(present: boolean, expanded: boolean, stopKey: string | null, c
   const playerRef = useRef<HTMLElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
   const wasFixed = useRef(false);
+  const placed = useRef(false);
   const closeRef = useRef(close);
   useEffect(() => {
     closeRef.current = close;
@@ -768,9 +860,16 @@ function useSheet(present: boolean, expanded: boolean, stopKey: string | null, c
       }
     };
     fit(expanded || stopKey !== null);
+    // The match opens wherever the prematch screen was scrolled, which can leave the pitch above
+    // it. Its layout settles only after the first commit, so the first placement waits a frame.
+    const first = placed.current ? 0 : requestAnimationFrame(() => fit(true));
+    placed.current = true;
     const onResize = () => fit(false);
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(first);
+      window.removeEventListener("resize", onResize);
+    };
   }, [present, expanded, stopKey]);
 
   return { sheetRef, pitchRef, playerRef, spacerRef };
