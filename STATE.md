@@ -24,6 +24,8 @@ Gates at `5e4b90d` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/broadcast-follow-ups.md`. Browser proof: `docs/reports/broadcast-follow-ups/`.
 
+Merged origin/main after PRs #107 and #108 at `816917d`; only STATE.md conflicted. Row 3k lands before 3i (PR #109) because 3i's hosted check timed out four haptics tests twice and this row carries that fix. After the merge lint, typecheck and build exited 0, 405 matchday and UI unit tests passed in 59 files (the haptics file's slowest test 373 ms), and `broadcast-follow-ups`, `score-lands-with-ball`, `haptics`, `fullscreen-score-bug`, `callouts-type-effects` and `follow-camera` passed 17 of 17 locally (`CI=1`, chromium, fresh build). The full gates at the reviewed head are in the review receipt.
+
 ## Landscape, full screen and score bug
 
 Branch `feat/fullscreen-score-bug` off `feat/follow-camera` at `be5a86f`. Wave 3 row 3c, matchday player, scoreboard and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
