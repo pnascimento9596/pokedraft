@@ -63,7 +63,7 @@ test("spin speed setting sits in Setup, starts Normal and keeps Fast after a rel
     "aria-pressed",
     "true",
   );
-  const setup = page.locator("section", { has: page.getByRole("heading", { name: "Setup" }) });
+  const setup = page.getByRole("heading", { name: "Setup", level: 3 }).locator("..");
   await expect(setup.getByRole("group", { name: "Spin speed" })).toBeVisible();
 
   await group.getByRole("button", { name: "Fast" }).click();
@@ -83,7 +83,7 @@ test("a fast run's first reveal settles within 2 s at 390", async ({ page }) => 
   await watchFirstReveal(page);
   await chooseSpinSpeed(page, "Fast");
   const ms = await firstRevealMs(page);
-  test.info().annotations.push({ type: "fast first reveal ms", description: ms.toFixed(0) });
+  console.log(`fast first reveal ${Math.round(ms)} ms`);
   expect(ms).toBeLessThan(2_000);
 });
 
@@ -91,6 +91,6 @@ test("a normal run's first reveal still takes at least 4 s at 390", async ({ pag
   await watchFirstReveal(page);
   await chooseSpinSpeed(page, "Normal");
   const ms = await firstRevealMs(page);
-  test.info().annotations.push({ type: "normal first reveal ms", description: ms.toFixed(0) });
+  console.log(`normal first reveal ${Math.round(ms)} ms`);
   expect(ms).toBeGreaterThanOrEqual(4_000);
 });
