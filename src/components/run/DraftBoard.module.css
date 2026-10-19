@@ -362,9 +362,12 @@
 }
 .dragPreview {
   position: fixed;
+  left: 0;
+  top: 0;
   pointer-events: none;
   z-index: 100;
-  transform: translate(-50%, -50%);
+  /* The pointer position arrives as an inline transform; this centres the card on it. */
+  translate: -50% -50%;
   width: 64px;
   min-height: 84px;
   display: flex;

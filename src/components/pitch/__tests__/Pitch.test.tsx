@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { Pitch } from "@/components/pitch/Pitch";
 import { applyAction, createDraft, speciesById, type Seed, type SpeciesId } from "@/engine";
@@ -66,10 +66,13 @@ describe("Pitch", () => {
       <Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSwap={() => {}} />,
     );
     document.elementFromPoint = () => null;
+    vi.useFakeTimers({ toFake: ["requestAnimationFrame", "cancelAnimationFrame"] });
     const card = screen.getByTestId("slot-s2");
     const mouse = { pointerId: 3, pointerType: "mouse", button: 0 };
     fireEvent.pointerDown(card, { ...mouse, clientX: 10, clientY: 10 });
     fireEvent.pointerMove(card, { ...mouse, clientX: 10, clientY: 110 });
+    act(() => vi.advanceTimersByTime(16));
+    vi.useRealTimers();
     expect(card.style.translate).toBe("0px 111.26px");
   });
 

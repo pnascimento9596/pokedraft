@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Pitch density and drag
+
+Branch `perf/pitch-density-drag` off `origin/main` at `168a8f3`. Wave 4 row 4j (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- On phones (pitch below 540px) a filled token draws a 48px sprite, up from 30px. The type shows as a 3px top bar in the type colour instead of a 2px frame, the type icon column is gone, and the types stay in the token's accessible name.
+- A token name takes one line and ends in an ellipsis when it does not fit ("Crabominable" is still the full accessible name).
+- Dragging an offer card: the preview stays under the finger (the 4c carryover, a preview left drawn near the drag start). It moves by transform once per frame.
+- Dragging a pitch token or an offer card re-renders once per new target slot and once on drop, not on every pointer move. The offer drag attaches its window listeners once per drag.
+- The picker drawer swipe is unchanged: measured at the same cost before and after.
+- At 4x CPU throttle, 390x844, headless (no GPU raster), medians of 5 runs: candidate drag script time 132 to 36 ms and DOM mutations 67 to 40 per second; token drag script time 50 to 31 ms; frame interval p50 16.7 ms and p95 16.7 to 16.8 ms in every scene before and after, 0 long tasks.
+
+RED commit: `883980e`, 3 of 3 unit tests failed in 2 files, and `e2e/pitch-density-drag.spec.ts` failed 9 of 11 against a build of `168a8f3` (the preview paint guard is timing dependent there: it failed 3 of 3 run alone and passed in the parallel file run; the unit transform test is the deterministic guard). Harness `854bf7c` (`scripts/perf/draft-drag.mts`). GREEN `94260af`. `4b62f25` moves the Crabominable phone spec to the one-line ellipsis.
+
+Gates at `94260af` (the commits after it change only `e2e/pitch-request-acceptance.spec.ts`, docs and proof):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All eight `check:*` scripts exited 0. Prettier passed on the changed files.
+- Unit tests: 1,752 passed in 205 files.
+- Playwright (`CI=1`, headless, build at `94260af`), full suite: 950 passed, 63 skipped by their own project gates, 2 failed (the Crabominable phone name test on chromium and webkit, retries included, which asserted the old wrapped name). After `4b62f25`, `pitch-request-acceptance` and `team-readability` passed 11 of 11 against the same build. `pitch-density-drag` 11 of 11, its preview guard 5 of 5 alone. `team-readability` (matchday sprite floor) unaffected: narrowest matchday sprite 70.4px at 390, 360 and 320.
+- NOT RUN: review and hosted CI; a full Playwright rerun at `4b62f25`; a physical phone check of drag feel and the denser tokens, and a screen reader pass (owner actions); GPU raster timing.
+
+Decision log: `docs/decisions/pitch-density-drag.md`. Proof: `docs/reports/pitch-density-drag/` (full pitch at 390, 360 and 320, before and after; `drag.json` with every perf run).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Fast spins
 
 Branch `feat/fast-spins` off `origin/main` at `337f9df`, with `origin/main` merged at `168a8f3` (PR #118) in `8c177bf`. Wave 4 row 4d, draft (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -23,6 +47,8 @@ Gates at `8c177bf` (fix round 1, the merge of `168a8f3`; the docs commit that fo
 - NOT RUN: review, hosted CI, a physical phone check and a real screen reader pass (owner actions).
 
 Decision log: `docs/decisions/fast-spins.md`. Browser proof: `docs/reports/fast-spins/setting-390.png`.
+
+PR #119 (row 4d, fast spins) merged as squash `da44d4b`, reviewed head `96acb86` after one fix round (merge of #118, no code change), GLM 5.3 Flash APPROVE in round 1 with canary `fast-spins-fc0f1b460206d3f0d3ba1eb6137545c4` echoed. At `96acb86` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,756 unit tests passed in 204 files and Prettier passed on 14 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `da44d4b` with `db.status` ok, and `fast-spins`, `wheel-results` and `home-hierarchy` against production (chromium) passed 15 of 15. NOT RUN: physical phone check (owner action), a real screen reader.
 
 ## Dossier and picker
 

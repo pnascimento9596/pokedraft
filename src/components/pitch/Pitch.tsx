@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { FORMATIONS } from "@/engine/formations";
 import type {
   FormationId,
@@ -47,12 +47,14 @@ export interface PitchProps {
 
 interface DragState {
   readonly from: SlotRef;
+  readonly el: HTMLElement;
+  readonly tilted: boolean;
   readonly pointerId: number;
   readonly x0: number;
   readonly y0: number;
-  readonly dx: number;
-  readonly dy: number;
-  readonly moved: boolean;
+  x: number;
+  y: number;
+  moved: boolean;
 }
 
 const DRAG_THRESHOLD = 6;
@@ -84,13 +86,54 @@ export function Pitch({
   const slots = FORMATIONS[formation].slots;
   const points = pitchPoints(slots);
   const { mirror } = useImageSettings();
-  const [drag, setDrag] = useState<DragState | null>(null);
+  // A drag lives in refs and moves its token in one animation frame per screen frame. React state
+  // changes only when the slot under the pointer changes and on drop.
+  const drag = useRef<DragState | null>(null);
+  const frame = useRef<number | null>(null);
   const [dropKey, setDropKey] = useState<string | null>(null);
+  const shownDropKey = useRef<string | null>(null);
   const suppressClick = useRef(false);
+
+  useEffect(
+    () => () => {
+      if (frame.current !== null) cancelAnimationFrame(frame.current);
+    },
+    [],
+  );
 
   const keyUnder = (x: number, y: number): string | null => {
     const el = document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-slot-key]");
     return el?.dataset.slotKey ?? null;
+  };
+
+  const showDropKey = (key: string | null) => {
+    if (key === shownDropKey.current) return;
+    shownDropKey.current = key;
+    setDropKey(key);
+  };
+
+  const paint = () => {
+    frame.current = null;
+    const d = drag.current;
+    if (d === null || !d.moved) return;
+    const dx = d.x - d.x0;
+    const dy = d.y - d.y0;
+    if (d.el.dataset.dragging === undefined) d.el.dataset.dragging = "";
+    d.el.style.translate = `${dx}px ${d.tilted ? Math.round((dy / FIELD_TILT_COS) * 100) / 100 : dy}px`;
+    const under = keyUnder(d.x, d.y);
+    showDropKey(under !== null && under !== refKey(d.from) ? under : null);
+  };
+
+  const endDrag = () => {
+    if (frame.current !== null) cancelAnimationFrame(frame.current);
+    frame.current = null;
+    const d = drag.current;
+    drag.current = null;
+    if (d !== null) {
+      delete d.el.dataset.dragging;
+      d.el.style.translate = "";
+    }
+    showDropKey(null);
   };
 
   const token = (
@@ -105,7 +148,6 @@ export function Pitch({
     const disabled = isSlotDisabled?.(ref) ?? false;
     const slotId = ref.kind === "starter" ? slots[ref.index]!.id : null;
     const weak = slotId !== null && weakest.includes(slotId);
-    const dragging = drag !== null && sameRef(drag.from, ref) && drag.moved;
     const draggable = onSwap !== undefined && species !== null && !disabled;
     const suitability = species === null ? (suitabilityOf?.(ref) ?? null) : null;
     const isDropTarget = dropKey === key || sameRef(dropTarget, ref);
@@ -136,18 +178,12 @@ export function Pitch({
         }
         data-weak={weak || undefined}
         data-drop={isDropTarget || undefined}
-        data-dragging={dragging || undefined}
         disabled={disabled || (onSlotTap === undefined && onSwap === undefined)}
         id={`${labelId}-${key}`}
         aria-describedby={description}
         style={{
           ...style,
           ...(species ? typeFrame(species.types[0]) : null),
-          ...(dragging
-            ? {
-                translate: `${drag.dx}px ${at === undefined ? drag.dy : Math.round((drag.dy / FIELD_TILT_COS) * 100) / 100}px`,
-              }
-            : null),
         }}
         onClick={(e) => {
           // A mouse drag ends with a click on the dragged token, which must not also open it. A
@@ -162,44 +198,41 @@ export function Pitch({
           suppressClick.current = false;
           if (!draggable || e.button !== 0) return;
           e.currentTarget.setPointerCapture(e.pointerId);
-          setDrag({
+          drag.current = {
             from: ref,
+            el: e.currentTarget,
+            tilted: at !== undefined,
             pointerId: e.pointerId,
             x0: e.clientX,
             y0: e.clientY,
-            dx: 0,
-            dy: 0,
+            x: e.clientX,
+            y: e.clientY,
             moved: false,
-          });
+          };
         }}
         onPointerMove={(e) => {
-          if (drag === null || drag.pointerId !== e.pointerId) return;
-          const dx = e.clientX - drag.x0;
-          const dy = e.clientY - drag.y0;
-          const moved = drag.moved || Math.hypot(dx, dy) > DRAG_THRESHOLD;
-          setDrag({ ...drag, dx, dy, moved });
-          if (moved) {
-            const under = keyUnder(e.clientX, e.clientY);
-            setDropKey(under !== null && under !== refKey(drag.from) ? under : null);
-          }
+          const d = drag.current;
+          if (d === null || d.pointerId !== e.pointerId) return;
+          d.x = e.clientX;
+          d.y = e.clientY;
+          d.moved ||= Math.hypot(d.x - d.x0, d.y - d.y0) > DRAG_THRESHOLD;
+          if (d.moved && frame.current === null) frame.current = requestAnimationFrame(paint);
         }}
         onPointerUp={(e) => {
-          if (drag === null || drag.pointerId !== e.pointerId) return;
-          if (drag.moved) {
+          const d = drag.current;
+          if (d === null || d.pointerId !== e.pointerId) return;
+          // Hit test while the dragged token still lets the pointer through (data-dragging).
+          const target = d.moved ? refFromKey(keyUnder(e.clientX, e.clientY) ?? "") : null;
+          endDrag();
+          if (d.moved) {
             suppressClick.current = true;
-            const target = refFromKey(keyUnder(e.clientX, e.clientY) ?? "");
             const targetDisabled = target !== null && (isSlotDisabled?.(target) ?? false);
-            if (target !== null && !sameRef(target, drag.from) && !targetDisabled) {
-              onSwap?.(drag.from, target);
+            if (target !== null && !sameRef(target, d.from) && !targetDisabled) {
+              onSwap?.(d.from, target);
             }
           }
-          setDrag(null);
-          setDropKey(null);
         }}
-        onPointerCancel={() => {
-          setDrag(null);
-          setDropKey(null);
-        }}
+        onPointerCancel={endDrag}
       >
         <PitchCard
           species={species}
