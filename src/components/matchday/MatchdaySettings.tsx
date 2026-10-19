@@ -11,6 +11,7 @@ import {
   loadPanel,
   matchdayView,
   savePanel,
+  type Matchday,
   type MatchView,
 } from "@/ui/settings";
 import s from "./MatchdaySettings.module.css";
@@ -27,57 +28,44 @@ function stored(): string {
   return `${p.managerMode ? "1" : "0"}|${p.matchView}`;
 }
 
-const noSubscribe = () => () => {};
-const noSnapshot = () => null;
-
-type Matchday = { readonly managerMode: boolean; readonly matchView: MatchView };
+// The server and the first client render draw the defaults, so nothing moves once the stored
+// choice is read: only the switch, the pressed segment and the summary line change.
+const serverSnapshot = () => null;
 
 /**
- * Manager mode and the match view on a challenge's start screen. They are the same two settings
- * the home panel holds; changing them here saves them there too. The home page passes its own
- * panel state as `value`, so this copy and the side panel's never disagree.
+ * Manager mode and the match view as the stored home panel holds them, for a challenge's start
+ * screen. A change saves the panel, so home shows it too.
  */
-export function MatchdaySettings({
-  value: controlled,
-  onChange,
-}: {
-  readonly value?: Matchday;
-  readonly onChange?: (next: Matchday) => void;
-} = {}) {
-  const labelId = useId();
-  const hintId = useId();
-  // A controlled copy never reads the store, so its first client render matches the server's and
-  // hydration has no store update to redo.
-  const snapshot = useSyncExternalStore(
-    controlled === undefined ? subscribe : noSubscribe,
-    controlled === undefined ? stored : noSnapshot,
-    noSnapshot,
-  );
+export function useStoredMatchday(): readonly [Matchday, (next: Matchday) => void] {
+  const snapshot = useSyncExternalStore(subscribe, stored, serverSnapshot);
   // A choice made here holds only while the stored panel is the one it was made over, so it covers
   // blocked storage but gives way once another tab saves.
-  const [local, setLocal] = useState<{
-    over: string | null;
-    value: { managerMode: boolean; matchView: MatchView };
-  } | null>(null);
-  // The server and the first client render draw the defaults, so nothing moves once the stored
-  // choice is read: only the switch and the pressed segment change.
+  const [local, setLocal] = useState<{ over: string | null; value: Matchday } | null>(null);
   const [mm, mv] = (
     snapshot ?? `${DEFAULT_PANEL.managerMode ? "1" : "0"}|${DEFAULT_PANEL.matchView}`
   ).split("|") as [string, MatchView];
   const value =
-    controlled ??
-    (local !== null && local.over === snapshot
+    local !== null && local.over === snapshot
       ? local.value
-      : { managerMode: mm === "1", matchView: mv });
-  const set = (patch: Partial<Matchday>) => {
-    const next = { ...value, ...patch };
-    if (onChange !== undefined) {
-      onChange(next);
-      return;
-    }
+      : { managerMode: mm === "1", matchView: mv };
+  const set = (next: Matchday) => {
     savePanel({ ...loadPanel(), ...next });
     setLocal({ over: stored(), value: next });
   };
+  return [value, set];
+}
+
+/** The Matchday selector. Home binds it to its panel state, the start screen to `useStoredMatchday`. */
+export function MatchdaySettings({
+  value,
+  onChange,
+}: {
+  readonly value: Matchday;
+  readonly onChange: (next: Matchday) => void;
+}) {
+  const labelId = useId();
+  const hintId = useId();
+  const set = (patch: Partial<Matchday>) => onChange({ ...value, ...patch });
   const shown = matchdayView(value);
   return (
     <div className={s.settings} data-testid="matchday-settings">

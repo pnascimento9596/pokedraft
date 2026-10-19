@@ -1,7 +1,9 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { HomeScreen } from "../HomeScreen";
+
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), prefetch: vi.fn() }) }));
 
 beforeEach(() => {
   localStorage.clear();
@@ -80,7 +82,10 @@ describe("the home Matchday settings with manager mode (catches a Quick choice a
   const managerSwitch = () => desk().getByRole("switch", { name: /Manager mode/ });
   const quick = () => desk().getByRole("button", { name: "Quick sim" }) as HTMLButtonElement;
   const live = () => desk().getByRole("button", { name: "Live match" });
-  const builderQuick = () => screen.getByTestId("match-view-quick") as HTMLButtonElement;
+  const builderQuick = () =>
+    within(screen.getByRole("button", { name: "Play a friendly cup" }).parentElement!).getByTestId(
+      "match-view-quick",
+    ) as HTMLButtonElement;
 
   it("treats the view as Live and disables Quick with the hint, keeping the saved Quick choice", () => {
     localStorage.setItem(

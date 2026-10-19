@@ -108,7 +108,6 @@ test("the home Settings switch turns ratings on for the next challenge, and off 
   await expect(page.getByText("Challenge runs show scores and ratings.")).toBeVisible();
 
   await page.getByRole("button", { name: "Play 8-0 Challenge" }).click();
-  await page.getByRole("button", { name: "Yes, play" }).click();
   await startOrResume(page);
   await expect(page.locator('[data-testid^="fit-"]').first()).toBeVisible();
   await expect(page.getByTestId("ratings-legend")).toBeVisible();
@@ -117,7 +116,6 @@ test("the home Settings switch turns ratings on for the next challenge, and off 
   await openSettings(page);
   await page.getByRole("switch", { name: /Show ratings \(challenges\)/ }).click();
   await page.getByRole("button", { name: "Play 8-0 Challenge" }).click();
-  await page.getByRole("button", { name: "Yes, play" }).click();
   await startOrResume(page);
   await expect(page.locator('[data-testid^="fit-"]')).toHaveCount(0);
 });

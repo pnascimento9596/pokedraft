@@ -2,7 +2,13 @@
 import { act } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { MatchdaySettings } from "../MatchdaySettings";
+import { MatchdaySettings, useStoredMatchday } from "../MatchdaySettings";
+
+// The start screen's wiring: the selector bound to the stored panel.
+function StartScreenSettings() {
+  const [value, set] = useStoredMatchday();
+  return <MatchdaySettings value={value} onChange={set} />;
+}
 
 const KEY = "pokedraft:panel";
 
@@ -22,7 +28,7 @@ function otherTabSaves(panel: Record<string, unknown>): void {
 
 describe("MatchdaySettings (catches a start screen that misses a change made in another tab)", () => {
   it("follows manager mode and the match view when another tab changes them", () => {
-    render(<MatchdaySettings />);
+    render(<StartScreenSettings />);
     expect(screen.getByTestId("manager-mode").getAttribute("aria-checked")).toBe("false");
     expect(screen.getByTestId("match-view-quick").getAttribute("aria-pressed")).toBe("true");
 
@@ -33,7 +39,7 @@ describe("MatchdaySettings (catches a start screen that misses a change made in 
   });
 
   it("still follows another tab after a change made on this screen", () => {
-    render(<MatchdaySettings />);
+    render(<StartScreenSettings />);
     fireEvent.click(screen.getByTestId("manager-mode"));
     expect(screen.getByTestId("manager-mode").getAttribute("aria-checked")).toBe("true");
     expect(JSON.parse(localStorage.getItem(KEY)!).managerMode).toBe(true);
@@ -48,7 +54,7 @@ describe("MatchdaySettings (catches a start screen that misses a change made in 
 describe("MatchdaySettings with manager mode (catches a Quick choice a manager can make but cannot coach)", () => {
   it("treats the view as Live and disables Quick with the hint, keeping the saved Quick choice", () => {
     localStorage.setItem(KEY, JSON.stringify({ managerMode: true, matchView: "quick" }));
-    render(<MatchdaySettings />);
+    render(<StartScreenSettings />);
     const quick = screen.getByTestId("match-view-quick") as HTMLButtonElement;
     expect(quick.disabled).toBe(true);
     expect(quick.getAttribute("aria-pressed")).toBe("false");
@@ -59,7 +65,7 @@ describe("MatchdaySettings with manager mode (catches a Quick choice a manager c
 
   it("restores the saved Quick choice when manager mode goes off", () => {
     localStorage.setItem(KEY, JSON.stringify({ managerMode: false, matchView: "quick" }));
-    render(<MatchdaySettings />);
+    render(<StartScreenSettings />);
     fireEvent.click(screen.getByTestId("manager-mode"));
     expect(JSON.parse(localStorage.getItem(KEY)!)).toMatchObject({
       managerMode: true,

@@ -283,20 +283,6 @@ export const SCENES: readonly Scene[] = [
     primary: (page) => page.getByRole("button", { name: "Play 8-0 Challenge" }),
   },
   {
-    id: "play confirmation open",
-    route: "/",
-    modal: true,
-    open: async (page) => {
-      await page.goto("/");
-      const play = page.getByRole("button", { name: "Play 8-0 Challenge" });
-      await ready(page, play);
-      await play.click();
-      await expect(page.getByRole("dialog", { name: "Settings confirmed?" })).toBeVisible();
-      await settle(page);
-    },
-    primary: (page) => page.getByRole("dialog").getByRole("button", { name: "Yes, play" }),
-  },
-  {
     id: "builder full",
     route: "/",
     open: async (page) => {
