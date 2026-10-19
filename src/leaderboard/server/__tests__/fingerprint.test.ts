@@ -35,7 +35,8 @@ describe("runFingerprint (catches two identical runs stored under different fing
   it("changes when the same species sit in other slots (catches a squad hashed as a set)", async () => {
     const { draft, cup } = await replayAnyVersion(GOLDEN_CUP8_V6);
     const [a, b, ...rest] = draft.lineup.starters;
-    const swapped = { ...draft, lineup: { ...draft.lineup, starters: [b, a, ...rest] } };
-    expect(runFingerprint(swapped as typeof draft, cup)).not.toBe(PD6_HEX);
+    const starters = [b, a, ...rest] as unknown as typeof draft.lineup.starters;
+    const swapped = { ...draft, lineup: { ...draft.lineup, starters } };
+    expect(runFingerprint(swapped, cup)).not.toBe(PD6_HEX);
   });
 });
