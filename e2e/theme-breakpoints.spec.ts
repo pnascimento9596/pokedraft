@@ -153,3 +153,25 @@ test.describe("phone picker sheet", () => {
     });
   }
 });
+
+test.describe("a share link that does not decode", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("follows a dark system (catches the light 404 page, whose layout renders on the client without the boot script)", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.goto("/r/garbage-not-a-token");
+    await expect(page.getByRole("region", { name: "Run not found" })).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(page.locator("body")).toHaveCSS("background-color", "rgb(11, 18, 32)");
+  });
+
+  test("follows a stored Night choice on a light system", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("pokedraft:theme", JSON.stringify("dark")));
+    await page.emulateMedia({ colorScheme: "light" });
+    await page.goto("/r/garbage-not-a-token");
+    await expect(page.getByRole("region", { name: "Run not found" })).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  });
+});

@@ -46,4 +46,23 @@ describe("ThemeToggle", () => {
     expect([button.textContent, theme(), metaColor()]).toEqual(["Auto", "dark", "#0B1220"]);
     expect(localStorage.getItem("pokedraft:theme")).toBe('"system"');
   });
+
+  it("sets the theme when the boot script never ran, as on a page rendered on the client (catches the light 404 page on a dark phone)", () => {
+    localStorage.setItem("pokedraft:theme", JSON.stringify("system"));
+    render(<ThemeToggle />);
+    expect([theme(), metaColor()]).toEqual(["dark", "#0B1220"]);
+  });
+
+  it("applies a stored Day choice when the boot script never ran", () => {
+    localStorage.setItem("pokedraft:theme", JSON.stringify("light"));
+    render(<ThemeToggle />);
+    expect([theme(), metaColor()]).toEqual(["light", "#E7EAE2"]);
+  });
+
+  it("leaves a theme the boot script set alone", () => {
+    localStorage.setItem("pokedraft:theme", JSON.stringify("light"));
+    document.documentElement.setAttribute("data-theme", "dark");
+    render(<ThemeToggle />);
+    expect([theme(), metaColor()]).toEqual(["dark", "#000000"]);
+  });
 });
