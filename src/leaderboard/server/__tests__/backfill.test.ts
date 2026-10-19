@@ -14,8 +14,7 @@ let client: PGlite;
 let lines: string[];
 
 const port = (): BackfillDb => ({
-  query: async (text, params = []) =>
-    (await client.query<Record<string, unknown>>(text, [...params])).rows,
+  query: async (text, params = []) => (await client.query(text, [...params])).rows,
   transaction: async (statements) => {
     await client.transaction(async (tx) => {
       for (const { text, params } of statements) await tx.query(text, [...params]);
