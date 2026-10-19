@@ -156,16 +156,21 @@ function ActiveDraftBoard({
   const swipe = useRef<{ readonly pointerId: number; readonly y0: number } | null>(null);
   const swipeClosed = useRef(false);
   const [selection, setSelection] = useState<Selection | null>(null);
+  // A candidate drag commits React state on press, once when it passes the slop, when the slot
+  // under the pointer changes, and on drop. The pointer itself lives in refs and moves the preview
+  // in one animation frame per screen frame.
   const [dragCandidate, setDragCandidate] = useState<{
-    id: SpeciesId;
-    x: number;
-    y: number;
-    moved: boolean;
+    readonly id: SpeciesId;
+    readonly moved: boolean;
   } | null>(null);
   const [dropSlot, setDropSlot] = useState<SlotRef | null>(null);
   const dragPointerId = useRef<number | null>(null);
   const dragStartPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const dragPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const dragCandidateRef = useRef<{ id: SpeciesId; moved: boolean } | null>(null);
+  const dragFrame = useRef<number | null>(null);
+  const dropKey = useRef<string | null>(null);
+  const dragPreview = useRef<HTMLDivElement | null>(null);
   // The player picked for a tap swap: a tap on a placed player, then a tap on another slot.
   const [swapFrom, setSwapFrom] = useState<SlotRef | null>(null);
   const onRevealDone = useCallback(() => setRevealedId(rollId), [rollId]);
@@ -310,85 +315,97 @@ function ActiveDraftBoard({
     if (e.button !== 0) return;
     dragPointerId.current = e.pointerId;
     dragStartPos.current = { x: e.clientX, y: e.clientY };
+    dragPos.current = { x: e.clientX, y: e.clientY };
     dragCandidateRef.current = { id, moved: false };
-    setDragCandidate({ id, x: e.clientX, y: e.clientY, moved: false });
+    setDragCandidate({ id, moved: false });
   }, []);
 
+  const placePreview = useCallback((el: HTMLDivElement | null) => {
+    dragPreview.current = el;
+    if (el !== null)
+      el.style.transform = `translate(${dragPos.current.x}px, ${dragPos.current.y}px)`;
+  }, []);
+
+  // What a drop reads, kept current so the window listeners stay attached for the whole drag.
+  const dropContext = useRef({ lineup: state.lineup, act, slot: choosing?.slot ?? null });
   useEffect(() => {
-    if (dragCandidate === null) return;
-    const onPointerMove = (e: PointerEvent) => {
-      if (dragPointerId.current !== e.pointerId) return;
-      const dx = e.clientX - dragStartPos.current.x;
-      const dy = e.clientY - dragStartPos.current.y;
-      const threshold = e.pointerType === "touch" ? 16 : 8;
-      const moved = (dragCandidateRef.current?.moved ?? false) || Math.hypot(dx, dy) > threshold;
-      if (dragCandidateRef.current) dragCandidateRef.current.moved = moved;
-      setDragCandidate((prev) => (prev ? { ...prev, x: e.clientX, y: e.clientY, moved } : null));
-      if (moved) {
-        const drawerRect = drawerRef.current?.getBoundingClientRect();
-        const overDrawer =
-          drawerRect !== undefined &&
-          e.clientX >= drawerRect.left &&
-          e.clientX <= drawerRect.right &&
-          e.clientY >= drawerRect.top &&
-          e.clientY <= drawerRect.bottom;
-        if (overDrawer) {
-          setDropSlot(null);
-        } else {
-          const el = document
-            .elementFromPoint(e.clientX, e.clientY)
-            ?.closest<HTMLElement>("[data-slot-key]");
-          const under = el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null;
-          setDropSlot(under !== null && valueAt(state.lineup, under) === null ? under : null);
-        }
-      }
+    dropContext.current = { lineup: state.lineup, act, slot: choosing?.slot ?? null };
+  });
+
+  const dragging = dragCandidate !== null;
+  useEffect(() => {
+    if (!dragging) return;
+    const overDrawer = (x: number, y: number) => {
+      const r = drawerRef.current?.getBoundingClientRect();
+      return r !== undefined && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
     };
-    const onPointerCancel = (e: PointerEvent) => {
-      if (dragPointerId.current !== e.pointerId) return;
+    const slotUnder = (x: number, y: number) =>
+      document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-slot-key]")?.dataset.slotKey ??
+      null;
+    const passedSlop = (e: PointerEvent) =>
+      Math.hypot(e.clientX - dragStartPos.current.x, e.clientY - dragStartPos.current.y) >
+      (e.pointerType === "touch" ? 16 : 8);
+    const paint = () => {
+      dragFrame.current = null;
+      const { x, y } = dragPos.current;
+      placePreview(dragPreview.current);
+      const key = overDrawer(x, y) ? null : slotUnder(x, y);
+      const ref = key === null ? null : refFromKey(key);
+      const open = ref !== null && valueAt(dropContext.current.lineup, ref) === null ? key : null;
+      if (open === dropKey.current) return;
+      dropKey.current = open;
+      setDropSlot(open === null ? null : refFromKey(open));
+    };
+    const end = () => {
+      if (dragFrame.current !== null) cancelAnimationFrame(dragFrame.current);
+      dragFrame.current = null;
+      dropKey.current = null;
       dragCandidateRef.current = null;
+      dragPointerId.current = null;
       setDragCandidate(null);
       setDropSlot(null);
-      dragPointerId.current = null;
+    };
+    const onPointerMove = (e: PointerEvent) => {
+      const drag = dragCandidateRef.current;
+      if (dragPointerId.current !== e.pointerId || drag === null) return;
+      dragPos.current = { x: e.clientX, y: e.clientY };
+      if (!drag.moved && passedSlop(e)) {
+        drag.moved = true;
+        setDragCandidate({ id: drag.id, moved: true });
+      }
+      if (drag.moved && dragFrame.current === null)
+        dragFrame.current = requestAnimationFrame(paint);
+    };
+    const onPointerCancel = (e: PointerEvent) => {
+      if (dragPointerId.current === e.pointerId) end();
     };
     const onPointerUp = (e: PointerEvent) => {
+      const drag = dragCandidateRef.current;
       if (dragPointerId.current !== e.pointerId) return;
-      const dx = e.clientX - dragStartPos.current.x;
-      const dy = e.clientY - dragStartPos.current.y;
-      const threshold = e.pointerType === "touch" ? 16 : 8;
-      const moved = (dragCandidateRef.current?.moved ?? false) || Math.hypot(dx, dy) > threshold;
-      const drawerRect = drawerRef.current?.getBoundingClientRect();
-      const overDrawer =
-        drawerRect !== undefined &&
-        e.clientX >= drawerRect.left &&
-        e.clientX <= drawerRect.right &&
-        e.clientY >= drawerRect.top &&
-        e.clientY <= drawerRect.bottom;
-      if (moved && dragCandidateRef.current && !overDrawer) {
-        const el = document
-          .elementFromPoint(e.clientX, e.clientY)
-          ?.closest<HTMLElement>("[data-slot-key]");
-        const target =
-          choosing?.slot ?? (el?.dataset.slotKey ? refFromKey(el.dataset.slotKey) : null);
-        if (target !== null && valueAt(state.lineup, target) === null) {
-          act({ type: "pick", species: dragCandidateRef.current.id, slot: target });
+      const moved = (drag?.moved ?? false) || passedSlop(e);
+      if (moved && drag !== null && !overDrawer(e.clientX, e.clientY)) {
+        const { lineup, act: send, slot } = dropContext.current;
+        const key = slotUnder(e.clientX, e.clientY);
+        const target = slot ?? (key === null ? null : refFromKey(key));
+        if (target !== null && valueAt(lineup, target) === null) {
+          send({ type: "pick", species: drag.id, slot: target });
           setSelection(null);
           setDrawerOpen(false);
         }
       }
-      dragCandidateRef.current = null;
-      setDragCandidate(null);
-      setDropSlot(null);
-      dragPointerId.current = null;
+      end();
     };
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerCancel);
     return () => {
+      if (dragFrame.current !== null) cancelAnimationFrame(dragFrame.current);
+      dragFrame.current = null;
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerCancel);
     };
-  }, [dragCandidate, state.lineup, act, choosing?.slot]);
+  }, [dragging, placePreview]);
 
   const cancelNewRun = useCallback(() => setAskNewRun(false), []);
   const askedNewRun = useRef(false);
@@ -891,11 +908,9 @@ function ActiveDraftBoard({
 
       {dragCandidate && dragCandidate.moved ? (
         <div
+          ref={placePreview}
           className={s.dragPreview}
-          style={{
-            left: `${dragCandidate.x}px`,
-            top: `${dragCandidate.y}px`,
-          }}
+          data-testid="drag-preview"
           aria-hidden="true"
         >
           <PlayerImage dexId={dragCandidate.id} size={44} alt="" />
