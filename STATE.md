@@ -3,6 +3,18 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wave 3 summary
+
+Branch `docs/wave3-summary` off `88f6f72`. Green: docs and evidence only, no change under `src/` or `e2e/`.
+
+- Wave 3 is closed: all twelve rows and the test chore merged and live-checked, one PR each (#98 to #111; #105 closed without merging). The entry with the PR table, measurements, brief vs code and open carryovers is in `docs/reports/audits-2026-10-17/program-log.md`.
+- The 360 px manager-mode screenshots and the GIF in `docs/reports/manager-mode/` are re-shot from production at `88f6f72`, and the #70 section's claim that they were updated is corrected in place.
+- The owner phone-check checklist for the whole wave is in `docs/decisions/wave3-summary.md`.
+
+Gates: Prettier passed on the touched Markdown. CI runs the rest. NOT RUN: unit tests and e2e locally (no code changed), the physical phone check (owner action).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Accessible stops and controls
 
 Branch `feat/accessible-controls` off `origin/main` at `eef865e`, with origin/main merged after PR #103 at `d6476b5`. Wave 3 row 3j, matchday controls (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
@@ -23,6 +35,8 @@ Gates at `119c971` (after the merge; the docs commit that adds this section chan
 - Review, hosted CI, a real screen reader and a physical phone check: NOT RUN at the time of writing.
 
 The axe scan of the matchday excludes the touchline panel, whose energy list fails `list`, `aria-allowed-role` and `heading-order`. Those predate this row and are left to Wave 4 (4g). Measurements and decisions are in `docs/decisions/accessible-controls.md`. Browser proof: `docs/reports/accessible-controls/`.
+
+PR #111 (row 3j, accessible stops and controls) merged as squash `88f6f72`, reviewed head `98f81a2`, GLM 5.3 Flash APPROVE in round 1 with canary `accessible-controls-ae5cc530d20413a78d50d43cf62e3a84` echoed. At `98f81a2` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,659 unit tests passed in 194 files and Prettier passed on 17 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `88f6f72` with `db.status` ok, and `keyboard`, `speed-aware-staging` and `a11y` against production (chromium) passed 30 of 30. NOT RUN: physical phone check (owner action), a real screen reader.
 
 ## Touchline intelligence
 
@@ -974,7 +988,7 @@ Local gates on the implementation commits:
 - Playwright (`e2e/manager-mode.spec.ts` and `e2e/watch-live.spec.ts`): 17 passed of 17 across chromium and pixel-7; `e2e/mobile-targets.spec.ts` and `e2e/mobile-acceptance.spec.ts` (`-g "matchday live touchline"`): 10 passed, 2 skipped across iphone-se, iphone-14 and pixel-7.
 - Hosted CI, physical phone check, and the Sol review lane: NOT RUN at the time of writing.
 
-Details and verbatim RED outputs are in `docs/decisions/matchday-sim-overhaul.md`, and updated screenshots are in `docs/reports/manager-mode/`.
+Details and verbatim RED outputs are in `docs/decisions/matchday-sim-overhaul.md`, and updated screenshots are in `docs/reports/manager-mode/`. (Correction, Wave 3 summary: only the 1280 shots and `live-move-callout.png` were refreshed here. The three 360 px shots and `live-match-move-callout.gif` stayed from #62 until the Wave 3 summary re-shot them from production; audit finding B13.)
 
 ## Hand-off follow-up: production check after PRs #64 to #67
 
