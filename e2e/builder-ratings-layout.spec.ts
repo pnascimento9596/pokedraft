@@ -116,6 +116,7 @@ test.describe("builder picker with Show ratings on, 320 px wide", () => {
   test("a row that carries the Swap tag leaves its name untruncated", async ({ page }) => {
     await openLineup(page);
     await page.getByTestId("slot-s9").click();
+    await page.getByTestId("slot-s9").click();
     await page.getByRole("searchbox").fill("Meowth");
     const row = page.getByTestId("pick-52");
     await expect(row).toContainText("Swap with SUB 1");
@@ -169,6 +170,7 @@ test.describe("rating label size", () => {
 
   test("the picker row label is at least 11 px", async ({ page }) => {
     await openLineup(page);
+    await page.getByTestId("slot-s9").click();
     await page.getByTestId("slot-s9").click();
     await expect(page.locator('dialog[open] [class*="rowFitVs"]').first()).toBeVisible();
     const sizes = await smallestLabelPx(page, 'dialog[open] [class*="rowFitVs"]');

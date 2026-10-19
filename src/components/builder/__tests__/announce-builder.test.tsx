@@ -138,7 +138,9 @@ describe("Picker focus return (SC-12)", () => {
 
   it("Clear slot gives focus back to the slot that opened the Picker", async () => {
     await openWithTwoPlaced();
-    fireEvent.click(screen.getByRole("button", { name: /ST Charmander/ }));
+    const slot = screen.getByRole("button", { name: /ST Charmander/ });
+    fireEvent.click(slot);
+    fireEvent.click(slot);
     const dialog = screen.getByRole("dialog");
     fireEvent.click(within(dialog).getByRole("button", { name: "Clear slot" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());

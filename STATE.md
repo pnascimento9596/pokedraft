@@ -23,7 +23,32 @@ Gates at `aa9022c` (the docs commit that follows changes only `STATE.md`, the de
 
 Decision log: `docs/decisions/fast-spins.md`. Browser proof: `docs/reports/fast-spins/setting-390.png`.
 
+## Dossier and picker
+
+Branch `feat/dossier-picker` off `origin/main` at `63462b3`, with `origin/main` merged at `337f9df` (PR #117) before the PR opened. Wave 4 row 4f (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- In Position First each offer card has a Scout button. The dossier opens with the slot in view ("In slot: GK. Goalkeeper, Poor fit."), and a tap on the card still signs the player.
+- The dossier steps through the round's offers with Prev, Next and the arrow keys ("1 of 3"). With ratings on, Compare draws every offer's radar on the same axes, each with its own dash pattern and a named legend.
+- A goalkeeper's radar shows DIV, REF, HAN, GKP, KIC and AER, by the slot in view, else the slot the player is drafted in, else the best role.
+- With ratings on, the Scout Report shows what the review changed, for example "TAK 35, review +3" for Bulbasaur. Ability and move contributions are not in the shipped data, so they are deferred to program data work.
+- Back closes the dossier over the Picker and leaves the Picker open; a second Back closes it.
+- Builder: tap a player to select it, tap another to swap, tap it again to open the Picker. An empty slot opens the Picker at once and Escape clears the selection.
+- Picker search ignores accents and punctuation: "flabebe", "mr mime" and "farfetchd" find Flabébé, Mr. Mime and Farfetch'd.
+
+RED commit: `7aa7519`, 19 of 23 failed in 4 files (the 4 passes are labelled regression guards), and `e2e/dossier-picker.spec.ts` failed 6 of 6 against a build of the pre-fix sources. GREEN `362539c`.
+
+Gates at `4114a63` (the merge of `337f9df`; the commits after it change only `e2e/theme-type.spec.ts` and docs):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All eight `check:*` scripts exited 0. Prettier passed on the 23 changed files.
+- Unit tests: 1,749 passed in 203 files.
+- Playwright (`CI=1`, headless, fresh build at `4114a63`), full suite: 940 passed, 63 skipped by their own project gates, 0 failed, 1 flaky (`theme-type` 1440 dark, a race in this PR's two-tap edit, fixed in `6b4530c`; `theme-type` then passed 20 of 20 with `--repeat-each 5`). `dossier-picker` 6 of 6.
+- NOT RUN: review and hosted CI; a full Playwright rerun at `6b4530c`; a physical phone check and a screen reader pass (owner actions).
+
+Decision log: `docs/decisions/dossier-picker.md`. Proof: `docs/reports/dossier-picker/` (390x844, 360x800 and 320x568: offer Scout buttons, GK dossier, Compare, builder selection).
+
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #118 (row 4f, dossier and picker) merged as squash `168a8f3`, reviewed head `93dfb66` (a STATE-only commit recording #117 on top of `3b72ded`), GLM 5.3 Flash APPROVE in round 1 with canary `dossier-picker-e17332efd0158b2654d6d186775c207e` echoed. At `93dfb66` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,749 unit tests passed in 203 files and Prettier passed on 22 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `168a8f3` with `db.status` ok, and `dossier-picker`, `draft-safety`, `builder` and `swap-a11y` against production (chromium) passed 25 of 25. NOT RUN: physical phone check (owner action), a real screen reader. Deferred: ability and move contributions in the dossier need a Red data change (program data work).
 
 ## Home hierarchy
 

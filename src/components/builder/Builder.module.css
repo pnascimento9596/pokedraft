@@ -64,6 +64,15 @@
 /* One line under the pitch while Show ratings is on: what a pill's number compares against. The
    same 11.2 px as the pill label it stands in for. The slot keeps that line's height with ratings
    off, so turning the saved setting on after hydration shifts nothing. */
+.swapHint {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--flood-text);
+}
+
 .legendSlot {
   margin-top: 4px;
   min-height: 24px;
