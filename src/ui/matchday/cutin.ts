@@ -1,6 +1,6 @@
 import type { Side, SpeciesId } from "@/engine/types";
 import type { Callout } from "./moves";
-import type { Beat, PitchStage } from "./timeline";
+import type { Beat, PitchStage, Timeline } from "./timeline";
 
 /** The lower-third card for a big moment: who made it and the move they called. */
 export interface CutIn {
@@ -32,4 +32,22 @@ export function cutInAt(
   }
   if (beat !== undefined || play?.moment !== "key-duel") return null;
   return { kind: "duel", side: play.side, species: play.species, callout: play.callout };
+}
+
+/**
+ * The cut-in with motion off. The pitch stages no open play then, so a key duel's card comes from
+ * the phase on the clock, until a beat fired since the phase began (its goal or save) takes over.
+ */
+export function stillCutInAt(
+  timeline: Timeline,
+  active: { readonly beat: Beat; readonly progress: number } | null,
+  clock: number,
+): CutIn | null {
+  const duel = timeline.plays.find(
+    (p) => p.moment === "key-duel" && p.from <= clock && clock < p.to,
+  );
+  if (duel?.callout == null || (active !== null && active.beat.minute > duel.from)) {
+    return cutInAt(active, null);
+  }
+  return { kind: "duel", side: duel.side, species: duel.actor.species, callout: duel.callout };
 }

@@ -29,7 +29,7 @@ import {
   type CameraMode,
 } from "@/ui/matchday/camera";
 import { TACTIC_LABEL, nameplate } from "@/ui/matchday/copy";
-import { cutInAt, type CutIn } from "@/ui/matchday/cutin";
+import { cutInAt, stillCutInAt, type CutIn } from "@/ui/matchday/cutin";
 import { isSpent, isTired } from "@/ui/matchday/fatigue";
 import type { FrameFeed, LiveFrame } from "@/ui/matchday/feed";
 import { kitsFor } from "@/ui/matchday/kit";
@@ -83,13 +83,12 @@ const CLOSES = [0.75, 0.9];
 function screenKey(
   active: Active | null,
   stage: PitchStage,
-  cutIns: boolean,
+  cut: CutIn | null,
   kicks: number,
   shots: number,
 ): string {
   const p = active?.beat.kind === "goal" ? active.progress : 0;
   const windows = OPENS.filter((w) => p >= w).length + CLOSES.filter((w) => p > w).length;
-  const cut = cutIns ? cutInAt(active, stage.playCallout) : null;
   const { trail, playCallout: play } = stage;
   const carrier = stage.ball.carrier;
   return [
@@ -302,6 +301,10 @@ export function Broadcast({
       windows: match.windows,
     });
   const { active, stage } = frameAt({ clock, now, fired, kicks, kickProgress, speed });
+  const cutInOf = (at: Active | null, staged: PitchStage, minute: number): CutIn | null => {
+    if (!cutIns) return null;
+    return motion ? cutInAt(at, staged.playCallout) : stillCutInAt(timeline, at, minute);
+  };
 
   const pitchRef = useRef<HTMLDivElement>(null);
   const trailId = `trail${useId().replace(/\W/g, "")}`;
@@ -338,7 +341,7 @@ export function Broadcast({
     const props: LiveFrame = { clock, now, fired, kicks, kickProgress, speed };
     const shotsOf = (f: LiveFrame) =>
       kicksShown(timeline.kicks.length, f.kicks, f.kickProgress, motion);
-    const rendered = screenKey(active, stage, cutIns, kicks, shotsOf(props));
+    const rendered = screenKey(active, stage, cutInOf(active, stage, clock), kicks, shotsOf(props));
     // Measured once per render, and only while a badge shows, so frames between renders read no
     // layout.
     const badgeEl = playBadgeRef.current;
@@ -372,7 +375,8 @@ export function Broadcast({
       const f = feed?.latest() ?? props;
       const latest = frameAt(f);
       paint(nodes, latest.stage, badge, pitch, aim(f, latest));
-      return screenKey(latest.active, latest.stage, cutIns, f.kicks, shotsOf(f)) !== rendered;
+      const cut = cutInOf(latest.active, latest.stage, f.clock);
+      return screenKey(latest.active, latest.stage, cut, f.kicks, shotsOf(f)) !== rendered;
     };
     draw();
     if (feed === undefined || !motion) return;
@@ -383,7 +387,7 @@ export function Broadcast({
     onBall?.(ballX);
   }, [onBall, ballX]);
   const goal = active?.beat.kind === "goal" ? active.beat : null;
-  const cutIn = cutIns ? cutInAt(active, stage.playCallout) : null;
+  const cutIn = cutInOf(active, stage, clock);
   const progress = active?.progress ?? 0;
   const shown = (from: number, to = 1) => !motion || (progress >= from && progress <= to);
   const kickList = timeline.kicks.slice(
