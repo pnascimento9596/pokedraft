@@ -27,6 +27,7 @@ import { parseNickname } from "../nickname";
 import { logServerError, requestIdOf } from "@/observability/log";
 import type { LeaderboardRow } from "@/db/schema";
 import { isCoached } from "@/ui/manager/coached";
+import { runFingerprint } from "./fingerprint";
 import { toBoardEntry, type Board, type Conflict, type LeaderboardStore } from "./store";
 
 export const RATE_LIMIT = { max: 10, windowMs: 60 * 60 * 1000 } as const;
@@ -158,6 +159,7 @@ interface Submission {
   readonly token: string;
   readonly board: Board;
   readonly coach: CoachFilter;
+  readonly coached: boolean;
 }
 
 // Everything that can be checked without the database. These rejections spend no attempt and
@@ -214,11 +216,12 @@ async function parseSubmission(
   // canonical one, so the token index sees one run as one row.
   const token = encodeToken(run);
   const coach = body.data.coach ?? "all";
-  if (coach !== "all" && (coach === "coached") !== isCoached(token)) {
+  const coached = isCoached(token);
+  if (coach !== "all" && (coach === "coached") !== coached) {
     return reject(submitError("INVALID_BODY", `This run is not on the ${coach} board.`));
   }
   const board: Board = { mode: run.settings.mode, dailyDate };
-  return { ok: true, sub: { nickname: nick.nickname, run, token, board, coach } };
+  return { ok: true, sub: { nickname: nick.nickname, run, token, board, coach, coached } };
 }
 
 // A retry of an accepted run (same run, same nickname) gets the saved entry back with 200.
@@ -265,7 +268,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
       "retry-after": "3600",
     });
   if (!parsed.ok) return parsed.res;
-  const { nickname, run, token, board, coach } = parsed.sub;
+  const { nickname, run, token, board, coach, coached } = parsed.sub;
   try {
     const admission = await deps.store.admitSubmission(
       token,
@@ -288,7 +291,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
   } catch (e) {
     return tokenError(e);
   }
-  const { cup } = result;
+  const { draft, cup } = result;
 
   try {
     const inserted = await deps.store.insert({
@@ -303,6 +306,8 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
       draws: cup.draws,
       losses: cup.losses,
       engineVersion: cup.engine,
+      coached,
+      runFingerprint: runFingerprint(draft, cup),
       ipHash,
     });
     if (!inserted.ok) {
