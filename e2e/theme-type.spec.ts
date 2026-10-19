@@ -30,9 +30,13 @@ for (const width of [390, 1440])
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       await page.goto("/");
       await page.getByRole("button", { name: "Randomize", exact: true }).click();
-      // A filled token selects on the first tap and opens the Picker on the second.
-      await page.locator('[data-testid^="slot-"]').first().click();
-      await page.locator('[data-testid^="slot-"]').first().click();
+      // A filled token selects on the first tap and opens the Picker on the second, so wait for
+      // Randomize to fill it: a tap on the still empty slot would open the Picker at once.
+      const slot = page.locator('[data-testid^="slot-"]').first();
+      await expect(slot).toHaveAttribute("data-filled", "true");
+      await slot.click();
+      await expect(slot).toHaveAttribute("aria-pressed", "true");
+      await slot.click();
       await type(page.getByRole("dialog").locator(".type-chip"), 13, 18);
       await type(page.getByRole("dialog").locator("button.chip"), 15, 20, "600");
       await page.goto(PLAY_8_0);
