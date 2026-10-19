@@ -12,7 +12,7 @@ for (const width of [320, 1280]) {
     await match.getByText("Boss XI", { exact: true }).click();
     const roster = match.getByRole("list", { name: /starting eleven/ });
     await expect(roster.getByRole("listitem")).toHaveCount(11);
-    await expect(roster.getByRole("img")).toHaveCount(11);
+    await expect(roster.locator("[data-player-image]")).toHaveCount(11);
     await expect(roster.getByText("Melmetal", { exact: true })).toBeVisible();
     await expect(match.getByText(/^Captain:/)).toBeVisible();
     await expect(page.getByRole("button", { name: /^Scout / })).toHaveCount(16);
