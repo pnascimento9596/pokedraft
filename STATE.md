@@ -27,6 +27,8 @@ Gates at `1efeb35` (code identical at the docs commit that adds this section):
 
 Measurements and decisions are in `docs/decisions/touchline-intel.md`. Browser proof: `docs/reports/touchline-intel/`.
 
+Merged origin/main twice. At `57b772c` (PRs #104, #106, #107): the branch was cut from row 3a's branch, so 3a's squash conflicted with its own commits in seven files; the six code files were re-merged against `bee9acf`, where they equal the squash, leaving one real hunk in `MatchPlayer.tsx` (the fatigue line and 3c's full-screen toggle, both kept). `74f2e55` then plays the intel tests' matches at the frame loop's 100 ms step and 1 s per `act()` (a loaded run had timed one out at 15,000 ms; back to back the two slow tests fell from 2,384 and 2,221 ms to 368 and 308 ms). At `ba878a2` (PRs #108, #110, #109) only an import line and STATE.md conflicted; 3i's seek already refuses the new 65' stop while unanswered. After the second merge lint, typecheck, build and all seven `check:*` scripts exited 0, 1,645 unit tests passed in 192 files, `touchline-intel`, `manager-mode`, `touchline-sheet`, `fullscreen-score-bug`, `replay-deep-links`, `injury-staging`, `prematch-merge`, `fatigue`, `your-calls` and `haptics` passed 41 of 41 and `mobile-targets` 93 of 93 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
 ## Replay and deep links
 
 Branch `feat/replay-deep-links` off `origin/main` at `1e417e3`. Wave 3 row 3i, results and the matchday replay (Yellow, bundle). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.

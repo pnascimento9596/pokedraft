@@ -230,13 +230,38 @@ the bench cards make it taller by design. Screenshots: `docs/reports/touchline-i
 - The 65' managed stop cannot appear in engine 6: the lowest reachable energy at 65' is 67
   (measured above). The row ships it as specified because the brief's threshold is a final product
   decision, and the guard proves it fires at 64 and not at 65. The browser proof of the 65' stop is
-  NOT RUN because no token can produce it. Owner decision for W6b or earlier: drop the stop, or move
-  its threshold (for example to the engine's `autoSubEnergy` of 82, which the assistant uses).
+  NOT RUN because no token can produce it. The coordinator put three options to the owner: A, ship
+  as written; B, move the threshold (for example to the engine's `autoSubEnergy` of 82, which the
+  assistant uses); C, drop the stop. On 2026-10-18 the owner chose A, the coordinator's
+  recommendation, because decision 4's threshold is final and the guard keeps the rule honest until
+  engine 7's fatigue model can reach it. Revisit at W6b, when the engine changes.
 - The brief points the fit at `src/scouting/fit.ts`. The fit value is already on every species
   (`Species.fits`, built from that layer), so nothing imports `fit.ts` and no scouting code reaches
   the client beyond what was there.
 - The hand-off asks for `injury-staging.spec.ts` to be updated if needed. It watches a replay with
   no manager, where nothing in this row changes, and it passed unchanged.
+
+## Merge with main (3d, 3b, 3e, 3c)
+
+The branch was cut from row 3a's branch (`bee9acf`), so git's merge base with main was `b08c68c`
+(3f) and 3a's squash conflicted with 3a's own commits in seven files. In the six code files
+`bee9acf` and the 3a squash `02e45cd` are identical, so each file was re-merged with
+`git merge-file` against `bee9acf` as the base. Five merged clean; `MatchPlayer.tsx` kept one real
+hunk, where 3g's fatigue line and 3c's full-screen toggle were both added after the injury lookup,
+and both stay. 3c's rule that any stop leaves full screen covers 3g's new 65' stop with no change.
+STATE.md was rebuilt as main's file with this row's section on top. Merge commit `57b772c`.
+
+After the merge a loaded `pnpm test` (three worktrees building, load average 18) timed out five
+tests at 15,000 ms, four in `MatchPlayer.haptics.test.tsx` (row 3k owns that fix) and this row's
+"repeats the scout line" in `MatchdayFlow.intel.test.tsx`; both files then passed 13 of 13 alone.
+The intel half-time and injury tests stepped 100 ms per `act()` under a 16 ms faked frame. `74f2e55`
+fires frames at the loop's largest step (100 ms) and advances 1 s per `act()`; a stop holds the
+clock, so none is skipped, and the injury test still reads minute 42 literally. Back to back in one
+run, the old and new file took 2,384 and 2,221 ms against 368 and 308 ms for those two tests.
+
+A second merge at `ba878a2` brought in PRs #108, #110 and #109; only the type import in
+`MatchPlayer.tsx` (3i added `Score`, this row keeps `FORMATIONS`) and STATE.md conflicted. 3i's
+seek refuses any stop in `env.stops` nobody answered, so it covers the new 65' stop unchanged.
 
 ## NOT RUN
 
