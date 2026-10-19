@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <clipPath id="ball">
+      <circle cx="256" cy="256" r="140"/>
+    </clipPath>
+    <polygon id="centre" points="0,-48 45.65,-14.83 28.21,38.83 -28.21,38.83 -45.65,-14.83"/>
+    <polygon id="edge" points="0,-44 41.84,-13.6 25.87,35.6 -25.87,35.6 -41.84,-13.6"/>
+  </defs>
+  <rect width="512" height="512" fill="#204630"/>
+  <rect y="64" width="512" height="64" fill="#255237"/>
+  <rect y="192" width="512" height="64" fill="#255237"/>
+  <rect y="320" width="512" height="64" fill="#255237"/>
+  <rect y="448" width="512" height="64" fill="#255237"/>
+  <g fill="none" stroke="#74E5AD" stroke-opacity="0.55" stroke-width="8">
+    <line x1="0" y1="256" x2="512" y2="256"/>
+    <circle cx="256" cy="256" r="196"/>
+  </g>
+  <ellipse cx="256" cy="404" rx="104" ry="14" fill="#0B1220" fill-opacity="0.35"/>
+  <circle cx="256" cy="256" r="140" fill="#F3EFE4"/>
+  <g clip-path="url(#ball)" fill="#0B1220" stroke="#0B1220" stroke-width="6" stroke-linejoin="round">
+    <use href="#centre" transform="translate(256 256)"/>
+    <use href="#edge" transform="translate(256 256) rotate(0) translate(0 -140) rotate(180)"/>
+    <use href="#edge" transform="translate(256 256) rotate(72) translate(0 -140) rotate(180)"/>
+    <use href="#edge" transform="translate(256 256) rotate(144) translate(0 -140) rotate(180)"/>
+    <use href="#edge" transform="translate(256 256) rotate(216) translate(0 -140) rotate(180)"/>
+    <use href="#edge" transform="translate(256 256) rotate(288) translate(0 -140) rotate(180)"/>
+    <g fill="none">
+      <line x1="0" y1="-48" x2="0" y2="-96" transform="translate(256 256) rotate(0)"/>
+      <line x1="0" y1="-48" x2="0" y2="-96" transform="translate(256 256) rotate(72)"/>
+      <line x1="0" y1="-48" x2="0" y2="-96" transform="translate(256 256) rotate(144)"/>
+      <line x1="0" y1="-48" x2="0" y2="-96" transform="translate(256 256) rotate(216)"/>
+      <line x1="0" y1="-48" x2="0" y2="-96" transform="translate(256 256) rotate(288)"/>
+    </g>
+  </g>
+  <circle cx="256" cy="256" r="140" fill="none" stroke="#0B1220" stroke-width="6"/>
+</svg>
