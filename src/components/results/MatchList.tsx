@@ -202,7 +202,7 @@ function Played({
         </div>
       ) : null}
       <RecordedSaves saves={m.saves} variant={variant} />
-      <MatchIncidents incidents={m.incidents} team={m.opponent.name} />
+      <MatchIncidents incidents={m.incidents} team={m.opponent.name} variant={variant} />
       {m.absences.map((a) => (
         <p key={a.slot} className={s.absence}>
           {absenceLine(a)}

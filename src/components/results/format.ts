@@ -162,6 +162,6 @@ function incidentCopy(i: Incident): IncidentCopy {
  * One line for an injury, substitution, card or tactic change. `team` names the opponent; the
  * user's own cards go unnamed in the results.
  */
-export function incidentLine(i: Incident, team: string): string {
-  return incidentText(incidentCopy(i), { user: null, opp: team });
+export function incidentLine(i: Incident, team: string, variant: ResultsVariant = "live"): string {
+  return incidentText(incidentCopy(i), { user: null, opp: team }, variant === "shared");
 }
