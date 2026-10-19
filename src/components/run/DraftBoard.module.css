@@ -509,3 +509,30 @@
   font-size: 13px;
   text-align: right;
 }
+
+.cardScout {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--stadium-ink);
+  cursor: pointer;
+}
+
+.cardScout svg {
+  box-sizing: content-box;
+  padding: 5px;
+  border: 1px solid var(--stadium-line);
+  border-radius: 50%;
+  background: var(--stadium-card);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}

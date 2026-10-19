@@ -63,7 +63,11 @@ describe("position-first Scout (4f)", () => {
     const dossier = screen.getByRole("dialog", { name: "Dewott" });
     expect(within(dossier).getByTestId("dossier-slot").textContent).toContain("In slot: GK");
     expect(
-      [...within(dossier).getByRole("img").querySelectorAll("text")].map((t) => t.textContent),
+      [
+        ...within(dossier)
+          .getByRole("img", { name: "Dewott attribute radar" })
+          .querySelectorAll("text"),
+      ].map((t) => t.textContent),
     ).toEqual(["DIV", "REF", "HAN", "GKP", "KIC", "AER"]);
     expect(within(dossier).getByTestId("dossier-offer-count").textContent).toBe("1 of 3");
     fireEvent.click(within(dossier).getByRole("button", { name: "Next offer" }));

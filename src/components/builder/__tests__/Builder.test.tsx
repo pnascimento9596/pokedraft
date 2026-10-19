@@ -93,8 +93,11 @@ function showRatings() {
 }
 
 // The first tap on an idle builder loads the engine with import(), so the sheet opens a tick later.
+// A filled token selects on the first tap and opens the Picker on the second.
 async function openPicker(slotName: string) {
-  fireEvent.click(screen.getByRole("button", { name: new RegExp(`^${slotName}(?: |$)`) }));
+  const slot = screen.getByRole("button", { name: new RegExp(`^${slotName}(?: |$)`) });
+  fireEvent.click(slot);
+  if (!slotName.startsWith("Empty ")) fireEvent.click(slot);
   return screen.findByRole("dialog", undefined, { timeout: 10_000 });
 }
 

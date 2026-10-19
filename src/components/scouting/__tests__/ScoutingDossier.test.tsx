@@ -158,7 +158,8 @@ describe("ScoutingDossier modal lifecycle", () => {
       expect((screen.getByRole("searchbox") as HTMLInputElement).value).toBe("Pikachu");
       expect(document.activeElement).toBe(opener);
       expect(onPickerClose).toHaveBeenCalledTimes(0);
-      expect(historyBack).toHaveBeenCalledTimes(0);
+      // One Back drops the dossier's own history entry; the sheet's entry stays.
+      expect(historyBack).toHaveBeenCalledTimes(1);
       expect(parentCancel).toHaveBeenCalledTimes(0);
     },
   );
@@ -370,7 +371,11 @@ describe("dossier and picker (4f)", () => {
     const roles = screen.getByRole("region", { name: "Role suitability" });
     const stars = [...roles.querySelectorAll('[aria-hidden="true"]')].map((el) => el.textContent);
     expect(stars).toEqual(["★", "★", "★"]);
-    expect(roles.textContent).not.toContain("★ Best");
+    expect(
+      [...roles.querySelectorAll('[aria-hidden="true"]')].map(
+        (el) => el.parentElement?.textContent,
+      ),
+    ).toEqual(["★ Best", "★ Best", "★ Best"]);
   });
 
   function OffersHarness({ showRatings = true }: { readonly showRatings?: boolean }) {
