@@ -26,7 +26,29 @@ Gates at `43647ef`:
 
 Decision log: `docs/decisions/resilience-a11y.md`. Browser proof: `docs/reports/resilience-a11y/{how-to-play,coach-mark,skip-link-focused}-390.png`.
 
+## Colour tokens and CVD
+
+Branch `refactor/colour-tokens` off `origin/main` at `3d59cee`. Wave 4 row 4h1 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Five type colours shift slightly so red-green colour blind players can tell every pair apart on the pitch bars, type icons and matchday kits: fire `#EE8130` to `#DD730F`, flying `#A98FF3` to `#AA96F6`, grass `#7AC74C` to `#89BC5F`, poison `#A33EA1` to `#A63EAA`, psychic `#F95587` to `#F65589`. The closest pair was fire against rock at 1.54 for deuteranopia; every pair now sits at 4.01 or more.
+- In dark mode the fire and grass type chips move one step of blue (`#D9D791`, `#5BC354`), lifting two pairs that sat at 4.0005 and 4.0014 over 4.01.
+- Nothing else changes on screen. The 129 colour literals outside `src/design` (75 of them in the live Match highlights panel) now read named tokens set to the same values. Screenshots of 7 scenes in both themes at 390x844 match the base build pixel for pixel after the token move; after the palette move only the pixels of moved type colours change.
+- `pnpm check:theme-colors` now also catches `rgb()`, `rgba()`, `hsl()` and `hsla()`, and `pnpm check:theme-cvd` now audits `TYPE_PALETTE` and fails any pair under 4.01.
+
+RED commit: `77e1b82`, 3 of 11 unit tests failed in 2 files; `check:theme-colors` found 129 lines and `check:theme-cvd` exited 1. Tools `15a5d70` and `1a8b357`. GREEN `b4ffd13` (tokens) and `958219b` (palette). `c53609c` adds mask output to the pixel diff tool.
+
+Gates at `958219b` (the commits after it change only `scripts/audit/pixel-diff.mts`, docs and proof):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All eight `check:*` scripts exited 0. Prettier passed on the changed files.
+- Unit tests: 1,767 passed in 207 files.
+- Playwright (`CI=1`, headless, build of `958219b`), full suite: 955 passed, 67 skipped, 0 failed, no retries.
+- NOT RUN: review and hosted CI; WebKit and Firefox pixel checks; screenshots of hover, drag and the goal overlay (covered by literal-equal token values); a physical phone check and a screen reader pass (owner actions).
+
+Decision log: `docs/decisions/colour-tokens.md`. Proof: `docs/reports/colour-tokens/` (pitch and matchday before, after and change masks in both themes, the results pitch mask, three pixel diff files, the palette search output).
+
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #121 (row 4h1, colour lint, tokens and CVD) merged as squash `ff7c893`, reviewed head `00a2d81`, GLM 5.3 Flash APPROVE in round 1 with canary `colour-tokens-bd6eeebd56e36ff0b38ade4ed20ec3e1` echoed. At `00a2d81` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,767 unit tests passed in 207 files and Prettier passed on 26 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `ff7c893` with `db.status` ok, and `team-readability`, `contrast`, `theme-draft` and `theme-builder` against production (chromium) passed 47 of 47. NOT RUN: physical phone check (owner action), a real screen reader.
 
 ## Pitch density and drag
 

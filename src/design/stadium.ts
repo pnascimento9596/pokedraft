@@ -1,18 +1,20 @@
 import type { CSSProperties } from "react";
 import type { PokemonType, Role } from "@/engine/types";
 
+// Fire, flying, grass, poison and psychic sit a little off the usual type colours so every pair
+// stays apart for red-green deficient eyes; scripts/audit/cvd-nudge.mts found the smallest change.
 export const TYPE_PALETTE = {
   normal: "#A8A77A",
-  fire: "#EE8130",
+  fire: "#DD730F",
   water: "#6390F0",
   electric: "#F7D02C",
-  grass: "#7AC74C",
+  grass: "#89BC5F",
   ice: "#96D9D6",
   fighting: "#C22E28",
-  poison: "#A33EA1",
+  poison: "#A63EAA",
   ground: "#E2BF65",
-  flying: "#A98FF3",
-  psychic: "#F95587",
+  flying: "#AA96F6",
+  psychic: "#F65589",
   bug: "#A6B91A",
   rock: "#B6A136",
   ghost: "#735797",

@@ -35,7 +35,7 @@ describe("kits on the broadcast (catches kit rings that only show while the pitc
         />,
       );
       const root = screen.getByTestId("broadcast");
-      expect(root.style.getPropertyValue("--kit-user")).toBe("#A33EA1");
+      expect(root.style.getPropertyValue("--kit-user")).toBe("#A63EAA");
       expect(root.style.getPropertyValue("--kit-opp")).toBe("#6390F0");
     });
   }

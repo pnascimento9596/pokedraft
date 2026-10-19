@@ -1,36 +1,56 @@
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { distance, simulate, type Rgb } from "../../src/design/color-distance";
+import { distance, simulate, VISIONS, type Rgb } from "../../src/design/color-distance";
+import { TYPE_PALETTE } from "../../src/design/stadium";
 import { hexRgb, palette } from "./theme-contrast.mjs";
 
 export { distance, simulate };
 export type { Vision } from "../../src/design/color-distance";
 
+// 4 is the floor for labelled type chips; the extra 0.01 keeps a later palette edit from sitting
+// on the line, where rounding decides the verdict.
+export const MINIMUM = 4.01;
+
+/** Every pair of `colors` in each vision, closest first, with the pairs under `MINIMUM`. */
+export function separation(colors: readonly (readonly [string, string])[]) {
+  return VISIONS.map((vision) => {
+    const pairs = [];
+    for (let a = 0; a < colors.length; a++)
+      for (let b = a + 1; b < colors.length; b++) {
+        pairs.push({
+          a: colors[a]![0],
+          b: colors[b]![0],
+          deltaEOK100: distance(
+            simulate(hexRgb(colors[a]![1]), vision),
+            simulate(hexRgb(colors[b]![1]), vision),
+          ),
+        });
+      }
+    pairs.sort((a, b) => a.deltaEOK100 - b.deltaEOK100);
+    return {
+      vision,
+      closest: pairs.slice(0, 5),
+      minimum: pairs[0]!.deltaEOK100,
+      under: pairs.filter((pair) => pair.deltaEOK100 < MINIMUM),
+    };
+  });
+}
+
+/** The `--type-*` chip tokens of `tokens.css` in both themes. */
 export function typeSeparation(css: string) {
-  const rows = [];
-  for (const theme of ["light", "dark"] as const) {
-    const tokens = palette(css, theme);
-    const types = Object.entries(tokens).filter(([role]) => /^--type-[a-z]+$/.test(role));
+  return (["light", "dark"] as const).flatMap((theme) => {
+    const types = Object.entries(palette(css, theme)).filter(([role]) =>
+      /^--type-[a-z]+$/.test(role),
+    );
     if (types.length !== 18) throw new Error(`Expected 18 labeled types, found ${types.length}`);
-    for (const vision of ["normal", "protanopia", "deuteranopia"] as const) {
-      const pairs = [];
-      for (let a = 0; a < types.length; a++)
-        for (let b = a + 1; b < types.length; b++) {
-          pairs.push({
-            a: types[a]![0],
-            b: types[b]![0],
-            deltaEOK100: distance(
-              simulate(hexRgb(types[a]![1]), vision),
-              simulate(hexRgb(types[b]![1]), vision),
-            ),
-          });
-        }
-      pairs.sort((a, b) => a.deltaEOK100 - b.deltaEOK100);
-      rows.push({ theme, vision, closest: pairs.slice(0, 5), minimum: pairs[0]!.deltaEOK100 });
-    }
-  }
-  return rows;
+    return separation(types).map((row) => ({ theme, ...row }));
+  });
+}
+
+/** `TYPE_PALETTE`: the pitch token bars, type icons and matchday kits. */
+export function paletteSeparation(colors: Readonly<Record<string, string>> = TYPE_PALETTE) {
+  return separation(Object.entries(colors));
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -41,6 +61,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     source: "https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html",
     method: "Machado 2009, severity 1.0, linear sRGB; Oklab Euclidean distance scaled by 100",
     rows: typeSeparation(css),
+    typePalette: paletteSeparation(),
   };
   writeFileSync(path.join(output, "report.json"), JSON.stringify(report, null, 2) + "\n");
   const color = (rgb: Rgb) => `rgb(${rgb.map((value) => Math.round(value)).join(",")})`;
@@ -66,5 +87,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     `<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="624" viewBox="0 0 1440 624"><g font-family="Inter,Arial,sans-serif" font-size="15">${content}</g></svg>\n`,
   );
   console.log(JSON.stringify(report, null, 2));
-  if (report.rows.some((row) => row.minimum < 4)) process.exitCode = 1;
+  if ([...report.rows, ...report.typePalette].some((row) => row.minimum < MINIMUM))
+    process.exitCode = 1;
 }

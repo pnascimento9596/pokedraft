@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { BLANK_PICTURE } from "@/design/card-tokens";
 import { pixelDisplaySize, type ImagePack } from "@/images/packs";
 
 // The pure half of the creature picture seam: no hooks and no browser APIs, so server code can
@@ -34,8 +35,8 @@ export function Blank({
         height: size,
         flexShrink: 0,
         borderRadius: Math.max(2, Math.round(size / 8)),
-        border: "1px solid rgba(128, 140, 132, 0.55)",
-        background: "rgba(128, 140, 132, 0.16)",
+        border: `1px solid ${BLANK_PICTURE.border}`,
+        background: BLANK_PICTURE.fill,
       }}
     />
   );

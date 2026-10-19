@@ -334,9 +334,9 @@
   padding: 6px 10px;
   font-size: 12px;
   border-radius: var(--radius-xs, 6px);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-muted, rgb(148, 163, 184));
+  background: var(--star-badge-fill);
+  border: 1px solid var(--star-badge-border);
+  color: var(--text-muted);
   width: fit-content;
   cursor: pointer;
   text-align: left;

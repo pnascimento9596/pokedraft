@@ -44,22 +44,22 @@
   flex: none;
   height: calc(var(--chart-h) * var(--h));
   border-radius: 4px 4px 0 0;
-  background: linear-gradient(180deg, var(--stadium-line) 0%, rgba(16, 185, 129, 0.35) 100%);
-  border-top: 2px solid rgb(110, 231, 183);
-  box-shadow: 0 0 8px rgba(52, 211, 153, 0.3);
+  background: linear-gradient(180deg, var(--stadium-line) 0%, var(--road-bar-base) 100%);
+  border-top: 2px solid var(--road-bar-edge);
+  box-shadow: 0 0 8px var(--road-bar-glow);
   transition: height var(--dur-1, 150ms) ease;
 }
 
 .step[data-big] .bar {
-  background: linear-gradient(180deg, rgb(129, 140, 248) 0%, rgba(99, 102, 241, 0.35) 100%);
-  border-top: 2px solid rgb(199, 210, 254);
-  box-shadow: 0 0 10px rgba(129, 140, 248, 0.4);
+  background: linear-gradient(180deg, var(--road-big-top) 0%, var(--road-big-base) 100%);
+  border-top: 2px solid var(--road-big-edge);
+  box-shadow: 0 0 10px var(--road-big-glow);
 }
 
 .step:last-child .bar {
-  background: linear-gradient(180deg, rgb(245, 158, 11) 0%, rgba(245, 158, 11, 0.35) 100%);
-  border-top: 2px solid rgb(253, 230, 138);
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+  background: linear-gradient(180deg, var(--road-final-top) 0%, var(--road-final-base) 100%);
+  border-top: 2px solid var(--road-final-edge);
+  box-shadow: 0 0 12px var(--road-final-glow);
 }
 
 .microLabel {
@@ -108,16 +108,16 @@
 }
 
 .step[data-big] :global(.theme-tooltip__trigger) {
-  background: rgba(37, 99, 235, 0.15);
-  border-color: rgba(96, 165, 250, 0.4);
+  background: var(--road-big-tip-fill);
+  border-color: var(--road-big-tip-border);
   color: var(--text);
 }
 
 .step:last-child :global(.theme-tooltip__trigger) {
-  background: rgba(245, 158, 11, 0.18);
-  border-color: rgba(245, 158, 11, 0.5);
+  background: var(--road-final-tip-fill);
+  border-color: var(--road-final-glow);
   color: var(--text);
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 0 8px var(--road-final-tip-glow);
 }
 
 .step :global(.theme-tooltip__trigger:hover) {

@@ -379,7 +379,7 @@
   background: var(--stadium-card);
   border: 2px solid var(--stadium-ring);
   border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.85);
+  box-shadow: 0 10px 25px var(--drag-preview-shadow);
   opacity: 0.95;
 }
 .dragPreview span {
@@ -407,7 +407,7 @@
   display: block;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--drawer-backdrop);
   backdrop-filter: blur(2px);
   z-index: 45;
 }
@@ -424,7 +424,7 @@
   background: var(--stadium-card);
   border: 2px solid var(--stadium-border);
   border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 10px 40px var(--drawer-shadow);
   padding: 12px;
   /* The global reduced-motion rule turns every 0s transition into 0.01ms, which painted one
      off-center frame as the picker reopened. */
