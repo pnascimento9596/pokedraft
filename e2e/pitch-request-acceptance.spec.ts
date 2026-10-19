@@ -3,7 +3,7 @@ import fixture from "../scripts/audit/fixtures.json";
 import { PLAY_8_0, ready } from "./mobile/scenes";
 
 for (const engine of ["chromium", "webkit"] as const) {
-  test(`${engine} phone pitch shows Crabominable's complete name inside its card`, async ({
+  test(`${engine} phone pitch shows Crabominable on one line with an ellipsis and its complete name in the card's accessible name`, async ({
     baseURL,
   }) => {
     const browser = await { chromium, webkit }[engine].launch();
@@ -26,11 +26,22 @@ for (const engine of ["chromium", "webkit"] as const) {
       await expect(slot).toHaveAttribute("data-filled", "true");
       const name = slot.locator('[id$="-name"]');
       await expect(name).toHaveText("Crabominable");
-      const dimensions = await name.evaluate((e) => ({
-        clippedHorizontally: e.scrollWidth > e.clientWidth,
-        clippedVertically: e.scrollHeight > e.clientHeight,
-      }));
-      expect(dimensions).toEqual({ clippedHorizontally: false, clippedVertically: false });
+      // Below 540px a name takes one line and an overlong one ends in an ellipsis
+      // (docs/decisions/pitch-density-drag.md). The full name stays in the card's accessible name.
+      const line = await name.evaluate((e) => {
+        const cs = getComputedStyle(e);
+        return {
+          whiteSpace: cs.whiteSpace,
+          textOverflow: cs.textOverflow,
+          clippedVertically: e.scrollHeight > e.clientHeight,
+        };
+      });
+      expect(line).toEqual({
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+        clippedVertically: false,
+      });
+      await expect(slot).toHaveAccessibleName(/Crabominable/);
     } finally {
       await context.close();
       await browser.close();
