@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { CupResult, DraftState } from "@/engine";
 import type { GroupRow, Score } from "@/engine/types";
 import { toFullLineup } from "@/engine/draft";
 import { MatchPlayer } from "@/components/matchday/MatchPlayer";
-import { unlockAudio, useSoundEnabled } from "@/components/wheel/sound";
+import { unlockAudio, useAudioLocked } from "@/components/wheel/sound";
 import { ROUND_LABEL } from "@/ui/labels";
 import { broadcastTable } from "./broadcast-table";
 import type { PlayedMatch } from "./format";
@@ -38,8 +38,7 @@ export function MatchReplay({
   const lineup = useMemo(() => toFullLineup(draft), [draft]);
   const heading = useRef<HTMLHeadingElement>(null);
   // A goal link plays without a tap, which browsers do not let start audio.
-  const soundOn = useSoundEnabled();
-  const [tapped, setTapped] = useState(false);
+  const locked = useAudioLocked();
   useEffect(() => {
     heading.current?.scrollIntoView({ block: "start" });
     heading.current?.focus();
@@ -63,15 +62,12 @@ export function MatchReplay({
         >
           Watch live: {ROUND_LABEL[match.round]} against {match.opponent.name}
         </h2>
-        {goal !== undefined && soundOn && !tapped ? (
+        {goal !== undefined && locked ? (
           <button
             type="button"
             className="btn btn--sm"
             data-testid="tap-for-sound"
-            onClick={() => {
-              unlockAudio();
-              setTapped(true);
-            }}
+            onClick={unlockAudio}
           >
             Tap for sound
           </button>

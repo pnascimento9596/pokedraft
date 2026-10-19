@@ -73,11 +73,22 @@ const ONE_GOAL: PlayedMatch = {
 
 let reduced = false;
 
+let buzzes: unknown[] = [];
+
 beforeEach(() => {
   vi.useFakeTimers({
     toFake: ["requestAnimationFrame", "cancelAnimationFrame", "performance", "setTimeout"],
   });
   sound.calls.length = 0;
+  buzzes = [];
+  Object.defineProperty(navigator, "vibrate", {
+    configurable: true,
+    writable: true,
+    value: (pattern: unknown) => {
+      buzzes.push(pattern);
+      return true;
+    },
+  });
   reduced = false;
   localStorage.clear();
   setSoundEnabled(true);
@@ -91,6 +102,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  delete (navigator as { vibrate?: unknown }).vibrate;
   vi.unstubAllGlobals();
   vi.useRealTimers();
 });
@@ -133,6 +145,16 @@ describe("instant replay on the pitch (catches a replay with no REPLAY bug, or o
     await frameUntil(() => minute() > 30, 200);
     expect(screen.queryByTestId("instant-replay")).toBeNull();
     expect(minute()).toBe(31);
+  });
+
+  it("the instant replay neither sounds nor buzzes the 30' goal again: one horn and one [120] buzz through the replay to 31'", async () => {
+    await mount();
+    await frameUntil(() => screen.queryByTestId("instant-replay") !== null);
+    await frameUntil(() => screen.queryByTestId("instant-replay") === null);
+    await frameUntil(() => minute() > 30, 200);
+    expect(minute()).toBe(31);
+    expect(sound.calls.filter((c) => c === "horn")).toEqual(["horn"]);
+    expect(buzzes).toEqual([[120]]);
   });
 
   it("with reduced motion the goal gets no instant replay", async () => {

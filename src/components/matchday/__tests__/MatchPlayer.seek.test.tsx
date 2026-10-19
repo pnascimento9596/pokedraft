@@ -72,11 +72,22 @@ const TWO_GOALS: PlayedMatch = {
   recap: [],
 };
 
+let buzzes: unknown[] = [];
+
 beforeEach(() => {
   vi.useFakeTimers({
     toFake: ["requestAnimationFrame", "cancelAnimationFrame", "performance", "setTimeout"],
   });
   sound.calls.length = 0;
+  buzzes = [];
+  Object.defineProperty(navigator, "vibrate", {
+    configurable: true,
+    writable: true,
+    value: (pattern: unknown) => {
+      buzzes.push(pattern);
+      return true;
+    },
+  });
   localStorage.clear();
   setSoundEnabled(true);
   vi.stubGlobal("matchMedia", (query: string) => ({
@@ -89,6 +100,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  delete (navigator as { vibrate?: unknown }).vibrate;
   vi.unstubAllGlobals();
   vi.useRealTimers();
 });
@@ -129,17 +141,20 @@ describe("goal pips seek the replay (catches a seek that replays every old goal'
     fireEvent.click(screen.getByTestId("skip-ft"));
     await frames(2);
     sound.calls.length = 0;
+    buzzes = [];
 
     fireEvent.click(screen.getByRole("button", { name: "Watch the 30' goal" }));
     await frames(2);
     expect(minute()).toBe(29);
     expect(screen.getByTestId("matchday-score").textContent).toBe("1 - 0");
     expect(goalSounds()).toEqual([]);
+    expect(buzzes).toEqual([]);
 
     for (let i = 0; i < 2_000 && screen.getByTestId("matchday-score").textContent !== "2 - 0"; i++)
       await frames(1);
     expect(screen.getByTestId("matchday-score").textContent).toBe("2 - 0");
     expect(sound.calls.filter((c) => c === "horn")).toEqual(["horn"]);
+    expect(buzzes).toEqual([[120]]);
   });
 
   it("a replay offers one pip per goal, named by its minute", async () => {
