@@ -238,7 +238,7 @@
   display: none;
 }
 
-@media (max-width: 599.98px) {
+@media (max-width: 719.98px) {
   .touchline[data-sheet] {
     gap: 8px;
     padding: 8px 10px 10px;

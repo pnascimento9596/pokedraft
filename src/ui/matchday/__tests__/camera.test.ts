@@ -106,7 +106,7 @@ describe("follow camera zoom (catches a zoom that cuts instead of easing over ab
 });
 
 describe("follow camera default (catches Follow on desktop or under reduced motion)", () => {
-  it("Follow below 600px, Full at 600px and up, Full under reduced motion, a stored choice wins", () => {
+  it("Follow below 720px, Full at 720px and up, Full under reduced motion, a stored choice wins", () => {
     expect(defaultCamera({ wide: false, reducedMotion: false, stored: null })).toBe("follow");
     expect(defaultCamera({ wide: true, reducedMotion: false, stored: null })).toBe("full");
     expect(defaultCamera({ wide: false, reducedMotion: true, stored: null })).toBe("full");

@@ -961,7 +961,7 @@ const PITCH_GAP = 8;
 const MIN_SHEET_ROOM = 120;
 
 /**
- * Below 600px the touchline is a fixed bottom sheet. The spacer under the page keeps the ticker
+ * Below 720px the touchline is a fixed bottom sheet. The spacer under the page keeps the ticker
  * reachable above it, and the first fit, opening the sheet or a stop brings the pitch back into
  * view. Turning the phone to a layout without the sheet closes it, since nothing there could close
  * it again.

@@ -25,3 +25,15 @@ export function applyTheme(choice: Theme): void {
   }
   meta.content = resolved === "dark" ? THEME_COLOR_DARK : THEME_COLOR_LIGHT;
 }
+
+/**
+ * The boot script's steps, for a page whose layout React rendered on the client (a route that
+ * 404s while streaming), where the <head> script never ran. Returns the cleanup for the Auto listener.
+ */
+export function bootTheme(read: () => Theme): () => void {
+  const query = window.matchMedia(DARK_QUERY);
+  const apply = () => applyTheme(read());
+  apply();
+  query.addEventListener("change", apply);
+  return () => query.removeEventListener("change", apply);
+}

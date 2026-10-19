@@ -105,7 +105,7 @@ export function framesWhole(
   return timeline.kicks.length > 0 && clock >= timeline.finalMinute;
 }
 
-/** Follow on a phone, the full pitch from 600px and under reduced motion; a stored choice wins. */
+/** Follow on a phone, the full pitch from 720px and under reduced motion; a stored choice wins. */
 export function defaultCamera(screen: {
   readonly wide: boolean;
   readonly reducedMotion: boolean;

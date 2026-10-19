@@ -98,10 +98,12 @@ test("CTAs one column at 360, two at 390", async ({ page }) => {
   expect(new Set(at360).size, `card lefts at 360: ${at360.join(", ")}`).toBe(1);
 
   await page.setViewportSize({ width: 390, height: 844 });
-  const at390 = await cardLefts(page);
-  expect(new Set(at390.slice(0, 2)).size, `challenge card lefts at 390: ${at390.join(", ")}`).toBe(
-    2,
-  );
+  // Layout widths lag the resize by a frame, and the cards switch on their own width.
+  await expect
+    .poll(async () => new Set((await cardLefts(page)).slice(0, 2)).size, {
+      message: "challenge card lefts at 390",
+    })
+    .toBe(2);
 });
 
 test("home fits 390, 360, 320 and 1280 with no side scroll", async ({ page }) => {

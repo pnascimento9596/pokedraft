@@ -182,8 +182,8 @@
   background: var(--bc-user);
 }
 
-/* Below 420px one row runs the momentum figures into the shot counts; the bar takes a row of its own. */
-@media (max-width: 419.98px) {
+/* Below 480px one row runs the momentum figures into the shot counts; the bar takes a row of its own. */
+@media (max-width: 479.98px) {
   .hud {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-areas:
@@ -325,7 +325,7 @@
   pointer-events: auto;
 }
 
-/* From 600px up the sheet's prompts and touchline sit in the page as before. */
+/* From 720px up the sheet's prompts and touchline sit in the page as before. */
 .sheet {
   display: contents;
 }
@@ -334,7 +334,7 @@
   display: none;
 }
 
-@media (max-width: 599.98px) {
+@media (max-width: 719.98px) {
   .sheet {
     position: fixed;
     right: 0;

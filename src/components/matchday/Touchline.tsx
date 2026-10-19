@@ -30,7 +30,7 @@ export function Touchline({
   readonly onDecide: (d: Decision) => void;
   readonly error: string | null;
   readonly busy?: boolean;
-  /** Below 600px the touchline is a bottom sheet: collapsed to the tactics until it is opened. */
+  /** Below 720px the touchline is a bottom sheet: collapsed to the tactics until it is opened. */
   readonly sheet?: { readonly expanded: boolean; readonly onExpand: (open: boolean) => void };
   /** Ratings are on: bench cards add fit scores and STA. Off, they keep the fit glyph only. */
   readonly ratings?: boolean;
