@@ -3,15 +3,17 @@
 import { useState } from "react";
 import { speciesById, type SaveEvent } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
-import { saveLine } from "./format";
+import { SIDE_COPY, saveLine, type ResultsVariant } from "./format";
 import s from "./RecordedSaves.module.css";
 
 export function RecordedSaves({
   saves,
   illustrate = false,
+  variant = "live",
 }: {
   readonly saves: readonly SaveEvent[] | undefined;
   readonly illustrate?: boolean;
+  readonly variant?: ResultsVariant;
 }) {
   const [selected, setSelected] = useState<SaveEvent | null>(null);
   if (saves === undefined) return null;
@@ -28,7 +30,7 @@ export function RecordedSaves({
           {saves.map((event, index) => (
             <li key={index} data-side={event.side}>
               <span>
-                {event.side === "user" ? "Your XI" : "Opponent"}: {saveLine(event)}
+                {event.side === "user" ? SIDE_COPY[variant].xi : "Opponent"}: {saveLine(event)}
               </span>
               {illustrate ? (
                 <button type="button" className="btn btn--sm" onClick={() => setSelected(event)}>

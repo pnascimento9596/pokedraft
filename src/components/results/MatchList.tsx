@@ -8,7 +8,9 @@ import {
   finalScore,
   goalLine,
   shootoutLine,
+  SIDE_COPY,
   type PlayedMatch,
+  type ResultsVariant,
 } from "./format";
 import { MatchIncidents } from "./MatchIncidents";
 import { RecordedSaves } from "./RecordedSaves";
@@ -31,6 +33,7 @@ export function MatchList({
   onSelectStar,
   onWatch,
   goalHref,
+  variant = "live",
 }: {
   cup: CupResult;
   draft?: DraftState;
@@ -39,6 +42,7 @@ export function MatchList({
   onWatch?: (matchIndex: number) => void;
   /** The link "Share this goal" copies for a goal of the user's at this match and minute. */
   goalHref?: (matchIndex: number, minute: number) => string;
+  variant?: ResultsVariant;
 }) {
   const outIn = eliminatedIn(cup);
   return (
@@ -54,6 +58,7 @@ export function MatchList({
               onSelectStar={onSelectStar}
               onWatch={onWatch === undefined ? undefined : () => onWatch(i)}
               shareGoal={goalHref === undefined ? undefined : (minute) => goalHref(i, minute)}
+              variant={variant}
             />
           ) : (
             <NotPlayed m={m} />
@@ -72,6 +77,7 @@ function Played({
   onSelectStar,
   onWatch,
   shareGoal,
+  variant,
 }: {
   m: PlayedMatch;
   draft?: DraftState;
@@ -80,7 +86,9 @@ function Played({
   onSelectStar?: (round: PlayedMatch["round"]) => void;
   onWatch?: () => void;
   shareGoal?: (minute: number) => string;
+  variant: ResultsVariant;
 }) {
+  const copy = SIDE_COPY[variant];
   const score = finalScore(m);
   const pens = shootoutLine(m);
   const user = m.goals.filter((g) => g.side === "user");
@@ -98,7 +106,7 @@ function Played({
         </span>
       </div>
       <div className={s.scoreline}>
-        <span className={s.side}>You</span>
+        <span className={s.side}>{copy.side}</span>
         <span className={s.goals}>
           {score.user}-{score.opp}
         </span>
@@ -155,7 +163,7 @@ function Played({
       ) : null}
       <div className={s.ladder} aria-label="Ratings for this match">
         <div className={s.meter}>
-          <span className={s.meterLabel}>You</span>
+          <span className={s.meterLabel}>{copy.side}</span>
           <span className={s.track}>
             <span className={s.fillUser} style={bar(m.rating)} />
           </span>
@@ -170,13 +178,13 @@ function Played({
         </div>
         {m.rating < headline ? (
           <p className={s.below}>
-            Fielded side rated {m.rating}, below your full Team Score of {headline}.
+            Fielded side rated {m.rating}, below {copy.fullTeamScore} of {headline}.
           </p>
         ) : null}
       </div>
       {user.length > 0 || opp.length > 0 ? (
         <div className={s.scorers}>
-          <ul className={s.goalList} aria-label="Your goals">
+          <ul className={s.goalList} aria-label={copy.goals}>
             {user.map((g, i) => (
               <li key={i} className={s.goalLine}>
                 {goalLine(g)}
@@ -193,8 +201,8 @@ function Played({
           </ul>
         </div>
       ) : null}
-      <RecordedSaves saves={m.saves} />
-      <MatchIncidents incidents={m.incidents} team={m.opponent.name} />
+      <RecordedSaves saves={m.saves} variant={variant} />
+      <MatchIncidents incidents={m.incidents} team={m.opponent.name} variant={variant} />
       {m.absences.map((a) => (
         <p key={a.slot} className={s.absence}>
           {absenceLine(a)}

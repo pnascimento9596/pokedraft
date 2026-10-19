@@ -17,6 +17,7 @@ import { FORMATIONS } from "@/engine";
 import type { FullLineup, MatchResult, Side, SpeciesId } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeIcon } from "@/components/TypeIcon";
+import { SIDE_COPY, type ResultsVariant } from "@/components/results/format";
 import { TYPE_PALETTE } from "@/design/stadium";
 import { typeLabel } from "@/ui/labels";
 import { badgeCorner, keepInside, type Box, type Size } from "@/ui/matchday/badge";
@@ -316,6 +317,7 @@ export function Broadcast({
   camera = "full",
   onBall,
   scoreBug,
+  variant = "live",
 }: {
   readonly match: PlayedMatch;
   /** The one timeline the match player clocks, sounds and stages from. */
@@ -340,6 +342,7 @@ export function Broadcast({
   readonly onBall?: (x: number) => void;
   /** Drawn over the camera's window, outside the zoomed pitch (the full-screen score bug). */
   readonly scoreBug?: ReactNode;
+  readonly variant?: ResultsVariant;
 }) {
   const userSlots = FORMATIONS[lineup.formation].slots;
   const oppSlots = FORMATIONS[match.opponent.formation ?? OPP_SHAPE].slots;
@@ -737,7 +740,9 @@ export function Broadcast({
         ) : null}
         {active?.beat.kind === "tactic" ? (
           <p className={s.banner} data-testid="tactic-banner">
-            {active.beat.side === "user" ? "Your side" : match.opponent.name} switch to{" "}
+            {active.beat.side === "user"
+              ? SIDE_COPY[variant].switchesTo
+              : `${match.opponent.name} switch to`}{" "}
             {TACTIC_LABEL[active.beat.tactic]}
           </p>
         ) : null}

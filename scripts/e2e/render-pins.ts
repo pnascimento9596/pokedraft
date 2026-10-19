@@ -113,8 +113,8 @@ function deepLink() {
         token,
         href: goalHref(token, watch, goal.minute),
         minute: goal.minute,
-        before: `${tally("user")} - ${tally("opp")}`,
-        after: `${tally("user") + 1} - ${tally("opp")}`,
+        before: `${tally("user")}-${tally("opp")}`,
+        after: `${tally("user") + 1}-${tally("opp")}`,
         opponent: match.opponent.name,
       };
     }
@@ -123,7 +123,7 @@ function deepLink() {
   throw new Error("the golden run scores no goal");
 }
 
-const scoreText = (score: Score) => `${score.user} - ${score.opp}`;
+const scoreText = (score: Score) => `${score.user}-${score.opp}`;
 const REMATCH_LIMIT = 50;
 
 // e2e/exhibition-two-legs.spec.ts: the golden engine-3 cup8 run saved as the Builder squad and

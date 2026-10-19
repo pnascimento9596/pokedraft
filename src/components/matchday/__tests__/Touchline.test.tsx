@@ -180,7 +180,12 @@ describe("Touchline intelligence (catches a touchline that hides the assistant's
       ["bench-card-0", "bench-card-2", "bench-card-4"].map(
         (t) => screen.getByTestId(t).querySelector("[data-fit]")?.textContent,
       ),
-    ).toEqual(["\u2605 Best", "OK Fit", "Poor Fit"]);
+    ).toEqual(["\u2605 Best", "OK", "Poor"]);
+    // The star is a glyph beside the label, so a screen reader hears only "Best".
+    expect(
+      screen.getByTestId("bench-card-0").querySelector("[data-fit] [aria-hidden='true']")
+        ?.textContent,
+    ).toBe("\u2605");
     expect(screen.queryByTestId("bench-card-1")).toBeNull();
     for (const t of ["bench-card-0", "bench-card-2", "bench-card-4"]) {
       expect(screen.getByTestId(t).textContent).not.toMatch(/\d/);

@@ -76,7 +76,7 @@ test("after full time a goal pip seeks to a minute before the goal, and the grou
   const standings = replay.getByTestId("replay-standings");
   await standings.locator("summary").click();
   await expect(standings.locator("tbody tr")).toHaveCount(4);
-  await expect(standings).toContainText("Your team");
+  await expect(standings).toContainText("This squad");
   await standings.scrollIntoViewIfNeeded();
   expect(await fitsWidth(page)).toBe(true);
   await page.screenshot({ path: `${SHOT}/standings-390.png` });

@@ -43,7 +43,7 @@ describe("goal deep link (catches a bad query that breaks the page or a good one
     const replay = screen.getByTestId("match-replay");
     expect(replay.textContent).toContain("Goldenrod United");
     expect(within(replay).getByTestId("match-player").getAttribute("data-minute")).toBe("48");
-    expect(within(replay).getByTestId("matchday-score").textContent).toBe("0 - 0");
+    expect(within(replay).getByTestId("matchday-score").textContent).toBe("0-0");
   });
 
   it("Share this goal on the 49' result line copies the goal's link", async () => {

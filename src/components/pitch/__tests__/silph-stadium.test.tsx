@@ -84,8 +84,8 @@ it("empty slots invite drafting and bench count reflects actual filled substitut
   render(
     <Pitch formation="4-3-3" lineup={draft.lineup} speciesOf={speciesById} onSlotTap={() => {}} />,
   );
-  expect(within(screen.getByTestId("slot-s0")).getByText("Tap to Draft!").textContent).toBe(
-    "Tap to Draft!",
+  expect(within(screen.getByTestId("slot-s0")).getByText("Tap to draft").textContent).toBe(
+    "Tap to draft",
   );
   expect(screen.getByText("Bench (0/5)").textContent).toBe("Bench (0/5)");
 });

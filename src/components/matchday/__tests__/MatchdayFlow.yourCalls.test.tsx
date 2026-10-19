@@ -72,6 +72,10 @@ describe("your calls card (catches a card shown before full time, or one that ne
 
     fireEvent.click(screen.getByTestId("skip-ft"));
     expect(screen.getByTestId("your-calls")).toBeTruthy();
+    // The full-time line writes the score with a hyphen (catches "Win, 3 - 1.").
+    expect(screen.getByTestId("fulltime").querySelector("p")!.textContent).toBe(
+      "Full time. Win, 3-1.",
+    );
     await frames(0, 1);
     expect(screen.getByTestId("your-calls-score").textContent).toBe("Assistant 1-0, You 3-1");
     expect(screen.queryByTestId("your-calls-call")).toBeNull();

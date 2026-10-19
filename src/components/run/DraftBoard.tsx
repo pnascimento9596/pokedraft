@@ -596,7 +596,7 @@ function ActiveDraftBoard({
               }}
               aria-expanded={drawerOpen}
             >
-              {drawerOpen ? "Minimize draft picker" : revealed ? "Choose a player" : "View spinner"}
+              {drawerOpen ? "Hide players" : revealed ? "Show players" : "Show roll"}
             </button>
             {roll !== null ? (
               <div className={s.wheels} data-testid="draft-wheel">
@@ -759,9 +759,9 @@ function ActiveDraftBoard({
                 setSelection(null);
                 setDrawerOpen(true);
               }}
-              aria-label="Back to spin results"
+              aria-label="Back to the roll"
             >
-              Spin results
+              Show roll
             </button>
           </div>
         ) : null}

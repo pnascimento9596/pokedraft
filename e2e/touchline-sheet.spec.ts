@@ -251,6 +251,6 @@ test.describe("shootout pause at 390x844", () => {
     await expect(pens).toHaveCount(0);
     await expect(taker).toHaveAttribute("data-pose", "cast");
     await page.clock.runFor(KICK_MS * 0.2);
-    await expect(pens).toHaveText("Pens 1 - 0");
+    await expect(pens).toHaveText("Pens 1-0");
   });
 });

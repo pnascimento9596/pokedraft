@@ -110,8 +110,9 @@ test.describe("manager mode", () => {
     await expect(page.getByTestId("results-score")).toHaveText(score!);
     await expect(page.getByTestId("coached-pill")).toHaveText("Coached");
     await page.getByTestId("match-G1").getByTestId("match-incidents").locator("summary").click();
+    // The shared link is a friend's view of the run, so it names the side "this squad".
     await expect(page.getByTestId("match-G1").getByTestId("match-incidents")).toContainText(
-      "Kick off: you play Attack",
+      "Kick off: this squad plays Attack",
     );
   });
 

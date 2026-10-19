@@ -170,10 +170,10 @@ export function MatchdayFlow({
           footer={
             <div className={s.fulltime} data-testid="fulltime">
               <p className={s.ftLine}>
-                Full time. {resultWord(match)}, {finalScore(match).user} - {finalScore(match).opp}
+                Full time. {resultWord(match)}, {finalScore(match).user}-{finalScore(match).opp}
                 {match.extraTime !== null ? " after extra time" : ""}
                 {match.shootout !== null
-                  ? `, ${match.shootout.user} - ${match.shootout.opp} on penalties`
+                  ? `, ${match.shootout.user}-${match.shootout.opp} on penalties`
                   : ""}
                 .
               </p>

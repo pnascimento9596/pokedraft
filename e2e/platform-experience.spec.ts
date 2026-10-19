@@ -104,7 +104,7 @@ for (const width of [1280, 320]) {
       const final = await modal.getByTestId("exhibition-score").textContent();
       const goals = await modal.getByRole("list", { name: "Exhibition goals" }).textContent();
       await modal.getByRole("button", { name: "Replay highlights" }).click();
-      await expect(modal.getByTestId("exhibition-score")).toHaveText("0 - 0");
+      await expect(modal.getByTestId("exhibition-score")).toHaveText("0-0");
       await modal.getByRole("button", { name: "Show full time" }).click();
       await expect(modal.getByTestId("exhibition-score")).toHaveText(final!);
       await expect(modal.getByRole("list", { name: "Exhibition goals" })).toHaveText(goals!);
@@ -130,7 +130,7 @@ for (const width of [1280, 320]) {
       expect(bounds!.width).toBeGreaterThanOrEqual(44);
       expect(bounds!.height).toBeGreaterThanOrEqual(44);
       // The open picker is modal: its backdrop takes taps until the picker is minimized.
-      await page.getByRole("button", { name: "Minimize draft picker" }).click();
+      await page.getByRole("button", { name: "Hide players" }).click();
       await sound.click();
       await expect(page.getByRole("button", { name: "Sound on", exact: true })).toHaveAttribute(
         "aria-pressed",

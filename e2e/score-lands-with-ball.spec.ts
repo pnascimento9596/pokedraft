@@ -45,7 +45,7 @@ test("the score holds while the first goal is in flight and lands with the ball,
   await page.getByTestId("match-G1").getByTestId("watch-live").click();
   const replay = page.getByTestId("match-replay");
   await expect(replay.getByTestId("broadcast")).toBeVisible();
-  await expect(replay.getByRole("status")).toHaveText("0 - 0");
+  await expect(replay.getByRole("status")).toHaveText("0-0");
 
   // The flash lives about 0.8 s at 1x, so a visibility poll can miss it on a busy runner. The
   // page's own mutation log records every frame that drew the callout and the flash.
@@ -67,8 +67,8 @@ test("the score holds while the first goal is in flight and lands with the ball,
   console.log(`score snapshots to the first goal: ${JSON.stringify(snaps)}`);
   const inFlight = [...new Set(snaps.filter((s) => s.flight).map((s) => s.score))];
   const landed = [...new Set(snaps.filter((s) => s.flash).map((s) => s.score))];
-  expect(inFlight).toEqual(["0 - 0"]);
+  expect(inFlight).toEqual(["0-0"]);
   expect(landed.length).toBe(1);
-  expect(["1 - 0", "0 - 1"]).toContain(landed[0]);
+  expect(["1-0", "0-1"]).toContain(landed[0]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

@@ -824,7 +824,7 @@ async function playFlow(page: Page, flow: Flow): Promise<Walk> {
     else {
       await walk.see(`round ${round} the offered player`, candidate);
       await expect(candidate).toHaveAttribute("aria-pressed", "true");
-      const minimize = page.getByRole("button", { name: "Minimize draft picker" });
+      const minimize = page.getByRole("button", { name: "Hide players" });
       await scrollDraftControlToView(page, minimize);
       await walk.tap(`round ${round} acknowledge player and read pitch`, minimize);
     }

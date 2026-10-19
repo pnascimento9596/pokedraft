@@ -182,8 +182,8 @@ export function SidePanel({
           </div>
           <p className={s.hint}>
             {panel.showChallengeRatings
-              ? "Challenge runs show ratings. Turn them off in Settings to play blind."
-              : "Challenge runs keep ratings hidden."}
+              ? "Challenge runs show scores and ratings."
+              : "Challenge runs hide scores and ratings. Position fit hints stay."}
           </p>
           <button
             type="button"
@@ -270,13 +270,13 @@ export function SidePanel({
             />
             <Switch
               label="Show ratings (builder)"
-              hint="Casual sighted mode"
+              hint="Ratings on"
               checked={panel.showRatings}
               onChange={(showRatings) => set({ showRatings })}
             />
             <Switch
               label="Show ratings (challenges)"
-              hint="Off keeps challenges blind"
+              hint="Off hides scores and ratings during challenges. Position fit hints stay."
               checked={panel.showChallengeRatings}
               onChange={(showChallengeRatings) => set({ showChallengeRatings })}
             />

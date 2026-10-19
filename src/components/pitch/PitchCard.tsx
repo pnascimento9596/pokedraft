@@ -50,7 +50,12 @@ export function PitchCard({
           className={s.emptyPrompt}
           data-suitability={suitability ?? undefined}
         >
-          {suitability ? SUITABILITY_LABEL[suitability] : "Tap to Draft!"}
+          {suitability === "recommended" ? (
+            <>
+              <span aria-hidden="true">★</span>{" "}
+            </>
+          ) : null}
+          {suitability ? SUITABILITY_LABEL[suitability] : "Tap to draft"}
         </span>
       ) : (
         <>

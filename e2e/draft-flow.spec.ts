@@ -106,8 +106,8 @@ for (const engine of ["chromium", "webkit"] as const) {
       await wheelVisible(page);
       await pitchShown(page);
       const reopened = await scrolls();
-      await page.getByRole("button", { name: "Minimize draft picker" }).tap();
-      await page.getByRole("button", { name: "Choose a player", exact: true }).tap();
+      await page.getByRole("button", { name: "Hide players" }).tap();
+      await page.getByRole("button", { name: "Show players", exact: true }).tap();
       await page.evaluate(() => window.scrollBy(0, -150));
       await page.waitForTimeout(250);
       expect(await scrolls()).toBe(reopened);
