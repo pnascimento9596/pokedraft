@@ -53,7 +53,7 @@ export default defineConfig({
     {
       name: "iphone-14",
       use: { ...devices["iPhone 14"] },
-      testMatch: /(mobile-(acceptance|targets|draft)|settings-confirm)\.spec\.ts/,
+      testMatch: /(mobile-(acceptance|targets|draft)|one-tap-play)\.spec\.ts/,
     },
     {
       name: "pixel-7",
