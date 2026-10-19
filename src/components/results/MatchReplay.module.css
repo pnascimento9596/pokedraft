@@ -29,3 +29,39 @@
 .head :global(.btn) {
   min-height: 44px;
 }
+
+.standings {
+  border-top: 1px solid var(--border-soft);
+  font-size: 13px;
+}
+
+.standings summary {
+  min-height: 44px;
+  padding-block: 12px;
+  cursor: pointer;
+}
+
+.standings p {
+  margin: 0 0 8px;
+  color: var(--text-muted);
+}
+
+.standings table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.standings th,
+.standings td {
+  padding: 6px;
+  text-align: right;
+}
+
+.standings th:first-child {
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.standings tr[data-user] {
+  font-weight: 700;
+}

@@ -382,16 +382,20 @@ describe("pitch geometry (catches sprites that leave the pitch or move with redu
   });
 });
 
-// A real cup's first match: seed "a1", 4-2-3-1, every pick the first offer.
-function pinnedCupMatch(): { match: PlayedMatch; lineup: FullLineup } {
+// A real cup's match, every pick the first offer: by default seed "a1", 4-2-3-1, the first match.
+function pinnedCupMatch(
+  seed = "a1",
+  formation: DraftSettings["formation"] = "4-2-3-1",
+  index = 0,
+): { match: PlayedMatch; lineup: FullLineup } {
   const settings: DraftSettings = {
     mode: "cup8",
-    formation: "4-2-3-1",
+    formation,
     gens: [1, 2, 3, 4, 5, 6, 7, 8, 9],
     style: "classic3",
     order: "squadFirst",
   };
-  let state = createDraft(settings, "a1" as Seed);
+  let state = createDraft(settings, seed as Seed);
   for (const slot of slotRefs()) {
     const roll = state.phase.kind === "choosing" ? state.phase.roll : null;
     if (roll === null) throw new Error("expected a roll");
@@ -399,9 +403,9 @@ function pinnedCupMatch(): { match: PlayedMatch; lineup: FullLineup } {
     state = applyAction(state, { type: "pick", species, slot });
   }
   const lineup = toFullLineup(state);
-  const first = runCup(lineup, "a1" as Seed, "cup8").matches[0];
-  if (first?.status !== "played") throw new Error("expected a played match");
-  return { match: first, lineup };
+  const played = runCup(lineup, seed as Seed, "cup8").matches[index];
+  if (played?.status !== "played") throw new Error("expected a played match");
+  return { match: played, lineup };
 }
 
 describe("callout budget (catches open play that calls a move on most phases instead of the big moments)", () => {
@@ -413,6 +417,17 @@ describe("callout budget (catches open play that calls a move on most phases ins
     expect(calls).toBeGreaterThanOrEqual(10);
     expect(calls).toBeLessThanOrEqual(18);
     expect(calls).toBe(12);
+  });
+
+  it("a pinned extra-time match yields between 10 and 18 open-play callouts (catches 120' matches calling 21, a third more than 90' ones)", () => {
+    const { match: m, lineup } = pinnedCupMatch("d3", "4-3-3", 3);
+    const t = buildTimeline(m, { matchIndex: 3, seed: "d3", lineup, movesOf: movesetFor });
+    const calls = t.plays.filter((p) => p.callout !== null).length;
+    expect(t.finalMinute).toBe(120);
+    expect(t.plays.length).toBe(96);
+    expect(calls).toBeGreaterThanOrEqual(10);
+    expect(calls).toBeLessThanOrEqual(18);
+    expect(calls).toBe(15);
   });
 
   it("calls a move only on final-third through balls, crosses, key duels and build-up", () => {

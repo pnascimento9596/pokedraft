@@ -18,9 +18,11 @@ import {
   type SlotRef,
 } from "@/engine/types";
 import { replay as replayV3 } from "@/engine/versions/v3/src/engine/replay";
-import { GOLDEN_CUP8_V3 } from "@/engine/versions/__tests__/fixtures";
+import { GOLDEN_CUP8_V3, GOLDEN_CUP8_V5 } from "@/engine/versions/__tests__/fixtures";
+import { decodeToken } from "@/engine/token";
 import { RETAINED_TOKEN_VERSIONS } from "@/engine/versions/label";
 import { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
+import { goalHref } from "@/ui/run-link";
 import { ALL_REFS, BUILDER_URL_SEED, valueAt } from "@/ui/lineup";
 import { parsePlayQuery } from "@/ui/settings";
 
@@ -93,6 +95,32 @@ function yourCalls() {
     return `${s.user}-${s.opp}`;
   };
   return { url: YOUR_CALLS_URL, assistant: first([]), you: first([YOUR_CALLS_ACTION]) };
+}
+
+// e2e/replay-deep-links.spec.ts: the golden engine-5 cup8 draft under the live prefix, linked to
+// the first goal it scores.
+function deepLink() {
+  const token = `pd${RUN_TOKEN_VERSION}.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+  const { cup } = replay(decodeToken(token));
+  let watch = 0;
+  for (const match of cup.matches) {
+    if (match.status !== "played") continue;
+    const goal = match.goals.find((g) => g.side === "user");
+    if (goal !== undefined) {
+      const before = match.goals.filter((g) => g.minute < goal.minute);
+      const tally = (side: string) => before.filter((g) => g.side === side).length;
+      return {
+        token,
+        href: goalHref(token, watch, goal.minute),
+        minute: goal.minute,
+        before: `${tally("user")} - ${tally("opp")}`,
+        after: `${tally("user") + 1} - ${tally("opp")}`,
+        opponent: match.opponent.name,
+      };
+    }
+    watch++;
+  }
+  throw new Error("the golden run scores no goal");
 }
 
 const scoreText = (score: Score) => `${score.user} - ${score.opp}`;
@@ -176,6 +204,11 @@ export async function renderPins(): Promise<string> {
     ``,
     `// A manager-mode run with Attack at the 45' stop of match 0: the full-time card's two scores.`,
     `export const YOUR_CALLS = ${JSON.stringify(yourCalls())} as const;`,
+  );
+  lines.push(
+    ``,
+    `// The golden engine-5 cup8 draft under the live prefix, linked to its first goal.`,
+    `export const DEEP_LINK = ${JSON.stringify(deepLink())} as const;`,
   );
   const options = await resolveConfig(PINS_PATH);
   return format(lines.join("\n"), { ...options, filepath: PINS_PATH });

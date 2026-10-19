@@ -16,17 +16,13 @@ for (const width of [320, 1280]) {
     await expect(roster.getByText("Melmetal", { exact: true })).toBeVisible();
     await expect(match.getByText(/^Captain:/)).toBeVisible();
     await expect(page.getByRole("button", { name: /^Scout / })).toHaveCount(16);
-    await page.getByTestId("toggle-matchday").click();
-    await page.getByTestId("broadcast-round-QF").click();
-    const shootout = page.getByTestId("broadcast-shootout");
-    await expect(shootout.getByRole("listitem")).toHaveCount(10);
-    await expect(shootout).toContainText("Melmetal");
-    await expect(shootout).not.toContainText("No. ");
-    await page.getByRole("button", { name: "Replay Shootout" }).click();
-    await expect(shootout.getByRole("listitem")).toHaveCount(0);
-    await page.getByRole("button", { name: "Next Kick" }).click();
-    await page.getByRole("button", { name: "Next Kick" }).click();
-    await expect(shootout).toContainText("Melmetal");
+    await match.getByTestId("watch-live").click();
+    const replay = page.getByTestId("match-replay");
+    await replay.getByTestId("skip-ft").click();
+    const kicks = replay.getByTestId("ticker").locator('li[data-kind="kick"]');
+    await expect(kicks).toHaveCount(10);
+    await expect(kicks.filter({ hasText: "Melmetal" })).not.toHaveCount(0);
+    await expect(kicks.filter({ hasText: "No. " })).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );

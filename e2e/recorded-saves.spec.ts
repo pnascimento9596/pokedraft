@@ -23,14 +23,14 @@ for (const width of [320, 1280]) {
       true,
     );
     await saves.screenshot({ path: `output/playwright/recorded-saves/results-${width}.png` });
-    await page.getByTestId("toggle-matchday").click();
-    await page.getByTestId("broadcast-round-G1").click();
-    const feed = page.getByTestId("matchday-live").getByTestId("broadcast-save");
+    await match.getByTestId("watch-live").click();
+    const replay = page.getByTestId("match-replay");
+    await replay.getByTestId("skip-ft").click();
+    const feed = replay.getByTestId("ticker").locator('li[data-kind="save"]');
     await expect(feed).toHaveCount(8);
-    await expect(feed.last()).toContainText("82' Spheal saves Tapu Koko's shot");
-    await page
-      .getByTestId("matchday-live")
-      .screenshot({ path: `output/playwright/recorded-saves/matchday-${width}.png` });
+    await expect(feed.first()).toContainText("82'");
+    await expect(feed.first()).toContainText("Spheal");
+    await replay.screenshot({ path: `output/playwright/recorded-saves/matchday-${width}.png` });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );

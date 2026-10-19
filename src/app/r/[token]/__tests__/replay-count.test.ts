@@ -51,7 +51,7 @@ describe("/r/[token] replay count (catches the dispatch 3 page that replayed a t
     const page = await import("../page");
     const meta = await page.generateMetadata({ params } as never);
     expect(meta.title).toBe("pokedraft run: 3-0-2, Team Score 593");
-    const main = page.default({ params } as never) as {
+    const main = page.default({ params, searchParams: Promise.resolve({}) } as never) as {
       props: {
         children: { props: { children: Promise<{ props: { run: { cup: { wins: number } } } }> } };
       };

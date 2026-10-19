@@ -24,7 +24,7 @@ export async function pngSize(download: Download): Promise<{ width: number; heig
 
 export async function shareAndReplay(page: Page, record: string): Promise<void> {
   await expect(page.getByTestId("results-record")).toHaveText(record);
-  await page.getByRole("button", { name: "Share" }).click();
+  await page.getByRole("button", { name: "Share", exact: true }).click();
   const link = await page.evaluate(() => navigator.clipboard.readText());
   expect(link).toMatch(SHARE_LINK);
 

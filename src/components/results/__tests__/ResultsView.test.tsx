@@ -224,7 +224,14 @@ describe("ResultsView", () => {
     expect(screen.queryByTestId("submit-slot")).toBeNull();
   });
 
-  it("renders squad score breakdown, links match star badges to MatchHighlights, and opens Matchday Live broadcast", async () => {
+  it("MatchdayLive is gone: the results page has no Matchday Broadcast toggle and no text studio", async () => {
+    await view(FLAWLESS);
+    expect(screen.queryByTestId("toggle-matchday")).toBeNull();
+    expect(screen.queryByTestId("matchday-live")).toBeNull();
+    expect(screen.queryByText(/Watch Matchday Broadcast/)).toBeNull();
+  });
+
+  it("renders squad score breakdown and links match star badges to MatchHighlights", async () => {
     await view(FLAWLESS);
     const breakdown = screen.getByTestId("score-breakdown");
     expect(breakdown.textContent).toContain("GK");
@@ -235,10 +242,6 @@ describe("ResultsView", () => {
 
     fireEvent.click(screen.getByTestId("match-star-G3"));
     expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
-
-    fireEvent.click(screen.getByTestId("toggle-matchday"));
-    const broadcast = screen.getByTestId("matchday-live");
-    expect(broadcast.textContent).toContain("Group match 1");
   });
 
   it("can reselect the same match list star after using the highlight navigation", async () => {
@@ -313,9 +316,8 @@ describe("ResultsView", () => {
     expect(label.nextElementSibling!.textContent).toBe("-12");
   });
 
-  it("hides the match star badge emoji and the broadcast play glyph from screen readers", async () => {
+  it("hides the match star badge emoji from screen readers", async () => {
     await view(FLAWLESS);
-    expect(screen.getByRole("button", { name: "Watch Matchday Broadcast" })).toBeTruthy();
     const badge = screen.getByTestId("match-star-G1");
     const spoken = badge.cloneNode(true) as HTMLElement;
     spoken.querySelectorAll('[aria-hidden="true"]').forEach((el) => el.remove());
