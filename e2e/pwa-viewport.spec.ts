@@ -69,6 +69,11 @@ test("page bottom padding includes the inset", async ({ page }) => {
   await page.goto("/");
   expect(await edges(page)).toEqual({ headerTop: "53px", headerHeight: 104, pageBottom: "66px" });
   await page.screenshot({ path: `${SHOT}/home-notch-390.png` });
+
+  await page.goto("/how-to-play");
+  expect((await edges(page)).pageBottom).toBe("66px");
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.screenshot({ path: `${SHOT}/how-to-play-bottom-notch-390.png` });
 });
 
 test("desktop header top padding includes the inset", async ({ page }) => {
