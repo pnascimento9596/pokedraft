@@ -15,6 +15,7 @@ import { PitchCard } from "./PitchCard";
 import { Pitch3DStage } from "./Pitch3DStage";
 import { CARD_ROLE, pitchPoints, typeFrame } from "@/design/stadium";
 import { useImageSettings } from "@/images/settings";
+import { SUITABILITY_LABEL } from "@/ui/labels";
 import { BENCH_REFS, STARTER_REFS, refFromKey, refKey, sameRef, valueAt } from "@/ui/lineup";
 import s from "./Pitch.module.css";
 
@@ -111,7 +112,7 @@ export function Pitch({
     const isDropTarget = dropKey === key || sameRef(dropTarget, ref);
     const name =
       species === null
-        ? `Empty ${slotLabel} slot${suitability ? ` (${suitability} fit)` : ""}`
+        ? `Empty ${slotLabel} slot${suitability ? ` (${SUITABILITY_LABEL[suitability]} fit)` : ""}`
         : `${slotLabel} ${species.name}`;
     return (
       <button

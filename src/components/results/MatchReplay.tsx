@@ -8,7 +8,7 @@ import { MatchPlayer } from "@/components/matchday/MatchPlayer";
 import { unlockAudio, useAudioLocked } from "@/components/wheel/sound";
 import { ROUND_LABEL } from "@/ui/labels";
 import { broadcastTable } from "./broadcast-table";
-import type { PlayedMatch } from "./format";
+import { SIDE_COPY, type PlayedMatch, type ResultsVariant } from "./format";
 import s from "./MatchReplay.module.css";
 
 const GROUP_ROUNDS: readonly string[] = ["G1", "G2", "G3"];
@@ -24,6 +24,7 @@ export function MatchReplay({
   matchIndex,
   goal,
   shareGoal,
+  variant = "live",
   onClose,
 }: {
   readonly cup: CupResult;
@@ -32,6 +33,7 @@ export function MatchReplay({
   /** A goal link's minute: the replay opens a minute before it. */
   readonly goal?: number;
   readonly shareGoal?: (minute: number) => string;
+  readonly variant?: ResultsVariant;
   readonly onClose: () => void;
 }) {
   const match = cup.matches[matchIndex] as PlayedMatch;
@@ -46,7 +48,10 @@ export function MatchReplay({
   const standings =
     GROUP_ROUNDS.includes(match.round) && cup.groupFixtures !== undefined
       ? (minute: number, score: Score) => (
-          <Standings rows={broadcastTable(cup, match.round, minute, score) ?? []} />
+          <Standings
+            rows={broadcastTable(cup, match.round, minute, score) ?? []}
+            team={SIDE_COPY[variant].team}
+          />
         )
       : undefined;
 
@@ -97,7 +102,7 @@ export function MatchReplay({
   );
 }
 
-function Standings({ rows }: { readonly rows: readonly GroupRow[] }) {
+function Standings({ rows, team }: { readonly rows: readonly GroupRow[]; readonly team: string }) {
   return (
     <details className={s.standings} data-testid="replay-standings">
       <summary>Group table</summary>
@@ -114,7 +119,7 @@ function Standings({ rows }: { readonly rows: readonly GroupRow[] }) {
         <tbody>
           {rows.map((row) => (
             <tr key={row.team} data-user={row.team === "user" || undefined}>
-              <th scope="row">{row.team === "user" ? "Your team" : row.name}</th>
+              <th scope="row">{row.team === "user" ? team : row.name}</th>
               <td>{row.played}</td>
               <td>{row.goalsFor - row.goalsAgainst}</td>
               <td>{row.points}</td>

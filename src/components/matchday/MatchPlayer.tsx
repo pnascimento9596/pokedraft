@@ -577,11 +577,11 @@ export function MatchPlayer({
             {minuteLabel}
           </span>
           <span className={`num ${s.score}`} role="status" data-testid="matchday-score">
-            {score.user} - {score.opp}
+            {score.user}-{score.opp}
           </span>
           {pens !== null ? (
             <span className={`num ${s.pens}`} data-testid="matchday-pens">
-              Pens {pens.user} - {pens.opp}
+              Pens {pens.user}-{pens.opp}
             </span>
           ) : null}
         </span>

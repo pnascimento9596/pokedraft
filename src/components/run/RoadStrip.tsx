@@ -81,7 +81,7 @@ export function RoadStrip({
                     ? [{ key: "Opponent", value: "Set when the run starts" }]
                     : [
                         { key: "Opponent", value: opponent.name },
-                        { key: "Rating", value: `Rating ${opponent.score}` },
+                        { key: "Rating", value: opponent.score },
                       ]
                 }
                 source="This run's seeded cup"

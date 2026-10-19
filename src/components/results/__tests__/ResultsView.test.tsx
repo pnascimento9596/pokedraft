@@ -57,7 +57,7 @@ describe("ResultsView side copy (catches a shared link that calls a friend's squ
     expect(text).toContain("This squad's record, Team Score and cup finish.");
     expect(text).toContain("This lineup, Synergy links and ratings for each role.");
     expect(within(screen.getByTestId("match-G1")).getAllByText("This squad")).toHaveLength(2);
-    expect(screen.getByRole("list", { name: "This squad's goals" })).toBeTruthy();
+    expect(screen.getAllByRole("list", { name: "This squad's goals" })).toHaveLength(7);
     expect(screen.getByRole("group", { name: "This lineup" })).toBeTruthy();
     expect([...document.querySelectorAll("tr[data-user] th")].map((th) => th.textContent)).toEqual([
       "1This squad",
@@ -197,7 +197,7 @@ describe("ResultsView", () => {
     const details = screen.getByText("Season details: how grading works").closest("details")!;
     expect(
       within(details).getByText(
-        /Matches are simulated from your Team Score against a ladder of opponents\. The group games are the gentle start\. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test\./,
+        /Matches are simulated from the Team Score against a ladder of opponents\. The group games are the gentle start\. From the Round of 32 on, every knockout round is a step up, and the Final is the hardest test\./,
       ),
     ).toBeTruthy();
     expect(details.textContent).not.toMatch(/hard from the quarter-final/);
@@ -317,7 +317,7 @@ describe("ResultsView", () => {
     fireEvent.click(screen.getByTestId("play-exhibition"));
     const modal = screen.getByTestId("exhibition-modal");
     expect(modal.textContent).toContain("Exhibition Match");
-    expect(screen.getByTestId("exhibition-score").textContent).toMatch(/^\d+ - \d+$/);
+    expect(screen.getByTestId("exhibition-score").textContent).toMatch(/^\d+-\d+$/);
     expect(loadHistory()).toEqual([]);
   });
 

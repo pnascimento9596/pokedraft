@@ -52,7 +52,7 @@ test('"2" with the scouting dossier open signs nothing (catches draft keys reach
   await page.locator('[data-testid^="slot-"][data-filled="false"]').first().click();
   await expect(page.locator('[data-testid^="candidate-"]').first()).toBeVisible();
 
-  await page.getByRole("button", { name: "Minimize draft picker" }).click();
+  await page.getByRole("button", { name: "Hide players" }).click();
   await page.getByText("Scout squad (1)").click();
   await page.getByRole("button", { name: /^Scout .+ at / }).click();
   const dossier = page.getByTestId("scouting-dossier");
@@ -98,7 +98,7 @@ test.describe("on a 390x844 touch screen", () => {
   async function openPicker(page: Page) {
     await page.goto(RUN_8_0.url);
     await page.getByTestId("run-start").click();
-    await expect(page.getByRole("button", { name: "Minimize draft picker" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Hide players" })).toBeVisible();
     await settle(page);
   }
 
@@ -109,7 +109,7 @@ test.describe("on a 390x844 touch screen", () => {
     const drawer = (await page.getByTestId("draft-drawer").boundingBox())!;
     const below = { x: 195, y: Math.min(drawer.y + drawer.height + 20, 830) };
     await page.touchscreen.tap(below.x, below.y);
-    await expect(page.getByRole("button", { name: "Choose a player" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Show players" })).toBeVisible();
     await expect(page.getByTestId("round-header")).toHaveText("Round 1 of 16");
     await expect(filled(page)).toHaveCount(0);
   });
@@ -118,10 +118,10 @@ test.describe("on a 390x844 touch screen", () => {
     page,
   }) => {
     await openPicker(page);
-    const bar = page.getByRole("button", { name: "Minimize draft picker" });
+    const bar = page.getByRole("button", { name: "Hide players" });
     const from = centre((await bar.boundingBox())!);
     await touchDrag(page, from, { x: from.x, y: from.y + 160 });
-    await expect(page.getByRole("button", { name: "Choose a player" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Show players" })).toBeVisible();
   });
 
   test("a vertical swipe that starts on a player card scrolls the page (catches touch-action none trapping the scroll)", async ({
@@ -148,7 +148,7 @@ for (const width of [390, 360, 320]) {
     }, info) => {
       await page.goto(RUN_8_0.url);
       await page.getByTestId("run-start").click();
-      await expect(page.getByRole("button", { name: "Minimize draft picker" })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Hide players" })).toBeVisible();
       await settle(page);
       await page.screenshot({ path: info.outputPath(`picker-${width}.png`) });
       expect(await widestRight(page)).toBeLessThanOrEqual(width);
@@ -156,7 +156,7 @@ for (const width of [390, 360, 320]) {
       await page.locator('[data-testid^="candidate-"]').first().click();
       await page.locator('[data-testid^="slot-"][data-filled="false"]').first().click();
       await expect(page.getByTestId("round-header")).toHaveText("Round 2 of 16");
-      await page.getByRole("button", { name: "Minimize draft picker" }).click();
+      await page.getByRole("button", { name: "Hide players" }).click();
       await page.getByTestId("new-run").click();
       const ask = page.getByRole("group", { name: /^Start over\?/ });
       await expect(ask).toHaveText(

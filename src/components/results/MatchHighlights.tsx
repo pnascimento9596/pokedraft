@@ -8,6 +8,7 @@ import { playGoalHorn, unlockAudio } from "@/components/wheel/sound";
 import { TYPE_PALETTE } from "@/design/stadium";
 import { getAllMatchStars, type MatchStar } from "./starCalculation";
 import { RecordedSaves } from "./RecordedSaves";
+import type { ResultsVariant } from "./format";
 import { SoccerBall } from "./SoccerBall";
 import s from "./MatchHighlights.module.css";
 
@@ -16,6 +17,7 @@ export interface MatchHighlightsProps {
   readonly draft: DraftState;
   readonly selectedRound?: CupRound | "mvp" | null;
   readonly onSelectRound?: (round: CupRound | "mvp") => void;
+  readonly variant?: ResultsVariant;
 }
 
 export function MatchHighlights({
@@ -23,6 +25,7 @@ export function MatchHighlights({
   draft,
   selectedRound = null,
   onSelectRound,
+  variant = "live",
 }: MatchHighlightsProps) {
   const stars = useMemo(() => getAllMatchStars(cup, draft), [cup, draft]);
   const [activeIdx, setActiveIdx] = useState(0);
@@ -284,7 +287,9 @@ export function MatchHighlights({
       {cup.matches
         .filter((m) => m.status === "played" && m.round === currentStar.round)
         .map((m) =>
-          m.status === "played" ? <RecordedSaves key={m.round} saves={m.saves} illustrate /> : null,
+          m.status === "played" ? (
+            <RecordedSaves key={m.round} saves={m.saves} illustrate variant={variant} />
+          ) : null,
         )}
       <p className="kicker">
         Illustrated highlights. Actions do not change the recorded match result.

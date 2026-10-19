@@ -197,6 +197,11 @@ export function Touchline({
                     <span className={s.benchName}>{species.name}</span>
                     {fit !== null ? (
                       <span className={s.benchFit} data-fit={fit}>
+                        {fit === "recommended" ? (
+                          <>
+                            <span aria-hidden="true">★</span>{" "}
+                          </>
+                        ) : null}
                         {SUITABILITY_LABEL[fit]}
                       </span>
                     ) : null}

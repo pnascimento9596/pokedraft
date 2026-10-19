@@ -29,17 +29,12 @@ export const RUN_POSITION_FIRST = {
 
 // The golden engine-3 cup8 squad saved as the Builder squad and played against itself.
 export const MIRROR_EXHIBITION = {
-  firstSingle: "1 - 3",
+  firstSingle: "1-3",
   extraTimeRematch: 1,
-  extraTime: {
-    leg1: "0 - 1",
-    leg2: "5 - 6",
-    aggregate: "5 - 7",
-    goal: "117' Talonflame (solo run)",
-  },
-  singleAtExtraTimeRematch: "3 - 1",
+  extraTime: { leg1: "0-1", leg2: "5-6", aggregate: "5-7", goal: "117' Talonflame (solo run)" },
+  singleAtExtraTimeRematch: "3-1",
   aggregateRematch: 2,
-  aggregate: "5 - 10",
+  aggregate: "5-10",
 } as const;
 
 // A manager-mode run with Attack at the 45' stop of match 0: the full-time card's two scores.
@@ -55,7 +50,7 @@ export const DEEP_LINK = {
     "pd6.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
   href: "/r/pd6?t=W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0&watch=0&at=49",
   minute: 49,
-  before: "0 - 0",
-  after: "1 - 0",
+  before: "0-0",
+  after: "1-0",
   opponent: "Goldenrod United",
 } as const;

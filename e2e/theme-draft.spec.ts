@@ -11,7 +11,7 @@ for (const theme of ["light", "dark"] as const) {
     await page.goto(PLAY_8_0);
     await page.getByTestId("run-start").click();
     await expect(page.locator('[data-testid^="candidate-"]').first()).toBeVisible();
-    await expect(page.getByRole("button", { name: "Minimize draft picker" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Hide players" })).toBeVisible();
     const { violations } = await new AxeBuilder({ page })
       .include('[data-testid="draft-drawer"]')
       .withRules(["color-contrast"])

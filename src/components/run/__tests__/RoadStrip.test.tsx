@@ -42,7 +42,11 @@ describe("RoadStrip", () => {
 
   it("prints each exact rating above its bar and sizes the bar by it (catches numbers or bars still read from the nominal table)", () => {
     render(<RoadStrip seed="golden-1" mode="kanto151" />);
-    expect(screen.getAllByText(/^\d{3}$/).map((el) => el.textContent)).toEqual([
+    // The tooltip's Rating row prints the same bare number; this reads only the bar labels.
+    const barLabels = screen
+      .getAllByText(/^\d{3}$/)
+      .filter((el) => el.closest('[role="tooltip"]') === null);
+    expect(barLabels.map((el) => el.textContent)).toEqual([
       "267",
       "302",
       "346",

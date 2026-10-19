@@ -27,7 +27,7 @@ import { recordCompletedRun } from "@/ui/lifetime";
 import { isCoached } from "@/ui/manager/coached";
 import { goalHref, watchIndex } from "@/ui/run-link";
 import { toRecord } from "@/ui/runs";
-import { contributionLine, dragLabel } from "./format";
+import { contributionLine, dragLabel, SIDE_COPY, type ResultsVariant } from "./format";
 import { FitReveal } from "./FitReveal";
 import { MatchHighlights } from "./MatchHighlights";
 import { MatchList } from "./MatchList";
@@ -54,7 +54,7 @@ export interface ResultsViewProps {
   readonly draft: DraftState;
   readonly cup: CupResult;
   /** `live` right after a run (records it locally, offers New run); `shared` on /r/[token]. */
-  readonly variant: "live" | "shared";
+  readonly variant: ResultsVariant;
   readonly onNewRun?: () => void;
   /** Leaderboard submit panel; rendered for `live` runs only. */
   readonly submit?: ReactNode;
@@ -108,7 +108,7 @@ export function ResultsView({
         eyebrow="Run results"
         title={modeLine(draft)}
         headingLevel={1}
-        description="Your record, Team Score and cup finish."
+        description={SIDE_COPY[variant].summary}
         icon={<NavIcon family={navFamily} />}
         meta={
           <div className={s.heroMain}>
@@ -159,6 +159,7 @@ export function ResultsView({
           matchIndex={watching.matchIndex}
           goal={watching.goal}
           shareGoal={(minute) => goalLink(watching.matchIndex, minute)}
+          variant={variant}
           onClose={() => setWatching(null)}
         />
       ) : null}
@@ -168,6 +169,7 @@ export function ResultsView({
         draft={draft}
         selectedRound={selectedHighlightRound}
         onSelectRound={setSelectedHighlightRound}
+        variant={variant}
       />
 
       <div className={s.columns}>
@@ -183,6 +185,7 @@ export function ResultsView({
             onSelectStar={(round) => setSelectedHighlightRound(round)}
             onWatch={(matchIndex) => setWatching({ matchIndex })}
             goalHref={goalLink}
+            variant={variant}
           />
         </ModuleCard>
 
@@ -219,7 +222,7 @@ export function ResultsView({
                     <tr key={row.team} data-user={row.team === "user" || undefined}>
                       <th scope="row" className={s.teamCol}>
                         <span className={s.pos}>{i + 1}</span>
-                        {row.team === "user" ? "Your team" : row.name}
+                        {row.team === "user" ? SIDE_COPY[variant].team : row.name}
                       </th>
                       <td>{row.played}</td>
                       <td>{row.won}</td>
@@ -268,9 +271,9 @@ export function ResultsView({
       <ModuleCard
         className={s.block}
         variant="emphasis"
-        eyebrow="Your squad"
+        eyebrow={SIDE_COPY[variant].squad}
         title="How the eleven fit"
-        description="Your lineup, Synergy links and ratings for each role."
+        description={SIDE_COPY[variant].squadSummary}
       >
         <div
           className={s.breakdownBar}
@@ -314,7 +317,7 @@ export function ResultsView({
               speciesOf={speciesById}
               edges={cup.rating.edges}
               weakest={cup.rating.weakest}
-              label="Your lineup"
+              label={SIDE_COPY[variant].lineup}
               onSlotTap={(ref) => {
                 const id = valueAt(draft.lineup, ref);
                 if (id !== null) setInspectId(id);
@@ -365,7 +368,7 @@ export function ResultsView({
             weaknesses. The bench adds a little depth on top.
           </p>
           <p>
-            Matches are simulated from your Team Score against a ladder of opponents. {LADDER_SHAPE}{" "}
+            Matches are simulated from the Team Score against a ladder of opponents. {LADDER_SHAPE}{" "}
             If a player misses a match, the bench steps in and that match uses the Team Score of the
             side that actually played.
           </p>
