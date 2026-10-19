@@ -24,6 +24,7 @@
     "calibrate": "tsx scripts/calibrate.mts",
     "test:e2e": "playwright test",
     "e2e:pins": "tsx scripts/e2e/generate-pins.mts",
+    "assets:icons": "node scripts/assets/build-icons.mjs",
     "check:image-seam": "bash scripts/check-image-seam.sh",
     "check:image-packs": "node scripts/images/check-packs.mjs",
     "check:client-bundle": "bash scripts/check-client-bundle.sh",

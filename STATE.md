@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## PWA and viewport
+
+Branch `feat/pwa-viewport` off `origin/main` at `5c7d4fb`. Wave 4 row 4i (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Players can add pokedraft to their home screen: it opens standalone with no browser bar, under the name "pokedraft", with a new soccer ball on pitch green icon (no Pokémon art). There is no offline mode.
+- On phones with a notch and a home bar, the header, the draft's "Wait for the wheel to stop." toast and the last control on each page clear them. On an iPhone 14 the header grows from 57px to 104px and the page bottom gap from 32px to 66px; phones without a notch look the same as before.
+- Pulling down during the draft no longer bounces the page or triggers pull-to-refresh. Every other screen scrolls as before.
+- The install files (manifest and icons) stay reachable when the friends passcode is on, because browsers fetch them without cookies.
+
+RED commit: `cd43845` (1 of 16 unit tests failed and `manifest.test.ts` failed to load; `e2e/pwa-viewport.spec.ts` failed 5 of 6 against a build of `5c7d4fb`, the sixth passing as a labelled regression guard). GREEN `171688a`. `2434ddb` adds the `/how-to-play` bottom check and the screenshots.
+
+Gates at `2434ddb` (code-identical to `171688a` outside `e2e/` and `docs/`):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0 (the build at `171688a`). All eight `check:*` scripts exited 0. Prettier passed on the 12 touched text files (it has no parser for the SVG).
+- Unit tests: 1,790 passed in 212 files.
+- Playwright (`CI=1`, headless, build of `171688a`), full suite: 972 passed, 67 skipped by their own project gates, 0 failed, no retries. `pwa-viewport` passed 6 of 6.
+- Safe areas measured with Chromium's `Emulation.setSafeAreaInsetsOverride` (top 47, bottom 34) at 390x844.
+- NOT RUN: review and hosted CI; WebKit and Firefox safe-area checks (no inset override outside Chromium); landscape side insets (carryover); Add to Home Screen and real notch insets on a phone, and a screen reader pass (owner actions).
+
+Decision log: `docs/decisions/pwa-viewport.md`. Browser proof: `docs/reports/pwa-viewport/{home-notch,draft-toast-notch,how-to-play-bottom-notch}-390.png`.
+
 ## Dark palette and breakpoints
 
 Branch `refactor/theme-breakpoints` off `origin/main` at `5c7d4fb`. Wave 4 row 4h2 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -26,6 +47,8 @@ Gates at `7e39085`:
 Decision log: `docs/decisions/theme-breakpoints.md`. Browser proof: `docs/reports/theme-breakpoints/` (home, draft, results and matchday at 320, 360, 390, 720, 960 and 1280, light and dark).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #124 (row 4h2, dark palette, vignette and breakpoints) merged as squash `6e0a34a`, reviewed head `4f01365`, GLM 5.3 Flash APPROVE in round 1 with canary `theme-breakpoints-fc4d3da4626c5ce313b9a26a2d90f13f` echoed. At `4f01365` lint, typecheck, build and all nine `check:*` scripts (now including `check:breakpoints`) exited 0, 1,802 unit tests passed in 213 files and Prettier passed on 47 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `6e0a34a` with `db.status` ok, and `theme-breakpoints`, `theme-choice`, `home-hierarchy` and `contrast` against production (chromium) passed 70 of 70. NOT RUN: physical phone check (owner action), a real screen reader, WebKit and Firefox proof screenshots.
 
 ## Resilience, onboarding and a11y
 

@@ -559,6 +559,7 @@ function ActiveDraftBoard({
   return (
     <div
       className={s.board}
+      data-draft-board
       data-revealed={revealed || undefined}
       data-rated={showRatings || undefined}
       data-drawer={drawerOpen || undefined}

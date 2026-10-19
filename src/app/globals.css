@@ -320,6 +320,7 @@ body:has(.page-loading) .site-footer {
   justify-content: space-between;
   gap: 4px 12px;
   padding: 12px var(--gutter);
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
   border-bottom: 1px solid var(--line);
 }
 
@@ -389,7 +390,12 @@ body:has(.page-loading) .site-footer {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 16px var(--gutter) 32px;
+  padding: 16px var(--gutter);
+  padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+}
+
+body:has([data-draft-board]) {
+  overscroll-behavior: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -500,15 +506,15 @@ body:has(.page-loading) .site-footer {
   }
 
   :root {
-    /* One 44 px row, 6 px above and below, and the 1 px rule. The draft screen sizes its pitch
-       from it. */
-    --site-header-h: 57px;
+    /* One 44 px row, 6 px above and below, the 1 px rule and the notch. The draft screen sizes its
+       pitch from it. */
+    --site-header-h: calc(57px + env(safe-area-inset-top, 0px));
   }
   .site-header {
     position: relative;
     flex-wrap: nowrap;
     height: var(--site-header-h);
-    padding-block: 6px;
+    padding-block: calc(6px + env(safe-area-inset-top, 0px)) 6px;
   }
   .site-header__brand {
     display: inline-flex;

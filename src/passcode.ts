@@ -11,6 +11,10 @@ const PUBLIC: readonly RegExp[] = [
   /^\/_next\/static\//,
   /^\/favicon\.ico$/,
   /^\/robots\.txt$/,
+  // Browsers fetch the manifest and its icons without cookies, so a home screen install needs them.
+  /^\/manifest\.webmanifest$/,
+  /^\/icons\/[\w-]+\.png$/,
+  /^\/apple-icon\.png$/,
   /^\/gate$/,
   /^\/gate\/unlock$/,
   // Browsers send CSP reports without cookies.

@@ -483,7 +483,7 @@
   .error {
     position: fixed;
     z-index: 40;
-    top: 8px;
+    top: calc(8px + env(safe-area-inset-top, 0px));
     left: 8px;
     right: 8px;
     margin: 0;
