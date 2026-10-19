@@ -49,7 +49,8 @@
 
 /* Phones: the one-face wheel of Wheel.module.css, and the result line is for screen readers only
    (the header row shows it). */
-@media (max-width: 480px), (orientation: landscape) and (max-height: 500px) and (max-width: 959px) {
+@media (max-width: 479.98px),
+  (orientation: landscape) and (max-height: 500px) and (max-width: 959.98px) {
   .reveal {
     gap: 0;
   }

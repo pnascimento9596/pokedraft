@@ -125,7 +125,7 @@ export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
   const set = (patch: Partial<PanelSettings>) => onChange({ ...panel, ...patch });
   const allGens = panel.gens.length === GENS.length;
   // Unset until the player or the #settings hash decides, so CSS can collapse the settings below
-  // 1024px without the server knowing the width.
+  // 960px without the server knowing the width.
   const [open, setOpen] = useState<boolean | null>(null);
   const expanded = open === true;
   const router = useRouter();

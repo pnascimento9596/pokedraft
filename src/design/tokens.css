@@ -1,3 +1,12 @@
+/* One light palette in :root and one dark palette in :root[data-theme="dark"]. The theme boot
+ * script in src/ui/theme.ts sets data-theme to the resolved theme before first paint, so no
+ * system-scheme media copy is needed.
+ *
+ * Viewport breakpoints use one scale: 480, 720, 960 and 1200px, written as min-width: N and
+ * max-width: N - 0.02 (479.98px). Media queries cannot read custom properties, so
+ * `pnpm check:breakpoints` (scripts/audit/breakpoint-lint.mjs) enforces it. @container queries
+ * are exempt. */
+
 :root {
   /* Surfaces */
   --canvas: #E7EAE2;
@@ -10,7 +19,7 @@
   --border-soft: #E6E8DC;        /* inner dividers, list rules, icon tile outline */
   --border-strong: #CCD2C0;      /* tooltip, neutral pill */
   --border-emphasis: rgba(13,148,136,.30);
-  --border-control: #8E9684;     /* inputs: must hold 3:1 against --surface; verify, adjust darker if not */
+  --border-control: #7C856F;     /* inputs: holds 3:1 against --surface */
 
   /* Text */
   --text: #1E2419;               /* titles, labels, figures */
@@ -51,72 +60,7 @@
   /* Elevation */
   --shadow-rest: 0 1px 2px rgba(31,40,28,.04), 0 1px 3px rgba(31,40,28,.05);
   --shadow-raised: 0 6px 24px rgba(31,40,28,.08), 0 2px 6px rgba(31,40,28,.05);
-}
 
-:root[data-theme="dark"] {
-  --canvas: #0B1220;
-  --surface: #172334;
-  --surface-emphasis: #223247;
-  --surface-sunken: #111A29;
-  --border: #2A3A50;
-  --border-soft: #1E2B3C;
-  --border-strong: #3B4E6B;
-  --border-emphasis: rgba(116,229,173,.35);
-  --border-control: #5A7394;
-  --text: #F4F7FA;
-  --text-soft: #DDE5ED;
-  --text-muted: #B0BED0;
-  --text-faint: #8E9EAF;
-  --link: #74E5AD;
-  --accent: #F4CE52;
-  --accent-hover: #E5BE3E;
-  --accent-fg: #0B1220;
-  --selected: #1B3545;
-  --ok-text: #79C8A0; --ok-bg: #15271D; --ok-border: #2C4636;
-  --info-bg: #13222D;
-  --warn-bg: #28220F;
-  --risk-mark: #D5675C;
-  --viz-1: #2DB7A7; --viz-2: #E0A05A; --viz-3: #4FB3A5; --viz-4: #A78CB3;
-  --viz-5: #C79A66; --viz-6: #8696A6; --viz-7: #85A86A; --viz-8: #BFBA94;
-  --shadow-rest: 0 1px 2px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.24);
-  --shadow-raised: 0 8px 28px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.30);
-}
-
-body { background: var(--canvas); color: var(--text-soft); font-family: Inter, system-ui, sans-serif; }
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-  --canvas: #0B1220;
-  --surface: #172334;
-  --surface-emphasis: #223247;
-  --surface-sunken: #111A29;
-  --border: #2A3A50;
-  --border-soft: #1E2B3C;
-  --border-strong: #3B4E6B;
-  --border-emphasis: rgba(116,229,173,.35);
-  --border-control: #5A7394;
-  --text: #F4F7FA;
-  --text-soft: #DDE5ED;
-  --text-muted: #B0BED0;
-  --text-faint: #8E9EAF;
-  --link: #74E5AD;
-  --accent: #F4CE52;
-  --accent-hover: #E5BE3E;
-  --accent-fg: #0B1220;
-  --selected: #1B3545;
-  --ok-text: #79C8A0; --ok-bg: #15271D; --ok-border: #2C4636;
-  --info-bg: #13222D;
-  --warn-bg: #28220F;
-  --risk-mark: #D5675C;
-  --viz-1: #2DB7A7; --viz-2: #E0A05A; --viz-3: #4FB3A5; --viz-4: #A78CB3;
-  --viz-5: #C79A66; --viz-6: #8696A6; --viz-7: #85A86A; --viz-8: #BFBA94;
-  --shadow-rest: 0 1px 2px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.24);
-  --shadow-raised: 0 8px 28px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.30);
-  }
-}
-
-:root {
-  --border-control: #7C856F;
   --pitch: #476147;
   --pitch-stripe: #496349;
   --pitch-line: #F3EFE4;
@@ -284,7 +228,32 @@ body { background: var(--canvas); color: var(--text-soft); font-family: Inter, s
 }
 
 :root[data-theme="dark"] {
-
+  --canvas: #0B1220;
+  --surface: #172334;
+  --surface-emphasis: #223247;
+  --surface-sunken: #111A29;
+  --border: #2A3A50;
+  --border-soft: #1E2B3C;
+  --border-strong: #3B4E6B;
+  --border-emphasis: rgba(116,229,173,.35);
+  --border-control: #5A7394;
+  --text: #F4F7FA;
+  --text-soft: #DDE5ED;
+  --text-muted: #B0BED0;
+  --text-faint: #8E9EAF;
+  --link: #74E5AD;
+  --accent: #F4CE52;
+  --accent-hover: #E5BE3E;
+  --accent-fg: #0B1220;
+  --selected: #1B3545;
+  --ok-text: #79C8A0; --ok-bg: #15271D; --ok-border: #2C4636;
+  --info-bg: #13222D;
+  --warn-bg: #28220F;
+  --risk-mark: #D5675C;
+  --viz-1: #2DB7A7; --viz-2: #E0A05A; --viz-3: #4FB3A5; --viz-4: #A78CB3;
+  --viz-5: #C79A66; --viz-6: #8696A6; --viz-7: #85A86A; --viz-8: #BFBA94;
+  --shadow-rest: 0 1px 2px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.24);
+  --shadow-raised: 0 8px 28px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.30);
   --pitch: #204630;
   --pitch-stripe: #204830;
   --pitch-line: #74E5AD;
@@ -316,37 +285,4 @@ body { background: var(--canvas); color: var(--text-soft); font-family: Inter, s
   --type-fairy: #D8BDBA;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-
-  --pitch: #204630;
-  --pitch-stripe: #204830;
-  --pitch-line: #74E5AD;
-  --pitch-line-soft: rgba(116,229,173,.35);
-  --pitch-pokeball-top: #C84B31;
-  --pitch-pokeball-bottom: rgba(243, 239, 228, 0.75);
-  --risk-text: #E3A197;
-  --action-border: var(--link);
-  --overlay: rgba(0,0,0,.52);
-  --shadow-ink: #000000;
-  color-scheme: dark;
-  --type-normal: #BBA986;
-  --type-fighting: #D1BF99;
-  --type-flying: #BAB0E3;
-  --type-poison: #D3BAD8;
-  --type-ground: #CEB173;
-  --type-rock: #DDE3B0;
-  --type-bug: #C7CE73;
-  --type-ghost: #99A4D1;
-  --type-steel: #CEEBEE;
-  --type-fire: #D9D791;
-  --type-water: #CED7EE;
-  --type-grass: #5BC354;
-  --type-electric: #ECEECE;
-  --type-psychic: #EECECF;
-  --type-ice: #61B8A6;
-  --type-dragon: #A8B0C2;
-  --type-dark: #F6F6EF;
-  --type-fairy: #D8BDBA;
-  }
-}
+body { background: var(--canvas); color: var(--text-soft); font-family: Inter, system-ui, sans-serif; }

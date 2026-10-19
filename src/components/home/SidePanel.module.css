@@ -1,4 +1,4 @@
-@media (max-width: 1023px) {
+@media (max-width: 959.98px) {
   .panel {
     display: contents !important;
   }
@@ -8,6 +8,7 @@
   flex-direction: column;
   gap: 12px;
   padding: 16px;
+  container-type: inline-size;
 }
 .title {
   margin: 0;
@@ -31,7 +32,8 @@
 .cards > :last-child {
   grid-column: 1 / -1;
 }
-@media (max-width: 379px), (min-width: 1024px) {
+/* The cards stack below two 152px columns: on a phone under 380px and in the 320px desktop panel. */
+@container (max-width: 313.98px) {
   .cards {
     grid-template-columns: 1fr;
   }
@@ -262,12 +264,12 @@
   font-size: 15px;
   line-height: 20px;
 }
-@media (max-width: 1023px) {
+@media (max-width: 959.98px) {
   .more:not([data-open="true"]) {
     display: none;
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: 960px) {
   .moreToggle {
     display: none;
   }

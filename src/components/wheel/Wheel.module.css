@@ -148,7 +148,8 @@
 }
 
 /* Phones: the wheel sits in the draft's bottom tray, so its window shows only the payline face. */
-@media (max-width: 480px), (orientation: landscape) and (max-height: 500px) and (max-width: 959px) {
+@media (max-width: 479.98px),
+  (orientation: landscape) and (max-height: 500px) and (max-width: 959.98px) {
   .window {
     height: var(--face-h);
   }

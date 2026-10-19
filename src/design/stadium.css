@@ -1,7 +1,13 @@
+/* The night stadium: the pitch, the player cards on it and the brand plate keep one value in both
+   themes, like the broadcast. The page chrome around it follows the theme: the floodlight
+   vignette, the glass panels and their edge, and the phone picker sheet. */
 :root {
-  --stadium-shell: radial-gradient(ellipse at 50% 15%, #111a2e 0%, #080d16 100%);
-  --stadium-glass: rgba(13, 22, 38, 0.85);
-  --stadium-border: rgba(37, 99, 235, 0.4);
+  --stadium-shell: none;
+  --stadium-glass: var(--surface);
+  --stadium-border: var(--border-emphasis);
+  --sheet-fill: var(--surface);
+  --sheet-ink: var(--text);
+  --sheet-muted: var(--text-muted);
   --stadium-glow: 0 0 20px rgba(37, 99, 235, 0.18);
   --stadium-turf:
     repeating-linear-gradient(
@@ -32,15 +38,13 @@
   --stadium-suitability-bad: #ef4444;
   --stadium-suitability-bad-glow: rgba(239, 68, 68, 0.45);
 }
-:root[data-theme="light"] {
-  --stadium-shell: none;
-  --stadium-glass: var(--surface);
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --stadium-shell: none;
-    --stadium-glass: var(--surface);
-  }
+:root[data-theme="dark"] {
+  --stadium-shell: radial-gradient(ellipse at 50% 15%, #111a2e 0%, #080d16 100%);
+  --stadium-glass: rgba(13, 22, 38, 0.85);
+  --stadium-border: rgba(37, 99, 235, 0.4);
+  --sheet-fill: var(--stadium-card);
+  --sheet-ink: var(--stadium-ink);
+  --sheet-muted: var(--stadium-muted);
 }
 
 /* The match broadcast. The pitch is grass in both themes, so these do not change with it. */

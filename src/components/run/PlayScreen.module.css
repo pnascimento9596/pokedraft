@@ -14,7 +14,7 @@
   margin: 0 auto;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 960px) {
   .start {
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     align-items: start;

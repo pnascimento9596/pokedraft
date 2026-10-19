@@ -90,7 +90,7 @@
   display: inline-flex;
   margin-top: 12px;
 }
-@media (min-width: 768px) {
+@media (min-width: 720px) {
   .link,
   .record,
   .score {

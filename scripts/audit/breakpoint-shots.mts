@@ -81,7 +81,7 @@ for (const theme of ["light", "dark"] as const) {
       await scene(page);
       await page.evaluate(() => document.fonts.ready);
       const file = path.join(out, `${name}-${width}-${theme}.png`);
-      await page.screenshot({ path: file, fullPage: name === "results", animations: "disabled" });
+      await page.screenshot({ path: file, animations: "disabled" });
       const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
       console.log(JSON.stringify({ file: path.basename(file), width, scrollWidth }));
       await context.close();

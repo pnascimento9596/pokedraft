@@ -194,7 +194,7 @@
   gap: 6px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 479.98px) {
   .roleGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -238,7 +238,7 @@
   gap: 8px 12px;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 479.98px) {
   .attrGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

@@ -58,7 +58,7 @@
   color: var(--text-muted);
 }
 
-@media (max-width: 599.98px) {
+@media (max-width: 719.98px) {
   .tactics[data-dense] {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 4px;
@@ -89,8 +89,8 @@
   }
 }
 
-/* Five names in one row at 320px leave about 52px for "Balanced". */
-@media (max-width: 359.98px) {
+/* Five names in one row on a phone under 480px: at 320px they leave about 52px for "Balanced". */
+@media (max-width: 479.98px) {
   .tactics[data-dense] .tacticName {
     font-size: 11px;
   }
