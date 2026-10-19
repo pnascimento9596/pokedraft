@@ -777,6 +777,30 @@ describe("insert plus rank (catches a saved run that needs a second round trip f
   });
 });
 
+describe("admission SQL (catches an all-time submit paying for the daily nickname probe)", () => {
+  it.each([
+    ["an all-time", false, () => scriptedToken(CUP8, "lb-cup8")],
+    ["a daily", true, () => scriptedToken(dailySettings("4-3-3"), dailySeed(TODAY))],
+  ] as const)(
+    "%s run has the daily_date probe in its admission SQL: %s",
+    async (_, daily, token) => {
+      const queries: string[] = [];
+      const logged = await migratedDb({ logQuery: (query) => void queries.push(query) });
+      try {
+        const res = await submit(
+          { nickname: "Ash", token: token() },
+          undefined,
+          drizzleStore(() => logged.db),
+        );
+        expect(res.status).toBe(201);
+        expect(queries[0]!.includes("daily_date =")).toBe(daily);
+      } finally {
+        await logged.client.close();
+      }
+    },
+  );
+});
+
 describe("GET /api/leaderboard (catches a wrong board order or a read that writes)", () => {
   async function board(qs: string, s: LeaderboardStore = store) {
     const res = await handleBoard(new URL(`http://local/api/leaderboard?${qs}`), s);
