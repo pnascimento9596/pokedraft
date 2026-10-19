@@ -297,6 +297,9 @@ body:has(.page-loading) .site-footer {
   top: 8px;
   left: 8px;
   z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 10px 14px;
   border-radius: 8px;
   background: var(--surface);

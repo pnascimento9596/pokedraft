@@ -120,8 +120,10 @@ for (const size of SIZES) {
         return `${cs.borderTopWidth} ${cs.borderLeftWidth} ${cs.borderRightWidth} ${cs.borderBottomWidth} ${types <= 1 ? "hidden" : "shown"}`;
       });
       expect(frame).toBe("3px 0px 0px 0px hidden");
-      await expect(gk).toHaveAccessibleName(
-        /GK .+ (Normal|Fire|Water|Grass|Electric|Ice|Fighting|Poison|Ground|Flying|Psychic|Bug|Rock|Ghost|Dragon|Dark|Steel|Fairy)/,
+      // Row 4g moved the types from the name to the description: still read, after the name.
+      await expect(gk).toHaveAccessibleName(/^GK \S/);
+      await expect(gk).toHaveAccessibleDescription(
+        /(Normal|Fire|Water|Grass|Electric|Ice|Fighting|Poison|Ground|Flying|Psychic|Bug|Rock|Ghost|Dragon|Dark|Steel|Fairy)$/,
       );
     });
   });
