@@ -3,6 +3,31 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Resilience, onboarding and a11y
+
+Branch `feat/resilience-a11y` off `origin/main` at `da44d4b`, with `origin/main` merged at `3d59cee` (PR #120) in `69cc0b7`. Wave 4 row 4g (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- If a page crashes, players see "Something went wrong." and "Your run is saved; reload to continue." with Reload and Home, instead of a blank screen. A crash of the whole layout gets the same page.
+- Keyboard players get a "Skip to content" link first, and the menu marks the page they are on.
+- The phone status bar colour now follows a Day or Night choice, and Auto follows the phone switching between light and dark while the page is open.
+- A first-time player sees a one-line tip in their first draft, worded for that draft ("Watch the spin, pick one that matches, place it on the pitch. Fill all 16 to play the cup."). It goes away at the first pick or on Got it and does not come back.
+- Skipping the wheel with the keyboard no longer drops focus to the top of the page: it lands on the first player, at Normal and Fast speed.
+- Screen readers hear a pitch token as "LCB Bulbasaur" or "Empty LCB slot", then the fit, rating and types. Pictures next to a written name are no longer read twice; leaderboard and History squad pictures are read by species name.
+- How to play now explains Daily, Live match, Manager mode and the leaderboard, and says the Team Score runs from 0 to 1000. The "Trainer Dugout" label on the desktop draft is gone.
+
+RED commit: `a8d94cf` (30 of 122 unit tests failed in 11 files, and the error page test file failed to load; `e2e` failed 10 of 25 against a build of the pre-fix sources, the `/r` server HTML case passing as a labelled regression guard). GREEN `e0503e4`. Fix `43647ef` (44px skip link, spec churn from the full run).
+
+Gates at `43647ef`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All eight `check:*` scripts exited 0. Prettier passed on the 63 text files changed against `origin/main` and the decision log.
+- Unit tests: 1,779 passed in 210 files.
+- Playwright (`CI=1`, headless, fresh build at `43647ef`), full suite: 965 passed, 67 skipped by their own project gates, 0 failed, 1 flaky (`mobile-acceptance` "7 landscape: draft 151 round 1" on iphone-14, a Playwright "Cannot find parent object browser" harness error, passed on retry). `resilience-a11y`, `wheel-results` and `server-html` passed 25 of 25 alone.
+- NOT RUN: review and hosted CI; the error page screenshot (by design, no production route throws; the unit test renders both pages); a physical phone check and a real screen reader pass (owner actions).
+
+Decision log: `docs/decisions/resilience-a11y.md`. Browser proof: `docs/reports/resilience-a11y/{how-to-play,coach-mark,skip-link-focused}-390.png`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Pitch density and drag
 
 Branch `perf/pitch-density-drag` off `origin/main` at `168a8f3`. Wave 4 row 4j (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -26,6 +51,8 @@ Gates at `94260af` (the commits after it change only `e2e/pitch-request-acceptan
 Decision log: `docs/decisions/pitch-density-drag.md`. Proof: `docs/reports/pitch-density-drag/` (full pitch at 390, 360 and 320, before and after; `drag.json` with every perf run).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #120 (row 4j, pitch density and drag perf) merged as squash `3d59cee`, reviewed head `f3d112e` (the coordinator's merge of #119, a STATE-only conflict, on top of `801e995`), GLM 5.3 Flash APPROVE in round 1 with canary `pitch-density-drag-ddd575d5a96b88923d1b2713aae1556b` echoed. At `f3d112e` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,759 unit tests passed in 206 files and Prettier passed on 13 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `3d59cee` with `db.status` ok, and `pitch-density-drag`, `pitch-request-acceptance` and `mobile-draft` against production (chromium and pixel-7) passed 39, 2 skipped by their project gates. NOT RUN: physical phone check (owner action), a real screen reader, GPU raster timing.
 
 ## Fast spins
 
