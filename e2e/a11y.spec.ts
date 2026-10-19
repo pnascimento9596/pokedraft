@@ -122,7 +122,7 @@ const PAGES: {
   {
     name: "a managed live match at an injury stop with the skip warning open",
     // The touchline's energy list (li role=button in a ul) and its h3 fail list, aria-allowed-role
-    // and heading-order; row 3g rewrites that list, so it is scanned once that lands.
+    // and heading-order. They predate row 3j and are left to the Wave 4 a11y bundle.
     exclude: ['[data-testid="touchline"]'],
     open: async (page) => {
       await page.addInitScript(() => {
