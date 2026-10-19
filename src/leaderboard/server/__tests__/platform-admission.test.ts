@@ -20,7 +20,7 @@ afterEach(async () => {
 });
 
 it.each([false, true])(
-  "uses three actual SQL queries for a fresh submission (daily=%s), two for a free retry",
+  "uses two actual SQL queries for a fresh submission (daily=%s), admission then insert with its rank, and two for a free retry",
   async (daily) => {
     const token = scriptedToken(
       dailySettings("4-3-3"),
@@ -40,7 +40,7 @@ it.each([false, true])(
       });
     const query = vi.spyOn(client, "query");
     expect((await handleSubmit(post(), deps)).status).toBe(201);
-    expect(query).toHaveBeenCalledTimes(3);
+    expect(query).toHaveBeenCalledTimes(2);
     query.mockClear();
     expect((await handleSubmit(post(), deps)).status).toBe(200);
     expect(query).toHaveBeenCalledTimes(2);

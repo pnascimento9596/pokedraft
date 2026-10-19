@@ -294,31 +294,32 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
   const { draft, cup } = result;
 
   try {
-    const inserted = await deps.store.insert({
-      nickname,
-      mode: board.mode,
-      variant: variantOf(run.settings),
-      dailyDate: board.dailyDate,
-      seed: run.seed,
-      token,
-      teamScore: cup.rating.score,
-      wins: cup.wins,
-      draws: cup.draws,
-      losses: cup.losses,
-      engineVersion: cup.engine,
-      coached,
-      runFingerprint: runFingerprint(draft, cup),
-      ipHash,
-    });
+    const inserted = await deps.store.insert(
+      {
+        nickname,
+        mode: board.mode,
+        variant: variantOf(run.settings),
+        dailyDate: board.dailyDate,
+        seed: run.seed,
+        token,
+        teamScore: cup.rating.score,
+        wins: cup.wins,
+        draws: cup.draws,
+        losses: cup.losses,
+        engineVersion: cup.engine,
+        coached,
+        runFingerprint: runFingerprint(draft, cup),
+        ipHash,
+      },
+      coach,
+    );
     if (!inserted.ok) {
       // A concurrent copy of this same submission won the insert race.
       const winner = await deps.store.byToken(token);
       if (winner?.nickname === nickname) return savedEntry(winner, deps.store, coach, rid);
       return conflictError(inserted.conflict);
     }
-    // The run is saved. A rank that cannot be computed must not turn that into a failure.
-    const rank = await rankOrNull(deps.store, inserted.row, board, coach, rid);
-    const ok: SubmitOk = { entry: toBoardEntry(inserted.row, rank) };
+    const ok: SubmitOk = { entry: toBoardEntry(inserted.row, inserted.rank) };
     return json(ok, 201);
   } catch (e) {
     return unavailable("submit.insert", rid, e);

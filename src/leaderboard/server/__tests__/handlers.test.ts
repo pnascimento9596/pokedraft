@@ -569,11 +569,11 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     return {
       ...store,
       inserts,
-      insert: async (row) => {
+      insert: async (row, coach) => {
         inserts.push("held");
         if (inserts.length === 2) release();
         await bothThere;
-        const out = await store.insert(row);
+        const out = await store.insert(row, coach);
         inserts.push(out.ok ? "saved" : `conflict:${out.conflict}`);
         return out;
       },
@@ -682,10 +682,10 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     async (_, err) => {
       const failing: LeaderboardStore = {
         ...store,
-        insert: (row) =>
+        insert: (row, coach) =>
           drizzleStore(() => {
             throw err;
-          }).insert(row),
+          }).insert(row, coach),
       };
       const token = scriptedToken(CUP8, "lb-cup8");
       const res = await submit({ nickname: "Ash", token }, undefined, failing);
@@ -697,10 +697,10 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
   it("maps any other insert failure to 503 DB_UNAVAILABLE", async () => {
     const failing: LeaderboardStore = {
       ...store,
-      insert: (row) =>
+      insert: (row, coach) =>
         drizzleStore(() => {
           throw Object.assign(new Error("connection reset"), { code: "08006" });
-        }).insert(row),
+        }).insert(row, coach),
     };
     const res = await submit(
       { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },

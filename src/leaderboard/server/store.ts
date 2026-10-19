@@ -11,7 +11,7 @@ export type Board = { readonly mode: BoardMode; readonly dailyDate: string | nul
 export type Conflict = "daily" | "token";
 
 export type InsertResult =
-  | { readonly ok: true; readonly row: LeaderboardRow }
+  | { readonly ok: true; readonly row: LeaderboardRow; readonly rank: number }
   | { readonly ok: false; readonly conflict: Conflict };
 
 export type SubmissionAdmission =
@@ -31,7 +31,8 @@ export interface LeaderboardStore {
   ): Promise<SubmissionAdmission>;
   byToken(token: string): Promise<LeaderboardRow | null>;
   dailyTaken(nickname: string, board: Board): Promise<boolean>;
-  insert(row: NewLeaderboardRow): Promise<InsertResult>;
+  /** Saves the row and ranks it in one coach view of its board, in a single statement. */
+  insert(row: NewLeaderboardRow, coach: CoachFilter): Promise<InsertResult>;
   /** The row's rank in one coach view of its board, counted the way `top` orders that view. */
   rankOf(row: LeaderboardRow, board: Board, coach: CoachFilter): Promise<number>;
   /** The top `BOARD_LIMIT` rows of one coach view, in board order; ranks are 1..n in the view. */
@@ -84,7 +85,11 @@ function boardFilter(board: Board): SQL {
 
 const ORDER = [desc(t.wins), desc(t.draws), desc(t.teamScore), asc(t.createdAt), asc(t.id)];
 
-function aheadOf(row: LeaderboardRow): SQL {
+type RankKey = {
+  readonly [K in "wins" | "draws" | "teamScore" | "createdAt" | "id"]: LeaderboardRow[K] | SQL;
+};
+
+function aheadOf(row: RankKey): SQL {
   return or(
     gt(t.wins, row.wins),
     and(eq(t.wins, row.wins), gt(t.draws, row.draws)),
@@ -96,6 +101,35 @@ function aheadOf(row: LeaderboardRow): SQL {
       or(lt(t.createdAt, row.createdAt), and(eq(t.createdAt, row.createdAt), lt(t.id, row.id))),
     ),
   )!;
+}
+
+const INSERTED: RankKey = {
+  wins: sql`inserted.wins`,
+  draws: sql`inserted.draws`,
+  teamScore: sql`inserted.team_score`,
+  createdAt: sql`inserted.created_at`,
+  id: sql`inserted.id`,
+};
+
+function rowFromJson(j: Record<string, unknown>): LeaderboardRow {
+  return {
+    id: j.id as string,
+    nickname: j.nickname as string,
+    mode: j.mode as LeaderboardRow["mode"],
+    variant: j.variant as string,
+    dailyDate: j.daily_date as string | null,
+    seed: j.seed as string,
+    token: j.token as string,
+    teamScore: j.team_score as number,
+    wins: j.wins as number,
+    draws: j.draws as number,
+    losses: j.losses as number,
+    engineVersion: j.engine_version as string,
+    coached: j.coached as boolean | null,
+    runFingerprint: j.run_fingerprint as string | null,
+    ipHash: j.ip_hash as string,
+    createdAt: new Date(j.created_at as string),
+  };
 }
 
 function uniqueViolation(e: unknown): string | null {
@@ -135,27 +169,7 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
         }
       ).rows;
       const existing = out!.existing;
-      if (existing?.nickname === nickname) {
-        const row: LeaderboardRow = {
-          id: existing.id as string,
-          nickname: existing.nickname as string,
-          mode: existing.mode as LeaderboardRow["mode"],
-          variant: existing.variant as string,
-          dailyDate: existing.daily_date as string | null,
-          seed: existing.seed as string,
-          token: existing.token as string,
-          teamScore: existing.team_score as number,
-          wins: existing.wins as number,
-          draws: existing.draws as number,
-          losses: existing.losses as number,
-          engineVersion: existing.engine_version as string,
-          coached: existing.coached as boolean | null,
-          runFingerprint: existing.run_fingerprint as string | null,
-          ipHash: existing.ip_hash as string,
-          createdAt: new Date(existing.created_at as string),
-        };
-        return { kind: "retry", row };
-      }
+      if (existing?.nickname === nickname) return { kind: "retry", row: rowFromJson(existing) };
       if (existing) return { kind: "conflict", conflict: "token" };
       if (out!.daily_taken) return { kind: "conflict", conflict: "daily" };
       if (!out!.allowed) return { kind: "limited" };
@@ -178,10 +192,24 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
         .limit(1);
       return hit.length > 0;
     },
-    async insert(row) {
+    async insert(row, coach) {
+      const board: Board = { mode: row.mode, dailyDate: row.dailyDate ?? null };
       try {
-        const [inserted] = await getDb().insert(t).values(row).returning();
-        return { ok: true, row: inserted! };
+        const db = getDb();
+        // The outer query reads the table as it was before the insert, and a row is never ahead
+        // of itself, so the count is exactly the rows that outrank the new one.
+        const result = await db.execute(sql`
+          WITH inserted AS ${db.insert(t).values(row).returning()}
+          SELECT
+            row_to_json(inserted) AS row,
+            (SELECT count(*) FROM ${t}
+              WHERE ${and(boardFilter(board), coachFilter(coach), aheadOf(INSERTED))})::int + 1 AS rank
+          FROM inserted
+        `);
+        const [out] = (
+          result as unknown as { rows: { row: Record<string, unknown>; rank: number }[] }
+        ).rows;
+        return { ok: true, row: rowFromJson(out!.row), rank: out!.rank };
       } catch (e) {
         const constraint = uniqueViolation(e);
         if (constraint === null) throw e;
