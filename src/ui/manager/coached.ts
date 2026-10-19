@@ -35,7 +35,7 @@ function payloadOf(token: string): string | null {
 
 /**
  * Whether a stored run was coached from the touchline: its token carries at least one manager
- * decision. Read from the token at read time, so no column holds it. The rule is the payload
+ * decision. Submit and db:backfill-runs store it in the `coached` column. The rule is the payload
  * array having more than three elements, read straight from the JSON without the live decoder,
  * so it also holds for retained versions. `coachedSql` in the leaderboard store is the same rule
  * in SQL, and a PGlite test pins the two together. Tokens of any other version, and any token that

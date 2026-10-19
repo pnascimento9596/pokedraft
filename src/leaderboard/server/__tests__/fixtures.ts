@@ -1,4 +1,5 @@
 import { PGlite } from "@electric-sql/pglite";
+import type { Logger } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import path from "node:path";
@@ -41,10 +42,10 @@ async function snapshot(): Promise<Blob> {
   }
 }
 
-export async function migratedDb(): Promise<{ db: Db; client: PGlite }> {
+export async function migratedDb(logger?: Logger): Promise<{ db: Db; client: PGlite }> {
   emptySnapshot ??= snapshot();
   const client = await PGlite.create({ loadDataDir: await emptySnapshot });
-  return { db: drizzle({ client, schema }) as unknown as Db, client };
+  return { db: drizzle({ client, schema, logger }) as unknown as Db, client };
 }
 
 const SLOTS: SlotRef[] = [
@@ -82,3 +83,7 @@ export function scriptedToken(settings: DraftSettings, seed: string): string {
   }
   return encodeToken({ v: RUN_TOKEN_VERSION, settings, seed: seed as Seed, actions });
 }
+
+// encodeToken of the engine-6 cup8 golden script; goldens.test.ts pins its sha256 (91d7a44a...).
+export const GOLDEN_CUP8_V6 =
+  "pd6.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0";
