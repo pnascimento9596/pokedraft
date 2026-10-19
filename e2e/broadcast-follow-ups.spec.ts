@@ -41,6 +41,9 @@ test("with reduced motion a key duel shows its cut-in, still, like the goal card
   const duel = replay.locator('[data-testid="cut-in"][data-kind="duel"]');
   await expect(duel).toBeVisible();
   await expect(duel.locator("img")).toHaveCount(1);
+  await expect
+    .poll(() => duel.locator("img").evaluate((el: HTMLImageElement) => el.naturalWidth))
+    .toBeGreaterThan(0);
   await expect(duel.getByTestId("duel-callout")).toHaveText(/ (used .+|wins the tackle)!$/);
   expect(await duel.evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
   await expect(replay.getByTestId("pitch-ability")).toHaveCount(0);
