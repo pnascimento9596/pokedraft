@@ -75,3 +75,57 @@ test("at 2x the first goal stages in half the time and the score lands with the 
   expect(["1 - 0", "0 - 1"]).toContain(marks[flash]!.score);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+// The 1e carryover: 2x switched on mid-goal used to jump the staging forward. The goal's callout
+// shows from 0.25 to 1 of its 2,600 ms staging. Switched to 2x 300 ms after it shows, the rest
+// (1,650 ms at 1x) plays in 825 ms, so it is on screen about 1,125 ms; the jump left about 650 ms.
+test("2x switched on mid-goal keeps the staging where it is: the callout stays about 1,125 ms, at 390px", async ({
+  page,
+}) => {
+  test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.addInitScript(() => {
+    const w = window as unknown as {
+      shown: number | null;
+      toggled: number | null;
+      gone: number | null;
+    };
+    w.shown = null;
+    w.toggled = null;
+    w.gone = null;
+    new MutationObserver(() => {
+      if (w.gone !== null) return;
+      const callout = document.querySelector('[data-testid="move-callout"]') !== null;
+      if (callout && w.shown === null) {
+        w.shown = performance.now();
+        setTimeout(() => {
+          w.toggled = performance.now();
+          document.querySelector<HTMLButtonElement>('[data-testid="speed-toggle"]')?.click();
+        }, 300);
+      } else if (!callout && w.shown !== null) w.gone = performance.now();
+    }).observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
+  });
+
+  await page.goto(`/r/${LIVE}`);
+  await expect(page.getByTestId("results-record")).toBeVisible();
+  await page.getByTestId("match-G1").getByTestId("watch-live").click();
+  const replay = page.getByTestId("match-replay");
+  await expect(replay.getByTestId("broadcast")).toBeVisible();
+  await page.waitForFunction(
+    () => (window as unknown as { gone: number | null }).gone !== null,
+    null,
+    { timeout: 60_000 },
+  );
+  await expect(replay.getByTestId("speed-toggle")).toHaveAttribute("aria-pressed", "true");
+  const { shown, toggled, gone } = await page.evaluate(() => {
+    const w = window as unknown as { shown: number; toggled: number; gone: number };
+    return { shown: w.shown, toggled: w.toggled, gone: w.gone };
+  });
+  const onScreen = gone - shown;
+  console.log(
+    `callout on screen ${Math.round(onScreen)} ms, 2x at ${Math.round(toggled - shown)} ms after it showed`,
+  );
+  expect(onScreen).toBeGreaterThan(1_000);
+  expect(onScreen).toBeLessThan(1_300);
+});
