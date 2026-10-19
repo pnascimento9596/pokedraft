@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Live Team Score in the draft
+
+Branch `feat/live-team-score` off `origin/main` at `d48aa0f`, with `origin/main` merged at `fb03b7a` (PR #115) in fix round 1. Wave 4 row 4c (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- With ratings on, the draft hub shows a Team Score scorebug from the first starter on. It reads "Team Score (so far)" during the draft and "Team Score" with the exact engine value once all 16 are signed. Chemistry stays beside it.
+- The selected candidate shows its signed change, "Team Score +281", for its best empty slot. While dragging, the preview shows the change for the slot under the finger ("+24" over GK).
+- With two legendaries or mythicals signed, picking a third warns "Last legendary or mythical slot. A third fills the cap." In Position First the warning sits above the offers. It shows with ratings on or off.
+- With ratings off, the scorebug and the change are hidden. Fit glyphs and glow stay.
+- The live score is `provisionalTeamScore` in `src/ui/partial-rating.ts`: `rateTeam`'s formula over the filled slots. For a full squad it equals `rateTeam` on both engine goldens (593, 480) and 20 seeded random squads.
+
+RED commit: `32316d1`, 12 of 13 failed in 2 files. The one pass is a regression guard with no RED (ratings off shows no scorebug). GREEN `09f3e46`. `3fb839c` moves the drag proof to a three-offer roll and keeps the delta line on one line at 320 px.
+
+Gates at `c617d85` (fix round 1, the merge of `fb03b7a`; the docs commit that follows changes only `STATE.md` and the decision log):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All eight `check:*` scripts exited 0, `check:client-bundle` and `check:dashes` among them. Prettier passed on the 8 changed text files.
+- Unit tests: 1,720 passed in 201 files.
+- Playwright (`CI=1`, headless, fresh build at `c617d85`), full suite: 929 passed, 63 skipped by their own project gates, 0 failed, 0 flaky. `live-team-score` 11 of 11.
+- Round 0, at `3fb839c`: 1,705 unit tests in 200 files, chromium 143 passed in 14 specs, `mobile-draft` 74 passed and 4 skipped on three phone projects.
+- NOT RUN: review and hosted CI; a physical phone check and a screen reader pass (owner actions).
+
+Decision log: `docs/decisions/live-team-score.md`. Proof: `docs/reports/live-team-score/` (390x844, 360x800 and 320x568, ratings on and off, cap warning, drag delta, full draft).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## One-tap play
 
 Branch `feat/one-tap-play` off `origin/main` at `34af10e`, with `origin/main` merged at `d48aa0f` (PRs #113 and #114) in fix round 1. Wave 4 row 4a, home and start card (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -26,6 +50,8 @@ Gates at `1b0e673` (fix round 1, the merge of `d48aa0f`; the docs commit that fo
 Measurements and decisions are in `docs/decisions/one-tap-play.md`. Browser proof: `docs/reports/one-tap-play/` (Play card and start card at 390, 360 and 320).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #115 (row 4a, one-tap play) merged as squash `fb03b7a`, reviewed head `e2bf503` after one fix round (merge of #114, no code change), GLM 5.3 Flash APPROVE in round 1 with canary `one-tap-play-35f51cc513e6f76406638549d461fc1b` echoed. At `e2bf503` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,707 unit tests passed in 199 files and Prettier passed on 25 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `fb03b7a` with `db.status` ok, and `one-tap-play`, `challenge-ratings` and `draft-modes` against production (chromium) passed 21 of 21. NOT RUN: physical phone check (owner action), a real screen reader.
 
 ## Copy pass and dash lint
 

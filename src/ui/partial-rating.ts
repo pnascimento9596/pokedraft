@@ -1,16 +1,19 @@
 import { ENGINE_COEFFICIENTS } from "@/engine/coefficients";
 import { FORMATIONS } from "@/engine/formations";
 import { speciesById } from "@/engine/species";
+import { benchQuality } from "@/engine/team";
 import { covers } from "@/engine/type-chart";
 import { LINES, type Line } from "@/engine/types";
 import type {
   Lineup,
   SlotId,
+  SlotRef,
   Species,
   SpeciesId,
   SynergyEdge,
   SynergyReason,
 } from "@/engine/types";
+import { ALL_REFS, valueAt } from "./lineup";
 
 export { SYNERGY_REASON_LABEL } from "./chemistry-labels";
 
@@ -137,4 +140,92 @@ export function ratePartialLines(lineup: Lineup): readonly PartialLineRating[] {
           : (100 * qualities.reduce((sum, quality) => sum + quality, 0)) / qualities.length,
     };
   });
+}
+
+const SCORE_SCALE = 1000;
+
+function mean(values: readonly number[]): number {
+  return values.reduce((a, b) => a + b, 0) / values.length;
+}
+
+// rateTeam's formula over the filled slots only. Every operation runs in rateTeam's order, so a
+// full lineup gives the engine's exact score; a missing line or an empty bench drops out with its
+// weight renormalised, and an empty slot is never assumed to hold anyone.
+export function provisionalTeamScore(lineup: Lineup): number | null {
+  const c = ENGINE_COEFFICIENTS.team;
+  const formation = FORMATIONS[lineup.formation];
+  const filled = formation.slots.flatMap((slot, index) => {
+    const id = lineup.starters[index] ?? null;
+    return id === null ? [] : [{ line: slot.line, quality: speciesById(id).quality[slot.role] }];
+  });
+  if (filled.length === 0) return null;
+
+  const present = LINES.filter((l) => filled.some((s) => s.line === l));
+  const lineQuality = (line: Line): number =>
+    mean(filled.filter((s) => s.line === line).map((s) => s.quality));
+  const weighted = present.reduce((sum, l) => sum + c.lineWeights[l] * lineQuality(l), 0);
+  const core =
+    present.length === LINES.length
+      ? weighted
+      : weighted / present.reduce((sum, l) => sum + c.lineWeights[l], 0);
+
+  const teamMean = mean(filled.map((s) => s.quality));
+  const lowest = filled
+    .map((s, index) => ({ s, index }))
+    .sort((a, b) => a.s.quality - b.s.quality || a.index - b.index)
+    .slice(0, c.dragCount);
+  const drag = c.dragWeight * mean(lowest.map(({ s }) => Math.max(0, teamMean - s.quality)));
+
+  const synergy = ratePartialLineup(lineup).synergy ?? 0;
+
+  const roles = [...new Set(formation.slots.map((s) => s.role))];
+  const benchIds = lineup.bench.filter((id): id is SpeciesId => id !== null);
+  const blend =
+    benchIds.length === 0
+      ? (c.coreWeight * (core - drag) + c.synergyWeight * synergy) /
+        (c.coreWeight + c.synergyWeight)
+      : c.coreWeight * (core - drag) +
+        c.synergyWeight * synergy +
+        c.benchWeight * mean(benchIds.map((id) => benchQuality(speciesById(id), roles)));
+
+  const x = Math.max(0, Math.min(1, blend));
+  return Math.round(SCORE_SCALE * (x + c.curve * x * (1 - x)));
+}
+
+function withCandidate(lineup: Lineup, ref: SlotRef, id: SpeciesId): Lineup {
+  if (ref.kind === "starter") {
+    const starters = [...lineup.starters];
+    starters[ref.index] = id;
+    return { ...lineup, starters: starters as unknown as Lineup["starters"] };
+  }
+  const bench = [...lineup.bench];
+  bench[ref.index] = id;
+  return { ...lineup, bench: bench as unknown as Lineup["bench"] };
+}
+
+export interface CandidateDelta {
+  readonly slot: SlotRef;
+  readonly delta: number;
+}
+
+// The change in the live Team Score from signing `candidate` into `slot`, or into the empty slot
+// that scores best (the first in slot order on a tie) when `slot` is null.
+export function candidateScoreDelta(
+  lineup: Lineup,
+  candidate: SpeciesId,
+  slot: SlotRef | null,
+): CandidateDelta | null {
+  const current = provisionalTeamScore(lineup);
+  if (current === null) return null;
+  let best: CandidateDelta | null = null;
+  for (const ref of slot === null ? ALL_REFS : [slot]) {
+    if (valueAt(lineup, ref) !== null) continue;
+    const delta = provisionalTeamScore(withCandidate(lineup, ref, candidate))! - current;
+    if (best === null || delta > best.delta) best = { slot: ref, delta };
+  }
+  return best;
+}
+
+export function formatDelta(delta: number): string {
+  return delta < 0 ? `-${-delta}` : `+${delta}`;
 }
