@@ -22,32 +22,32 @@ const WATER = squad(7, 8, 9, 129, 130, 131, 4, 25, 133, 1, 5);
 
 describe("team kits on the pitch (catches one fixed colour per side, and two sides in one colour)", () => {
   it("user kit for a Fire-majority squad is TYPE_PALETTE.fire", () => {
-    expect(kitsFor(FIRE, "water")).toEqual({ user: "#EE8130", opp: "#6390F0" });
+    expect(kitsFor(FIRE, "water")).toEqual({ user: "#DD730F", opp: "#6390F0" });
   });
 
   it("kits fall back when both sides share a dominant type", () => {
-    expect(kitsFor(FIRE, "fire")).toEqual({ user: "#EE8130", opp: "#F8FAFC" });
+    expect(kitsFor(FIRE, "fire")).toEqual({ user: "#DD730F", opp: "#F8FAFC" });
   });
 
   it("falls back when the opponent's theme looks like the user's kit to a red-green deficient eye (catches fire against rock)", () => {
-    expect(kitsFor(FIRE, "rock")).toEqual({ user: "#EE8130", opp: "#F8FAFC" });
+    expect(kitsFor(FIRE, "rock")).toEqual({ user: "#DD730F", opp: "#F8FAFC" });
   });
 
   it("breaks a tie in count by slot order (catches a tie decided by type order)", () => {
     expect(kitsFor(WATER_FIRST, "ghost").user).toBe("#6390F0");
-    expect(kitsFor(FIRE_FIRST, "ghost").user).toBe("#EE8130");
+    expect(kitsFor(FIRE_FIRST, "ghost").user).toBe("#DD730F");
   });
 
   it("counts both types of a dual-type starter: the golden squad wears poison, tied with grass on four and first in slot 0 (catches a dual type counted once)", () => {
     const { draft } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
     expect(kitsFor(toFullLineup(draft).starters, "water")).toEqual({
-      user: "#A33EA1",
+      user: "#A63EAA",
       opp: "#6390F0",
     });
   });
 
   it("gives an opponent with no theme the broadcast's own opponent colour, unless it clashes (catches a retained run with no kit)", () => {
-    expect(kitsFor(FIRE, undefined)).toEqual({ user: "#EE8130", opp: "#60A5FA" });
+    expect(kitsFor(FIRE, undefined)).toEqual({ user: "#DD730F", opp: "#60A5FA" });
     expect(kitsFor(WATER, undefined)).toEqual({ user: "#6390F0", opp: "#F8FAFC" });
   });
 

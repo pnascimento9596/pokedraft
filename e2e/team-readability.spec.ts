@@ -6,7 +6,7 @@ import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
 // user wears poison. The opponent, Goldenrod United, is a water theme.
 const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
 const SHOT = "docs/reports/team-readability";
-const POISON = "rgb(163, 62, 161)";
+const POISON = "rgb(166, 62, 170)";
 const WATER = "rgb(99, 144, 240)";
 
 test.use({ hasTouch: true, isMobile: true });

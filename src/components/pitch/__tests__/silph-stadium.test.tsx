@@ -28,19 +28,19 @@ it("keeps Pichu's real zero keeper rating visible when a numeric note is enabled
   );
   expect(within(screen.getByTestId("slot-s0")).getByText("0").textContent).toBe("0");
 });
-it("owns all eighteen authentic type colors in the typed presentation palette", () => {
+it("owns all eighteen type colors in the typed presentation palette", () => {
   expect(TYPE_PALETTE).toEqual({
     normal: "#A8A77A",
-    fire: "#EE8130",
+    fire: "#DD730F",
     water: "#6390F0",
     electric: "#F7D02C",
-    grass: "#7AC74C",
+    grass: "#89BC5F",
     ice: "#96D9D6",
     fighting: "#C22E28",
-    poison: "#A33EA1",
+    poison: "#A63EAA",
     ground: "#E2BF65",
-    flying: "#A98FF3",
-    psychic: "#F95587",
+    flying: "#AA96F6",
+    psychic: "#F65589",
     bug: "#A6B91A",
     rock: "#B6A136",
     ghost: "#735797",
