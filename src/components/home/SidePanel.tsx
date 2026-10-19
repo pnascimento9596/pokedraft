@@ -1,15 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
-import { FORMATION_IDS, GENS, type FormationId, type Gen } from "@/engine/types";
-import { ORDER_LABEL, STYLE_LABEL, genLabel, record } from "@/ui/labels";
+import { FORMATION_IDS, GENS, type FormationId, type Gen, type IsoDate } from "@/engine/types";
+import { dailyDate } from "@/leaderboard/daily";
+import { DAILY_RULE, MODE_LABEL, ORDER_LABEL, STYLE_LABEL, genLabel, record } from "@/ui/labels";
 import { BUCKET_LABEL, STAT_BUCKETS, type BucketStats, type StatBucket } from "@/ui/runs";
 import { playTarget, type ChallengeMode, type PanelSettings } from "@/ui/settings";
 import { RUN_CLEARED, runSlotKey, writeRunCheckpoint, writeSession } from "@/ui/storage";
+import { longDate } from "@/components/leaderboard/format";
 import { MatchdaySettings } from "@/components/matchday/MatchdaySettings";
 import { ModuleCard, Table } from "@/components/ui/primitives";
-import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./SidePanel.module.css";
 
 const SETTINGS_ID = "settings";
@@ -17,8 +19,6 @@ const SETTINGS_ID = "settings";
 export interface SidePanelProps {
   readonly panel: PanelSettings;
   readonly onChange: (next: PanelSettings) => void;
-  readonly filled?: number;
-  readonly chemistry?: number | null;
   readonly stats: Readonly<Record<StatBucket, BucketStats>> | null;
 }
 
@@ -83,17 +83,46 @@ function Segmented<T extends string>({
   );
 }
 
-export function SidePanel({
-  panel,
-  onChange,
-  stats,
-  filled = 0,
-  chemistry = null,
-}: SidePanelProps) {
+const PITCH_ID = "home-pitch";
+
+// Each rule line comes from How to play; the Daily one is the /daily start card's own.
+const CHALLENGE_RULE: Readonly<Record<ChallengeMode, string>> = {
+  cup8: "Each round rolls a region and a type. Draft one Pokémon that matches both.",
+  kanto151:
+    "Only the original 151. Each round rolls a single Pokémon and you place it in your squad.",
+};
+
+// The date is the one /daily plays, read on the client only, so the server HTML never holds one.
+// It is set after mount: a store read (useToday) re-renders home while it hydrates, and that drops
+// a formation picked as the page loads.
+function DailyCard() {
+  const [today, setToday] = useState<IsoDate | null>(null);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only date, see above
+    setToday(dailyDate(new Date()));
+  }, []);
+  return (
+    <div className={s.card} data-card>
+      <h2 className={s.cardTitle}>Daily</h2>
+      <p className={s.rule}>
+        {today === null ? "\u00a0" : <time dateTime={today}>{longDate(today)}</time>}
+      </p>
+      <p className={s.rule}>{DAILY_RULE}</p>
+      <Link href="/daily" className={`btn btn--primary ${s.cta}`}>
+        Play Daily
+      </Link>
+    </div>
+  );
+}
+
+export function SidePanel({ panel, onChange, stats }: SidePanelProps) {
   const formationId = useId();
   const set = (patch: Partial<PanelSettings>) => onChange({ ...panel, ...patch });
   const allGens = panel.gens.length === GENS.length;
-  const [open, setOpen] = useState(true);
+  // Unset until the player or the #settings hash decides, so CSS can collapse the settings below
+  // 1024px without the server knowing the width.
+  const [open, setOpen] = useState<boolean | null>(null);
+  const expanded = open === true;
   const router = useRouter();
 
   // The start card's Edit link lands here. The settings open first, then their heading scrolls into
@@ -135,203 +164,187 @@ export function SidePanel({
   };
 
   return (
-    <aside className={s.panel} aria-label="Control desk">
-      <div className={s.hub}>
+    <>
+      <section className={`module-card ${s.hero}`} aria-labelledby={PITCH_ID}>
+        <div>
+          <h1 id={PITCH_ID} className={s.title}>
+            Draft a Pokémon XI and win the cup.
+          </h1>
+          <p className={s.sub}>Spin for players, fill a formation, then play the cup.</p>
+        </div>
+        <div className={s.cards}>
+          {(["cup8", "kanto151"] as const).map((mode) => (
+            <div key={mode} className={s.card} data-card>
+              <h2 className={s.cardTitle}>{MODE_LABEL[mode]}</h2>
+              <p className={s.rule}>{CHALLENGE_RULE[mode]}</p>
+              {mode === "cup8" ? (
+                <p className={s.rule}>Draft style: {STYLE_LABEL[panel.style]}</p>
+              ) : null}
+              <button
+                type="button"
+                className={`btn btn--primary ${s.cta}`}
+                onClick={() => play(mode)}
+                onPointerEnter={() => prefetch(mode)}
+                onFocus={() => prefetch(mode)}
+              >
+                Play {MODE_LABEL[mode]}
+              </button>
+            </div>
+          ))}
+          <DailyCard />
+        </div>
+        <p className={s.hint}>
+          {panel.showChallengeRatings
+            ? "Challenge runs show scores and ratings."
+            : "Challenge runs hide scores and ratings. Position fit hints stay."}
+        </p>
+        <MatchdaySettings
+          value={{ managerMode: panel.managerMode, matchView: panel.matchView }}
+          onChange={(next) => set(next)}
+        />
+      </section>
+
+      <aside className={s.panel} aria-label="Control desk">
         <button
           type="button"
-          className="btn btn--ghost"
-          aria-expanded={open}
+          className={`btn btn--ghost btn--sm ${s.moreToggle}`}
+          aria-expanded={expanded}
           aria-controls={SETTINGS_ID}
-          onClick={() => setOpen(!open)}
+          onClick={() => setOpen(!expanded)}
         >
-          Challenge Hub
+          {expanded ? "Hide settings and records" : "Settings and records"}
         </button>
-        <p>
-          {STYLE_LABEL[panel.style]} · Draft: {filled}/16 ·{" "}
-          {chemistry === null ? "Chemistry after draft" : `${Math.round(chemistry * 100)}% Chem`}
-        </p>
-      </div>
-      <ModuleCard
-        eyebrow="Trainer Dugout"
-        title="Play"
-        description="Choose a cup and draft your squad."
-        icon={<NavIcon family="play" />}
-      >
-        <div className={s.section}>
-          <div className={s.challengeGroup}>
-            <div className={s.bannerTitle}>Pokémon Challenge</div>
-            <div className={s.ctas}>
-              <button
-                type="button"
-                className={`btn btn--primary ${s.cta}`}
-                onClick={() => play("cup8")}
-                onPointerEnter={() => prefetch("cup8")}
-                onFocus={() => prefetch("cup8")}
-              >
-                Play 8-0 Challenge
-              </button>
-              <button
-                type="button"
-                className={`btn btn--primary ${s.cta}`}
-                onClick={() => play("kanto151")}
-                onPointerEnter={() => prefetch("kanto151")}
-                onFocus={() => prefetch("kanto151")}
-              >
-                Play 151 Challenge
-              </button>
-            </div>
-          </div>
-          <p className={s.hint}>
-            {panel.showChallengeRatings
-              ? "Challenge runs show scores and ratings."
-              : "Challenge runs hide scores and ratings. Position fit hints stay."}
-          </p>
-          <MatchdaySettings
-            value={{ managerMode: panel.managerMode, matchView: panel.matchView }}
-            onChange={(next) => set(next)}
-          />
-          <button
-            type="button"
-            className={`btn btn--ghost btn--sm ${s.moreToggle}`}
-            aria-expanded={open}
-            aria-controls={SETTINGS_ID}
-            onClick={() => setOpen(!open)}
+        <div id={SETTINGS_ID} className={s.more} data-open={open ?? undefined}>
+          <ModuleCard
+            eyebrow="Your game"
+            title="Settings and records"
+            description="Set up the builder and check your saved results."
           >
-            {open ? "Hide settings and records" : "Settings and records"}
-          </button>
-        </div>
-      </ModuleCard>
-
-      <div id={SETTINGS_ID} className={s.more} data-open={open}>
-        <ModuleCard
-          eyebrow="Your game"
-          title="Settings and records"
-          description="Set up the builder and check your saved results."
-        >
-          <section className={s.section}>
-            <h2 className={s.heading}>Setup</h2>
-            <div className={s.field}>
-              <label className={s.fieldLabel} htmlFor={formationId}>
-                Formation
-              </label>
-              <select
-                id={formationId}
-                className={s.select}
-                value={panel.formation}
-                onChange={(e) => set({ formation: e.target.value as FormationId })}
-              >
-                {FORMATION_IDS.map((f) => (
-                  <option key={f} value={f}>
-                    {f}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className={s.field}>
-              <span className={s.fieldLabel}>Generations</span>
-              <div className={s.chips} role="group" aria-label="Generations">
-                <button
-                  type="button"
-                  className="chip"
-                  aria-pressed={allGens}
-                  onClick={() => set({ gens: GENS })}
+            <section className={s.section}>
+              <h3 className={s.heading}>Setup</h3>
+              <div className={s.field}>
+                <label className={s.fieldLabel} htmlFor={formationId}>
+                  Formation
+                </label>
+                <select
+                  id={formationId}
+                  className={s.select}
+                  value={panel.formation}
+                  onChange={(e) => set({ formation: e.target.value as FormationId })}
                 >
-                  All
-                </button>
-                {GENS.map((g) => (
+                  {FORMATION_IDS.map((f) => (
+                    <option key={f} value={f}>
+                      {f}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={s.field}>
+                <span className={s.fieldLabel}>Generations</span>
+                <div className={s.chips} role="group" aria-label="Generations">
                   <button
-                    key={g}
                     type="button"
                     className="chip"
-                    aria-pressed={panel.gens.includes(g)}
-                    onClick={() => toggleGen(g)}
+                    aria-pressed={allGens}
+                    onClick={() => set({ gens: GENS })}
                   >
-                    {genLabel(g)}
+                    All
                   </button>
-                ))}
+                  {GENS.map((g) => (
+                    <button
+                      key={g}
+                      type="button"
+                      className="chip"
+                      aria-pressed={panel.gens.includes(g)}
+                      onClick={() => toggleGen(g)}
+                    >
+                      {genLabel(g)}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          <section className={s.section}>
-            <h2 className={s.heading}>Rules</h2>
-            <Segmented
-              label="Draft style"
-              value={panel.style}
-              options={STYLE_LABEL}
-              onChange={(style) => set({ style })}
-            />
-            <Segmented
-              label="Order"
-              value={panel.order}
-              options={ORDER_LABEL}
-              onChange={(order) => set({ order })}
-            />
-            <Switch
-              label="Legendaries"
-              hint="Builder pool"
-              checked={panel.legendaries}
-              onChange={(legendaries) => set({ legendaries })}
-            />
-            <Switch
-              label="Show ratings (builder)"
-              hint="Ratings on"
-              checked={panel.showRatings}
-              onChange={(showRatings) => set({ showRatings })}
-            />
-            <Switch
-              label="Show ratings (challenges)"
-              hint="Off hides scores and ratings during challenges. Position fit hints stay."
-              checked={panel.showChallengeRatings}
-              onChange={(showChallengeRatings) => set({ showChallengeRatings })}
-            />
-          </section>
+            <section className={s.section}>
+              <h3 className={s.heading}>Rules</h3>
+              <Segmented
+                label="Draft style"
+                value={panel.style}
+                options={STYLE_LABEL}
+                onChange={(style) => set({ style })}
+              />
+              <Segmented
+                label="Order"
+                value={panel.order}
+                options={ORDER_LABEL}
+                onChange={(order) => set({ order })}
+              />
+              <Switch
+                label="Legendaries"
+                hint="Builder pool"
+                checked={panel.legendaries}
+                onChange={(legendaries) => set({ legendaries })}
+              />
+              <Switch
+                label="Show ratings (builder)"
+                hint="Ratings on"
+                checked={panel.showRatings}
+                onChange={(showRatings) => set({ showRatings })}
+              />
+              <Switch
+                label="Show ratings (challenges)"
+                hint="Off hides scores and ratings during challenges. Position fit hints stay."
+                checked={panel.showChallengeRatings}
+                onChange={(showChallengeRatings) => set({ showChallengeRatings })}
+              />
+            </section>
 
-          <section className={s.section}>
-            <h2 className={s.heading}>Your records</h2>
-            <Table className={s.stats}>
-              <thead>
-                <tr>
-                  <th scope="col">Mode</th>
-                  <th scope="col">Best score</th>
-                  <th scope="col">Best record</th>
-                  <th scope="col">Runs</th>
-                </tr>
-              </thead>
-              <tbody>
-                {STAT_BUCKETS.map((b) => {
-                  const st = stats?.[b];
-                  const empty = st === undefined || st.runs === 0;
-                  return (
-                    <tr key={b}>
-                      <th scope="row">{BUCKET_LABEL[b]}</th>
-                      {empty ? (
-                        <td colSpan={3} className={s.none}>
-                          No saved runs
-                        </td>
-                      ) : (
-                        <>
-                          <td className="num">{st.bestScore ?? "Unavailable"}</td>
-                          <td className="num">
-                            {st.bestRecord === null
-                              ? "Unavailable"
-                              : record(
-                                  st.bestRecord.wins,
-                                  st.bestRecord.draws,
-                                  st.bestRecord.losses,
-                                )}
+            <section className={s.section}>
+              <h3 className={s.heading}>Your records</h3>
+              <Table className={s.stats}>
+                <thead>
+                  <tr>
+                    <th scope="col">Mode</th>
+                    <th scope="col">Best score</th>
+                    <th scope="col">Best record</th>
+                    <th scope="col">Runs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {STAT_BUCKETS.map((b) => {
+                    const st = stats?.[b];
+                    const empty = st === undefined || st.runs === 0;
+                    return (
+                      <tr key={b}>
+                        <th scope="row">{BUCKET_LABEL[b]}</th>
+                        {empty ? (
+                          <td colSpan={3} className={s.none}>
+                            No saved runs
                           </td>
-                          <td className="num">{st.runs}</td>
-                        </>
-                      )}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </section>
-        </ModuleCard>
-      </div>
-    </aside>
+                        ) : (
+                          <>
+                            <td className="num">{st.bestScore ?? "Unavailable"}</td>
+                            <td className="num">
+                              {st.bestRecord === null
+                                ? "Unavailable"
+                                : record(
+                                    st.bestRecord.wins,
+                                    st.bestRecord.draws,
+                                    st.bestRecord.losses,
+                                  )}
+                            </td>
+                            <td className="num">{st.runs}</td>
+                          </>
+                        )}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </section>
+          </ModuleCard>
+        </div>
+      </aside>
+    </>
   );
 }

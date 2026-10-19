@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { openHomeSettings } from "../helpers";
 import { RUN_151, RUN_8_0 } from "../pins";
 import { settle, waitForHydration } from "./helpers";
 
@@ -276,6 +277,7 @@ export const SCENES: readonly Scene[] = [
     open: async (page) => {
       await seedStorage(page, { "pokedraft:stats:v1": STATS });
       await page.goto("/");
+      await openHomeSettings(page);
       await ready(page, page.getByRole("button", { name: "Hide settings and records" }));
       await expect(page.getByRole("heading", { name: "Your records" })).toBeVisible();
       await settle(page);

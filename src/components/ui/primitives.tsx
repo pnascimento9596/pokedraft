@@ -40,7 +40,7 @@ export function ModuleCard({
   className = "",
   ...props
 }: HTMLAttributes<HTMLElement> & {
-  readonly eyebrow: string;
+  readonly eyebrow?: string;
   readonly title: string;
   readonly description: string;
   readonly meta?: ReactNode;
@@ -60,7 +60,7 @@ export function ModuleCard({
         <div className="module-card__heading">
           {icon}
           <div>
-            <p className="eyebrow">{eyebrow}</p>
+            {eyebrow !== undefined ? <p className="eyebrow">{eyebrow}</p> : null}
             <Heading id={id} className="module-title">
               {title}
             </Heading>

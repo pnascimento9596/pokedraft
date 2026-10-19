@@ -1,10 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
-import { draftSixteen } from "./helpers";
+import { draftSixteen, openHomeSettings } from "./helpers";
 
 const SHOT = "docs/reports/one-tap-play";
 const CUP8_DEFAULT = "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open";
 const formation = (page: Page) => page.getByLabel("Formation");
-const playCard = (page: Page) => page.getByRole("region", { name: "Play" });
+const playCard = (page: Page) =>
+  page.getByRole("region", { name: "Draft a Pokémon XI and win the cup." });
 const settingsHeading = (page: Page) =>
   page.getByRole("heading", { name: "Settings and records", level: 2 });
 
@@ -22,6 +23,7 @@ test.describe("one-tap play on a phone", () => {
     page,
   }) => {
     await page.goto("/");
+    await openHomeSettings(page);
     await formation(page).selectOption("4-4-2");
     await page.getByRole("button", { name: "Play 8-0 Challenge" }).click();
     await expect(page).toHaveURL("/play?mode=cup8&f=4-4-2&order=squadFirst&g=123456789&style=open");
@@ -50,10 +52,13 @@ test.describe("one-tap play on a phone", () => {
     await expect(page.getByTestId("results-record")).toHaveCount(0);
   });
 
-  test("a formation picked as the home page loads on a slow phone reaches /play (catches a store read redoing hydration and dropping the pick)", async ({
+  test("a formation picked as the home page loads on a slow device reaches /play (catches a store read redoing hydration and dropping the pick)", async ({
     page,
   }) => {
     test.skip(test.info().project.name !== "chromium", "CPU throttling needs Chromium's CDP");
+    // At 1280 the settings show before hydration, so the pick can still race it. Below 1024 they
+    // start collapsed and opening them waits for hydration.
+    await page.setViewportSize({ width: 1280, height: 800 });
     const cdp = await page.context().newCDPSession(page);
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: 8 });
     await page.goto("/");
@@ -62,10 +67,16 @@ test.describe("one-tap play on a phone", () => {
     await expect(page).toHaveURL(/[?&]f=4-4-2&/);
   });
 
-  test("settings are open on first load with Formation, Order and the switches visible", async ({
+  test("settings start collapsed and one tap shows Formation, Order and the switches", async ({
     page,
   }) => {
     await page.goto("/");
+    await expect(page.getByRole("button", { name: "Settings and records" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+    await expect(formation(page)).toBeHidden();
+    await openHomeSettings(page);
     await expect(page.getByRole("button", { name: "Hide settings and records" })).toHaveAttribute(
       "aria-expanded",
       "true",

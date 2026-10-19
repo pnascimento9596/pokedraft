@@ -41,3 +41,13 @@ export async function shareAndReplay(page: Page, record: string): Promise<void> 
   await page.goto(link);
   await expect(page.getByTestId("results-record")).toHaveText(record);
 }
+
+// Home settings start collapsed below 1024px. A tap before hydration does nothing, so this taps
+// until Formation shows, and taps nothing once they are open.
+export async function openHomeSettings(page: Page): Promise<void> {
+  const collapsed = page.getByRole("button", { name: "Settings and records", exact: true });
+  await expect(async () => {
+    if (await collapsed.isVisible()) await collapsed.click();
+    await expect(page.getByLabel("Formation")).toBeVisible({ timeout: 1_000 });
+  }).toPass();
+}

@@ -31,7 +31,6 @@ import {
 } from "@/ui/settings";
 import { SidePanel } from "./SidePanel";
 import { focusHeading } from "@/ui/focus";
-import { fullLineup } from "@/components/builder/model";
 import s from "./HomeScreen.module.css";
 
 // The builder engine and the species data load on first use (a pointer over the builder, a tap, a
@@ -243,19 +242,7 @@ export function HomeScreen() {
 
   return (
     <div className={s.home}>
-      <SidePanel
-        panel={panel}
-        onChange={changePanel}
-        stats={stats}
-        filled={live === null ? 0 : filledCount(live.draft.lineup)}
-        chemistry={
-          live === null
-            ? null
-            : fullLineup(live.draft.lineup) !== null
-              ? live.engine.rateTeam(fullLineup(live.draft.lineup)!).synergy
-              : live.engine.ratePartialLineup(live.draft.lineup).synergy
-        }
-      />
+      <SidePanel panel={panel} onChange={changePanel} stats={stats} />
       <Builder
         desk={desk}
         ensureLive={ensureLive}

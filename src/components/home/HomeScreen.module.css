@@ -1,8 +1,3 @@
-@media (max-width: 1023px) {
-  .home > section {
-    grid-row: 4;
-  }
-}
 .home {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -13,7 +8,13 @@
 @media (min-width: 1024px) {
   .home {
     grid-template-columns: 320px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
     gap: 20px;
+  }
+
+  .home > :last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
   }
 
   .home > aside {

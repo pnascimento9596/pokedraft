@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { renderToString } from "react-dom/server";
 import { useState } from "react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { applyAction, createDraft, type DraftSettings, type SpeciesId } from "@/engine";
@@ -39,7 +38,8 @@ beforeEach(() => {
 afterEach(cleanup);
 
 const settingsPanel = () => document.getElementById("settings") as HTMLElement;
-const playCard = () => within(screen.getByRole("region", { name: "Play" }));
+const playCard = () =>
+  within(screen.getByRole("region", { name: "Draft a Pokémon XI and win the cup." }));
 
 describe("home Play buttons start the run in one tap (catches the retired Settings confirmed? dialog coming back)", () => {
   it("Play navigates to /play with no dialog", () => {
@@ -117,12 +117,12 @@ describe("the Matchday selector sits in the Play card (catches a cup started wit
 });
 
 describe("the #settings anchor (catches an Edit link that lands on a closed or unfocused panel)", () => {
-  it("gives the settings region id settings and points both toggles at it", () => {
+  it("gives the settings region id settings and points the settings toggle at it", () => {
     render(<Harness initial={DEFAULT_PANEL} />);
     expect(settingsPanel()).not.toBeNull();
-    for (const name of ["Challenge Hub", "Hide settings and records"]) {
-      expect(screen.getByRole("button", { name }).getAttribute("aria-controls")).toBe("settings");
-    }
+    expect(
+      screen.getByRole("button", { name: "Settings and records" }).getAttribute("aria-controls"),
+    ).toBe("settings");
   });
 
   it("opens the settings and focuses their heading when the page loads at #settings", () => {
@@ -136,6 +136,7 @@ describe("the #settings anchor (catches an Edit link that lands on a closed or u
 
   it("reopens collapsed settings when the hash changes to #settings", () => {
     render(<Harness initial={DEFAULT_PANEL} />);
+    fireEvent.click(screen.getByRole("button", { name: "Settings and records" }));
     fireEvent.click(screen.getByRole("button", { name: "Hide settings and records" }));
     expect(settingsPanel().getAttribute("data-open")).toBe("false");
     act(() => {
@@ -174,17 +175,11 @@ describe("the #settings anchor (catches an Edit link that lands on a closed or u
   });
 });
 
-describe("settings are open by default (catches settings hidden behind a toggle on phones)", () => {
-  it("renders expanded in the server HTML", () => {
-    const html = renderToString(
-      <SidePanel panel={DEFAULT_PANEL} onChange={() => {}} stats={null} />,
-    );
-    expect(html).toContain('data-open="true"');
-    expect(html).toContain('aria-expanded="true"');
-  });
-
-  it("still lets the player collapse and re-expand the settings", () => {
+describe("the settings toggle (catches settings a player cannot open or close again)", () => {
+  it("opens the unset settings, then collapses and reopens them", () => {
     render(<Harness initial={DEFAULT_PANEL} />);
+    expect(settingsPanel().getAttribute("data-open")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Settings and records" }));
     expect(settingsPanel().getAttribute("data-open")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: "Hide settings and records" }));
     expect(settingsPanel().getAttribute("data-open")).toBe("false");
