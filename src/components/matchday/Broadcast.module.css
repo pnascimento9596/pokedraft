@@ -9,11 +9,23 @@
   box-shadow: inset 0 0 0 1px var(--bc-line-faint);
 }
 
+/* The camera's window: the pitch moves and zooms inside it, the overlay and the note stay put. */
+.view {
+  position: relative;
+  overflow: hidden;
+}
+
 .pitch {
   position: relative;
   width: 100%;
   aspect-ratio: 100 / 64;
-  --sprite: 0.48;
+  transform-origin: 0 0;
+  /* 0.55 of the 80px art is 44px, the smallest a sprite gets on a phone. */
+  --sprite: 0.55;
+}
+
+.broadcast[data-camera="follow"] .pitch {
+  will-change: transform;
 }
 
 @container (min-width: 520px) {
@@ -105,12 +117,16 @@
   --fx-core: var(--fx-dive-core);
 }
 
-/* Strokes do not scale with the box; 1cqi is one pitch unit, so they keep their width. */
+/* Strokes do not scale with the box; 1cqi is one pitch unit, so they keep their width. The glow
+   and the line draw the shape through use, which passes them every stroke property but this one. */
+.trailShape {
+  vector-effect: non-scaling-stroke;
+}
+
 .trailGlow {
   fill: none;
   stroke: var(--fx);
   stroke-width: 1.5cqi;
-  vector-effect: non-scaling-stroke;
   stroke-linecap: round;
   opacity: 0.48;
 }
@@ -121,7 +137,6 @@
   stroke-width: 0.65cqi;
   stroke-linecap: round;
   stroke-dasharray: 2.2cqi 1.4cqi;
-  vector-effect: non-scaling-stroke;
 }
 
 .trails[data-kind="shot"] .trailLine,
@@ -141,6 +156,7 @@
 /* The frame loop moves each player with an inline transform from the pitch's top left corner. */
 .player {
   --fx: var(--fx-impact);
+  --kit: var(--kit-user);
   position: absolute;
   left: 0;
   top: 0;
@@ -188,7 +204,11 @@
   --fx: var(--fx-shield);
 }
 
-/* A team-coloured ring at the player's feet; the sprite stands on it. */
+.player[data-side="opp"] {
+  --kit: var(--kit-opp);
+}
+
+/* A ring in the side's kit at the player's feet; the sprite stands on it. */
 .body::before {
   content: "";
   position: absolute;
@@ -198,11 +218,7 @@
   height: 14px;
   border-radius: 50%;
   background: var(--bc-shade);
-  box-shadow: 0 0 0 2px var(--bc-user);
-}
-
-.player[data-side="opp"] .body::before {
-  box-shadow: 0 0 0 2px var(--bc-opp);
+  box-shadow: 0 0 0 3px var(--kit);
 }
 
 .body > * {
@@ -220,13 +236,7 @@
 .player[data-hot] .body::before {
   box-shadow:
     0 0 0 3px var(--bc-ink),
-    0 0 14px 5px var(--bc-user-glow);
-}
-
-.player[data-side="opp"][data-hot] .body::before {
-  box-shadow:
-    0 0 0 3px var(--bc-ink),
-    0 0 14px 5px var(--bc-opp-glow);
+    0 0 14px 5px color-mix(in srgb, var(--kit) 45%, transparent);
 }
 
 .player[data-pose="cast"] .body::after {
@@ -428,17 +438,13 @@
   padding: 2px 7px;
   border-radius: 999px;
   background: var(--bc-shade-strong);
-  border: 1.5px solid var(--bc-user);
+  border: 1.5px solid var(--kit);
   color: var(--bc-ink);
   font-size: 11px;
   font-weight: 800;
   line-height: 1.2;
   white-space: nowrap;
   pointer-events: none;
-}
-
-.player[data-side="opp"] .carrierBadge {
-  border-color: var(--bc-opp);
 }
 
 .shirt {
@@ -490,11 +496,11 @@
   --fx-core: var(--fx-shield-core);
 }
 
+/* The frame loop places the badge's top left corner, kept on the pitch. */
 .playBadge {
   --fx: var(--fx-impact-core);
   position: absolute;
   z-index: 4;
-  transform: translate(-50%, -225%);
   padding: 2px 8px;
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--fx);
@@ -533,11 +539,11 @@
 @keyframes badgeFloat {
   from {
     opacity: 0;
-    transform: translate(-50%, -185%) scale(0.9);
+    transform: translateY(40%) scale(0.9);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -225%) scale(1);
+    transform: none;
   }
 }
 

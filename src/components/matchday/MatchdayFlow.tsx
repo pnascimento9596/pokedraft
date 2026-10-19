@@ -5,7 +5,7 @@ import { FORMATIONS, speciesById } from "@/engine";
 import type { CupResult, FullLineup, ManagerAction, MatchResult, Tactic } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { BossRoster } from "@/components/results/BossRoster";
-import { unlockAudio } from "@/components/wheel/sound";
+import { unlockAudio, useAudioLocked } from "@/components/wheel/sound";
 import { finalScore } from "@/components/results/format";
 import { ROUND_LABEL } from "@/ui/labels";
 import { matchdayView, type MatchView } from "@/ui/settings";
@@ -20,6 +20,7 @@ import { focusHeading } from "@/ui/focus";
 import { scoutLine } from "@/ui/manager/intel";
 import { MatchPlayer } from "./MatchPlayer";
 import { TacticPills } from "./TacticPills";
+import { YourCalls } from "./YourCalls";
 import s from "./MatchdayFlow.module.css";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
@@ -82,6 +83,7 @@ export function MatchdayFlow({
       : nextPlayed(initialCup, initialMatch),
   );
   const [phase, setPhase] = useState<"pre" | "play">("pre");
+  const locked = useAudioLocked();
 
   useEffect(() => {
     focusHeading();
@@ -112,7 +114,14 @@ export function MatchdayFlow({
   };
 
   return (
-    <section className={s.flow} data-testid="matchday" data-match={index}>
+    // A touch pointerdown alone does not count as a gesture for audio; the pointerup does.
+    <section
+      className={s.flow}
+      data-testid="matchday"
+      data-match={index}
+      onPointerDown={locked ? unlockAudio : undefined}
+      onPointerUp={locked ? unlockAudio : undefined}
+    >
       <header className={s.head}>
         <p className={s.kicker}>
           Match {number}
@@ -121,6 +130,16 @@ export function MatchdayFlow({
         <h1 className={s.title} data-testid="matchday-title">
           {ROUND_LABEL[match.round]}: {match.opponent.name}
         </h1>
+        {locked ? (
+          <button
+            type="button"
+            className={`btn btn--sm ${s.soundChip}`}
+            data-testid="tap-for-sound"
+            onClick={unlockAudio}
+          >
+            Tap for sound
+          </button>
+        ) : null}
       </header>
 
       {phase === "pre" ? (
@@ -156,6 +175,7 @@ export function MatchdayFlow({
                   : ""}
                 .
               </p>
+              <YourCalls ctx={ctx} cup={cup} actions={actions} matchIndex={index} />
               <button
                 type="button"
                 className="btn btn--primary"

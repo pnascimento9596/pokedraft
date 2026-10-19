@@ -39,6 +39,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test --maxWorkers=4
       - run: pnpm build
+      - run: pnpm exec tsx scripts/build/check-retained-replays.mts .next/server/chunks
       - run: node scripts/build/measure-retained-json.mjs .next/server/chunks
       - run: pnpm check:client-bundle
       - name: Rebuild data artifacts and require zero diff

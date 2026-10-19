@@ -1,9 +1,40 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { encodeToken } from "../src/engine/token";
+import {
+  GENS,
+  RUN_TOKEN_VERSION,
+  type DraftAction,
+  type ManagerAction,
+  type Seed,
+  type SlotRef,
+  type SpeciesId,
+} from "../src/engine/types";
 
 // A builder squad pinned for this proof: fifteen strong players and Magikarp (STA 19) in slot 2,
-// pressing all match. In the R16 extra time Magikarp is at 42 energy from 115' and slot 10 at 64.
-const TOKEN =
-  "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwwXSwiZmF0aWd1ZS0xIixbWyJsIiw3ODQsInMwIl0sWyJsIiwxMDA5LCJzMSJdLFsibCIsMTI5LCJzMiJdLFsibCIsMjg5LCJzMyJdLFsibCIsODg3LCJzNCJdLFsibCIsMzczLCJzNSJdLFsibCIsMTAxMCwiczYiXSxbImwiLDk5OCwiczciXSxbImwiLDEwMjIsInM4Il0sWyJsIiwxMDE4LCJzOSJdLFsibCIsMTAwNiwiczEwIl0sWyJsIiw5OTMsImIwIl0sWyJsIiw3MDYsImIxIl0sWyJsIiwyNDgsImIyIl0sWyJsIiwxMDIzLCJiMyJdLFsibCIsOTg5LCJiNCJdXSxbWyJ0IiwwLDAsInAiXSxbInQiLDEsMCwicCJdLFsidCIsMiwwLCJwIl0sWyJ0IiwzLDAsInAiXSxbInQiLDQsMCwicCJdLFsidCIsNSwwLCJwIl1dXQ";
+// pressing all match. On engine 6, in the R16 extra time Magikarp is at 42 energy from 115' and
+// slot 10 at 64. The token is encoded for the live engine, so an engine bump replays this squad
+// on the new engine instead of on a retained bundle.
+const STARTERS = [784, 1009, 129, 289, 887, 373, 1010, 998, 1022, 1018, 1006];
+const BENCH = [993, 706, 248, 1023, 989];
+const place =
+  (kind: "starter" | "bench") =>
+  (species: number, index: number): DraftAction => ({
+    type: "place",
+    species: species as SpeciesId,
+    slot: { kind, index } as SlotRef,
+  });
+const TOKEN = encodeToken({
+  v: RUN_TOKEN_VERSION,
+  settings: { mode: "builder", formation: "4-3-3", gens: GENS, legendaries: false },
+  seed: "fatigue-1" as Seed,
+  actions: [...STARTERS.map(place("starter")), ...BENCH.map(place("bench"))],
+  manager: Array.from({ length: 6 }, (_, match): ManagerAction => ({
+    type: "tactic",
+    match,
+    minute: 0,
+    tactic: "press",
+  })),
+});
 const SHOT = "docs/reports/fatigue";
 const FRAME = 16;
 

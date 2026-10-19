@@ -29,6 +29,12 @@
   outline: none;
 }
 
+.soundChip {
+  justify-self: start;
+  min-height: 44px;
+  min-width: 44px;
+}
+
 .pre {
   display: grid;
   gap: 12px;

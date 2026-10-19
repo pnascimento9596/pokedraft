@@ -13,7 +13,7 @@ Branch `feat/touchline-intel` off `bee9acf` (row 3a's branch, PR #102). Wave 3 r
 - Subs are picked by tapping: an energy row for who goes off, a bench card for who comes on. Bench cards show the Best, OK or Poor fit glyph for that position, plus "Fit n, STA n" when ratings are on. The Take off and Bring on selects are gone.
 - A booked player's energy row shows a yellow card. The injury prompt names the position.
 - During an unanswered injury stop the ticker no longer shows the assistant's replacement (the 1d carryover).
-- A managed match stops at 65' when an outfield player is below 65 energy. Engine 6 cannot get anyone that low by 65' (the measured minimum is 67), so this stop never shows in a real match yet; see the decision log.
+- A managed match stops at 65' when an outfield player is below 65 energy. Engine 6 cannot get anyone that low by 65' (the measured minimum is 67), so this stop never shows in a real match yet. The owner chose on 2026-10-18 to ship it as written; see the decision log.
 - The closed phone sheet is 143 px high, up from 115 px, to fit the assistant line.
 
 RED commit: `1005614` (24 of 60 failed).
@@ -26,6 +26,107 @@ Gates at `1efeb35` (code identical at the docs commit that adds this section):
 - The 65' stop in a browser (unreachable in engine 6), review, hosted CI, the full e2e suite, `env(safe-area-inset-bottom)` on a device and a physical phone: NOT RUN at the time of writing.
 
 Measurements and decisions are in `docs/decisions/touchline-intel.md`. Browser proof: `docs/reports/touchline-intel/`.
+
+## Landscape, full screen and score bug
+
+Branch `feat/fullscreen-score-bug` off `feat/follow-camera` at `be5a86f`. Wave 3 row 3c, matchday player, scoreboard and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The pitch is never taller than 70% of the screen. On a phone turned to landscape (844x390) it is 427 by 273 px, wholly on screen and letterboxed, where it was 778 by 498 and ran off the screen. Portrait phones are unchanged. On a 1280x720 desktop the pitch is 788 px wide instead of 1214.
+- In Watch live a "Full screen" button (44 px target) ends the control row on browsers with the Fullscreen API. In full screen the same button reads "Exit full screen" in the corner; Esc also leaves. The broadcast is centred and padded by the safe-area insets.
+- iPhone Safari has no Fullscreen API for a page element, so the button is hidden there instead of doing nothing. The phone check confirms it.
+- In full screen only, a TV-style score bug sits in the top left corner over the pitch, outside the follow camera's zoom: "Your XI", the score as 1-0, the club's town ("Goldenrod"), the clock, and "Pens 3-2" in a shootout.
+- A half-time, injury or extra-time question leaves full screen, so it can be answered.
+- In landscape the touchline sits in the page under the pitch, every control at least 44 px, and a substitution goes through.
+- The 320 px scoreboard no longer breaks "Goldenrod United" mid-word (the Wave 1 carryover); a name wraps between words only.
+
+RED commits: `139417f` (6 of 8 failed in the unit file; `fullscreen-score-bug.spec.ts` failed 4 of 4 on a `be5a86f` build) and `cd472f4` (the stop step; it failed 1 of 4 on a build of the fix with the stop effect disabled).
+
+Gates at `3d76f09` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 7 touched code and test files.
+- Unit tests: 1,580 passed in 183 files.
+- Playwright (`CI=1`, fresh build of the `3d76f09` code): `fullscreen-score-bug`, `follow-camera`, `touchline-sheet`, `team-readability`, `broadcast-frame-loop`, `manager-mode`, `mobile-targets`, `mobile-acceptance` and `mobile-pitch-fixes` 411 passed, 56 skipped by their own project gates, 3 failed. The 3 are `mobile-pitch-fixes` at 390, 360 and 320 (carrier nameplate scale 1.6, not 1), and a `be5a86f` build fails the same 3: they come from row 3b's Follow default, not this row.
+- Review, hosted CI, the full e2e suite, real safe-area insets and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/fullscreen-score-bug.md`. Browser proof: `docs/reports/fullscreen-score-bug/`.
+
+Merged origin/main after PRs #106 and #107 at `d29858d`. `MatchPlayer.tsx` and its CSS conflicted in the control row and the pitch wrapper; all three rows' controls stay (camera group, full-screen button, then the haptics hint on its own line). Two specs failed after the merge: at 320x640 the match opened with the pitch top 41 px above the screen (`touchline-sheet`, the prematch screen's scroll carried into the match), and `fullscreen-score-bug` read `document.fullscreenElement` before the async exit settled. `1bc8259` brings the pitch into view a frame after the match mounts and makes the spec poll. At `1bc8259` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,590 unit tests passed in 185 files (a first run failed 2 tests that three reruns passed; recorded as a flake), `touchline-sheet` passed 8 of 8, `fullscreen-score-bug`, `mobile-pitch-fixes`, `follow-camera`, `haptics`, `audio-polish`, `injury-staging`, `manager-mode`, `prematch-merge`, `your-calls` and `shootout-suspense` 32 of 32, and `mobile-targets` 93 of 93 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+## Haptics and tap for sound
+
+Branch `feat/haptics` off `40221a8`. Wave 3 row 3e, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `Broadcast.tsx` is untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- On a phone with vibration (Android), your goal buzzes once (120 ms), a red card for your team buzzes twice, and the final whistle buzzes once long. The opponent's goals and red cards do not buzz.
+- Haptics follow the beat sounds: only in Live, only with sound on, once per event. A pause and resume buzzes nothing again, and a skip to full time buzzes nothing, as it plays no sound.
+- The matchday toggle now reads "Sound and haptics on" or "off", with the hint "Haptics work on Android phones only." It is still the one sound setting the draft wheel uses.
+- After a reload the browser can keep audio waiting for a tap. The matchday now shows a "Tap for sound" button (44 px) while that is so, and the first tap anywhere on the matchday starts the sound and removes it (the 2h carryover).
+- Reduced motion still leaves the crowd at its normal level: reduced motion governs motion, the Sound toggle governs sound (2h carryover closed as by design).
+
+RED commit: `3115615` (6 of 10 unit tests failed in 2 files; `haptics.spec.ts` failed 3 of 3 on a `40221a8` build).
+
+Gates at `49c1ef2` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 10 touched code, test and doc files.
+- Unit tests: 1,555 passed in 181 files.
+- Playwright (`CI=1`, fresh build at `49c1ef2`): chromium `haptics`, `audio-polish`, `watch-live`, `quick-not-broadcast`, `manager-mode`, `prematch-merge`, `touchline-sheet` and `builder-matchday` 30 passed; `mobile-targets` and `mobile-acceptance` 370 passed, 56 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, vibration on a real Android phone and audio after a reload on a real iPhone: NOT RUN at the time of writing. The spec stubs `navigator.vibrate` and emulates iOS Safari's autoplay rule.
+
+Measurements and decisions are in `docs/decisions/haptics.md`. Browser proof: `docs/reports/haptics/`.
+
+Merged origin/main after PR #106 (row 3b) at `1d337d5`. `MatchPlayer.tsx` and its CSS conflicted where both rows added a control after the sound toggle; both stay, the camera group on the controls row and the haptics hint on its own line below. After the merge lint, typecheck and build exited 0, 394 matchday and UI unit tests passed in 58 files, `haptics`, `follow-camera`, `audio-polish` and `mobile-pitch-fixes` passed 13 of 13 and `mobile-targets` 93 of 93 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #107 (row 3e, haptics and tap for sound) merged as squash `8247f20`, reviewed head `f729d11`, GLM 5.3 Flash APPROVE in round 1 with canary `haptics-1568e86cb64bdbbb152c99156adf2c7d` echoed. At `f729d11` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,582 unit tests passed in 184 files and Prettier passed on 11 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `8247f20` with `db.status` ok, and `haptics.spec.ts` plus `audio-polish.spec.ts` against production (chromium) passed 5 of 5. NOT RUN: physical phone check (owner action), including a real Android vibration.
+
+## Follow camera
+
+Branch `feat/follow-camera` off `feat/team-readability` at `d656db7`. Wave 3 row 3b, matchday pitch and control row (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- In Watch live the pitch can follow the ball. Follow zooms to 1.6 and chases the ball on a critically damped spring that settles in about 0.5 s. Goals of every kind (penalties and free kicks included), saves, a settling shot and the shootout ease out to the full pitch over 400 ms. The view never shows past the touchlines or goal lines.
+- "Full pitch" and "Follow" buttons (44 px targets) sit after the sound toggle. Follow is the default below 600 px and Full from 600 px. Reduced motion opens on Full and can still choose Follow. The choice is kept in `localStorage`. Quick has no camera and no toggle.
+- The play badge stays at its own size outside the zoomed pitch and is placed through the camera, so it stays in view at 390, 360 and 320 (13 badges, none clipped).
+- The camera writes one transform on the pitch, 23 times a second. The trail now draws its glow and line from one shared path, which saves 34 writes a second, so mutations per second are below main's.
+- 2a perf rerun against origin/main at `02e45cd`: frame pacing, long tasks, mutations and style recalc not worse. Main-thread task time rose 3 to 12%, in compositing (Layerize). Headless numbers exclude GPU raster.
+
+RED commits: `3251033` (15 of 19 failed in 4 of 4 unit files; `follow-camera.spec.ts` failed 4 of 4 on a `d656db7` build) and `59c844e` (2 of 15 failed).
+
+Gates at `99ec77b` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 13 touched code and test files.
+- Unit tests: 1,572 passed in 182 files.
+- Playwright (`CI=1`, fresh build at `99ec77b`): `follow-camera`, `broadcast-frame-loop`, `continuous-ball`, `team-readability`, `callouts-type-effects`, `set-pieces`, `shootout-suspense`, `touchline-sheet`, `pitch-card-containment`, `mobile-targets` and `mobile-acceptance` 415 passed, 56 skipped by their own project gates, 0 failed.
+- Review, hosted CI, the full e2e suite and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/follow-camera.md`. Browser proof and perf JSON: `docs/reports/follow-camera/`.
+
+Review round 1 at `be5a86f`: GLM 5.3 Flash APPROVE (canary `follow-camera-9b2e38e8dd010e1cef2629ff5a51a022`), but hosted e2e shard 2 failed `mobile-pitch-fixes.spec.ts` at 390, 360 and 320 (carrier badge scale expected 1, received 1.6; run 39171973319), because Follow is now the phone default and zooms the pitch. The spec now switches to Full pitch before pinning the unzoomed sizes; locally (`CI=1`, chromium, fresh build) `mobile-pitch-fixes` and `follow-camera` passed 8 of 8, carrier 11px at scale 1 and the pip 9x13 at all three widths. The receipt from `be5a86f` is void; the reviewed head is the next one.
+
+PR #106 (row 3b, follow camera) merged as squash `1e417e3`, reviewed head `7e8b503`, GLM 5.3 Flash APPROVE in round 2 with canary `follow-camera-r2-789a6edce25ae0d736d1e2507fe1bbfc` echoed (round 1 at `be5a86f` approved, but hosted shard 2 failed `mobile-pitch-fixes` under the new phone zoom; the spec now pins its sizes in Full pitch). At `7e8b503` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,572 unit tests passed in 182 files and Prettier passed on 18 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `1e417e3` with `db.status` ok, and `follow-camera`, `mobile-pitch-fixes` and `broadcast-frame-loop` against production (chromium) passed 11 of 11. NOT RUN: physical phone check (owner action), including stutter from the 10 Hz pose floor under zoom.
+
+## Team readability
+
+Branch `feat/team-readability` off `c33fa17`. Wave 3 row 3d, matchday pitch only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed, and `MatchPlayer.tsx` and `Touchline.tsx` are untouched. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- Each side's players stand on a ring in their kit. Your kit is the type most of your starting eleven carry; a dual type counts toward both its types, and a tie goes to the type seen first in slot order. The opponent wears its theme's type.
+- When the two kits look too alike (closer than 10 in the CVD audit's own metric, in normal, protanopia or deuteranopia vision), the opponent wears white. A club with no theme keeps the old blue unless it clashes too.
+- Sprites draw at 44px on phones instead of 38.4px. Wider pitches keep 56 and 72px.
+- A move's badge over a player now stays inside the pitch. In the golden group match, 5 to 7 of 13 badges were cut off by up to 65px at 390, 360 and 320; none are now.
+- The rings show in Quick and with reduced motion. They add no element and no per-frame write.
+- The 2f carryover (sweat pip and stamina arc not sized in px) did not reproduce: both already sit in the unscaled player box at 6 by 8 and 24 by 8 px at 390 and 320. Closed in the decision log.
+
+RED commit: `33a3e60` (3 of 3 unit files failed: the 2 collected tests, and `kit.test.ts` with 7 tests and `badge.test.ts` with 4 tests could not import the missing modules; `team-readability.spec.ts` failed 7 of 7 on a `c33fa17` build).
+
+Gates at `1303a58` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 12 touched code and test files.
+- Unit tests: 1,530 passed in 178 files.
+- Playwright (`CI=1`, fresh build at `1303a58`): chromium `team-readability`, `pitch-card-containment`, `mobile-pitch-fixes`, `broadcast-frame-loop`, `fatigue`, `callouts-type-effects`, `continuous-ball` and `one-shared-timeline` 34 passed; `mobile-targets` and `mobile-acceptance` 360 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, a frame-loop perf trace and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/team-readability.md`. Browser proof: `docs/reports/team-readability/`.
+
+Merged origin/main after PR #102 (row 3a) at `ce9e48a`; only STATE.md conflicted. After the merge typecheck and build exited 0, 358 matchday, UI and design unit tests passed in 54 files, and `team-readability`, `touchline-sheet`, `pitch-card-containment` and `callouts-type-effects` passed 31 of 31 locally (`CI=1`, chromium, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #104 (row 3d, team readability) merged as squash `40221a8`, reviewed head `d656db7`, GLM 5.3 Flash APPROVE in round 1 with canary `team-readability-c4febf2ba9dcf8c27c441e9403fc4047` echoed. At `d656db7` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,545 unit tests passed in 179 files and Prettier passed on 14 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `40221a8` with `db.status` ok, and `team-readability.spec.ts` plus `pitch-card-containment.spec.ts` against production (chromium) passed 19 of 19. NOT RUN: physical phone check (owner action). PR #105 (mute e2e browser audio, Green) was closed without merging: GLM 5.3 Flash approved it (canary `mute-e2e-audio-cd1c52994b884f093ca3e1029dfcb679`), but hosted e2e shards 1 and 2 failed because specs that call `webkit.launch()` inside the chromium project inherit its launch args and WebKit rejects `--mute-audio` ("Cannot parse arguments: Unknown option --mute-audio", run 39170166703). Playwright 1.64.0 already mutes every headless Chromium launch, so nothing ran on production and nothing changed.
 
 ## Touchline bottom sheet
 
@@ -47,6 +148,58 @@ Gates at `e094fc8` (code identical at the docs commit that adds this section):
 - Review, hosted CI, the full e2e suite, `env(safe-area-inset-bottom)` on a device and a physical phone: NOT RUN at the time of writing.
 
 Measurements and decisions are in `docs/decisions/touchline-sheet.md`. Browser proof: `docs/reports/touchline-sheet/`.
+
+Merged origin/main after PRs #100 and #101 at `14a9e70`; only STATE.md conflicted, and `MatchdayFlow.tsx` merged cleanly with 3h's full-time card. After the merge typecheck and build exited 0, 344 matchday and UI unit tests passed in 50 files, and `your-calls`, `touchline-sheet`, `manager-mode` and `prematch-merge` passed 28 of 28 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #102 (row 3a, touchline bottom sheet) merged as squash `02e45cd`, reviewed head `72063d0`, GLM 5.3 Flash APPROVE in round 1 with canary `touchline-sheet-b261a397b3341849f45c9c6d003fec37` echoed. At `72063d0` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,532 unit tests passed in 176 files and Prettier passed on 17 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `02e45cd` with `db.status` ok, and `touchline-sheet.spec.ts` plus `shootout-suspense.spec.ts` against production (chromium) passed 9 of 9. NOT RUN: physical phone check (owner action); `env(safe-area-inset-bottom)` on a real device.
+
+## Your calls card
+
+Branch `feat/your-calls` off `20e34f6`. Wave 3 row 3h, matchday UI only (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed; the card only calls `runCup`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- At full time of a match where the player made at least one call, a "Your calls" card shows the assistant's score next to theirs, for example "Assistant 6-1, You 8-2". A shootout reads "0-0 (5-4 pens)".
+- The card then names the call whose removal moves the score most ("Biggest swing: your Attack switch at 45'."), or says "No single call changed the score." It checks at most 8 calls and never names one it did not replay.
+- It says whether later results changed without this match's calls, and "Later calls depended on this match." when they cannot be replayed without it. If the scores match, it says so.
+- The card lives in the full-time footer, which shows only once the match is over. Matches with no call of the player's have no card. It shows scores only, so nothing new appears with ratings off.
+- Each replay runs in its own task. In headless chromium at 4x CPU throttle, 8 replays took 254 to 300 ms with no long task; the score line showed after 45 to 59 ms.
+
+RED commit: `cbd24ad` (2 of 2 files failed: the 1 collected test, and `your-calls.test.ts` with 5 tests could not import the missing module).
+
+Gates at `3ac4b9b` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 9 touched files.
+- Unit tests: 1,517 passed in 175 files.
+- Playwright (`CI=1`, fresh build at `3ac4b9b`): `your-calls`, `manager-mode`, `prematch-merge`, `injury-staging`, `builder-matchday`, `mobile-targets` and `mobile-acceptance`: 382 passed, 54 skipped by their own project gates.
+- Review, hosted CI, the full e2e suite, 360 and 320 proof (no new fixed width) and a physical phone: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/your-calls.md`. Browser proof: `docs/reports/your-calls/`.
+
+PR #101 (row 3h, "Your calls" card) merged as squash `c33fa17`, reviewed head `2df3889`, GLM 5.3 Flash APPROVE in round 1 with canary `your-calls-29b3f5ee29e3e8fe73d47f7ded60c35f` echoed. At `2df3889` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,517 unit tests passed in 175 files and Prettier passed on 11 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `c33fa17` with `db.status` ok, and `your-calls.spec.ts` plus `manager-mode.spec.ts` against production (chromium) passed 8 of 8. 3h landed before 3a because it was ready first and touches none of 3a's files (owner's leave to choose the order). NOT RUN: physical phone check (owner action).
+
+## Test flakes and retained replays in CI
+
+Branch `chore/test-flakes-retained-replays` off `bcf5493`. Tests, one build check and the CI workflow only (Green). No product code, and no file under `src/engine`, `src/data` or `src/scouting` changed. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+- The Quick cut-in unit test no longer steps 16 ms frames from kickoff. It jumps to 28' in 100 ms frames and steps only through the 30' goal. It took 7.7 to 14.1 s on hosted runners against a 15 s limit and timed out once; locally it fell from about 1.3 s to 0.3 s.
+- The Builder test that flaked on `main` (run 39080199806) waits for the shared squad before it reads the pitch tokens, the fix #80 used for the same lazy-import race. A probe that delays the lazy import reproduced the CI failure exactly before the fix and passed after.
+- `check-retained-replays.mts` now replays the v1 to v5 bundles and the engine-6 golden through the emitted `replayAnyVersion`, requires the emitted bundles to match `RETAINED_TOKEN_VERSIONS`, and requires a golden case for every retained and live version. It runs in the `check` job after `pnpm build` in about 0.7 s.
+- `fatigue.spec.ts` encodes its squad for the live engine instead of a literal `pd6.` token. On engine 6 the token is byte-identical.
+
+RED: no RED commit; the changes are tests and a check. The old replay check passed on a build with a tampered or missing v5 bundle, and the new one failed on both, on a tampered live engine and on a wrong expected hash. Output verbatim in the decision log.
+
+Gates at `b941966` (code identical at the docs commit that adds this section):
+
+- Lint, typecheck and build exited 0. All seven `check:*` scripts exited 0. Prettier passed on the 5 touched files.
+- Unit tests: 1,481 passed in 171 files.
+- `check-retained-replays.mts` after the build: 10 emitted golden replays passed; 0.64 to 0.65 s over three runs. `measure-retained-json.mjs` exited 0.
+- Playwright (`CI=1`, fresh build): `fatigue.spec.ts` 1 of 1 passed.
+- Review, hosted CI, the full e2e suite and a loaded full unit suite: NOT RUN at the time of writing.
+
+Measurements and decisions are in `docs/decisions/test-chores.md`. No browser proof: no UI changed.
+
+Merged origin/main after PR #98 (row 3f) at `c28cfd2`; only STATE.md conflicted. Then `callouts-type-effects.spec.ts` waits for a typed badge in one filtered locator (the badge lives only for its phase; PR #98's hosted shard 1 found it, lost it and failed twice with "element(s) not found", run 39157333456). RED for that race is the hosted run; it did not reproduce locally. After the merge and the spec fix, build exited 0, `callouts-type-effects` and `fatigue` passed 5 of 5 locally (`CI=1`, chromium) and `check-retained-replays.mts` passed 10 emitted golden replays. The full gates at the reviewed head are in the review receipt.
+
+PR #100 (test flakes and retained replays, Green) merged as squash `20e34f6`, reviewed head `3432861`, GLM 5.3 Flash APPROVE in round 1 with canary `test-chores-4f9dc4674c3afab8be87f9fcad51dc26` echoed. At `3432861` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,511 unit tests passed in 173 files and Prettier passed on 8 touched files; hosted check and all eight e2e shards green, and the hosted `check` job ran `check-retained-replays.mts` after the build (10 emitted golden replays passed, v1 to v5 bundles and the live engine 6). Production `/api/health?db=1` served `20e34f6` with `db.status` ok, and `fatigue.spec.ts` plus `callouts-type-effects.spec.ts` against production (chromium) passed 5 of 5. No product code changed.
 
 ## Pre-match merge
 
@@ -70,6 +223,8 @@ Gates at `eb2af7b` (code identical at the docs commit that adds this section):
 Measurements and decisions are in `docs/decisions/prematch-merge.md`. Browser proof: `docs/reports/prematch-merge/`.
 
 Merged origin/main after PR #99 (row 3-0, motion bounds) at `3ed16b8`; only STATE.md conflicted. After the merge typecheck and build exited 0, and `prematch-merge`, `manager-mode`, `continuous-ball` and `injury-staging` passed 22 of 22 locally (`CI=1`, fresh build). The full gates at the reviewed head are in the review receipt.
+
+PR #98 (row 3f, prematch merge) merged as squash `b08c68c`, reviewed head `8789a50`, GLM 5.3 Flash APPROVE in round 1 with canary `prematch-merge-2a6e531b18d95c9875727ef78ceb72f7` echoed. At `8789a50` lint, typecheck, build and all seven `check:*` scripts exited 0, 1,511 unit tests passed in 173 files and Prettier passed on 22 touched files. Hosted check and e2e shards 2 to 8 green; shard 1 failed `callouts-type-effects.spec.ts` at 320px twice (the typed badge was visible, then gone before its text was read: "element(s) not found"). It passed 3 of 3 locally at the same head, and `gh run rerun 39157333456 --failed` passed with no commit, so the receipt stood. The spec race is fixed in the test chore. Production `/api/health?db=1` served `b08c68c` with `db.status` ok, and `prematch-merge.spec.ts` plus `manager-mode.spec.ts` against production (chromium) passed 12 of 12. NOT RUN: physical phone check (owner action).
 
 ## Motion bounds
 
