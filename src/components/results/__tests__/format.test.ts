@@ -284,6 +284,31 @@ describe("incidentLine (catches results that hide who made a change or mislabel 
     ).toBe("60' Opp switch to Counter");
   });
 
+  it("on a shared run names the side This squad, never you (catches Your assistant on a friend's link)", () => {
+    const line = (i: Parameters<typeof incidentLine>[0]) => incidentLine(i, "Opp", "shared");
+    expect(line({ kind: "tactic", side: "user", minute: 0, tactic: "press", by: "manager" })).toBe(
+      "Kick off: this squad plays Press",
+    );
+    expect(
+      line({ kind: "tactic", side: "user", minute: 46, tactic: "attack", by: "manager" }),
+    ).toBe("46' This squad switches to Attack");
+    expect(line({ kind: "tactic", side: "user", minute: 75, tactic: "defend", by: "auto" })).toBe(
+      "75' This squad's assistant switches to Defend",
+    );
+    expect(
+      line({
+        kind: "sub",
+        side: "user",
+        minute: 61,
+        slot: 9,
+        out: sp(25),
+        in: sp(26),
+        reason: "tactical",
+        by: "manager",
+      }),
+    ).toBe("61' Raichu on for Pikachu (tactical, manager's call)");
+  });
+
   it("writes an opponent tactic at kickoff as the shape they start in, not a 0' switch", () => {
     expect(
       incidentLine(
