@@ -177,5 +177,8 @@ test.describe("one-tap play on desktop", () => {
     await page.getByRole("link", { name: "Edit settings" }).click();
     await expect(page).toHaveURL("/#settings");
     await expect(settingsHeading(page)).toBeFocused();
+    await page.getByTestId("pitch").hover();
+    await page.waitForTimeout(2_000);
+    expect(new URL(page.url()).hash, "hash after the builder loads").toBe("#settings");
   });
 });

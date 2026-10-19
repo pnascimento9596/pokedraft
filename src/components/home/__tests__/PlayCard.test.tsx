@@ -1,9 +1,13 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { useState } from "react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { applyAction, createDraft, type DraftSettings, type SpeciesId } from "@/engine";
+import { builderToken } from "@/ui/builder-token";
+import { BUILDER_URL_SEED } from "@/ui/lineup";
 import { DEFAULT_PANEL, type PanelSettings } from "@/ui/settings";
+import { HomeScreen } from "../HomeScreen";
 import { SidePanel } from "../SidePanel";
 
 const router = { push: vi.fn(), prefetch: vi.fn(), replace: vi.fn() };
@@ -142,6 +146,26 @@ describe("the #settings anchor (catches an Edit link that lands on a closed or u
     expect(document.activeElement).toBe(
       screen.getByRole("heading", { name: "Settings and records" }),
     );
+  });
+
+  it("keeps #settings in the URL when the builder writes its squad link (catches the hash dropped once the builder loads)", async () => {
+    const gen1: DraftSettings = {
+      mode: "builder",
+      formation: "4-3-3",
+      gens: [1],
+      legendaries: false,
+    };
+    const draft = applyAction(createDraft(gen1, BUILDER_URL_SEED), {
+      type: "place",
+      species: 1 as SpeciesId,
+      slot: { kind: "starter", index: 2 },
+    });
+    const token = builderToken(gen1, draft.lineup, BUILDER_URL_SEED);
+    localStorage.setItem("pokedraft.builder", JSON.stringify(token));
+    window.history.replaceState(null, "", "/#settings");
+    render(<HomeScreen />);
+    await waitFor(() => expect(window.location.search).toBe(`?b=${token}`), { timeout: 10_000 });
+    expect(window.location.hash).toBe("#settings");
   });
 
   it("leaves focus alone on a plain home visit", () => {
