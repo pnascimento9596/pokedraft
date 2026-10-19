@@ -112,6 +112,7 @@ export function LiveRun({
   const [failure, setFailure] = useState<string | null>(null);
   const [showRatings] = useState(() => loadPanel().showChallengeRatings);
   const [kickOff] = useState(() => playsMatchday(loadPanel()));
+  const [spinSpeed] = useState(() => loadPanel().spinSpeed);
   // A friendly from the builder follows the builder's own ratings switch.
   const [matchRatings] = useState(() => {
     const panel = loadPanel();
@@ -250,6 +251,7 @@ export function LiveRun({
       onNewRun={newRun}
       onSeeResults={() => seeResults(screen.run)}
       kickOff={kickOff}
+      spinSpeed={spinSpeed}
     />
   );
 }

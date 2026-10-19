@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { spinMs, type SpinSpeed } from "@/ui/settings";
 import { announce, type Stage } from "./reel";
 import { playReelSettle, playTick } from "./sound";
 import { Wheel, type WheelState } from "./Wheel";
@@ -10,6 +11,7 @@ export interface RollRevealProps {
   readonly stages: readonly Stage[];
   /** Skip the animation entirely (reduced motion): every stage renders settled. */
   readonly instant: boolean;
+  readonly speed: SpinSpeed;
   /** Fires once, shortly after the last stage settles. Remount (key) per roll. */
   readonly onDone: () => void;
 }
@@ -22,7 +24,7 @@ interface Progress {
 const STAGE_PAUSE_MS = 320;
 const DONE_PAUSE_MS = 260;
 
-export function RollReveal({ stages, instant, onDone }: RollRevealProps) {
+export function RollReveal({ stages, instant, speed, onDone }: RollRevealProps) {
   const last = stages.length - 1;
   const [progress, setProgress] = useState<Progress>({ index: 0, state: "spinning" });
   const shown: Progress = instant ? { index: last, state: "settled" } : progress;
@@ -34,10 +36,10 @@ export function RollReveal({ stages, instant, onDone }: RollRevealProps) {
         if (progress.index < last) setProgress({ index: progress.index + 1, state: "spinning" });
         else onDone();
       },
-      progress.index < last ? STAGE_PAUSE_MS : DONE_PAUSE_MS,
+      spinMs(progress.index < last ? STAGE_PAUSE_MS : DONE_PAUSE_MS, speed),
     );
     return () => window.clearTimeout(id);
-  }, [instant, progress, last, onDone]);
+  }, [instant, progress, last, onDone, speed]);
 
   // The result, once the last wheel stops. The draft board reads it out through the page's live
   // region, which is on the page before the roll, so this line is not a live region itself.
@@ -62,6 +64,7 @@ export function RollReveal({ stages, instant, onDone }: RollRevealProps) {
               key={stage.kind}
               stage={stage}
               state={state}
+              speed={speed}
               onTick={playTick}
               onSettle={(reason) => {
                 if (i !== shown.index || shown.state !== "spinning") return;

@@ -24,7 +24,12 @@ describe("wheel announcement", () => {
   it("writes the result line once, after the last wheel stops, so it never shows the region alone (the draft board reads it out, see announce-draft.test.tsx)", () => {
     const onDone = vi.fn();
     render(
-      <RollReveal stages={stagesFor(ROLL, SETTINGS, "new")} instant={false} onDone={onDone} />,
+      <RollReveal
+        stages={stagesFor(ROLL, SETTINGS, "new")}
+        instant={false}
+        speed="normal"
+        onDone={onDone}
+      />,
     );
     const spoken: string[] = [];
     for (let t = 0; t < 12_000; t += 50) {

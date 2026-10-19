@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type CSSProperties } from "react";
 import { PlayerImage } from "@/components/PlayerImage";
+import { spinMs, type SpinSpeed } from "@/ui/settings";
 import {
   buildStrip,
   dexLabel,
@@ -19,6 +20,7 @@ export type WheelState = "spinning" | "settled";
 export interface WheelProps {
   readonly stage: Stage;
   readonly state: WheelState;
+  readonly speed: SpinSpeed;
   /** Called when the spin finishes or the user taps to skip. The parent flips `state`. */
   readonly onSettle: (reason: "finished" | "skipped") => void;
   readonly onTick?: () => void;
@@ -73,7 +75,7 @@ function FaceView({ face, result }: { face: Face; result?: boolean }) {
   );
 }
 
-export function Wheel({ stage, state, onSettle, onTick }: WheelProps) {
+export function Wheel({ stage, state, speed, onSettle, onTick }: WheelProps) {
   const reelRef = useRef<HTMLDivElement>(null);
   const settleRef = useRef(onSettle);
   const tickRef = useRef(onTick);
@@ -92,7 +94,7 @@ export function Wheel({ stage, state, onSettle, onTick }: WheelProps) {
     if (!spinning) return;
     const el = reelRef.current;
     if (el === null) return;
-    const duration = DURATION_MS[stage.kind];
+    const duration = spinMs(DURATION_MS[stage.kind], speed);
     let raf = 0;
     let start: number | null = null;
     let lastFace = 0;
@@ -120,7 +122,7 @@ export function Wheel({ stage, state, onSettle, onTick }: WheelProps) {
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [spinning, stage.kind, landingIndex]);
+  }, [spinning, stage.kind, landingIndex, speed]);
 
   return (
     <div

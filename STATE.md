@@ -27,6 +27,29 @@ Decision log: `docs/decisions/pitch-density-drag.md`. Proof: `docs/reports/pitch
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Fast spins
+
+Branch `feat/fast-spins` off `origin/main` at `337f9df`, with `origin/main` merged at `168a8f3` (PR #118) in `8c177bf`. Wave 4 row 4d, draft (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Home settings, Setup group, has a new "Spin speed" choice: Normal or Fast. Normal is the default, and players' saved settings keep working.
+- Fast runs the draft reels and the pauses between them at 0.4x: 680, 840 and 920 ms spins with 128 and 104 ms pauses, instead of 1700, 2100, 2300, 320 and 260 ms.
+- Reduced motion still shows the result at once, and Tap to skip works at both speeds. Matchday pacing is unchanged.
+- Measured in Chromium at 390x844, one run each: a full 8-0 draft took 77.7 s at Normal and 29.8 s at Fast (47.9 s saved), and a 151 draft 45.8 s and 21.8 s (24.0 s saved). The first 8-0 reveal settled in 4,172 ms at Normal and 1,672 ms at Fast.
+
+RED commit: `a2d3d05` (4 of 22 unit tests failed in 2 files; `e2e/fast-spins.spec.ts` failed 3 of 3 against a build of the pre-fix sources). GREEN `930fe0b`. `aa9022c` changes only the spec's Setup locator.
+
+Gates at `8c177bf` (fix round 1, the merge of `168a8f3`; the docs commit that follows changes only `STATE.md` and the decision log):
+
+- Lint, typecheck and build exited 0. All eight `check:*` scripts exited 0. Prettier passed on the 14 text files changed against `origin/main`.
+- Unit tests: 1,756 passed in 204 files.
+- Playwright (`CI=1`, headless, fresh build at `8c177bf`), full suite: 944 passed, 67 skipped (63 by their own project gates, 4 in the opt-in measurement spec), 0 failed, 0 retries. `fast-spins` passed 3 of 3.
+- Round 0, at `aa9022c`: 1,733 unit tests in 203 files, Playwright 938 passed, 67 skipped, 0 failed.
+- NOT RUN: review, hosted CI, a physical phone check and a real screen reader pass (owner actions).
+
+Decision log: `docs/decisions/fast-spins.md`. Browser proof: `docs/reports/fast-spins/setting-390.png`.
+
+PR #119 (row 4d, fast spins) merged as squash `da44d4b`, reviewed head `96acb86` after one fix round (merge of #118, no code change), GLM 5.3 Flash APPROVE in round 1 with canary `fast-spins-fc0f1b460206d3f0d3ba1eb6137545c4` echoed. At `96acb86` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,756 unit tests passed in 204 files and Prettier passed on 14 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `da44d4b` with `db.status` ok, and `fast-spins`, `wheel-results` and `home-hierarchy` against production (chromium) passed 15 of 15. NOT RUN: physical phone check (owner action), a real screen reader.
+
 ## Dossier and picker
 
 Branch `feat/dossier-picker` off `origin/main` at `63462b3`, with `origin/main` merged at `337f9df` (PR #117) before the PR opened. Wave 4 row 4f (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -51,6 +74,8 @@ Gates at `4114a63` (the merge of `337f9df`; the commits after it change only `e2
 Decision log: `docs/decisions/dossier-picker.md`. Proof: `docs/reports/dossier-picker/` (390x844, 360x800 and 320x568: offer Scout buttons, GK dossier, Compare, builder selection).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #118 (row 4f, dossier and picker) merged as squash `168a8f3`, reviewed head `93dfb66` (a STATE-only commit recording #117 on top of `3b72ded`), GLM 5.3 Flash APPROVE in round 1 with canary `dossier-picker-e17332efd0158b2654d6d186775c207e` echoed. At `93dfb66` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,749 unit tests passed in 203 files and Prettier passed on 22 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `168a8f3` with `db.status` ok, and `dossier-picker`, `draft-safety`, `builder` and `swap-a11y` against production (chromium) passed 25 of 25. NOT RUN: physical phone check (owner action), a real screen reader. Deferred: ability and move contributions in the dossier need a Red data change (program data work).
 
 ## Home hierarchy
 
