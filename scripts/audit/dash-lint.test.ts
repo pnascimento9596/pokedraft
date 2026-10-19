@@ -4,8 +4,8 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { lintDashes, lintSource } from "./dash-lint.mjs";
 
-const EM = "—";
-const EN = "–";
+const EM = "\u2014";
+const EN = "\u2013";
 
 describe("lintSource (catches an em or en dash reaching user-facing copy)", () => {
   it("flags an em dash in a string literal with its line", () => {

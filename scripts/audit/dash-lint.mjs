@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
-const DASH = /[–—]|&(?:m|n)dash;|&#(?:821[12]|x201[34]);/i;
+const DASH = /[\u2013\u2014]|&(?:m|n)dash;|&#(?:821[12]|x201[34]);/i;
 const CSS_ESCAPE = /\\0{0,2}201[34]\b/i;
 const MESSAGE = "em or en dash in copy";
 
