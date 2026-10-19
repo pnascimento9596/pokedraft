@@ -7,7 +7,8 @@
 // drives one scripted 2 s drag per scene with CDP mouse moves about every 16 ms:
 //   candidate: an offered card dragged in a loop over the pitch, released over the drawer;
 //   token: Gulpin dragged around the pitch and released where it started;
-//   swipe: the open picker's toggle dragged down and up by less than the close distance.
+//   swipe: the open picker's toggle dragged down and up by less than the close distance;
+//   picker: the Builder Picker sheet on / dragged by its handle the same way.
 // While each drag runs it records every rAF timestamp, every long task, every DOM mutation record
 // and Chrome's task, script, layout and style time. Targets alternate run by run so warmup and
 // drift hit every side alike. Headless Chromium rasterises in software and these numbers do not
@@ -17,7 +18,7 @@ import path from "node:path";
 import { chromium, type Browser, type CDPSession, type Page } from "@playwright/test";
 
 const DRAFT = "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=run-test";
-const SCENES = ["candidate", "token", "swipe"] as const;
+const SCENES = ["candidate", "token", "swipe", "picker"] as const;
 type Scene = (typeof SCENES)[number];
 const DRAG_MS = 2_000;
 const STEP_MS = 16;
@@ -132,11 +133,30 @@ async function plan(page: Page, scene: Scene): Promise<{ from: Point; at: (f: nu
       },
     };
   }
-  const from = await centre(page, "draft-drawer-toggle");
+  const from = await centre(page, scene === "picker" ? "sheet-handle" : "draft-drawer-toggle");
   return {
     from,
     at: (f) => ({ x: from.x, y: from.y + Math.abs(Math.sin(f * Math.PI * 3)) * 70 }),
   };
+}
+
+async function openDraft(page: Page, url: string, scene: Scene): Promise<void> {
+  await page.goto(`${url}${DRAFT}`);
+  await page.getByTestId("run-start").click();
+  await page.getByTestId("candidate-316").tap();
+  await page.getByTestId("slot-s9").tap();
+  await page.getByTestId("candidate-296").waitFor();
+  await page.evaluate(() => {
+    const toggle = document.querySelector('[data-testid="draft-drawer"] > button');
+    toggle?.setAttribute("data-testid", "draft-drawer-toggle");
+  });
+  if (scene !== "candidate") {
+    await page.getByTestId("slot-s5").evaluate((el) => el.scrollIntoView({ block: "center" }));
+  }
+  if (scene === "token") {
+    await page.getByTestId("draft-drawer-toggle").click();
+    await page.getByTestId("draft-drawer-toggle").waitFor();
+  }
 }
 
 async function measure(
@@ -159,22 +179,11 @@ async function measure(
   await page.addInitScript(() =>
     localStorage.setItem("pokedraft:panel", JSON.stringify({ showChallengeRatings: true })),
   );
-  await page.goto(`${url}${DRAFT}`);
-  await page.getByTestId("run-start").click();
-  await page.getByTestId("candidate-316").tap();
-  await page.getByTestId("slot-s9").tap();
-  await page.getByTestId("candidate-296").waitFor();
-  await page.evaluate(() => {
-    const toggle = document.querySelector('[data-testid="draft-drawer"] > button');
-    toggle?.setAttribute("data-testid", "draft-drawer-toggle");
-  });
-  if (scene !== "candidate") {
-    await page.getByTestId("slot-s5").evaluate((el) => el.scrollIntoView({ block: "center" }));
-  }
-  if (scene === "token") {
-    await page.getByTestId("draft-drawer-toggle").click();
-    await page.getByTestId("draft-drawer-toggle").waitFor();
-  }
+  if (scene === "picker") {
+    await page.goto(`${url}/`);
+    await page.getByTestId("slot-s6").tap();
+    await page.locator("dialog[open]").getByTestId("sheet-handle").waitFor();
+  } else await openDraft(page, url, scene);
   const path_ = await plan(page, scene);
 
   await cdp.send("Emulation.setCPUThrottlingRate", { rate: THROTTLE });
@@ -227,6 +236,9 @@ async function measure(
         swipe: /translateY\((?!0px)/.test(
           document.querySelector<HTMLElement>('[data-testid="draft-drawer"]')?.style.transform ??
             "",
+        ),
+        picker: /translateY\((?!0px)/.test(
+          document.querySelector<HTMLElement>("dialog[open]")?.style.transform ?? "",
         ),
       }) as Record<string, boolean>,
   );
