@@ -2,6 +2,8 @@ import { expect, test, type Page } from "@playwright/test";
 
 const SHOT = "docs/reports/live-team-score";
 const RUN_TEST = "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
+const RUN_TEST_CLASSIC3 =
+  "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=run-test";
 const CAP = "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=cap-0";
 const SIZES = [
   { width: 390, height: 844 },
@@ -90,24 +92,26 @@ for (const size of SIZES) {
 test.describe("at 390x844", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("a dragged candidate shows the delta for the slot under it: Combusken over LCB is +125", async ({
+  test("a dragged candidate shows its best-slot delta, then the delta for the slot under it: Makuhita +132, over GK +24", async ({
     page,
   }) => {
     await ratings(page, true);
-    await start(page, RUN_TEST);
+    await start(page, RUN_TEST_CLASSIC3);
     await pickAt(page, 316, "s9");
-    const card = page.getByTestId("candidate-256");
-    const slot = page.getByTestId("slot-s2");
+    const card = page.getByTestId("candidate-296");
+    const slot = page.getByTestId("slot-s0");
     await slot.evaluate((el) => el.scrollIntoView({ block: "end", behavior: "instant" }));
     const from = (await card.boundingBox())!;
     const to = (await slot.boundingBox())!;
     await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
     await page.mouse.down();
+    await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2 + 30, { steps: 3 });
+    await expect(page.getByTestId("drag-delta")).toHaveText("+132");
     await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, { steps: 5 });
-    await expect(page.getByTestId("drag-delta")).toHaveText("+125");
+    await expect(page.getByTestId("drag-delta")).toHaveText("+24");
     await page.screenshot({ path: `${SHOT}/drag-delta-390.png` });
     await page.mouse.up();
-    await expect(page.getByTestId("slot-s2")).toContainText("Combusken");
+    await expect(page.getByTestId("slot-s0")).toContainText("Makuhita");
   });
 
   test("a full draft ends on Team Score 336, the engine value, without (so far)", async ({
