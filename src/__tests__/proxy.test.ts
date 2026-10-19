@@ -89,6 +89,24 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     expect(gated.filter((p) => isPublicPath(p))).toEqual([]);
   });
 
+  it("keeps the install files public (catches a home screen install that hits the gate, since browsers fetch the manifest without cookies)", () => {
+    const exempt = [
+      "/manifest.webmanifest",
+      "/icons/icon-192.png",
+      "/icons/icon-512.png",
+      "/icons/icon-maskable-512.png",
+      "/apple-icon.png",
+    ];
+    const gated = [
+      "/manifest.webmanifest/x",
+      "/icons/",
+      "/icons/x/icon.png",
+      "/apple-icon.png.bak",
+    ];
+    expect(exempt.filter((p) => !isPublicPath(p))).toEqual([]);
+    expect(gated.filter((p) => isPublicPath(p))).toEqual([]);
+  });
+
   it("runs the proxy on every path except static assets (catches a matcher that skips the API or gates /_next/static)", () => {
     const runs = (url: string) => unstable_doesMiddlewareMatch({ config, url });
     const matched = [
