@@ -1,50 +1,67 @@
-.hub {
-  display: none;
-}
 @media (max-width: 1023px) {
   .panel {
     display: contents !important;
   }
-  .hub {
-    grid-row: 1;
-  }
-  .panel > section {
-    grid-row: 2;
-  }
-  .more {
-    grid-row: 3;
-  }
-  .hub p {
-    margin: 4px;
-  }
 }
-.challengeGroup {
+.hero {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+.title {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.sub {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 22px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.cards > :last-child {
+  grid-column: 1 / -1;
+}
+@media (max-width: 379px), (min-width: 1024px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 12px 12px;
   border-radius: var(--radius);
   background: var(--stadium-rainbow);
   border: 1.5px solid rgba(116, 229, 173, 0.35);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-}
-.bannerTitle {
-  padding: 10px 12px 2px;
-  background: transparent;
   color: var(--stadium-ink);
+}
+.cardTitle {
+  margin: 0;
+  font-size: 15px;
+  line-height: 20px;
   font-weight: 800;
-  text-align: center;
-  font-size: 14px;
   letter-spacing: 0.02em;
 }
-@media (max-width: 1023px) {
-  .hub {
-    display: block;
-    padding: 10px;
-    border: 1px solid var(--stadium-border);
-    border-radius: 12px;
-    background: var(--stadium-glass);
-    font-size: 13px;
-  }
+.rule {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+.card .cta {
+  margin-top: auto;
 }
 .panel {
   display: flex;
@@ -73,12 +90,6 @@
   line-height: 18px;
   font-weight: 600;
   color: var(--text);
-}
-.ctas {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding: 6px 10px 10px;
 }
 .cta {
   min-height: 48px;
@@ -248,12 +259,11 @@
 }
 .moreToggle {
   width: 100%;
-  margin-top: 4px;
   font-size: 15px;
   line-height: 20px;
 }
 @media (max-width: 1023px) {
-  .more[data-open="false"] {
+  .more:not([data-open="true"]) {
     display: none;
   }
 }

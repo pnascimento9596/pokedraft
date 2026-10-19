@@ -60,6 +60,9 @@ export const MODE_LABEL: Readonly<Record<Mode, string>> = {
 
 export const FRIENDLY_LABEL = "Friendly (not ranked)";
 
+export const DAILY_RULE =
+  "Everyone plays the same seed today, and your run can go on the daily board.";
+
 export const ROUND_LABEL: Readonly<Record<CupRound, string>> = {
   G1: "Group match 1",
   G2: "Group match 2",

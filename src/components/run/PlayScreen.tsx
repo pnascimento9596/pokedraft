@@ -8,7 +8,7 @@ import { DRAFT_ROUNDS, type DraftSettings, type IsoDate } from "@/engine/types";
 import { longDate } from "@/components/leaderboard/format";
 import { unlockAudio } from "@/components/wheel/sound";
 import { focusHeading } from "@/ui/focus";
-import { MODE_LABEL } from "@/ui/labels";
+import { DAILY_RULE, MODE_LABEL } from "@/ui/labels";
 import { DEFAULT_PANEL, playHref, freshSeed, parsePlayQuery } from "@/ui/settings";
 import { settingsSummary } from "@/ui/settingsSummary";
 import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/storage";
@@ -200,7 +200,7 @@ export function Challenge({
         className={s.hero}
         eyebrow={daily !== undefined ? `Daily challenge, ${longDate(daily)}` : "Challenge"}
         title={daily !== undefined ? `Daily ${title}` : title}
-        description={`${daily !== undefined ? "Everyone plays the same seed today, and your run can go on the daily board. " : ""}${DRAFT_ROUNDS} rounds. Each round the wheel rolls, you sign one player and place them. Then your squad plays the cup.`}
+        description={`${daily !== undefined ? `${DAILY_RULE} ` : ""}${DRAFT_ROUNDS} rounds. Each round the wheel rolls, you sign one player and place them. Then your squad plays the cup.`}
         headingLevel={1}
         icon={<NavIcon family={daily !== undefined ? "daily" : "play"} />}
         data-testid={daily !== undefined ? "daily-kicker" : undefined}

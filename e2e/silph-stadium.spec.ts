@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openHomeSettings } from "./helpers";
 import { touchScroll } from "./mobile/helpers";
 import { RUN_151 } from "./pins";
 
@@ -7,6 +8,7 @@ for (const width of [375, 390, 1280]) {
   test(`Silph Stadium separates all eleven HTML hitboxes at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
+    await openHomeSettings(page);
     for (const formation of formations) {
       await page.getByLabel("Formation", { exact: true }).selectOption(formation);
       const boxes = await page.locator('[data-testid^="slot-s"]').evaluateAll((elements) =>

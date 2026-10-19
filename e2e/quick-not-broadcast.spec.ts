@@ -26,8 +26,8 @@ test("manager mode plays live over a saved Quick choice, at 390px", async ({ pag
   await seedManagerQuick(page);
 
   await page.goto("/");
-  // The builder's friendly card shows the same settings, so read the Play card's own copy.
-  const desk = page.getByRole("complementary", { name: "Control desk" });
+  // The builder's friendly card shows the same settings, so read the challenge cards' own copy.
+  const desk = page.getByRole("region", { name: "Draft a Pokémon XI and win the cup." });
   const homeView = desk.getByRole("group", { name: "Match view" });
   await expect(homeView.getByRole("button", { name: "Quick sim" })).toBeDisabled();
   await expect(homeView.getByRole("button", { name: "Live match" })).toHaveAttribute(

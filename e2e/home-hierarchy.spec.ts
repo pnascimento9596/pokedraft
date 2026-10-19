@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 const SHOT = "docs/reports/home-hierarchy";
 const H1 = "Draft a Pokémon XI and win the cup.";
-const toggle = (page: Page) => page.getByRole("button", { name: /Settings and records/ });
+const toggle = (page: Page) => page.getByRole("button", { name: /settings and records/i });
 const settings = (page: Page) => page.locator("#settings");
 
 // Hydration errors only reach the console, so every test here fails on one.
