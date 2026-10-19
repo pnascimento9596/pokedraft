@@ -5,6 +5,7 @@ import {
   DRAFT_ROUNDS,
   FORMATIONS,
   REROLLS,
+  SPECIAL_CAP,
   speciesById,
   rateTeam,
   type DraftAction,
@@ -35,7 +36,14 @@ import { candidatesFor, withHint, type Run } from "./runState";
 import { typeFrame } from "@/design/stadium";
 import { fullLineup } from "@/components/builder/model";
 import { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
-import { previewCandidateEdges, ratePartialLineup, ratePartialLines } from "@/ui/partial-rating";
+import {
+  candidateScoreDelta,
+  formatDelta,
+  previewCandidateEdges,
+  provisionalTeamScore,
+  ratePartialLineup,
+  ratePartialLines,
+} from "@/ui/partial-rating";
 import { getSlotSuitability } from "@/ui/suitability";
 import s from "./DraftBoard.module.css";
 
@@ -70,6 +78,8 @@ const REROLLED: Readonly<Record<RerollTarget, string>> = {
   region: "region",
   species: "player",
 };
+
+const CAP_WARNING = "Last legendary or mythical slot. A third fills the cap.";
 
 const swapPrompt = (name: string) => `Tap another slot to swap ${name}, or tap it again to cancel.`;
 
@@ -457,6 +467,30 @@ function ActiveDraftBoard({
   const teamRating = full === null ? null : rateTeam(full);
   const partialRating = useMemo(() => ratePartialLineup(state.lineup), [state.lineup]);
   const liveSynergy = teamRating?.synergy ?? partialRating.synergy;
+  const provisionalScore = useMemo(() => provisionalTeamScore(state.lineup), [state.lineup]);
+  const liveScore = teamRating?.score ?? provisionalScore;
+  const selectedDelta = useMemo(
+    () =>
+      !showRatings || selected === null
+        ? null
+        : candidateScoreDelta(state.lineup, selected, committed),
+    [showRatings, selected, state.lineup, committed],
+  );
+  const draggedId = dragCandidate?.moved ? dragCandidate.id : null;
+  const dragDelta = useMemo(
+    () =>
+      !showRatings || draggedId === null
+        ? null
+        : candidateScoreDelta(state.lineup, draggedId, committed ?? dropSlot),
+    [showRatings, draggedId, state.lineup, committed, dropSlot],
+  );
+  const lastSpecialSlot = partialRating.specialCount === SPECIAL_CAP - 1;
+  const selectedCapWarning = lastSpecialSlot && selected !== null && speciesById(selected).special;
+  const offerCapWarning =
+    lastSpecialSlot && committed !== null && candidates.some((id) => speciesById(id).special);
+  useEffect(() => {
+    if (selectedCapWarning) announce(CAP_WARNING);
+  }, [selectedCapWarning, selected]);
   const armed = phase.kind === "awaitingSlot" || (committed === null && selected !== null);
   const message = failure ?? run.error ?? (pickedName === null ? null : swapPrompt(pickedName));
   const activeSpecies = useMemo(() => {
@@ -505,8 +539,20 @@ function ActiveDraftBoard({
           {liveSynergy === null
             ? "Chemistry after draft"
             : `${Math.round(liveSynergy * 100)}% Chem`}
-          {partialRating.specialCount > 0 ? ` · Legendaries: ${partialRating.specialCount}/3` : ""}
+          {partialRating.specialCount > 0
+            ? ` · Legendaries: ${partialRating.specialCount}/${SPECIAL_CAP}`
+            : ""}
         </p>
+        {showRatings && liveScore !== null ? (
+          <p className={s.hubScore} data-testid="draft-team-score">
+            <span className="scorebug">
+              <span className="scorebug__label">
+                {teamRating === null ? "Team Score (so far)" : "Team Score"}
+              </span>
+              <span className="scorebug__value">{liveScore}</span>
+            </span>
+          </p>
+        ) : null}
       </div>
       <section className={s.side} aria-label="Draft">
         <header className={s.header}>
@@ -610,6 +656,11 @@ function ActiveDraftBoard({
             ) : null}
             {revealed ? (
               <>
+                {offerCapWarning ? (
+                  <p className={s.capWarning} data-testid="cap-warning">
+                    {CAP_WARNING}
+                  </p>
+                ) : null}
                 <Candidates
                   key={`cands-${rollId}`}
                   ids={candidates}
@@ -728,6 +779,11 @@ function ActiveDraftBoard({
               <div className={s.selectionDetails}>
                 <span className={s.selectionName}>{speciesById(selected).name}</span>
                 <span className={s.selectionHint}>Tap pitch position to place</span>
+                {selectedDelta !== null ? (
+                  <span className={s.selectionDelta} data-testid="draft-delta">
+                    Team Score {formatDelta(selectedDelta.delta)}
+                  </span>
+                ) : null}
               </div>
             </div>
             <div className={s.selectionLegend} aria-hidden="true">
@@ -764,6 +820,11 @@ function ActiveDraftBoard({
               Show roll
             </button>
           </div>
+        ) : null}
+        {selectedCapWarning && phase.kind === "choosing" && !drawerOpen ? (
+          <p className={s.capWarning} data-testid="cap-warning">
+            {CAP_WARNING}
+          </p>
         ) : null}
         <Pitch
           formation={settings.formation}
@@ -813,6 +874,9 @@ function ActiveDraftBoard({
         >
           <PlayerImage dexId={dragCandidate.id} size={44} alt="" />
           <span>{speciesById(dragCandidate.id).name}</span>
+          {dragDelta !== null ? (
+            <span data-testid="drag-delta">{formatDelta(dragDelta.delta)}</span>
+          ) : null}
         </div>
       ) : null}
     </div>
