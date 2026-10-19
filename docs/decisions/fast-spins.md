@@ -104,6 +104,24 @@ spec's Setup locator, after the first GREEN run of the spec hit a strict-mode er
   so the RED result stands. One earlier foreground attempt at the same run ended with exit 144
   after one test and was rerun.
 
+## Fix round 1 (merge of #118)
+
+`8c177bf` merges `origin/main` at `168a8f3` (PR #118, row 4f dossier and picker). Git merged
+`src/components/run/DraftBoard.tsx` on its own (4f's Scout button and this row's `speed` prop sit
+in different hunks). Only `STATE.md` conflicted, resolved with `resolve-state.py` and the #118
+paragraph. No code change beyond the merge, so no new guard test.
+
+Gates at `8c177bf`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All eight `check:*` scripts exited 0.
+  Prettier passed on the 14 text files changed against `origin/main`.
+- Unit tests: 1,756 passed in 204 files (1,749 on `main` plus this row's 7).
+- Playwright (`CI=1`, headless, fresh build at `8c177bf`), full suite: 944 passed, 67 skipped (63
+  by their own project gates, 4 in the opt-in measurement spec), 0 failed, 0 retries, in 17.4
+  minutes. `fast-spins` passed 3 of 3. The run rewrote proof PNGs of earlier rows under
+  `docs/reports`; those were reverted with `git checkout --`.
+- The measurements above were not rerun after the merge. #118 changes no reel or pause timer.
+
 ## Product decisions applied
 
 From hand-off 4.3, row 4d:
@@ -145,6 +163,7 @@ From hand-off 4.3, row 4d:
 ## NOT RUN
 
 - The review (the coordinator runs GLM) and hosted CI.
+- The full-draft measurement after the merge of #118.
 - A physical phone check ("fast spins feel fast but readable") and a screen reader pass (owner
   actions).
 - Proof at 360 and 320 (no layout change at those widths; see above).

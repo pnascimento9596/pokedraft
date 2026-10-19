@@ -5,7 +5,7 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Fast spins
 
-Branch `feat/fast-spins` off `origin/main` at `337f9df`. Wave 4 row 4d, draft (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+Branch `feat/fast-spins` off `origin/main` at `337f9df`, with `origin/main` merged at `168a8f3` (PR #118) in `8c177bf`. Wave 4 row 4d, draft (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
 
 - Home settings, Setup group, has a new "Spin speed" choice: Normal or Fast. Normal is the default, and players' saved settings keep working.
 - Fast runs the draft reels and the pauses between them at 0.4x: 680, 840 and 920 ms spins with 128 and 104 ms pauses, instead of 1700, 2100, 2300, 320 and 260 ms.
@@ -14,11 +14,12 @@ Branch `feat/fast-spins` off `origin/main` at `337f9df`. Wave 4 row 4d, draft (Y
 
 RED commit: `a2d3d05` (4 of 22 unit tests failed in 2 files; `e2e/fast-spins.spec.ts` failed 3 of 3 against a build of the pre-fix sources). GREEN `930fe0b`. `aa9022c` changes only the spec's Setup locator.
 
-Gates at `aa9022c` (the docs commit that follows changes only `STATE.md`, the decision log and the proof PNG):
+Gates at `8c177bf` (fix round 1, the merge of `168a8f3`; the docs commit that follows changes only `STATE.md` and the decision log):
 
-- Lint, typecheck and build exited 0. All eight `check:*` scripts exited 0. Prettier passed on the 12 files changed against `origin/main` and the decision log.
-- Unit tests: 1,733 passed in 203 files.
-- Playwright (`CI=1`, headless, build of `930fe0b`, the same sources as `aa9022c`), full suite: 938 passed, 67 skipped (63 by their own project gates, 4 in the opt-in measurement spec), 0 failed, 0 retries. `fast-spins` passed 3 of 3.
+- Lint, typecheck and build exited 0. All eight `check:*` scripts exited 0. Prettier passed on the 14 text files changed against `origin/main`.
+- Unit tests: 1,756 passed in 204 files.
+- Playwright (`CI=1`, headless, fresh build at `8c177bf`), full suite: 944 passed, 67 skipped (63 by their own project gates, 4 in the opt-in measurement spec), 0 failed, 0 retries. `fast-spins` passed 3 of 3.
+- Round 0, at `aa9022c`: 1,733 unit tests in 203 files, Playwright 938 passed, 67 skipped, 0 failed.
 - NOT RUN: review, hosted CI, a physical phone check and a real screen reader pass (owner actions).
 
 Decision log: `docs/decisions/fast-spins.md`. Browser proof: `docs/reports/fast-spins/setting-390.png`.
