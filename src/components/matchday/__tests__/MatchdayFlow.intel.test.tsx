@@ -13,9 +13,12 @@ const { draft, cup } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const CTX = { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode };
 
 beforeEach(() => {
-  vi.useFakeTimers({
-    toFake: ["requestAnimationFrame", "cancelAnimationFrame", "performance", "setTimeout"],
-  });
+  vi.useFakeTimers({ toFake: ["performance", "setTimeout", "clearTimeout"] });
+  // One frame per 100 ms, the frame loop's largest step, so a match costs a sixth of the renders.
+  vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) =>
+    setTimeout(() => cb(performance.now()), 100),
+  );
+  vi.stubGlobal("cancelAnimationFrame", (id: number) => clearTimeout(id));
   vi.stubGlobal("matchMedia", (query: string) => ({
     matches: false,
     media: query,
@@ -52,13 +55,13 @@ async function kickOff(): Promise<void> {
   });
 }
 
-/** Plays live time in 100 ms steps until `testId` shows. */
+/** Plays live time in 1 s steps until `testId` shows; a stop holds the clock, so none is skipped. */
 async function until(testId: string): Promise<HTMLElement> {
-  for (let i = 0; i < 1_000; i++) {
+  for (let i = 0; i < 100; i++) {
     const el = screen.queryByTestId(testId);
     if (el !== null) return el;
     await act(async () => {
-      vi.advanceTimersByTime(STEP);
+      vi.advanceTimersByTime(10 * STEP);
     });
   }
   throw new Error(`${testId} never showed`);
