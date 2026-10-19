@@ -149,6 +149,8 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
           draws: existing.draws as number,
           losses: existing.losses as number,
           engineVersion: existing.engine_version as string,
+          coached: existing.coached as boolean | null,
+          runFingerprint: existing.run_fingerprint as string | null,
           ipHash: existing.ip_hash as string,
           createdAt: new Date(existing.created_at as string),
         };
