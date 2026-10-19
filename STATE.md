@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Fast spins
+
+Branch `feat/fast-spins` off `origin/main` at `337f9df`. Wave 4 row 4d, draft (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Home settings, Setup group, has a new "Spin speed" choice: Normal or Fast. Normal is the default, and players' saved settings keep working.
+- Fast runs the draft reels and the pauses between them at 0.4x: 680, 840 and 920 ms spins with 128 and 104 ms pauses, instead of 1700, 2100, 2300, 320 and 260 ms.
+- Reduced motion still shows the result at once, and Tap to skip works at both speeds. Matchday pacing is unchanged.
+- Measured in Chromium at 390x844, one run each: a full 8-0 draft took 77.7 s at Normal and 29.8 s at Fast (47.9 s saved), and a 151 draft 45.8 s and 21.8 s (24.0 s saved). The first 8-0 reveal settled in 4,172 ms at Normal and 1,672 ms at Fast.
+
+RED commit: `a2d3d05` (4 of 22 unit tests failed in 2 files; `e2e/fast-spins.spec.ts` failed 3 of 3 against a build of the pre-fix sources). GREEN `930fe0b`. `aa9022c` changes only the spec's Setup locator.
+
+Gates at `aa9022c` (the docs commit that follows changes only `STATE.md`, the decision log and the proof PNG):
+
+- Lint, typecheck and build exited 0. All eight `check:*` scripts exited 0. Prettier passed on the 12 files changed against `origin/main` and the decision log.
+- Unit tests: 1,733 passed in 203 files.
+- Playwright (`CI=1`, headless, build of `930fe0b`, the same sources as `aa9022c`), full suite: 938 passed, 67 skipped (63 by their own project gates, 4 in the opt-in measurement spec), 0 failed, 0 retries. `fast-spins` passed 3 of 3.
+- NOT RUN: review, hosted CI, a physical phone check and a real screen reader pass (owner actions).
+
+Decision log: `docs/decisions/fast-spins.md`. Browser proof: `docs/reports/fast-spins/setting-390.png`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Home hierarchy
 
 Branch `feat/home-hierarchy` off `origin/main` at `fb03b7a`, with `origin/main` merged at `63462b3` (PR #116) in `b9e8225`. Wave 4 row 4b, home page (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -25,6 +47,8 @@ Gates at `b9e8225` (the merge of `63462b3`; the docs commit that follows changes
 Decision log: `docs/decisions/home-hierarchy.md`. Browser proof: `docs/reports/home-hierarchy/` (home at 390, 360, 320 and 1280).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #117 (row 4b, home hierarchy) merged as squash `337f9df`, reviewed head `40779df` (a STATE-only commit recording #116 on top of code head `b9e8225`), GLM 5.3 Flash APPROVE in round 1 with canary `home-hierarchy-26bebf429ef785764f6bb7a3203ccb74` echoed. At `40779df` lint, typecheck, build and all eight `check:*` scripts exited 0, 1,726 unit tests passed in 202 files and Prettier passed on 22 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `337f9df` with `db.status` ok, and `home-hierarchy`, `one-tap-play` and `ui-foundation` against production (chromium) passed 20 of 20. NOT RUN: physical phone check (owner action), a real screen reader.
 
 ## Live Team Score in the draft
 
