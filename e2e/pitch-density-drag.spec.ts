@@ -115,8 +115,9 @@ for (const size of SIZES) {
       const gk = page.getByTestId("slot-s0");
       const frame = await gk.evaluate((el) => {
         const cs = getComputedStyle(el);
-        const types = el.querySelector('[id$="-types"]')!.getBoundingClientRect();
-        return `${cs.borderTopWidth} ${cs.borderLeftWidth} ${cs.borderRightWidth} ${cs.borderBottomWidth} ${types.width <= 1 ? "hidden" : "shown"}`;
+        // offsetWidth, not the client rect: the tilted field's perspective scales the 1px box.
+        const types = el.querySelector<HTMLElement>('[id$="-types"]')!.offsetWidth;
+        return `${cs.borderTopWidth} ${cs.borderLeftWidth} ${cs.borderRightWidth} ${cs.borderBottomWidth} ${types <= 1 ? "hidden" : "shown"}`;
       });
       expect(frame).toBe("3px 0px 0px 0px hidden");
       await expect(gk).toHaveAccessibleName(
