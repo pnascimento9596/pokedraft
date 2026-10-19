@@ -203,6 +203,9 @@ describe("score bug present only when fullscreen (catches a bug drawn on the pag
     fireEvent.click(screen.getByTestId("skip-ft"));
     fireEvent.click(toggle());
     expect(bugCells()).toEqual(["Your XI", "0-0", "Goldenrod", "FT", "Pens 3-2"]);
+    // The scoreboard above the pitch reads the same, with no spaces (catches "Pens 3 - 2").
+    expect(screen.getByTestId("matchday-score").textContent).toBe("0-0");
+    expect(screen.getByTestId("matchday-pens").textContent).toBe("Pens 3-2");
   });
 
   it("no Fullscreen API (iPhone Safari): no button and no bug", async () => {

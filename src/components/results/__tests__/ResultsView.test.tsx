@@ -40,6 +40,39 @@ async function view(token: string, variant: "live" | "shared" = "shared", cupOve
   );
 }
 
+describe("ResultsView side copy (catches a shared link that calls a friend's squad You)", () => {
+  it("shared view never says You or Your", async () => {
+    await view(FLAWLESS, "shared");
+    const results = screen.getByTestId("results");
+    const walker = document.createTreeWalker(results, NodeFilter.SHOW_TEXT);
+    const said: string[] = [];
+    for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+      said.push(node.textContent!);
+    }
+    for (const el of results.querySelectorAll("[aria-label]")) {
+      said.push(el.getAttribute("aria-label")!);
+    }
+    expect(said.filter((t) => /\b(You|Your)\b/.test(t))).toEqual([]);
+    const text = results.textContent!;
+    expect(text).toContain("This squad's record, Team Score and cup finish.");
+    expect(text).toContain("This lineup, Synergy links and ratings for each role.");
+    expect(within(screen.getByTestId("match-G1")).getAllByText("This squad")).toHaveLength(2);
+    expect(screen.getByRole("list", { name: "This squad's goals" })).toBeTruthy();
+    expect(screen.getByRole("group", { name: "This lineup" })).toBeTruthy();
+    expect([...document.querySelectorAll("tr[data-user] th")].map((th) => th.textContent)).toEqual([
+      "1This squad",
+    ]);
+  });
+
+  it("a live run still says You and Your team (regression guard, no RED: behaviour already correct)", async () => {
+    await view(FLAWLESS, "live");
+    expect(within(screen.getByTestId("match-G1")).getAllByText("You")).toHaveLength(2);
+    expect([...document.querySelectorAll("tr[data-user] th")].map((th) => th.textContent)).toEqual([
+      "1Your team",
+    ]);
+  });
+});
+
 describe("ResultsView", () => {
   it("lets a player scout every starter and all five bench members from the scouting rows", async () => {
     await view(FLAWLESS);

@@ -21,6 +21,19 @@ const rows = () =>
     .map((r) => [...r.querySelectorAll("th, td")].map((c) => c.textContent));
 
 describe("MatchReplay group standings (decision 13: MatchdayLive's table folds into the replay)", () => {
+  it("names the shared run's side This squad in the table (catches Your team on a friend's link)", () => {
+    const { draft, cup } = replay(LIVE);
+    render(
+      <MatchReplay cup={cup} draft={draft} matchIndex={0} variant="shared" onClose={() => {}} />,
+    );
+    expect(rows().map(([team]) => team)).toEqual([
+      "Goldenrod United",
+      "Santalune Town",
+      "Veilstone United",
+      "This squad",
+    ]);
+  });
+
   it("shows the group at kickoff of G1 with nothing played, then the table after the 1-0 at full time", () => {
     const { draft, cup } = replay(LIVE);
     render(<MatchReplay cup={cup} draft={draft} matchIndex={0} onClose={() => {}} />);

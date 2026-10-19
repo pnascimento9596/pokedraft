@@ -131,12 +131,12 @@ describe("speed-aware staging (catches a 2x goal staging that outlives its hold 
     await toGoalAt2x();
     // 40 frames is 640 ms of the 1300 ms staging at 2x: progress 0.49, the ball still in flight.
     await frames(40);
-    expect(score()).toBe("0 - 0");
+    expect(score()).toBe("0-0");
     expect(sound.calls.filter((c) => c === "horn")).toEqual([]);
 
     // 10 more frames is 800 ms: progress 0.62, past GOAL_LANDS (0.6).
     await frames(10);
-    expect(score()).toBe("1 - 0");
+    expect(score()).toBe("1-0");
     expect(sound.calls.filter((c) => c === "horn")).toEqual(["horn"]);
   });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ROLES } from "@/scouting/types";
-import { ROUND_SHORT, ROLE_PLURAL, qualityScore, versusLabel } from "../labels";
+import { ROUND_SHORT, ROLE_PLURAL, SUITABILITY_LABEL, qualityScore, versusLabel } from "../labels";
 
 describe("role plurals", () => {
   it("names every role the formations use, in the words the cards print", () => {
@@ -60,5 +60,11 @@ it("prints readable round names instead of internal round codes", () => {
     QF: "Quarter",
     SF: "Semi",
     F: "Final",
+  });
+});
+
+describe("fit labels (catches the star glyph or a trailing Fit inside the label text)", () => {
+  it("names the three fits Best, OK and Poor, with no glyph", () => {
+    expect(SUITABILITY_LABEL).toEqual({ recommended: "Best", ok: "OK", bad: "Poor" });
   });
 });

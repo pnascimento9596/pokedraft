@@ -12,6 +12,14 @@ const saves: readonly SaveEvent[] = [
 afterEach(cleanup);
 
 describe("RecordedSaves (catches invented saves on old replays and misnamed keepers)", () => {
+  it("names a shared run's side This squad (catches Your XI on a friend's link)", () => {
+    render(<RecordedSaves saves={saves} variant="shared" />);
+    expect(screen.getAllByRole("listitem").map((li) => li.textContent)).toEqual([
+      "This squad: 12' Squirtle saves Charmander's shot",
+      "Opponent: 77' Bulbasaur saves Pikachu's shot",
+    ]);
+  });
+
   it("renders nothing for a retained replay that recorded no save list", () => {
     render(<RecordedSaves saves={undefined} />);
     expect(screen.queryByTestId("recorded-saves")).toBeNull();

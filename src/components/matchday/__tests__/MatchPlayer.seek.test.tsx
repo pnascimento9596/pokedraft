@@ -146,13 +146,13 @@ describe("goal pips seek the replay (catches a seek that replays every old goal'
     fireEvent.click(screen.getByRole("button", { name: "Watch the 30' goal" }));
     await frames(2);
     expect(minute()).toBe(29);
-    expect(screen.getByTestId("matchday-score").textContent).toBe("1 - 0");
+    expect(screen.getByTestId("matchday-score").textContent).toBe("1-0");
     expect(goalSounds()).toEqual([]);
     expect(buzzes).toEqual([]);
 
-    for (let i = 0; i < 2_000 && screen.getByTestId("matchday-score").textContent !== "2 - 0"; i++)
+    for (let i = 0; i < 2_000 && screen.getByTestId("matchday-score").textContent !== "2-0"; i++)
       await frames(1);
-    expect(screen.getByTestId("matchday-score").textContent).toBe("2 - 0");
+    expect(screen.getByTestId("matchday-score").textContent).toBe("2-0");
     expect(sound.calls.filter((c) => c === "horn")).toEqual(["horn"]);
     expect(buzzes).toEqual([[120]]);
   });

@@ -140,7 +140,7 @@ describe("instant replay on the pitch (catches a replay with no REPLAY bug, or o
     const bug = screen.getByTestId("instant-replay");
     expect(bug.textContent).toContain("REPLAY");
     expect(minute()).toBe(30);
-    expect(screen.getByTestId("matchday-score").textContent).toBe("1 - 0");
+    expect(screen.getByTestId("matchday-score").textContent).toBe("1-0");
     fireEvent.click(screen.getByRole("button", { name: "Skip replay" }));
     await frameUntil(() => minute() > 30, 200);
     expect(screen.queryByTestId("instant-replay")).toBeNull();

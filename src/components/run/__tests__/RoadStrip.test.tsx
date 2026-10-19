@@ -16,6 +16,23 @@ const ROAD_5 =
 const ratings = () => screen.queryAllByText(/, rating \d+$/).map((el) => el.textContent);
 
 describe("RoadStrip", () => {
+  it("prints the tooltip's Rating row as the bare number (catches Rating / Rating 267)", () => {
+    const { container } = render(<RoadStrip seed="golden-1" mode="kanto151" />);
+    const rows = Array.from(container.querySelectorAll(".theme-tooltip__row"))
+      .map((row) => [row.children[0]!.textContent, row.children[1]!.textContent])
+      .filter(([key]) => key === "Rating");
+    expect(rows.map(([, value]) => value)).toEqual([
+      "267",
+      "302",
+      "346",
+      "489",
+      "601",
+      "749",
+      "859",
+      "999",
+    ]);
+  });
+
   it("reads out the club and exact rating of this seed's opponent in every round (catches the nominal ladder standing in for the run)", () => {
     render(<RoadStrip seed="golden-1" mode="kanto151" />);
     expect(ratings()).toEqual(GOLDEN_1_KANTO151);

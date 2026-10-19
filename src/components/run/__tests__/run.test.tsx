@@ -57,6 +57,21 @@ async function start(): Promise<void> {
 }
 
 describe("challenge run screen", () => {
+  it("labels the draft drawer Hide players, Show players and Show roll (catches Minimize draft picker and Spin results)", async () => {
+    query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
+    render(<PlayScreen />);
+    await start();
+    const toggle = () => screen.getByTestId("draft-drawer").querySelector("button")!;
+    expect(toggle().textContent).toBe("Hide players");
+    fireEvent.click(toggle());
+    expect(toggle().textContent).toBe("Show players");
+    fireEvent.click(toggle());
+    fireEvent.click(screen.getByTestId("candidate-316"));
+    const back = screen.getByRole("button", { name: "Back to the roll" });
+    expect(back.textContent).toBe("Show roll");
+    expect(toggle().textContent).toBe("Show players");
+  });
+
   it("plays one placement cue after a committed pick, not when choosing a candidate or swapping", async () => {
     query.current = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test";
     render(<PlayScreen />);
