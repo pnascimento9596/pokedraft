@@ -36,6 +36,8 @@ Gates: Prettier passed on the touched Markdown. CI runs the rest. NOT RUN: unit 
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #125 (Wave 4 summary, Green) merged as squash `5932775`, reviewed head `4605872`, GLM 5.3 Flash APPROVE in round 1 with canary `wave4-summary-c9a240051fa41dd01a1bfa8e31bba22f` echoed. At `4605872` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,805 unit tests passed in 214 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `5932775` with `db.status` ok. No runtime change.
+
 ## PWA and viewport
 
 Branch `feat/pwa-viewport` off `origin/main` at `5c7d4fb`. Wave 4 row 4i (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
