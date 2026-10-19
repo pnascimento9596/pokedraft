@@ -119,10 +119,20 @@
   text-transform: uppercase;
 }
 
+/* One grid for both meters, so a longer side label ("This squad") moves both bars together. */
 .ladder {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: minmax(2.6em, max-content) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+.ladder > .meter {
+  display: contents;
+}
+
+.ladder > .below {
+  grid-column: 1 / -1;
 }
 
 .meter {
@@ -134,6 +144,7 @@
 }
 
 .meterLabel {
+  white-space: nowrap;
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -273,6 +284,7 @@
 }
 .roundLong,
 .outcome,
+.ladder,
 .meter,
 .below,
 .goalList,
