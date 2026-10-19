@@ -152,3 +152,96 @@ was built on 2c's branch and opened only after 2c merged, with the owner's leave
 - A physical phone check and on-device sound were not run for any row (owner action).
 - Process: on #94 a push went out while a merge had stopped on a conflict (a pipe hid the exit code);
   it was resolved in the next commit with no force-push.
+
+## Wave 3. Matchday on a phone
+
+All twelve rows (3-0, 3a to 3k) and the test chore merged, one PR each, each live-checked on
+production before the next landed. Production serves `88f6f72` (PR #111), engine 6, token versions
+1 to 6, `db.status` ok.
+
+| Row | PR | Squash | Reviewed head | Review | Production check |
+| --- | --- | --- | --- | --- | --- |
+| 3f prematch merge | #98 | `b08c68c` | `8789a50` | GLM APPROVE, round 1 | `prematch-merge`, `manager-mode` 12 of 12 |
+| 3-0 motion bounds | #99 | `39a3a6a` | `d86e58b` | GLM APPROVE, round 1 | `continuous-ball`, `smooth-movement` 4 of 4 |
+| Chore: test flakes, retained replays | #100 | `20e34f6` | `3432861` | GLM APPROVE, round 1 | `fatigue`, `callouts-type-effects` 5 of 5 |
+| 3h "Your calls" card | #101 | `c33fa17` | `2df3889` | GLM APPROVE, round 1 | `your-calls`, `manager-mode` 8 of 8 |
+| 3a touchline bottom sheet | #102 | `02e45cd` | `72063d0` | GLM APPROVE, round 1 | `touchline-sheet`, `shootout-suspense` 9 of 9 |
+| 3d team readability | #104 | `40221a8` | `d656db7` | GLM APPROVE, round 1 | `team-readability`, `pitch-card-containment` 19 of 19 |
+| 3b follow camera | #106 | `1e417e3` | `7e8b503` | GLM APPROVE, round 2 | `follow-camera`, `mobile-pitch-fixes`, `broadcast-frame-loop` 11 of 11 |
+| 3e haptics and tap for sound | #107 | `8247f20` | `f729d11` | GLM APPROVE, round 1 | `haptics`, `audio-polish` 5 of 5 |
+| 3c landscape, full screen, score bug | #108 | `b9c9113` | `4bc15fd` | GLM APPROVE, round 1 | `fullscreen-score-bug`, `touchline-sheet` 12 of 12 |
+| 3k broadcast follow-ups | #110 | `cf4efeb` | `2952e09` | GLM APPROVE, round 1 | `broadcast-follow-ups`, `score-lands-with-ball`, `callouts-type-effects` 6 of 6 |
+| 3i replay and deep links | #109 | `eef865e` | `46d7641` | GLM APPROVE, round 2 | `replay-deep-links`, `haptics` 8 of 8 |
+| 3g touchline intelligence | #103 | `6fb14b7` | `834cfea` | GLM APPROVE, round 1 | `touchline-intel`, `manager-mode` 13 of 13 |
+| 3j accessible stops and controls | #111 | `88f6f72` | `98f81a2` | GLM APPROVE, round 1 | `keyboard`, `speed-aware-staging`, `a11y` 30 of 30 |
+
+Closed without merging: #105 (mute e2e browser audio, Green). GLM approved it, but specs that call
+`webkit.launch()` inherit the chromium project's launch args and WebKit rejects `--mute-audio`
+(run 39170166703); Playwright 1.64.0 already mutes headless Chromium. All reviews were GLM 5.3 Flash
+with an echoed canary; no fallback reviewer ran. Both round-2 reviews followed a hosted failure on
+an approved head, not a review finding: #106's shard 2 failed `mobile-pitch-fixes` under the new
+phone zoom, and #109's check timed out four haptics unit tests twice.
+
+Order: 3f first to simplify the stop flow, then 3-0. 3h landed before 3a because it was ready first
+and shares no files. 3g waited on an owner decision (below) and landed after 3i. 3k landed before
+3i because it carried the haptics test fix that 3i's hosted check kept tripping. 3j last, since it
+touches controls from 3a, 3c and 3i. Every reorder was within the owner's leave and is recorded in
+the row's decision log.
+
+### Measurements that moved
+
+- 3-0: largest one-frame ball move per golden match at 2x, 5.62 to 8.84% before, 5.09 to 6.77% after;
+  player at 2x, 9.85% worst to 6.26%. Over the 20 sweep seeds the worst 1x ball frame went 4.41%
+  (six views at or over 4%) to 3.97% (none).
+- 3d: move badges clipped at the pitch edge, 5 to 7 of 13 per golden match (up to 65.1 px) at 390,
+  360 and 320, to none; phone sprites 38.4 to 44 px.
+- 3b: at 4x CPU throttle, p50 and p95 frame time 16.7 and 16.8 ms with and without the camera, no
+  dropped frames or long tasks. Under Follow's 1.6x zoom the ball's worst on-screen frame is 4.91%,
+  against the 4% bound that 3-0 holds on the unzoomed pitch.
+- 3k: callouts per 120' match over 108 cups, mean 17.32 (max 23) to 13.34 (max 20); 90' matches
+  unchanged at 13.54. `MatchPlayer.haptics.test.tsx` 15.5 s to 2.9 s per file.
+- 3j: a 2x toggle 301 ms into a goal callout used to cut it to 665 ms; it now runs 1,133 ms against
+  1,125 predicted.
+- 3h: the "Your calls" card's 8 replays take 254 to 300 ms at 4x CPU throttle, no long task.
+- 3c: on a phone turned to landscape (844x390) the pitch is 427 by 273 px; at 320x640 the match now
+  opens with the pitch wholly on screen (it sat 41 px above the screen after 3b and 3c composed).
+- Unit tests, 1,506 in 172 files at 3-0's head to 1,659 in 194 at 3j's.
+
+### Brief vs code
+
+- 3g: the 65' managed stop cannot appear in engine 6. The lowest STA in the pool is 19 and the
+  lowest energy at 65' is 67. The owner chose to ship it as written (2026-10-18) and revisit at W6b.
+- 3g: engine 6 gates the auto tactic and fatigue subs on one `managed` flag, so the assistant status
+  reads "subs on, tactics on" until a decision and "subs off, tactics off" after.
+- 3i: the deep-link minute is `at`, not `t` (`t` already carries the run). There was no event bar,
+  so goal pips sit on the progress bar.
+- 3j: the code map's lines had moved (momentum at `MatchPlayer.tsx:557`, not `:416`); `speed` had
+  no `now`; every fired beat is rebased, not only those in flight, which reads the same on screen.
+- 3k: `speed-aware-staging` does not control the clock; it waits on a `MutationObserver` log, and
+  `score-lands-with-ball` now does the same. The missed-penalty short trail no longer reproduces:
+  all 87 misses over 108 cups trail 9.43, all 294 goals 11.18.
+- 3c: the 70svh pitch cap also applies on a desktop: at 1280x720 the pitch is 787.5 px wide, not
+  1,214.
+- Rows built in parallel and merged in turn. 3g was cut from 3a's branch before 3a's squash, so its
+  first merge with main re-merged six files against 3a's branch tip, where they equal the squash.
+
+### Open carryovers
+
+- Follow camera: the ball's worst on-screen frame is 4.91% under the 1.6x zoom, unguarded. Watch for
+  it on the phone; the fix is a smaller zoom or a gentler pass speed.
+- The cut-in card's sprite can render empty: `PlayerImage`'s inline 80 px box beats
+  `.cutInSprite > *`, so a small pixel sprite (Remoraid) shows nothing in the circle (since 2g).
+- The ball carrier's nameplate is clipped at the pitch's left edge (seen in the refreshed
+  `touchline-stop-360.png`); 3d clamps badges, not nameplates.
+- At 1280x720 the full-screen exit button overlaps the pitch's top right corner.
+- One 120' match still draws 20 callouts (d5, 4-3-3, match 3); 11 are key duels, outside the budget
+  by 2g's design.
+- 3i: in manager mode a goal on a stop minute replays after the stop is answered (code reading
+  only). The diff ran to about 1,413 insertions in one PR.
+- 3j: axe finds three touchline violations that predate the wave (`aria-allowed-role` on the energy
+  rows, `list`, `heading-order`); the matchday scan excludes the touchline until Wave 4 (4g). After
+  Kick off a keyboard user lands on the body, so Space needs a click or Tab into the player first.
+- Engine 7 (W6b) checklist: the 65' stop decision; seed `e2e-a11y-47` (an injury at 16' in match 0)
+  behind the keyboard and axe scenes; `e2e/pins.ts`'s deep link (the golden v5 draft's 49' goal).
+- A physical phone check and on-device sound and haptics were not run for any row (owner action;
+  the checklist is in the Wave 3 summary's decision log).
