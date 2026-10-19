@@ -352,7 +352,7 @@ export function Builder({
           </div>
         </div>
 
-        <div className={s.tools} role="toolbar" aria-label="Builder actions">
+        <div className={s.tools} role="group" aria-label="Builder actions">
           <button
             type="button"
             className="btn btn--primary"

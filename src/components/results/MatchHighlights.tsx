@@ -201,7 +201,7 @@ export function MatchHighlights({
           <div className={s.elementalAura} aria-hidden="true" />
 
           <div className={s.spriteWrap} data-striking={striking}>
-            <PlayerImage dexId={currentStar.speciesId} size={84} alt={currentStar.name} />
+            <PlayerImage dexId={currentStar.speciesId} size={84} alt="" />
           </div>
 
           <div className={s.ballStage} aria-hidden="true">

@@ -63,6 +63,11 @@ export const FRIENDLY_LABEL = "Friendly (not ranked)";
 export const DAILY_RULE =
   "Everyone plays the same seed today, and your run can go on the daily board.";
 
+// The error pages' copy. Every route that holds a run checkpoints it on each action, so a reload
+// brings the run back (savedRun.ts, and HomeScreen for the builder squad).
+export const ERROR_TITLE = "Something went wrong.";
+export const ERROR_BODY = "Your run is saved; reload to continue.";
+
 export const ROUND_LABEL: Readonly<Record<CupRound, string>> = {
   G1: "Group match 1",
   G2: "Group match 2",

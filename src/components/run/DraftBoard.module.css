@@ -251,10 +251,20 @@
   .hubControls > button:first-child {
     display: none;
   }
-  .hub::before {
-    content: "Trainer Dugout";
-    font-weight: 700;
-  }
+}
+.coach {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--stadium-border);
+  border-radius: 12px;
+  color: var(--ink);
+}
+.coach p {
+  flex: 1 1 16rem;
+  margin: 0;
 }
 .selectionBar {
   display: flex;

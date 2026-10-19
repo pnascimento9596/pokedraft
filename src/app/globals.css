@@ -276,8 +276,38 @@ select {
 /* While a page shows its one-line Loading fallback, the footer would sit at the bottom of the first
    viewport and be pushed down when the content lands (CLS 0.21 on a shared run on a phone). It
    shows once the content is in place. */
-body:has(.page-loading) > .site-footer {
+body:has(.page-loading) .site-footer {
   visibility: hidden;
+}
+
+/* The skip link's target wraps every page, so it stands in for body as the flex column the footer
+   pushes to the bottom of. */
+#content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+
+#content:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 16px));
+}
+
+.skip-link:focus {
+  transform: none;
 }
 
 .site-header {

@@ -11,6 +11,7 @@ import {
 } from "@/engine";
 import { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
 import { BUILDER_URL_SEED } from "@/ui/lineup";
+import { computeAccessibleName } from "dom-accessibility-api";
 
 // The home Play buttons navigate with the app router.
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), prefetch: vi.fn() }) }));
@@ -112,8 +113,8 @@ describe("builder drag and swap", () => {
     fireEvent.pointerMove(from, { pointerId: 1, clientX: 120, clientY: 140 });
     fireEvent.pointerUp(from, { pointerId: 1, clientX: 120, clientY: 140 });
 
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Charmander");
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Bulbasaur");
+    expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("LCB Charmander");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Bulbasaur");
   });
 
   it("picking a species already on the field into another slot swaps the two, never duplicates it", async () => {
@@ -125,8 +126,8 @@ describe("builder drag and swap", () => {
 
     // The pick lands once the sheet's history entry is gone (see "the picker sheet" below).
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Bulbasaur");
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Charmander");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Bulbasaur");
+    expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("LCB Charmander");
   });
 });
 
@@ -157,7 +158,7 @@ describe("the picker sheet", () => {
     fireEvent.click(within(dialog).getByTestId("pick-25"));
 
     await waitFor(() =>
-      expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Pikachu"),
+      expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("LCB Pikachu"),
     );
     expect({ sheet: onSheetEntry(), link: window.location.search.startsWith("?b=") }).toEqual({
       sheet: false,
@@ -335,7 +336,7 @@ async function replaceBulbasaurWithPikachu() {
   fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
   fireEvent.click(within(dialog).getByTestId("pick-25"));
   await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-  expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Pikachu");
+  expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("LCB Pikachu");
 }
 
 describe("browser builder checkpoints (catches drafts lost when reopening the plain home page)", () => {
@@ -383,7 +384,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     render(<HomeScreen />);
 
     await screen.findByRole("button", { name: /CB Pikachu/ }, { timeout: 10_000 });
-    expect(screen.getByTestId("slot-b0").getAttribute("aria-label")).toBe("SUB 1 Charmander");
+    expect(computeAccessibleName(screen.getByTestId("slot-b0"))).toBe("SUB 1 Charmander");
     expect(filledSlots()).toBe(2);
     expect((screen.getByLabelText("Formation") as HTMLSelectElement).value).toBe("3-5-2");
     expect(screen.getByRole("switch", { name: /Legendaries/ }).getAttribute("aria-checked")).toBe(
@@ -408,7 +409,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     window.history.replaceState(null, "", "/");
     render(<HomeScreen />);
     await screen.findByRole("button", { name: /LCB Pikachu/ }, { timeout: 10_000 });
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Charmander");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Charmander");
     expect(filledSlots()).toBe(2);
   });
 
@@ -416,7 +417,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     localStorage.setItem("pokedraft.builder", JSON.stringify(OWN_BUILDER_TOKEN));
     openWithTwoPlaced();
     await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Charmander");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Charmander");
     showRatings();
     expect(localStorage.getItem("pokedraft.builder")).toBe(JSON.stringify(OWN_BUILDER_TOKEN));
     fireEvent.click(screen.getByRole("button", { name: "Reset" }));
@@ -443,7 +444,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     cleanup();
     window.history.replaceState(null, "", "/");
     render(<HomeScreen />);
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("Empty LCB slot");
+    expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("Empty LCB slot");
     expect(filledSlots()).toBe(0);
   });
 
@@ -488,7 +489,7 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
     openWithTwoPlaced();
     await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
     await replaceBulbasaurWithPikachu();
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Charmander");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Charmander");
     expect(filledSlots()).toBe(2);
   });
 
@@ -501,14 +502,14 @@ describe("browser builder checkpoints (catches drafts lost when reopening the pl
       fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
       fireEvent.click(within(dialog).getByTestId("pick-25"));
       await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-      expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Pikachu");
+      expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("LCB Pikachu");
       expect(filledSlots()).toBe(1);
     },
   );
 
   it("an initial home with no checkpoint keeps its empty idle pitch and does not save a draft on picker open", async () => {
     render(<HomeScreen />);
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("Empty LCB slot");
+    expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("Empty LCB slot");
     expect(filledSlots()).toBe(0);
     expect(localStorage.getItem("pokedraft.builder")).toBeNull();
     const dialog = await openPicker("Empty LCB slot");
@@ -524,10 +525,10 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
     fireEvent.change(within(dialog).getByRole("searchbox"), { target: { value: "pika" } });
     fireEvent.click(within(dialog).getByTestId("pick-25"));
 
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("Empty LCB slot");
+    expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("Empty LCB slot");
     // The pick lands once the sheet's history entry is gone (see "the picker sheet" above).
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Pikachu");
+    expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("LCB Pikachu");
     expect(filledSlots()).toBe(1);
   });
 
@@ -722,8 +723,8 @@ describe("builder two-tap swap and dossier Back (4f)", () => {
     expect(a.getAttribute("aria-pressed")).toBe("true");
     expect(hint()).toBe("Tap another player to swap, or tap again to change");
     fireEvent.click(screen.getByRole("button", { name: /ST Charmander/ }));
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe("LCB Charmander");
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe("ST Bulbasaur");
+    expect(computeAccessibleName(screen.getByTestId("slot-s2"))).toBe("LCB Charmander");
+    expect(computeAccessibleName(screen.getByTestId("slot-s9"))).toBe("ST Bulbasaur");
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(hint()).toBeNull();
   });

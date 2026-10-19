@@ -19,7 +19,8 @@ for (const system of ["light", "dark"] as const)
     await expect(root).toHaveAttribute("data-theme", "light");
     expect(await page.evaluate(() => localStorage.getItem("pokedraft:theme"))).toBe('"light"');
     await page.getByRole("button", { name: "Theme: day. Change theme", exact: true }).click();
-    await expect(root).not.toHaveAttribute("data-theme", /./);
+    // Auto writes the theme it resolved to, so the boot script and the toggle agree on one value.
+    await expect(root).toHaveAttribute("data-theme", system);
     await expect(page.locator("body")).toHaveCSS(
       "background-color",
       system === "light" ? "rgb(231, 234, 226)" : "rgb(11, 18, 32)",
@@ -29,4 +30,5 @@ for (const system of ["light", "dark"] as const)
       "background-color",
       system === "light" ? "rgb(11, 18, 32)" : "rgb(231, 234, 226)",
     );
+    await expect(root).toHaveAttribute("data-theme", system === "light" ? "dark" : "light");
   });

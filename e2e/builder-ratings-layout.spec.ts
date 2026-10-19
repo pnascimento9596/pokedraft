@@ -46,7 +46,7 @@ async function overlappingTokens(page: Page): Promise<string[]> {
       ...document.querySelectorAll<HTMLElement>('[data-testid="pitch"] button[data-slot-key]'),
     ];
     const parts = tokens.map((t) => ({
-      label: t.getAttribute("aria-label") ?? "",
+      label: t.dataset.slotKey ?? "",
       rects: [...t.children]
         .filter((c) => c.tagName === "SPAN")
         .map((c) => c.getBoundingClientRect())

@@ -4,6 +4,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayScreen } from "../PlayScreen";
+import { computeAccessibleName } from "dom-accessibility-api";
 
 const query = { current: "" };
 
@@ -35,7 +36,7 @@ const SQUAD_FIRST = "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&s
 const POSITION_FIRST =
   "mode=cup8&f=4-3-3&order=positionFirst&g=123456789&style=classic3&seed=run-pf";
 
-const label = (key: string) => screen.getByTestId(`slot-${key}`).getAttribute("aria-label");
+const label = (key: string) => computeAccessibleName(screen.getByTestId(`slot-${key}`));
 const pressed = (key: string) => screen.getByTestId(`slot-${key}`).getAttribute("aria-pressed");
 const hint = () => screen.queryByTestId("draft-hint")?.textContent ?? null;
 const header = () => screen.getByTestId("round-header").textContent;

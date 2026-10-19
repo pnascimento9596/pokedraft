@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { openHomeSettings } from "./helpers";
+import { accessibleName, openHomeSettings } from "./helpers";
 import { touchScroll } from "./mobile/helpers";
 import { RUN_151 } from "./pins";
 
@@ -173,11 +173,11 @@ test("touch completes all sixteen 151 picks, swaps players, and preserves the se
   await expect(page.getByTestId("round-header")).toHaveText("Draft complete");
   const a = page.getByTestId("slot-s6"),
     b = page.getByTestId("slot-s7");
-  const names = [await a.getAttribute("aria-label"), await b.getAttribute("aria-label")];
+  const names = [await accessibleName(a), await accessibleName(b)];
   await a.tap();
   await b.tap();
-  await expect(a).toHaveAttribute("aria-label", names[1]!.replace("RCM ", "LCM "));
-  await expect(b).toHaveAttribute("aria-label", names[0]!.replace("LCM ", "RCM "));
+  await expect(a).toHaveAccessibleName(names[1]!.replace("RCM ", "LCM "));
+  await expect(b).toHaveAccessibleName(names[0]!.replace("LCM ", "RCM "));
   await a.tap();
   await b.tap();
   await page.getByTestId("see-results").tap();
@@ -199,15 +199,15 @@ test("grass swipes scroll the page and filled HTML cards still drag-swap", async
   await expect(a).toHaveAttribute("data-filled", "true");
   await expect(b).toHaveAttribute("data-filled", "true");
   await a.scrollIntoViewIfNeeded();
-  const names = [await a.getAttribute("aria-label"), await b.getAttribute("aria-label")];
+  const names = [await accessibleName(a), await accessibleName(b)];
   const ar = await a.boundingBox(),
     br = await b.boundingBox();
   await page.mouse.move(ar!.x + ar!.width / 2, ar!.y + ar!.height / 2);
   await page.mouse.down();
   await page.mouse.move(br!.x + br!.width / 2, br!.y + br!.height / 2, { steps: 10 });
   await page.mouse.up();
-  await expect(a).toHaveAttribute("aria-label", names[1]!.replace("RCM ", "LCM "));
-  await expect(b).toHaveAttribute("aria-label", names[0]!.replace("LCM ", "RCM "));
+  await expect(a).toHaveAccessibleName(names[1]!.replace("RCM ", "LCM "));
+  await expect(b).toHaveAccessibleName(names[0]!.replace("LCM ", "RCM "));
   const point = await page.evaluate(() => {
     const stage = document.querySelector('[data-testid="pitch-stage"]')!.getBoundingClientRect();
     const cards = [...document.querySelectorAll('[data-testid^="slot-"]')].map((el) =>

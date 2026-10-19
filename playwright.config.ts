@@ -9,6 +9,7 @@ import { localServerPort, worktreeHead } from "./e2e/local-server";
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL;
 const PORT = Number(process.env.PLAYWRIGHT_PORT) || localServerPort(process.cwd());
 const HEAD = worktreeHead();
+const ORIGIN = BASE_URL ?? `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "e2e",
@@ -25,9 +26,17 @@ export default defineConfig({
     toHaveScreenshot: { pathTemplate: "{testDir}/{testFilePath}-snapshots/{platform}/{arg}{ext}" },
   },
   use: {
-    baseURL: BASE_URL ?? `http://localhost:${PORT}`,
+    baseURL: ORIGIN,
     trace: "retain-on-failure",
     colorScheme: "dark",
+    // Every spec starts as a returning player who has seen the first-draft tip.
+    // e2e/resilience-a11y.spec.ts clears this to play a first visit.
+    storageState: {
+      cookies: [],
+      origins: [
+        { origin: ORIGIN, localStorage: [{ name: "pokedraft:coach:draft", value: "true" }] },
+      ],
+    },
   },
   projects: [
     {

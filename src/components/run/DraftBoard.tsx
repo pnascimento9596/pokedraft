@@ -27,6 +27,7 @@ import { SoundToggle } from "@/components/wheel/SoundToggle";
 import { announce as stageLine, dexLabel, stagesFor } from "@/components/wheel/reel";
 import { playSignCard, playSpecialReveal, unlockAudio } from "@/components/wheel/sound";
 import { useReducedMotion } from "@/components/wheel/useReducedMotion";
+import { coachLine, dismissCoach, useCoachDismissed } from "@/ui/coach";
 import { REGION_LABEL } from "@/ui/labels";
 import { filledCount, refFromKey, sameRef, slotLabel, valueAt } from "@/ui/lineup";
 import { ratingFor, type Rating } from "@/ui/rating";
@@ -248,6 +249,31 @@ function ActiveDraftBoard({
     specialRevealRoll.current = rollId;
     if (candidates.some((id) => speciesById(id).special)) playSpecialReveal();
   }, [revealed, rollId, candidates]);
+  const wheelsRef = useRef<HTMLDivElement>(null);
+  // A keyboard skip leaves focus on the roll; once the players show, it moves to the first one.
+  useEffect(() => {
+    const wheels = wheelsRef.current;
+    if (!revealed || wheels === null || !wheels.contains(document.activeElement)) return;
+    drawerRef.current?.querySelector<HTMLElement>('[data-testid^="candidate-"]')?.focus();
+  }, [revealed, rollId]);
+  const coachDismissed = useCoachDismissed();
+  const showCoach = !coachDismissed && state.round === 0 && phase.kind !== "complete";
+  // In the drawer while it is up, since on a phone the drawer covers the header.
+  const coach = showCoach ? (
+    <div className={s.coach} data-testid="coach-mark">
+      <p>{coachLine(settings)}</p>
+      <button
+        type="button"
+        className="btn btn--sm"
+        onClick={() => {
+          dismissCoach();
+          headingRef.current?.focus();
+        }}
+      >
+        Got it
+      </button>
+    </div>
+  ) : null;
   const single = candidates.length === 1 ? candidates[0]! : null;
   const selected =
     selection !== null && selection.rollId === rollId && candidates.includes(selection.species)
@@ -286,7 +312,10 @@ function ActiveDraftBoard({
     (action: DraftAction) => {
       focusBefore.current = document.activeElement;
       setSwapFrom(null);
-      if (action.type === "pick") setDrawerOpen(true);
+      if (action.type === "pick") {
+        setDrawerOpen(true);
+        dismissCoach();
+      }
       onAction(action);
     },
     [onAction],
@@ -572,6 +601,7 @@ function ActiveDraftBoard({
           <h1 ref={headingRef} className={s.round} data-testid="round-header" tabIndex={-1}>
             {phase.kind === "complete" ? "Draft complete" : `Round ${round} of ${DRAFT_ROUNDS}`}
           </h1>
+          {phase.kind !== "choosing" ? coach : null}
           <div className={s.rolled} aria-live="off">
             {phase.kind === "awaitingSlot" ? (
               <p className={s.prompt} data-testid="round-prompt">
@@ -651,8 +681,9 @@ function ActiveDraftBoard({
             >
               {drawerOpen ? "Hide players" : revealed ? "Show players" : "Show roll"}
             </button>
+            {coach}
             {roll !== null ? (
-              <div className={s.wheels} data-testid="draft-wheel">
+              <div ref={wheelsRef} className={s.wheels} data-testid="draft-wheel">
                 <RollReveal
                   key={`reveal-${rollId}`}
                   stages={stagesFor(roll, settings, run.cause)}
@@ -784,7 +815,7 @@ function ActiveDraftBoard({
         {selected !== null && phase.kind === "choosing" && !drawerOpen ? (
           <div className={s.selectionBar} data-testid="draft-selection-bar">
             <div className={s.selectionMeta}>
-              <PlayerImage dexId={selected} size={32} alt={speciesById(selected).name} />
+              <PlayerImage dexId={selected} size={32} alt="" />
               <div className={s.selectionDetails}>
                 <span className={s.selectionName}>{speciesById(selected).name}</span>
                 <span className={s.selectionHint}>Tap pitch position to place</span>
@@ -955,7 +986,7 @@ function Candidates({
                 onPointerDown={(e) => onCandidatePointerDown?.(id, e)}
               >
                 <div className={s.cardArtWrap}>
-                  <PlayerImage dexId={id} size={isCompact ? 72 : 88} alt={sp.name} />
+                  <PlayerImage dexId={id} size={isCompact ? 72 : 88} alt="" />
                 </div>
                 <span className={s.candName}>{sp.name}</span>
                 {sp.special ? <span className={s.candSpecial}>Legendary / Mythical</span> : null}

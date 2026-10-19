@@ -15,7 +15,6 @@ import { PitchCard } from "./PitchCard";
 import { Pitch3DStage } from "./Pitch3DStage";
 import { CARD_ROLE, pitchPoints, typeFrame } from "@/design/stadium";
 import { useImageSettings } from "@/images/settings";
-import { SUITABILITY_LABEL } from "@/ui/labels";
 import { BENCH_REFS, STARTER_REFS, refFromKey, refKey, sameRef, valueAt } from "@/ui/lineup";
 import s from "./Pitch.module.css";
 
@@ -110,10 +109,15 @@ export function Pitch({
     const draggable = onSwap !== undefined && species !== null && !disabled;
     const suitability = species === null ? (suitabilityOf?.(ref) ?? null) : null;
     const isDropTarget = dropKey === key || sameRef(dropTarget, ref);
-    const name =
+    const base = `${labelId}-${key}`;
+    // The name comes from the card's text, slot then player as the card shows them; fit and types
+    // are read after it on request.
+    const description =
       species === null
-        ? `Empty ${slotLabel} slot${suitability ? ` (${SUITABILITY_LABEL[suitability]} fit)` : ""}`
-        : `${slotLabel} ${species.name}`;
+        ? suitability
+          ? `${base}-fit`
+          : undefined
+        : `${tokenNote ? `${base}-note ` : ""}${base}-types`;
     return (
       <button
         key={key}
@@ -135,15 +139,7 @@ export function Pitch({
         data-dragging={dragging || undefined}
         disabled={disabled || (onSlotTap === undefined && onSwap === undefined)}
         id={`${labelId}-${key}`}
-        aria-label={name}
-        aria-labelledby={
-          species === null
-            ? `${labelId}-${key} ${labelId}-${key}-role ${labelId}-${key}-slot ${labelId}-${key}-prompt`
-            : `${labelId}-${key} ${labelId}-${key}-role${tokenNote ? ` ${labelId}-${key}-note-score` : ""} ${labelId}-${key}-slot ${labelId}-${key}-name ${labelId}-${key}-types`
-        }
-        aria-describedby={
-          species !== null && tokenNote ? `${labelId}-${key}-note-label` : undefined
-        }
+        aria-describedby={description}
         style={{
           ...style,
           ...(species ? typeFrame(species.types[0]) : null),

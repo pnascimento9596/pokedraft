@@ -1,4 +1,4 @@
-import { expect, type Download, type Page } from "@playwright/test";
+import { expect, type Download, type Locator, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { SHARE_LINK } from "./pins";
 
@@ -6,6 +6,14 @@ import { SHARE_LINK } from "./pins";
 export async function skipManaged(page: Page): Promise<void> {
   await page.getByTestId("skip-ft").click();
   await page.getByTestId("skip-confirm").click();
+}
+
+/** The element's accessible name, as the browser computes it, read from its ARIA snapshot. */
+export async function accessibleName(locator: Locator): Promise<string> {
+  const snapshot = await locator.ariaSnapshot();
+  const match = /^- [\w-]+ ("(?:[^"\\]|\\.)*")/.exec(snapshot);
+  if (match === null) throw new Error(`harness: no accessible name in ${snapshot}`);
+  return JSON.parse(match[1]!) as string;
 }
 
 export async function draftSixteen(page: Page): Promise<void> {

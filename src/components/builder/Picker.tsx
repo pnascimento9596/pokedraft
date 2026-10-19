@@ -442,11 +442,11 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
                   aria-describedby={rating !== null ? `${rawFitId}-${sp.id}` : undefined}
                   onClick={() => leave(() => onPick(sp.id))}
                 >
-                  <PlayerImage dexId={sp.id} size={44} alt={sp.name} />
+                  <PlayerImage dexId={sp.id} size={44} alt="" />
                   <span className={s.rowMain}>
-                    <span className={s.rowName}>{sp.name}</span>
+                    <span className={s.rowName}>{sp.name}</span>{" "}
                     <span className={s.rowMeta}>
-                      <span className="num">{dex(sp.id)}</span>
+                      <span className="num">{dex(sp.id)}</span>{" "}
                       {sp.types.map((t) => (
                         <TypeChip key={t} type={t} />
                       ))}

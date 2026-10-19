@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { spinMs, type SpinSpeed } from "@/ui/settings";
 import { announce, type Stage } from "./reel";
 import { playReelSettle, playTick } from "./sound";
@@ -28,6 +28,16 @@ export function RollReveal({ stages, instant, speed, onDone }: RollRevealProps) 
   const last = stages.length - 1;
   const [progress, setProgress] = useState<Progress>({ index: 0, state: "spinning" });
   const shown: Progress = instant ? { index: last, state: "settled" } : progress;
+  const region = useRef<HTMLDivElement>(null);
+  // Set when a keyboard skip unmounts the focused Tap to skip button, so focus lands on the roll
+  // and not on <body>.
+  const refocus = useRef(false);
+
+  useEffect(() => {
+    if (!refocus.current) return;
+    refocus.current = false;
+    region.current?.focus();
+  }, [progress]);
 
   useEffect(() => {
     if (instant || progress.state !== "settled") return;
@@ -47,7 +57,7 @@ export function RollReveal({ stages, instant, speed, onDone }: RollRevealProps) 
     shown.state === "settled" && shown.index === last ? stages.map(announce).join(" ") : "";
 
   return (
-    <div className={s.reveal}>
+    <div ref={region} className={s.reveal} role="group" aria-label="Roll" tabIndex={-1}>
       <div className={s.reels}>
         {stages.map((stage, i) => {
           if (i > shown.index) {
@@ -69,6 +79,12 @@ export function RollReveal({ stages, instant, speed, onDone }: RollRevealProps) 
               onSettle={(reason) => {
                 if (i !== shown.index || shown.state !== "spinning") return;
                 playReelSettle();
+                const focused = document.activeElement;
+                refocus.current =
+                  reason === "skipped" &&
+                  focused !== null &&
+                  focused !== region.current &&
+                  region.current?.contains(focused) === true;
                 setProgress({ index: reason === "skipped" ? last : i, state: "settled" });
               }}
             />

@@ -120,8 +120,8 @@ test("builder tap A then B swaps A and B, and a second tap on A opens the Picker
   );
   await page.screenshot({ path: `${SHOT}/builder-selected-390.png` });
   await page.getByTestId("slot-s9").tap();
-  await expect(page.getByTestId("slot-s2")).toHaveAttribute("aria-label", "LCB Bulbasaur");
-  await expect(page.getByTestId("slot-s9")).toHaveAttribute("aria-label", "ST Pikachu");
+  await expect(page.getByTestId("slot-s2")).toHaveAccessibleName("LCB Bulbasaur");
+  await expect(page.getByTestId("slot-s9")).toHaveAccessibleName("ST Pikachu");
 
   await page.getByTestId("slot-s2").tap();
   await page.getByTestId("slot-s2").tap();

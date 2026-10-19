@@ -85,8 +85,8 @@ describe("Pitch", () => {
       <Pitch formation="4-3-3" lineup={twoPlaced} speciesOf={speciesById} onSlotTap={() => {}} />,
     );
     const card = screen.getByTestId("slot-s2");
-    const label = card.querySelector('[id$="-slot"]')!;
-    expect(card.getAttribute("aria-labelledby")?.split(" ")).toContain(label.id);
+    expect(card.querySelector('[id$="-slot"]')!.textContent).toBe("LCB");
+    expect(screen.getByRole("button", { name: "LCB Bulbasaur" })).toBe(card);
   });
 
   it("labels every starter and bench slot so taps reach the right SlotRef", () => {

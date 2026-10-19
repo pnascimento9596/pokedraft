@@ -65,11 +65,12 @@ test.describe("draft drawer", () => {
         .locator('[data-testid^="slot-"][data-suitability] [data-suitability]')
         .allTextContents();
       expect(prompts.length).toBeGreaterThan(0);
-      for (const p of prompts) expect(["★ Best", "OK", "Poor"]).toContain(p);
-      const names = await page
-        .locator('[data-testid^="slot-"][data-suitability]')
-        .evaluateAll((els) => els.map((el) => el.getAttribute("aria-label")));
-      for (const n of names) expect(n).toMatch(/^Empty .+ slot \((Best|OK|Poor) fit\)$/);
+      // The card shows "★ Best", "OK" or "Poor"; the trailing "fit" is visually hidden.
+      for (const p of prompts) expect(["★ Best fit", "OK fit", "Poor fit"]).toContain(p);
+      for (const slot of await page.locator('[data-testid^="slot-"][data-suitability]').all()) {
+        await expect(slot).toHaveAccessibleName(/^Empty .+ slot$/);
+        await expect(slot).toHaveAccessibleDescription(/^(Best|OK|Poor) fit$/);
+      }
       expect(await fitsWidth(page)).toBe(true);
       await toggle.scrollIntoViewIfNeeded();
       await page.screenshot({ path: `${SHOT}/draft-show-players-390.png` });

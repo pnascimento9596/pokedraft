@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { pngSize } from "./helpers";
+import { accessibleName, pngSize } from "./helpers";
 import { RUN_151 } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
@@ -26,10 +26,13 @@ const SQUAD_AFTER_FIVE = [
   "RB Slowpoke",
 ];
 
-const squad = (page: Page) =>
-  page
-    .locator('[data-testid^="slot-"][data-filled="true"]')
-    .evaluateAll((els) => els.map((el) => el.getAttribute("aria-label")));
+const squad = async (page: Page) => {
+  const names: string[] = [];
+  for (const slot of await page.locator('[data-testid^="slot-"][data-filled="true"]').all()) {
+    names.push(await accessibleName(slot));
+  }
+  return names;
+};
 
 test("a seeded run survives a reload and Back then Forward mid-draft, and its results survive a reload with the same record (SA-08, SB-06)", async ({
   page,
@@ -78,7 +81,9 @@ test.describe("builder Download image feedback (SA-20, SB-05)", () => {
     const file = await download;
     expect(file.suggestedFilename()).toBe("pokedraft-lineup.png");
     expect(await pngSize(file)).toEqual({ width: 1200, height: 630 });
-    await expect(page.getByRole("toolbar").getByRole("status")).toHaveText("Image saved");
+    await expect(
+      page.getByRole("group", { name: "Builder actions" }).getByRole("status"),
+    ).toHaveText("Image saved");
   });
 
   test("on a touch phone that can share files, hands the PNG to the share sheet and says Image shared", async ({
@@ -106,7 +111,9 @@ test.describe("builder Download image feedback (SA-20, SB-05)", () => {
     await page.goto("/");
     await page.getByRole("button", { name: "Randomize" }).click();
     await page.getByRole("button", { name: "Download image" }).click();
-    await expect(page.getByRole("toolbar").getByRole("status")).toHaveText("Image shared");
+    await expect(
+      page.getByRole("group", { name: "Builder actions" }).getByRole("status"),
+    ).toHaveText("Image shared");
     expect(await page.evaluate(() => (window as unknown as { shared: unknown[] }).shared)).toEqual([
       { name: "pokedraft-lineup.png", type: "image/png", head: [137, 80, 78, 71, 13, 10, 26, 10] },
     ]);
@@ -121,9 +128,9 @@ test.describe("builder Download image feedback (SA-20, SB-05)", () => {
     await page.goto("/");
     await page.getByRole("button", { name: "Randomize" }).click();
     await page.getByRole("button", { name: "Download image" }).click();
-    await expect(page.getByRole("toolbar").getByRole("alert")).toHaveText(
-      "Download failed. Try again.",
-    );
+    await expect(
+      page.getByRole("group", { name: "Builder actions" }).getByRole("alert"),
+    ).toHaveText("Download failed. Try again.");
     await expect(page.getByRole("button", { name: "Download image" })).toBeEnabled();
     expect(errors).toEqual([]);
   });
