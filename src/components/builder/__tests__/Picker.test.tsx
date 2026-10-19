@@ -67,6 +67,24 @@ describe("Picker", () => {
     expect(screen.getByRole("region", { name: "Role fit mini pitch" }).textContent).toContain("W");
   });
 
+  it("names each row once, with the picture beside the name left out (catches Pikachu Pikachu read twice)", () => {
+    render(
+      <Picker
+        state={createDraft(ALL_GENS, "test" as Seed)}
+        slot={{ kind: "starter", index: 0 }}
+        showRatings={false}
+        onPick={vi.fn()}
+        onClear={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "Pikachu" } });
+    expect(screen.getByTestId("pick-25").querySelector("img")?.getAttribute("alt")).toBe("");
+    expect(screen.getByRole("button", { name: /^Pikachu #025/ })).toBe(
+      screen.getByTestId("pick-25"),
+    );
+  });
+
   it("previews both sides of an existing starter swap rather than duplicating the candidate", () => {
     const slot: SlotRef = { kind: "starter", index: 0 };
     let draft = createDraft(ALL_GENS, "test" as Seed);

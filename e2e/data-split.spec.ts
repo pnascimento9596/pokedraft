@@ -143,7 +143,7 @@ test("on a slow connection the first slot tap says the players are loading, then
   await page.getByTestId("slot-s0").click();
   // The builder toolbar has its own status line; the page's announcer region is a second
   // role=status since theme 7F, so scope to the toolbar.
-  const builderStatus = page.getByRole("toolbar", { name: "Builder actions" }).getByRole("status");
+  const builderStatus = page.getByRole("group", { name: "Builder actions" }).getByRole("status");
   await expect(builderStatus).toHaveText("Loading the players");
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(builderStatus).toHaveText("");

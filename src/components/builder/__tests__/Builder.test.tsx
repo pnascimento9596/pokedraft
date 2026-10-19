@@ -578,7 +578,7 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
     });
     expect(writeText.mock.calls).toEqual([[`http://localhost:3000/?b=${TWO_PLACED_TOKEN}`]]);
     expect(
-      within(screen.getByRole("toolbar", { name: "Builder actions" })).getByRole("status")
+      within(screen.getByRole("group", { name: "Builder actions" })).getByRole("status")
         .textContent,
     ).toBe("Link copied");
 
@@ -587,7 +587,7 @@ describe("builder toolbar (catches buttons that stop doing what they say)", () =
       fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
     });
     expect(
-      within(screen.getByRole("toolbar", { name: "Builder actions" })).getByRole("status")
+      within(screen.getByRole("group", { name: "Builder actions" })).getByRole("status")
         .textContent,
     ).toBe("Could not copy the link");
   });
@@ -629,7 +629,7 @@ describe("builder Download image feedback (SA-20, SB-05)", () => {
   const tools = async () => {
     openWithTwoPlaced();
     await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
-    return screen.getByRole("toolbar", { name: "Builder actions" });
+    return screen.getByRole("group", { name: "Builder actions" });
   };
 
   it("says Preparing image and disables the button while the card renders, so a second tap cannot start a second request", async () => {
@@ -695,9 +695,16 @@ describe("placed squad scouting and live lines", () => {
   });
 });
 
+it("no role toolbar: Builder actions is a plain group, since it has no arrow-key navigation (catches a toolbar role that promises arrow keys)", async () => {
+  openWithTwoPlaced();
+  await screen.findByRole("button", { name: /LCB Bulbasaur/ }, { timeout: 10_000 });
+  expect(screen.queryAllByRole("toolbar")).toEqual([]);
+  expect(screen.getByRole("group", { name: "Builder actions" }).tagName).toBe("DIV");
+});
+
 it("keeps Builder actions above feedback that appears after the engine loads", async () => {
   openWithTwoPlaced();
-  const toolbar = screen.getByRole("toolbar", { name: "Builder actions" });
+  const toolbar = screen.getByRole("group", { name: "Builder actions" });
   const feedback = await screen.findByText(/^Chemistry links \(/, {}, { timeout: 10_000 });
   expect(
     Boolean(toolbar.compareDocumentPosition(feedback) & Node.DOCUMENT_POSITION_FOLLOWING),

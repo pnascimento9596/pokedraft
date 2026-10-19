@@ -245,7 +245,7 @@ describe("Board", () => {
   });
 });
 
-it("renders server-provided squad species without replaying retained tokens in the browser", async () => {
+it("renders server-provided squad species, each named by its species (catches Squad species 807 read out as a number)", async () => {
   vi.stubGlobal(
     "fetch",
     vi.fn(async () =>
@@ -263,7 +263,8 @@ it("renders server-provided squad species without replaying retained tokens in t
     ),
   );
   render(<StatefulBoard view={DAILY} />);
-  expect(await screen.findByRole("img", { name: "Squad species 807" })).toBeTruthy();
+  expect(await screen.findByRole("img", { name: "Zeraora" })).toBeTruthy();
+  expect(screen.queryByRole("img", { name: /^Squad species/ })).toBeNull();
   expect(screen.getAllByRole("img")).toHaveLength(16);
 });
 

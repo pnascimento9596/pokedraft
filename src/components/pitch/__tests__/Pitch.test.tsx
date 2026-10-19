@@ -229,19 +229,15 @@ describe("Pitch", () => {
         }}
       />,
     );
-    expect(screen.getByTestId("slot-s0").getAttribute("aria-label")).toBe(
-      "Empty GK slot (Poor fit)",
-    );
-    expect(screen.getByTestId("slot-s2").getAttribute("aria-label")).toBe(
-      "Empty LCB slot (OK fit)",
-    );
-    expect(screen.getByTestId("slot-s9").getAttribute("aria-label")).toBe(
-      "Empty ST slot (Best fit)",
-    );
+    const slot = (name: string, description: string) =>
+      screen.getByRole("button", { name, description }).getAttribute("data-testid");
+    expect(slot("Empty GK slot", "Poor fit")).toBe("slot-s0");
+    expect(slot("Empty LCB slot", "OK fit")).toBe("slot-s2");
+    expect(slot("Empty ST slot", "Best fit")).toBe("slot-s9");
   });
 });
 
-it("orders a visible rating before the tactical label in a filled card accessible name", () => {
+it("token accessible name is name and slot, with the rating and types in the description (catches the 8-part name read on every focus move)", () => {
   render(
     <Pitch
       formation="4-3-3"
@@ -253,7 +249,15 @@ it("orders a visible rating before the tactical label in a filled card accessibl
   );
   expect(
     screen
-      .getByRole("button", { name: "LCB Bulbasaur DF 42 LCB Bulbasaur Grass Poison" })
+      .getByRole("button", { name: "LCB Bulbasaur", description: "42 Grass Poison" })
       .getAttribute("data-testid"),
   ).toBe("slot-s2");
+  expect(
+    screen
+      .getByRole("button", { name: "ST Charmander", description: "42 Fire" })
+      .getAttribute("data-testid"),
+  ).toBe("slot-s9");
+  expect(
+    screen.getByRole("button", { name: "Empty GK slot" }).getAttribute("aria-describedby"),
+  ).toBeNull();
 });
