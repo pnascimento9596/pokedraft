@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { decodeToken, encodeToken } from "@/engine/token";
 import { GOLDEN_CUP8_V3 } from "@/engine/versions/__tests__/fixtures";
 import type { LeaderboardRow } from "@/db/schema";
+import { isCoached } from "@/ui/manager/coached";
 import { toBoardEntry } from "../store";
 import { GOLDEN_CUP8_V6 } from "./fixtures";
 
@@ -56,4 +57,12 @@ describe("toBoardEntry (catches every board row decoding its token twice)", () =
       ]);
     },
   );
+
+  it("pins the tamper-only empty manager list, which isCoached counts and the live decoder drops", () => {
+    const payload = JSON.parse(
+      Buffer.from(GOLDEN_CUP8_V6.slice("pd6.".length), "base64url").toString("utf8"),
+    ) as unknown[];
+    const token = `pd6.${Buffer.from(JSON.stringify([...payload, []])).toString("base64url")}`;
+    expect([isCoached(token), toBoardEntry(row(token), 1).coached]).toEqual([true, false]);
+  });
 });

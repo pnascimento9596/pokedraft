@@ -2,8 +2,8 @@ import { and, asc, count, desc, eq, gt, lt, or, sql, type SQL } from "drizzle-or
 import { leaderboardEntries, type LeaderboardRow, type NewLeaderboardRow } from "@/db/schema";
 import type { Db } from "@/db/types";
 import { admissionCtes, type RateLimitRule } from "@/ratelimit/store";
-import { isCoached, MANAGER_TOKEN_VERSIONS } from "@/ui/manager/coached";
-import { squadPreview } from "./squad-preview";
+import { MANAGER_TOKEN_VERSIONS } from "@/ui/manager/coached";
+import { readStoredToken } from "./squad-preview";
 import { BOARD_LIMIT, type BoardEntry, type BoardMode, type CoachFilter } from "../contract";
 
 export type Board = { readonly mode: BoardMode; readonly dailyDate: string | null };
@@ -234,10 +234,11 @@ export function toBoardEntry<R extends number | null>(
   row: LeaderboardRow,
   rank: R,
 ): Omit<BoardEntry, "rank"> & { readonly rank: R } {
+  const { squadSpeciesIds, coached } = readStoredToken(row.token);
   return {
     rank,
-    squadSpeciesIds: squadPreview(row.token),
-    coached: isCoached(row.token),
+    squadSpeciesIds,
+    coached,
     nickname: row.nickname,
     mode: row.mode,
     variant: row.variant,
