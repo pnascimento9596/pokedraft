@@ -97,10 +97,20 @@ for (const width of [390, 360, 320]) {
 test.describe("scoreboard and history", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("the scoreboard shows 1-0 with no spaces (catches 1 - 0)", async ({ page }) => {
+  test("the scoreboard shows 1-0 with no spaces and names a shared side This squad (catches 1 - 0 and Your XI on a friend's link)", async ({
+    page,
+  }) => {
     await page.goto(DEEP_LINK.href);
-    const score = page.getByTestId("match-replay").getByTestId("matchday-score");
+    const replay = page.getByTestId("match-replay");
+    const score = replay.getByTestId("matchday-score");
     await expect(score).toHaveText("1-0", { timeout: 10_000 });
+    await expect(replay.getByTestId("matchday-scoreboard").locator("span").first()).toHaveText(
+      "This squad",
+    );
+    await expect(replay.getByRole("meter", { name: "Match momentum" })).toHaveAttribute(
+      "aria-valuetext",
+      /^This squad \d+%$/,
+    );
     await page
       .getByTestId("matchday-scoreboard")
       .screenshot({ path: `${SHOT}/scoreboard-390.png` });

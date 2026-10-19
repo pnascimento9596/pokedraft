@@ -118,7 +118,7 @@ test("score bug present only when fullscreen: the button enters and leaves full 
   await expect.poll(() => page.evaluate(() => document.fullscreenElement !== null)).toBe(true);
   const bug = replay.getByTestId("score-bug");
   await expect(bug).toBeVisible();
-  await expect(bug).toContainText("Your XI");
+  await expect(bug).toContainText("This squad");
   await expect(bug).toContainText("Goldenrod");
   await expect(bug).toContainText(/\d+-\d+/);
   await expect(bug).toContainText(/\d+'/);
