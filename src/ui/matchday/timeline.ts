@@ -187,6 +187,8 @@ export const OPP_SHAPE: FormationId = "4-3-3";
 
 // A slot this far up its own half (engine y) receives the ball in the final third.
 const FINAL_THIRD_Y = 70;
+// The build-up share and the callout gap are tuned for 90 minutes. Extra time scales both, so a
+// 120' match calls about as many moves as a 90' one.
 const BUILD_UP_SHARE = 0.15;
 // Minutes between two callouts, so they mark moments instead of narrating every touch. Key duels
 // ignore it: they lead straight to a shot.
@@ -438,6 +440,7 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
     };
     const sofar = { plays, frames, drift: drifts };
     let lastCallout = -Infinity;
+    const length = finalMinute / 90;
     let curSide: Side = "user";
     let curSlot = 5;
     let chain = 0;
@@ -566,11 +569,12 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
             ? finalThird
               ? kind
               : null
-            : buildUpRoll < BUILD_UP_SHARE
+            : buildUpRoll < BUILD_UP_SHARE / length
               ? "build-up"
               : null;
       const moment =
-        candidate === "key-duel" || (candidate !== null && from - lastCallout >= CALLOUT_GAP)
+        candidate === "key-duel" ||
+        (candidate !== null && from - lastCallout >= CALLOUT_GAP * length)
           ? candidate
           : null;
       if (moment !== null) lastCallout = from;
