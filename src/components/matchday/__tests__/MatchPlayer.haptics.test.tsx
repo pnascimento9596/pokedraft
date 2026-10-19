@@ -85,6 +85,7 @@ const MATCH: PlayedMatch = {
 };
 
 let buzzes: unknown[] = [];
+const FRAME = 100;
 
 beforeEach(() => {
   vi.useFakeTimers({
@@ -99,6 +100,12 @@ beforeEach(() => {
       return true;
     },
   });
+  // Whole matches run in 100 ms frames, the largest dt the frame loop takes. Stepping 16 ms frames
+  // timed out at 15 s on a hosted runner.
+  vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) =>
+    setTimeout(() => cb(performance.now()), FRAME),
+  );
+  vi.stubGlobal("cancelAnimationFrame", (handle: number) => clearTimeout(handle));
   localStorage.clear();
   setSoundEnabled(true);
   vi.stubGlobal("matchMedia", (query: string) => ({
@@ -116,7 +123,6 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-const FRAME = 16;
 const player = () => screen.getByTestId("match-player");
 const minute = () => Number(player().getAttribute("data-minute"));
 const stage = () => player().getAttribute("data-stage");
@@ -138,7 +144,7 @@ async function frames(until: () => boolean): Promise<void> {
   await act(async () => {
     await vi.dynamicImportSettled();
   });
-  for (let i = 0; i < 12_000 && !until(); i++) {
+  for (let i = 0; i < 2_000 && !until(); i++) {
     await act(async () => {
       vi.advanceTimersByTime(FRAME);
     });
