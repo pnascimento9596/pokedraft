@@ -281,6 +281,7 @@ export function Builder({
   return (
     <section
       ref={rootRef}
+      id="builder"
       className={s.builder}
       aria-label="Pitch builder"
       onPointerEnter={preload}

@@ -114,6 +114,8 @@ export function LiveRun({
     initial === null ? { kind: "draft", run: startRun(settings, seed) } : screenOf(initial),
   );
   const [failure, setFailure] = useState<string | null>(null);
+  // Each saved submission refetches the seed table under the results, so the new row shows.
+  const [submissions, setSubmissions] = useState(0);
   const [showRatings] = useState(() => loadPanel().showChallengeRatings);
   const [kickOff] = useState(() => playsMatchday(loadPanel()));
   const [spinSpeed] = useState(() => loadPanel().spinSpeed);
@@ -236,10 +238,15 @@ export function LiveRun({
         }
         navFamily={daily === undefined ? "play" : "daily"}
         onNewRun={daily === undefined ? newRun : undefined}
+        submissions={submissions}
         submit={
           settings.mode === "builder" ? undefined : (
             <>
-              <SubmitPanel token={screen.token} daily={daily !== undefined} />
+              <SubmitPanel
+                token={screen.token}
+                daily={daily !== undefined}
+                onSubmitted={() => setSubmissions((n) => n + 1)}
+              />
               {daily !== undefined ? (
                 <p className={s.dailyNext}>
                   One daily seed per day.{" "}

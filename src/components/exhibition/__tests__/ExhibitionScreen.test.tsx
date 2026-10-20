@@ -138,7 +138,9 @@ describe("challenger", () => {
       "Play a cup or save a full squad in the Builder",
     );
     expect(screen.getByRole("link", { name: "Play a cup" }).getAttribute("href")).toBe("/");
-    expect(screen.getByRole("link", { name: "Open the Builder" }).getAttribute("href")).toBe("/");
+    expect(screen.getByRole("link", { name: "Open the Builder" }).getAttribute("href")).toBe(
+      "/#builder",
+    );
     expect(screen.queryByTestId("exhibition-score")).toBeNull();
   });
 
@@ -170,6 +172,19 @@ describe("route state", () => {
     expect(replace).toHaveBeenLastCalledWith(`/exhibition?away=${OPPONENT}&n=1&legs=2`, {
       scroll: false,
     });
+  });
+
+  it("counts both taps of a fast double tap on Play rematch (catches two taps that read the same n before the URL updates)", async () => {
+    localStorage.setItem("pokedraft.builder", JSON.stringify(BUILDER));
+    open(`away=${OPPONENT}&n=1`);
+    await playToFullTime();
+    const rematch = screen.getByRole("button", { name: "Play rematch" });
+    fireEvent.click(rematch);
+    fireEvent.click(rematch);
+    expect(replace.mock.calls.map(([href]) => href)).toEqual([
+      `/exhibition?away=${OPPONENT}&n=2`,
+      `/exhibition?away=${OPPONENT}&n=3`,
+    ]);
   });
 
   it("explains a link with no readable other squad instead of playing", () => {

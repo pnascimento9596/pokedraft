@@ -70,6 +70,8 @@ export interface ResultsViewProps {
   readonly onNewRun?: () => void;
   /** Leaderboard submit panel; rendered for `live` runs only. */
   readonly submit?: ReactNode;
+  /** How many times `submit` saved this run; each change refetches the seed table. */
+  readonly submissions?: number;
   /** A challenge's comparison with the run it dared you to beat, right after the hero. */
   readonly versus?: ReactNode;
   readonly navFamily?: NavFamily;
@@ -91,6 +93,7 @@ export function ResultsView({
   variant,
   onNewRun,
   submit,
+  submissions = 0,
   versus,
   navFamily = "play",
   watch = null,
@@ -410,7 +413,7 @@ export function ResultsView({
         </div>
       </ModuleCard>
 
-      <SeedBoard token={token} />
+      <SeedBoard token={token} refresh={submissions} />
 
       {inspectId !== null ? (
         <ScoutingDossier

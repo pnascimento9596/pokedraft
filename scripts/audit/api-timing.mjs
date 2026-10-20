@@ -36,6 +36,7 @@ import {
   whenQuiet,
   writeJson,
 } from "./lib.mjs";
+import { ENGINE_VERSION } from "@/engine/types";
 import { PERCENTILE_METHOD, median, summarize } from "./stats.mjs";
 import { botCup8Token } from "./tokens.mjs";
 
@@ -290,7 +291,6 @@ async function card() {
 
 const CLIENT_IP = "198.51.100.77";
 const PRODUCTION_ENDPOINT_FRAGMENT = "ep-falling-resonance-b7y5z6oi";
-const ENGINE_VERSION = "pokedraft-engine-3";
 
 function postChecks() {
   const base = args["base-url"];
