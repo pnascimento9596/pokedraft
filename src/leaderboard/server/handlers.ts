@@ -27,7 +27,6 @@ import { dailyDateForSeed, isDailySettings } from "../daily";
 import { parseNickname } from "../nickname";
 import { logServerError, requestIdOf } from "@/observability/log";
 import type { LeaderboardRow } from "@/db/schema";
-import { replayAnyVersion } from "@/engine/versions";
 import { isCoached } from "@/ui/manager/coached";
 import { canonicalToken } from "@/ui/read-token";
 import { runFingerprint } from "./fingerprint";
@@ -79,6 +78,13 @@ const TOKEN_ERROR: Record<RunTokenErrorCode, SubmitErrorCode> = {
   invalidSettings: "INVALID_SETTINGS",
   invalidAction: "ILLEGAL_ACTION",
 };
+
+// Loaded only for a grace run. A static import changes how the build splits the route's chunks
+// and emits a second copy of the live scouting data (measure-retained-json.mjs counts it).
+async function replayRetired(token: string): Promise<ReturnType<typeof engineReplay>> {
+  const { replayAnyVersion } = await import("@/engine/versions");
+  return replayAnyVersion(token);
+}
 
 function tokenError(e: unknown): Response {
   // A retained bundle throws its own copy of RunTokenError, so the class alone misses it.
@@ -331,7 +337,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
 
   let result: ReturnType<typeof engineReplay>;
   try {
-    result = grace === null ? replay(run) : await replayAnyVersion(token);
+    result = grace === null ? replay(run) : await replayRetired(token);
   } catch (e) {
     return tokenError(e);
   }
