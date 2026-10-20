@@ -3,6 +3,20 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Badge loop budget
+
+Branch `test/badge-loop-budget` off `origin/main` at `9f01b8c`. Out-of-band side fix (Green) that unblocks Wave 5 row 5e (PR #134). Only `e2e/team-readability.spec.ts` changed. No product code changed.
+
+- PR #134 failed shard e2e (4) on hosted run 39357079608 twice (first attempt and a rerun of the failed job): all three widths of the play badge test hit their 240 s timeout. Per hand-off 3.5 that is not a flake, so it gets its own PR first.
+- The test steps a fake clock through a whole match, up to 3,000 steps, and made three browser round trips per step. One `evaluate` now reads the minute and the badge together, the test asserts the loop reached minute 90, and the timeout is 480 s.
+- Local, same build, chromium, `CI=1`, `--retries=0`: main's spec ran the three widths in 54.6 s and this branch in 35.0 s (11.7, 11.3 and 11.3 s). Both found 13 badges with a closest margin of 0 px and none clipped.
+
+Gates at the head: recorded in the PR review receipt. NOT RUN: the full Playwright suite locally (hosted CI runs it).
+
+Decision log: `docs/decisions/badge-loop-budget.md`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Head-to-head challenges
 
 Branch `feat/head-to-head` off `origin/main` at `71a86ec`. Wave 5 row 5b (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -25,6 +39,8 @@ Gates at `67039e2`:
 Decision log: `docs/decisions/head-to-head.md`. Browser proof: `docs/reports/head-to-head/` (`they-win-{390,360,320}.png`, `you-win-390.png`, `level-send-it-back-390.png`, `retained-390.png`).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #132 (row 5b, head-to-head challenges, Yellow) merged as squash `9f01b8c`, reviewed head `960539b` (`84969bb` plus the PR #131 STATE paragraph), GLM 5.3 Flash APPROVE in round 1 with canary `head-to-head-853bc57b4f1a89df1104672e88324070` echoed. Landed ahead of 5g, which was still building: its files are disjoint apart from one mount line each in the results views, and the Red row still needed two receipts and its database steps. At `960539b` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,863 unit tests passed in 221 files and Prettier passed on 19 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `9f01b8c` with `db.status` ok; `head-to-head`, `challenge` and `share-sheet` against production (chromium) passed 16 of 16. NOT RUN: the challenge loop on two real phones and a screen reader pass over the head-to-head table (owner actions).
 
 ## Share sheet and run metadata
 
