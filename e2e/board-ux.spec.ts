@@ -118,7 +118,9 @@ test("the player's own Daily row is marked, named and shows the formation, at 39
   await expect(rows.nth(0)).toHaveAttribute("data-me", "true");
   await expect(rows.nth(1)).not.toHaveAttribute("data-me");
   await expect(rows.nth(0).getByTestId("own-row-chip")).toHaveText("You");
-  expect(await accessibleName(rows.nth(0).getByRole("link").first())).toContain(`${WIDE}, you`);
+  // Chromium pads the out-of-flow hidden span with a space ("W , you"); a screen reader reads both the same.
+  const name = await accessibleName(rows.nth(0).getByRole("link").first());
+  expect(name.replace(/ ,/g, ",")).toContain(`${WIDE}, you Coached 4-2-3-1`);
   await expect(rows.nth(0)).toContainText("4-2-3-1");
   await expect(rows.nth(1)).toContainText("3-5-2");
   await expect(rows.nth(2)).toContainText("Open, Squad First, All regions");

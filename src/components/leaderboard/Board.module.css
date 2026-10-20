@@ -62,7 +62,12 @@
   flex-direction: column;
   min-width: 0;
 }
+/* A wrapping row, so a chip that drops under a long nickname starts flush and never splits. */
 .nick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 8px;
   font-weight: 600;
   color: var(--text);
   overflow-wrap: anywhere;
@@ -155,8 +160,8 @@
 .coached,
 .engineLabel {
   display: inline-block;
-  margin-left: 8px;
   padding: 0 6px;
+  white-space: nowrap;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
   font-size: 11px;
