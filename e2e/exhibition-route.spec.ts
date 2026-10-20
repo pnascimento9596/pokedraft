@@ -87,6 +87,13 @@ async function fitsWithHeadroom(page: Page, selector: string, label: string) {
   }
 }
 
+// Manager mode is off by default, so Skip to full time ends the match at once.
+async function playToFullTime(page: Page, kickOff = true) {
+  if (kickOff) await page.getByTestId("exhibition-kickoff").click();
+  await page.getByTestId("skip-ft").click();
+  await expect(page.getByTestId("exhibition-fulltime")).toBeVisible();
+}
+
 async function seedHistory(page: Page) {
   await page.addInitScript((runs) => {
     if (sessionStorage.getItem("seeded") !== null) return;
@@ -121,19 +128,21 @@ for (const [width, height] of [
     await expect(picker).toHaveValue(PIN.friendly);
     await expect(picker.locator("option")).toHaveText([/, 4-3-3, 4-1-3$/, /, 4-2-3-1, 3-0-2$/]);
     await expect(main.getByTestId("exhibition-mirror")).toHaveCount(0);
+    await playToFullTime(page);
     await expect(main.getByTestId("exhibition-score")).toHaveText(PIN.friendlyVsGolden);
-    const board = main.getByLabel("Exhibition final score");
-    await expect(board).toContainText("Your squad");
-    await expect(board).toContainText("Their squad");
+    await expect(main.getByTestId("matchday-scoreboard")).toContainText("Their squad");
+    const fulltime = main.getByTestId("exhibition-fulltime");
+    await expect(fulltime).toContainText(/Your squad wins|Their squad wins|Honours even/);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
       width,
     );
-    await board.scrollIntoViewIfNeeded();
+    await fulltime.scrollIntoViewIfNeeded();
     await page.screenshot({ path: `${PROOF}/exhibition-${width}.png` });
 
     await picker.selectOption(GOLDEN_CUP8_V3);
     await expect(page).toHaveURL(`/exhibition?home=${GOLDEN_CUP8_V3}&away=${GOLDEN_CUP8_V3}`);
     await expect(main.getByTestId("exhibition-mirror")).toHaveText("Same squad on both sides");
+    await playToFullTime(page);
     await expect(main.getByTestId("exhibition-score")).toHaveText(PIN.goldenMirror);
 
     expect(await page.evaluate(() => localStorage.getItem("pokedraft:history:v1"))).toBe(history);
@@ -149,6 +158,9 @@ test("the exhibition page in both themes at 390, 360 and 320, with 12 px of head
   await page.goto(`/exhibition?away=${GOLDEN_CUP8_V3}&name=${WIDE}&legs=2`);
   const main = page.getByRole("main");
   await expect(main.getByRole("heading", { level: 2 })).toHaveText(`Your squad vs ${WIDE}'s squad`);
+  await playToFullTime(page);
+  await main.getByRole("button", { name: "Play leg 2" }).click();
+  await playToFullTime(page, false);
   await expect(main.getByTestId("exhibition-aggregate")).toBeVisible();
   for (const theme of ["light", "dark"] as const) {
     await page.emulateMedia({ colorScheme: theme });
@@ -220,5 +232,7 @@ test("history and board row actions keep 12 px of headroom at 320 and fit at 308
   await page.screenshot({ path: `${PROOF}/board-row-320.png` });
   await link.click();
   await expect(page).toHaveURL(`/exhibition?away=${GOLDEN_CUP8_V3}&name=${WIDE}`);
-  await expect(page.getByLabel("Exhibition final score")).toContainText(`${WIDE}'s squad`);
+  await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText(
+    `Your squad vs ${WIDE}'s squad`,
+  );
 });

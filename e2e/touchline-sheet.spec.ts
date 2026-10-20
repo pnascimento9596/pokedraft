@@ -1,5 +1,6 @@
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { draftSixteen } from "./helpers";
+import { box, expectPitchClear, minute, sideScroll, smallControls } from "./touchline-helpers";
 
 // Row 3a: below 600px the touchline is a bottom sheet. Collapsed it shows the tactics, the sub
 // count and any stop's button; open, the bench and energy, and the clock waits. From 600px up the
@@ -7,13 +8,6 @@ import { draftSixteen } from "./helpers";
 
 const PLAY = "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach";
 const SHOT = "docs/reports/touchline-sheet";
-
-interface Box {
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-}
 
 async function toMatch(page: Page): Promise<void> {
   await page.addInitScript(() => {
@@ -30,46 +24,6 @@ async function toMatch(page: Page): Promise<void> {
   await page.getByTestId("prematch-go").click();
   await expect(page.getByTestId("broadcast")).toBeVisible();
   await expect.poll(() => minute(page)).toBeGreaterThan(0);
-}
-
-async function minute(page: Page): Promise<number> {
-  return Number(await page.getByTestId("match-player").getAttribute("data-minute"));
-}
-
-async function box(locator: Locator): Promise<Box> {
-  const b = await locator.boundingBox();
-  expect(b, "the element has a box").not.toBeNull();
-  return b!;
-}
-
-async function sideScroll(page: Page): Promise<number> {
-  return page.evaluate(
-    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-  );
-}
-
-/** Every visible button, select and interactive row in the sheet under 44 px on a side. */
-async function smallControls(sheet: Locator): Promise<string[]> {
-  return sheet.evaluate((root) => {
-    const out: string[] = [];
-    const view = root.getBoundingClientRect();
-    for (const el of root.querySelectorAll<HTMLElement>("button, select, input, [role=button]")) {
-      const r = el.getBoundingClientRect();
-      if (r.width === 0 || r.height === 0 || r.bottom <= view.top || r.top >= view.bottom) continue;
-      if (Math.min(r.width, r.height) < 44)
-        out.push(`${el.dataset.testid ?? el.textContent?.trim()} ${r.width}x${r.height}`);
-    }
-    return out;
-  });
-}
-
-/** The pitch is wholly on screen and wholly above the sheet. */
-async function expectPitchClear(page: Page): Promise<{ pitch: Box; sheet: Box }> {
-  const pitch = await box(page.getByTestId("broadcast"));
-  const sheet = await box(page.getByTestId("touchline-sheet"));
-  expect(pitch.y, "the pitch top is on screen").toBeGreaterThanOrEqual(0);
-  expect(pitch.y + pitch.height, "the sheet starts below the pitch").toBeLessThanOrEqual(sheet.y);
-  return { pitch, sheet };
 }
 
 for (const [width, height] of [

@@ -15,6 +15,20 @@ async function saveMirrorSquad(page: Page): Promise<void> {
   await page.reload();
 }
 
+// Manager mode is off by default, so Skip to full time ends each match at once.
+async function playMatch(page: Page): Promise<void> {
+  await page.getByTestId("exhibition-kickoff").click();
+  await page.getByTestId("skip-ft").click();
+  await expect(page.getByTestId("exhibition-fulltime")).toBeVisible();
+}
+
+async function playTie(page: Page): Promise<void> {
+  await playMatch(page);
+  await page.getByRole("button", { name: "Play leg 2" }).click();
+  await page.getByTestId("skip-ft").click();
+  await expect(page.getByTestId("exhibition-aggregate")).toBeVisible();
+}
+
 for (const width of [1280, 360]) {
   test.describe(`two-leg exhibition at ${width}px`, () => {
     test.use({ viewport: { width, height: width === 360 ? 780 : 900 }, reducedMotion: "reduce" });
@@ -27,14 +41,15 @@ for (const width of [1280, 360]) {
       const lifetime = await page.evaluate(() => localStorage.getItem("pokedraft:lifetime:v1"));
       await page.getByTestId("play-exhibition").click();
       await expect(page).toHaveURL(`/exhibition?away=${GOLDEN_CUP8_V3}`);
-      const modal = page.getByRole("main");
-      await expect(modal.getByTestId("exhibition-mirror")).toHaveText("Same squad on both sides");
-      const format = modal.getByRole("group", { name: "Exhibition format" });
+      const main = page.getByRole("main");
+      await expect(main.getByTestId("exhibition-mirror")).toHaveText("Same squad on both sides");
+      const format = main.getByRole("group", { name: "Exhibition format" });
       await expect(format.getByRole("button", { name: "One match" })).toHaveAttribute(
         "aria-pressed",
         "true",
       );
-      await expect(modal.getByTestId("exhibition-score")).toHaveText(PIN.firstSingle);
+      await playMatch(page);
+      await expect(main.getByTestId("exhibition-score")).toHaveText(PIN.firstSingle);
       for (const button of await format.getByRole("button").all()) {
         const box = await button.boundingBox();
         expect(box!.height).toBeGreaterThanOrEqual(44);
@@ -42,41 +57,40 @@ for (const width of [1280, 360]) {
       }
 
       await format.getByRole("button", { name: "Two legs" }).click();
+      await expect(page).toHaveURL(`/exhibition?away=${GOLDEN_CUP8_V3}&legs=2`);
+      await playTie(page);
+      await main.getByRole("button", { name: "Play rematch" }).click();
+      await expect(page).toHaveURL(`/exhibition?away=${GOLDEN_CUP8_V3}&n=1&legs=2`);
+
       // The first rematch of this mirror whose tie reaches extra time comes from the engine.
-      for (let rematch = 0; rematch < PIN.extraTimeRematch; rematch++) {
-        await modal.getByRole("button", { name: "Play rematch" }).click();
-        await expect(page).toHaveURL(new RegExp(`[?&]n=${rematch + 1}(&|$)`));
-      }
-      await expect(modal.getByTestId("exhibition-leg-1-score")).toHaveText(PIN.extraTime.leg1);
-      await expect(modal.getByTestId("exhibition-leg-2-score")).toHaveText(PIN.extraTime.leg2);
-      await expect(modal.getByTestId("exhibition-aggregate")).toHaveText(PIN.extraTime.aggregate);
-      await expect(modal.getByTestId("exhibition-decided")).toHaveText("After extra time");
-      const leg2 = modal.getByRole("region", { name: "Leg 2" });
-      await expect(leg2.getByRole("status")).toHaveText("Leg 2 after extra time.");
-      await expect(leg2.getByRole("list", { name: "Leg 2 goals" })).toContainText(
+      await page.goto(`/exhibition?away=${GOLDEN_CUP8_V3}&n=${PIN.extraTimeRematch}&legs=2`);
+      await page.getByTestId("exhibition-kickoff").click();
+      await page.getByTestId("skip-ft").click();
+      await expect(main.getByTestId("exhibition-leg-1-score")).toHaveText(PIN.extraTime.leg1);
+      await main.getByRole("button", { name: "Play leg 2" }).click();
+      await page.getByTestId("skip-ft").click();
+      await expect(main.getByTestId("exhibition-leg-1-score")).toHaveText(PIN.extraTime.leg1);
+      await expect(main.getByTestId("exhibition-leg-2-score")).toHaveText(PIN.extraTime.leg2);
+      await expect(main.getByTestId("exhibition-aggregate")).toHaveText(PIN.extraTime.aggregate);
+      await expect(main.getByTestId("exhibition-decided")).toHaveText("After extra time");
+      await expect(main.getByTestId("exhibition-fulltime")).toContainText(
+        "Level on aggregate after 90 minutes, so leg 2 went to extra time.",
+      );
+      await expect(main.getByRole("list", { name: "Extra time goals" })).toContainText(
         PIN.extraTime.goal,
       );
-
-      await leg2.getByRole("button", { name: "Replay highlights" }).click();
-      await expect(modal.getByTestId("exhibition-aggregate")).toHaveCount(0);
-      await expect(modal.getByRole("region", { name: "Aggregate" })).toHaveText(
-        "The aggregate shows when both legs are at full time.",
-      );
-      await expect(leg2.getByRole("status")).toContainText("/ 120' Replay of recorded goals.");
-      await leg2.getByRole("button", { name: "Show full time" }).click();
-      await expect(modal.getByTestId("exhibition-aggregate")).toHaveText(PIN.extraTime.aggregate);
       await noOverflow(page);
       await page.screenshot({ path: `output/playwright/two-leg-exhibition-${width}.png` });
 
       await format.getByRole("button", { name: "One match" }).click();
-      await expect(modal.getByTestId("exhibition-score")).toHaveText(PIN.singleAtExtraTimeRematch);
-      await format.getByRole("button", { name: "Two legs" }).click();
-      for (let rematch = PIN.extraTimeRematch; rematch < PIN.aggregateRematch; rematch++) {
-        await modal.getByRole("button", { name: "Play rematch" }).click();
-        await expect(page).toHaveURL(new RegExp(`[?&]n=${rematch + 1}(&|$)`));
-      }
-      await expect(modal.getByTestId("exhibition-aggregate")).toHaveText(PIN.aggregate);
-      await expect(modal.getByTestId("exhibition-decided")).toHaveText("On aggregate");
+      await expect(page).toHaveURL(`/exhibition?away=${GOLDEN_CUP8_V3}&n=${PIN.extraTimeRematch}`);
+      await playMatch(page);
+      await expect(main.getByTestId("exhibition-score")).toHaveText(PIN.singleAtExtraTimeRematch);
+
+      await page.goto(`/exhibition?away=${GOLDEN_CUP8_V3}&n=${PIN.aggregateRematch}&legs=2`);
+      await playTie(page);
+      await expect(main.getByTestId("exhibition-aggregate")).toHaveText(PIN.aggregate);
+      await expect(main.getByTestId("exhibition-decided")).toHaveText("On aggregate");
 
       expect(await page.evaluate(() => localStorage.getItem("pokedraft:history:v1"))).toBe(history);
       expect(await page.evaluate(() => localStorage.getItem("pokedraft:lifetime:v1"))).toBe(
