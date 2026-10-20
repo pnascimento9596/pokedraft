@@ -67,6 +67,27 @@ export interface MatchInput {
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
+/** One chance trial, read after the engine rolled it. `slot` is the shooter's formation slot. */
+export interface ChanceObservation {
+  readonly window: number;
+  readonly minute: number;
+  readonly side: Side;
+  readonly p: number;
+  readonly outcome: "goal" | "saved" | "off";
+  readonly kind: GoalKind | null;
+  readonly shooter: SpeciesId;
+  readonly slot: StarterIndex;
+}
+
+/**
+ * Read-only hooks into one match. They receive plain values after the engine has used them, so
+ * nothing they do can draw, mutate the match or change what happens next.
+ */
+export interface MatchObserver {
+  readonly chance: (chance: ChanceObservation) => void;
+  readonly window: (window: { readonly window: number; readonly minute: number }) => void;
+}
+
 const REGULATION_MINUTES = 90;
 const EXTRA_TIME_LAST_MINUTE = 120;
 const PERCENT = 100;
@@ -186,6 +207,16 @@ function convertProb(edge: number, c: EngineCoefficients): number {
 function goalTieKey(g: GoalEvent): readonly [number, number] {
   if (g.side === "user") return [0, g.scorer];
   return g.scorer.kind === "species" ? [0, g.scorer.id] : [1, g.scorer.number];
+}
+
+function slotOf(side: SideState, id: SpeciesId): StarterIndex {
+  return side.onPitch.findIndex((o) => o?.species.id === id) as StarterIndex;
+}
+
+function scorerOf(goal: GoalEvent): SpeciesId {
+  if (goal.side === "user") return goal.scorer;
+  if (goal.scorer.kind !== "species") throw new RangeError("the live engine fields species only");
+  return goal.scorer.id;
 }
 
 function outcomeOf(score: Score): "W" | "D" | "L" {
@@ -458,6 +489,16 @@ function shootoutOf(
 export function simulateMatch(
   input: MatchInput,
   c: EngineCoefficients = ENGINE_COEFFICIENTS,
+): PlayedMatch {
+  return playMatchCore(input, c);
+}
+
+// The one body behind simulateMatch and matchStory. `observe` is only ever called through `?.`,
+// so the match plays the same draws in the same order with or without it.
+export function playMatchCore(
+  input: MatchInput,
+  c: EngineCoefficients,
+  observe?: MatchObserver,
 ): PlayedMatch {
   const scope = `match:${input.matchIndex}`;
   const m = c.manager;
@@ -789,8 +830,19 @@ export function simulateMatch(
       const pool = onField(attacking);
       if (struct.next() < p) {
         const penalty = event.next() < c.match.penaltyShare;
-        goals.push(goalEvent(it.side, pool, it.minute, penalty, event, c));
+        const goal = goalEvent(it.side, pool, it.minute, penalty, event, c);
+        goals.push(goal);
         attacking.goals++;
+        observe?.chance({
+          window: index,
+          minute: it.minute,
+          side: it.side,
+          p,
+          outcome: "goal",
+          kind: goal.kind ?? null,
+          shooter: scorerOf(goal),
+          slot: slotOf(attacking, scorerOf(goal)),
+        });
       } else {
         const keeperSide: Side = defending.side;
         const rng = saveRng[keeperSide];
@@ -802,7 +854,8 @@ export function simulateMatch(
           (s) => Math.max(1, s.species.attrs.SHO) * c.match.roleFactor[s.role],
           rng,
         ).species;
-        if (rng.next() < saveProbability(attacker, keeper)) {
+        const saved = rng.next() < saveProbability(attacker, keeper);
+        if (saved) {
           saves.push({
             kind: "save",
             side: keeperSide,
@@ -811,6 +864,16 @@ export function simulateMatch(
             keeper: keeper.id,
           });
         }
+        observe?.chance({
+          window: index,
+          minute: it.minute,
+          side: it.side,
+          p,
+          outcome: saved ? "saved" : "off",
+          kind: null,
+          shooter: attacker.id,
+          slot: slotOf(attacking, attacker.id),
+        });
       }
     }
     // The snapshot is what the touchline sees when it pauses at this minute, so decisions taken
@@ -824,6 +887,7 @@ export function simulateMatch(
       energy: user.onPitch.map((o) => (o === null ? null : Math.round(o.energy))),
       onPitch: user.onPitch.map((o) => o?.species.id ?? null),
     });
+    observe?.window({ window: index, minute: last });
   };
 
   const regWindows = REGULATION_MINUTES / m.windowMinutes;
