@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { ACHIEVEMENTS_SINCE, ACHIEVEMENT_LABEL, lifetimeAchievements } from "@/ui/achievements";
 import { backupFileName, buildBackup, parseBackup, restoreBackup } from "@/ui/backup";
 import { FINISH_LABEL, record } from "@/ui/labels";
 import { overall } from "@/ui/lifetime";
@@ -9,6 +10,12 @@ import { savedRunsChanged, useSavedRuns } from "./store";
 import s from "./HistoryList.module.css";
 
 type Notice = { readonly kind: "done" | "error"; readonly text: string } | null;
+
+function earnedOn(at: string): string {
+  const d = new Date(at);
+  if (Number.isNaN(d.getTime())) return "Earned";
+  return `Earned ${d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`;
+}
 
 function download(): void {
   const exportedAt = new Date().toISOString();
@@ -33,6 +40,7 @@ export function LifetimePanel() {
   if (saved === null) return <p className="kicker">Loading your totals</p>;
   const { lifetime } = saved;
   const total = overall(lifetime);
+  const tiles = lifetimeAchievements(lifetime, saved.runs);
   const metrics = [
     { label: "Runs completed", value: total.runs },
     { label: "Cups won", value: total.cupsWon },
@@ -91,6 +99,29 @@ export function LifetimePanel() {
             </div>
           ))}
         </dl>
+      </section>
+      <section aria-label="Achievements" className={s.career}>
+        <h3>Achievements</h3>
+        <p className={s.scope}>Ranked runs only. Friendlies never count.</p>
+        <p className={s.scope}>
+          {ACHIEVEMENT_LABEL["hat-trick-hero"]}, {ACHIEVEMENT_LABEL.comeback} and{" "}
+          {ACHIEVEMENT_LABEL["giant-killer"]} count runs played from {ACHIEVEMENTS_SINCE}.
+        </p>
+        <ul className={s.achievements}>
+          {tiles.map((tile) => (
+            <li key={tile.id} data-earned={tile.done} data-testid={`achievement-${tile.id}`}>
+              <strong>{tile.label}</strong>
+              <span>
+                {tile.earned !== null ? earnedOn(tile.earned.at) : tile.done ? "Earned" : "Not yet"}
+              </span>
+              {tile.progress !== null ? (
+                <span className={s.progress}>
+                  {tile.progress.count} of {tile.progress.of}
+                </span>
+              ) : null}
+            </li>
+          ))}
+        </ul>
       </section>
       <section aria-label="Best finish by mode" className={s.career}>
         <h3>Best finish by mode</h3>

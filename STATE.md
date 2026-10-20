@@ -27,6 +27,34 @@ Gates at `6c73d50` (`9ad9c46` changes only `e2e/leaderboard-font-cls.spec.ts`):
 
 Decision log: `docs/decisions/board-ux.md`. Browser proof: `docs/reports/board-ux/` (`own-row-{390,360,320}-{light,dark}.png`, `share-my-rank-{390,320}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Achievements
+
+Branch `feat/achievements` off `origin/main` at `afaa695`. Wave 5 row 5h (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- The history page has an Achievements grid with six tiles: First Flawless, Hat-trick hero, Champion with every formation (with "n of 8"), 151 champion, Comeback and Giant killer. An earned tile is gold and shows the date of the first earn; the others say "Not yet".
+- Only ranked runs count. A builder friendly never earns one.
+- Older saved runs still earn First Flawless, 151 champion and their formation titles. The grid says once that Hat-trick hero, Comeback and Giant killer count runs played from 20 October 2026, because older runs did not store per-match results.
+- Earns are kept with the lifetime totals, so trimming the 50-run history never loses one, and a backup carries them. Restoring keeps the earliest date. Old backups still restore.
+- A run's results and its share card show its most notable earn as a gold chip: Giant killer, then Comeback, then Hat-trick hero, then 151 champion. Cards already shared keep their old picture.
+- Giant killer means beating a Boss Club at least 100 above the rating you fielded. At 150 only 1.0% of 200 good-bot cups earned it, under the 2% floor, so the gap moved to 100 (2.5%).
+
+RED commit: `2a74138` (9 of 65 unit tests failed in 4 files, and `achievements.test.ts`, 28 tests, failed to load). GREEN `73d5767`. `0e2bfde` adds `e2e/achievements.spec.ts` and the browser proof.
+
+Gates at `0e2bfde` (code identical to `73d5767` plus the e2e spec):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 16 touched code and test files.
+- Unit tests at `73d5767`: 1,911 passed in 222 files.
+- Playwright (`CI=1`, headless chromium, `--retries=0`, build of the `73d5767` code): `achievements` passed 15 of 15, and with `results-reveal`, `theme-results`, `layout-shift`, `lifetime-history`, `history-controls`, `watch-live`, `highlights-honesty`, `results-interactions`, `head-to-head`, `share`, `share-sheet`, `challenge`, `run-persist`, `a11y`, `contrast`, `old-links`, `server-html`, `platform-experience`, `exhibition-two-legs` and `draft-modes` 167 passed and 1 skipped by its own project gate.
+- NOT RUN: review and hosted CI; the full Playwright suite; WebKit and the phone projects; a real phone check and a screen reader pass over the grid and the chip (owner actions).
+
+Decision log: `docs/decisions/achievements.md`. Browser proof: `docs/reports/achievements/` (`grid-{390,360,320}-{light,dark}.png`, `chip-{390,360,320}-{light,dark}.png`, `card-giant-killer.png`, `card-coached-giant-killer.png`).
+
+Merge `0aae4bc` (#133 seed boards; only `STATE.md` conflicted, `ResultsView.tsx` merged cleanly with the chip, the trophy and the seed board together). With the seed board on every results page, `achievements.spec.ts`'s console check saw the seed board's 503 from the database-less local server (7 failed). The spec now answers `/api/leaderboard` with an empty seed board in a `beforeEach`, as `results-reveal.spec.ts` does. After that `achievements`, `results-reveal`, `seed-board`, `layout-shift`, `theme-results`, `lifetime-history` and `server-html` passed 53 of 53 (`CI=1`, `--retries=0`, build of `0aae4bc`).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #136 (row 5h, achievements, Yellow) merged as squash `fc657f4`, reviewed head `2306816` (`1228750` plus a merge of main bringing in PR #133 and a seed board stub in `achievements.spec.ts`), GLM 5.3 Flash APPROVE in round 1 with canary `achievements-fece2fd90d77f93b58fbd5ff24535cd1` echoed. At `2306816` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,953 unit tests passed in 225 files and Prettier passed on 18 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `fc657f4` with `db.status` ok; `achievements` (including a real `/card` render through satori), `results-reveal`, `lifetime-history` and `layout-shift` against production (chromium) passed 38 of 38. The Giant killer threshold is 100, not 150, by the hand-off's 2% to 20% rule (150 earned 1.0% of 200 good-bot cups, 100 earned 2.5%). Hat-trick hero is common (68.0% of those runs) under its literal definition. NOT RUN: WebKit and phone projects for the grid and chip, a real phone check and a screen reader pass (owner actions).
+
 ## Seed boards and engine filter
 
 Branch `feat/seed-boards` off `origin/main` at `07beda9`. Wave 5 row 5g (Red). No file under `src/engine`, `src/data` or `src/scouting` changed, and there is no migration.
@@ -52,6 +80,8 @@ Merge `da86f41` (#135 badge loop budget and #134 results reveal; `STATE.md` and 
 Hosted CI at `3eac05a` (both receipts) failed shard e2e (3): `seed-board.spec.ts` at 320 px measured the seed table 3 px wider than its wrapper, on the attempt and its retry (run 39364653413). Locally it fit, with 3 px to spare on macOS fonts; measured at narrower widths the same table overflowed by 7 px at 310 and 17 px at 300. The floor came from fixed columns: the nowrap "Engine v3" tag (player column 74 px) and the "Formation" header (65 px). Cell side padding goes from 3 to 2 px and tag side padding from 6 to 4 px, with no copy or column change: the table's minimum drops from 254 to about 239 px, so it fits down to 306 px locally (overflow 5 px at 300). The 320, 360 and 390 seed table screenshots were regenerated. The PR was not merged at `3eac05a`; both receipts were rerun at the fix head.
 
 Decision log: `docs/decisions/seed-boards.md`. Browser proof: `docs/reports/seed-boards/` (seed table at 390, 360 and 320, the unavailable state, All engines at 390, 360 and 320). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #133 (row 5g, seed boards and engine filter, Red) merged as squash `783ddbf`, reviewed head `5cf4f47`. Round 1 at `3eac05a` (GLM 5.3 Flash APPROVE, canary `seed-boards-a9d72814eeca653b17b9896a23ff8872`, and the independent Red reviewer PASS) was voided when hosted e2e (3) measured the seed table 3 px wider than its wrapper at 320 px on Linux fonts (attempt and retry, run 39364653413); the fix lowered cell and tag padding. Round 2 at `5cf4f47`: GLM 5.3 Flash APPROVE with canary `seed-boards-r2-2c6347b44475602b7f3bbbc22b217216` echoed, and a fresh independent `pokedraft-mode` Red reviewer PASS that re-executed lint, typecheck, build and all nine `check:*` scripts (exit 0), 1,915 unit tests in 224 files, the PGlite leaderboard tests (124 in 11 files) and read-only GETs against the Neon preview branch. No migration. Hosted check and all eight e2e shards green. Production `/api/health?db=1` served `783ddbf` with `db.status` ok. Production read-only API: the all-time default returned 1 engine 6 row, `engine=all` returned 3 rows (adding two engine 3 rows), the 16 October daily seed returned its engine 6 row, and an empty seed returned 400 `INVALID_QUERY`. `seed-board`, `leaderboard`, `layout-shift` and `server-html` against production (chromium) passed 26 of 26. Carryovers: a misleading comment on the rank test in `seed-board.test.ts`; "This run" compares token strings; no `(mode, seed)` index (threshold recorded in `store.ts`).
 
 ## Results reveal and sync
 

@@ -49,6 +49,19 @@
   flex: none;
   color: var(--gold-edge);
 }
+.achievement {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid var(--gold-edge);
+  border-radius: 999px;
+  background: var(--gold-bg);
+  color: var(--gold-ink);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 18px;
+  white-space: nowrap;
+}
 .flawless {
   display: flex;
   flex-wrap: wrap;
@@ -114,6 +127,7 @@
   animation: flipIn 300ms ease-out 900ms both;
 }
 .hero[data-reveal] .trophy,
+.hero[data-reveal] .achievement,
 .hero[data-reveal] .flawless {
   animation: popIn 300ms ease-out 1200ms both;
 }
@@ -165,6 +179,7 @@
   .hero[data-reveal] .count,
   .hero[data-reveal] .flip,
   .hero[data-reveal] .trophy,
+  .hero[data-reveal] .achievement,
   .hero[data-reveal] .flawless,
   .hero[data-reveal] .mvp {
     animation: none;
