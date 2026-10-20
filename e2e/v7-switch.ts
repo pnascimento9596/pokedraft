@@ -1,7 +1,10 @@
 import type { Page } from "@playwright/test";
 
-/** The client chunks a build serves, which the switch below rewrites. */
-export const CLIENT_CHUNKS = "**/_next/static/chunks/**";
+/**
+ * The client chunks a build serves, which the switch below rewrites: /_next/static/chunks/ under
+ * `next start`, /_next/static/immutable/chunks/ on Vercel.
+ */
+export const CLIENT_CHUNKS = "**/_next/static/**/chunks/**";
 
 /**
  * The test-only engine 7 switch. Engine 7 rules ship dormant: the UI reads the live coefficients
