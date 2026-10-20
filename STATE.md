@@ -9,13 +9,14 @@ Branch `feat/match-story` off `origin/main` at `9e4802b`. Wave 6 row 6a1 (Red). 
 
 - Nothing changes for a player yet. `matchStory(seed, matchIndex, run)` in `src/engine/story.ts` returns every chance the engine rolled in a match (its probability, goal, saved or off, the shooter and a derived zone) and each five-minute window's xG and territory, next to the unchanged match result. Row 6a2 draws the xG river and the territory lean from it.
 - `simulateMatch` and `matchStory` share one core, `playMatchCore` in `match.ts`. The story reads the core through a read-only observer that cannot draw or change state. `runCup` and `matchStory` build each match's input with the same `cupMatchInput`.
+- `matchStory` plays the whole run through `runCup` first (fix round 1). A run `runCup` rejects throws the same error, and a match the run never reaches throws instead of returning a result that never happened.
 
-Parity guard (the RED equivalent for an engine row that must not move): RED commit `420228a` (7 of 7 failed against a stub `matchStory` that throws), GREEN `7bf01e8`. The guard replays every played match of `goldens.test.ts`'s 20-run panel and 30 more seeds (50 runs in `pnpm test`; 200 in `story.slow.test.ts`) and requires the story's result to be byte-identical to `runCup`'s match, its goal chances to be the goals and its saved chances to be the saves.
+Parity guard (the RED equivalent for an engine row that must not move): RED commit `420228a` (7 of 7 failed against a stub `matchStory` that throws), GREEN `7bf01e8`. Fix round 1: RED `8685f39` (3 of 10 failed: an unreached knockout and two tokens `runCup` rejects), GREEN `fa446f0`. The guard replays every played match of `goldens.test.ts`'s 20-run panel and 30 more seeds (50 runs in `pnpm test`; 200 in `story.slow.test.ts`) and requires the story's result to be byte-identical to `runCup`'s match, its goal chances to be the goals and its saved chances to be the saves. That test compares HEAD with HEAD. The cross-version guarantee is `goldens.test.ts` plus the coordinator's skeptic check against `9e4802b` (byte-identical over 1,676 and 2,238 outputs); 6b1 adds the frozen v6 against live parity test.
 
-Gates at `7bf01e8`:
+Gates at `5a7f6a3` (after fix round 1 and the merge of `origin/main` at `38b1bb4`):
 
 - `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
-- Unit tests: 2,005 passed in 230 files. `pnpm vitest run src/engine`: 280 passed in 24 files.
+- Unit tests: 2,023 passed in 231 files. `pnpm vitest run src/engine`: 283 passed in 24 files.
 - `SLOW_TESTS=1 pnpm vitest run src/engine/__tests__/story.slow.test.ts --silent=false`: 1 of 1 passed over 942 played matches (81 with extra time, 415 coached).
 - `check-retained-replays.mts`: 10 golden replays passed, live v6 replay `2b26ee82...`. `measure-retained-json.mjs`: 4 payloads.
 - The probe numbers are unchanged by construction against the 6p baseline; no probe was re-run.

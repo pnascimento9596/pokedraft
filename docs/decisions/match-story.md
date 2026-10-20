@@ -22,8 +22,10 @@ are unchanged.
   index outside 0 to 7 with a `RangeError`.
 - `src/engine/opponents.ts`. `BOSS_FORMATION` is exported so the story can read the Boss Club's
   slot channels.
-- `src/engine/story.ts` (new). `matchStory(seed, matchIndex, run, c?)` (`:91`) returns
-  `{ chances, windows, result }`. `chanceZone` (`:74`) derives the zone.
+- `src/engine/story.ts` (new). `matchStory(seed, matchIndex, run, c?)` (`:93`) returns
+  `{ chances, windows, result }`. It plays the whole run through `runCup` first, so a run `runCup`
+  rejects throws the same `RunTokenError` and a match the run never reaches throws a `RangeError`.
+  `chanceZone` (`:74`) derives the zone.
 - `src/engine/__tests__/story.test.ts`, `story.slow.test.ts` and `story-panel.ts` (new): the
   parity guard, the zone table and the observer boundary.
 - `vitest.config.mts`. `*.slow.test.ts` files are excluded unless `SLOW_TESTS=1` is set.
@@ -102,6 +104,48 @@ Mutation check, not committed: making the observer path draw once more from `sav
 moved) while `goldens.test.ts` still passed. That is why the parity guard exists next to the
 goldens: an observer-only drift never reaches `simulateMatch`.
 
+## Fix round 1: matchStory skipped runCup's whole-run checks
+
+The coordinator's review found that `matchStory` built one match without playing the run. With
+the kanto151 3-5-2 run on seed `beh-0`, `runCup` leaves match 7 not played but `matchStory(seed, 7,
+run)` returned a played loss. With a decision for match 7, `runCup` throws "a coach decision names
+a match the run never played" while `matchStory(seed, 0, run)` returned a result. The leftover
+decision, after-the-final-whistle and invalid sub checks in other matches were all skipped. I
+reproduced it at `79f9bf1` with a kanto151 run on `beh-0` (statuses: four played, four not
+played; `matchStory(seed, 7, ...)` returned outcome "L").
+
+RED commit `8685f39`: three guard tests on `golden-cup8` (out in the QF, so matches 6 and 7 are not
+played). `pnpm vitest run src/engine/__tests__/story.test.ts`, 3 of 10 failed:
+
+```
+ FAIL  src/engine/__tests__/story.test.ts > matchStory run checks (a story of a match runCup never plays would show a result that never happened) > refuses a knockout the run never reached
+AssertionError: expected function to throw an error, but it didn't
+ FAIL  src/engine/__tests__/story.test.ts > matchStory run checks (a story of a match runCup never plays would show a result that never happened) > rejects a token runCup rejects: a decision for a match the run never played
+AssertionError: expected function to throw an error, but it didn't
+ FAIL  src/engine/__tests__/story.test.ts > matchStory run checks (a story of a match runCup never plays would show a result that never happened) > rejects a token runCup rejects: a decision after the final whistle of another match
+AssertionError: expected function to throw an error, but it didn't
+ Test Files  1 failed (1)
+      Tests  3 failed | 7 passed (10)
+```
+
+GREEN commit `fa446f0`: `matchStory` calls `runCup` with the same run first and throws a
+`RangeError` when `matches[matchIndex]` is not played. 10 of 10 pass. A story now costs one full
+cup plus one match; 6a2 measures the time per cup.
+
+## What the parity guard proves, and what it does not
+
+The in-repo parity test compares HEAD with HEAD: `matchStory` against `runCup` on the same code.
+It proves the observer changes nothing, not that the refactor left engine 6 as it was. The
+cross-version guarantee is two things:
+
+- `goldens.test.ts`, byte-identical and green: two full runs hashed and the 20-run panel's Team
+  Scores and outcomes.
+- The coordinator's skeptic review, which compared this branch with `9e4802b` and found the
+  outputs byte-identical over 1,676 and 2,238 outputs in two checks.
+
+Row 6b1 adds the frozen v6 bundle against live engine parity test, which turns that cross-version
+check into a committed guard.
+
 ## Measurements
 
 The probe numbers (squad share of variance, manager table, upset curve, shootout win rate) are
@@ -160,19 +204,24 @@ guard prove. No probe was re-run.
 
 ## Gates
 
-At `7bf01e8` (the docs commit that follows changes only `docs/decisions/match-story.md` and
-`STATE.md`):
+At `5a7f6a3`, after fix round 1 and the merge of `origin/main` (PR #141, `38b1bb4`). The docs
+commit that follows changes only `docs/decisions/match-story.md` and `STATE.md`.
 
 - `pnpm lint` 0, `pnpm typecheck` 0, `pnpm build` 0.
-- `pnpm test`: 2,005 passed in 230 files (main had 1,998 in 229).
-- `pnpm vitest run src/engine`: 280 passed in 24 files.
-- `SLOW_TESTS=1 pnpm vitest run src/engine/__tests__/story.slow.test.ts`: 1 of 1 passed.
+- `pnpm test`: 2,023 passed in 231 files (main at `38b1bb4` had 2,013 in 230).
+- `pnpm vitest run src/engine`: 283 passed in 24 files.
+- `SLOW_TESTS=1 pnpm vitest run src/engine/__tests__/story.slow.test.ts --silent=false`: 1 of 1
+  passed, with the same tally as at `7bf01e8` (942 played matches, 81 with extra time, 415 coached,
+  5,192 saved and 89,177 off).
 - `goldens.test.ts`: byte-identical to `origin/main` and green.
 - `pnpm exec tsx scripts/build/check-retained-replays.mts .next/server/chunks`: 0, "10 emitted golden
   replays passed, 1 dispatcher(s)", live v6 replay `2b26ee82...`.
 - `node scripts/build/measure-retained-json.mjs .next/server/chunks`: 0, 4 payloads.
 - All nine `check:*` scripts exited 0.
-- Prettier passed on the eight touched code, test and config files.
+- Prettier passed on the eight touched code, test and config files, `STATE.md` and this log.
+
+At `7bf01e8`, before fix round 1: the same gates passed, with 2,005 unit tests in 230 files and
+280 engine tests in 24 files.
 
 ## NOT RUN
 
@@ -183,7 +232,5 @@ At `7bf01e8` (the docs commit that follows changes only `docs/decisions/match-st
 
 ## Carryovers
 
-- `matchStory` plays any match index 0 to 7, including a knockout the run never reached. 6a2 should
-  call it only for matches whose `status` is "played".
 - 6b0 freezes from `replay.ts` and `types.ts`. `story.ts` is outside that closure, so the frozen v6
   bundle will hold `playMatchCore` and the observer types but not the story.
