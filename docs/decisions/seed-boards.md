@@ -190,6 +190,11 @@ Full suite at `7a9e7d2` (`CI=1`, headless, six projects): 1,020 passed, 67 skipp
 in 17.9m. `seed-board.spec.ts` 8 of 8 on chromium. Screenshots the suite rewrote outside
 `docs/reports/seed-boards/` were reverted.
 
+After the PR opened, `origin/main` gained #131 (share sheet) and the PR conflicted in `STATE.md`
+only. Merged (not rebased) as `e54e9e2`, both STATE sections kept. At `e54e9e2`: lint, typecheck,
+build and all nine `check:*` exited 0; unit tests 1,881 passed in 221 files; full Playwright 1,029
+passed, 67 skipped, 0 failed (17.8m).
+
 ## Brief vs code
 
 - The hand-off's RED test asserts `formation: "4-3-3"` "for the fixture". The golden fixtures are
