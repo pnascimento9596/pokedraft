@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { CARD_THEME } from "@/design/card-tokens";
 import type { CupFinish, FormationId } from "@/engine";
+import { ACHIEVEMENT_LABEL } from "@/ui/achievements";
 import { FINISH_LABEL, FRIENDLY_LABEL } from "@/ui/labels";
 import type { CardHeadline } from "./card";
 import { PANEL_RECT } from "./card-layout";
@@ -279,6 +280,11 @@ export function ResultPanel({
         {run?.coached ? (
           <Chip bg={CARD_THEME.accent} fg={CARD_THEME.accentFg}>
             Coached
+          </Chip>
+        ) : null}
+        {run?.achievement ? (
+          <Chip bg={CARD_THEME.goldHi} fg={CARD_THEME.goldInk}>
+            {ACHIEVEMENT_LABEL[run.achievement]}
           </Chip>
         ) : null}
       </div>

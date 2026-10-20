@@ -1,6 +1,14 @@
 import { z } from "zod";
 import { FORMATION_IDS, type CupFinish, type FormationId } from "@/engine/types";
 import { cyrb128 } from "@/lib/rng";
+import {
+  ACHIEVEMENT_IDS,
+  earnRun,
+  isRanked,
+  mergeEarned,
+  mergeTitles,
+  type Earned,
+} from "./achievements";
 import { loadHistory, recordRun, STAT_BUCKETS, type RunRecord, type StatBucket } from "./runs";
 import { readJson, writeJson } from "./storage";
 
@@ -48,6 +56,10 @@ export interface LifetimeTotals {
   readonly counted: readonly string[];
   /** Runs taken from the retained history when lifetime tracking started, 0 when none. */
   readonly backfilledRuns: number;
+  /** The first earn of each achievement, kept here so trimming the history never loses one. */
+  readonly earned: Earned;
+  /** Formations with a ranked cup won, in FORMATION_IDS order. */
+  readonly formationTitles: readonly FormationId[];
 }
 
 const Count = z.number().int().nonnegative();
@@ -66,6 +78,8 @@ const BucketTotalsSchema = z
   })
   .refine((t) => t.cupsWon <= t.runs && t.goalRuns <= t.runs, "counts exceed runs");
 const FormationTotalsSchema = z.object({ runs: Count, wins: Count, draws: Count, losses: Count });
+const FormationSchema = z.enum(FORMATION_IDS as unknown as [FormationId, ...FormationId[]]);
+const EarnSchema = z.object({ at: z.string().min(1), token: z.string().min(1) });
 export const LifetimeSchema = z.object({
   v: z.literal(1),
   buckets: z.object(
@@ -74,15 +88,17 @@ export const LifetimeSchema = z.object({
       typeof BucketTotalsSchema
     >,
   ),
-  formations: z.partialRecord(
-    z.enum(FORMATION_IDS as unknown as [FormationId, ...FormationId[]]),
-    FormationTotalsSchema,
-  ),
+  formations: z.partialRecord(FormationSchema, FormationTotalsSchema),
   counted: z
     .array(z.string().regex(/^[0-9a-f]{16}$/))
     .max(COUNTED_LIMIT)
     .refine((keys) => new Set(keys).size === keys.length, "repeated run keys"),
   backfilledRuns: Count,
+  earned: z.partialRecord(z.enum(ACHIEVEMENT_IDS), EarnSchema).optional(),
+  formationTitles: z
+    .array(FormationSchema)
+    .refine((ids) => new Set(ids).size === ids.length, "repeated formations")
+    .optional(),
 });
 export type StoredLifetime = z.infer<typeof LifetimeSchema>;
 
@@ -107,6 +123,8 @@ export function emptyLifetime(): LifetimeTotals {
     formations: {},
     counted: [],
     backfilledRuns: 0,
+    earned: {},
+    formationTitles: [],
   };
 }
 
@@ -136,10 +154,6 @@ function addRun(bucket: BucketTotals, run: RunRecord): BucketTotals {
   };
 }
 
-export function isRanked(run: RunRecord): boolean {
-  return !run.friendly && run.bucket !== "builder";
-}
-
 /** Adds one completed run. Returns the same object when the run was already counted. */
 export function countRun(totals: LifetimeTotals, run: RunRecord): LifetimeTotals {
   const key = runKey(run.token);
@@ -160,6 +174,7 @@ export function countRun(totals: LifetimeTotals, run: RunRecord): LifetimeTotals
       : totals.formations,
     counted: [key, ...totals.counted].slice(0, COUNTED_LIMIT),
     backfilledRuns: totals.backfilledRuns,
+    ...earnRun(totals, run),
   };
 }
 
@@ -230,11 +245,19 @@ export function mergeLifetime(local: LifetimeTotals, imported: LifetimeTotals): 
     formations,
     counted: [...new Set([...local.counted, ...imported.counted])].slice(0, COUNTED_LIMIT),
     backfilledRuns: Math.max(local.backfilledRuns, imported.backfilledRuns),
+    earned: mergeEarned(local.earned, imported.earned),
+    formationTitles: mergeTitles(local.formationTitles, imported.formationTitles),
   };
 }
 
 export function toStored(totals: LifetimeTotals): StoredLifetime {
-  return { v: 1, ...totals, counted: [...totals.counted] };
+  return {
+    v: 1,
+    ...totals,
+    counted: [...totals.counted],
+    earned: { ...totals.earned },
+    formationTitles: [...totals.formationTitles],
+  };
 }
 
 export function loadLifetime(): LifetimeTotals | null {
@@ -248,8 +271,10 @@ export function fromStored({
   formations,
   counted,
   backfilledRuns,
+  earned = {},
+  formationTitles = [],
 }: StoredLifetime): LifetimeTotals {
-  return { buckets, formations, counted, backfilledRuns };
+  return { buckets, formations, counted, backfilledRuns, earned, formationTitles };
 }
 
 export function writeLifetime(totals: LifetimeTotals): void {

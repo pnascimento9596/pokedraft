@@ -47,6 +47,49 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+.achievements {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.achievements li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+.achievements strong {
+  color: var(--text-soft);
+  font-size: 14px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+.achievements li[data-earned="true"] {
+  border-color: var(--gold-edge);
+  background: var(--gold-bg);
+  color: var(--gold-ink);
+}
+.achievements li[data-earned="true"] strong {
+  color: var(--gold-ink);
+}
+.progress {
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 720px) {
+  .achievements {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 
 .list {
   display: flex;

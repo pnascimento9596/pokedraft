@@ -64,6 +64,7 @@ describe("Coached chip on the run card (catches a coached run's card looking lik
       "8-0 Challenge, Open",
       "4-3-3",
       "Coached",
+      "Comeback",
     ]);
   });
 
@@ -73,6 +74,7 @@ describe("Coached chip on the run card (catches a coached run's card looking lik
     expect(chips(renderToStaticMarkup(<Card model={model!} />))).toEqual([
       "8-0 Challenge, Open",
       "4-3-3",
+      "Comeback",
     ]);
   });
 });
