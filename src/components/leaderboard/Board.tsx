@@ -22,6 +22,12 @@ const FILTER_EMPTY: Readonly<Record<Exclude<CoachFilter, "all">, string>> = {
 
 const NO_ENGINE_RUNS = "No runs on this engine yet.";
 
+const CHIP_CLASS: Readonly<Record<CoachFilter, string | undefined>> = {
+  all: s.chipAll,
+  uncoached: s.chipUncoached,
+  coached: s.chipCoached,
+};
+
 const ERROR_COPY: Readonly<Record<Extract<BoardResult, { kind: "error" }>["reason"], string>> = {
   offline: "The leaderboard is offline right now.",
   network: "Could not reach the leaderboard. Check your connection.",
@@ -132,7 +138,7 @@ export function Board({
         <button
           key={f}
           type="button"
-          className="chip"
+          className={`chip ${CHIP_CLASS[f]}`}
           aria-pressed={coach === f}
           data-testid={`coach-filter-${f}`}
           onClick={() => onCoachChange(f)}

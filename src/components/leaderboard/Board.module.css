@@ -154,8 +154,8 @@
 .challenge {
   min-height: 44px;
 }
-/* Each chip is as wide as its label and padding, so "Uncoached" never meets its border; on a
-   narrow phone the row wraps instead. */
+/* Fixed widths, each sized for its own label with room to spare, so a late web font never moves a
+   chip and "Uncoached" never meets its border. On a narrow phone the row wraps. */
 .coachFilter {
   display: flex;
   flex-wrap: wrap;
@@ -163,8 +163,18 @@
   margin: 0 0 8px;
 }
 .coachFilter :global(.chip) {
+  flex: none;
   justify-content: center;
   min-height: 44px;
+}
+.coachFilter .chipAll {
+  width: 4.5rem;
+}
+.coachFilter .chipUncoached {
+  width: 8.75rem;
+}
+.coachFilter .chipCoached {
+  width: 7.5rem;
 }
 .filterEmpty {
   margin: 0 0 8px;
