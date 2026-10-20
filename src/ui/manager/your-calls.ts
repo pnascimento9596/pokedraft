@@ -83,6 +83,10 @@ function bigger(a: readonly number[], b: readonly number[]): boolean {
 
 /** A call in plain words, named from what the real match logged. */
 export function callLabel(a: ManagerAction, match: PlayedMatch): string {
+  if (a.type === "taker") {
+    const set = a.set === "penalty" ? "penalty" : "free-kick";
+    return a.minute === 0 ? `your ${set} taker from kickoff` : `your ${set} taker at ${a.minute}'`;
+  }
   if (a.type === "tactic") {
     const label = TACTIC_LABEL[a.tactic];
     return a.minute === 0 ? `your ${label} from kickoff` : `your ${label} switch at ${a.minute}'`;

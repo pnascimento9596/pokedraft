@@ -20,4 +20,6 @@ export const ENGINE_COEFFICIENTS_V7: EngineCoefficients = {
     counterLead: 1.1,
     pressFade: { below: 70, perPoint: 0.004 },
   },
+  penalty: { missable: true, awardShare: 0.077 },
+  takers: { freeKickWeight: 1.5 },
 };

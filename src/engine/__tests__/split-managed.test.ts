@@ -7,7 +7,8 @@ import { CUP8, draftLineup } from "./story-panel";
 // Golden panel run 0 (seed panel-0, cup8 4-2-3-1), match 1. Uncoached, it leads 1-0 from 10',
 // an injury at 28' is answered by the assistant, fatigue subs come at 60' and 75', and the
 // assistant switches to Defend at 75'. Each expectation below is that match's engine 6 output up to
-// the first minute where an assistant the manager has not taken over acts.
+// the first minute where an assistant the manager has not taken over acts, except the score: engine 7
+// also awards the user a penalty at 61', which goes in.
 const SEED = "panel-0" as Seed;
 const LINEUP = draftLineup(CUP8, SEED);
 const MATCH = 1;
@@ -62,11 +63,11 @@ const DEFEND_75 = {
 };
 
 describe("engine 7 split managed (catches one decision switching off the whole assistant)", () => {
-  it("Balanced at kickoff leaves both assistant behaviours on: the uncoached match, 3-0", () => {
+  it("Balanced at kickoff leaves both assistant behaviours on: the uncoached match, 4-0", () => {
     const { match, autoTactics, fatigueSubs } = play([tactic(0, "balanced")]);
     expect(autoTactics).toEqual([DEFEND_75]);
     expect(fatigueSubs).toEqual([FATIGUE_60, FATIGUE_75]);
-    expect(match.regulation).toEqual({ user: 3, opp: 0 });
+    expect(match.regulation).toEqual({ user: 4, opp: 0 });
   });
 
   it("a sub at 30' turns the fatigue subs off and leaves the late tactic on", () => {

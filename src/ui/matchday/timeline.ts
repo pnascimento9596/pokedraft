@@ -61,6 +61,8 @@ export type Beat =
       readonly keeper: PitchRef;
       readonly attacker: PitchRef;
       readonly callout: Callout;
+      /** Engine 7: a penalty that did not score, kept by the keeper or put wide by the taker. */
+      readonly penalty?: "saved" | "missed";
     }
   | {
       readonly kind: "card";
@@ -374,6 +376,24 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
       case "tactic":
         beats.push({ kind: "tactic", minute: i.minute, side: i.side, tactic: i.tactic, by: i.by });
         break;
+      case "penalty": {
+        // An engine 7 penalty that did not score plays as a save from the spot, kept or wide.
+        const keeperSide: Side = i.side === "user" ? "opp" : "user";
+        const keeper =
+          keeperSide === "user"
+            ? userRef(i.keeper, i.minute)
+            : oppRef(i.keeper, name(i.keeper, ""), i.minute);
+        beats.push({
+          kind: "save",
+          minute: i.minute,
+          side: keeperSide,
+          keeper,
+          attacker: slotRef(i.side, i.slot, i.taker),
+          callout: saveCallout(keeper.name, movesOf === null ? null : movesOf(i.keeper)),
+          penalty: i.outcome,
+        });
+        break;
+      }
     }
   }
   const whistles: [number, WhistleLabel][] = [
@@ -766,6 +786,9 @@ export function saveBall(
   if (progress < 0.65) return mouth;
   return lerp(mouth, deflect, (progress - 0.65) / 0.35);
 }
+
+/** Where a penalty put wide crosses the goal line: outside the post the pitch draws at 58.6. */
+const WIDE_OF_POST = 64;
 
 /** The spot a penalty is taken from, the one the pitch draws. */
 export function penaltySpot(side: Side): Point {
@@ -1537,7 +1560,17 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     const attSlot = b.attacker.slot;
     // Where the shooter strikes: the ball meets them there, then flies at the keeper.
     let strike: Point = { x: attSide === "user" ? 76 : 24, y: 42 };
-    if (attSlot !== null && pts[attSide][attSlot]) {
+    if (b.penalty !== undefined) {
+      strike = penaltySpot(attSide);
+      if (attSlot !== null && pts[attSide][attSlot]) {
+        const runUp = { x: strike.x - attackDir(attSide) * RUN_UP, y: strike.y };
+        pts[attSide][attSlot] = lerp(
+          pts[attSide][attSlot]!,
+          runUp,
+          smoothstep(progress / SAVE_STRIKE),
+        );
+      }
+    } else if (attSlot !== null && pts[attSide][attSlot]) {
       const baseAtt = pts[attSide][attSlot]!;
       const shootSpot = clampPoint({
         x: attSide === "user" ? 78 : 22,
@@ -1555,13 +1588,15 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
     }
     // The parry falls back toward open play, where the ball goes on once the clock resumes.
     const resumed = stagePitch(timeline, { ...input, clock: b.minute + RESUME, shot: null }).ball;
-    const parried = lerp(mouth, { x: resumed.x, y: resumed.y }, PARRY);
-    ballPos = saveBall(liveBall, strike, mouth, parried, progress);
+    // A penalty put wide flies past the post instead of at the keeper.
+    const target = b.penalty === "missed" ? { x: mouth.x, y: WIDE_OF_POST } : mouth;
+    const parried = lerp(target, { x: resumed.x, y: resumed.y }, PARRY);
+    ballPos = saveBall(liveBall, strike, target, parried, progress);
     ballLoft = progress < SAVE_REACH ? Math.sin((progress / SAVE_REACH) * Math.PI) * 0.65 : 0.25;
     ballEffect = b.callout.effect;
     carrier = progress < SAVE_REACH ? b.attacker : b.keeper;
     trail = {
-      from: progress < SAVE_STRIKE ? liveBall : progress < SAVE_REACH ? strike : mouth,
+      from: progress < SAVE_STRIKE ? liveBall : progress < SAVE_REACH ? strike : target,
       to: ballPos,
       effect: b.callout.effect,
       type: b.callout.type,

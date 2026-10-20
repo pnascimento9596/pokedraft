@@ -28,6 +28,8 @@ export function cutInAt(
       : null;
   }
   if (beat?.kind === "save") {
+    // A penalty put wide is the taker's miss, not the keeper's moment.
+    if (beat.penalty === "missed") return null;
     return { kind: "save", side: beat.side, species: beat.keeper.species, callout: beat.callout };
   }
   if (beat !== undefined || play?.moment !== "key-duel") return null;

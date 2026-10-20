@@ -1,9 +1,13 @@
 import { expect } from "vitest";
-import { runCup } from "../cup";
+import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "../coefficients";
+import { cupMatchInput, runCup } from "../cup";
 import { applyAction, createDraft, eligibleSpecies, slotRefs, toFullLineup } from "../draft";
 import { dailySeed, toIsoDate } from "../rng";
 import { speciesById } from "../species";
+import { playMatchCore, type ChanceObservation, type MatchInput } from "../match";
 import { runCup as runCupV6 } from "../versions/v6/src/engine/cup";
+import { ENGINE_COEFFICIENTS as V6_COEFFICIENTS } from "../versions/v6/src/engine/coefficients";
+import { playMatchCore as playMatchCoreV6 } from "../versions/v6/src/engine/match";
 import {
   CUP_ROUNDS,
   FORMATION_IDS,
@@ -19,7 +23,7 @@ import {
   type Seed,
   type StarterIndex,
 } from "../types";
-import { draftLineup } from "./story-panel";
+import { CUP8, draftLineup } from "./story-panel";
 
 type Shape = "cup8" | "kanto151" | "daily" | "builder";
 const SHAPES: readonly Shape[] = ["cup8", "kanto151", "daily", "builder"];
@@ -186,4 +190,73 @@ export function checkParity(run: ParityRun, tally: ParityTally): void {
       (x) => x.kind === "sub" && x.reason === "injury" && x.by === "manager",
     ).length;
   }
+}
+
+/** One match as the per-trial rate comparison plays it. */
+export interface RateInput {
+  readonly name: string;
+  readonly input: MatchInput;
+}
+
+const RATE_ARMS = ["auto", "counter", "press"] as const;
+
+/**
+ * Golden panel runs 0 to `runs - 1` (cup8 4-2-3-1), each played three ways: uncoached, and with
+ * Counter or Press held from kickoff and again at 45'. Every match the live run plays is an input,
+ * so leads, tired sides and both sides' chances all reach the comparison.
+ */
+export function rateInputs(runs: number): RateInput[] {
+  const out: RateInput[] = [];
+  for (let r = 0; r < runs; r++) {
+    const seed = `panel-${r}` as Seed;
+    const lineup = draftLineup(CUP8, seed);
+    // Coaching match k cannot change whether the run reaches it, so the uncoached run decides.
+    const reached = runCup(lineup, seed, "cup8").matches.map((m) => m.status === "played");
+    for (const arm of RATE_ARMS) {
+      const manager = (k: number): ManagerAction[] =>
+        arm === "auto"
+          ? []
+          : [
+              { type: "tactic", match: k, minute: 0, tactic: arm },
+              { type: "tactic", match: k, minute: 45, tactic: arm },
+            ];
+      for (let k = 0; k < CUP_ROUNDS.length; k++) {
+        if (!reached[k]) continue;
+        const input = cupMatchInput(lineup, seed, "cup8", k, manager(k));
+        out.push({ name: `panel-${r} ${arm} match ${k}`, input });
+      }
+    }
+  }
+  return out;
+}
+
+/** Every trial the live engine observes under `c`, and every trial the frozen engine 6 bundle does. */
+export function rateTraces(
+  input: MatchInput,
+  c: EngineCoefficients = ENGINE_COEFFICIENTS,
+): { live: ChanceObservation[]; frozen: ChanceObservation[] } {
+  const live: ChanceObservation[] = [];
+  const frozen: ChanceObservation[] = [];
+  playMatchCore(input, c, { chance: (ch) => live.push(ch), window: () => {} });
+  // The cast only bridges the bundle's own copy of the branded types, as checkParity does.
+  playMatchCoreV6(input as never, V6_COEFFICIENTS, {
+    chance: (ch) => frozen.push(ch as unknown as ChanceObservation),
+    window: () => {},
+  });
+  return { live, frozen };
+}
+
+/** The side of the first trial where live and frozen differ in any field, or null. */
+export function firstDivergence(t: {
+  live: readonly ChanceObservation[];
+  frozen: readonly ChanceObservation[];
+}): "user" | "opp" | "length" | null {
+  const n = Math.max(t.live.length, t.frozen.length);
+  for (let i = 0; i < n; i++) {
+    const a = t.live[i];
+    const b = t.frozen[i];
+    if (a === undefined || b === undefined) return "length";
+    if (JSON.stringify(a) !== JSON.stringify(b)) return a.side;
+  }
+  return null;
 }

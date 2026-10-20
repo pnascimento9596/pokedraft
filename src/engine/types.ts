@@ -338,7 +338,22 @@ export type ManagerAction =
       readonly minute: number;
       readonly slot: StarterIndex;
       readonly bench: BenchIndex;
+    }
+  | {
+      /**
+       * Engine 7: whoever plays in formation slot `slot` takes this set piece from `minute` on;
+       * null hands it back to the automatic choice (the best shooter on the pitch).
+       */
+      readonly type: "taker";
+      readonly match: number;
+      readonly minute: number;
+      readonly set: SetPiece;
+      readonly slot: StarterIndex | null;
     };
+
+/** The set pieces a manager can nominate a taker for. */
+export const SET_PIECES = ["penalty", "freeKick"] as const;
+export type SetPiece = (typeof SET_PIECES)[number];
 
 /** Something that happened on the pitch besides a goal or a save. `slot` is a formation slot. */
 export type Incident =
@@ -374,6 +389,19 @@ export type Incident =
       readonly minute: number;
       readonly tactic: Tactic;
       readonly by: "manager" | "auto";
+    }
+  | {
+      /**
+       * Engine 7: a penalty that did not score. "saved" when the keeper stopped it, "missed" when
+       * the taker put it wide. A scored penalty is a goal.
+       */
+      readonly kind: "penalty";
+      readonly side: Side;
+      readonly minute: number;
+      readonly slot: StarterIndex;
+      readonly taker: SpeciesId;
+      readonly keeper: SpeciesId;
+      readonly outcome: "saved" | "missed";
     };
 
 /** The state at the end of one five-minute window, for the touchline and the broadcast. */

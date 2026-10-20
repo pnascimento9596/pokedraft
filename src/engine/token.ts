@@ -12,6 +12,7 @@ import {
   type DraftStyle,
   type Gen,
   type ManagerAction,
+  type SetPiece,
   type Tactic,
   type RerollTarget,
   type RunToken,
@@ -90,6 +91,7 @@ const TACTIC_CODES = {
   press: "p",
   counter: "k",
 } as const satisfies Record<Tactic, string>;
+const SET_PIECE_CODES = { penalty: "p", freeKick: "f" } as const satisfies Record<SetPiece, string>;
 const TARGET_CODES = { type: "t", region: "r", species: "s" } as const satisfies Record<
   RerollTarget,
   string
@@ -102,6 +104,7 @@ const STYLES = invert(STYLE_CODES);
 const ORDERS = invert(ORDER_CODES);
 const TARGETS = invert(TARGET_CODES);
 const TACTIC_BY_CODE = invert(TACTIC_CODES);
+const SET_PIECE_BY_CODE = invert(SET_PIECE_CODES);
 
 const formation = z.enum(FORMATION_IDS);
 const gens = z.string().regex(/^[1-9]+$/);
@@ -126,16 +129,34 @@ const actionSchema = z.union([
 
 const cupMatch = z.number().int().min(0).max(7);
 const matchMinute = z.number().int().min(0).max(120);
-const managerSchema = z.union([
-  z.tuple([z.literal("t"), cupMatch, matchMinute, z.enum(["b", "a", "d", "p", "k"])]),
-  z.tuple([
-    z.literal("u"),
-    cupMatch,
-    matchMinute,
-    z.number().int().min(0).max(10),
-    z.number().int().min(0).max(4),
-  ]),
+const starter = z.number().int().min(0).max(10);
+const tacticTuple = z.tuple([
+  z.literal("t"),
+  cupMatch,
+  matchMinute,
+  z.enum(["b", "a", "d", "p", "k"]),
 ]);
+const subTuple = z.tuple([
+  z.literal("u"),
+  cupMatch,
+  matchMinute,
+  starter,
+  z.number().int().min(0).max(4),
+]);
+// Nominated takers: p for penalties, f for free kicks; a null slot is the automatic choice.
+const takerTuple = z.tuple([z.enum(["p", "f"]), cupMatch, matchMinute, starter.nullable()]);
+const TAKER_SINCE = 7;
+
+/**
+ * The coach decisions a token of `version` may carry. Nominated takers arrive with engine 7, so a
+ * pd6 token never carries one: the frozen engine 6 codec would refuse it after the flip.
+ */
+export function managerSchemaFor(version: number) {
+  return version >= TAKER_SINCE
+    ? z.union([tacticTuple, subTuple, takerTuple])
+    : z.union([tacticTuple, subTuple]);
+}
+const managerSchema = managerSchemaFor(RUN_TOKEN_VERSION);
 
 // Engine 6 appends the coach's decisions as a fourth element, left out when there are none.
 const payloadSchema = z.union([
@@ -153,21 +174,37 @@ type CompactAction = z.infer<typeof actionSchema>;
 type CompactManager = z.infer<typeof managerSchema>;
 
 function compactManager(a: ManagerAction): CompactManager {
-  return a.type === "tactic"
-    ? ["t", a.match, a.minute, TACTIC_CODES[a.tactic]]
-    : ["u", a.match, a.minute, a.slot, a.bench];
+  switch (a.type) {
+    case "tactic":
+      return ["t", a.match, a.minute, TACTIC_CODES[a.tactic]];
+    case "sub":
+      return ["u", a.match, a.minute, a.slot, a.bench];
+    case "taker":
+      return [SET_PIECE_CODES[a.set], a.match, a.minute, a.slot];
+  }
 }
 
 function expandManager(c: CompactManager): ManagerAction {
-  return c[0] === "t"
-    ? { type: "tactic", match: c[1], minute: c[2], tactic: TACTIC_BY_CODE[c[3]] }
-    : {
+  switch (c[0]) {
+    case "t":
+      return { type: "tactic", match: c[1], minute: c[2], tactic: TACTIC_BY_CODE[c[3]] };
+    case "u":
+      return {
         type: "sub",
         match: c[1],
         minute: c[2],
         slot: c[3] as StarterIndex,
         bench: c[4] as BenchIndex,
       };
+    default:
+      return {
+        type: "taker",
+        match: c[1],
+        minute: c[2],
+        set: SET_PIECE_BY_CODE[c[0]],
+        slot: c[3] as StarterIndex | null,
+      };
+  }
 }
 
 function gensCode(list: readonly Gen[]): string {
@@ -246,6 +283,12 @@ function expandAction(c: CompactAction): DraftAction {
 }
 
 export function encodeToken(t: RunToken): string {
+  if (RUN_TOKEN_VERSION < TAKER_SINCE && t.manager?.some((a) => a.type === "taker")) {
+    throw new RunTokenError(
+      "invalidAction",
+      `a pd${RUN_TOKEN_VERSION} token cannot carry a nominated taker`,
+    );
+  }
   const payload: unknown[] = [compactSettings(t.settings), t.seed, t.actions.map(compactAction)];
   if (t.manager !== undefined && t.manager.length > 0) payload.push(t.manager.map(compactManager));
   return `pd${RUN_TOKEN_VERSION}.${toBase64Url(new TextEncoder().encode(JSON.stringify(payload)))}`;

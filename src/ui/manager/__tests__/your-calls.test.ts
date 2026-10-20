@@ -90,3 +90,15 @@ describe("your calls card (catches a card that credits the wrong call or invents
     expect(callLabel({ ...attack12, minute: 0 }, match)).toBe("your Attack from kickoff");
   });
 });
+
+describe("callLabel for a nominated taker (catches a nomination named as a tactic or a sub)", () => {
+  const match = {} as never;
+  it("names the set piece and the minute", () => {
+    expect(
+      callLabel({ type: "taker", match: 0, minute: 0, set: "penalty", slot: null }, match),
+    ).toBe("your penalty taker from kickoff");
+    expect(
+      callLabel({ type: "taker", match: 0, minute: 60, set: "freeKick", slot: null }, match),
+    ).toBe("your free-kick taker at 60'");
+  });
+});

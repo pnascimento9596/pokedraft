@@ -5,9 +5,15 @@ import { FORMATIONS, speciesById } from "@/engine";
 import type { BenchIndex, FormationId, StarterIndex } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { assistantStatus, type OpponentStyle } from "@/ui/manager/intel";
-import { MAX_SUBS, type Decision, type Touchline as TouchlineState } from "@/ui/manager/touchline";
+import {
+  MAX_SUBS,
+  SET_PIECES_ON,
+  type Decision,
+  type Touchline as TouchlineState,
+} from "@/ui/manager/touchline";
 import { SUITABILITY_LABEL } from "@/ui/labels";
 import { getSlotSuitability } from "@/ui/suitability";
+import { SetPieceTakers } from "./SetPieceTakers";
 import { TacticPills } from "./TacticPills";
 import s from "./Touchline.module.css";
 
@@ -105,6 +111,18 @@ export function Touchline({
         <p className={s.error} role="alert">
           {error}
         </p>
+      ) : null}
+
+      {SET_PIECES_ON ? (
+        <div className={s.extra}>
+          <SetPieceTakers
+            formation={formation}
+            onPitch={line.onPitch}
+            value={line.takers}
+            disabled={closed}
+            onPick={(set, slot) => onDecide({ kind: "taker", set, slot })}
+          />
+        </div>
       ) : null}
 
       <div className={`${s.pick} ${s.extra}`}>

@@ -205,6 +205,7 @@ describe("MatchPlayer and Touchline UX (catches a match screen with no sound tog
       energy: [95, 88, 84, 82, 58, 80, 79, 77, 75, 74, 72],
       yellow: XI.map(() => false),
       bench: [seat(0, 130), seat(1, 131), seat(2, 132), seat(3, 133), seat(4, 134)],
+      takers: { penalty: null, freeKick: null },
       open: true,
     };
     const onDecide = vi.fn();

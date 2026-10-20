@@ -11,6 +11,7 @@ import {
   type MatchResult,
   type Mode,
   type Seed,
+  type SetPiece,
   type SpeciesId,
   type StarterIndex,
   type Tactic,
@@ -19,6 +20,8 @@ import {
 export type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 export const MAX_SUBS = ENGINE_COEFFICIENTS.manager.maxSubs;
+/** Nominated set-piece takers arrive with missable penalties (engine 7); hidden until then. */
+export const SET_PIECES_ON = ENGINE_COEFFICIENTS.penalty.missable;
 const FRESH = 100;
 const REGULATION = 90;
 const EXTRA_TIME = 120;
@@ -94,6 +97,8 @@ export interface Touchline {
   /** The player in each slot is on a yellow card. */
   readonly yellow: readonly boolean[];
   readonly bench: readonly BenchSeat[];
+  /** The formation slot nominated for each set piece; null is the automatic choice. */
+  readonly takers: Readonly<Record<SetPiece, StarterIndex | null>>;
   /** A decision at this minute would still be played: the match has minutes after it. */
   readonly open: boolean;
 }
@@ -128,8 +133,28 @@ function sideState(fielded: Fielded, incidents: readonly Incident[]) {
   return { onPitch, since, yellow, subs, tactic, bench };
 }
 
+/**
+ * Whether a decision takes the touchline from the assistant. A nominated taker does not: it is a
+ * set-piece choice, and the engine leaves the assistant's tactics and subs on for it.
+ */
+export function takesOver(a: ManagerAction): boolean {
+  return a.type !== "taker";
+}
+
 function managedAt(actions: readonly ManagerAction[], matchIndex: number, minute: number): boolean {
-  return actions.some((a) => a.match === matchIndex && a.minute <= minute);
+  return actions.some((a) => a.match === matchIndex && a.minute <= minute && takesOver(a));
+}
+
+function takersAt(
+  actions: readonly ManagerAction[],
+  matchIndex: number,
+  minute: number,
+): Record<SetPiece, StarterIndex | null> {
+  const takers: Record<SetPiece, StarterIndex | null> = { penalty: null, freeKick: null };
+  for (const a of actions) {
+    if (a.type === "taker" && a.match === matchIndex && a.minute <= minute) takers[a.set] = a.slot;
+  }
+  return takers;
 }
 
 export function touchlineAt(
@@ -155,6 +180,7 @@ export function touchlineAt(
     energy,
     yellow: state.yellow,
     bench: state.bench,
+    takers: takersAt(actions, matchIndex, minute),
     open:
       Number.isInteger(minute) &&
       minute >= 0 &&
@@ -206,7 +232,8 @@ export function injuries(match: PlayedMatch, lineup: FullLineup): readonly Injur
 
 export type Decision =
   | { readonly kind: "tactic"; readonly tactic: Tactic }
-  | { readonly kind: "sub"; readonly slot: StarterIndex; readonly bench: BenchIndex };
+  | { readonly kind: "sub"; readonly slot: StarterIndex; readonly bench: BenchIndex }
+  | { readonly kind: "taker"; readonly set: SetPiece; readonly slot: StarterIndex | null };
 
 export type Verdict =
   | { readonly ok: true; readonly actions: readonly ManagerAction[]; readonly cup: CupResult }
@@ -234,6 +261,12 @@ function precheck(
   if (decision.kind === "tactic") {
     return decision.tactic === line.tactic ? "Your side already plays that way." : null;
   }
+  if (decision.kind === "taker") {
+    if (decision.slot === line.takers[decision.set]) return "That is already your taker.";
+    return decision.slot !== null && line.onPitch[decision.slot] === null
+      ? "Nobody is playing in that position."
+      : null;
+  }
   const call = injuries(match, lineup).find((c) => c.minute === minute && c.slot === decision.slot);
   if (call !== undefined) {
     return call.options.some((b) => b.index === decision.bench)
@@ -244,6 +277,17 @@ function precheck(
   if (line.onPitch[decision.slot] === null) return "Nobody is playing in that position.";
   if (!line.bench[decision.bench]?.available) return "That bench player cannot come on.";
   return null;
+}
+
+function actionFor(decision: Decision, match: number, minute: number): ManagerAction {
+  switch (decision.kind) {
+    case "tactic":
+      return { type: "tactic", match, minute, tactic: decision.tactic };
+    case "sub":
+      return { type: "sub", match, minute, slot: decision.slot, bench: decision.bench };
+    case "taker":
+      return { type: "taker", match, minute, set: decision.set, slot: decision.slot };
+  }
 }
 
 export type Recorded =
@@ -264,11 +308,7 @@ export function record(
 ): Recorded {
   const why = precheck(match, matchIndex, lineup, actions, minute, decision);
   if (why !== null) return { ok: false, reason: why };
-  const action: ManagerAction =
-    decision.kind === "tactic"
-      ? { type: "tactic", match: matchIndex, minute, tactic: decision.tactic }
-      : { type: "sub", match: matchIndex, minute, slot: decision.slot, bench: decision.bench };
-  return { ok: true, actions: [...actions, action] };
+  return { ok: true, actions: [...actions, actionFor(decision, matchIndex, minute)] };
 }
 
 /** The reason the engine refuses a decision the touchline let through. */
@@ -287,10 +327,25 @@ export function decide(
   minute: number,
   decision: Decision,
 ): Verdict {
+  return decideAll(ctx, cup, actions, matchIndex, minute, [decision]);
+}
+
+/** Several decisions at one minute, such as the pre-match card's, replayed once together. */
+export function decideAll(
+  ctx: CupContext,
+  cup: CupResult,
+  actions: readonly ManagerAction[],
+  matchIndex: number,
+  minute: number,
+  decisions: readonly Decision[],
+): Verdict {
   const match = cup.matches[matchIndex];
   if (match?.status !== "played") return refuse("That match was not played.");
-  const recorded = record(match, matchIndex, ctx.lineup, actions, minute, decision);
-  if (!recorded.ok) return recorded;
+  let recorded: Recorded = { ok: true, actions };
+  for (const d of decisions) {
+    recorded = record(match, matchIndex, ctx.lineup, recorded.actions, minute, d);
+    if (!recorded.ok) return recorded;
+  }
   try {
     return {
       ok: true,

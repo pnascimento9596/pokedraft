@@ -13,9 +13,14 @@ vi.mock("@/ui/manager/touchline", async (importOriginal) => {
   const real = await importOriginal<typeof import("@/ui/manager/touchline")>();
   return {
     ...real,
+    // The pre-match card records through decideAll, the touchline through decide.
     decide: (...args: Parameters<typeof real.decide>) => {
       spy.decide++;
       return real.decide(...args);
+    },
+    decideAll: (...args: Parameters<typeof real.decideAll>) => {
+      spy.decide++;
+      return real.decideAll(...args);
     },
   };
 });
@@ -99,5 +104,15 @@ describe("pre-match tactic (catches a starting tactic that needs a 0' stop, or a
     fireEvent.click(screen.getByTestId("prematch-go"));
     expect(spy.decide).toBe(0);
     expect(flow.actions()).toEqual([]);
+  });
+});
+
+// Regression guard, no RED: behaviour already correct. Engine 6 has no missable penalties, so the
+// pre-match card offers no set-piece takers in either mode.
+describe("pre-match set pieces at engine 6 (catches an engine 7 control reaching engine 6)", () => {
+  it.each([true, false])("manager mode %s: no Set pieces row", (managerMode) => {
+    open(managerMode);
+    expect(screen.queryByTestId("set-pieces")).toBeNull();
+    expect(screen.queryByText("Set pieces")).toBeNull();
   });
 });

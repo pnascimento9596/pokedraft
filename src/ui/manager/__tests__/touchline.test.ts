@@ -15,6 +15,7 @@ import type {
 import {
   MAX_SUBS,
   decide,
+  decideAll,
   fieldedFor,
   incidentsBefore,
   injuries,
@@ -412,6 +413,60 @@ describe("decide (catches a recorder that emits an action the engine rejects)", 
         reason: "injury",
         by: "manager",
       },
+    ]);
+  });
+});
+
+describe("nominated takers on the touchline (catches a nomination that takes over the assistant)", () => {
+  const { ctx, cup } = realCup("touch-2");
+  const PENALTY_10 = { kind: "taker", set: "penalty", slot: 10 } as const;
+
+  it("records { type: 'taker', match: 0, minute: 0, set: 'penalty', slot: 10 } and leaves managed off", () => {
+    const v = decide(ctx, cup, [], 0, 0, PENALTY_10);
+    if (!v.ok) throw new Error(v.reason);
+    expect(v.actions).toEqual([{ type: "taker", match: 0, minute: 0, set: "penalty", slot: 10 }]);
+    const line = touchlineAt(played(v.cup, 0), 0, ctx.lineup, v.actions, 0);
+    expect(line.takers).toEqual({ penalty: 10, freeKick: null });
+    expect(line.managed).toBe(false);
+  });
+
+  it("a later stop still shows the nominee, and Auto records a null slot", () => {
+    const v = decide(ctx, cup, [], 0, 0, PENALTY_10);
+    if (!v.ok) throw new Error(v.reason);
+    expect(touchlineAt(played(v.cup, 0), 0, ctx.lineup, v.actions, 60).takers.penalty).toBe(10);
+    const auto = decide(ctx, v.cup, v.actions, 0, 60, {
+      kind: "taker",
+      set: "penalty",
+      slot: null,
+    });
+    if (!auto.ok) throw new Error(auto.reason);
+    expect(auto.actions.at(-1)).toEqual({
+      type: "taker",
+      match: 0,
+      minute: 60,
+      set: "penalty",
+      slot: null,
+    });
+  });
+
+  it("refuses the taker already in place: 'That is already your taker.'", () => {
+    expect(decide(ctx, cup, [], 0, 0, { kind: "taker", set: "freeKick", slot: null })).toEqual({
+      ok: false,
+      reason: "That is already your taker.",
+    });
+  });
+
+  it("decideAll records a tactic and both takers at kickoff in order", () => {
+    const v = decideAll(ctx, cup, [], 0, 0, [
+      { kind: "tactic", tactic: "attack" },
+      PENALTY_10,
+      { kind: "taker", set: "freeKick", slot: 9 },
+    ]);
+    if (!v.ok) throw new Error(v.reason);
+    expect(v.actions).toEqual([
+      { type: "tactic", match: 0, minute: 0, tactic: "attack" },
+      { type: "taker", match: 0, minute: 0, set: "penalty", slot: 10 },
+      { type: "taker", match: 0, minute: 0, set: "freeKick", slot: 9 },
     ]);
   });
 });

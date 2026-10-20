@@ -24,6 +24,7 @@ const LINE: TouchlineState = {
   energy: [96, 80, 81, 82, 83, 84, 85, 86, 87, 88, 62],
   yellow: [false, false, false, true, false, false, false, false, false, false, false],
   bench: [seat(0, 133), seat(1, 143, false), seat(2, 150), seat(3, 151, false), seat(4, 152)],
+  takers: { penalty: null, freeKick: null },
   open: true,
 };
 
@@ -235,5 +236,21 @@ describe("Touchline intelligence (catches a touchline that hides the assistant's
       <Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} style="balanced" />,
     );
     expect(document.querySelectorAll('[data-testid^="edge-"]')).toHaveLength(0);
+  });
+});
+
+// Regression guard, no RED: behaviour already correct. Engine 6 has no missable penalties.
+describe("Touchline set pieces at engine 6 (catches an engine 7 control reaching engine 6)", () => {
+  it("shows no Set pieces row, expanded or not", () => {
+    render(
+      <Touchline
+        line={LINE}
+        formation="4-3-3"
+        onDecide={() => {}}
+        error={null}
+        sheet={{ expanded: true, onExpand: () => {} }}
+      />,
+    );
+    expect(screen.queryByTestId("set-pieces")).toBeNull();
   });
 });
