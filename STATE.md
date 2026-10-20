@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## matchStory core
+
+Branch `feat/match-story` off `origin/main` at `9e4802b`. Wave 6 row 6a1 (Red). Engine change with no output change: engine 6 stays live and every run, token and board row replays exactly as before. Nothing under `src/scouting`, `scripts/data` or `src/data` changed, and `goldens.test.ts` is byte-identical.
+
+- Nothing changes for a player yet. `matchStory(seed, matchIndex, run)` in `src/engine/story.ts` returns every chance the engine rolled in a match (its probability, goal, saved or off, the shooter and a derived zone) and each five-minute window's xG and territory, next to the unchanged match result. Row 6a2 draws the xG river and the territory lean from it.
+- `simulateMatch` and `matchStory` share one core, `playMatchCore` in `match.ts`. The story reads the core through a read-only observer that cannot draw or change state. `runCup` and `matchStory` build each match's input with the same `cupMatchInput`.
+
+Parity guard (the RED equivalent for an engine row that must not move): RED commit `420228a` (7 of 7 failed against a stub `matchStory` that throws), GREEN `7bf01e8`. The guard replays every played match of `goldens.test.ts`'s 20-run panel and 30 more seeds (50 runs in `pnpm test`; 200 in `story.slow.test.ts`) and requires the story's result to be byte-identical to `runCup`'s match, its goal chances to be the goals and its saved chances to be the saves.
+
+Gates at `7bf01e8`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 2,005 passed in 230 files. `pnpm vitest run src/engine`: 280 passed in 24 files.
+- `SLOW_TESTS=1 pnpm vitest run src/engine/__tests__/story.slow.test.ts --silent=false`: 1 of 1 passed over 942 played matches (81 with extra time, 415 coached).
+- `check-retained-replays.mts`: 10 golden replays passed, live v6 replay `2b26ee82...`. `measure-retained-json.mjs`: 4 payloads.
+- The probe numbers are unchanged by construction against the 6p baseline; no probe was re-run.
+- NOT RUN: review and hosted CI, Playwright (no UI changed), the calibration probes, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/match-story.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 5 summary
 
 Branch `docs/wave5-summary` off `origin/main` at `e1f2c38`. Green: docs only, no runtime change.
