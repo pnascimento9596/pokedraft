@@ -3,6 +3,8 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import type { IsoDate } from "@/engine";
+import { ENGINE_VERSION } from "@/engine/types";
+import { engineLabel } from "@/engine/versions/label";
 import { BOARD_LIMIT, BOARD_MODES, BOARD_SCOPES, type BoardScope } from "@/leaderboard/contract";
 import { MODE_LABEL } from "@/ui/labels";
 import { ModuleCard } from "@/components/ui/primitives";
@@ -38,10 +40,11 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
     router.replace(boardHref({ ...view, ...next }), { scroll: false });
   };
 
+  const engines = view.engine === "all" ? "every engine" : `engine ${engineLabel(ENGINE_VERSION)}`;
   const caption = `${
     view.scope === "daily"
       ? `Daily ${MODE_LABEL.cup8} for ${longDate(view.date)}${view.date === today ? " (today)" : ""}.`
-      : `${MODE_LABEL[view.mode]}, all-time. Every draft setting shares this board, and each row names its settings.`
+      : `${MODE_LABEL[view.mode]}, all-time, ${engines}. Every draft setting shares this board, and each row names its settings.`
   } Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top ${BOARD_LIMIT}.`;
 
   return (
@@ -105,7 +108,11 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
         ) : null}
       </div>
       <p className={s.caption}>{caption}</p>
-      <Board view={view} onCoachChange={(coach) => go({ coach })} />
+      <Board
+        view={view}
+        onCoachChange={(coach) => go({ coach })}
+        onEngineChange={(engine) => go({ engine })}
+      />
     </ModuleCard>
   );
 }

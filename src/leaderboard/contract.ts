@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { toIsoDate } from "@/engine";
+import { toIsoDate, type FormationId } from "@/engine";
 
 export const BOARD_MODES = ["cup8", "kanto151"] as const;
 export type BoardMode = (typeof BOARD_MODES)[number];
@@ -14,7 +14,16 @@ export type BoardScope = (typeof BOARD_SCOPES)[number];
 export const COACH_FILTERS = ["all", "uncoached", "coached"] as const;
 export type CoachFilter = (typeof COACH_FILTERS)[number];
 
+/**
+ * Which engines an all-time board lists. `current` is runs whose stored engine is the live
+ * `ENGINE_VERSION`. Daily and seed boards are never filtered: a date already pins the engine that
+ * was live that day, and a seed board shows every friend who played the seed.
+ */
+export const ENGINE_FILTERS = ["current", "all"] as const;
+export type EngineFilter = (typeof ENGINE_FILTERS)[number];
+
 export const BOARD_LIMIT = 50;
+export const SEED_BOARD_LIMIT = 20;
 export const NICKNAME_MIN = 2;
 export const NICKNAME_MAX = 20;
 export const TOKEN_MAX = 4096;
@@ -74,6 +83,11 @@ export interface BoardEntry {
   readonly createdAt: string;
   /** The run's token carries touchline decisions. Stored with the run when it is submitted. */
   readonly coached: boolean;
+  /** The engine that replayed the run when it was submitted, as stored. */
+  readonly engineVersion: string;
+  readonly seed: string;
+  /** Read from the token's settings, or null when the stored token does not decode. */
+  readonly formation: FormationId | null;
 }
 
 // The run is saved before its rank is looked up, so a failed lookup leaves rank null.
@@ -89,11 +103,19 @@ export interface SubmitOk {
 
 export interface BoardOk {
   readonly mode: BoardMode;
-  readonly scope: BoardScope;
+  readonly scope: BoardScope | "seed";
   readonly date: string | null;
   readonly coach: CoachFilter;
+  readonly engine: EngineFilter;
+  readonly seed: string | null;
   readonly entries: readonly BoardEntry[];
 }
+
+// The same rule as a token's seed field, capped at the longest seed a token can carry.
+const seedSchema = z
+  .string()
+  .max(TOKEN_MAX)
+  .refine((s) => s.trim().length > 0);
 
 export const boardQuerySchema = z.discriminatedUnion("scope", [
   z.object({
@@ -108,12 +130,24 @@ export const boardQuerySchema = z.discriminatedUnion("scope", [
       }
     }),
     coach: z.enum(COACH_FILTERS).default("all"),
+    engine: z.undefined(),
+    seed: z.undefined(),
   }),
   z.object({
     mode: z.enum(BOARD_MODES),
     scope: z.literal("all"),
     date: z.undefined(),
     coach: z.enum(COACH_FILTERS).default("all"),
+    engine: z.enum(ENGINE_FILTERS).default("current"),
+    seed: z.undefined(),
+  }),
+  z.object({
+    mode: z.enum(BOARD_MODES),
+    scope: z.literal("seed"),
+    date: z.undefined(),
+    coach: z.undefined(),
+    engine: z.undefined(),
+    seed: seedSchema,
   }),
 ]);
 export type BoardQuery = z.infer<typeof boardQuerySchema>;

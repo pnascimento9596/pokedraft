@@ -59,3 +59,22 @@ export async function openHomeSettings(page: Page): Promise<void> {
     await expect(page.getByLabel("Formation")).toBeVisible({ timeout: 1_000 });
   }).toPass();
 }
+
+/**
+ * A board stub's reply to the results page's "Friends on this seed" request, or null for any other
+ * board request. Nobody else played the seed, so the table stays hidden.
+ */
+export function emptySeedBoard(url: string): Record<string, unknown> | null {
+  const q = new URL(url).searchParams;
+  const seed = q.get("seed");
+  if (seed === null) return null;
+  return {
+    mode: q.get("mode"),
+    scope: "seed",
+    date: null,
+    coach: "all",
+    engine: "all",
+    seed,
+    entries: [],
+  };
+}

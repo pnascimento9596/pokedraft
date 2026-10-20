@@ -1,0 +1,44 @@
+.wrap {
+  overflow-x: auto;
+}
+.table th,
+.table td {
+  padding: 8px 2px;
+  text-align: right;
+}
+.table td,
+.table thead th {
+  white-space: nowrap;
+}
+.table thead .wraps {
+  white-space: normal;
+}
+.table thead th {
+  font-size: 12px;
+  line-height: 16px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.table .player {
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.table tr[data-mine] {
+  background: var(--selected);
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+.tag {
+  padding: 0 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}

@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { openHomeSettings } from "../helpers";
+import { emptySeedBoard, openHomeSettings } from "../helpers";
 import { RUN_151, RUN_8_0 } from "../pins";
 import { settle, waitForHydration } from "./helpers";
 
@@ -39,6 +39,9 @@ interface BoardRow {
   readonly losses: number;
   readonly createdAt: string;
   readonly coached: boolean;
+  readonly engineVersion: string;
+  readonly seed: string;
+  readonly formation: string;
 }
 
 export function boardRow(rank: number): BoardRow {
@@ -58,6 +61,9 @@ export function boardRow(rank: number): BoardRow {
     createdAt: "2026-10-09T12:00:00.000Z",
     // Every fourth row was coached from the touchline, so the chip shows in the phone scenes.
     coached: rank % 4 === 2,
+    engineVersion: "pokedraft-engine-6",
+    seed: `e2e-row-${rank}`,
+    formation: "4-3-3",
   };
 }
 
@@ -93,8 +99,17 @@ export async function stubLeaderboard(
         json: { entry: { ...boardRow(4), nickname, dailyDate: "2026-10-09" } },
       });
     }
-    if (request.method() === "GET")
-      return route.fulfill({ status: reply.status, json: reply.body });
+    if (request.method() === "GET") {
+      const seed = emptySeedBoard(request.url());
+      if (seed !== null) return route.fulfill({ json: seed });
+      // The reply names the engine view the request asked for, as the server does.
+      const q = new URL(request.url()).searchParams;
+      const engine = q.get("scope") === "all" ? (q.get("engine") ?? "current") : "all";
+      return route.fulfill({
+        status: reply.status,
+        json: reply.status === 200 ? { ...(reply.body as object), engine } : reply.body,
+      });
+    }
     return route.fulfill({
       status: 405,
       json: { error: { code: "METHOD_NOT_ALLOWED", message: "stub" } },

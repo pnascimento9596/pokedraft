@@ -18,6 +18,22 @@ const PROOF = "docs/reports/results-reveal";
 // The live results of a finished run, entered the way a reload enters them: from the run's saved
 // checkpoint, so the page shows the results screen of the live variant without drafting 16 picks.
 async function openLiveResults(page: Page): Promise<void> {
+  // Live results mount the seed board, and the local server has no database. An empty board keeps
+  // its 503 out of the console this test reads.
+  await page.route("**/api/leaderboard?**", (route) => {
+    const url = new URL(route.request().url());
+    return route.fulfill({
+      json: {
+        mode: url.searchParams.get("mode"),
+        scope: "seed",
+        date: null,
+        coach: "all",
+        engine: "all",
+        seed: url.searchParams.get("seed"),
+        entries: [],
+      },
+    });
+  });
   await page.goto("/");
   await page.evaluate((token) => {
     localStorage.setItem(

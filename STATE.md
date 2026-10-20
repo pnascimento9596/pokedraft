@@ -27,6 +27,34 @@ Decision log: `docs/decisions/achievements.md`. Browser proof: `docs/reports/ach
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Seed boards and engine filter
+
+Branch `feat/seed-boards` off `origin/main` at `07beda9`. Wave 5 row 5g (Red). No file under `src/engine`, `src/data` or `src/scouting` changed, and there is no migration.
+
+- The all-time board shows only runs played on the current engine (v6) by default, and the caption says "all-time, engine v6." An "All engines" button adds older runs, each labelled "Engine v3" (or its own version), and the link gains `engine=all`. Daily boards are unchanged.
+- After a cup, live results and every shared `/r/` page show "Friends on this seed": every submitted run on the same seed and mode, best first, up to 20, across engines and dates. The current run is marked "This run". The table loads after the page, hides when nobody submitted the seed, and says "Board unavailable" when it cannot load. Builder friendlies have none.
+- A player who submits to the all-time board is told their rank on the current-engine board, the one "View leaderboard" opens.
+- Board rows now carry `engineVersion`, `seed` and `formation` (null when the token does not decode). `GET /api/leaderboard?mode=..&seed=..` answers the seed board; an empty, blank or too long seed is 400 `INVALID_QUERY`, a seed nobody played is 200 with no entries.
+
+RED commit: `b10dad5` (26 of 37 unit tests failed in 4 of 4 files; `seed-board.test.tsx` failed to load). GREEN `6a8fee2`, Prettier `7a9e7d2`.
+
+Gates at `7a9e7d2`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0 (`check:client-bundle`: no retained engine bundle). Prettier passed on the touched files.
+- Unit tests: 1,858 passed in 218 files.
+- Playwright (`CI=1`, headless): the full suite across all six projects passed 1,020 with 67 skipped and 0 failed (17.9m); `seed-board.spec.ts` passed 8 of 8 on chromium, and `layout-shift` plus `server-html` passed 10 of 10.
+- NOT RUN: every Neon query and the production real-API check (the coordinator runs them), `seed-board.spec.ts` against the RED build, review and hosted CI, `seed-board.spec.ts` on the WebKit and phone projects (it runs on chromium only), the phone check and screen reader pass.
+
+Merges of `origin/main` into the branch (no rebase): `e54e9e2` (#131 share sheet; only `STATE.md` conflicted) and `026c596` (#132 head-to-head; `STATE.md` and `src/ui/challenge-href.ts` conflicted; main's `challenge-href.ts` taken, and `readTokenRun` in `src/ui/versus.ts` now reads through `readAnyToken`, same result). Gates at `026c596`: `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0, all nine `check:*` scripts exited 0, unit tests 1,905 passed in 224 files, and the full Playwright suite passed 1,034 with 67 skipped and 0 failed (19.2m; `seed-board` 8, `head-to-head` 5, `share-sheet` 9, `layout-shift` 7 and `server-html` 3 among them). The seed board screenshots came out byte-identical.
+
+Merge `da86f41` (#135 badge loop budget and #134 results reveal; `STATE.md` and the `ResultsView.tsx` imports conflicted, both the `SeedBoard` and `Trophy` imports kept). With the seed board now on 5e's live results, `results-reveal.spec.ts`'s no-console-error check saw two 503s from `/api/leaderboard` (the local server has no database), deterministically, 3 of 3. That spec now stubs an empty seed board, like `seed-board.spec.ts`; it passed 14 of 14. Full Playwright suite after that (`CI=1`, `--retries=0`, 4 workers): 1,047 passed, 67 skipped, 1 failed, an `iphone-14` `mobile-draft` test with the harness error "Cannot find parent object browser", which passed 3 of 3 on a rerun.
+
+Hosted CI at `3eac05a` (both receipts) failed shard e2e (3): `seed-board.spec.ts` at 320 px measured the seed table 3 px wider than its wrapper, on the attempt and its retry (run 39364653413). Locally it fit, with 3 px to spare on macOS fonts; measured at narrower widths the same table overflowed by 7 px at 310 and 17 px at 300. The floor came from fixed columns: the nowrap "Engine v3" tag (player column 74 px) and the "Formation" header (65 px). Cell side padding goes from 3 to 2 px and tag side padding from 6 to 4 px, with no copy or column change: the table's minimum drops from 254 to about 239 px, so it fits down to 306 px locally (overflow 5 px at 300). The 320, 360 and 390 seed table screenshots were regenerated. The PR was not merged at `3eac05a`; both receipts were rerun at the fix head.
+
+Decision log: `docs/decisions/seed-boards.md`. Browser proof: `docs/reports/seed-boards/` (seed table at 390, 360 and 320, the unavailable state, All engines at 390, 360 and 320). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #133 (row 5g, seed boards and engine filter, Red) merged as squash `783ddbf`, reviewed head `5cf4f47`. Round 1 at `3eac05a` (GLM 5.3 Flash APPROVE, canary `seed-boards-a9d72814eeca653b17b9896a23ff8872`, and the independent Red reviewer PASS) was voided when hosted e2e (3) measured the seed table 3 px wider than its wrapper at 320 px on Linux fonts (attempt and retry, run 39364653413); the fix lowered cell and tag padding. Round 2 at `5cf4f47`: GLM 5.3 Flash APPROVE with canary `seed-boards-r2-2c6347b44475602b7f3bbbc22b217216` echoed, and a fresh independent `pokedraft-mode` Red reviewer PASS that re-executed lint, typecheck, build and all nine `check:*` scripts (exit 0), 1,915 unit tests in 224 files, the PGlite leaderboard tests (124 in 11 files) and read-only GETs against the Neon preview branch. No migration. Hosted check and all eight e2e shards green. Production `/api/health?db=1` served `783ddbf` with `db.status` ok. Production read-only API: the all-time default returned 1 engine 6 row, `engine=all` returned 3 rows (adding two engine 3 rows), the 16 October daily seed returned its engine 6 row, and an empty seed returned 400 `INVALID_QUERY`. `seed-board`, `leaderboard`, `layout-shift` and `server-html` against production (chromium) passed 26 of 26. Carryovers: a misleading comment on the rank test in `seed-board.test.ts`; "This run" compares token strings; no `(mode, seed)` index (threshold recorded in `store.ts`).
+
 ## Results reveal and sync
 
 Branch `feat/results-reveal` off `origin/main` at `9f01b8c`. Wave 5 row 5e (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -48,6 +76,8 @@ Gates at `dbab0bf` (the later commits change only `e2e/results-reveal.spec.ts`):
 - NOT RUN: review and hosted CI; WebKit and a real phone for the reveal and the focus return, and a screen reader pass over the MVP card and highlights headings (owner actions).
 
 Decision log: `docs/decisions/results-reveal.md`. Browser proof: `docs/reports/results-reveal/` (`reveal-{0ms,600ms,2000ms}-390.png`, `hero-{390,360,320}-{light,dark}.png`, `highlights-{390,360,320}-{light,dark}.png`).
+
+PR #134 (row 5e, results reveal and sync, Yellow) merged as squash `afaa695`, reviewed head `32b082c` (`cbd0ba3` plus a merge of main bringing in PR #135), GLM 5.3 Flash APPROVE at `cbd0ba3` (canary `results-reveal-72c25fd5263faef1c355d672c87ff28c`) and again at `32b082c` (canary `results-reveal-r2-63637163fa52ca8be0db7d712147b2f3`), both echoed. At `cbd0ba3` hosted shard e2e (4) failed twice (first attempt and a rerun of the failed job) on the play badge test's 240 s timeout; per hand-off 3.5 that went to its own fix, PR #135, before this row landed. At `32b082c` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,873 unit tests passed in 221 files and Prettier passed on 13 touched files; hosted check and all eight e2e shards green on the first run (play badge test 2.8 minutes per width). Production `/api/health?db=1` served `afaa695` with `db.status` ok; `results-reveal`, `watch-live`, `theme-results` and `layout-shift` against production (chromium) passed 28 of 28. NOT RUN: the reveal on a real phone and a screen reader pass over the staged reveal (owner actions).
 
 ## Badge loop budget
 

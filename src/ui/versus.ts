@@ -1,7 +1,6 @@
-import { decodeToken } from "@/engine/token";
 import { RUN_TOKEN_VERSION, type DraftSettings } from "@/engine/types";
-import { RETAINED_TOKEN_VERSIONS } from "@/engine/versions/label";
 import { record } from "./labels";
+import { readAnyToken } from "./read-token";
 
 /** The run a challenge link dares you to beat. Only a live token can be replayed on the client. */
 export type Versus =
@@ -15,16 +14,9 @@ export interface TokenRun {
 }
 
 export function readTokenRun(token: string): TokenRun | null {
-  const version = Number(/^pd(\d+)\./.exec(token)?.[1]);
-  if (version !== RUN_TOKEN_VERSION && !RETAINED_TOKEN_VERSIONS.includes(version)) return null;
-  try {
-    // Every token version's wire format is a subset of the live one, so any known version reads
-    // its settings through the live codec without a replay.
-    const { settings, seed } = decodeToken(token.replace(/^pd\d+\./, `pd${RUN_TOKEN_VERSION}.`));
-    return { version, settings, seed };
-  } catch {
-    return null;
-  }
+  const run = readAnyToken(token);
+  if (run === null) return null;
+  return { version: Number(/^pd(\d+)\./.exec(token)?.[1]), settings: run.settings, seed: run.seed };
 }
 
 // Each retained token version pdN was issued by engine N, so the token names the engine.

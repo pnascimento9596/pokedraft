@@ -1,11 +1,30 @@
 import { and, asc, count, desc, eq, gt, lt, or, sql, type SQL } from "drizzle-orm";
+import { ENGINE_VERSION } from "@/engine";
 import { leaderboardEntries, type LeaderboardRow, type NewLeaderboardRow } from "@/db/schema";
 import type { Db } from "@/db/types";
 import { admissionCtes, type RateLimitRule } from "@/ratelimit/store";
-import { readStoredToken } from "./squad-preview";
-import { BOARD_LIMIT, type BoardEntry, type BoardMode, type CoachFilter } from "../contract";
+import { readAnyToken } from "@/ui/read-token";
+import { squadOf } from "./squad-preview";
+import {
+  BOARD_LIMIT,
+  SEED_BOARD_LIMIT,
+  type BoardEntry,
+  type BoardMode,
+  type CoachFilter,
+  type EngineFilter,
+} from "../contract";
 
-export type Board = { readonly mode: BoardMode; readonly dailyDate: string | null };
+export type Board =
+  | { readonly mode: BoardMode; readonly dailyDate: string }
+  | { readonly mode: BoardMode; readonly dailyDate: null; readonly engine: EngineFilter };
+
+/**
+ * The board a submitted run is ranked on: its daily board, or the current-engine all-time board,
+ * which is the view the submit panel's board link opens.
+ */
+export function rankedBoard(mode: BoardMode, dailyDate: string | null): Board {
+  return dailyDate === null ? { mode, dailyDate, engine: "current" } : { mode, dailyDate };
+}
 
 export type Conflict = "daily" | "token" | "fingerprint";
 
@@ -41,6 +60,8 @@ export interface LeaderboardStore {
   rankOf(row: LeaderboardRow, board: Board, coach: CoachFilter): Promise<number>;
   /** The top `BOARD_LIMIT` rows of one coach view, in board order; ranks are 1..n in the view. */
   top(board: Board, coach: CoachFilter): Promise<readonly LeaderboardRow[]>;
+  /** The top `SEED_BOARD_LIMIT` rows played on one seed of one mode, every engine and date. */
+  seedBoard(mode: BoardMode, seed: string): Promise<readonly LeaderboardRow[]>;
 }
 
 const t = leaderboardEntries;
@@ -50,9 +71,12 @@ function coachFilter(coach: CoachFilter): SQL | undefined {
 }
 
 function boardFilter(board: Board): SQL {
-  return board.dailyDate === null
+  if (board.dailyDate !== null) {
+    return and(eq(t.mode, board.mode), eq(t.dailyDate, board.dailyDate))!;
+  }
+  return board.engine === "all"
     ? eq(t.mode, board.mode)
-    : and(eq(t.mode, board.mode), eq(t.dailyDate, board.dailyDate))!;
+    : and(eq(t.mode, board.mode), eq(t.engineVersion, ENGINE_VERSION))!;
 }
 
 const ORDER = [desc(t.wins), desc(t.draws), desc(t.teamScore), asc(t.createdAt), asc(t.id)];
@@ -166,7 +190,7 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
       return row ?? null;
     },
     async insert(row, coach) {
-      const board: Board = { mode: row.mode, dailyDate: row.dailyDate ?? null };
+      const board = rankedBoard(row.mode, row.dailyDate ?? null);
       try {
         const db = getDb();
         // The outer query reads the table as it was before the insert, and a row is never ahead
@@ -204,6 +228,16 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
         .orderBy(...ORDER)
         .limit(BOARD_LIMIT);
     },
+    // No index serves the seed filter. Under 10,000 rows the scan is sub-millisecond; past that,
+    // add (mode, seed) to an index.
+    async seedBoard(mode, seed) {
+      return getDb()
+        .select()
+        .from(t)
+        .where(and(eq(t.mode, mode), eq(t.seed, seed)))
+        .orderBy(...ORDER)
+        .limit(SEED_BOARD_LIMIT);
+    },
   };
 }
 
@@ -211,10 +245,14 @@ export function toBoardEntry<R extends number | null>(
   row: LeaderboardRow,
   rank: R,
 ): Omit<BoardEntry, "rank"> & { readonly rank: R } {
+  const run = readAnyToken(row.token);
   return {
     rank,
-    squadSpeciesIds: readStoredToken(row.token),
+    squadSpeciesIds: run === null ? undefined : squadOf(run),
     coached: row.coached,
+    engineVersion: row.engineVersion,
+    seed: row.seed,
+    formation: run?.settings.formation ?? null,
     nickname: row.nickname,
     mode: row.mode,
     variant: row.variant,

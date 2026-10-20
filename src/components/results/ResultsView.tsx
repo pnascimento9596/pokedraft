@@ -41,6 +41,7 @@ import { FitReveal } from "./FitReveal";
 import { MatchHighlights } from "./MatchHighlights";
 import { MatchList } from "./MatchList";
 import { ShareActions } from "./ShareActions";
+import { SeedBoard } from "@/components/leaderboard/SeedBoard";
 import { Trophy } from "./Trophy";
 import s from "./ResultsView.module.css";
 import { ModuleCard, Pill, Table } from "@/components/ui/primitives";
@@ -408,6 +409,8 @@ export function ResultsView({
           />
         </div>
       </ModuleCard>
+
+      <SeedBoard token={token} />
 
       {inspectId !== null ? (
         <ScoutingDossier

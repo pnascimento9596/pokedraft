@@ -23,6 +23,9 @@ const ENTRY: BoardEntry = {
   losses: 0,
   createdAt: "2026-10-09T12:00:00.000Z",
   coached: false,
+  engineVersion: "pokedraft-engine-6",
+  seed: "e2e-seed",
+  formation: "4-3-3",
 };
 
 function json(status: number, body: unknown): Response {
