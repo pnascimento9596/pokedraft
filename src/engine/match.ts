@@ -460,6 +460,7 @@ export function goalKindOf(
   c: EngineCoefficients,
 ): Exclude<GoalKind, "penalty"> {
   if (!c.goalKind.weighted) {
+    // Engine 6's literal thresholds, so a live run cannot move by an ulp.
     return roll < 0.12 ? "header" : roll < 0.2 ? "free-kick" : roll < 0.38 ? "solo" : "open-play";
   }
   const line = pool.filter((s) => s.line === "ATT");
