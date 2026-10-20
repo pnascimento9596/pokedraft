@@ -68,4 +68,23 @@ describe("per-trial rate parity self-test (catches a comparison too blind to see
     });
     expect(divergences(c).sides).toEqual({ user: 11, opp: 23, length: 0 });
   });
+
+  it("weighted goal kinds: 24 user-side divergences, each first in a goal's kind", () => {
+    const c = mutate((m) => {
+      m.goalKind = { weighted: true, header: 1, solo: 1 };
+    });
+    expect(divergences(c).sides).toEqual({ user: 24, opp: 0, length: 0 });
+    const firstFields = new Set<string>();
+    for (const { input } of INPUTS) {
+      const { live, frozen } = rateTraces(input, c);
+      const i = live.findIndex((ch, k) => JSON.stringify(ch) !== JSON.stringify(frozen[k]));
+      if (i < 0) continue;
+      const a = live[i]!;
+      const b = frozen[i]!;
+      firstFields.add(
+        (Object.keys(a) as (keyof typeof a)[]).filter((key) => a[key] !== b[key]).join(","),
+      );
+    }
+    expect([...firstFields].sort()).toEqual(["kind", "kind,shooter,slot"]);
+  });
 });

@@ -58,6 +58,13 @@ export interface EngineCoefficients {
    * from its ladder step comes on, and its rotations are logged as incidents.
    */
   opponent: { injuries: boolean };
+  /**
+   * Engine 7: with `weighted`, the header share of the kind draw is scaled by
+   * 1 + header * (the attackers' mean AER over the dex mean - 1), and the solo share likewise by
+   * `solo` and mean(DRI, ACC), each clamped to 0.6 to 1.5. Free kicks keep their share and open
+   * play takes the rest. Off, the shares are engine 6's.
+   */
+  goalKind: { weighted: boolean; header: number; solo: number };
   availability: { eventProb: number; familiarityFloor: number };
   awards: {
     goal: number;
@@ -186,6 +193,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
   penalty: { missable: false, awardShare: 0 },
   takers: { freeKickWeight: 1 },
   opponent: { injuries: false },
+  goalKind: { weighted: false, header: 0, solo: 0 },
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
   awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, CB: 1, FB: 1, DM: 1 }, minutesPerPoint: 180 },
   ladder: {

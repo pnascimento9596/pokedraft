@@ -1,9 +1,9 @@
 import { familiarity } from "@/scouting/fit";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
-import { bossReserve } from "./opponents";
+import { bossHasReserve, bossReserve } from "./opponents";
 import { recapLines } from "./recap";
 import { canonicalSortBy, createEngineRng, deriveSubseed, type EngineRng } from "./rng";
-import { speciesById } from "./species";
+import { SPECIES, speciesById } from "./species";
 import { matchLines, rateTeam } from "./team";
 import {
   RunTokenError,
@@ -428,6 +428,57 @@ function pickScorer(
   );
 }
 
+// Engine 6's shares of the kind draw. Open play takes what the other three leave.
+const KIND_SHARE = { header: 0.12, freeKick: 0.08, solo: 0.18 } as const;
+const KIND_SCALE = { min: 0.6, max: 1.5 } as const;
+
+const meanOf = (values: readonly number[]): number =>
+  values.reduce((a, b) => a + b, 0) / values.length;
+const aerial = (s: Species): number => s.attrs.AER;
+const carry = (s: Species): number => (s.attrs.DRI + s.attrs.ACC) / 2;
+const DEX_MEAN = { aerial: meanOf(SPECIES.map(aerial)), carry: meanOf(SPECIES.map(carry)) };
+
+const kindScale = (
+  attackers: readonly MatchStarter[],
+  attr: (s: Species) => number,
+  dexMean: number,
+  weight: number,
+): number => {
+  const ratio = meanOf(attackers.map((a) => attr(a.species))) / dexMean;
+  return Math.min(KIND_SCALE.max, Math.max(KIND_SCALE.min, 1 + weight * (ratio - 1)));
+};
+
+/**
+ * The kind of a goal that is not a penalty, from its one `event` draw. Engine 7's `goalKind`
+ * scales the header share by the attackers' AER and the solo share by their DRI and ACC, each
+ * against the whole dex's mean. The attackers are the ATT line on the pitch, or the whole pool
+ * when that line is empty.
+ */
+export function goalKindOf(
+  roll: number,
+  pool: readonly MatchStarter[],
+  c: EngineCoefficients,
+): Exclude<GoalKind, "penalty"> {
+  if (!c.goalKind.weighted) {
+    // Engine 6's literal thresholds, so a live run cannot move by an ulp.
+    return roll < 0.12 ? "header" : roll < 0.2 ? "free-kick" : roll < 0.38 ? "solo" : "open-play";
+  }
+  const line = pool.filter((s) => s.line === "ATT");
+  const attackers = line.length > 0 ? line : pool;
+  const header =
+    KIND_SHARE.header * kindScale(attackers, aerial, DEX_MEAN.aerial, c.goalKind.header);
+  const freeKick = header + KIND_SHARE.freeKick;
+  const solo =
+    freeKick + KIND_SHARE.solo * kindScale(attackers, carry, DEX_MEAN.carry, c.goalKind.solo);
+  return roll < header
+    ? "header"
+    : roll < freeKick
+      ? "free-kick"
+      : roll < solo
+        ? "solo"
+        : "open-play";
+}
+
 function goalEvent(
   side: Side,
   pool: readonly MatchStarter[],
@@ -438,15 +489,7 @@ function goalEvent(
   freeKickTaker: SpeciesId | null,
 ): GoalEvent {
   const roll = penalty ? 1 : rng.next();
-  const kind: GoalKind = penalty
-    ? "penalty"
-    : roll < 0.12
-      ? "header"
-      : roll < 0.2
-        ? "free-kick"
-        : roll < 0.38
-          ? "solo"
-          : "open-play";
+  const kind: GoalKind = penalty ? "penalty" : goalKindOf(roll, pool, c);
   const scorer = penalty ? bestShooter(pool) : pickScorer(pool, kind, rng, c, freeKickTaker);
   const creators = pool.filter((s) => s !== scorer && c.match.assistRoleFactor[s.role] > 0);
   const assisted = (kind === "open-play" || kind === "header") && rng.next() < c.match.assistProb;
@@ -810,6 +853,10 @@ export function playMatchCore(
   // Engine 7: the Boss Club's players used so far (its eleven, then each reserve sent on).
   const oppUsed = new Set(input.opponentStarters.map((s) => s.species.id));
   let oppSubs = 0;
+  const oppCanReplace = (): boolean =>
+    input.mode !== undefined &&
+    oppSubs < m.maxSubs &&
+    bossHasReserve(input.mode, input.opponent, oppUsed);
   const oppReserve = (slot: StarterIndex, role: Role): Species | null =>
     input.mode === undefined || oppSubs >= m.maxSubs
       ? null
@@ -822,6 +869,7 @@ export function playMatchCore(
           slot,
           role,
           oppUsed,
+          oppSubs,
         );
 
   const incident = (it: Extract<Item, { kind: "incident" }>): void => {
@@ -839,8 +887,7 @@ export function playMatchCore(
       press *
       (isKeeper ? (canReplace ? 0.5 : 0) : 1);
     if (it.side === "opp" && c.opponent.injuries && input.mode !== undefined) {
-      const keeperCover = isKeeper ? oppReserve(it.slot, slot.role) : null;
-      if (it.injury < hazard(keeperCover !== null)) {
+      if (it.injury < hazard(isKeeper && oppCanReplace())) {
         incidents.push({
           kind: "injury",
           side: "opp",
@@ -848,7 +895,7 @@ export function playMatchCore(
           slot: it.slot,
           player: occupant.species.id,
         });
-        const reserve = keeperCover ?? oppReserve(it.slot, slot.role);
+        const reserve = oppReserve(it.slot, slot.role);
         if (reserve === null) {
           side.onPitch[it.slot] = null;
           side.vacancies++;

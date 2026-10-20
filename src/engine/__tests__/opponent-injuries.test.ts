@@ -137,6 +137,22 @@ describe("opponent injuries under engine 7 (catches a Boss Club that never loses
   });
 });
 
+describe("a re-injured slot draws a fresh reserve (catches two injuries in one slot sharing one draw)", () => {
+  it("panel-87 match 3: Sawk (539) goes off at 6' for Hitmonlee (106), and Hitmonlee at 48' for Pheromosa (795)", () => {
+    const seed = "panel-87" as Seed;
+    const m = runCup(draftLineup(CUP8, seed), seed, "cup8", ENGINE_COEFFICIENTS_V7).matches[3];
+    if (m?.status !== "played") throw new Error("match 3 is played");
+    expect(
+      opponentChanges(m).flatMap((i) =>
+        i.kind === "sub" ? [[i.minute, i.slot, i.out, i.in]] : [],
+      ),
+    ).toEqual([
+      [6, 8, 539, 106],
+      [48, 8, 106, 795],
+    ]);
+  });
+});
+
 // Regression guard, no RED: behaviour already correct. Engine 6 bytes must not move before the
 // flip, so none of engine 7's new keys or kinds may appear at the live coefficients.
 describe("engine 6 output carries no opponent injury, rotation or oppEnergy (catches dormant output leaking into live runs)", () => {
@@ -156,15 +172,15 @@ describe("engine 6 output carries no opponent injury, rotation or oppEnergy (cat
 });
 
 // Regression guard, no RED: behaviour already correct. A reserve is drawn on its own
-// `opponent_roster` scope, `inj:<match>:<slot>`, so the ladder's rung scopes draw what they drew.
+// `opponent_roster` scope, `inj:<match>:<slot>:<n>`, so the ladder's rung scopes draw what they drew.
 describe("the reserve's scope leaves the opponent rosters alone (catches a reserve draw shifting a ladder)", () => {
-  it("the rung scopes 0 to 7 still open on the same first draw, and inj:0:9 opens elsewhere", () => {
+  it("the rung scopes 0 to 7 still open on the same first draw, and inj:0:9:0 opens elsewhere", () => {
     const first = (scope: string) =>
       createEngineRng(deriveSubseed("pin-seed", "opponent_roster", scope)).uint32();
     expect([0, 1, 2, 3, 4, 5, 6, 7].map((k) => first(`${k}`))).toEqual([
       3865100042, 441332670, 3912850124, 3395792505, 3917561808, 2638849127, 222207424, 2684933535,
     ]);
-    expect(first("inj:0:9")).toBe(4125128776);
+    expect(first("inj:0:9:0")).toBe(2134766504);
   });
 
   it("panel runs 0 to 9 field the same Boss Clubs under engine 7 as under engine 6", () => {
