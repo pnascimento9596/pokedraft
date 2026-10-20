@@ -92,6 +92,8 @@ const REGULATION_MINUTES = 90;
 const EXTRA_TIME_LAST_MINUTE = 120;
 const PERCENT = 100;
 const FRESH = 100;
+// With splitManaged, a tactic from half-time on takes the tactics from the assistant.
+const SPLIT_TACTIC_MINUTE = 45;
 
 function clamp(x: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, x));
@@ -551,7 +553,12 @@ export function playMatchCore(
   const windows: WindowSnapshot[] = [];
   const actions = [...(input.manager ?? [])];
   let nextAction = 0;
-  let managed = false;
+  // Engine 6 hands both to the manager on any decision; engine 7 (splitManaged) splits them.
+  let tacticManaged = false;
+  let subsManaged = false;
+  // The tactic the assistant returns to when the score no longer calls for a change: Balanced, or
+  // the manager's own early choice, which the assistant keeps until the late game needs it.
+  let userBase: Tactic = "balanced";
   let lastMinute = 0;
 
   const advance = (minute: number): void => {
@@ -598,9 +605,18 @@ export function playMatchCore(
     refreshUserLines();
   };
 
+  const takeOver = (a: ManagerAction): void => {
+    if (!m.splitManaged) {
+      tacticManaged = true;
+      subsManaged = true;
+    } else if (a.type === "sub") subsManaged = true;
+    else if (a.minute >= SPLIT_TACTIC_MINUTE) tacticManaged = true;
+  };
+
   const applyManager = (a: ManagerAction): void => {
-    managed = true;
+    takeOver(a);
     if (a.type === "tactic") {
+      userBase = a.tactic;
       if (a.tactic !== user.tactic) {
         user.tactic = a.tactic;
         incidents.push({
@@ -645,27 +661,27 @@ export function playMatchCore(
 
   const boundary = (t: number): void => {
     applyDecisionsUpTo(t);
-    // Any manager decision switches the auto coach off for the user side, fatigue subs included.
-    // Pinned by manager.test.ts "hands the touchline to the manager".
-    if (!managed) {
-      const next = autoTactic("balanced", t, user.goals, opp.goals);
+    // takeOver decides which half of the assistant a decision switches off. Pinned by
+    // manager.test.ts "hands the touchline to the manager" and split-managed.test.ts.
+    if (!tacticManaged) {
+      const next = autoTactic(userBase, t, user.goals, opp.goals);
       if (next !== user.tactic) {
         user.tactic = next;
         incidents.push({ kind: "tactic", side: "user", minute: t, tactic: next, by: "auto" });
       }
-      if (bench !== null && m.autoSubMinutes.includes(t)) {
-        const tired = canonicalSortBy(
-          user.onPitch.flatMap((o, i) =>
-            o !== null && user.slots[i]!.role !== "GK" && o.energy < m.autoSubEnergy
-              ? [{ o, i: i as StarterIndex }]
-              : [],
-          ),
-          (x) => [x.o.energy, x.i],
-        )[0];
-        if (tired) {
-          const pick = replacementFor(bench, user.slots[tired.i]!.role, c);
-          if (pick) substitute(tired.i, pick.index, t, "fatigue", "auto", tired.o.species);
-        }
+    }
+    if (!subsManaged && bench !== null && m.autoSubMinutes.includes(t)) {
+      const tired = canonicalSortBy(
+        user.onPitch.flatMap((o, i) =>
+          o !== null && user.slots[i]!.role !== "GK" && o.energy < m.autoSubEnergy
+            ? [{ o, i: i as StarterIndex }]
+            : [],
+        ),
+        (x) => [x.o.energy, x.i],
+      )[0];
+      if (tired) {
+        const pick = replacementFor(bench, user.slots[tired.i]!.role, c);
+        if (pick) substitute(tired.i, pick.index, t, "fatigue", "auto", tired.o.species);
       }
     }
     // A Boss Club has no named bench, so it rotates by refreshing its most tired outfield player at
@@ -726,7 +742,7 @@ export function playMatchCore(
           if (!bench.available[chosen.bench] || bench.subsUsed >= m.maxSubs) {
             invalid(`bench player ${chosen.bench} cannot replace the injured player`);
           }
-          managed = true;
+          takeOver(chosen);
           substitute(it.slot, chosen.bench, it.minute, "injury", "manager", occupant.species);
         } else {
           const pick = replacementFor(bench, slot.role, c);
@@ -968,14 +984,17 @@ export function playMatchCore(
     windows,
     absences: input.absences,
     rating: input.rating,
-    recap: recapLines({
-      matchIndex: input.matchIndex,
-      opponent: input.opponent,
-      regulation,
-      extraTime,
-      shootout: penalties,
-      outcome,
-      goals: ordered,
-    }),
+    recap: recapLines(
+      {
+        matchIndex: input.matchIndex,
+        opponent: input.opponent,
+        regulation,
+        extraTime,
+        shootout: penalties,
+        outcome,
+        goals: ordered,
+      },
+      c,
+    ),
   };
 }
