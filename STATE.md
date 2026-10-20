@@ -3,6 +3,18 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wave 5 summary
+
+Branch `docs/wave5-summary` off `origin/main` at `e1f2c38`. Green: docs only, no runtime change.
+
+- `docs/reports/audits-2026-10-17/program-log.md` gains the Wave 5 entry: the PR table for the eleven rows and three side PRs, the landed order and why, the hosted CI failures treated as real, the database receipts, measurements that moved, brief vs code, open carryovers and the Wave 7 additions.
+- `docs/decisions/wave5-summary.md` holds the owner phone checklist, the screen reader pass and the owner items still open (the passcode gate is off in production; credential rotation and the WAF rule are decided for Wave 7).
+- Production at the start of this PR serves `e1f2c38` (PR #139), engine 6, token versions 1 to 6, `db.status` ok, 6 migrations and 3 leaderboard entries.
+- The PR #137 and PR #138 merged paragraphs are added here, under their own sections. Neither 5c1 nor 5c2 needed a merge of `origin/main`, and the coordinator's paragraph step had been tied to that merge, so both were missed until this PR.
+- NOT RUN: the phone check, the screen reader pass and the owner items; unit and e2e suites on this branch (nothing under `src/` or `e2e/` changed; CI runs them).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Exhibitions on the Broadcast
 
 Branch `feat/exhibition-broadcast` off `origin/main` at `aeb66b6`. Wave 5 row 5c2 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -25,6 +37,8 @@ Gates at `849d2ad` (later commits change only e2e files, docs and screenshots):
 
 Decision log: `docs/decisions/exhibition-broadcast.md`. Browser proof: `docs/reports/exhibition-broadcast/` (`{390,360,320}-halftime-stop.png`, `{390,360,320}-sub-made.png`, `{390,360,320}-fulltime.png`, `390-two-legs.png`, `fulltime-{390,360,320}-{light,dark}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #139 (row 5c2, exhibitions on the Broadcast with manager controls, Yellow) merged as squash `e1f2c38`, reviewed head `997d93a`, GLM 5.3 Flash APPROVE in round 1 with canary `exhibition-broadcast-5892f40d33c203275f927989df4f2691` echoed. At `997d93a` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,998 unit tests passed in 229 files and Prettier passed on 23 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `e1f2c38` with `db.status` ok; `exhibition-broadcast`, `exhibition-route`, `exhibition-two-legs` and `touchline-sheet` against production (chromium) passed 21 of 21. Exhibition pins moved because subs and injuries are now on (one match 4-1 to 4-0; no stored or ranked data depends on them). Carryover: the touchline sheet's content reaches 310 px at 320 (10 px of headroom; existing Wave 3 UI). NOT RUN: `exhibition-broadcast` on WebKit and the phone projects, a real phone check and a screen reader pass (owner actions).
+
 ## Exhibition route
 
 Branch `feat/exhibition-route` off `origin/main` at `54c6a58`. Wave 5 row 5c1 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -46,6 +60,8 @@ Gates at `8839ff7`:
 - NOT RUN: the e2e specs against the RED build, `exhibition-route.spec.ts` on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
 
 Decision log: `docs/decisions/exhibition-route.md`. Browser proof: `docs/reports/exhibition-route/` (`history-row-{390,360,320}.png`, `exhibition-{390,360,320}.png`, `route-{390,360,320}-{light,dark}.png`, `board-row-320.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #138 (row 5c1, exhibition route, picker and entry points, Yellow) merged as squash `aeb66b6`, reviewed head `1b2c8dd`, GLM 5.3 Flash APPROVE in round 1 with canary `exhibition-route-3b64165b036d9028ad29126c8c571868` echoed. At `1b2c8dd` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,996 unit tests passed in 228 files and Prettier passed on 26 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `aeb66b6` with `db.status` ok; `exhibition-route`, `exhibition-two-legs`, `platform-experience` and `board-ux` against production (chromium) passed 24 of 24. Carryovers: a fast double tap on "Play rematch" can count once; the empty state's Play and Builder links both go to `/`. NOT RUN: `exhibition-route` on WebKit and the phone projects, a real phone check and a screen reader pass (owner actions).
 
 ## Board UX
 
@@ -70,6 +86,8 @@ Gates at `6c73d50` (`9ad9c46` changes only `e2e/leaderboard-font-cls.spec.ts`):
 - NOT RUN: the e2e specs against a build of the RED commit, `board-ux.spec.ts` on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
 
 Decision log: `docs/decisions/board-ux.md`. Browser proof: `docs/reports/board-ux/` (`own-row-{390,360,320}-{light,dark}.png`, `share-my-rank-{390,320}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #137 (row 5d, board UX, Yellow) merged as squash `54c6a58`, reviewed head `d4ff01a` (`4dbd58e` plus a merge of main bringing in PR #136 and a STATE note), GLM 5.3 Flash APPROVE in round 1 with canary `board-ux-a3c6062c1bea73a77645b64da0ed0129` echoed. At `d4ff01a` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,969 unit tests passed in 226 files and Prettier passed on 20 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `54c6a58` with `db.status` ok; `board-ux`, `leaderboard`, `platform-experience`, `leaderboard-font-cls` and `leaderboard-cls` against production (chromium) passed 38 of 38. Carryover: at 320 px the coach chips' labels touch their borders (not measured on main). NOT RUN: `board-ux` on WebKit and the phone projects, a real phone check and a screen reader pass (owner actions).
 
 ## Achievements
 
