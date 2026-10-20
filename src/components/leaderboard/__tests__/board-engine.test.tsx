@@ -160,6 +160,55 @@ describe("All engines toggle and engine labels (catches older-engine runs shown 
     ]);
   });
 
+  it("says No runs on this engine yet when only older engines have runs, and one tap shows them (catches an empty default board that never says why)", async () => {
+    const fetchMock = vi.fn(async (url: string) => {
+      const engine = new URL(url, "http://local").searchParams.get("engine") ?? "current";
+      return json(200, {
+        mode: "cup8",
+        scope: "all",
+        date: null,
+        coach: "all",
+        engine,
+        seed: null,
+        entries: engine === "all" ? [{ ...LANCE, rank: 1 }] : [],
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    render(<StatefulBoard view={{ mode: "cup8", scope: "all", date: "2026-10-19" }} />);
+    const empty = await screen.findByTestId("board-empty-engine");
+    expect(empty.textContent).toBe(
+      "No runs on this engine yet.Runs from older engines are on the All engines board.Show all enginesPlay a run",
+    );
+    expect(screen.queryByTestId("board-empty")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Show all engines" }));
+    expect((await screen.findAllByTestId("board-row")).map((r) => r.textContent)).toEqual([
+      expect.stringContaining("Lance"),
+    ]);
+    expect(screen.getByRole("button", { name: "All engines" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+  });
+
+  it("keeps No entries yet when no engine has runs", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) =>
+        json(200, {
+          mode: "cup8",
+          scope: "all",
+          date: null,
+          coach: "all",
+          engine: new URL(url, "http://local").searchParams.get("engine") ?? "current",
+          seed: null,
+          entries: [],
+        }),
+      ),
+    );
+    render(<StatefulBoard view={{ mode: "cup8", scope: "all", date: "2026-10-19" }} />);
+    expect((await screen.findByTestId("board-empty")).textContent).toContain("No entries yet.");
+    expect(screen.queryByTestId("board-empty-engine")).toBeNull();
+  });
+
   it("has no engine toggle on a daily board", async () => {
     vi.stubGlobal(
       "fetch",
