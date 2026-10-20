@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ModuleCard, Pill, StatusNote } from "@/components/ui/primitives";
+import { ENGINE_VERSION } from "@/engine";
+import { engineLabel } from "@/engine/versions/label";
 import { ManualLink } from "@/components/share/ManualLink";
 import { SHARE_TITLE, rankShareText } from "@/components/share/shareLink";
 import { useLinkShare } from "@/components/share/useLinkShare";
@@ -45,6 +47,12 @@ function errorCopy(code: SubmitFailure, nickname: string | undefined): string {
   return code === "DUPLICATE_TOKEN" && nickname !== undefined
     ? `This exact run is already on the board, listed under ${nickname}.`
     : SUBMIT_ERROR_COPY[code];
+}
+
+// A run the grace window accepted after an engine change ranks on its own engine's board.
+function graceLine(engine: string): string | null {
+  if (engine === ENGINE_VERSION) return null;
+  return `Ranked on the engine ${engineLabel(engine).replace(/^v/, "")} board.`;
 }
 
 function savedNickname(): string {
@@ -92,6 +100,7 @@ export function SubmitPanel({
     const { entry } = status;
     const { rank } = entry;
     const scope = entry.dailyDate === null ? "all" : "daily";
+    const grace = graceLine(entry.engineVersion);
     return (
       <ModuleCard
         className={s.panel}
@@ -111,13 +120,24 @@ export function SubmitPanel({
             among {coach} runs.
           </span>
         </p>
+        {grace === null ? null : (
+          <p className={s.grace} data-testid="submit-grace">
+            {grace}
+          </p>
+        )}
         {entry.rank === null ? (
           <StatusNote title="Rank unavailable" data-testid="rank-unavailable">
             Your rank could not be loaded right now.
           </StatusNote>
         ) : null}
         <Link
-          href={boardHref({ mode: entry.mode, scope, date: entry.dailyDate, coach })}
+          href={boardHref({
+            mode: entry.mode,
+            scope,
+            date: entry.dailyDate,
+            coach,
+            engine: grace === null ? undefined : "all",
+          })}
           className="btn btn--primary"
         >
           View leaderboard

@@ -12,17 +12,35 @@ Branch `feat/xg-river` off `origin/main` at `969ca1c`. Wave 6 row 6a2 (Yellow). 
 - Goal lines in the ticker can add "Late drama at 86'", "Tapu Koko's second" (or hat-trick) and "Against the run of play" when the run's chances back it.
 - A friend's link on the live engine shows the river with "this squad" for "you". Retained runs (older engine links) and exhibitions show no river and keep the old lean; Quick view shows no river.
 
-RED commit: `5fbf33a` (unit 24 of 57 failed in the five touched test files). GREEN `19213f6`. `21fe650` adds `e2e/xg-river.spec.ts`, re-pins `honest-momentum.spec.ts` (minutes 6 to 9 read `77%23%`, was `36%64%`) and adds `scripts/perf/story-timing.mts`. `626cc30` re-pins the set-pieces solo presser to opp slot 5 (was 3).
+RED commit: `5fbf33a` (unit 24 of 57 failed in the five touched test files). GREEN `19213f6`. `21fe650` adds `e2e/xg-river.spec.ts` and `scripts/perf/story-timing.mts`. `1749ebc` merges `origin/main` at `2992500` (#144, #145). `3d6a972` builds the generated pins' timelines with the story's territory, as `MatchPlayer` does, and adds an `XG_RIVER` pin. Pins that moved: `HONEST_MOMENTUM.second` `36%64%` to `77%23%`, `SET_PIECES.solo.presser` `3` to `5` (the solo presser rule now asks for a defender level with the scorer mid-run and behind by the shot, since under the territory lean it steps in from upfield). No other pin moved. FILL_MERGE2
 
-Gates at `626cc30` (app code identical to `19213f6`):
+FILL_GATES_STATE
 
-- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `check-retained-replays.mts` (10 golden replays), `measure-retained-json.mjs` (4 copies) and all nine `check:*` scripts exited 0. Prettier passed on every touched file.
-- Unit tests: 2,054 passed in 233 files.
-- Playwright (`CI=1`, headless, muted chromium, `--retries=0`), the full suite at `21fe650`: 1,085 passed, 67 skipped, 1 failed (the set-pieces solo presser, re-pinned in `626cc30`; `set-pieces.spec.ts` then 4 of 4). `xg-river.spec.ts` 5 of 5, `honest-momentum.spec.ts` 1 of 1.
-- Story cost at 4x CPU throttle: at most 29.6 ms for one match, 108 to 153 ms for a cup's six. River layout at 390, 360, 320 and 308 px: 6 px under the meter, 11 px inside the HUD, no overlap, no page scroll.
-- NOT RUN: the full suite after `626cc30`, the new spec on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
+Decision log: `docs/decisions/xg-river.md`. Browser proof: `docs/reports/xg-river/` (`river-{30,ht,ft}-{390,360,320}.png`) and `docs/reports/set-pieces/390-solo.png`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
-Decision log: `docs/decisions/xg-river.md`. Browser proof: `docs/reports/xg-river/` (`river-{30,ht,ft}-{390,360,320}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+## Engine grace window and version plumbing
+
+Branch `feat/engine-grace` off `origin/main` at `8059458` (the 6b0 squash). Wave 6 row 6g (Red). Dormant: `GRACE` is `null`, so production behaviour is exactly today's. No file under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #144 merge, and the branch merged `origin/main` at `2992500` (PR #145) with its merged paragraph below.
+
+- Nothing changes for a player yet.
+- When engine 7 goes live and 6b9 sets `GRACE`, an engine 6 run finished just before the flip can still be submitted for about a day, whether the page says engine 6 or engine 7. It replays on the frozen engine 6 bundle, is stored as an engine 6 row and is ranked among engine 6 rows. The submit result says "Ranked on the engine 6 board." and its board link opens All engines.
+- The flip day's Daily accepts only engine 7 runs, so one date never mixes engines. The day before stays open to engine 6 runs.
+- Coached engine 7 runs keep their Coached marker (`MANAGER_TOKEN_VERSIONS = [6, 7]`).
+- A new proxy guard checks a golden share link of every retained and live version plus engine 6. It passes today and goes RED at the flip until pd6 links get their own codec branch.
+
+RED commit `82e5bcd` (9 of 19 failed), GREEN `c93e5ea`. Regression guards with no RED, behaviour already correct: the proxy guard `cd524a2` and the canonical-form guard (a stored engine 6 token, plain and coached, re-encodes to the exact stored string). Build fix `34069ba`: a static import of the retained dispatcher emitted a second live scouting payload (`measure-retained-json.mjs`: `5 !== 4`); it is now loaded only for a grace run.
+
+Gates at `4c275fa` (the merge of `origin/main`, code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 2,046 passed in 233 files. `pnpm vitest run src/engine`: 286 passed in 24 files. `pnpm e2e:pins --check` reported the pins current.
+- `check-retained-replays.mts`: 10 golden replays passed. `measure-retained-json.mjs`: 4 payloads, 2,891,853 bytes.
+- Playwright on chromium against a fresh build: `grace-submit`, `leaderboard`, `seed-board`, `board-ux`, `old-links`, `share` and `health`, 43 passed. The grace line has 37 px of headroom at 320 and 25 px at 308. Browser proof: `docs/reports/engine-grace/`.
+- NOT RUN: review and hosted CI, the preview-branch API proof (the coordinator runs it with the Red reviewer), the full Playwright suite, the calibration probes (engine output cannot move), the phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine-grace.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #146 (engine grace window and version plumbing, dormant, Red) merged as squash `7045ccd`, reviewed head `242c169`, GLM 5.3 Flash APPROVE with canary `6g-f61e4e1b51f410939f95cb77b57a8383` echoed and the independent executing Red reviewer PASS on the same head. At `242c169` lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main` and 2,046 unit tests passed in 233 files. The first hosted run failed the `check` job on `src/components/run/__tests__/coach-mark.test.tsx` (1 of 2,046; the file is not touched by 6g and passed 3 of 3 runs locally); the failed job was rerun with `gh run rerun 39465358138 --failed`, no commit, and passed; all eight e2e shards were green on the first run. Preview API receipt (local `next start` on the Neon preview branch because the Vercel preview is protected): POST pd6 Daily 201, retry 200 same entry, `db:delete-entry` deleted 1 row, preview left with its 2 seed rows. Production `/api/health?db=1` served `7045ccd` with engine `pokedraft-engine-6`, token versions 1 to 6 and `db.status` ok; live check on chromium `grace-submit` 4, `leaderboard` 8, `seed-board` 9, `old-links` 1, `share` 17 and `health` 1, 40/40. No production rows written (grace-submit mocks the POST). GRACE is null, so engine output is unchanged.
 
 ## Live-token pins
 
