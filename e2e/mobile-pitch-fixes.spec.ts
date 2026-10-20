@@ -1,10 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { LIVE_GOLDEN_CUP8 } from "./pins";
 import { draftSixteen } from "./helpers";
 
-// Group match 1 of the golden cup8 run under engine 6. The user's slot 4 is booked at 3', so the
-// card pip, the ball carrier's nameplate and a pass trail are all on the pitch early.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// Group match 1 of the golden cup8 run under the live prefix. A user card early in the match puts
+// the card pip, the ball carrier's nameplate and a pass trail on the pitch early.
+const LIVE = LIVE_GOLDEN_CUP8;
 const PLAY = "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach";
 const SHOT = "docs/reports/mobile-pitch-fixes";
 

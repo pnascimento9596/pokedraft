@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { draftSixteen } from "./helpers";
-import { RUN_8_0 } from "./pins";
+import { ENGINE_VERSION, LIVE_PREFIX, RUN_8_0 } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
 
@@ -23,12 +23,12 @@ const ROWS = [
     ...ROW,
     rank: 1,
     nickname: "W".repeat(20),
-    token: "pd6.e2e-wide",
+    token: `${LIVE_PREFIX}e2e-wide`,
     teamScore: 812,
     wins: 7,
     draws: 1,
     losses: 0,
-    engineVersion: "pokedraft-engine-6",
+    engineVersion: ENGINE_VERSION,
     formation: "3-4-2-1",
   },
   {
@@ -47,12 +47,12 @@ const ROWS = [
     ...ROW,
     rank: 3,
     nickname: "Misty",
-    token: "pd6.e2e-misty",
+    token: `${LIVE_PREFIX}e2e-misty`,
     teamScore: 540,
     wins: 2,
     draws: 1,
     losses: 2,
-    engineVersion: "pokedraft-engine-6",
+    engineVersion: ENGINE_VERSION,
     formation: "4-4-2",
   },
 ];
@@ -186,12 +186,12 @@ test("live results show a run submitted from the page in the seed table without 
     seed: "e2e-80",
     rank: 2,
     nickname: "Brock",
-    token: "pd6.e2e-brock",
+    token: `${LIVE_PREFIX}e2e-brock`,
     teamScore: 700,
     wins: 8,
     draws: 0,
     losses: 0,
-    engineVersion: "pokedraft-engine-6",
+    engineVersion: ENGINE_VERSION,
     formation: "4-3-3",
   };
   let submitted = false;

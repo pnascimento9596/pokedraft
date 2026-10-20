@@ -1,6 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 import { draftSixteen } from "./helpers";
+import { ENGINE_VERSION, INJURY_STOP } from "./pins";
 
 // A real share token, so the shared-run page renders the full results view.
 const TOKEN =
@@ -26,7 +27,7 @@ const BOARD = {
       losses: 0,
       createdAt: "2026-10-09T12:00:00.000Z",
       coached: false,
-      engineVersion: "pokedraft-engine-6",
+      engineVersion: ENGINE_VERSION,
       seed: "e2e-seed",
       formation: "4-3-3",
     },
@@ -132,10 +133,8 @@ const PAGES: {
             JSON.stringify({ managerMode: true, matchView: "live" }),
           );
       });
-      // Match 0 of this run stops for an injury at 16' (engine 6).
-      await page.goto(
-        "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-a11y-47",
-      );
+      // Match 0 of this run stops for an injury, then at half time.
+      await page.goto(INJURY_STOP.url);
       await page.getByTestId("run-start").click();
       await draftSixteen(page);
       await page.getByTestId("see-results").click();

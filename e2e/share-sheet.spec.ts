@@ -1,7 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import { expect, test, type Page } from "@playwright/test";
 import { decodeToken, encodeToken } from "../src/engine/token";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { LIVE_GOLDEN_CUP8 } from "./pins";
 
 const SHOT = "docs/reports/share-sheet";
 // e2e/share.spec.ts's run: cup8 Open 4-3-3 on engine 3, 1-1-1, Team Score 283, out in the group.
@@ -166,7 +166,7 @@ test.describe("on a desktop", () => {
 
 test("a coached run card renders, for the Coached chip proof capture", async ({ request }) => {
   const coached = encodeToken({
-    ...decodeToken(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`),
+    ...decodeToken(LIVE_GOLDEN_CUP8),
     manager: [{ type: "tactic", match: 0, minute: 0, tactic: "attack" }],
   });
   const res = await request.get(`/card?t=${coached}`);

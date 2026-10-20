@@ -84,6 +84,4 @@ export function scriptedToken(settings: DraftSettings, seed: string): string {
   return encodeToken({ v: RUN_TOKEN_VERSION, settings, seed: seed as Seed, actions });
 }
 
-// encodeToken of the engine-6 cup8 golden script; goldens.test.ts pins its sha256 (91d7a44a...).
-export const GOLDEN_CUP8_V6 =
-  "pd6.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0";
+export { GOLDEN_CUP8_V6 } from "@/engine/versions/__tests__/fixtures";

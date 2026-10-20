@@ -1,9 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { FULLSCREEN_SCORE_BUG, LIVE_GOLDEN_CUP8 } from "./pins";
 import { draftSixteen } from "./helpers";
 
-// Group match 1 of the golden cup8 run under engine 6 (against Goldenrod United), watched live.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// A group match of the golden cup8 run under the live prefix, watched live.
+const LIVE = LIVE_GOLDEN_CUP8;
 const SHOT = "docs/reports/fullscreen-score-bug";
 const PLAY = "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach";
 
@@ -12,7 +12,7 @@ test.use({ hasTouch: true, isMobile: true });
 async function watchLive(page: Page) {
   await page.goto(`/r/${LIVE}`);
   await expect(page.getByTestId("results-record")).toBeVisible();
-  await page.getByTestId("match-G1").getByTestId("watch-live").click();
+  await page.getByTestId(`match-${FULLSCREEN_SCORE_BUG.round}`).getByTestId("watch-live").click();
   const replay = page.getByTestId("match-replay");
   await expect(replay.getByTestId("broadcast")).toBeVisible();
   return replay;
@@ -90,7 +90,7 @@ test("no word break in the scoreboard at 320: every word of both names and the s
   await page.setViewportSize({ width: 320, height: 640 });
   const replay = await watchLive(page);
   const board = replay.getByTestId("matchday-scoreboard");
-  await expect(board).toContainText("Goldenrod United");
+  await expect(board).toContainText(FULLSCREEN_SCORE_BUG.opponent);
   const broken = await brokenWords(page);
   console.log(`320 scoreboard: broken words ${JSON.stringify(broken)}`);
   expect(broken).toEqual([]);
@@ -119,7 +119,7 @@ test("score bug present only when fullscreen: the button enters and leaves full 
   const bug = replay.getByTestId("score-bug");
   await expect(bug).toBeVisible();
   await expect(bug).toContainText("This squad");
-  await expect(bug).toContainText("Goldenrod");
+  await expect(bug).toContainText(FULLSCREEN_SCORE_BUG.short);
   await expect(bug).toContainText(/\d+-\d+/);
   await expect(bug).toContainText(/\d+'/);
   const where = await bug.evaluate((el) => ({

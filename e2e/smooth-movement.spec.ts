@@ -1,9 +1,9 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { LIVE_GOLDEN_CUP8, RED_CARD } from "./pins";
 
-// The golden cup8 run under the live engine-6 prefix. G1 has a crowded moment at 38'; in the QF
-// Ludicolo is sent off from the user's slot 2 at 6'.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// The golden cup8 run under the live prefix. G1 has a crowded moment at 38' (a probe minute picked
+// by hand), and e2e/pins.ts holds the run's first user red card.
+const LIVE = LIVE_GOLDEN_CUP8;
 const SHOT = "docs/reports/smooth-movement";
 const FRAME = 16;
 
@@ -59,15 +59,15 @@ test("a red-carded player walks to the touchline and then leaves, at 390px (catc
 }) => {
   test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
   test.setTimeout(150_000);
-  const replay = await watch(page, "QF");
+  const replay = await watch(page, RED_CARD.round);
   const player = replay.getByTestId("match-player");
   const pitch = replay.getByTestId("broadcast");
-  await toMinute(page, player, 6);
+  await toMinute(page, player, RED_CARD.minute);
   const leaving = pitch.locator("[data-leaving]");
   for (let i = 0; i < 200 && (await leaving.count()) === 0; i++) await page.clock.runFor(FRAME);
   await expect(leaving).toHaveCount(1);
   await expect(leaving).toHaveAttribute("data-side", "user");
-  await expect(leaving).toHaveAttribute("data-slot", "2");
+  await expect(leaving).toHaveAttribute("data-slot", String(RED_CARD.slot));
 
   const path: number[] = [];
   const across: number[] = [];

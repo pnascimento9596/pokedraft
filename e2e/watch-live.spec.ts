@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { LIVE_GOLDEN_CUP8 } from "./pins";
 
-// The engine-5 golden cup8 run, and the same draft under the live engine-6 prefix.
+// The engine-5 golden cup8 run, and the same draft under the live prefix.
 const RETAINED = GOLDEN_CUP8_V5;
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+const LIVE = LIVE_GOLDEN_CUP8;
 
 test.use({ reducedMotion: "reduce" });
 
@@ -33,7 +34,7 @@ for (const width of [360, 1280]) {
   });
 }
 
-test("Watch live on an engine-6 run plays the full broadcast with match events", async ({
+test("Watch live on a live-engine run plays the full broadcast with match events", async ({
   page,
 }) => {
   await page.goto(`/r/${LIVE}`);
