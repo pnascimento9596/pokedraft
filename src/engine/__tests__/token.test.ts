@@ -1,8 +1,17 @@
 import { describe, expect, it } from "vitest";
+import { ENGINE_COEFFICIENTS } from "../coefficients";
 import { decodeToken, encodeToken, managerSchemaFor } from "../token";
 import { decodeToken as decodeTokenV6 } from "../versions/v6/src/engine/token";
 import { GOLDEN_CUP8_V6 } from "../versions/__tests__/fixtures";
-import type { DraftAction, RunToken, RunTokenErrorCode, Seed, SlotRef, SpeciesId } from "../types";
+import {
+  RUN_TOKEN_VERSION,
+  type DraftAction,
+  type RunToken,
+  type RunTokenErrorCode,
+  type Seed,
+  type SlotRef,
+  type SpeciesId,
+} from "../types";
 
 const GOLDEN_TOKEN =
   "pd6.W1siYyIsIjQtMi0zLTEiLCIxNCIsImMiLCJwIl0sImFiYyIsW1siYyIsInMzIl0sWyJyIiwidCJdLFsicCIsMjUsbnVsbF0sWyJ3IiwiczAiLCJiNCJdXV0";
@@ -180,5 +189,14 @@ describe("nominated takers in the codec (catches a pd6 token carrying an engine 
 
   it("re-encoding the decoded engine 6 golden token is byte-identical", () => {
     expect(encodeToken(decodeToken(GOLDEN_CUP8_V6))).toBe(GOLDEN_CUP8_V6);
+  });
+});
+
+// Regression guard, no RED: behaviour already correct. The touchline offers nominations whenever
+// penalties are missable, and encodeToken refuses a nomination in a token older than pd7, so
+// switching the rule on without the token version would break saving a run.
+describe("missable penalties and the token version (catches a flip that leaves tokens at pd6)", () => {
+  it("penalty.missable is on only with RUN_TOKEN_VERSION 7 or later", () => {
+    expect(!ENGINE_COEFFICIENTS.penalty.missable || RUN_TOKEN_VERSION >= 7).toBe(true);
   });
 });
