@@ -67,7 +67,8 @@ test("page bottom padding includes the inset", async ({ page }) => {
 
   await emulateNotch(page);
   await page.goto("/");
-  expect(await edges(page)).toEqual({ headerTop: "53px", headerHeight: 104, pageBottom: "66px" });
+  // On / the footer below the page carries the home bar inset (e2e/safe-area-insets.spec.ts).
+  expect(await edges(page)).toEqual({ headerTop: "53px", headerHeight: 104, pageBottom: "32px" });
   await page.screenshot({ path: `${SHOT}/home-notch-390.png` });
 
   await page.goto("/how-to-play");

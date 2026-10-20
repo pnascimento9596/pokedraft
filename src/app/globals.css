@@ -35,10 +35,15 @@ html {
 }
 
 /* viewport-fit=cover (layout.tsx) lets the page run under a landscape notch and the home
-   indicator, so the sides keep clear of them. */
+   indicator. The header, page and footer gutters grow to the side insets, so the notch is cleared
+   once and a phone without one keeps the plain gutter. */
+:root {
+  --gutter-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  --gutter-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+}
+
 body {
   min-height: 100dvh;
-  padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
   display: flex;
   flex-direction: column;
   color: var(--text-soft);
@@ -262,7 +267,7 @@ select {
 
 .site-footer {
   margin-top: auto;
-  padding: 20px var(--gutter) calc(28px + env(safe-area-inset-bottom, 0px));
+  padding: 20px var(--gutter-right) calc(28px + env(safe-area-inset-bottom, 0px)) var(--gutter-left);
   border-top: 1px solid var(--line);
   color: var(--ink-faint);
   font-size: 0.82rem;
@@ -319,7 +324,7 @@ body:has(.page-loading) .site-footer {
   align-items: center;
   justify-content: space-between;
   gap: 4px 12px;
-  padding: 12px var(--gutter);
+  padding: 12px var(--gutter-right) 12px var(--gutter-left);
   padding-top: calc(12px + env(safe-area-inset-top, 0px));
   border-bottom: 1px solid var(--line);
 }
@@ -352,7 +357,8 @@ body:has(.page-loading) .site-footer {
 
 @media (max-width: 479.98px) {
   .site-header {
-    padding-inline: 12px;
+    padding-inline: max(12px, env(safe-area-inset-left, 0px))
+      max(12px, env(safe-area-inset-right, 0px));
   }
   .site-header nav a {
     padding: 6px 5px;
@@ -390,8 +396,13 @@ body:has(.page-loading) .site-footer {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 16px var(--gutter);
+  padding: 16px var(--gutter-right) 16px var(--gutter-left);
   padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+}
+
+/* The home bar inset goes on the last block only. On / that is the footer. */
+.page:has(+ .site-footer) {
+  padding-bottom: 32px;
 }
 
 body:has([data-draft-board]) {
