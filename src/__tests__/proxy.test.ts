@@ -7,13 +7,29 @@ import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
 import { config, proxy } from "../proxy";
 import { scriptedToken } from "../leaderboard/server/__tests__/fixtures";
 import { RUN_TOKEN_VERSION } from "../engine";
+import { RETAINED_TOKEN_VERSIONS } from "../engine/versions/label";
 import {
   A11Y_RUN_V1,
+  GOLDEN_CUP8_V1,
   GOLDEN_CUP8_V2,
   GOLDEN_CUP8_V3,
   GOLDEN_CUP8_V4,
   GOLDEN_CUP8_V5,
+  GOLDEN_CUP8_V6,
 } from "../engine/versions/__tests__/fixtures";
+
+// Named here rather than read from RETAINED_TOKEN_VERSIONS, so a flip that forgets to retain
+// engine 6 still has its pd6 links checked.
+const FLIP_RETAINS = 6;
+
+const GOLDEN_BY_VERSION: Readonly<Record<number, string>> = {
+  1: GOLDEN_CUP8_V1,
+  2: GOLDEN_CUP8_V2,
+  3: GOLDEN_CUP8_V3,
+  4: GOLDEN_CUP8_V4,
+  5: GOLDEN_CUP8_V5,
+  6: GOLDEN_CUP8_V6,
+};
 
 function importClosure(entryRel: string): string[] {
   const root = path.resolve(import.meta.dirname, "../..");
@@ -207,6 +223,20 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   it("keeps a shipped engine-5 share link on its page once engine 6 is live (catches pd5 links 404ing)", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "");
     expect(proxy(req(`/r/${GOLDEN_CUP8_V5}`)).headers.get("x-middleware-rewrite")).toBeNull();
+  });
+
+  it("passes a golden share link of every retained, live and flip-retained version (regression guard, no RED: behaviour already correct; catches pd6 links 404ing at the flip)", () => {
+    vi.stubEnv("FRIENDS_PASSCODE", "");
+    const versions = [
+      ...new Set([...RETAINED_TOKEN_VERSIONS, RUN_TOKEN_VERSION, FLIP_RETAINS]),
+    ].sort((a, b) => a - b);
+    for (const v of versions) {
+      const token = GOLDEN_BY_VERSION[v];
+      expect(token, `a golden pd${v} token`).toBeDefined();
+      const res = proxy(req(`/r/${token}`));
+      expect([v, res.headers.get("x-middleware-rewrite")]).toEqual([v, null]);
+      expect([v, res.headers.get("x-middleware-next")]).toEqual([v, "1"]);
+    }
   });
 
   it("keeps missing, malformed and unsupported query payloads on the real 404 route", () => {
