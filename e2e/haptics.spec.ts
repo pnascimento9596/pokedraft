@@ -1,9 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
 import { draftSixteen } from "./helpers";
+import { HAPTICS, LIVE_GOLDEN_CUP8 } from "./pins";
 
-// Group match 3 of the golden run: your goals at 3', 6', 17', 30', 50' and 64', theirs at 10'.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// A group match of the golden cup8 run under the live prefix where the user scores before the
+// opponent's first goal: the score at that goal shows how many user goals have buzzed.
+const LIVE = LIVE_GOLDEN_CUP8;
 const PLAY = "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach";
 const SHOT = "docs/reports/haptics";
 
@@ -81,7 +82,7 @@ const chipSeen = (page: Page) =>
 async function watchG3(page: Page) {
   await page.goto(`/r/${LIVE}`);
   await expect(page.getByTestId("results-record")).toBeVisible();
-  await page.getByTestId("match-G3").getByTestId("watch-live").tap();
+  await page.getByTestId(`match-${HAPTICS.round}`).getByTestId("watch-live").tap();
   const replay = page.getByTestId("match-replay");
   await expect(replay.getByTestId("broadcast")).toBeVisible();
   return replay;
@@ -98,15 +99,19 @@ test("Watch live buzzes once per user goal, never for the opponent's, and once a
   await expect(replay.getByTestId("haptics-hint")).toHaveText(
     "Haptics work on Android phones only.",
   );
-  await expect(replay.getByTestId("matchday-score")).toHaveText("2-1", { timeout: 60_000 });
+  await expect(replay.getByTestId("matchday-score")).toHaveText(HAPTICS.scoreAtConceded, {
+    timeout: 60_000,
+  });
   await page.screenshot({ path: `${SHOT}/toggle-390.png` });
-  expect(await buzzes(page)).toEqual([[120], [120]]);
+  expect(await buzzes(page)).toEqual(Array.from({ length: HAPTICS.goalsBefore }, () => [120]));
 
   await replay.getByTestId("speed-toggle").tap();
   await expect(replay.getByTestId("match-player")).toHaveAttribute("data-stage", "done", {
     timeout: 90_000,
   });
-  await expect.poll(() => buzzes(page)).toEqual([[120], [120], [120], [120], [120], [120], [400]]);
+  await expect
+    .poll(() => buzzes(page))
+    .toEqual([...Array.from({ length: HAPTICS.goals }, () => [120]), [400]]);
   for (const width of [360, 320]) {
     await page.setViewportSize({ width, height: 844 });
     await replay.getByTestId("sound-toggle").scrollIntoViewIfNeeded();
@@ -121,7 +126,9 @@ test("with Sound and haptics off Watch live never buzzes", async ({ page }) => {
   await phone(page, false);
   const replay = await watchG3(page);
   await expect(replay.getByTestId("sound-toggle")).toHaveText("Sound and haptics off");
-  await expect(replay.getByTestId("matchday-score")).toHaveText("2-1", { timeout: 60_000 });
+  await expect(replay.getByTestId("matchday-score")).toHaveText(HAPTICS.scoreAtConceded, {
+    timeout: 60_000,
+  });
   await replay.getByTestId("skip-ft").tap();
   await expect(replay.getByTestId("match-player")).toHaveAttribute("data-stage", "done");
   expect(await buzzes(page)).toEqual([]);

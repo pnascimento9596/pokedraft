@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { draftSixteen } from "./helpers";
 import { box, expectPitchClear, minute, sideScroll, smallControls } from "./touchline-helpers";
+import { SHOOTOUT } from "./pins";
 
 // Row 3a: below 600px the touchline is a bottom sheet. Collapsed it shows the tactics, the sub
 // count and any stop's button; open, the bench and energy, and the clock waits. From 600px up the
@@ -158,10 +159,8 @@ test("from 600px up the touchline stays in the page with no sheet toggle, at 128
   await page.screenshot({ path: `${SHOT}/1280-desktop.png`, fullPage: true });
 });
 
-// Builder seed "shootout-1" (e2e/shootout-suspense.spec.ts): the final goes to 12 kicks, and the
-// user scores the first.
-const SHOOTOUT =
-  "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwic2hvb3RvdXQtMSIsW1sibCIsOSwiczAiXSxbImwiLDU5LCJzMSJdLFsibCIsMTQ5LCJzMiJdLFsibCIsMTMwLCJzMyJdLFsibCIsMywiczQiXSxbImwiLDgwLCJzNSJdLFsibCIsNiwiczYiXSxbImwiLDU1LCJzNyJdLFsibCIsMjYsInM4Il0sWyJsIiw4NSwiczkiXSxbImwiLDEzNSwiczEwIl0sWyJsIiwyNSwiYjAiXSxbImwiLDk0LCJiMSJdLFsibCIsNjUsImIyIl0sWyJsIiw2OCwiYjMiXSxbImwiLDE0MywiYjQiXV1d";
+// The shootout run of e2e/shootout-suspense.spec.ts: the user scores the first kick.
+const SHOOTOUT_RUN = SHOOTOUT.token;
 const KICK_MS = 1_200;
 
 test.describe("shootout pause at 390x844", () => {
@@ -173,9 +172,9 @@ test.describe("shootout pause at 390x844", () => {
     test.skip(test.info().project.name !== "chromium", "the viewport is set explicitly");
     test.setTimeout(180_000);
     await page.clock.install({ time: new Date("2026-10-18T12:00:00Z") });
-    await page.goto(`/r/${SHOOTOUT}`);
+    await page.goto(`/r/${SHOOTOUT_RUN}`);
     await expect(page.getByTestId("results-record")).toBeVisible();
-    await page.getByTestId("match-F").getByTestId("watch-live").tap();
+    await page.getByTestId(`match-${SHOOTOUT.round}`).getByTestId("watch-live").tap();
     const replay = page.getByTestId("match-replay");
     await expect(replay.getByTestId("broadcast")).toBeVisible();
     await page.clock.pauseAt(new Date("2026-10-18T12:00:10Z"));

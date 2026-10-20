@@ -1,17 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
+import { GIANT_KILLER, LIVE_PREFIX } from "./pins";
 
-// A bot-drafted cup8 Classic 4-3-3 run on the live engine (scripts/audit/tokens.mts
-// botCup8Token("achievements-19")): 7-0-1, lost the final, won the SF 2-1 from 0-1 down against a
-// Boss Club 116 above its rating. It earns Hat-trick hero, Comeback and Giant killer.
-const GIANT_KILLER = {
-  url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=achievements-19",
-  token:
-    "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiYWNoaWV2ZW1lbnRzLTE5IixbWyJwIiw5NzMsInMyIl0sWyJwIiw3OTIsInMwIl0sWyJwIiw4ODAsInMzIl0sWyJwIiwxMjIsInM1Il0sWyJwIiw4MCwiczEiXSxbInAiLDYyMCwiczgiXSxbInAiLDcyNywiczkiXSxbInAiLDg3MSwiczYiXSxbInAiLDE2OSwiczEwIl0sWyJwIiwxNDksInM0Il0sWyJwIiwyMjcsInM3Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw0MzAsImIwIl0sWyJwIiwzLCJiMSJdLFsicCIsMTk2LCJiMiJdLFsicCIsOTQsImIzIl0sWyJwIiwzODEsImI0Il1dXQ",
-};
+// A bot-drafted cup8 run on the live engine that earns Hat-trick hero, Comeback and Giant killer
+// (e2e/pins.ts searches scripts/audit/tokens.mts botCup8Token("achievements-<n>") for it).
 
 const HISTORY = [
   {
-    token: "pd6.e2e-achievements-newer",
+    token: `${LIVE_PREFIX}e2e-achievements-newer`,
     bucket: "cup8:open",
     friendly: false,
     formation: "3-5-2",
@@ -120,7 +115,7 @@ for (const width of [390, 360, 320]) {
         const errors = watchConsole(page);
         await page.goto(`/r/${GIANT_KILLER.token}`);
         const chip = page.getByTestId("results-achievement");
-        await expect(chip).toHaveText("Achievement: Giant killer");
+        await expect(chip).toHaveText(`Achievement: ${GIANT_KILLER.chip}`);
         await expect(chip).toBeVisible();
         const box = (await chip.boundingBox())!;
         expect(box.x + box.width).toBeLessThanOrEqual(width);
@@ -147,7 +142,9 @@ test.describe("live results", () => {
       );
     }, GIANT_KILLER.token);
     await page.goto(GIANT_KILLER.url);
-    await expect(page.getByTestId("results-achievement")).toHaveText("Achievement: Giant killer");
+    await expect(page.getByTestId("results-achievement")).toHaveText(
+      `Achievement: ${GIANT_KILLER.chip}`,
+    );
     await expect
       .poll(() =>
         page.evaluate(
@@ -156,7 +153,7 @@ test.describe("live results", () => {
             null,
         ),
       )
-      .toEqual(["hat-trick-hero", "comeback", "giant-killer"]);
+      .toEqual(GIANT_KILLER.earned);
     await page.goto("/history");
     const grid = page.getByRole("region", { name: "Achievements" });
     await expect(grid.getByTestId("achievement-giant-killer")).toHaveAttribute(

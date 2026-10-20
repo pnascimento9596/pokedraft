@@ -1,8 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { CONTINUOUS_BALL, LIVE_GOLDEN_CUP8 } from "./pins";
 
-// Group match 1 of the golden cup8 run under the live engine-6 prefix, watched live.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// Group match 1 of the golden cup8 run under the live prefix, watched live.
+const LIVE = LIVE_GOLDEN_CUP8;
 const SHOT = "docs/reports/continuous-ball";
 const BOUNDS_SHOT = "docs/reports/motion-bounds";
 
@@ -107,7 +107,7 @@ test("the ball never teleports through the first goal and its kickoff, at 390px 
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
-test("at 2x the ball stays under 8% of the pitch per frame through the 59' save, at 390px (catches a parry thrown the length of the pitch)", async ({
+test(`at 2x the ball stays under 8% of the pitch per frame through the ${CONTINUOUS_BALL.save}' save, at 390px (catches a parry thrown the length of the pitch)`, async ({
   page,
 }) => {
   test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
@@ -116,7 +116,7 @@ test("at 2x the ball stays under 8% of the pitch per frame through the 59' save,
   await sampleBall(page);
   await page.goto(`/r/${LIVE}`);
   await expect(page.getByTestId("results-record")).toBeVisible();
-  await page.getByTestId("match-G1").getByTestId("watch-live").click();
+  await page.getByTestId(`match-${CONTINUOUS_BALL.round}`).getByTestId("watch-live").click();
   const replay = page.getByTestId("match-replay");
   await expect(replay.getByTestId("broadcast")).toBeVisible();
   await replay.getByTestId("speed-toggle").click();
@@ -124,10 +124,15 @@ test("at 2x the ball stays under 8% of the pitch per frame through the 59' save,
 
   const minute = async () =>
     Number(await replay.getByTestId("match-player").getAttribute("data-minute"));
-  // The clock holds on 59 while the save stages, then the parry settles into play as it runs on.
-  await expect.poll(minute, { timeout: 90_000, intervals: [50] }).toBeGreaterThanOrEqual(60);
+  // The clock holds on the save's minute while it stages, then the parry settles into play as it
+  // runs on.
+  await expect
+    .poll(minute, { timeout: 90_000, intervals: [50] })
+    .toBeGreaterThanOrEqual(CONTINUOUS_BALL.save + 1);
   await page.screenshot({ path: `${BOUNDS_SHOT}/390-2x-after-save.png` });
-  await expect.poll(minute, { timeout: 10_000, intervals: [50] }).toBeGreaterThanOrEqual(61);
+  await expect
+    .poll(minute, { timeout: 10_000, intervals: [50] })
+    .toBeGreaterThanOrEqual(CONTINUOUS_BALL.save + 2);
 
   const { count, perFrameMax } = await ballSpeed(page);
   expect(count).toBeGreaterThan(300);
