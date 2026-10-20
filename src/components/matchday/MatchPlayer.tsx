@@ -28,7 +28,7 @@ import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
 import { SIDE_COPY, type ResultsVariant } from "@/components/results/format";
 import { fatigueLine, scoutLine } from "@/ui/manager/intel";
-import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
+import { injuries, takesOver, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Pace, type Stop } from "@/ui/matchday/clock";
 import { TACTIC_LABEL, beatLine, clubShort, kickLine, type Teams } from "@/ui/matchday/copy";
 import {
@@ -206,7 +206,7 @@ export function MatchPlayer({
         : stopsFor(
             match,
             lineup,
-            manager.actions.some((a) => a.match === matchIndex && a.minute <= 65),
+            manager.actions.some((a) => a.match === matchIndex && a.minute <= 65 && takesOver(a)),
           ),
     [manager, match, matchIndex, lineup],
   );

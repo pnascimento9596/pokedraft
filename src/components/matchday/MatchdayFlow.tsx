@@ -2,7 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { FORMATIONS, speciesById } from "@/engine";
-import type { CupResult, FullLineup, ManagerAction, MatchResult, Tactic } from "@/engine/types";
+import type {
+  CupResult,
+  FullLineup,
+  ManagerAction,
+  MatchResult,
+  SetPiece,
+  StarterIndex,
+  Tactic,
+} from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { BossRoster } from "@/components/results/BossRoster";
 import { unlockAudio, useAudioLocked } from "@/components/wheel/sound";
@@ -10,7 +18,8 @@ import { finalScore } from "@/components/results/format";
 import { ROUND_LABEL } from "@/ui/labels";
 import { matchdayView, type MatchView } from "@/ui/settings";
 import {
-  decide,
+  SET_PIECES_ON,
+  decideAll,
   fieldedFor,
   touchlineAt,
   type CupContext,
@@ -20,6 +29,7 @@ import { focusHeading } from "@/ui/focus";
 import { scoutLine } from "@/ui/manager/intel";
 import { storySource } from "@/ui/matchday/river";
 import { MatchPlayer } from "./MatchPlayer";
+import { SetPieceTakers } from "./SetPieceTakers";
 import { TacticPills } from "./TacticPills";
 import { YourCalls } from "./YourCalls";
 import s from "./MatchdayFlow.module.css";
@@ -32,6 +42,8 @@ const STYLE_LABEL = {
   possession: "Possession",
   direct: "Direct",
 } as const;
+
+type Takers = Readonly<Record<SetPiece, StarterIndex | null>>;
 
 function nextPlayed(cup: CupResult, after: number): number | null {
   for (let i = after + 1; i < cup.matches.length; i++) {
@@ -101,8 +113,8 @@ export function MatchdayFlow({
   const number = cup.matches.slice(0, index + 1).filter((m) => m.status === "played").length;
   const next = nextPlayed(cup, index);
 
-  const onDecide = (minute: number, d: Decision): string | null => {
-    const verdict = decide(ctx, cup, actions, index, minute, d);
+  const onDecide = (minute: number, d: Decision | readonly Decision[]): string | null => {
+    const verdict = decideAll(ctx, cup, actions, index, minute, "kind" in d ? [d] : d);
     if (!verdict.ok) return verdict.reason;
     setActions(verdict.actions);
     setCup(verdict.cup);
@@ -149,9 +161,9 @@ export function MatchdayFlow({
           key={index}
           match={match}
           lineup={ctx.lineup}
-          start={managerMode ? touchlineAt(match, index, ctx.lineup, actions, 0).tactic : undefined}
-          onKickOff={(tactic) => {
-            const why = tactic === null ? null : onDecide(0, { kind: "tactic", tactic });
+          start={managerMode ? touchlineAt(match, index, ctx.lineup, actions, 0) : undefined}
+          onKickOff={(decisions) => {
+            const why = decisions.length === 0 ? null : onDecide(0, decisions);
             if (why === null) setPhase("play");
             return why;
           }}
@@ -204,12 +216,13 @@ function PreMatch({
 }: {
   readonly match: PlayedMatch;
   readonly lineup: FullLineup;
-  /** The tactic the side starts in, present in manager mode only. */
-  readonly start: Tactic | undefined;
-  /** Kicks off with the tactic to record, or null to record nothing; returns why it was refused. */
-  readonly onKickOff: (tactic: Tactic | null) => string | null;
+  /** The tactic and set-piece takers the side starts with, present in manager mode only. */
+  readonly start: { readonly tactic: Tactic; readonly takers: Takers } | undefined;
+  /** Kicks off with the decisions to record, none to record nothing; returns why it was refused. */
+  readonly onKickOff: (decisions: readonly Decision[]) => string | null;
 }) {
-  const [tactic, setTactic] = useState(start);
+  const [tactic, setTactic] = useState(start?.tactic);
+  const [takers, setTakers] = useState(start?.takers);
   const [error, setError] = useState<string | null>(null);
   const fielded = fieldedFor(lineup, match);
   const slots = FORMATIONS[lineup.formation].slots;
@@ -250,6 +263,14 @@ function PreMatch({
             style={match.opponent.tacticalStyle}
             onPick={setTactic}
           />
+          {SET_PIECES_ON && takers !== undefined ? (
+            <SetPieceTakers
+              formation={lineup.formation}
+              onPitch={fielded.starters}
+              value={takers}
+              onPick={(set, slot) => setTakers({ ...takers, [set]: slot })}
+            />
+          ) : null}
         </>
       ) : null}
       {error !== null ? (
@@ -274,9 +295,21 @@ function PreMatch({
         data-testid="prematch-go"
         onClick={() => {
           unlockAudio();
-          // Any recorded decision hands the match to the player and switches the assistant off,
-          // so keeping the starting tactic records nothing.
-          setError(onKickOff(tactic !== undefined && tactic !== start ? tactic : null));
+          // Any recorded tactic hands the match to the player and switches the assistant off, so
+          // keeping the starting tactic records nothing; an unchanged taker records nothing either.
+          if (start === undefined) {
+            setError(onKickOff([]));
+            return;
+          }
+          const decisions: Decision[] = [];
+          if (tactic !== undefined && tactic !== start.tactic) {
+            decisions.push({ kind: "tactic", tactic });
+          }
+          for (const set of ["penalty", "freeKick"] as const) {
+            const slot = takers?.[set] ?? null;
+            if (slot !== start.takers[set]) decisions.push({ kind: "taker", set, slot });
+          }
+          setError(onKickOff(decisions));
         }}
       >
         Kick off
