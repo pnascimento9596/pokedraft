@@ -23,8 +23,8 @@ The next engineer inherits the pieces every later engine 7 row reuses:
 ## Scope and files
 
 - `src/engine/coefficients.ts`. `EngineCoefficients.manager.splitManaged: boolean`, live `false`.
-- `src/engine/coefficients-v7.ts` (new). `ENGINE_COEFFICIENTS_V7`, a spread of the live object with
-  `manager.splitManaged: true`, so the candidate is never a hand-kept copy of the numbers.
+- `src/engine/coefficients-v7.ts` (new). `ENGINE_COEFFICIENTS_V7`, a deep copy of the live object
+  with `manager.splitManaged: true`, so the candidate is never a hand-kept copy of the numbers.
 - `src/engine/match.ts`. `managed` becomes `tacticManaged` and `subsManaged`, set by one
   `takeOver(action)` helper; the boundary gates the auto tactic and the fatigue subs separately;
   the auto tactic's base is `userBase` (Balanced, or the manager's last tactic). `recapLines`
@@ -159,6 +159,29 @@ What the numbers say:
   edges), then 6b8's calibration.
 - The auto column does not move: an uncoached match never sets a flag.
 
+### Review-driven additions
+
+The coordinator's adversarial parity review (parity held under all three lenses) asked for two
+changes, made after the `origin/main` merge (`34aac0f`, PR #147, no overlap with engine paths).
+
+- **The candidate shared nested objects with the live coefficients.** `{ ...ENGINE_COEFFICIENTS,
+  manager: { ... } }` copied only the top level and `manager`, so `team`, `match` and
+  `manager.tactics` were the live objects; a later row writing a nested V7 field would have changed
+  engine 6. RED `b11eaa8`, `pnpm vitest run src/engine/__tests__/coefficient-boundaries.test.ts`,
+  1 of 9 failed:
+
+  ```
+   FAIL  src/engine/__tests__/coefficient-boundaries.test.ts > engine 7 candidate (catches a V7 tweak leaking into the live engine 6 coefficients) > shares no nested object with ENGINE_COEFFICIENTS
+  AssertionError: expected 9 to be 1 // Object.is equality
+  ```
+
+  GREEN `55cdad3` builds V7 from `structuredClone(ENGINE_COEFFICIENTS)`. The guard writes three
+  nested V7 fields, checks the live values with literals, and restores both objects in `finally`.
+- **The parity tally proves the shootout path runs.** It now counts extra-time matches and
+  shootouts, and both parity tests assert at least one of each. The 50-run panel already has 17
+  and 13, so it did not need widening; the 200-run panel has 58 and 36. Shootouts are where
+  `recapLines` reads the injected `c.shootout.kicks`.
+
 ## Product decisions applied
 
 - Decision 4 (assistant after a decision), with the hand-off's 6b1 bullet: `tacticManaged` only for
@@ -184,9 +207,9 @@ What the numbers say:
   down. The hand-off's parenthesis names only 60' and 75'; changing the rule would move uncoached
   matches, which the parity guard forbids before the flip.
 - **A tactic at exactly 45' counts as late** (`minute >= 45`), as the hand-off states.
-- **The candidate spreads the live object.** `ENGINE_COEFFICIENTS_V7 = { ...ENGINE_COEFFICIENTS,
-  manager: { ...ENGINE_COEFFICIENTS.manager, splitManaged: true } }`. Each later row adds its delta
-  here. At the flip, 6b9 either makes this the live object or moves the literal; whichever it does,
+- **The candidate is a deep copy of the live object plus its deltas.** `ENGINE_COEFFICIENTS_V7` is
+  `structuredClone(ENGINE_COEFFICIENTS)` with `manager.splitManaged: true` (first a shallow spread;
+  the review found it shared nested objects, see above). Each later row adds its delta here. At the flip, 6b9 either makes this the live object or moves the literal; whichever it does,
   the import direction must flip too, or `coefficients.ts` and `coefficients-v7.ts` import each
   other.
 - **The source scan is stricter than "reads `ENGINE_COEFFICIENTS.`".** It strips import and
@@ -229,12 +252,14 @@ What the numbers say:
   means a client-side mirror of `takeOver` (a tactic at 45' or later, any sub) rather than "any
   action".
 
-## Gates (at `610a5ee`, GREEN `6dbe958` plus a test comment, code-identical to the docs commit)
+## Gates (at `55cdad3`, after the `origin/main` merge, code-identical to the docs commit)
 
 - `pnpm lint`, `pnpm typecheck`, `pnpm build` exited 0.
-- `pnpm test`: 2,064 passed in 237 files.
-- `pnpm vitest run src/engine`: 301 passed in 27 files.
-- Slow parity, 200 runs: 1 of 1 passed (numbers above).
+- `pnpm test`: 2,092 passed in 239 files (the merge of PR #147 brought 2 files).
+- `pnpm vitest run src/engine`: 302 passed in 27 files.
+- Parity, 50 runs: passed (211 played matches, 17 extra time, 13 shootouts). Slow parity, 200 runs:
+  passed (871 played matches, 58 extra time, 36 shootouts).
+- `goldens.test.ts`: `git diff origin/main` is empty.
 - `check-retained-replays.mts .next/server/chunks`: 10 golden replays passed.
   `measure-retained-json.mjs .next/server/chunks`: 4 copies, 2,891,853 bytes (unchanged from 6g).
 - All nine `check:*` scripts exited 0. Prettier passed on every touched file. `pnpm e2e:pins
