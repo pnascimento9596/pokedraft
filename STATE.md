@@ -24,6 +24,29 @@ Gates at `610a5ee` (GREEN `6dbe958` plus a test comment; code-identical to this 
 
 Decision log: `docs/decisions/engine7-split-managed.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Territory, xG river and real commentary
+
+Branch `feat/xg-river` off `origin/main` at `969ca1c`. Wave 6 row 6a2 (Yellow). UI only: nothing under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed, and `goldens.test.ts` is byte-identical. The first commit records the PR #142 merge above.
+
+- In Live match, a live-engine cup match shows an xG river under the momentum bar: one column per five-minute window, yours above the line and theirs below, labelled "Chances (xG)" with each side's running total. A window appears only once the clock has passed its end.
+- The momentum bar and the possession drift now follow the engine's territory for each completed window instead of goals and saves. Kickoff reads 50%.
+- Goal lines in the ticker can add "Late drama at 86'", "Tapu Koko's second" (or hat-trick) and "Against the run of play" when the run's chances back it.
+- A friend's link on the live engine shows the river with "this squad" for "you". Retained runs (older engine links) and exhibitions show no river and keep the old lean; Quick view shows no river.
+
+RED commit: `5fbf33a` (unit 24 of 57 failed in the five touched test files). GREEN `19213f6`. `21fe650` adds `e2e/xg-river.spec.ts` and `scripts/perf/story-timing.mts`. `1749ebc` merges `origin/main` at `2992500` (#144, #145). `3d6a972` builds the generated pins' timelines with the story's territory, as `MatchPlayer` does, and adds an `XG_RIVER` pin. Pins that moved: `HONEST_MOMENTUM.second` `36%64%` to `77%23%`, `SET_PIECES.solo.presser` `3` to `5` (the solo presser rule now asks for a defender level with the scorer mid-run and behind by the shot, since under the territory lean it steps in from upfield). No other pin moved. `aaa64d2` merges `origin/main` at `7045ccd` (#146).
+
+Gates at `aaa64d2`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `check-retained-replays.mts` (10 golden replays), `measure-retained-json.mjs` (4 copies) and all nine `check:*` scripts exited 0. `pnpm e2e:pins --check` current. Prettier passed on every touched file. `goldens.test.ts` is byte-identical to `origin/main`.
+- Unit tests: 2,073 passed in 235 files. Touched tests (`scripts/e2e`, matchday UI, `MatchReplay`): 368 passed in 56 files.
+- Playwright (`CI=1`, headless, muted, `--retries=0`), the full suite at `3d6a972` (after #144 and #145): 1,086 passed, 67 skipped, 0 failed. At `aaa64d2`: `grace-submit`, `xg-river`, `honest-momentum` and `set-pieces` specs 14 passed.
+- Story cost at 4x CPU throttle: at most 29.6 ms for one match, 108 to 153 ms for a cup's six. River layout at 390, 360, 320 and 308 px: 6 px under the meter, 11 px inside the HUD, no overlap, no page scroll.
+- NOT RUN: the full suite after the #146 merge, the new spec on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/xg-river.md`. Browser proof: `docs/reports/xg-river/` (`river-{30,ht,ft}-{390,360,320}.png`) and `docs/reports/set-pieces/390-solo.png`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #147 (xG river on the Broadcast, Yellow) merged as squash `2551dce`, reviewed head `d9eaba6`, GLM 5.3 Flash APPROVE in round 1 with canary `6a2-3b896958e455926b70b6a79a86892bd0` echoed. At `aaa64d2` (code-identical to the head) lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main`, `pnpm e2e:pins --check` reported the pins current, 2,073 unit tests passed in 235 files and Prettier passed on 20 touched files; hosted check and all eight e2e shards green on the first run. The implementer's full local Playwright suite at `3d6a972` gave 1,086 passed, 67 skipped, 0 failed. Pins moved: `HONEST_MOMENTUM.second` 36%64% to 77%23% and `SET_PIECES.solo.presser` 3 to 5 (the bar and the shape now follow the story's territory); `XG_RIVER` is new. Browser proof at 390, 360 and 320 with a 308 measurement (chart 95 px, no overlap, no page scroll). Production `/api/health?db=1` served `2551dce` with `db.status` ok; live check on chromium `xg-river` 5, `honest-momentum` 1, `set-pieces` 4, `watch-live` 3 and `health` 1, 14/14. Engine untouched.
+
 ## Engine grace window and version plumbing
 
 Branch `feat/engine-grace` off `origin/main` at `8059458` (the 6b0 squash). Wave 6 row 6g (Red). Dormant: `GRACE` is `null`, so production behaviour is exactly today's. No file under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #144 merge, and the branch merged `origin/main` at `2992500` (PR #145) with its merged paragraph below.
