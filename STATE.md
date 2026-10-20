@@ -3,6 +3,29 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine 7 missable penalties and nominated takers
+
+Branch `feat/engine7-penalties` off `origin/main` at `6b7d40a` (the 6b2 squash). Wave 6 row 6b3 (Red). Dormant: the live coefficients keep `penalty.missable: false`, `penalty.awardShare: 0` and `takers.freeKickWeight: 1`, and tokens stay pd6, so production engine output is exactly engine 6's and the new control is hidden. `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #149 merge.
+
+- Nothing changes for a player yet.
+- From the flip, penalties come from their own draw (two draws per side per five-minute window on the new `set_pieces` stream) instead of relabelling a goal, and about a quarter of them miss: saved by the keeper or put wide. Penalty goals per match hold at engine 6's level (0.2038 against 0.2036).
+- From the flip, manager mode adds a "Set pieces" row with "Penalties" and "Free kicks" selects ("Auto (best shooter)" or a player on the pitch) on the pre-match card and in the touchline's expanded view. The penalty nominee takes the side's penalties and kicks first in a shootout; the free-kick nominee's pick weight is 1.5 times. A nomination does not switch the assistant off. Sim mode never shows it.
+- From the flip, the broadcast stages a missed penalty as a kick from the spot past the post and a saved one as a save, with "Penalty missed." and "Penalty saved." commentary.
+- Tokens: `managerSchemaFor(version)` carries the `p` and `f` tuples from pd7 only, and `encodeToken` refuses a taker while tokens are pd6. A guard keeps `penalty.missable` off until `RUN_TOKEN_VERSION` is 7.
+
+RED commits `e79487e4` (9 of 42 failed), `aea5b54e` (4 of 4 failed) and `ad4437a9` (11 of 61 failed); GREEN `955960a9`, `74d385f7` and `41a2243c`. Regression guards with no RED (behaviour already correct): `f8766c35` pins the first draw of the 11 existing substreams (checked against `origin/main`'s `rng.ts`) and widens per-trial rate parity to 123 matches and 12,946 trials with a self-test that each engine 7 term (counterLead, pressFade, missable penalties) diverges on both sides; `96844719` couples `missable` to pd7. Three V7 score literals in the 6b1 and 6b2 tests gain one penalty goal each.
+
+Gates at `4d50018b` (code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` (fresh `.next`) exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files. `pnpm e2e:pins --check` reported the pins current.
+- Unit tests: 2,157 passed in 246 files. `pnpm vitest run src/engine`: 346 passed in 31 files. Parity: 50 runs and the 200-run slow test byte-identical; rate parity 4 of 4. `goldens.test.ts` is byte-identical to `origin/main`.
+- `check-retained-replays.mts`: 10 golden replays passed. `measure-retained-json.mjs`: 4 copies, 2,891,853 bytes.
+- Probes under V7 against the 6p baseline: kinds (n 2000, good, 4-3-3) 0.2617 penalties awarded per match, conversion 0.7787 [0.7649, 0.7919], 300 saved and 508 wide (0.404 unscored per cup), penalty goals 0.2038 per match (0.2036); shootouts (n 15000) rate 0.0808 [0.0786, 0.0830] (0.0886), user wins 0.5055 (0.5052).
+- Playwright (Chromium, headless, `CI=1`): `e2e/penalty-takers.spec.ts` 6 passed: no row at engine 6; with this row's coefficients rewritten in the downloaded chunks (test only), both selects 44 px tall inside the viewport with no side scroll at 390x844, 360, 320 and 308 on both surfaces, and none in sim mode. Related specs on the same build (penalty-takers, prematch-merge, manager-mode, touchline-sheet, touchline-intel, your-calls, matchday-carryovers, exhibition-broadcast, builder-matchday, a11y, keyboard, all projects they match): 85 passed, 0 flaky; screenshot churn in other reports reverted.
+- NOT RUN: review and hosted CI, the other probe modes, WebKit and phone projects for the new spec, a browser run that records a nomination (refused by the pd6 codec by design), the phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine7-penalties.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Engine 7 tactic edges with state dependence
 
 Branch `feat/engine7-tactic-edges` off `origin/main` at `233be7e` (the 6b1 squash). Wave 6 row 6b2 (Red). Dormant: the live coefficients keep the engine 6 tactic table, `manager.counterLead: 1` and `manager.pressFade.perPoint: 0`, so production engine output is exactly engine 6's. Only `src/engine` changed among code paths (plus a UI test); `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #148 merge.
