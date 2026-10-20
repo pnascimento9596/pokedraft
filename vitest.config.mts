@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import path from "node:path";
 
 export default defineConfig({
@@ -12,6 +12,10 @@ export default defineConfig({
   },
   test: {
     include: ["src/**/*.test.ts", "src/**/*.test.tsx", "scripts/**/*.test.ts"],
+    // `*.slow.test.ts` files are receipt runs for reviewers; SLOW_TESTS=1 includes them.
+    exclude: process.env.SLOW_TESTS
+      ? configDefaults.exclude
+      : [...configDefaults.exclude, "**/*.slow.test.ts"],
     environment: "node",
     css: { modules: { classNameStrategy: "non-scoped" } },
     testTimeout: 15_000,
