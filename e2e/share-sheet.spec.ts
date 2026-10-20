@@ -121,6 +121,35 @@ test.describe("on a phone", () => {
       await page.screenshot({ path: `${SHOT}/manual-link-${width}.png` });
     });
   }
+  test("a blocked clipboard shows the goal link and the Builder link in a Link field at 390px", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: () => Promise.reject(new DOMException("denied", "NotAllowedError")) },
+      });
+    });
+    await page.goto(RUN_PATH);
+    const goal = page.getByTestId("share-goal").first();
+    await goal.click();
+    const origin = new URL(page.url()).origin;
+    const goalField = page.getByRole("textbox", { name: "Link" });
+    await expect(goalField).toHaveValue(new RegExp(`^${origin}/r/pd3\\?t=.+&watch=\\d+&at=\\d+$`));
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+    await goalField.scrollIntoViewIfNeeded();
+    await page.screenshot({ path: `${SHOT}/manual-goal-link-390.png` });
+
+    await page.goto("/");
+    await page.getByRole("button", { name: "Randomize" }).click();
+    await page.getByRole("button", { name: "Share link" }).click();
+    const builderField = page
+      .getByRole("group", { name: "Builder actions" })
+      .getByRole("textbox", { name: "Link" });
+    await expect(builderField).toHaveValue(new RegExp(`^${origin}/\\?b=.+$`));
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+    await builderField.scrollIntoViewIfNeeded();
+    await page.screenshot({ path: `${SHOT}/manual-builder-link-390.png` });
+  });
 });
 
 test.describe("on a desktop", () => {
