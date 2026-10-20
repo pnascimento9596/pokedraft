@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { GOLDEN_CUP8_V3 } from "@/engine/versions/__tests__/fixtures";
 import type { RunRecord } from "@/ui/runs";
 import { HistoryList } from "../HistoryList";
 
@@ -168,6 +169,71 @@ it("shows match win rate by formation and all species with honest missing-histor
     target: { value: "Ivysaur" },
   });
   expect(screen.getByRole("region", { name: "Species Hall of Fame" }).textContent).toContain(
+    "No species match these filters.",
+  );
+  fireEvent.change(screen.getByRole("combobox", { name: "Filter Hall of Fame species" }), {
+    target: { value: "all" },
+  });
+  expect(screen.getByRole("region", { name: "Species Hall of Fame" }).textContent).toContain(
     "No recorded squads",
   );
+});
+
+describe("Species Hall of Fame default", () => {
+  function hallFilter(): string {
+    return (
+      screen.getByRole("combobox", { name: "Filter Hall of Fame species" }) as HTMLSelectElement
+    ).value;
+  }
+
+  function hallNames(): string[] {
+    return within(screen.getByRole("region", { name: "Species Hall of Fame" }))
+      .getAllByRole("listitem")
+      .map((li) => li.querySelector("strong")?.textContent ?? "");
+  }
+
+  it("opens on the drafted species when stored squads exist (catches a returning player landing on 1,025 species they never drafted)", () => {
+    localStorage.setItem(
+      "pokedraft:history:v1",
+      JSON.stringify([{ ...runs[0], squadSpeciesIds: [1, 25, 1025] }, runs[2]]),
+    );
+    render(<HistoryList />);
+    expect(hallFilter()).toBe("drafted");
+    expect(hallNames()).toEqual(["#1 Bulbasaur", "#25 Pikachu", "#1025 Pecharunt"]);
+  });
+
+  it("opens on all species when no stored run has a squad, so a new player never sees an empty grid", () => {
+    localStorage.setItem("pokedraft:history:v1", JSON.stringify([runs[0], runs[2]]));
+    render(<HistoryList />);
+    expect(hallFilter()).toBe("all");
+    expect(hallNames().slice(0, 2)).toEqual(["#1 Bulbasaur", "#2 Ivysaur"]);
+  });
+
+  it("keeps the player's own choice after the default", () => {
+    localStorage.setItem(
+      "pokedraft:history:v1",
+      JSON.stringify([{ ...runs[0], squadSpeciesIds: [1, 25, 1025] }]),
+    );
+    render(<HistoryList />);
+    fireEvent.change(screen.getByRole("combobox", { name: "Filter Hall of Fame species" }), {
+      target: { value: "all" },
+    });
+    expect(hallFilter()).toBe("all");
+    expect(hallNames().slice(0, 2)).toEqual(["#1 Bulbasaur", "#2 Ivysaur"]);
+  });
+});
+
+it("names each history challenge link by its run (catches every row reading the same Challenge this Seed)", () => {
+  localStorage.setItem(
+    "pokedraft:history:v1",
+    JSON.stringify([
+      { ...runs[2], token: GOLDEN_CUP8_V3 },
+      { ...runs[0], token: "no-challenge" },
+    ]),
+  );
+  render(<HistoryList />);
+  const links = screen.getAllByRole("link", { name: /^Challenge this Seed/ });
+  expect(links).toHaveLength(1);
+  expect(links[0].textContent).toBe("Challenge this Seed");
+  expect(links[0].getAttribute("aria-label")).toMatch(/^Challenge this Seed: .*2026.*, 3-0-2$/);
 });

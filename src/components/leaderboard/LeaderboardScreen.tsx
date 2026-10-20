@@ -55,14 +55,13 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
       description="Choose a board, then open a run to see its squad."
     >
       <div className={s.controls}>
-        <div role="tablist" aria-label="Board" className={s.tabs}>
+        <div role="group" aria-label="Board" className={s.tabs}>
           {BOARD_SCOPES.map((scope) => (
             <button
               key={scope}
               type="button"
-              role="tab"
               className={s.tab}
-              aria-selected={view.scope === scope}
+              aria-pressed={view.scope === scope}
               onClick={() => go({ scope })}
             >
               {SCOPE_LABEL[scope]}
@@ -70,14 +69,13 @@ export function LeaderboardScreen({ serverToday }: { readonly serverToday?: IsoD
           ))}
         </div>
         {view.scope === "all" ? (
-          <div className={s.modes} role="radiogroup" aria-label="Mode">
+          <div className={s.modes} role="group" aria-label="Mode">
             {BOARD_MODES.map((mode) => (
               <button
                 key={mode}
                 type="button"
-                role="radio"
                 className="chip"
-                aria-checked={view.mode === mode}
+                aria-pressed={view.mode === mode}
                 onClick={() => go({ mode })}
               >
                 {MODE_LABEL[mode]}

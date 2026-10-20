@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Board UX
+
+Branch `feat/board-ux` off `origin/main` at `783ddbf`. Wave 5 row 5d (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Your own rows on the leaderboard stand out: an accent bar on the left and a "You" chip, matched to the nickname this browser last submitted (cleaned like the server cleans it). A screen reader hears "Misty, you". With no stored nickname nothing is marked, and the first paint never is.
+- After a ranked submit, "Share my rank" sits next to "View leaderboard" and shares the run link with "I'm #3 on the October 9 daily. Beat it?" or "I'm #12 on the all-time board. Beat it?". No button when the rank could not be loaded.
+- Daily rows show the formation ("4-3-3") instead of the same ruleset on every row; all-time rows keep their settings label.
+- Each "Challenge this Seed" link is named for its row ("Challenge this Seed: Misty, 3-0-2"; in History, the row's date and record). The visible text is unchanged.
+- Daily and All-time, and the mode chips, are pressed buttons in a group, like the coach chips. The app has no tab or radio roles left.
+- The Hall of Fame opens on "Drafted species", or on "All species" for a player with no stored squad.
+- Under the widest nickname the row chips now wrap whole instead of breaking "Coached" mid-word at 320 px.
+
+RED commit: `3d8ff07` (12 of 41 unit tests failed in 4 of 4 files). GREEN `9584c1e`, chip wrap `6c73d50`, font swap spec literal `9ad9c46`.
+
+Gates at `6c73d50` (`9ad9c46` changes only `e2e/leaderboard-font-cls.spec.ts`):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 1,931 passed in 225 files.
+- Playwright (`CI=1`, headless, `--retries=0`): the full suite once passed 1,047 with 67 skipped and 4 failed (17.8m), all four `leaderboard-font-cls` cases on a stale row literal; after `9ad9c46`, `leaderboard-font-cls` and `leaderboard-cls` passed 13 of 13. `board-ux.spec.ts` 3 of 3; `leaderboard` and `platform-experience` 22 of 22 (chromium).
+- The widest own row fits with 33 px to spare at 320 and at 308, and the submitted panel with "Share my rank" fits down to 300; `board-ux.spec.ts` asserts both at 308 px.
+- NOT RUN: the e2e specs against a build of the RED commit, `board-ux.spec.ts` on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/board-ux.md`. Browser proof: `docs/reports/board-ux/` (`own-row-{390,360,320}-{light,dark}.png`, `share-my-rank-{390,320}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Achievements
 
 Branch `feat/achievements` off `origin/main` at `afaa695`. Wave 5 row 5h (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -27,7 +51,11 @@ Decision log: `docs/decisions/achievements.md`. Browser proof: `docs/reports/ach
 
 Merge `0aae4bc` (#133 seed boards; only `STATE.md` conflicted, `ResultsView.tsx` merged cleanly with the chip, the trophy and the seed board together). With the seed board on every results page, `achievements.spec.ts`'s console check saw the seed board's 503 from the database-less local server (7 failed). The spec now answers `/api/leaderboard` with an empty seed board in a `beforeEach`, as `results-reveal.spec.ts` does. After that `achievements`, `results-reveal`, `seed-board`, `layout-shift`, `theme-results`, `lifetime-history` and `server-html` passed 53 of 53 (`CI=1`, `--retries=0`, build of `0aae4bc`).
 
+Merge `cc34701` (#136 achievements; only `STATE.md` conflicted). Full Playwright suite on a build of `cc34701` (`CI=1`, headless, `--retries=0`, 4 workers, all projects): 1,066 passed, 67 skipped by their own project gates, 0 failed (17.7m).
+
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #136 (row 5h, achievements, Yellow) merged as squash `fc657f4`, reviewed head `2306816` (`1228750` plus a merge of main bringing in PR #133 and a seed board stub in `achievements.spec.ts`), GLM 5.3 Flash APPROVE in round 1 with canary `achievements-fece2fd90d77f93b58fbd5ff24535cd1` echoed. At `2306816` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,953 unit tests passed in 225 files and Prettier passed on 18 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `fc657f4` with `db.status` ok; `achievements` (including a real `/card` render through satori), `results-reveal`, `lifetime-history` and `layout-shift` against production (chromium) passed 38 of 38. The Giant killer threshold is 100, not 150, by the hand-off's 2% to 20% rule (150 earned 1.0% of 200 good-bot cups, 100 earned 2.5%). Hat-trick hero is common (68.0% of those runs) under its literal definition. NOT RUN: WebKit and phone projects for the grid and chip, a real phone check and a screen reader pass (owner actions).
 
 ## Seed boards and engine filter
 

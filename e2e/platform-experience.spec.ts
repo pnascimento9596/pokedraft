@@ -22,7 +22,12 @@ async function noOverflow(page: Page) {
 
 for (const width of [1280, 320]) {
   test.describe(`platform experience at ${width}px`, () => {
-    test.use({ viewport: { width, height: width === 320 ? 568 : 900 }, reducedMotion: "reduce" });
+    test.use({
+      viewport: { width, height: width === 320 ? 568 : 900 },
+      reducedMotion: "reduce",
+      locale: "en-US",
+      timezoneId: "UTC",
+    });
 
     test("filled formations retain visible tactical labels and scout all sixteen players", async ({
       page,
@@ -196,7 +201,7 @@ for (const width of [1280, 320]) {
       await expect(page.getByAltText("Pecharunt", { exact: true })).toBeVisible();
       await expect(page.getByText("Squad preview unavailable.", { exact: true })).toBeVisible();
       await expect(
-        page.getByRole("link", { name: "Challenge this Seed", exact: true }),
+        page.getByRole("link", { name: "Challenge this Seed: Known squad, 3-0-2", exact: true }),
       ).toHaveAttribute(
         "href",
         "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=golden-cup8",
@@ -258,7 +263,12 @@ for (const width of [1280, 320]) {
       await expect(hall).toContainText("1 drafted squad, 0 champion squads");
       await expect(page.getByAltText("Pikachu", { exact: true })).toBeVisible();
       await expect(page.getByText("Squad preview unavailable for this older run.")).toBeVisible();
-      await expect(page.getByRole("link", { name: "Challenge this Seed" })).toHaveAttribute(
+      await expect(
+        page.getByRole("link", {
+          name: "Challenge this Seed: Oct 15, 2026, 12:00\u202fAM, 3-0-2",
+          exact: true,
+        }),
+      ).toHaveAttribute(
         "href",
         "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=golden-cup8",
       );

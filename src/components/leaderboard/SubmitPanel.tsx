@@ -3,13 +3,16 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ModuleCard, Pill, StatusNote } from "@/components/ui/primitives";
+import { ManualLink } from "@/components/share/ManualLink";
+import { SHARE_TITLE, rankShareText } from "@/components/share/shareLink";
+import { useLinkShare } from "@/components/share/useLinkShare";
 import { NICKNAME_MAX, NICKNAME_MIN, type SubmitEntry } from "@/leaderboard/contract";
 import { isCoached } from "@/ui/manager/coached";
+import { runHref } from "@/ui/run-link";
 import { readJson, writeJson } from "@/ui/storage";
 import { boardHref, submitRun, type SubmitFailure } from "./client";
+import { NICKNAME_KEY } from "./ownNickname";
 import s from "./SubmitPanel.module.css";
-
-export const NICKNAME_KEY = "pokedraft:nickname";
 
 export const SUBMIT_ERROR_COPY: Readonly<Record<SubmitFailure, string>> = {
   INVALID_BODY: "The leaderboard could not read this submission. Reload the page and try again.",
@@ -52,6 +55,7 @@ function savedNickname(): string {
 export function SubmitPanel({ token, daily }: { readonly token: string; readonly daily: boolean }) {
   const [nickname, setNickname] = useState(savedNickname);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const link = useLinkShare();
   const successRef = useRef<HTMLParagraphElement>(null);
   const trimmed = nickname.trim();
   // The reply's rank is counted among runs like this one, so a leader of the uncoached runs reads
@@ -77,6 +81,7 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
 
   if (status.kind === "done") {
     const { entry } = status;
+    const { rank } = entry;
     const scope = entry.dailyDate === null ? "all" : "daily";
     return (
       <ModuleCard
@@ -108,6 +113,27 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
         >
           View leaderboard
         </Link>
+        {rank === null ? null : (
+          <>
+            <span className={s.share}>
+              <button
+                type="button"
+                className="btn"
+                onClick={() =>
+                  void link.share({
+                    title: SHARE_TITLE,
+                    text: rankShareText(rank, entry.dailyDate),
+                    path: runHref(token),
+                  })
+                }
+              >
+                Share my rank
+              </button>
+              <span role="status">{link.said}</span>
+            </span>
+            <ManualLink url={link.manual} />
+          </>
+        )}
       </ModuleCard>
     );
   }

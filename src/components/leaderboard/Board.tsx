@@ -11,6 +11,7 @@ import { record } from "@/ui/labels";
 import { fetchBoard, type BoardResult, type BoardView } from "./client";
 import { COACH_FILTERS, type CoachFilter, type EngineFilter } from "@/leaderboard/contract";
 import { COACH_FILTER_LABEL, engineRowLabel, variantLabel } from "./format";
+import { useOwnNickname } from "./ownNickname";
 import s from "./Board.module.css";
 
 const FILTER_EMPTY: Readonly<Record<Exclude<CoachFilter, "all">, string>> = {
@@ -47,6 +48,7 @@ export function Board({
   readonly onEngineChange: (engine: EngineFilter) => void;
 }) {
   const [attempt, setAttempt] = useState(0);
+  const me = useOwnNickname();
   const { coach } = view;
   const engine = view.scope === "all" ? view.engine : "current";
   const board = `${view.mode}|${view.scope}|${view.scope === "daily" ? view.date : ""}`;
@@ -222,12 +224,21 @@ export function Board({
             className={s.row}
             data-testid="board-row"
             data-top={e.rank <= 3 || undefined}
+            data-me={e.nickname === me || undefined}
           >
             <Link href={`/r/${e.token}`} className={s.link}>
               <span className={s.rank}>{e.rank}</span>
               <span className={s.main}>
                 <span className={s.nick}>
                   {e.nickname}
+                  {e.nickname === me ? (
+                    <>
+                      <span className="visually-hidden">, you</span>
+                      <span className={s.you} data-testid="own-row-chip" aria-hidden="true">
+                        You
+                      </span>
+                    </>
+                  ) : null}
                   {e.coached ? (
                     <span className={s.coached} data-testid="coached-chip">
                       Coached
@@ -239,7 +250,11 @@ export function Board({
                     </span>
                   ) : null}
                 </span>
-                <span className={s.meta}>{variantLabel(e.variant)}</span>
+                <span className={s.meta}>
+                  {view.scope === "daily" && e.formation !== null
+                    ? e.formation
+                    : variantLabel(e.variant)}
+                </span>
                 <span className={s.squad}>
                   {e.squadSpeciesIds ? (
                     e.squadSpeciesIds.map((id) => (
@@ -269,7 +284,11 @@ export function Board({
               </span>
             </Link>
             {challengeHref(e.token) !== null ? (
-              <Link className={`btn btn--ghost ${s.challenge}`} href={challengeHref(e.token)!}>
+              <Link
+                className={`btn btn--ghost ${s.challenge}`}
+                href={challengeHref(e.token)!}
+                aria-label={`Challenge this Seed: ${e.nickname}, ${record(e.wins, e.draws, e.losses)}`}
+              >
                 Challenge this Seed
               </Link>
             ) : null}

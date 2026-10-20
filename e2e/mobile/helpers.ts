@@ -481,8 +481,6 @@ export function interactiveTargets(page: Page): Promise<TargetInfo[]> {
       "textarea",
       "summary",
       '[role="button"]',
-      '[role="tab"]',
-      '[role="radio"]',
       '[role="checkbox"]',
       '[role="switch"]',
       '[role="menuitem"]',
@@ -710,7 +708,7 @@ document.addEventListener(
     if (
       active instanceof HTMLElement &&
       active !== document.body &&
-      active.matches('button, a[href], summary, [role="button"], [role="tab"], [role="radio"], [role="switch"], [role="checkbox"]')
+      active.matches('button, a[href], summary, [role="button"], [role="switch"], [role="checkbox"]')
     ) {
       active.blur();
     }

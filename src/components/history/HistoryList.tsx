@@ -22,7 +22,9 @@ export function HistoryList() {
   const saved = useSavedRuns();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
-  const [speciesFilter, setSpeciesFilter] = useState<"all" | "drafted" | "champions">("all");
+  // Null until the player picks one: the Hall then opens on the drafted species, or on every
+  // species when no stored run has a squad, so a new player never lands on an empty grid.
+  const [pickedFilter, setSpeciesFilter] = useState<"all" | "drafted" | "champions" | null>(null);
   const [filter, setFilter] = useState<"all" | "champions">("all");
 
   if (saved === null) return <p className="kicker">Loading your runs</p>;
@@ -38,6 +40,7 @@ export function HistoryList() {
     );
   }
   const career = careerSummary(runs, lifetime);
+  const speciesFilter = pickedFilter ?? (career.species.size > 0 ? "drafted" : "all");
   const matchingSpecies = POKEDEX.filter((pokemon) => {
     const counts = career.species.get(pokemon.id);
     return (
@@ -237,7 +240,11 @@ export function HistoryList() {
                 </span>
               </Link>
               {challengeHref(r.token) !== null ? (
-                <Link className={`btn btn--ghost ${s.challenge}`} href={challengeHref(r.token)!}>
+                <Link
+                  className={`btn btn--ghost ${s.challenge}`}
+                  href={challengeHref(r.token)!}
+                  aria-label={`Challenge this Seed: ${when(r.at)}, ${record(r.wins, r.draws, r.losses)}`}
+                >
                   Challenge this Seed
                 </Link>
               ) : null}
