@@ -76,3 +76,44 @@ describe("Coached chip on the run card (catches a coached run's card looking lik
     ]);
   });
 });
+
+// Bot-drafted cup8 Classic 4-3-3 runs on the live engine (scripts/audit/tokens.mts botCup8Token).
+// "achievements-19": 7-0-1, won the SF 2-1 from 0-1 down against a Boss Club 116 above its rating.
+// "achievements-17": 6-0-1, won the QF 3-1 after conceding first, no win against a bigger side.
+// "achievements-0": 4-0-1, never trailed in a win and never scored three with one player.
+const GIANT_KILLER_V6 =
+  "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiYWNoaWV2ZW1lbnRzLTE5IixbWyJwIiw5NzMsInMyIl0sWyJwIiw3OTIsInMwIl0sWyJwIiw4ODAsInMzIl0sWyJwIiwxMjIsInM1Il0sWyJwIiw4MCwiczEiXSxbInAiLDYyMCwiczgiXSxbInAiLDcyNywiczkiXSxbInAiLDg3MSwiczYiXSxbInAiLDE2OSwiczEwIl0sWyJwIiwxNDksInM0Il0sWyJwIiwyMjcsInM3Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw0MzAsImIwIl0sWyJwIiwzLCJiMSJdLFsicCIsMTk2LCJiMiJdLFsicCIsOTQsImIzIl0sWyJwIiwzODEsImI0Il1dXQ";
+const COMEBACK_V6 =
+  "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiYWNoaWV2ZW1lbnRzLTE3IixbWyJwIiwxOTYsInM2Il0sWyJwIiw5NDMsInMxIl0sWyJwIiw4ODQsInM3Il0sWyJwIiw1NDcsInM4Il0sWyJwIiw3MTksInMwIl0sWyJwIiw0ODksInMxMCJdLFsicCIsNzkzLCJzNSJdLFsicCIsMjQ4LCJzMiJdLFsicCIsNzkyLCJzMyJdLFsiciIsInQiXSxbInAiLDEwMDYsInM5Il0sWyJwIiwxNDksInM0Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInAiLDQ1NCwiYjAiXSxbInAiLDY1OCwiYjEiXSxbInAiLDk0LCJiMiJdLFsicCIsNTg2LCJiMyJdLFsicCIsNDYzLCJiNCJdXV0";
+const NO_CHIP_V6 =
+  "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiYWNoaWV2ZW1lbnRzLTAiLFtbInAiLDgxNSwiczgiXSxbInAiLDgwNCwiczkiXSxbInAiLDY5OSwiczIiXSxbInAiLDU2OSwiczAiXSxbInAiLDk1MiwiczEwIl0sWyJwIiw3NTgsInM1Il0sWyJwIiw3MzgsInMzIl0sWyJwIiwyODYsInM2Il0sWyJwIiw4OTksInM3Il0sWyJwIiw1NDcsInMxIl0sWyJwIiw4OTcsInM0Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw3NzEsImIwIl0sWyJwIiw4NjYsImIxIl0sWyJwIiw2NjgsImIyIl0sWyJwIiwxOTUsImIzIl0sWyJwIiw2OTEsImI0Il1dXQ";
+
+describe("achievement chip on the run card (catches a card that hides the run's best moment)", () => {
+  it("shows Giant killer, the most notable earn, after the formation", async () => {
+    const model = await cardModel({ t: GIANT_KILLER_V6 }, replayAnyVersion);
+    expect(model?.headline).toMatchObject({ kind: "run", achievement: "giant-killer" });
+    expect(chips(renderToStaticMarkup(<Card model={model!} />))).toEqual([
+      "8-0 Challenge, Classic",
+      "4-3-3",
+      "Giant killer",
+    ]);
+  });
+
+  it("shows Comeback when the run killed no giant", async () => {
+    const model = await cardModel({ t: COMEBACK_V6 }, replayAnyVersion);
+    expect(chips(renderToStaticMarkup(<Card model={model!} />))).toEqual([
+      "8-0 Challenge, Classic",
+      "4-3-3",
+      "Comeback",
+    ]);
+  });
+
+  it("shows no chip for a run with no notable earn", async () => {
+    const model = await cardModel({ t: NO_CHIP_V6 }, replayAnyVersion);
+    expect(model?.headline).toMatchObject({ kind: "run", achievement: null });
+    expect(chips(renderToStaticMarkup(<Card model={model!} />))).toEqual([
+      "8-0 Challenge, Classic",
+      "4-3-3",
+    ]);
+  });
+});
