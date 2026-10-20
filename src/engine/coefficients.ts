@@ -53,6 +53,11 @@ export interface EngineCoefficients {
   penalty: { missable: boolean; awardShare: number };
   /** Engine 7: a nominated free-kick taker's weight in the scorer pick for a free-kick goal. */
   takers: { freeKickWeight: number };
+  /**
+   * Engine 7: with `injuries`, a Boss Club's players get injured at the user's rate and a reserve
+   * from its ladder step comes on, and its rotations are logged as incidents.
+   */
+  opponent: { injuries: boolean };
   availability: { eventProb: number; familiarityFloor: number };
   awards: {
     goal: number;
@@ -180,6 +185,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
   shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.1 },
   penalty: { missable: false, awardShare: 0 },
   takers: { freeKickWeight: 1 },
+  opponent: { injuries: false },
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
   awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, CB: 1, FB: 1, DM: 1 }, minutesPerPoint: 180 },
   ladder: {

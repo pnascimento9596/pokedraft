@@ -1,11 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
 import { draftSixteen } from "./helpers";
+import { switchToV7 } from "./v7-switch";
 
 // Row 6b3: the "Set pieces" row on the pre-match card and in the touchline's expanded view. It
 // renders only when ENGINE_COEFFICIENTS.penalty.missable is true, which no shipped build has
 // before the engine 7 flip. To see it, switchOn() rewrites this row's coefficients in the client
-// chunks the browser downloads, to their engine 7 values. The rewrite lives only in this spec:
-// nothing in the app reads a flag, a query or storage to show the row.
+// chunks the browser downloads, to their engine 7 values (e2e/v7-switch.ts). Nothing in the app
+// reads a flag, a query or storage to show the row.
 //
 // Tokens stay pd6 under the rewrite, and encodeToken refuses a nominated taker in a pd6 token, so
 // recording a nomination here would (correctly) throw when the run is saved. These tests therefore
@@ -18,16 +19,8 @@ const LIVE = "penalty:{missable:!1,awardShare:0},takers:{freeKickWeight:1}";
 const V7 = "penalty:{missable:!0,awardShare:.077},takers:{freeKickWeight:1.5}";
 
 /** Rewrites the live set-piece coefficients to engine 7's; returns how many it rewrote. */
-async function switchOn(page: Page): Promise<() => number> {
-  let rewritten = 0;
-  await page.route("**/_next/static/chunks/**", async (route) => {
-    const res = await route.fetch();
-    const body = await res.text();
-    if (!body.includes(LIVE)) return route.fulfill({ response: res, body });
-    rewritten += body.split(LIVE).length - 1;
-    await route.fulfill({ response: res, body: body.replaceAll(LIVE, V7) });
-  });
-  return () => rewritten;
+function switchOn(page: Page): Promise<() => number> {
+  return switchToV7(page, [[LIVE, V7]]);
 }
 
 async function toPreMatch(page: Page, managerMode: boolean): Promise<void> {

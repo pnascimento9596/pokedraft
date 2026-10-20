@@ -1,5 +1,6 @@
 import { familiarity } from "@/scouting/fit";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
+import { bossReserve } from "./opponents";
 import { recapLines } from "./recap";
 import { canonicalSortBy, createEngineRng, deriveSubseed, type EngineRng } from "./rng";
 import { speciesById } from "./species";
@@ -17,6 +18,7 @@ import {
   type LineStrength,
   type ManagerAction,
   type MatchResult,
+  type Mode,
   type Opponent,
   type PenKick,
   type Role,
@@ -64,6 +66,11 @@ export interface MatchInput {
   readonly unavailable?: readonly SpeciesId[];
   /** This match's coach decisions, in minute order. */
   readonly manager?: readonly ManagerAction[];
+  /**
+   * The run's mode, which sets the Boss Club's reserve pool. With it and engine 7's opponent
+   * injuries a Boss Club player can be injured and replaced; a one-off exhibition has none.
+   */
+  readonly mode?: Mode;
 }
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
@@ -757,7 +764,18 @@ export function playMatchCore(
         ),
         (x) => [x.o.energy, x.i],
       )[0];
-      if (tired) tired.o.energy = FRESH;
+      if (tired) {
+        tired.o.energy = FRESH;
+        if (c.opponent.injuries) {
+          incidents.push({
+            kind: "rotate",
+            side: "opp",
+            minute: t,
+            slot: tired.i as StarterIndex,
+            player: tired.o.species.id,
+          });
+        }
+      }
     }
     const oppNext = autoTactic(oppBase, t, opp.goals, user.goals);
     if (oppNext !== opp.tactic) {
@@ -789,6 +807,23 @@ export function playMatchCore(
     return lambda;
   };
 
+  // Engine 7: the Boss Club's players used so far (its eleven, then each reserve sent on).
+  const oppUsed = new Set(input.opponentStarters.map((s) => s.species.id));
+  let oppSubs = 0;
+  const oppReserve = (slot: StarterIndex, role: Role): Species | null =>
+    input.mode === undefined || oppSubs >= m.maxSubs
+      ? null
+      : bossReserve(
+          input.mode,
+          input.opponent,
+          input.round,
+          input.seed,
+          input.matchIndex,
+          slot,
+          role,
+          oppUsed,
+        );
+
   const incident = (it: Extract<Item, { kind: "incident" }>): void => {
     const side = it.side === "user" ? user : opp;
     const occupant = side.onPitch[it.slot];
@@ -797,14 +832,52 @@ export function playMatchCore(
     const press = side.tactic === "press" ? m.pressHazard : 1;
     const perWindow = REGULATION_MINUTES / m.windowMinutes;
     const isKeeper = slot.role === "GK";
+    // A keeper is injured only when someone can take the gloves, at half the outfield rate.
+    const hazard = (canReplace: boolean): number =>
+      (m.injuriesPerMatch / (side.slots.length * perWindow)) *
+      (1.5 - occupant.species.attrs.STA / PERCENT) *
+      press *
+      (isKeeper ? (canReplace ? 0.5 : 0) : 1);
+    if (it.side === "opp" && c.opponent.injuries && input.mode !== undefined) {
+      const keeperCover = isKeeper ? oppReserve(it.slot, slot.role) : null;
+      if (it.injury < hazard(keeperCover !== null)) {
+        incidents.push({
+          kind: "injury",
+          side: "opp",
+          minute: it.minute,
+          slot: it.slot,
+          player: occupant.species.id,
+        });
+        const reserve = keeperCover ?? oppReserve(it.slot, slot.role);
+        if (reserve === null) {
+          side.onPitch[it.slot] = null;
+          side.vacancies++;
+        } else {
+          oppUsed.add(reserve.id);
+          oppSubs++;
+          side.onPitch[it.slot] = {
+            species: reserve,
+            since: it.minute,
+            energy: FRESH,
+            yellow: false,
+          };
+          incidents.push({
+            kind: "sub",
+            side: "opp",
+            minute: it.minute,
+            slot: it.slot,
+            out: occupant.species.id,
+            in: reserve.id,
+            reason: "injury",
+            by: "auto",
+          });
+        }
+        return;
+      }
+    }
     if (it.side === "user" && bench !== null) {
       const canReplace = replacementFor(bench, slot.role, c) !== null;
-      const hazard =
-        (m.injuriesPerMatch / (side.slots.length * perWindow)) *
-        (1.5 - occupant.species.attrs.STA / PERCENT) *
-        press *
-        (isKeeper ? (canReplace ? 0.5 : 0) : 1);
-      if (it.injury < hazard) {
+      if (it.injury < hazard(canReplace)) {
         incidents.push({
           kind: "injury",
           side: "user",
@@ -1070,6 +1143,7 @@ export function playMatchCore(
       tactic: { user: user.tactic, opp: opp.tactic },
       energy: user.onPitch.map((o) => (o === null ? null : Math.round(o.energy))),
       onPitch: user.onPitch.map((o) => o?.species.id ?? null),
+      ...(c.opponent.injuries ? { oppEnergy: Math.round(meanOutfieldEnergy(opp)) } : {}),
     });
     observe?.window({ window: index, minute: last });
   };

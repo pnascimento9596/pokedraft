@@ -204,7 +204,7 @@ export function injuries(match: PlayedMatch, lineup: FullLineup): readonly Injur
   const all = match.incidents ?? [];
   const fielded = fieldedFor(lineup, match);
   return all.flatMap((i, k): InjuryCall[] => {
-    if (i.kind !== "injury") return [];
+    if (i.kind !== "injury" || i.side !== "user") return [];
     const state = sideState(fielded, all.slice(0, k));
     const next = all[k + 1];
     const replaced =

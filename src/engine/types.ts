@@ -359,14 +359,16 @@ export type SetPiece = (typeof SET_PIECES)[number];
 export type Incident =
   | {
       readonly kind: "injury";
-      readonly side: "user";
+      /** "opp" only in engine 7, where a Boss Club's players can be injured too. */
+      readonly side: Side;
       readonly minute: number;
       readonly slot: StarterIndex;
       readonly player: SpeciesId;
     }
   | {
       readonly kind: "sub";
-      readonly side: "user";
+      /** "opp" only in engine 7: a Boss Club's reserve replacing an injured player. */
+      readonly side: Side;
       readonly minute: number;
       readonly slot: StarterIndex;
       readonly out: SpeciesId;
@@ -389,6 +391,14 @@ export type Incident =
       readonly minute: number;
       readonly tactic: Tactic;
       readonly by: "manager" | "auto";
+    }
+  | {
+      /** Engine 7: a Boss Club rests its most tired outfield player at a rotation check. */
+      readonly kind: "rotate";
+      readonly side: "opp";
+      readonly minute: number;
+      readonly slot: StarterIndex;
+      readonly player: SpeciesId;
     }
   | {
       /**
@@ -414,6 +424,8 @@ export interface WindowSnapshot {
   readonly energy: readonly (number | null)[];
   /** Who plays in each of the user's eleven slots; null after a red card or an unreplaced injury. */
   readonly onPitch: readonly (SpeciesId | null)[];
+  /** Engine 7: the Boss Club's mean outfield energy, rounded. */
+  readonly oppEnergy?: number;
 }
 
 export type MatchResult =

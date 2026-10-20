@@ -200,3 +200,16 @@ describe("missable penalties and the token version (catches a flip that leaves t
     expect(!ENGINE_COEFFICIENTS.penalty.missable || RUN_TOKEN_VERSION >= 7).toBe(true);
   });
 });
+
+// Regression guard, no RED: behaviour already correct. A free-kick weight acts only on a nominated
+// taker, which a pd6 token cannot carry, so no parity run can see it. Both rules keep their engine 6
+// values until the token version flips with them.
+describe("engine 7 rules stay off while tokens are pd6 (catches a rule switched on before the flip)", () => {
+  it("takers.freeKickWeight is 1 while RUN_TOKEN_VERSION is below 7", () => {
+    expect(RUN_TOKEN_VERSION < 7 ? ENGINE_COEFFICIENTS.takers.freeKickWeight : 1).toBe(1);
+  });
+
+  it("opponent.injuries is false while RUN_TOKEN_VERSION is below 7", () => {
+    expect(RUN_TOKEN_VERSION < 7 ? ENGINE_COEFFICIENTS.opponent.injuries : false).toBe(false);
+  });
+});

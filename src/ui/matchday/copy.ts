@@ -25,7 +25,14 @@ interface Named {
  * beats have this shape, and the results map the engine's incidents onto it, so both read alike.
  */
 export type IncidentCopy =
-  | { readonly kind: "injury"; readonly minute: number; readonly player: Named }
+  | {
+      readonly kind: "injury";
+      readonly minute: number;
+      readonly player: Named;
+      /** Engine 7: the reserve a Boss Club sent on, named in the same line. */
+      readonly replacement?: Named;
+    }
+  | { readonly kind: "rotate"; readonly minute: number; readonly player: Named }
   | {
       readonly kind: "sub";
       readonly minute: number;
@@ -80,7 +87,11 @@ export function incidentText(c: IncidentCopy, teams: CardTeams, shared = false):
   const at = `${c.minute}'`;
   switch (c.kind) {
     case "injury":
-      return `${at} ${c.player.name} is injured`;
+      return c.replacement === undefined
+        ? `${at} ${c.player.name} is injured`
+        : `${at} ${c.player.name} is injured. ${c.replacement.name} comes on.`;
+    case "rotate":
+      return `${at} ${teams.opp} rotate: ${c.player.name} rested.`;
     case "sub":
       return `${at} ${c.in.name} on for ${c.out.name} (${REASON[c.reason]}, ${c.by === "manager" ? (shared ? "manager's call" : "your call") : "assistant"})`;
     case "card": {

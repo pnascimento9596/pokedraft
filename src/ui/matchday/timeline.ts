@@ -72,7 +72,14 @@ export type Beat =
       readonly color: "yellow" | "red";
       readonly secondYellow: boolean;
     }
-  | { readonly kind: "injury"; readonly minute: number; readonly player: PitchRef }
+  | {
+      readonly kind: "injury";
+      readonly minute: number;
+      readonly player: PitchRef;
+      /** Engine 7: the Boss Club reserve who replaces an injured opponent, named in its line. */
+      readonly replacement?: PitchRef;
+    }
+  | { readonly kind: "rotate"; readonly minute: number; readonly player: PitchRef }
   | {
       readonly kind: "sub";
       readonly minute: number;
@@ -89,6 +96,21 @@ export type Beat =
       readonly tactic: Tactic;
       readonly by: "manager" | "auto";
     };
+
+/** The side a beat belongs to; a whistle belongs to neither. */
+export function beatSide(b: Beat): Side | undefined {
+  switch (b.kind) {
+    case "whistle":
+      return undefined;
+    case "injury":
+    case "rotate":
+      return b.player.side;
+    case "sub":
+      return b.in.side;
+    default:
+      return b.side;
+  }
+}
 
 export interface Kick {
   readonly index: number;
@@ -270,7 +292,7 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
   const changes: SlotChange[] = [];
   for (const i of incidents) {
     if (i.kind === "sub")
-      changes.push({ minute: i.minute, side: "user", slot: i.slot, species: i.in });
+      changes.push({ minute: i.minute, side: i.side, slot: i.slot, species: i.in });
     else if (i.kind === "red" || i.kind === "injury")
       changes.push({ minute: i.minute, side: i.side, slot: i.slot, species: null });
   }
@@ -359,19 +381,45 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
           secondYellow: i.secondYellow,
         });
         break;
-      case "injury":
-        beats.push({ kind: "injury", minute: i.minute, player: slotRef("user", i.slot, i.player) });
+      case "injury": {
+        const player = slotRef(i.side, i.slot, i.player);
+        // An opponent's injury line names the reserve the engine sent on in the same slot.
+        const reserve =
+          i.side === "opp"
+            ? incidents.find(
+                (x) =>
+                  x.kind === "sub" &&
+                  x.side === "opp" &&
+                  x.reason === "injury" &&
+                  x.minute === i.minute &&
+                  x.slot === i.slot,
+              )
+            : undefined;
+        beats.push(
+          reserve?.kind === "sub"
+            ? {
+                kind: "injury",
+                minute: i.minute,
+                player,
+                replacement: slotRef("opp", i.slot, reserve.in),
+              }
+            : { kind: "injury", minute: i.minute, player },
+        );
         break;
+      }
       case "sub":
         beats.push({
           kind: "sub",
           minute: i.minute,
           slot: i.slot,
-          out: slotRef("user", i.slot, i.out),
-          in: slotRef("user", i.slot, i.in),
+          out: slotRef(i.side, i.slot, i.out),
+          in: slotRef(i.side, i.slot, i.in),
           reason: i.reason,
           by: i.by,
         });
+        break;
+      case "rotate":
+        beats.push({ kind: "rotate", minute: i.minute, player: slotRef("opp", i.slot, i.player) });
         break;
       case "tactic":
         beats.push({ kind: "tactic", minute: i.minute, side: i.side, tactic: i.tactic, by: i.by });
@@ -725,6 +773,7 @@ export const SHOW: Readonly<Record<Beat["kind"], number>> = {
   save: 1_100,
   card: 1_600,
   injury: 1_800,
+  rotate: 1_200,
   sub: 1_800,
   tactic: 2_000,
 };
@@ -1155,11 +1204,13 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   const line = frame?.line ?? { user: 0, opp: 0 };
   const b = active?.beat;
   const userXI = [...xiAt(timeline, "user", clock)];
+  const oppXI = [...xiAt(timeline, "opp", clock)];
   // The injured player stays down in the slot until the replacement's own beat walks them on.
-  if (b?.kind === "injury" && b.player.slot !== null) userXI[b.player.slot] = b.player.species;
-  const oppXI = xiAt(timeline, "opp", clock);
+  if (b?.kind === "injury" && b.player.slot !== null) {
+    (b.player.side === "user" ? userXI : oppXI)[b.player.slot] = b.player.species;
+  }
   const injured = (side: Side, slot: number): boolean =>
-    b?.kind === "injury" && side === "user" && b.player.slot === slot;
+    b?.kind === "injury" && b.player.side === side && b.player.slot === slot;
   const windows = input.windows ?? [];
   const energyOf = (side: Side, slot: number, id: SpeciesId | null, minute: number) =>
     side === "user" ? energyAt(windows, slot, id, minute) : null;
@@ -1187,8 +1238,8 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
         (b.side === side && b.keeper.slot === slot) || (b.side !== side && b.attacker.slot === slot)
       );
     if (b.kind === "card") return b.side === side && b.player.slot === slot;
-    if (b.kind === "injury" || b.kind === "sub")
-      return side === "user" && (b.kind === "injury" ? b.player.slot : b.slot) === slot;
+    if (b.kind === "injury") return b.player.side === side && b.player.slot === slot;
+    if (b.kind === "sub") return b.in.side === side && b.slot === slot;
     return false;
   };
 
@@ -1623,8 +1674,8 @@ export function stagePitch(timeline: Timeline, input: StageInput): PitchStage {
   // An injured player stays down where the injury found them, so they walk off from that
   // spot. Play, and the ball, carry on around them.
   if (b?.kind === "injury" && b.player.slot !== null) {
-    const down = shapeAt(b.minute).user[b.player.slot];
-    if (down !== undefined) pts.user[b.player.slot] = down;
+    const down = shapeAt(b.minute)[b.player.side][b.player.slot];
+    if (down !== undefined) pts[b.player.side][b.player.slot] = down;
   }
 
   const buildStagedSide = (

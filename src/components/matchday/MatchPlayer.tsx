@@ -49,7 +49,14 @@ import {
 import { frameSource, type LiveFrame } from "@/ui/matchday/feed";
 import { goalNotes } from "@/ui/matchday/commentary";
 import { completedWindows, type StorySource } from "@/ui/matchday/river";
-import { PHASE_LEN, buildTimeline, frameAt, type Beat, type Kick } from "@/ui/matchday/timeline";
+import {
+  PHASE_LEN,
+  beatSide,
+  buildTimeline,
+  frameAt,
+  type Beat,
+  type Kick,
+} from "@/ui/matchday/timeline";
 import { crowdGain, kickPassDue, penRoar, roarFor } from "@/ui/matchday/crowd";
 import { kickCues, kickProgress, kicksShown, type KickCue } from "@/ui/matchday/shootout";
 import {
@@ -1146,18 +1153,21 @@ function Ticker({
   readonly shareGoal?: (minute: number) => string;
 }) {
   const lines = [
-    ...shown.map((b) => ({
-      key: beatKey(b),
-      kind: b.kind,
-      side: "side" in b ? b.side : undefined,
-      text: beatLine(b, teams, shared),
-      notes: notes.get(beatKey(b)) ?? [],
-      minute: b.minute,
-      share:
-        shareGoal !== undefined && b.kind === "goal" && b.side === "user"
-          ? shareGoal(b.minute)
-          : undefined,
-    })),
+    // An opponent's reserve is named in its injury's line, so its own sub beat stays off the ticker.
+    ...shown
+      .filter((b) => !(b.kind === "sub" && b.in.side === "opp"))
+      .map((b) => ({
+        key: beatKey(b),
+        kind: b.kind,
+        side: beatSide(b),
+        text: beatLine(b, teams, shared),
+        notes: notes.get(beatKey(b)) ?? [],
+        minute: b.minute,
+        share:
+          shareGoal !== undefined && b.kind === "goal" && b.side === "user"
+            ? shareGoal(b.minute)
+            : undefined,
+      })),
     ...kicks.map((k) => ({
       key: `kick:${k.index}`,
       kind: "kick" as const,

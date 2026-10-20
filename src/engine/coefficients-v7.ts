@@ -22,4 +22,5 @@ export const ENGINE_COEFFICIENTS_V7: EngineCoefficients = {
   },
   penalty: { missable: true, awardShare: 0.077 },
   takers: { freeKickWeight: 1.5 },
+  opponent: { injuries: true },
 };

@@ -581,6 +581,12 @@
   font-weight: 700;
 }
 
+/* Engine 7: an opponent's injury or rotation carries the opponent's colour. */
+.tickerList li[data-side="opp"]:is([data-kind="injury"], [data-kind="rotate"]) {
+  border-inline-start: 3px solid var(--bc-opp);
+  padding-inline-start: 6px;
+}
+
 .tickerNote {
   display: block;
   color: var(--text-muted);
