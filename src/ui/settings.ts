@@ -8,6 +8,7 @@ import {
   type Gen,
 } from "@/engine/types";
 import { readJson, writeJson } from "./storage";
+import { readTokenRun, versusOf, type Versus } from "./versus";
 
 export const MATCH_VIEWS = ["quick", "live"] as const;
 export type MatchView = (typeof MATCH_VIEWS)[number];
@@ -151,23 +152,59 @@ export function playTarget(
   return { href, settings: parsed.settings };
 }
 
-export function parsePlayQuery(q: URLSearchParams): {
-  settings: DraftSettings;
-  seed: string | null;
-} | null {
+// The same-seed challenge link for a run's settings, or null for a builder friendly.
+export function challengeLink(settings: DraftSettings, seed: string): string | null {
+  if (settings.mode === "builder") return null;
+  return playHref(
+    settings.mode,
+    {
+      ...DEFAULT_PANEL,
+      formation: settings.formation,
+      order: settings.order,
+      ...(settings.mode === "cup8" ? { gens: settings.gens, style: settings.style } : {}),
+    },
+    seed,
+  );
+}
+
+// A run to beat counts only on the seed and settings this link plays, so two different cups are
+// never compared.
+function readVersus(
+  vs: string | null,
+  settings: DraftSettings,
+  seed: string | null,
+): Versus | null {
+  if (vs === null || seed === null) return null;
+  const run = readTokenRun(vs);
+  if (run === null) return null;
+  const same = challengeLink(run.settings, run.seed) === challengeLink(settings, seed);
+  return same ? versusOf(run, vs) : null;
+}
+
+function readSettings(q: URLSearchParams): DraftSettings | null {
   const mode = q.get("mode");
   const formation = q.get("f");
   if (!(FORMATION_IDS as readonly (string | null)[]).includes(formation)) return null;
   const order = q.get("order") === "positionFirst" ? "positionFirst" : "squadFirst";
-  const seed = q.get("seed");
   const f = formation as FormationId;
-  if (mode === "kanto151") return { settings: { mode, formation: f, order }, seed };
+  if (mode === "kanto151") return { mode, formation: f, order };
   if (mode !== "cup8") return null;
   const g = q.get("g") ?? "123456789";
   const gens = GENS.filter((n) => g.includes(String(n)));
   if (gens.length === 0) return null;
   const style = q.get("style") === "classic3" ? "classic3" : "open";
-  return { settings: { mode, formation: f, gens, style, order }, seed };
+  return { mode, formation: f, gens, style, order };
+}
+
+export function parsePlayQuery(q: URLSearchParams): {
+  settings: DraftSettings;
+  seed: string | null;
+  vs: Versus | null;
+} | null {
+  const settings = readSettings(q);
+  if (settings === null) return null;
+  const seed = q.get("seed");
+  return { settings, seed, vs: readVersus(q.get("vs"), settings, seed) };
 }
 
 export function freshSeed(): string {

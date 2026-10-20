@@ -18,10 +18,15 @@ import {
   type SlotRef,
 } from "@/engine/types";
 import { replay as replayV3 } from "@/engine/versions/v3/src/engine/replay";
-import { GOLDEN_CUP8_V3, GOLDEN_CUP8_V5 } from "@/engine/versions/__tests__/fixtures";
+import {
+  GOLDEN_CUP8_V3,
+  GOLDEN_CUP8_V5,
+  GOLDEN_KANTO151_V5,
+} from "@/engine/versions/__tests__/fixtures";
 import { decodeToken } from "@/engine/token";
 import { RETAINED_TOKEN_VERSIONS } from "@/engine/versions/label";
 import { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
+import { challengeHref } from "@/ui/challenge-href";
 import { goalHref } from "@/ui/run-link";
 import { ALL_REFS, BUILDER_URL_SEED, valueAt } from "@/ui/lineup";
 import { parsePlayQuery } from "@/ui/settings";
@@ -65,12 +70,16 @@ function draftFirstOfferFirstSlot(settings: DraftSettings, seed: Seed): DraftAct
   return actions;
 }
 
-function seededRecord(url: string): string {
+function cupOf(url: string) {
   const parsed = parsePlayQuery(new URL(url, "http://pokedraft.invalid").searchParams);
   if (parsed === null || parsed.seed === null) throw new Error(`${url} is not a seeded challenge`);
   const seed = parsed.seed as Seed;
   const actions = draftFirstOfferFirstSlot(parsed.settings, seed);
-  const { cup } = replay({ v: RUN_TOKEN_VERSION, settings: parsed.settings, seed, actions });
+  return replay({ v: RUN_TOKEN_VERSION, settings: parsed.settings, seed, actions }).cup;
+}
+
+function seededRecord(url: string): string {
+  const cup = cupOf(url);
   return `${cup.wins}-${cup.draws}-${cup.losses}`;
 }
 
@@ -121,6 +130,23 @@ function deepLink() {
     watch++;
   }
   throw new Error("the golden run scores no goal");
+}
+
+// e2e/head-to-head.spec.ts: each golden engine-5 draft under the live prefix is the run to beat
+// on its own seed, and the challenger drafts the first offered player into the first open slot.
+function headToHead(golden: string) {
+  const theirs = `pd${RUN_TOKEN_VERSION}.${golden.replace(/^pd\d+\./, "")}`;
+  const url = challengeHref(theirs);
+  if (url === null) throw new Error("the golden run has no same-seed challenge");
+  const them = replay(decodeToken(theirs)).cup;
+  const you = cupOf(url);
+  return {
+    url,
+    theirs,
+    retained: golden,
+    you: { record: `${you.wins}-${you.draws}-${you.losses}`, score: you.rating.score },
+    them: { record: `${them.wins}-${them.draws}-${them.losses}`, score: them.rating.score },
+  };
 }
 
 const scoreText = (score: Score) => `${score.user}-${score.opp}`;
@@ -209,6 +235,11 @@ export async function renderPins(): Promise<string> {
     ``,
     `// The golden engine-5 cup8 draft under the live prefix, linked to its first goal.`,
     `export const DEEP_LINK = ${JSON.stringify(deepLink())} as const;`,
+  );
+  lines.push(
+    ``,
+    `// The golden engine-5 drafts under the live prefix as the runs to beat on their own seeds.`,
+    `export const HEAD_TO_HEAD = ${JSON.stringify({ cup8: headToHead(GOLDEN_CUP8_V5), kanto151: headToHead(GOLDEN_KANTO151_V5) })} as const;`,
   );
   const options = await resolveConfig(PINS_PATH);
   return format(lines.join("\n"), { ...options, filepath: PINS_PATH });
