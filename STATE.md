@@ -25,7 +25,21 @@ Gates at `dbab0bf` (the later commits change only `e2e/results-reveal.spec.ts`):
 
 Decision log: `docs/decisions/results-reveal.md`. Browser proof: `docs/reports/results-reveal/` (`reveal-{0ms,600ms,2000ms}-390.png`, `hero-{390,360,320}-{light,dark}.png`, `highlights-{390,360,320}-{light,dark}.png`).
 
+## Badge loop budget
+
+Branch `test/badge-loop-budget` off `origin/main` at `9f01b8c`. Out-of-band side fix (Green) that unblocks Wave 5 row 5e (PR #134). Only `e2e/team-readability.spec.ts` changed. No product code changed.
+
+- PR #134 failed shard e2e (4) on hosted run 39357079608 twice (first attempt and a rerun of the failed job): all three widths of the play badge test hit their 240 s timeout. Per hand-off 3.5 that is not a flake, so it gets its own PR first.
+- The test steps a fake clock through a whole match, up to 3,000 steps, and made three browser round trips per step. One `evaluate` now reads the minute and the badge together, the test asserts the loop reached minute 90, and the timeout is 480 s.
+- Local, same build, chromium, `CI=1`, `--retries=0`: main's spec ran the three widths in 54.6 s and this branch in 35.0 s (11.7, 11.3 and 11.3 s). Both found 13 badges with a closest margin of 0 px and none clipped.
+
+Gates at the head: recorded in the PR review receipt. NOT RUN: the full Playwright suite locally (hosted CI runs it).
+
+Decision log: `docs/decisions/badge-loop-budget.md`.
+
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #135 (out-of-band side fix for 5e, badge loop budget, Green) merged as squash `36ac415`, reviewed head `c896ac8`, GLM 5.3 Flash APPROVE in round 1 with canary `badge-loop-budget-df969b100b9d1780af8e0191df73502e` echoed. At `c896ac8` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,863 unit tests passed in 221 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green on the first run, with the play badge test at 2.7 minutes per width on shard 4 (3.1 to 3.3 minutes before). Production `/api/health?db=1` served `36ac415` with `db.status` ok; `team-readability` against production (chromium) passed 7 of 7.
 
 ## Head-to-head challenges
 
