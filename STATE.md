@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Seed boards and engine filter
+
+Branch `feat/seed-boards` off `origin/main` at `07beda9`. Wave 5 row 5g (Red). No file under `src/engine`, `src/data` or `src/scouting` changed, and there is no migration.
+
+- The all-time board shows only runs played on the current engine (v6) by default, and the caption says "all-time, engine v6." An "All engines" button adds older runs, each labelled "Engine v3" (or its own version), and the link gains `engine=all`. Daily boards are unchanged.
+- After a cup, live results and every shared `/r/` page show "Friends on this seed": every submitted run on the same seed and mode, best first, up to 20, across engines and dates. The current run is marked "This run". The table loads after the page, hides when nobody submitted the seed, and says "Board unavailable" when it cannot load. Builder friendlies have none.
+- A player who submits to the all-time board is told their rank on the current-engine board, the one "View leaderboard" opens.
+- Board rows now carry `engineVersion`, `seed` and `formation` (null when the token does not decode). `GET /api/leaderboard?mode=..&seed=..` answers the seed board; an empty, blank or too long seed is 400 `INVALID_QUERY`, a seed nobody played is 200 with no entries.
+
+RED commit: `b10dad5` (26 of 37 unit tests failed in 4 of 4 files; `seed-board.test.tsx` failed to load). GREEN `6a8fee2`, Prettier `7a9e7d2`.
+
+Gates at `7a9e7d2`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0 (`check:client-bundle`: no retained engine bundle). Prettier passed on the touched files.
+- Unit tests: 1,858 passed in 218 files.
+- Playwright (`CI=1`, headless): the full suite across all six projects passed 1,020 with 67 skipped and 0 failed (17.9m); `seed-board.spec.ts` passed 8 of 8 on chromium, and `layout-shift` plus `server-html` passed 10 of 10.
+- NOT RUN: every Neon query and the production real-API check (the coordinator runs them), `seed-board.spec.ts` against the RED build, review and hosted CI, `seed-board.spec.ts` on the WebKit and phone projects (it runs on chromium only), the phone check and screen reader pass.
+
+Decision log: `docs/decisions/seed-boards.md`. Browser proof: `docs/reports/seed-boards/` (seed table at 390, 360 and 320, the unavailable state, All engines at 390, 360 and 320). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Leaderboard integrity contract and copy guard
 
 Branch `feat/leaderboard-integrity` off `origin/main` at `3b821d1`. Wave 5 row 5f2 (Red). No file under `src/engine`, `src/data` or `src/scouting` changed.
