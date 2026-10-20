@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine grace window and version plumbing
+
+Branch `feat/engine-grace` off `origin/main` at `8059458` (the 6b0 squash). Wave 6 row 6g (Red). Dormant: `GRACE` is `null`, so production behaviour is exactly today's. No file under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #144 merge, and the branch merged `origin/main` at `2992500` (PR #145) with its merged paragraph below.
+
+- Nothing changes for a player yet.
+- When engine 7 goes live and 6b9 sets `GRACE`, an engine 6 run finished just before the flip can still be submitted for about a day, whether the page says engine 6 or engine 7. It replays on the frozen engine 6 bundle, is stored as an engine 6 row and is ranked among engine 6 rows. The submit result says "Ranked on the engine 6 board." and its board link opens All engines.
+- The flip day's Daily accepts only engine 7 runs, so one date never mixes engines. The day before stays open to engine 6 runs.
+- Coached engine 7 runs keep their Coached marker (`MANAGER_TOKEN_VERSIONS = [6, 7]`).
+- A new proxy guard checks a golden share link of every retained and live version plus engine 6. It passes today and goes RED at the flip until pd6 links get their own codec branch.
+
+RED commit `82e5bcd` (9 of 19 failed), GREEN `c93e5ea`. Regression guards with no RED, behaviour already correct: the proxy guard `cd524a2` and the canonical-form guard (a stored engine 6 token, plain and coached, re-encodes to the exact stored string). Build fix `34069ba`: a static import of the retained dispatcher emitted a second live scouting payload (`measure-retained-json.mjs`: `5 !== 4`); it is now loaded only for a grace run.
+
+Gates at `4c275fa` (the merge of `origin/main`, code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 2,046 passed in 233 files. `pnpm vitest run src/engine`: 286 passed in 24 files. `pnpm e2e:pins --check` reported the pins current.
+- `check-retained-replays.mts`: 10 golden replays passed. `measure-retained-json.mjs`: 4 payloads, 2,891,853 bytes.
+- Playwright on chromium against a fresh build: `grace-submit`, `leaderboard`, `seed-board`, `board-ux`, `old-links`, `share` and `health`, 43 passed. The grace line has 37 px of headroom at 320 and 25 px at 308. Browser proof: `docs/reports/engine-grace/`.
+- NOT RUN: review and hosted CI, the preview-branch API proof (the coordinator runs it with the Red reviewer), the full Playwright suite, the calibration probes (engine output cannot move), the phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine-grace.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Live-token pins
 
 Branch `test/live-token-pins` off `origin/main` at `eceb581`. Wave 6 row 6t (Green). Only e2e specs, the generated `e2e/pins.ts`, `scripts/e2e/render-pins.ts` and its test changed. No file under `src/` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #143 merge below.
@@ -21,6 +43,8 @@ Gates at `9340dec` (later commits add docs only):
 - NOT RUN: review and hosted CI, the phone check.
 
 Decision log: `docs/decisions/live-token-pins.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #145 (live-token pins, Green) merged as squash `2992500`, reviewed head `19cac51`, GLM 5.3 Flash APPROVE in round 1 with canary `6t-4ab7d06a4d8ac7e5f358f567b1de42f3` echoed. At `19cac51` lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main`, `pnpm e2e:pins --check` reported the pins current, 2,031 unit tests passed in 231 files and Prettier passed on 40 touched files; hosted check and all eight e2e shards green on the first run. The implementer's full local Playwright suite gave identical counts before (`b3199e9`) and after (`9340dec`): 1,081 passed, 67 skipped, 0 failed. Production `/api/health?db=1` served `2992500` with `db.status` ok; live check on chromium `watch-live`, `set-pieces`, `achievements`, `results-reveal`, `shootout-suspense`, `head-to-head` and `health` 43/43. No runtime change.
 
 ## Freeze engine 6
 
