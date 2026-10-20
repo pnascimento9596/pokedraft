@@ -143,7 +143,9 @@ export function beatLine(b: Beat, teams: Teams, shared = false): string {
       return `${at} Goal for ${team(teams, b.side)}! ${b.scorer.name}${how}${assist}`;
     }
     case "save":
-      return `${at} ${b.keeper.name} saves from ${b.attacker.name}`;
+      return b.penalty === undefined
+        ? `${at} ${b.keeper.name} saves from ${b.attacker.name}`
+        : penaltyText({ ...b, taker: b.attacker, outcome: b.penalty });
     default:
       return incidentText(b, teams, shared);
   }
