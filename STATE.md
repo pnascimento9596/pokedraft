@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Territory, xG river and real commentary
+
+Branch `feat/xg-river` off `origin/main` at `969ca1c`. Wave 6 row 6a2 (Yellow). UI only: nothing under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed, and `goldens.test.ts` is byte-identical. The first commit records the PR #142 merge above.
+
+- In Live match, a live-engine cup match shows an xG river under the momentum bar: one column per five-minute window, yours above the line and theirs below, labelled "Chances (xG)" with each side's running total. A window appears only once the clock has passed its end.
+- The momentum bar and the possession drift now follow the engine's territory for each completed window instead of goals and saves. Kickoff reads 50%.
+- Goal lines in the ticker can add "Late drama at 86'", "Tapu Koko's second" (or hat-trick) and "Against the run of play" when the run's chances back it.
+- A friend's link on the live engine shows the river with "this squad" for "you". Retained runs (older engine links) and exhibitions show no river and keep the old lean; Quick view shows no river.
+
+RED commit: `5fbf33a` (unit 24 of 57 failed in the five touched test files). GREEN `19213f6`. `21fe650` adds `e2e/xg-river.spec.ts`, re-pins `honest-momentum.spec.ts` (minutes 6 to 9 read `77%23%`, was `36%64%`) and adds `scripts/perf/story-timing.mts`. `626cc30` re-pins the set-pieces solo presser to opp slot 5 (was 3).
+
+Gates at `626cc30` (app code identical to `19213f6`):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `check-retained-replays.mts` (10 golden replays), `measure-retained-json.mjs` (4 copies) and all nine `check:*` scripts exited 0. Prettier passed on every touched file.
+- Unit tests: 2,054 passed in 233 files.
+- Playwright (`CI=1`, headless, muted chromium, `--retries=0`), the full suite at `21fe650`: 1,085 passed, 67 skipped, 1 failed (the set-pieces solo presser, re-pinned in `626cc30`; `set-pieces.spec.ts` then 4 of 4). `xg-river.spec.ts` 5 of 5, `honest-momentum.spec.ts` 1 of 1.
+- Story cost at 4x CPU throttle: at most 29.6 ms for one match, 108 to 153 ms for a cup's six. River layout at 390, 360, 320 and 308 px: 6 px under the meter, 11 px inside the HUD, no overlap, no page scroll.
+- NOT RUN: the full suite after `626cc30`, the new spec on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/xg-river.md`. Browser proof: `docs/reports/xg-river/` (`river-{30,ht,ft}-{390,360,320}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## matchStory core
 
 Branch `feat/match-story` off `origin/main` at `9e4802b`. Wave 6 row 6a1 (Red). Engine change with no output change: engine 6 stays live and every run, token and board row replays exactly as before. Nothing under `src/scouting`, `scripts/data` or `src/data` changed, and `goldens.test.ts` is byte-identical.
