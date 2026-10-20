@@ -1,7 +1,9 @@
 import { record } from "@/ui/labels";
 
-/** What happened to a link: the share sheet took it, the player closed the sheet, it reached the
- * clipboard, or nothing worked and the caller must show it for a manual copy. */
+/**
+ * What happened to a link: the share sheet took it, the player closed the sheet, it reached the
+ * clipboard, or nothing worked and the caller must show it for a manual copy.
+ */
 export type ShareOutcome = "shared" | "cancelled" | "copied" | "manual";
 
 export interface LinkShare {

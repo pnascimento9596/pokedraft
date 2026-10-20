@@ -12,8 +12,10 @@ export function runTitle(run: ReplayedRun | null): string {
   return `pokedraft run: ${line}`;
 }
 
-/** A run link's preview: title, description and the run card with an alt that carries the result.
- * The `/r` page and the passcode gate (where gated preview bots land) both send it. */
+/**
+ * A run link's preview: title, description and the run card with an alt that carries the result.
+ * The `/r` page and the passcode gate (where gated preview bots land) both send it.
+ */
 export function runMetadata(token: string, run: ReplayedRun | null): Metadata {
   const title = runTitle(run);
   const image = {
