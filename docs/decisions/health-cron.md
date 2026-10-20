@@ -61,3 +61,18 @@ deploys with no staging gate and no monitoring.
   in the next STATE update.
 - A real failure path on GitHub (it would open a real issue). The local run above covers the
   decision logic.
+
+## Removed (2026-10-19, owner decision)
+
+The owner asked for the 30-minute health cron to be removed: "please remove the health check that
+runs every 30 minutes, i don't need any health check". The workflow was disabled on GitHub the same
+day (`gh workflow disable health.yml`, state `disabled_manually`) and `.github/workflows/health.yml`
+is deleted in the follow-up PR. It ran once (the manual dispatch after #128, success) and opened no
+issue.
+
+The `/api/health` route stays. It is not a scheduled check: the merge procedure (`land.sh`) and each
+row's live check read it once to confirm production serves the merged sha, and it costs nothing when
+nobody calls it.
+
+This supersedes the Wave 5 hand-off's recommendation 8.4 and the brief's Wave 7 health cron row.
+After a merge, production state is still verified by hand through the live check in hand-off 3.7.

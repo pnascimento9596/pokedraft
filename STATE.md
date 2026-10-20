@@ -3,6 +3,20 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Health cron removed
+
+Branch `ci/remove-health-cron` off `ef542fb`. Green: deletes `.github/workflows/health.yml` and updates docs. No change under `src/`, `e2e/` or `scripts/`.
+
+- The owner asked for the 30-minute health check to go: "please remove the health check that runs every 30 minutes, i don't need any health check". The workflow was disabled on GitHub the same day (`disabled_manually`) and this PR deletes it. It ran once, the manual dispatch after #128, and opened no issue.
+- The `/api/health` route stays: the merge procedure reads it once per landing to confirm production serves the merged sha. Nothing calls it on a schedule.
+- Players see no change.
+
+Gates: Prettier passed on the touched Markdown. The coordinator re-runs every gate at the head for review. NOT RUN: nothing specific to this change beyond CI.
+
+Decision log: `docs/decisions/health-cron.md` ("Removed").
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 4 carryovers and queue triage
 
 Branch `fix/wave4-carryovers` off `origin/main` at `5932775`. Wave 5 row 5-0 (Yellow; the queue triage is Green). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -27,6 +41,8 @@ Gates at `b2f000c` (code-identical to `34b26b6` outside `e2e/`):
 Decision log: `docs/decisions/wave4-carryovers.md`. Browser proof: `docs/reports/wave4-carryovers/{home-footer-notch-390,home-landscape-notch-844}.png`; measurements in `docs/reports/wave4-carryovers/{swipe.json,frame-noise.jsonl}`.
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #127 (row 5-0, Wave 4 carryovers and queue triage, Yellow) merged as squash `ef542fb`, reviewed head `246ade2` (the coordinator's merge of `origin/main` at `32d0b69`, a STATE-only conflict, on top of `170fda6`), GLM 5.3 Flash APPROVE in round 1 with canary `wave4-carryovers-05f3b97dc9b0d977a8d15d7b4f43377b` echoed. At `246ade2` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,827 unit tests passed in 217 files and Prettier passed on 16 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `ef542fb` with `db.status` ok; `safe-area-insets`, `pwa-viewport`, `engine-v4` and `wheel-results` against production (chromium) passed 24 of 24. NOT RUN: physical phone check including real notch insets in landscape (owner action), a real screen reader, WebKit and Firefox safe-area checks.
 
 ## Health cron
 
