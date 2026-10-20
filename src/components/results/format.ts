@@ -149,6 +149,8 @@ function incidentCopy(i: Incident): IncidentCopy {
   switch (i.kind) {
     case "injury":
       return { kind: "injury", minute: i.minute, player: named(i.player) };
+    case "rotate":
+      return { kind: "rotate", minute: i.minute, player: named(i.player) };
     case "sub":
       return { ...i, in: named(i.in), out: named(i.out) };
     case "yellow":

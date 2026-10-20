@@ -26,6 +26,7 @@ interface Named {
  */
 export type IncidentCopy =
   | { readonly kind: "injury"; readonly minute: number; readonly player: Named }
+  | { readonly kind: "rotate"; readonly minute: number; readonly player: Named }
   | {
       readonly kind: "sub";
       readonly minute: number;
@@ -81,6 +82,8 @@ export function incidentText(c: IncidentCopy, teams: CardTeams, shared = false):
   switch (c.kind) {
     case "injury":
       return `${at} ${c.player.name} is injured`;
+    case "rotate":
+      return `${at} ${teams.opp} rotate: ${c.player.name} rested.`;
     case "sub":
       return `${at} ${c.in.name} on for ${c.out.name} (${REASON[c.reason]}, ${c.by === "manager" ? (shared ? "manager's call" : "your call") : "assistant"})`;
     case "card": {

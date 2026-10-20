@@ -12,12 +12,15 @@ import {
   type Mode,
   type Opponent,
   type OpponentPlayerRef,
+  type Role,
   type Species,
+  type SpeciesId,
 } from "./types";
 
 const LINE_DRAW_ORDER = ["ATT", "DEF", "MID", "GK"] as const;
 const KANTO151_MAX_ID = 151;
 const ROSTER_SIZE = 11;
+const RESERVE_CHOICES = 3;
 // Boss Clubs field a 4-3-3; roster fit shapes matchups around the ladder difficulty.
 export const BOSS_FORMATION = FORMATIONS["4-3-3"];
 
@@ -67,6 +70,41 @@ function bossRoster(
     roster.push(best!);
   }
   return roster.map((s) => ({ kind: "species", id: s.id }));
+}
+
+/**
+ * Engine 7: the reserve a Boss Club sends on for an injured player, or null when its themed pool
+ * has nobody left. The window bossRoster takes for this ladder step slides over the theme's members
+ * not yet used, and one of the three best fits there for the injured slot's role comes on, drawn
+ * on the `opponent_roster` scope `inj:<match>:<slot>`.
+ */
+export function bossReserve(
+  mode: Mode,
+  opponent: Opponent,
+  round: CupRound,
+  seed: string,
+  matchIndex: number,
+  slot: number,
+  role: Role,
+  used: ReadonlySet<SpeciesId>,
+): Species | null {
+  const pool = THEMED_POOLS[mode === "kanto151" ? "kanto151" : "open"].find(
+    (p) => p.theme === opponent.theme,
+  );
+  const remaining = (pool?.members ?? []).filter((s) => !used.has(s.id));
+  if (remaining.length === 0) return null;
+  const lastRung = CUP_ROUNDS.length - 1;
+  const rung = CUP_ROUNDS.indexOf(round);
+  const start = Math.max(
+    0,
+    Math.round(((remaining.length - ROSTER_SIZE) * (lastRung - rung)) / lastRung),
+  );
+  const choices = canonicalSortBy(remaining.slice(start, start + ROSTER_SIZE), (s) => [
+    -s.fits[role],
+    s.id,
+  ]).slice(0, RESERVE_CHOICES);
+  const rng = createEngineRng(deriveSubseed(seed, "opponent_roster", `inj:${matchIndex}:${slot}`));
+  return rng.pick(choices);
 }
 
 /**

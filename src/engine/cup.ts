@@ -170,6 +170,7 @@ interface CupMatch {
 function cupMatch(
   lineup: FullLineup,
   seed: Seed,
+  mode: Mode,
   ladder: Record<CupRound, Opponent>,
   rating: TeamRating,
   matchIndex: number,
@@ -203,6 +204,7 @@ function cupMatch(
       lineup: fielded,
       unavailable: absence === null ? [] : [absence.out],
       manager,
+      mode,
     },
   };
 }
@@ -226,6 +228,7 @@ export function cupMatchInput(
   return cupMatch(
     lineup,
     seed,
+    mode,
     buildLadder(seed, mode, c),
     rateTeam(lineup, c),
     matchIndex,
@@ -292,6 +295,7 @@ export function runCup(
     const { input, fielded } = cupMatch(
       lineup,
       seed,
+      mode,
       ladder,
       rating,
       matchIndex,
