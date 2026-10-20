@@ -794,7 +794,15 @@ export function pageScrollReach(page: Page): Promise<ScrollReach> {
       }
       const r = el.getBoundingClientRect();
       if (r.width <= 1 || r.height <= 1) continue;
-      contentBottom = Math.max(contentBottom, r.bottom + window.scrollY);
+      // Content inside an inner scroller (the Broadcast ticker) is reached by scrolling that box,
+      // so the page only has to reach the box's own bottom edge.
+      let bottom = r.bottom;
+      for (let p = el.parentElement; p !== null && p !== document.body; p = p.parentElement) {
+        if (getComputedStyle(p).overflowY !== "visible") {
+          bottom = Math.min(bottom, p.getBoundingClientRect().bottom);
+        }
+      }
+      contentBottom = Math.max(contentBottom, bottom + window.scrollY);
     }
     window.scrollTo(0, doc.scrollHeight);
     const scrolledTo = window.scrollY;
