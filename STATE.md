@@ -3,6 +3,47 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine 7 goal kind weighted by attributes
+
+Branch `feat/engine7-goal-kind` off `origin/main` at `f7448f9` (the 6b4 squash). Wave 6 row 6b5 (Red). Dormant: the live coefficients keep `goalKind.weighted: false` and tokens stay pd6, so production engine output is exactly engine 6's. `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #151 merge.
+
+- Nothing changes for a player yet.
+- From the flip, a side whose forwards are strong in the air scores more headers, and a side whose forwards dribble and run scores more solo goals. Each share moves with the forwards' mean against the average Pokémon, between 0.6 and 1.5 times engine 6's share. Free kicks keep their share and open play takes the rest. On the kinds probe, the header share rises from 0.117 in the lowest AER quartile to 0.155 in the highest; engine 6 is flat at about 0.11.
+- The 6b4 review carryovers: the Boss Club's keeper cover is checked without building a reserve every window, `bossRoster` and `bossReserve` share one window function, and each opponent reserve draws on its own scope `inj:<match>:<slot>:<n>`, so a re-injured slot no longer repeats the first draw.
+
+RED commits:
+
+- `15e45ed6`: 1 of 10 failed (the re-injured slot).
+- `fee98251`: 2 of 3 failed (high against low AER, and high against low DRI and ACC, over 10,000 seeded kind draws).
+- `13e8ebbd`: 3 of 4 failed (both sides' goals in a match).
+
+GREEN commits are `8727a258` and `ef73c0d7`. `1afaa90d` and `c99360b7` are refactors with no output change.
+
+Regression guards with no RED, because the behaviour was already correct:
+
+- At the live coefficients every attack gets engine 6's 1,266 headers, 783 free kicks and 1,817 solo goals of 10,000.
+- A rate parity self-test: `goalKind` on gives 24 user-side divergences, each first in a goal's kind.
+
+Gates at `c5050a04` (code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` (fresh `.next`) exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files. `pnpm e2e:pins --check` reported the pins current.
+- Unit tests: 2,182 passed in 250 files. `pnpm vitest run src/engine`: 364 passed in 33 files.
+- Parity: the 50-run test and the 200-run slow test are byte-identical. Rate parity passed 6 of 6: 123 matches and 12,946 trials at the live coefficients, plus five mutation self-tests. `goldens.test.ts` is byte-identical to `origin/main`.
+- `check-retained-replays.mts`: 10 golden replays passed, live v6 replay `2b26ee82...`. `measure-retained-json.mjs`: 4 copies, 2,891,853 bytes.
+- Kinds probe (n 2000, good, 4-3-3):
+  - Live reproduces the 6p baseline: 13,914 matches and 42,344 user goals.
+  - With only `goalKind` on, user header share is 0.1357 [0.1325, 0.1390] (live 0.1118) and solo 0.2365 [0.2324, 0.2405] (live 0.1673). Goal counts do not change.
+  - Header share by AER quartile: 0.1169, 0.1335, 0.1365 and 0.1555 (baseline 0.1118, 0.1141, 0.1082 and 0.1129). The whole V7 candidate gives 0.1167, 0.1339, 0.1359 and 0.1552.
+  - Drafted attacks sit above the dex mean, so header and solo shares rise for nearly every squad. 6b8 decides whether to lower the weights.
+- Playwright (Chromium, headless, `CI=1`): 51 passed over `opponent-injuries` 5, `v7-switch` 1, `penalty-takers` 6, `set-pieces` 4, `watch-live` 3, `results-reveal` 14, `share` 17 and `injury-staging` 1. No UI changed. Screenshot churn was reverted.
+- NOT RUN:
+  - Review and hosted CI.
+  - The full Playwright suite.
+  - A probe of V7 without this row's flag.
+  - The phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine7-goal-kind.md`. No browser proof: the row has no UI change. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Engine 7 opponent injuries and rotation incidents
 
 Branch `feat/engine7-opponent-injuries` off `origin/main` at `cee1ad1` (the 6b3 squash). Wave 6 row 6b4 (Red). Dormant: the live coefficients keep `opponent.injuries: false` and tokens stay pd6, so production engine output is exactly engine 6's. `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #150 merge.
