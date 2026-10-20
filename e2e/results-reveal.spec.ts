@@ -91,6 +91,31 @@ test.describe("staged reveal", () => {
     expect(errors).toEqual([]);
   });
 
+  test("the reveal shifts no layout while it plays (catches a count-up that resizes the hero)", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== "chromium", "layout-shift entries are Chromium only");
+    await page.addInitScript(() => {
+      const w = window as unknown as { __shifts: number[] };
+      w.__shifts = [];
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries() as unknown as { value: number }[])
+          w.__shifts.push(entry.value);
+      }).observe({ type: "layout-shift", buffered: true });
+    });
+    await openLiveResults(page);
+    await expect(hero(page)).toHaveAttribute("data-reveal", "staged");
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(2500);
+    await expect(hero(page).getByTestId("results-mvp")).toHaveCSS("opacity", "1");
+    expect(
+      await page.evaluate(() =>
+        (window as unknown as { __shifts: number[] }).__shifts.reduce((sum, v) => sum + v, 0),
+      ),
+    ).toBe(0);
+  });
+
   test("a shared run shows the final hero with no count-up", async ({ page }) => {
     await page.goto(`/r/${CHAMPION.token}`);
     await expect(page.getByTestId("results-score")).toHaveText("868");
