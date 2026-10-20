@@ -11,6 +11,7 @@ import * as v2 from "../v2";
 import * as v3 from "../v3";
 import * as v4 from "../v4";
 import * as v5 from "../v5";
+import * as v6 from "../v6";
 import { fromLegacy, type LegacyCupResult, type LegacyV3CupResult } from "../legacy";
 import { buildLadder as v1Ladder } from "../v1/src/engine/opponents";
 import { buildLadder as v2Ladder } from "../v2/src/engine/opponents";
@@ -26,6 +27,8 @@ import {
   GOLDEN_KANTO151_V4,
   GOLDEN_CUP8_V5,
   GOLDEN_KANTO151_V5,
+  GOLDEN_CUP8_V6,
+  GOLDEN_KANTO151_V6,
 } from "./fixtures";
 
 const sha256 = (s: string | Buffer): string => createHash("sha256").update(s).digest("hex");
@@ -212,6 +215,41 @@ describe("retained engine-5 bundle (catches a pre-manager run replaying differen
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v5"))).toBe(
       "cd69715e61910e64474cb5efd64b888974234b6837b2ac5bc8a6aae8d0084ede",
+    );
+  });
+});
+
+describe("retained engine-6 bundle (catches a manager-era run replaying differently after engine 7 moves in)", () => {
+  it("replays the engine-6 goldens byte-identical to the engine-6 live goldens at 969ca1c", () => {
+    expect(sha256(GOLDEN_CUP8_V6)).toBe(
+      "91d7a44a3e489b6740655ea38cf75d4ad83d2399b7cd53d706229ac8cebb30a4",
+    );
+    const cup8 = v6.replay(GOLDEN_CUP8_V6);
+    expect([cup8.cup.rating.score, cup8.cup.wins, cup8.cup.finish]).toEqual([593, 5, "QF"]);
+    expect(sha256(JSON.stringify(cup8))).toBe(
+      "2b26ee82cbf26da1d64e1c4978b25e846537085747d3845d78b555cb7d8f7e05",
+    );
+    expect(sha256(GOLDEN_KANTO151_V6)).toBe(
+      "6b4f9d46c3b88d5dab4135b91913e37ba1b909b41e9efd227fd9bd217b935c14",
+    );
+    const kanto = v6.replay(GOLDEN_KANTO151_V6);
+    expect([kanto.cup.rating.score, kanto.cup.wins, kanto.cup.finish]).toEqual([480, 3, "R32"]);
+    expect(sha256(JSON.stringify(kanto))).toBe(
+      "eb3664642c3c0bd9ee50cb4382182c73e070dad7896e620492d5b0e5b8b12747",
+    );
+  });
+
+  it("names engine 6 and token version 6", () => {
+    expect([v6.ENGINE_VERSION, v6.RUN_TOKEN_VERSION, v6.BUNDLE_MARKER]).toEqual([
+      "pokedraft-engine-6",
+      6,
+      "retained-engine-bundle:v6",
+    ]);
+  });
+
+  it("is frozen: no byte of the bundle changes", () => {
+    expect(bundleDigest(path.join(import.meta.dirname, "../v6"))).toBe(
+      "b0b922bc1eef6e7ec4af9bf64e4af10206e894fdfc5d5f317eaf75b85d604397",
     );
   });
 });
