@@ -435,18 +435,24 @@ function formationsFor(bot: BotName, o: ProbeOptions) {
 function onFieldAtEnd(m: Extract<CupResult["matches"][number], { status: "played" }>): {
   readonly user: readonly Species[];
   readonly opp: readonly Species[];
+  readonly oppKeeper: Species | null;
 } {
   if (m.windows === undefined || m.incidents === undefined)
     throw new Error("a live match always records windows and incidents");
   const last = m.windows[m.windows.length - 1]!;
-  const sentOff = new Set<number>(
-    m.incidents.flatMap((x) => (x.kind === "red" && x.side === "opp" ? [x.slot] : [])),
+  // Engine 7 injures Boss Club players too, so the opponent's pitch replays its own incidents.
+  const opp: (SpeciesId | null)[] = m.opponent.roster.map((ref) =>
+    ref.kind === "species" ? ref.id : null,
   );
+  for (const x of m.incidents) {
+    if (x.side !== "opp") continue;
+    if (x.kind === "red" || x.kind === "injury") opp[x.slot] = null;
+    else if (x.kind === "sub") opp[x.slot] = x.in;
+  }
   return {
     user: last.onPitch.flatMap((id) => (id === null ? [] : [speciesById(id)])),
-    opp: m.opponent.roster.flatMap((ref, slot) =>
-      ref.kind === "species" && !sentOff.has(slot) ? [speciesById(ref.id)] : [],
-    ),
+    opp: opp.flatMap((id) => (id === null ? [] : [speciesById(id)])),
+    oppKeeper: opp[0] === null ? null : speciesById(opp[0]!),
   };
 }
 
@@ -478,9 +484,8 @@ function shootoutsFor(bot: BotName, o: ProbeOptions) {
         const userTakers = takerOrder(pitch.user);
         const oppTakers = takerOrder(pitch.opp);
         const userKeeper = speciesById(m.shootout.keeper);
-        const oppGk = m.opponent.roster[0]!;
-        if (oppGk.kind !== "species") throw new Error("opponent keeper is not a species");
-        const oppKeeper = speciesById(oppGk.id);
+        const oppKeeper = pitch.oppKeeper;
+        if (oppKeeper === null) throw new Error("the opponent has no keeper at the shootout");
         let u = 0;
         let p = 0;
         for (const k of m.shootout.kicks) {
