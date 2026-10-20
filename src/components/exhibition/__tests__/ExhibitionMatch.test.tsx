@@ -103,6 +103,17 @@ describe("one match on the Broadcast", () => {
     expect(screen.queryByTestId("match-player")).toBeNull();
     expect(screen.getByTestId("exhibition-kickoff").textContent).toBe("Kick off");
   });
+
+  it("moves keyboard focus to Kick off after a rematch (catches a rematch that drops focus to the page)", async () => {
+    managerMode(false);
+    render(<Harness />);
+    await kickOff();
+    fireEvent.click(screen.getByTestId("skip-ft"));
+    const rematch = screen.getByRole("button", { name: "Play rematch" });
+    rematch.focus();
+    fireEvent.click(rematch);
+    expect(document.activeElement).toBe(screen.getByTestId("exhibition-kickoff"));
+  });
 });
 
 describe("two legs on the Broadcast", () => {
