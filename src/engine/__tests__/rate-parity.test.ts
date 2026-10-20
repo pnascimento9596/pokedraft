@@ -10,13 +10,15 @@ const INPUTS = rateInputs(8);
 function divergences(c: EngineCoefficients) {
   const sides = { user: 0, opp: 0, length: 0 };
   let trials = 0;
+  let kicks = 0;
   for (const { input } of INPUTS) {
     const traces = rateTraces(input, c);
     trials += traces.frozen.length;
+    kicks += traces.frozen.filter((t) => t.kind === "shootout").length;
     const side = firstDivergence(traces);
     if (side !== null) sides[side]++;
   }
-  return { sides, trials };
+  return { sides, trials, kicks };
 }
 
 function mutate(patch: (c: EngineCoefficients) => void): EngineCoefficients {
@@ -27,11 +29,12 @@ function mutate(patch: (c: EngineCoefficients) => void): EngineCoefficients {
 
 // Regression guard, no RED: behaviour already correct.
 describe("per-trial rate parity with engine 6 (catches a dormant engine 7 term moving engine 6)", () => {
-  it("123 matches, 12946 trials, every one identical at the live coefficients", () => {
+  it("123 matches, 12946 chances and 110 shootout kicks, every one identical at the live coefficients", () => {
     expect(INPUTS.length).toBe(123);
     expect(divergences(ENGINE_COEFFICIENTS)).toEqual({
       sides: { user: 0, opp: 0, length: 0 },
-      trials: 12946,
+      trials: 13056,
+      kicks: 110,
     });
   });
 });
@@ -86,5 +89,23 @@ describe("per-trial rate parity self-test (catches a comparison too blind to see
       );
     }
     expect([...firstFields].sort()).toEqual(["kind", "kind,shooter,slot"]);
+  });
+
+  // Only kicks a band can flip are visible: panel-1 match 3 goes to a shootout under Counter and
+  // under Press, and 0.18 turns the user's first kick from a miss into a goal in both.
+  it("shootout.band 0.18: 2 matches diverge first on the user's side, at a shootout kick", () => {
+    const c = mutate((m) => {
+      m.shootout.band = 0.18;
+    });
+    expect(divergences(c).sides).toEqual({ user: 2, opp: 0, length: 0 });
+    const first = INPUTS.flatMap(({ name, input }) => {
+      const { live, frozen } = rateTraces(input, c);
+      const i = live.findIndex((t, k) => JSON.stringify(t) !== JSON.stringify(frozen[k]));
+      return i < 0 ? [] : [[name, live[i]!.kind, frozen[i]!.kind]];
+    });
+    expect(first).toEqual([
+      ["panel-1 counter match 3", "shootout", "shootout"],
+      ["panel-1 press match 3", "shootout", "shootout"],
+    ]);
   });
 });
