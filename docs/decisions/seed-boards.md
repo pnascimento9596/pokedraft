@@ -96,7 +96,7 @@ view. It now also refuses a reply whose `engine` is not the view it asked for (`
 board). This is what forced the e2e stub churn.
 
 **One token reader.** `challengeHref` and `readStoredToken` held the same prefix-rewrite decode.
-`readAnyToken` replaces both. The seed table needs it on the client, and `challengeHref` already
+`readAnyToken` replaces both, and after the #132 merge `readTokenRun` delegates to it. The seed table needs it on the client, and `challengeHref` already
 proved it client-safe. It imports `@/engine/token`, `@/engine/types` and
 `@/engine/versions/label`, never `@/engine/versions`; `check:client-bundle` passed.
 
@@ -190,10 +190,14 @@ Full suite at `7a9e7d2` (`CI=1`, headless, six projects): 1,020 passed, 67 skipp
 in 17.9m. `seed-board.spec.ts` 8 of 8 on chromium. Screenshots the suite rewrote outside
 `docs/reports/seed-boards/` were reverted.
 
-After the PR opened, `origin/main` gained #131 (share sheet) and the PR conflicted in `STATE.md`
-only. Merged (not rebased) as `e54e9e2`, both STATE sections kept. At `e54e9e2`: lint, typecheck,
-build and all nine `check:*` exited 0; unit tests 1,881 passed in 221 files; full Playwright 1,029
-passed, 67 skipped, 0 failed (17.8m).
+After the PR opened, `origin/main` gained #131 (share sheet) and #132 (head-to-head). Merged, not
+rebased: `e54e9e2` (only `STATE.md` conflicted) and `026c596` (`STATE.md` and
+`src/ui/challenge-href.ts`). #132 rewrote `challengeHref` on a new `readTokenRun` in
+`src/ui/versus.ts`, a second copy of the prefix-rewrite decode. Main's `challenge-href.ts` is taken
+as is, and `readTokenRun` now calls `readAnyToken` and keeps its own return shape, so the decode
+lives in one place again; the `versus` and `head-to-head` tests pass unchanged. At `026c596`: lint,
+typecheck, build and all nine `check:*` exited 0; unit tests 1,905 passed in 224 files; full
+Playwright 1,034 passed, 67 skipped, 0 failed (19.2m).
 
 ## Brief vs code
 
