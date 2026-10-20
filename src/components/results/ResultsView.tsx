@@ -146,7 +146,7 @@ export function ResultsView({
         ) : null}
       </ModuleCard>
 
-      <ShareActions token={token} draft={draft} variant={variant} onNewRun={onNewRun} />
+      <ShareActions token={token} draft={draft} cup={cup} variant={variant} onNewRun={onNewRun} />
       {variant === "live" ? submit : null}
 
       <div className={s.actions}>

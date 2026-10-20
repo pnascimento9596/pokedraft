@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { safeNext } from "@/passcode";
 import { runTokenFromUrl } from "@/ui/run-link";
 import { loadRun } from "../r/[token]/run";
-import { runTitle } from "../r/[token]/title";
+import { runMetadata } from "../r/[token]/title";
 import { ModuleCard } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./page.module.css";
@@ -14,13 +14,7 @@ export async function generateMetadata({ searchParams }: PageProps<"/gate">): Pr
   const next = safeNext(firstParam((await searchParams).next));
   const token = runTokenFromUrl(new URL(next, "https://pokedraft.invalid"));
   if (token === null) return { title: "pokedraft" };
-  const title = runTitle(await loadRun(token));
-  const image = `/r/${encodeURIComponent(token)}/opengraph-image`;
-  return {
-    title,
-    openGraph: { title, images: [{ url: image, width: 1200, height: 630 }] },
-    twitter: { card: "summary_large_image", title, images: [image] },
-  };
+  return runMetadata(token, await loadRun(token));
 }
 
 function firstParam(v: string | string[] | undefined): string | undefined {

@@ -21,6 +21,9 @@ import {
   downloadStatus,
   useCardDownload,
 } from "@/components/share/useCardDownload";
+import { ManualLink } from "@/components/share/ManualLink";
+import { LINEUP_SHARE_TEXT, SHARE_SAID, SHARE_TITLE } from "@/components/share/shareLink";
+import { useLinkShare } from "@/components/share/useLinkShare";
 import { FRIENDLY_LABEL } from "@/ui/labels";
 import {
   BUILDER_URL_SEED,
@@ -102,6 +105,7 @@ export function Builder({
   const [status, setStatus] = useState("");
   const statusTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const card = useCardDownload();
+  const link = useLinkShare();
   const rootRef = useRef<HTMLElement>(null);
   const pickedFrom = useRef<SlotRef | null>(null);
 
@@ -219,6 +223,7 @@ export function Builder({
 
   const tokenOf = ({ engine, draft }: LiveDesk) =>
     engine.builderToken(draft.settings, draft.lineup, BUILDER_URL_SEED);
+  const lineupPath = (live: LiveDesk) => `/?b=${tokenOf(live)}`;
 
   const randomize = () =>
     withLive(({ engine, draft }) => {
@@ -239,14 +244,14 @@ export function Builder({
       });
     });
 
-  const copyLink = () =>
+  const shareLineup = () =>
     withLive(async (live) => {
-      try {
-        await navigator.clipboard.writeText(`${location.origin}/?b=${tokenOf(live)}`);
-        say("Link copied");
-      } catch {
-        say("Could not copy the link");
-      }
+      const how = await link.share({
+        title: SHARE_TITLE,
+        text: LINEUP_SHARE_TEXT,
+        path: lineupPath(live),
+      });
+      say(SHARE_SAID[how]);
     });
 
   const playFriendly = () =>
@@ -390,14 +395,21 @@ export function Builder({
             className="btn btn--ghost"
             onClick={() => {
               setStatus("");
-              withLive((live) => void card.start({ b: tokenOf(live) }, "pokedraft-lineup.png"));
+              link.clear();
+              withLive(
+                (live) =>
+                  void card.start({ b: tokenOf(live) }, "pokedraft-lineup.png", {
+                    path: lineupPath(live),
+                    text: LINEUP_SHARE_TEXT,
+                  }),
+              );
             }}
             disabled={card.state.kind === "busy"}
           >
             Download image
           </button>
-          <button type="button" className="btn btn--ghost" onClick={copyLink}>
-            Copy link
+          <button type="button" className="btn btn--ghost" onClick={shareLineup}>
+            Share link
           </button>
           <p className={s.status}>
             <span role="status" aria-live="polite">
@@ -405,6 +417,7 @@ export function Builder({
             </span>
             <span role="alert">{card.state.kind === "failed" ? DOWNLOAD_FAILED : ""}</span>
           </p>
+          <ManualLink url={link.manual} />
         </div>
 
         {desk.kind === "live" && !animating ? (

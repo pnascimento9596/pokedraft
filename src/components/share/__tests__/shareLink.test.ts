@@ -11,7 +11,7 @@ function pointer(coarse: boolean) {
   }));
 }
 
-function shareSheet(answer: () => Promise<void>, canShare = (_: ShareData) => true) {
+function shareSheet(answer: () => Promise<void>, canShare: () => boolean = () => true) {
   const calls: ShareData[] = [];
   Object.assign(navigator, {
     canShare,

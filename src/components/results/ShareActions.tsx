@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { GENS, type DraftState } from "@/engine/types";
+import { GENS, type CupResult, type DraftState } from "@/engine/types";
 import { builderToken } from "@/ui/builder-token";
 import { BUILDER_URL_SEED } from "@/ui/lineup";
 import { DEFAULT_PANEL, playHref } from "@/ui/settings";
 import { runHref } from "@/ui/run-link";
-import { copyLink } from "@/components/share/copyLink";
+import { ManualLink } from "@/components/share/ManualLink";
+import { SHARE_TITLE, runShareText } from "@/components/share/shareLink";
+import { useLinkShare } from "@/components/share/useLinkShare";
 import {
   DOWNLOAD_FAILED,
   downloadStatus,
@@ -20,17 +22,27 @@ export function ShareActions({
   token,
   variant,
   draft,
+  cup,
   onNewRun,
 }: {
   token: string;
   variant: "live" | "shared";
   draft: DraftState;
+  cup: CupResult;
   onNewRun?: () => void;
 }) {
-  const [copied, setCopied] = useState("");
   const [exhibition, setExhibition] = useState(false);
-  const card = useCardDownload();
+  const card = useCardDownload({ t: token });
+  const link = useLinkShare();
   const settings = draft.settings;
+  const path = runHref(token);
+  const text = runShareText({
+    wins: cup.wins,
+    draws: cup.draws,
+    losses: cup.losses,
+    score: cup.rating.score,
+    friendly: settings.mode === "builder",
+  });
   const builderHref = `/?b=${builderToken(
     { mode: "builder", formation: draft.lineup.formation, gens: GENS, legendaries: true },
     draft.lineup,
@@ -50,14 +62,14 @@ export function ShareActions({
           draft.seed,
         );
 
-  const share = async () => {
+  const share = () => {
     card.reset();
-    setCopied(await copyLink(runHref(token)));
+    void link.share({ title: SHARE_TITLE, text, path });
   };
 
   const download = () => {
-    setCopied("");
-    void card.start({ t: token }, "pokedraft-run.png");
+    link.clear();
+    void card.start({ t: token }, "pokedraft-run.png", { path, text });
   };
 
   return (
@@ -103,10 +115,11 @@ export function ShareActions({
       ) : null}
       <span className={s.status}>
         <span role="status" aria-live="polite">
-          {downloadStatus(card.state) || copied}
+          {downloadStatus(card.state) || link.said}
         </span>
         <span role="alert">{card.state.kind === "failed" ? DOWNLOAD_FAILED : ""}</span>
       </span>
+      <ManualLink url={link.manual} />
       {exhibition ? (
         <ExhibitionMatchModal opponent={draft} onClose={() => setExhibition(false)} />
       ) : null}
