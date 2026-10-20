@@ -45,6 +45,25 @@ async function noOverflow(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 }
 
+// Results pages mount the seed board, and the local server has no database. An empty board keeps
+// its 503 out of the console these tests read.
+test.beforeEach(async ({ page }) => {
+  await page.route("**/api/leaderboard?**", (route) => {
+    const url = new URL(route.request().url());
+    return route.fulfill({
+      json: {
+        mode: url.searchParams.get("mode"),
+        scope: "seed",
+        date: null,
+        coach: "all",
+        engine: "all",
+        seed: url.searchParams.get("seed"),
+        entries: [],
+      },
+    });
+  });
+});
+
 function watchConsole(page: Page): string[] {
   const errors: string[] = [];
   page.on("console", (message) => {

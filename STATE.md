@@ -25,6 +25,8 @@ Gates at `0e2bfde` (code identical to `73d5767` plus the e2e spec):
 
 Decision log: `docs/decisions/achievements.md`. Browser proof: `docs/reports/achievements/` (`grid-{390,360,320}-{light,dark}.png`, `chip-{390,360,320}-{light,dark}.png`, `card-giant-killer.png`, `card-coached-giant-killer.png`).
 
+Merge `0aae4bc` (#133 seed boards; only `STATE.md` conflicted, `ResultsView.tsx` merged cleanly with the chip, the trophy and the seed board together). With the seed board on every results page, `achievements.spec.ts`'s console check saw the seed board's 503 from the database-less local server (7 failed). The spec now answers `/api/leaderboard` with an empty seed board in a `beforeEach`, as `results-reveal.spec.ts` does. After that `achievements`, `results-reveal`, `seed-board`, `layout-shift`, `theme-results`, `lifetime-history` and `server-html` passed 53 of 53 (`CI=1`, `--retries=0`, build of `0aae4bc`).
+
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 ## Seed boards and engine filter
