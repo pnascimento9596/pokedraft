@@ -24,6 +24,8 @@ Gates at `5a7f6a3` (after fix round 1 and the merge of `origin/main` at `38b1bb4
 
 Decision log: `docs/decisions/match-story.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #142 (matchStory core, Red) merged as squash `969ca1c`, reviewed head `2c5fddf`. GLM 5.3 Flash APPROVE in round 1 with canary `6a1-886049602d8287d19173a0948f75f9fb` echoed, and the independent executing Red reviewer (fresh pokedraft-mode subagent, Opus) returned PASS on the same head: at `2c5fddf` lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, 2,027 unit tests passed in 231 files, `pnpm vitest run src/engine` 283 passed in 24 files, the slow parity file passed over 200 runs (942 played matches), `goldens.test.ts` was byte-identical to `origin/main`, and a cross-version check against `9e4802b` over 120 seeds gave byte-identical `runCup` output. Before review, three adversarial skeptics compared `9e4802b` with the head (1,676 and 2,238 outputs, byte-identical) and found one contract gap, fixed in round 1 (RED `8685f39`, 3 of 10 failed). Hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `969ca1c` with engine `pokedraft-engine-6` and `db.status` ok; live `health`, `old-links` and `share` 19/19 on chromium. Engine output unchanged.
+
 ## Wave 5 carryovers and queue hygiene
 
 Branch `chore/wave5-carryovers` off `origin/main` at `9e4802b`. Wave 6 row 6-0 (Yellow). No file under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #140 merge below.
