@@ -90,6 +90,13 @@ export interface EngineCoefficients {
      * to them, each on its own. Off, any decision hands both over.
      */
     splitManaged: boolean;
+    /** Engine 7: Counter's own multiplier is scaled by this while the side leads. */
+    counterLead: number;
+    /**
+     * Engine 7: Press's own multiplier loses perPoint for each point the side's mean outfield
+     * energy sits below `below`.
+     */
+    pressFade: { below: number; perPoint: number };
   };
 }
 
@@ -200,5 +207,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     autoSubEnergy: 82,
     autoSubMinutes: [60, 75],
     splitManaged: false,
+    counterLead: 1,
+    pressFade: { below: 70, perPoint: 0 },
   },
 };
