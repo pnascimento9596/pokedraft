@@ -137,6 +137,22 @@ describe("opponent injuries under engine 7 (catches a Boss Club that never loses
   });
 });
 
+describe("a re-injured slot draws a fresh reserve (catches two injuries in one slot sharing one draw)", () => {
+  it("panel-87 match 3: Sawk (539) goes off at 6' for Hitmonlee (106), and Hitmonlee at 48' for Pheromosa (795)", () => {
+    const seed = "panel-87" as Seed;
+    const m = runCup(draftLineup(CUP8, seed), seed, "cup8", ENGINE_COEFFICIENTS_V7).matches[3];
+    if (m?.status !== "played") throw new Error("match 3 is played");
+    expect(
+      opponentChanges(m).flatMap((i) =>
+        i.kind === "sub" ? [[i.minute, i.slot, i.out, i.in]] : [],
+      ),
+    ).toEqual([
+      [6, 8, 539, 106],
+      [48, 8, 106, 795],
+    ]);
+  });
+});
+
 // Regression guard, no RED: behaviour already correct. Engine 6 bytes must not move before the
 // flip, so none of engine 7's new keys or kinds may appear at the live coefficients.
 describe("engine 6 output carries no opponent injury, rotation or oppEnergy (catches dormant output leaking into live runs)", () => {
