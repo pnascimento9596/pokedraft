@@ -428,6 +428,11 @@ function pickScorer(
   );
 }
 
+/** The kind of a goal that is not a penalty, from its one `event` draw. */
+export function goalKindOf(roll: number): Exclude<GoalKind, "penalty"> {
+  return roll < 0.12 ? "header" : roll < 0.2 ? "free-kick" : roll < 0.38 ? "solo" : "open-play";
+}
+
 function goalEvent(
   side: Side,
   pool: readonly MatchStarter[],
@@ -438,15 +443,7 @@ function goalEvent(
   freeKickTaker: SpeciesId | null,
 ): GoalEvent {
   const roll = penalty ? 1 : rng.next();
-  const kind: GoalKind = penalty
-    ? "penalty"
-    : roll < 0.12
-      ? "header"
-      : roll < 0.2
-        ? "free-kick"
-        : roll < 0.38
-          ? "solo"
-          : "open-play";
+  const kind: GoalKind = penalty ? "penalty" : goalKindOf(roll);
   const scorer = penalty ? bestShooter(pool) : pickScorer(pool, kind, rng, c, freeKickTaker);
   const creators = pool.filter((s) => s !== scorer && c.match.assistRoleFactor[s.role] > 0);
   const assisted = (kind === "open-play" || kind === "header") && rng.next() < c.match.assistProb;
