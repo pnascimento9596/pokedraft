@@ -24,6 +24,9 @@ const ENTRY: BoardEntry = {
   losses: 0,
   createdAt: "2026-10-09T12:00:00.000Z",
   coached: false,
+  engineVersion: "pokedraft-engine-6",
+  seed: "e2e-seed",
+  formation: "4-3-3",
 };
 
 function json(status: number, body: unknown): Response {
@@ -61,6 +64,7 @@ describe("Board", () => {
           scope: "daily",
           date: "2026-10-09",
           coach: "all",
+          engine: "all",
           entries: [ENTRY],
         }),
       );
@@ -88,7 +92,14 @@ describe("Board", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () =>
-        json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", coach: "all", entries: [] }),
+        json(200, {
+          mode: "cup8",
+          scope: "daily",
+          date: "2026-10-09",
+          coach: "all",
+          engine: "all",
+          entries: [],
+        }),
       ),
     );
     render(<StatefulBoard view={DAILY} />);
@@ -120,6 +131,7 @@ describe("Board", () => {
         scope: "all",
         date: null,
         coach: "all",
+        engine: "current",
         entries: [ENTRY, second],
       }),
     );
@@ -143,7 +155,14 @@ describe("Board", () => {
   });
   it("asks the server for each coach view and shows its rows and ranks as sent (catches a client-side filter over the All top 50)", async () => {
     const reply = (coach: string, entries: BoardEntry[]) =>
-      json(200, { mode: "cup8", scope: "daily", date: "2026-10-09", coach, entries });
+      json(200, {
+        mode: "cup8",
+        scope: "daily",
+        date: "2026-10-09",
+        coach,
+        engine: "all",
+        entries,
+      });
     let release: () => void = () => {};
     const fetchMock = vi
       .fn()
@@ -196,9 +215,16 @@ describe("Board", () => {
       vi
         .fn()
         .mockResolvedValueOnce(
-          json(200, { ...DAILY, coach: "all", entries: [{ ...ENTRY, coached: true }] }),
+          json(200, {
+            ...DAILY,
+            coach: "all",
+            engine: "all",
+            entries: [{ ...ENTRY, coached: true }],
+          }),
         )
-        .mockResolvedValueOnce(json(200, { ...DAILY, coach: "uncoached", entries: [] })),
+        .mockResolvedValueOnce(
+          json(200, { ...DAILY, coach: "uncoached", engine: "all", entries: [] }),
+        ),
     );
     render(<StatefulBoard view={DAILY} />);
     await screen.findAllByTestId("board-row");
@@ -219,7 +245,7 @@ describe("Board", () => {
     cleanup();
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => json(200, { ...DAILY, coach: "coached", entries: [ENTRY] })),
+      vi.fn(async () => json(200, { ...DAILY, coach: "coached", engine: "all", entries: [ENTRY] })),
     );
     render(<StatefulBoard view={DAILY} />);
     expect(await screen.findByTestId("board-error")).toBeTruthy();
@@ -236,6 +262,7 @@ describe("Board", () => {
           scope: "daily",
           date: "2026-10-09",
           coach: "all",
+          engine: "all",
           entries: [legacy],
         }),
       ),
@@ -251,6 +278,7 @@ it("renders server-provided squad species, each named by its species (catches Sq
     vi.fn(async () =>
       json(200, {
         coach: "all",
+        engine: "all",
         entries: [
           {
             ...ENTRY,
@@ -272,7 +300,7 @@ it("rejects corrupt server preview metadata rather than drawing invented species
   vi.stubGlobal(
     "fetch",
     vi.fn(async () =>
-      json(200, { coach: "all", entries: [{ ...ENTRY, squadSpeciesIds: [1026] }] }),
+      json(200, { coach: "all", engine: "all", entries: [{ ...ENTRY, squadSpeciesIds: [1026] }] }),
     ),
   );
   render(<StatefulBoard view={DAILY} />);

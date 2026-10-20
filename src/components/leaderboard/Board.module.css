@@ -139,7 +139,8 @@
   margin: 0 0 8px;
   color: var(--text-muted);
 }
-.coached {
+.coached,
+.engineLabel {
   display: inline-block;
   margin-left: 8px;
   padding: 0 6px;
@@ -150,4 +151,11 @@
   line-height: 18px;
   color: var(--text-muted);
   vertical-align: 1px;
+}
+.engineToggle {
+  align-self: flex-start;
+  justify-self: start;
+  width: fit-content;
+  min-height: 44px;
+  margin: 0 0 8px;
 }

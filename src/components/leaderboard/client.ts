@@ -1,24 +1,28 @@
 import { z } from "zod";
-import { ENGINE_VERSION } from "@/engine";
+import { ENGINE_VERSION, FORMATION_IDS } from "@/engine";
 import {
   BOARD_MODES,
   BOARD_SCOPES,
   COACH_FILTERS,
+  ENGINE_FILTERS,
   SUBMIT_ERROR_STATUS,
   type BoardEntry,
   type BoardMode,
   type BoardScope,
   type CoachFilter,
+  type EngineFilter,
   type SubmitEntry,
   type SubmitErrorCode,
 } from "@/leaderboard/contract";
 
-// The daily challenge is always an 8-0 Challenge, so a daily board is always cup8.
+// The daily challenge is always an 8-0 Challenge, so a daily board is always cup8. Only the
+// all-time board filters by engine; a daily view always reads `current` here and sends nothing.
 export interface BoardView {
   readonly mode: BoardMode;
   readonly scope: BoardScope;
   readonly date: string;
   readonly coach: CoachFilter;
+  readonly engine: EngineFilter;
 }
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -41,9 +45,22 @@ const entrySchema = z.object({
   losses: z.number(),
   createdAt: z.string(),
   coached: z.boolean(),
+  engineVersion: z.string(),
+  seed: z.string(),
+  formation: z.enum(FORMATION_IDS).nullable(),
 }) satisfies z.ZodType<BoardEntry>;
 
-const boardOkSchema = z.object({ coach: z.enum(COACH_FILTERS), entries: z.array(entrySchema) });
+const boardOkSchema = z.object({
+  coach: z.enum(COACH_FILTERS),
+  engine: z.enum(ENGINE_FILTERS),
+  entries: z.array(entrySchema),
+});
+const seedBoardOkSchema = z.object({
+  mode: z.enum(BOARD_MODES),
+  scope: z.literal("seed"),
+  seed: z.string(),
+  entries: z.array(entrySchema),
+});
 const submitEntrySchema = entrySchema.extend({
   rank: z.number().nullable(),
 }) satisfies z.ZodType<SubmitEntry>;
@@ -68,6 +85,7 @@ export function parseBoardView(q: URLSearchParams, today: string): BoardView {
     scope,
     date: date !== null && ISO_DATE.test(date) ? date : today,
     coach,
+    engine: scope === "all" && q.get("engine") === "all" ? "all" : "current",
   };
 }
 
@@ -76,31 +94,41 @@ export function boardHref(view: {
   scope: BoardScope;
   date?: string | null;
   coach?: CoachFilter;
+  engine?: EngineFilter;
 }) {
   const q = new URLSearchParams({ mode: view.mode, scope: view.scope });
   if (view.scope === "daily" && view.date) q.set("date", view.date);
   if (view.coach !== undefined && view.coach !== "all") q.set("coach", view.coach);
+  if (view.scope === "all" && view.engine === "all") q.set("engine", "all");
   return `/leaderboard?${q.toString()}`;
 }
 
-// `coach` is sent only for a filtered view, so the default All request is unchanged.
+// `coach` and `engine` are sent only for a non-default view, so the default request is unchanged.
 function apiQuery(view: BoardView): string {
   const q = new URLSearchParams({ mode: view.mode, scope: view.scope });
   if (view.scope === "daily") q.set("date", view.date);
   if (view.coach !== "all") q.set("coach", view.coach);
+  if (view.scope === "all" && view.engine === "all") q.set("engine", "all");
   return `/api/leaderboard?${q.toString()}`;
+}
+
+// A daily board lists every engine that played its date.
+function replyEngine(view: BoardView): EngineFilter {
+  return view.scope === "all" ? view.engine : "all";
 }
 
 export type BoardResult =
   | { readonly kind: "ok"; readonly entries: readonly BoardEntry[] }
   | { readonly kind: "error"; readonly reason: "offline" | "network" | "unexpected" };
 
-// Any reply that is not a well-formed BoardOk for the requested coach view is an error, never an
-// empty board or another view's rows.
-export async function fetchBoard(view: BoardView, signal?: AbortSignal): Promise<BoardResult> {
+async function getBoard(
+  url: string,
+  signal: AbortSignal | undefined,
+  read: (body: unknown) => readonly BoardEntry[] | null,
+): Promise<BoardResult> {
   let res: Response;
   try {
-    res = await fetch(apiQuery(view), { signal, cache: "no-store" });
+    res = await fetch(url, { signal, cache: "no-store" });
   } catch {
     return { kind: "error", reason: "network" };
   }
@@ -115,10 +143,31 @@ export async function fetchBoard(view: BoardView, signal?: AbortSignal): Promise
     const offline = err.success && err.data.error.code === "DB_UNAVAILABLE";
     return { kind: "error", reason: offline || res.status === 503 ? "offline" : "unexpected" };
   }
-  const ok = boardOkSchema.safeParse(body);
-  return ok.success && ok.data.coach === view.coach
-    ? { kind: "ok", entries: ok.data.entries }
-    : { kind: "error", reason: "unexpected" };
+  const entries = read(body);
+  return entries === null ? { kind: "error", reason: "unexpected" } : { kind: "ok", entries };
+}
+
+// Any reply that is not a well-formed BoardOk for the requested coach and engine view is an
+// error, never an empty board or another view's rows.
+export function fetchBoard(view: BoardView, signal?: AbortSignal): Promise<BoardResult> {
+  return getBoard(apiQuery(view), signal, (body) => {
+    const ok = boardOkSchema.safeParse(body);
+    return ok.success && ok.data.coach === view.coach && ok.data.engine === replyEngine(view)
+      ? ok.data.entries
+      : null;
+  });
+}
+
+export function fetchSeedBoard(
+  mode: BoardMode,
+  seed: string,
+  signal?: AbortSignal,
+): Promise<BoardResult> {
+  const q = new URLSearchParams({ mode, seed });
+  return getBoard(`/api/leaderboard?${q.toString()}`, signal, (body) => {
+    const ok = seedBoardOkSchema.safeParse(body);
+    return ok.success && ok.data.mode === mode && ok.data.seed === seed ? ok.data.entries : null;
+  });
 }
 
 export type SubmitFailure = SubmitErrorCode | "NETWORK" | "UNEXPECTED";

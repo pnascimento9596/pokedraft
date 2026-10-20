@@ -9,8 +9,8 @@ import { StatusNote } from "@/components/ui/primitives";
 import { announce } from "@/components/Announcer";
 import { record } from "@/ui/labels";
 import { fetchBoard, type BoardResult, type BoardView } from "./client";
-import { COACH_FILTERS, type CoachFilter } from "@/leaderboard/contract";
-import { COACH_FILTER_LABEL, variantLabel } from "./format";
+import { COACH_FILTERS, type CoachFilter, type EngineFilter } from "@/leaderboard/contract";
+import { COACH_FILTER_LABEL, engineRowLabel, variantLabel } from "./format";
 import s from "./Board.module.css";
 
 const FILTER_EMPTY: Readonly<Record<Exclude<CoachFilter, "all">, string>> = {
@@ -40,14 +40,17 @@ function Figure({ value }: { readonly value: string | number }) {
 export function Board({
   view,
   onCoachChange,
+  onEngineChange,
 }: {
   readonly view: BoardView;
   readonly onCoachChange: (coach: CoachFilter) => void;
+  readonly onEngineChange: (engine: EngineFilter) => void;
 }) {
   const [attempt, setAttempt] = useState(0);
   const { coach } = view;
+  const engine = view.scope === "all" ? view.engine : "current";
   const board = `${view.mode}|${view.scope}|${view.scope === "daily" ? view.date : ""}`;
-  const key = `${board}|${coach}|${attempt}`;
+  const key = `${board}|${coach}|${engine}|${attempt}`;
   const [loaded, setLoaded] = useState<{ key: string; result: BoardResult } | null>(null);
   // The board this player has seen rows on. Once it has, the chips stay mounted through every
   // filtered load, empty view or error, so switching views never moves the page.
@@ -120,10 +123,25 @@ export function Board({
     </div>
   ) : null;
 
+  // On the all-time board only: a current-engine board can be empty while older runs exist.
+  const engineToggle =
+    view.scope === "all" ? (
+      <button
+        type="button"
+        className={`chip ${s.engineToggle}`}
+        aria-pressed={engine === "all"}
+        data-testid="engine-filter-all"
+        onClick={() => onEngineChange(engine === "all" ? "current" : "all")}
+      >
+        All engines
+      </button>
+    ) : null;
+
   if (result === null) {
     return (
       <>
         {chips}
+        {engineToggle}
         <p className={`kicker ${s.loading}`}>Loading the board</p>
       </>
     );
@@ -133,6 +151,7 @@ export function Board({
     return (
       <>
         {chips}
+        {engineToggle}
         <StatusNote
           className={s.error}
           title="Board unavailable"
@@ -160,6 +179,7 @@ export function Board({
     return (
       <>
         {chips}
+        {engineToggle}
         <p ref={target} className={s.filterEmpty} data-testid="coach-filter-empty" tabIndex={-1}>
           {FILTER_EMPTY[coach]}
         </p>
@@ -169,22 +189,26 @@ export function Board({
 
   if (result.entries.length === 0) {
     return (
-      <StatusNote className={s.empty} title="No entries yet." data-testid="board-empty">
-        <span>Finish a run and submit it to claim the top spot.</span>
-        <Link
-          ref={target}
-          href={view.scope === "daily" ? "/daily" : "/"}
-          className="btn btn--primary"
-        >
-          {view.scope === "daily" ? "Play the daily" : "Play a run"}
-        </Link>
-      </StatusNote>
+      <>
+        {engineToggle}
+        <StatusNote className={s.empty} title="No entries yet." data-testid="board-empty">
+          <span>Finish a run and submit it to claim the top spot.</span>
+          <Link
+            ref={target}
+            href={view.scope === "daily" ? "/daily" : "/"}
+            className="btn btn--primary"
+          >
+            {view.scope === "daily" ? "Play the daily" : "Play a run"}
+          </Link>
+        </StatusNote>
+      </>
     );
   }
 
   return (
     <>
       {chips}
+      {engineToggle}
       <ol
         ref={target}
         className={s.list}
@@ -207,6 +231,11 @@ export function Board({
                   {e.coached ? (
                     <span className={s.coached} data-testid="coached-chip">
                       Coached
+                    </span>
+                  ) : null}
+                  {engineRowLabel(e.engineVersion) !== null ? (
+                    <span className={s.engineLabel} data-testid="engine-row-label">
+                      {engineRowLabel(e.engineVersion)}
                     </span>
                   ) : null}
                 </span>

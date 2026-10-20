@@ -28,7 +28,13 @@ import { logServerError, requestIdOf } from "@/observability/log";
 import type { LeaderboardRow } from "@/db/schema";
 import { isCoached } from "@/ui/manager/coached";
 import { runFingerprint } from "./fingerprint";
-import { toBoardEntry, type Board, type Conflict, type LeaderboardStore } from "./store";
+import {
+  rankedBoard,
+  toBoardEntry,
+  type Board,
+  type Conflict,
+  type LeaderboardStore,
+} from "./store";
 
 export const RATE_LIMIT = { max: 10, windowMs: 60 * 60 * 1000 } as const;
 export const IP_HASH_SECRET_MIN = 32;
@@ -231,7 +237,7 @@ async function parseSubmission(
   if (coach !== "all" && (coach === "coached") !== coached) {
     return reject(submitError("INVALID_BODY", `This run is not on the ${coach} board.`));
   }
-  const board: Board = { mode: run.settings.mode, dailyDate };
+  const board = rankedBoard(run.settings.mode, dailyDate);
   return { ok: true, sub: { nickname: nick.nickname, run, token, board, coach, coached } };
 }
 
@@ -257,7 +263,7 @@ async function savedEntry(
   coach: CoachFilter,
   requestId: string,
 ): Promise<Response> {
-  const board: Board = { mode: row.mode, dailyDate: row.dailyDate };
+  const board = rankedBoard(row.mode, row.dailyDate);
   const rank = await rankOrNull(store, row, board, coach, requestId);
   const ok: SubmitOk = { entry: toBoardEntry(row, rank) };
   return json(ok, 200);
@@ -341,35 +347,63 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
   }
 }
 
+function entries(rows: readonly LeaderboardRow[]) {
+  return rows.map((r, i) => toBoardEntry(r, i + 1));
+}
+
 export async function handleBoard(
   url: URL,
   store: LeaderboardStore,
   requestId: string = requestIdOf(new Headers()),
 ): Promise<Response> {
   const q = url.searchParams;
+  const seed = q.get("seed") ?? undefined;
   const parsed = boardQuerySchema.safeParse({
     mode: q.get("mode") ?? undefined,
-    scope: q.get("scope") ?? undefined,
+    scope: q.get("scope") ?? (seed === undefined ? undefined : "seed"),
     date: q.get("date") ?? undefined,
     coach: q.get("coach") ?? undefined,
+    engine: q.get("engine") ?? undefined,
+    seed,
   });
   if (!parsed.success) {
     return boardError(
       "INVALID_QUERY",
-      "Expected mode=cup8|kanto151 and scope=daily&date= or scope=all, with optional coach=all|uncoached|coached.",
+      "Expected mode=cup8|kanto151 and one of scope=daily&date=, scope=all with optional engine=current|all, or seed=. Daily and all-time take an optional coach=all|uncoached|coached.",
     );
   }
-  const { mode, scope, coach } = parsed.data;
-  const date = parsed.data.scope === "daily" ? parsed.data.date : null;
+  const query = parsed.data;
   try {
-    const rows = await store.top({ mode, dailyDate: date }, coach);
-    const ok: BoardOk = {
-      mode,
-      scope,
-      date,
-      coach,
-      entries: rows.map((r, i) => toBoardEntry(r, i + 1)),
-    };
+    let ok: BoardOk;
+    if (query.scope === "seed") {
+      const rows = await store.seedBoard(query.mode, query.seed);
+      ok = {
+        mode: query.mode,
+        scope: "seed",
+        date: null,
+        coach: "all",
+        engine: "all",
+        seed: query.seed,
+        entries: entries(rows),
+      };
+    } else {
+      const date = query.scope === "daily" ? query.date : null;
+      const engine = query.scope === "all" ? query.engine : "all";
+      const board: Board =
+        date === null
+          ? { mode: query.mode, dailyDate: null, engine }
+          : { mode: query.mode, dailyDate: date };
+      const rows = await store.top(board, query.coach);
+      ok = {
+        mode: query.mode,
+        scope: query.scope,
+        date,
+        coach: query.coach,
+        engine,
+        seed: null,
+        entries: entries(rows),
+      };
+    }
     return json(ok, 200);
   } catch (e) {
     logServerError("board.read", requestId, e);

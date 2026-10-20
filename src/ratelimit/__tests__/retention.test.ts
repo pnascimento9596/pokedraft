@@ -121,7 +121,7 @@ describe("rate-limit retention (catches rows for keys that never return being ke
     const admission = await drizzleStore(() => db).admitSubmission(
       "not-a-real-token",
       "Ash",
-      { mode: "cup8", dailyDate: null },
+      { mode: "cup8", dailyDate: null, engine: "current" },
       "player",
       NOW,
       HOUR_RULE,
