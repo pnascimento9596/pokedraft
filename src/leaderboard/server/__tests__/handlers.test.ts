@@ -255,6 +255,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       draws: 0,
       losses: 0,
       engineVersion: ENGINE_VERSION,
+      coached: true,
+      runFingerprint: `fp-${nickname}`,
       ipHash: "seeded",
       createdAt: new Date("2026-10-01T12:00:00Z"),
     });
@@ -801,6 +803,8 @@ describe("insert plus rank (catches a saved run that needs a second round trip f
         draws: 0,
         losses: 0,
         engineVersion: ENGINE_VERSION,
+        coached: false,
+        runFingerprint: "fp-leader",
         ipHash: "test",
       });
       await logged.db.delete(leaderboardEntries).where(eq(leaderboardEntries.nickname, "Ash"));
@@ -865,6 +869,8 @@ describe("GET /api/leaderboard (catches a wrong board order or a read that write
       draws,
       losses: 8 - wins - draws,
       engineVersion: ENGINE_VERSION,
+      coached: false,
+      runFingerprint: `fp-${nickname}`,
       ipHash: "h",
       createdAt: new Date(Date.UTC(2026, 9, 9, 12, minute)),
     });
@@ -904,6 +910,8 @@ describe("GET /api/leaderboard (catches a wrong board order or a read that write
         draws: 0,
         losses: 2,
         engineVersion: ENGINE_VERSION,
+        coached: false,
+        runFingerprint: `fp${i}`,
         ipHash: "h",
       })),
     );

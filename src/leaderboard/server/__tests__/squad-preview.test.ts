@@ -20,13 +20,13 @@ describe("server squad membership previews", () => {
   ])(
     "reads all16 real picked species from a retained or live token without cup replay (catches pd5+ boards with no squad)",
     (token) => {
-      expect(readStoredToken(token).squadSpeciesIds).toEqual([
+      expect(readStoredToken(token)).toEqual([
         849, 315, 272, 691, 453, 754, 785, 175, 663, 188, 807, 784, 703, 942, 145, 884,
       ]);
     },
   );
   it("marks malformed, incomplete and unknown versions unavailable", () => {
-    expect(readStoredToken("pd3.e30").squadSpeciesIds).toBeUndefined();
-    expect(readStoredToken(GOLDEN_CUP8_V3.replace(/^pd3/, "pd99")).squadSpeciesIds).toBeUndefined();
+    expect(readStoredToken("pd3.e30")).toBeUndefined();
+    expect(readStoredToken(GOLDEN_CUP8_V3.replace(/^pd3/, "pd99"))).toBeUndefined();
   });
 });
