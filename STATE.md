@@ -15,6 +15,8 @@ Branch `docs/wave5-summary` off `origin/main` at `e1f2c38`. Green: docs only, no
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #140 (Wave 5 summary, Green) merged as squash `9e4802b`, reviewed head `fcd1745`, GLM 5.3 Flash APPROVE in round 1 with canary `wave5-summary-135d85a8ca4f8795c14e032fabd8c0cb` echoed. At `fcd1745` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,998 unit tests passed in 229 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `9e4802b` with `db.status` ok. No runtime change.
+
 ## Exhibitions on the Broadcast
 
 Branch `feat/exhibition-broadcast` off `origin/main` at `aeb66b6`. Wave 5 row 5c2 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
