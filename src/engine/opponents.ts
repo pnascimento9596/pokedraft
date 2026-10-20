@@ -47,6 +47,19 @@ function themedPools(mode: Mode) {
 const THEMED_POOLS = { kanto151: themedPools("kanto151"), open: themedPools("cup8") };
 
 /**
+ * The 11-wide window of a strength-ordered pool for one rung, sliding up the pool as the rung
+ * rises. A pool shorter than eleven is taken whole.
+ */
+function rungWindow(members: readonly Species[], rungIndex: number): readonly Species[] {
+  const lastRung = CUP_ROUNDS.length - 1;
+  const start = Math.max(
+    0,
+    Math.round(((members.length - ROSTER_SIZE) * (lastRung - rungIndex)) / lastRung),
+  );
+  return members.slice(start, start + ROSTER_SIZE);
+}
+
+/**
  * A themed eleven for one rung: every member shares the drawn type, the window slides up the
  * themed pool's strength order as the rung rating rises, and each formation slot takes the
  * best remaining fit (the goalkeeper lands first).
@@ -58,9 +71,7 @@ function bossRoster(
 ): readonly Extract<OpponentPlayerRef, { kind: "species" }>[] {
   const rng = createEngineRng(deriveSubseed(seed, "opponent_roster", `${rungIndex}`));
   const themed = rng.pick(THEMED_POOLS[mode === "kanto151" ? "kanto151" : "open"]).members;
-  const lastRung = CUP_ROUNDS.length - 1;
-  const start = Math.round(((themed.length - ROSTER_SIZE) * (lastRung - rungIndex)) / lastRung);
-  const window = themed.slice(start, start + ROSTER_SIZE);
+  const window = rungWindow(themed, rungIndex);
   const roster: Species[] = [];
   for (const slot of BOSS_FORMATION.slots) {
     const [best] = canonicalSortBy(
@@ -70,6 +81,19 @@ function bossRoster(
     roster.push(best!);
   }
   return roster.map((s) => ({ kind: "species", id: s.id }));
+}
+
+const themedPool = (mode: Mode, opponent: Opponent): readonly Species[] =>
+  THEMED_POOLS[mode === "kanto151" ? "kanto151" : "open"].find((p) => p.theme === opponent.theme)
+    ?.members ?? [];
+
+/** Engine 7: whether a Boss Club's themed pool still holds a player it has not used. */
+export function bossHasReserve(
+  mode: Mode,
+  opponent: Opponent,
+  used: ReadonlySet<SpeciesId>,
+): boolean {
+  return themedPool(mode, opponent).some((s) => !used.has(s.id));
 }
 
 /**
@@ -88,18 +112,9 @@ export function bossReserve(
   role: Role,
   used: ReadonlySet<SpeciesId>,
 ): Species | null {
-  const pool = THEMED_POOLS[mode === "kanto151" ? "kanto151" : "open"].find(
-    (p) => p.theme === opponent.theme,
-  );
-  const remaining = (pool?.members ?? []).filter((s) => !used.has(s.id));
+  const remaining = themedPool(mode, opponent).filter((s) => !used.has(s.id));
   if (remaining.length === 0) return null;
-  const lastRung = CUP_ROUNDS.length - 1;
-  const rung = CUP_ROUNDS.indexOf(round);
-  const start = Math.max(
-    0,
-    Math.round(((remaining.length - ROSTER_SIZE) * (lastRung - rung)) / lastRung),
-  );
-  const choices = canonicalSortBy(remaining.slice(start, start + ROSTER_SIZE), (s) => [
+  const choices = canonicalSortBy(rungWindow(remaining, CUP_ROUNDS.indexOf(round)), (s) => [
     -s.fits[role],
     s.id,
   ]).slice(0, RESERVE_CHOICES);

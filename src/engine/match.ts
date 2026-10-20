@@ -1,6 +1,6 @@
 import { familiarity } from "@/scouting/fit";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
-import { bossReserve } from "./opponents";
+import { bossHasReserve, bossReserve } from "./opponents";
 import { recapLines } from "./recap";
 import { canonicalSortBy, createEngineRng, deriveSubseed, type EngineRng } from "./rng";
 import { speciesById } from "./species";
@@ -810,6 +810,10 @@ export function playMatchCore(
   // Engine 7: the Boss Club's players used so far (its eleven, then each reserve sent on).
   const oppUsed = new Set(input.opponentStarters.map((s) => s.species.id));
   let oppSubs = 0;
+  const oppCanReplace = (): boolean =>
+    input.mode !== undefined &&
+    oppSubs < m.maxSubs &&
+    bossHasReserve(input.mode, input.opponent, oppUsed);
   const oppReserve = (slot: StarterIndex, role: Role): Species | null =>
     input.mode === undefined || oppSubs >= m.maxSubs
       ? null
@@ -839,8 +843,7 @@ export function playMatchCore(
       press *
       (isKeeper ? (canReplace ? 0.5 : 0) : 1);
     if (it.side === "opp" && c.opponent.injuries && input.mode !== undefined) {
-      const keeperCover = isKeeper ? oppReserve(it.slot, slot.role) : null;
-      if (it.injury < hazard(keeperCover !== null)) {
+      if (it.injury < hazard(isKeeper && oppCanReplace())) {
         incidents.push({
           kind: "injury",
           side: "opp",
@@ -848,7 +851,7 @@ export function playMatchCore(
           slot: it.slot,
           player: occupant.species.id,
         });
-        const reserve = keeperCover ?? oppReserve(it.slot, slot.role);
+        const reserve = oppReserve(it.slot, slot.role);
         if (reserve === null) {
           side.onPitch[it.slot] = null;
           side.vacancies++;
