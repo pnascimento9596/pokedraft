@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
 import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
 
-// Group match 1 of the golden cup8 run under the live engine-6 prefix. The user's keeper saves at
-// 3', so the opening window leans to the opponent once it has been played.
+// Group match 1 of the golden cup8 run under the live engine-6 prefix. The live engine's story gives
+// this squad 98% of the opening window's chances (territory 0.977), so the bar leans to this squad
+// once that window has been played.
 const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
 const SHOT = "docs/reports/honest-momentum";
 
@@ -54,10 +55,10 @@ test("the momentum bar reads 50/50 until the first window is played, at 390px", 
     ["50%50%"],
   ]);
   expect([6, 7, 8, 9].map((m) => leans[m])).toEqual([
-    ["36%64%"],
-    ["36%64%"],
-    ["36%64%"],
-    ["36%64%"],
+    ["77%23%"],
+    ["77%23%"],
+    ["77%23%"],
+    ["77%23%"],
   ]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
