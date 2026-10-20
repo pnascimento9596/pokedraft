@@ -1,4 +1,8 @@
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
+import { cupMatchInput } from "./cup";
+import { FORMATIONS } from "./formations";
+import { playMatchCore, type MatchObserver } from "./match";
+import { BOSS_FORMATION } from "./opponents";
 import type {
   Channel,
   FullLineup,
@@ -9,6 +13,7 @@ import type {
   Mode,
   Seed,
   Side,
+  Slot,
   SpeciesId,
 } from "./types";
 
@@ -64,15 +69,69 @@ export interface MatchStory {
   readonly result: PlayedMatch;
 }
 
+const LANE: Readonly<Record<Channel, ChanceZone["lane"]>> = { L: "left", C: "centre", R: "right" };
+
 export function chanceZone(line: Line, channel: Channel, kind: GoalKind | null): ChanceZone {
-  throw new Error(`chanceZone is not built yet (${line}, ${channel}, ${kind})`);
+  if (kind === "penalty") return { depth: "box", lane: "centre" };
+  const depth =
+    kind === "header"
+      ? "box"
+      : kind === "free-kick"
+        ? "outside"
+        : line === "MID" || line === "GK"
+          ? "outside"
+          : "box";
+  return { depth, lane: LANE[channel] };
 }
 
+/**
+ * Replays match `matchIndex` of a run and returns every chance trial and per-window xG next to
+ * the result. Nothing here feeds back into the engine: the result is the one runCup produces.
+ */
 export function matchStory(
   seed: Seed,
   matchIndex: number,
   run: StoryRun,
   c: EngineCoefficients = ENGINE_COEFFICIENTS,
 ): MatchStory {
-  throw new Error(`matchStory is not built yet (${seed}, ${matchIndex}, ${run.mode}, ${c.match})`);
+  const input = cupMatchInput(run.lineup, seed, run.mode, matchIndex, run.manager ?? [], c);
+  const slots: Readonly<Record<Side, readonly Slot[]>> = {
+    user: FORMATIONS[run.lineup.formation].slots,
+    opp: BOSS_FORMATION.slots,
+  };
+  const chances: StoryChance[] = [];
+  const windows: StoryWindow[] = [];
+  let xgUser = 0;
+  let xgOpp = 0;
+  const observe: MatchObserver = {
+    chance: (ch) => {
+      const slot = slots[ch.side][ch.slot]!;
+      if (ch.side === "user") xgUser += ch.p;
+      else xgOpp += ch.p;
+      chances.push({
+        window: ch.window,
+        minute: ch.minute,
+        side: ch.side,
+        p: ch.p,
+        outcome: ch.outcome,
+        kind: ch.kind,
+        shooter: ch.shooter,
+        zone: chanceZone(slot.line, slot.channel, ch.kind),
+      });
+    },
+    window: ({ window, minute }) => {
+      const total = xgUser + xgOpp;
+      windows.push({
+        window,
+        minute,
+        xgUser,
+        xgOpp,
+        territory: total === 0 ? 0.5 : xgUser / total,
+      });
+      xgUser = 0;
+      xgOpp = 0;
+    },
+  };
+  const result = playMatchCore(input, c, observe);
+  return { chances, windows, result };
 }
