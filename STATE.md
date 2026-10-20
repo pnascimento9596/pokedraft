@@ -15,10 +15,10 @@ Branch `feat/engine-grace` off `origin/main` at `8059458` (the 6b0 squash). Wave
 
 RED commit `82e5bcd` (9 of 19 failed), GREEN `c93e5ea`. Regression guards with no RED, behaviour already correct: the proxy guard `cd524a2` and the canonical-form guard (a stored engine 6 token, plain and coached, re-encodes to the exact stored string). Build fix `34069ba`: a static import of the retained dispatcher emitted a second live scouting payload (`measure-retained-json.mjs`: `5 !== 4`); it is now loaded only for a grace run.
 
-Gates at `34069ba`:
+Gates at `4c275fa` (the merge of `origin/main`, code-identical to this docs commit):
 
 - `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
-- Unit tests: 2,045 passed in 233 files. `pnpm vitest run src/engine`: 286 passed in 24 files.
+- Unit tests: 2,046 passed in 233 files. `pnpm vitest run src/engine`: 286 passed in 24 files. `pnpm e2e:pins --check` reported the pins current.
 - `check-retained-replays.mts`: 10 golden replays passed. `measure-retained-json.mjs`: 4 payloads, 2,891,853 bytes.
 - Playwright on chromium against a fresh build: `grace-submit`, `leaderboard`, `seed-board`, `board-ux`, `old-links`, `share` and `health`, 43 passed. The grace line has 37 px of headroom at 320 and 25 px at 308. Browser proof: `docs/reports/engine-grace/`.
 - NOT RUN: review and hosted CI, the preview-branch API proof (the coordinator runs it with the Red reviewer), the full Playwright suite, the calibration probes (engine output cannot move), the phone check and screen reader pass.
