@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Board UX
+
+Branch `feat/board-ux` off `origin/main` at `783ddbf`. Wave 5 row 5d (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Your own rows on the leaderboard stand out: an accent bar on the left and a "You" chip, matched to the nickname this browser last submitted (cleaned like the server cleans it). A screen reader hears "Misty, you". With no stored nickname nothing is marked, and the first paint never is.
+- After a ranked submit, "Share my rank" sits next to "View leaderboard" and shares the run link with "I'm #3 on the October 9 daily. Beat it?" or "I'm #12 on the all-time board. Beat it?". No button when the rank could not be loaded.
+- Daily rows show the formation ("4-3-3") instead of the same ruleset on every row; all-time rows keep their settings label.
+- Each "Challenge this Seed" link is named for its row ("Challenge this Seed: Misty, 3-0-2"; in History, the row's date and record). The visible text is unchanged.
+- Daily and All-time, and the mode chips, are pressed buttons in a group, like the coach chips. The app has no tab or radio roles left.
+- The Hall of Fame opens on "Drafted species", or on "All species" for a player with no stored squad.
+- Under the widest nickname the row chips now wrap whole instead of breaking "Coached" mid-word at 320 px.
+
+RED commit: `3d8ff07` (12 of 41 unit tests failed in 4 of 4 files). GREEN `9584c1e`, chip wrap `6c73d50`, font swap spec literal `9ad9c46`.
+
+Gates at `6c73d50` (`9ad9c46` changes only `e2e/leaderboard-font-cls.spec.ts`):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 1,931 passed in 225 files.
+- Playwright (`CI=1`, headless, `--retries=0`): the full suite once passed 1,047 with 67 skipped and 4 failed (17.8m), all four `leaderboard-font-cls` cases on a stale row literal; after `9ad9c46`, `leaderboard-font-cls` and `leaderboard-cls` passed 13 of 13. `board-ux.spec.ts` 3 of 3; `leaderboard` and `platform-experience` 22 of 22 (chromium).
+- The widest own row fits with 33 px to spare at 320 and at 308, and the submitted panel with "Share my rank" fits down to 300; `board-ux.spec.ts` asserts both at 308 px.
+- NOT RUN: the e2e specs against a build of the RED commit, `board-ux.spec.ts` on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/board-ux.md`. Browser proof: `docs/reports/board-ux/` (`own-row-{390,360,320}-{light,dark}.png`, `share-my-rank-{390,320}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Seed boards and engine filter
 
 Branch `feat/seed-boards` off `origin/main` at `07beda9`. Wave 5 row 5g (Red). No file under `src/engine`, `src/data` or `src/scouting` changed, and there is no migration.
