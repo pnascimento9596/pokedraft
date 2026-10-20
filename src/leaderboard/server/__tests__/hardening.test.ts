@@ -89,19 +89,22 @@ describe("submit hardening", () => {
     expect(await db.select().from(leaderboardEntries)).toHaveLength(1);
   });
 
-  it("returns 201 with rank null when the rank lookup fails after the insert (catches a 503 for a saved run)", async () => {
+  it("returns 200 with rank null when the rank lookup fails on a retry of a saved run (catches a 503 for a saved run)", async () => {
     const flaky: LeaderboardStore = {
       ...store,
       rankOf: () => Promise.reject(new Error("rank query timed out")),
     };
-    const res = await handleSubmit(
-      post(
-        { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
-        { "x-real-ip": "198.51.100.2" },
-      ),
-      { store: flaky, ipHashSecret: SECRET, now: () => NOW },
-    );
-    expect(res.status).toBe(201);
+    const send = (using: LeaderboardStore) =>
+      handleSubmit(
+        post(
+          { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
+          { "x-real-ip": "198.51.100.2" },
+        ),
+        { store: using, ipHashSecret: SECRET, now: () => NOW },
+      );
+    expect((await send(store)).status).toBe(201);
+    const res = await send(flaky);
+    expect(res.status).toBe(200);
     const body = (await res.json()) as { entry: { rank: number | null; nickname: string } };
     expect(body.entry.nickname).toBe("Ash");
     expect(body.entry.rank).toBeNull();
@@ -170,14 +173,17 @@ describe("server error logging (catches a 503 whose cause is lost, or a log that
     spy.mockRestore();
   });
 
-  it("logs a failed rank lookup after a saved run instead of dropping it", async () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+  it("logs a failed rank lookup on a retry of a saved run instead of dropping it", async () => {
     const flaky: LeaderboardStore = { ...store, rankOf: () => Promise.reject(driverError()) };
-    const res = await handleSubmit(
-      post({ nickname: NICK, token: scriptedToken(CUP8, "lb-cup8") }, { "x-vercel-id": RID }),
-      { store: flaky, ipHashSecret: SECRET, now: () => NOW },
-    );
-    expect(res.status).toBe(201);
+    const send = (using: LeaderboardStore) =>
+      handleSubmit(
+        post({ nickname: NICK, token: scriptedToken(CUP8, "lb-cup8") }, { "x-vercel-id": RID }),
+        { store: using, ipHashSecret: SECRET, now: () => NOW },
+      );
+    expect((await send(store)).status).toBe(201);
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const res = await send(flaky);
+    expect(res.status).toBe(200);
     expect(logged(spy)).toEqual([
       {
         level: "error",
