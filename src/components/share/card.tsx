@@ -13,6 +13,7 @@ import {
 import { MODE_LABEL, STYLE_LABEL } from "@/ui/labels";
 import { draftFromBuilderToken } from "@/ui/builder-token";
 import { filledCount } from "@/ui/lineup";
+import { isCoached } from "@/ui/manager/coached";
 import type { CardSource } from "./download";
 import { CARD_SIZE, tokenBoxes } from "./card-layout";
 import { Pitch } from "./card-pitch";
@@ -32,6 +33,7 @@ export type CardHeadline =
       readonly draws: number;
       readonly losses: number;
       readonly finish: CupFinish;
+      readonly coached: boolean;
     }
   | { readonly kind: "lineup"; readonly score: number | null };
 
@@ -50,7 +52,7 @@ export interface ReplayedRun {
   readonly cup: CupResult;
 }
 
-export function runCardModel({ draft, cup }: ReplayedRun): CardModel {
+export function runCardModel(token: string, { draft, cup }: ReplayedRun): CardModel {
   const st = draft.settings;
   return {
     formation: st.formation,
@@ -65,6 +67,7 @@ export function runCardModel({ draft, cup }: ReplayedRun): CardModel {
       draws: cup.draws,
       losses: cup.losses,
       finish: cup.finish,
+      coached: isCoached(token),
     },
   };
 }
@@ -75,7 +78,7 @@ export async function cardModel(
 ): Promise<CardModel | null> {
   if ("t" in source) {
     try {
-      return runCardModel(await replayRun(source.t));
+      return runCardModel(source.t, await replayRun(source.t));
     } catch {
       return null;
     }
