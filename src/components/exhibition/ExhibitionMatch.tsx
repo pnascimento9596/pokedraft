@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import type { FullLineup, ManagerAction, Score, Seed } from "@/engine";
 import { MatchPlayer } from "@/components/matchday/MatchPlayer";
 import { unlockAudio } from "@/components/wheel/sound";
@@ -96,6 +96,14 @@ export function ExhibitionMatch({
   const [state, setState] = useState<{ game: typeof game; run: Run | null }>({ game, run: null });
   const run = state.game === game ? state.run : null;
   const start = (next: Run) => setState({ game, run: next });
+  // Play rematch unmounts with the match, so the focus it held moves to the new Kick off.
+  const kickoffRef = useRef<HTMLButtonElement>(null);
+  const refocus = useRef(false);
+  useEffect(() => {
+    if (run !== null || !refocus.current) return;
+    refocus.current = false;
+    kickoffRef.current?.focus({ preventScroll: true });
+  }, [run]);
 
   if (fixture === null || (single === null && tie === null)) {
     return <p>One of these squads has no goalkeeper, so this exhibition cannot be played.</p>;
@@ -132,7 +140,14 @@ export function ExhibitionMatch({
   };
 
   const rematchButton = (
-    <button type="button" className="btn btn--primary" onClick={onRematch}>
+    <button
+      type="button"
+      className="btn btn--primary"
+      onClick={() => {
+        refocus.current = true;
+        onRematch();
+      }}
+    >
       Play rematch
     </button>
   );
@@ -179,6 +194,7 @@ export function ExhibitionMatch({
       {run === null ? (
         <button
           type="button"
+          ref={kickoffRef}
           className={`btn btn--primary ${s.kickoff}`}
           data-testid="exhibition-kickoff"
           onClick={kickOff}
