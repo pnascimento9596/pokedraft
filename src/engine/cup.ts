@@ -1,7 +1,13 @@
 import { matchLineup } from "./availability";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
 import { FORMATIONS } from "./formations";
-import { simulateMatch, simulateScore, type MatchStarter, type Phase } from "./match";
+import {
+  simulateMatch,
+  simulateScore,
+  type MatchInput,
+  type MatchStarter,
+  type Phase,
+} from "./match";
 import { buildLadder } from "./opponents";
 import { canonicalSortBy, createEngineRng, deriveSubseed } from "./rng";
 import { speciesById } from "./species";
@@ -24,6 +30,7 @@ import {
   RunTokenError,
   type Seed,
   type SpeciesId,
+  type TeamRating,
 } from "./types";
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
@@ -154,6 +161,79 @@ function managerByMatch(manager: readonly ManagerAction[]): Map<number, ManagerA
   return out;
 }
 
+interface CupMatch {
+  readonly input: MatchInput;
+  readonly fielded: FullLineup;
+}
+
+// What match `matchIndex` of a run is played from. runCup and matchStory both build it here.
+function cupMatch(
+  lineup: FullLineup,
+  seed: Seed,
+  ladder: Record<CupRound, Opponent>,
+  rating: TeamRating,
+  matchIndex: number,
+  manager: readonly ManagerAction[],
+  c: EngineCoefficients,
+): CupMatch {
+  const formation = FORMATIONS[lineup.formation];
+  const phase: Phase = matchIndex < GROUP_ROUNDS.length ? "group" : "knockout";
+  const { lineup: fielded, absence } = matchLineup(lineup, seed, matchIndex, c);
+  const matchRating = absence === null ? rating : rateTeam(fielded, c);
+  const starters = fielded.starters.map((id, i): MatchStarter => ({
+    species: speciesById(id),
+    line: formation.slots[i]!.line,
+    role: formation.slots[i]!.role,
+  }));
+  const round = CUP_ROUNDS[matchIndex]!;
+  return {
+    fielded,
+    input: {
+      matchIndex,
+      round,
+      phase,
+      seed,
+      rating: matchRating.score,
+      userLines: matchLines(matchRating, c),
+      starters,
+      keeper: starters.find((s) => s.line === "GK")!.species,
+      opponent: ladder[round],
+      opponentStarters: bossStarters(ladder[round]),
+      absences: absence === null ? [] : [absence],
+      lineup: fielded,
+      unavailable: absence === null ? [] : [absence.out],
+      manager,
+    },
+  };
+}
+
+/**
+ * The `MatchInput` runCup plays match `matchIndex` from, whether or not the run reaches it.
+ * `manager` is the whole run's decisions, checked for order the same way runCup checks them.
+ */
+export function cupMatchInput(
+  lineup: FullLineup,
+  seed: Seed,
+  mode: Mode,
+  matchIndex: number,
+  manager: readonly ManagerAction[] = [],
+  c: EngineCoefficients = ENGINE_COEFFICIENTS,
+): MatchInput {
+  if (!Number.isInteger(matchIndex) || matchIndex < 0 || matchIndex >= CUP_ROUNDS.length) {
+    throw new RangeError(`match index ${matchIndex} is outside the cup`);
+  }
+  const decisions = managerByMatch(manager).get(matchIndex) ?? [];
+  return cupMatch(
+    lineup,
+    seed,
+    buildLadder(seed, mode, c),
+    rateTeam(lineup, c),
+    matchIndex,
+    decisions,
+    c,
+  ).input;
+}
+
 export function runCup(
   lineup: FullLineup,
   seed: Seed,
@@ -208,34 +288,17 @@ export function runCup(
     });
   };
 
-  const play = (matchIndex: number, round: CupRound, opponent: Opponent): PlayedMatch => {
-    const phase: Phase = matchIndex < GROUP_ROUNDS.length ? "group" : "knockout";
-    const { lineup: fielded, absence } = matchLineup(lineup, seed, matchIndex, c);
-    const matchRating = absence === null ? rating : rateTeam(fielded, c);
-    const starters = fielded.starters.map((id, i): MatchStarter => ({
-      species: speciesById(id),
-      line: formation.slots[i]!.line,
-      role: formation.slots[i]!.role,
-    }));
-    const match = simulateMatch(
-      {
-        matchIndex,
-        round,
-        phase,
-        seed,
-        rating: matchRating.score,
-        userLines: matchLines(matchRating, c),
-        starters,
-        keeper: starters.find((s) => s.line === "GK")!.species,
-        opponent,
-        opponentStarters: bossStarters(opponent),
-        absences: absence === null ? [] : [absence],
-        lineup: fielded,
-        unavailable: absence === null ? [] : [absence.out],
-        manager: decisions.get(matchIndex) ?? [],
-      },
+  const play = (matchIndex: number): PlayedMatch => {
+    const { input, fielded } = cupMatch(
+      lineup,
+      seed,
+      ladder,
+      rating,
+      matchIndex,
+      decisions.get(matchIndex) ?? [],
       c,
     );
+    const match = simulateMatch(input, c);
     decisions.delete(matchIndex);
     const conceded = match.regulation.opp + (match.extraTime?.opp ?? 0);
     const minutes = match.extraTime === null ? REGULATION_MINUTES : EXTRA_TIME_MINUTES;
@@ -263,7 +326,7 @@ export function runCup(
     return match;
   };
 
-  const matches: MatchResult[] = GROUP_ROUNDS.map((round, i) => play(i, round, ladder[round]));
+  const matches: MatchResult[] = GROUP_ROUNDS.map((_, i) => play(i));
   const fixtures: GroupFixture[] = matches.map((m, i) => {
     const played = m as PlayedMatch;
     return {
@@ -307,7 +370,7 @@ export function runCup(
       matches.push({ status: "notPlayed", round, opponent: ladder[round] });
       return;
     }
-    const match = play(GROUP_ROUNDS.length + k, round, ladder[round]);
+    const match = play(GROUP_ROUNDS.length + k);
     matches.push(match);
     if (match.outcome !== "W") {
       alive = false;

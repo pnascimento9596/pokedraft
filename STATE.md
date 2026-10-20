@@ -22,6 +22,51 @@ Gates at `9340dec` (later commits add docs only):
 
 Decision log: `docs/decisions/live-token-pins.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Freeze engine 6
+
+Branch `chore/freeze-engine-6` off `origin/main` at `969ca1c` (the 6a1 squash). Wave 6 row 6b0 (Red). Engine 6 is frozen into `src/engine/versions/v6/` as a dormant retained bundle: nothing imports it until the engine 7 flip (6b9). No live engine file, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`.
+
+- Nothing changes for a player. Engine 6 stays live and every run, link and board row replays exactly as before.
+- When engine 7 goes live, every engine 6 link can replay through this exact copy of the engine.
+- One `GOLDEN_CUP8_V6` literal now exists, in `src/engine/versions/__tests__/fixtures.ts`, next to the new `GOLDEN_KANTO151_V6`. The leaderboard fixtures re-export it and `check-retained-replays.mts` imports it.
+
+Parity guard: RED commit `35bf588` (1 of 1 file failed to load on the missing `../v6` import, 0 tests ran), GREEN `ae838a2`. The v6 block replays both goldens through the bundle to the live engine's `2b26ee82...` and `eb366464...` and pins the bundle digest `b0b922bc1eef6e7ec4af9bf64e4af10206e894fdfc5d5f317eaf75b85d604397`. `check-bundle-provenance.sh v6 969ca1c` exited 0 (34 files, only `@/` import lines differ), and a re-freeze from a `git archive` of `969ca1c` was `diff -r` identical.
+
+Gates at `e54e63c`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 2,030 passed in 231 files. `pnpm vitest run src/engine`: 286 passed in 24 files.
+- `check-retained-replays.mts`: 10 golden replays passed, live v6 replay `2b26ee82...`. `measure-retained-json.mjs`: 4 payloads, 2,891,853 bytes.
+- `retained-engine-bundle:v6` appears in 0 files under `.next/static` and 0 under `.next/server` (the v5 marker, as a control, in 4 server files).
+- NOT RUN: review and hosted CI, Playwright (no UI changed), the calibration probes (engine output cannot move), the phone check and screen reader pass.
+
+Decision log: `docs/decisions/freeze-engine-6.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #144 (freeze engine 6, Red) merged as squash `8059458`, reviewed head `243963a`. GLM 5.3 Flash APPROVE in round 1 with canary `6b0-dcfa6180736f240403def6c19db393f8` echoed, and the independent executing Red reviewer (fresh pokedraft-mode subagent, Opus) returned PASS on the same head: lint, typecheck, build, both retained-bundle checks (10 golden replays, `totalCopies` 4) and all nine `check:*` scripts exited 0, 2,030 unit tests passed in 231 files, `pnpm vitest run src/engine` 286 passed in 24 files, `goldens.test.ts` byte-identical to `origin/main`, a re-freeze from `969ca1c` was `diff -r` identical to the committed bundle, `check-bundle-provenance.sh v6 969ca1c` exited 0, bundle digest `b0b922bc...`, and the `retained-engine-bundle:v6` marker appeared in no `.next/static` or `.next/server` file. Hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `8059458` with engine `pokedraft-engine-6` and `db.status` ok; live `health`, `old-links` and `share` 19/19 on chromium. Engine output unchanged; the v6 bundle is dormant.
+
+## matchStory core
+
+Branch `feat/match-story` off `origin/main` at `9e4802b`. Wave 6 row 6a1 (Red). Engine change with no output change: engine 6 stays live and every run, token and board row replays exactly as before. Nothing under `src/scouting`, `scripts/data` or `src/data` changed, and `goldens.test.ts` is byte-identical.
+
+- Nothing changes for a player yet. `matchStory(seed, matchIndex, run)` in `src/engine/story.ts` returns every chance the engine rolled in a match (its probability, goal, saved or off, the shooter and a derived zone) and each five-minute window's xG and territory, next to the unchanged match result. Row 6a2 draws the xG river and the territory lean from it.
+- `simulateMatch` and `matchStory` share one core, `playMatchCore` in `match.ts`. The story reads the core through a read-only observer that cannot draw or change state. `runCup` and `matchStory` build each match's input with the same `cupMatchInput`.
+- `matchStory` plays the whole run through `runCup` first (fix round 1). A run `runCup` rejects throws the same error, and a match the run never reaches throws instead of returning a result that never happened.
+
+Parity guard (the RED equivalent for an engine row that must not move): RED commit `420228a` (7 of 7 failed against a stub `matchStory` that throws), GREEN `7bf01e8`. Fix round 1: RED `8685f39` (3 of 10 failed: an unreached knockout and two tokens `runCup` rejects), GREEN `fa446f0`. The guard replays every played match of `goldens.test.ts`'s 20-run panel and 30 more seeds (50 runs in `pnpm test`; 200 in `story.slow.test.ts`) and requires the story's result to be byte-identical to `runCup`'s match, its goal chances to be the goals and its saved chances to be the saves. That test compares HEAD with HEAD. The cross-version guarantee is `goldens.test.ts` plus the coordinator's skeptic check against `9e4802b` (byte-identical over 1,676 and 2,238 outputs); 6b1 adds the frozen v6 against live parity test.
+
+Gates at `5a7f6a3` (after fix round 1 and the merge of `origin/main` at `38b1bb4`):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 2,023 passed in 231 files. `pnpm vitest run src/engine`: 283 passed in 24 files.
+- `SLOW_TESTS=1 pnpm vitest run src/engine/__tests__/story.slow.test.ts --silent=false`: 1 of 1 passed over 942 played matches (81 with extra time, 415 coached).
+- `check-retained-replays.mts`: 10 golden replays passed, live v6 replay `2b26ee82...`. `measure-retained-json.mjs`: 4 payloads.
+- The probe numbers are unchanged by construction against the 6p baseline; no probe was re-run.
+- NOT RUN: review and hosted CI, Playwright (no UI changed), the calibration probes, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/match-story.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #142 (matchStory core, Red) merged as squash `969ca1c`, reviewed head `2c5fddf`. GLM 5.3 Flash APPROVE in round 1 with canary `6a1-886049602d8287d19173a0948f75f9fb` echoed, and the independent executing Red reviewer (fresh pokedraft-mode subagent, Opus) returned PASS on the same head: at `2c5fddf` lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, 2,027 unit tests passed in 231 files, `pnpm vitest run src/engine` 283 passed in 24 files, the slow parity file passed over 200 runs (942 played matches), `goldens.test.ts` was byte-identical to `origin/main`, and a cross-version check against `9e4802b` over 120 seeds gave byte-identical `runCup` output. Before review, three adversarial skeptics compared `9e4802b` with the head (1,676 and 2,238 outputs, byte-identical) and found one contract gap, fixed in round 1 (RED `8685f39`, 3 of 10 failed). Hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `969ca1c` with engine `pokedraft-engine-6` and `db.status` ok; live `health`, `old-links` and `share` 19/19 on chromium. Engine output unchanged.
+
 ## Wave 5 carryovers and queue hygiene
 
 Branch `chore/wave5-carryovers` off `origin/main` at `9e4802b`. Wave 6 row 6-0 (Yellow). No file under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #140 merge below.

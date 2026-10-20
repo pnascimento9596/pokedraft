@@ -19,7 +19,7 @@ const LINE_DRAW_ORDER = ["ATT", "DEF", "MID", "GK"] as const;
 const KANTO151_MAX_ID = 151;
 const ROSTER_SIZE = 11;
 // Boss Clubs field a 4-3-3; roster fit shapes matchups around the ladder difficulty.
-const BOSS_FORMATION = FORMATIONS["4-3-3"];
+export const BOSS_FORMATION = FORMATIONS["4-3-3"];
 
 function bossPool(mode: Mode): readonly Species[] {
   return mode === "kanto151" ? SPECIES.filter((s) => s.id <= KANTO151_MAX_ID) : SPECIES;
