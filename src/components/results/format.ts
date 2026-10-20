@@ -21,11 +21,14 @@ export type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 export type ResultsVariant = "live" | "shared";
 
 // A shared token carries no nickname, so a friend's squad is "This squad", never "You".
+// `xiInSentence` is the side's name inside a ticker line ("Goal for this squad!"). "Your XI" is
+// the live side's name and keeps its capitals.
 export const SIDE_COPY = {
   live: {
     side: "You",
     team: "Your team",
     xi: "Your XI",
+    xiInSentence: "Your XI",
     ourSide: "Your side",
     switchesTo: "Your side switch to",
     squad: "Your squad",
@@ -39,6 +42,7 @@ export const SIDE_COPY = {
     side: "This squad",
     team: "This squad",
     xi: "This squad",
+    xiInSentence: "this squad",
     ourSide: "This squad",
     switchesTo: "This squad switches to",
     squad: "This squad",

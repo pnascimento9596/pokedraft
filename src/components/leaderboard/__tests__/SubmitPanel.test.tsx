@@ -148,7 +148,7 @@ describe("SubmitPanel", () => {
       "Too many submissions from this network. The limit is 10 an hour, so you may need to wait up to an hour.",
     ],
     [503, "DB_UNAVAILABLE", "The leaderboard is offline right now. Try again in a few minutes."],
-    [409, "DUPLICATE_TOKEN", "This run is already on the leaderboard."],
+    [409, "DUPLICATE_TOKEN", "This exact run is already on the board."],
     [
       409,
       "ENGINE_VERSION_MISMATCH",
@@ -165,6 +165,20 @@ describe("SubmitPanel", () => {
     typeAndSubmit("Misty");
     expect((await screen.findByTestId("submit-error")).textContent).toBe(copy);
     expect(screen.queryByTestId("submit-success")).toBeNull();
+  });
+
+  it("names the nickname a matching run is listed under (catches a copy refusal that does not say whose run it matches)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        json(409, { error: { code: "DUPLICATE_TOKEN", message: "x", nickname: "Misty" } }),
+      ),
+    );
+    render(<SubmitPanel token="pd1.abc" daily />);
+    typeAndSubmit("Brock");
+    expect((await screen.findByTestId("submit-error")).textContent).toBe(
+      "This exact run is already on the board, listed under Misty.",
+    );
   });
 
   it("shows the network copy when the request never reaches the server", async () => {

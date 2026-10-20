@@ -32,7 +32,7 @@ it("applies every migration to a genuinely empty database", async () => {
     const result = await client.query<{ migrations: number; buckets: number }>(
       "SELECT (SELECT count(*) FROM drizzle.__drizzle_migrations)::int AS migrations, (SELECT count(*) FROM rate_limit_buckets)::int AS buckets",
     );
-    expect(result.rows).toEqual([{ migrations: 4, buckets: 0 }]);
+    expect(result.rows).toEqual([{ migrations: 6, buckets: 0 }]);
   } finally {
     await client.close();
   }

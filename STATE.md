@@ -28,6 +28,112 @@ Decision log: `docs/decisions/share-sheet.md`. Browser proof: `docs/reports/shar
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Leaderboard integrity contract and copy guard
+
+Branch `feat/leaderboard-integrity` off `origin/main` at `3b821d1`. Wave 5 row 5f2 (Red). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- A copy of a run that is already on the board is refused, even when the copy adds touchline decisions that change nothing. The player sees "This exact run is already on the board, listed under Misty." with the nickname of the listed run.
+- Two friends who play the same Daily with the same XI in the same slots and get the same result count as one run: the second is refused and sees the first's nickname. This is the decided tradeoff.
+- The Coached filter and the Coached chip read the same stored value, so they always agree.
+- Migration `0005_leaderboard_integrity` makes `coached` and `run_fingerprint` NOT NULL and adds the unique `(mode, run_fingerprint)` index and the coached board index, with a paired down file. `db:smoke` now also proves the fingerprint index refuses a copy. The one-shot `db:backfill-runs` is deleted. Production met the precondition on 2026-10-19 (0 NULLs, 0 duplicate groups, 3 rows).
+
+RED commit: `186a5cd` (8 of 85 unit tests failed in 6 of 6 files; the new `leaderboard.spec.ts` case failed 1 of 1 against a build of `186a5cd`). GREEN `2b799a4`.
+
+Gates at `2b799a4`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 22 touched non-SQL files.
+- Unit tests: 1,813 passed in 215 files.
+- Playwright (`CI=1`, headless, chromium): `leaderboard`, `leaderboard-cls`, `leaderboard-date`, `leaderboard-font-cls` and `theme-board` passed 31 of 31; `a11y`, `contrast`, `platform-experience` and `manager-mode` passed 73 of 73.
+- PGlite: the `db:smoke` statements printed both 23505 lines and `[db:smoke] OK`; the 0005 down file restores nullable columns and drops both indexes; the coached all-time query plans an index scan on `leaderboard_entries_coached_board_idx`. The 5f1 code with 0005 applied answers a copy with 409 `DUPLICATE_TOKEN`.
+- NOT RUN: every Neon step (preview migrate, smoke, rollback, migrate; production restore point, migration and real-API smoke; the coordinator runs them), review and hosted CI, the full Playwright suite, the CI data rebuild, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/leaderboard-integrity.md`. Browser proof: `docs/reports/leaderboard-integrity/duplicate-run-390x844.png`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #129 (row 5f2, leaderboard integrity contract and copy guard, Red) merged as squash `07beda9`, reviewed head `1039845` (the coordinator's merge of `origin/main` at `f27f17c`, a STATE-only conflict, on top of `b094210`). Receipts on the same head: GLM 5.3 Flash APPROVE in round 2 with canary `leaderboard-integrity-r2-34bf5f0f7ff3cdbfb61351962c093c19` echoed (round 1 at the same head returned REQUEST_CHANGES only because `coach-mark.test.tsx`, a file this PR does not touch, failed once while the Red reviewer's gates ran concurrently at load average 12; it passed 5 of 5 alone and the full gates were re-run quietly), and the independent executing Red reviewer (a fresh pokedraft-mode subagent, interrogate rubric) PASS. At `1039845` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,816 unit tests passed in 215 files and Prettier passed on 24 touched files; hosted check and all eight e2e shards green on the first run. Database receipt: preview ran migrate, smoke (both 23505 cases), rollback and migrate (6 migrations) twice, once by the coordinator and once by the Red reviewer; no backfill (the script is deleted). Before the production migration the precondition held (0 NULLs, 0 duplicate `(mode, run_fingerprint)` groups, 3 entries); restore point `pre-0005_leaderboard_integrity` (`br-noisy-bread-b7gzc2s4`) created; production `db:migrate` before merge recorded 6 migrations with both columns NOT NULL, `leaderboard_entries_fingerprint_uq` and `leaderboard_entries_coached_board_idx` present and 3 entries unchanged. Real-API smoke on the 2026-10-19 Daily as `w5proof1019`: 201 (rank 1, 3-0-1, Team Score 429) then 200 on retry, and the same run as `w5proof1019b` got 409 `DUPLICATE_TOKEN` with `nickname` `w5proof1019`; `db:delete-entry` removed exactly the smoke row (`ee1af1e3`), leaving 3 entries and 0 NULLs. Production `/api/health?db=1` served `07beda9` with `db.status` ok; `leaderboard`, `leaderboard-date` and `theme-board` against production (chromium) passed 18 of 18. NOT RUN: physical phone check and screen reader pass of the duplicate message (owner actions).
+
+## Health cron removed
+
+Branch `ci/remove-health-cron` off `ef542fb`. Green: deletes `.github/workflows/health.yml` and updates docs. No change under `src/`, `e2e/` or `scripts/`.
+
+- The owner asked for the 30-minute health check to go: "please remove the health check that runs every 30 minutes, i don't need any health check". The workflow was disabled on GitHub the same day (`disabled_manually`) and this PR deletes it. It ran once, the manual dispatch after #128, and opened no issue.
+- The `/api/health` route stays: the merge procedure reads it once per landing to confirm production serves the merged sha. Nothing calls it on a schedule.
+- Players see no change.
+
+Gates: Prettier passed on the touched Markdown. The coordinator re-runs every gate at the head for review. NOT RUN: nothing specific to this change beyond CI.
+
+Decision log: `docs/decisions/health-cron.md` ("Removed").
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #130 (health cron removed, Green) merged as squash `f27f17c`, reviewed head `8e6a39c`, GLM 5.3 Flash APPROVE in round 1 with canary `remove-health-cron-73a686964b58b634d8d8c03d1b701fa8` echoed. At `8e6a39c` lint, typecheck, build and all nine `check:*` scripts exited 0 and Prettier passed on 2 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `f27f17c` with `db.status` ok, and `gh workflow list` no longer lists the health workflow. No runtime change.
+
+## Wave 4 carryovers and queue triage
+
+Branch `fix/wave4-carryovers` off `origin/main` at `5932775`. Wave 5 row 5-0 (Yellow; the queue triage is Green). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- On a friend's shared replay the goal line reads "Goal for this squad!" instead of "Goal for This squad!". Cards and penalties name "(this squad)" the same way.
+- Screen readers hear the wheel's landed Pokémon and each Boss XI player once, by the written name, instead of the picture repeating it.
+- On the home page of a phone with a home bar, the gap between the last card and the footer is 32px again instead of 66px; the footer keeps its own clearance, so its text ends 65px above the bottom edge.
+- On a notched phone turned to landscape, the header and page content sit 47px from each side (the notch) instead of 63px; 820px-wide pages sit at 59px. Phones without a notch look the same as before.
+- Docs only: the deferred audit queue loses 11 fixed SA rows (each with its PR), and the 13 left get one disposition each.
+- Closed by measurement, no code change: the 4h2 4-pixel matchday diffs also appear between two shots of one build (frame noise), and both swipes (draft drawer and Builder Picker) kept every frame at 4x CPU throttle (p95 16.7 ms).
+
+RED commits: `456d436` (3 of 60 unit tests failed in 3 files; `e2e/safe-area-insets.spec.ts` failed 6 of 7 against a build of `5932775`, the no-notch case passing as a labelled regression guard) and `051b0dc` (the re-decided footer guard and the 820px edges; 6 of 7 failed against a build of `051b0dc`, whose code equals `5932775`). GREEN `90442aa`. `b2f000c` adds the Builder Picker scene to `scripts/perf/draft-drag.mts` and the measurement files; `34b26b6` updates `engine-v4` and `pwa-viewport` to the new literals.
+
+Gates at `b2f000c` (code-identical to `34b26b6` outside `e2e/`):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0 (lint and typecheck again at `34b26b6`). All nine `check:*` scripts exited 0.
+- Unit tests: 1,808 passed in 214 files.
+- Full Playwright suite (`CI=1`, headless, build of `b2f000c`): 1,008 passed, 67 skipped, 3 failed, no flaky. The 3 were spec churn (two `engine-v4` cases counting Boss XI pictures by role, and `pwa-viewport` expecting the home page's 66px). After `34b26b6`, `engine-v4`, `pwa-viewport`, `safe-area-insets`, `a11y`, `wheel-results`, `mobile-acceptance` and `theme-breakpoints` passed 356 with 54 skipped, 0 failed.
+- Safe areas measured with Chromium's `Emulation.setSafeAreaInsetsOverride`: portrait top 47 and bottom 34 at 390x844; landscape left 47, right 47 and bottom 21 at 844x390.
+- NOT RUN: review and hosted CI; WebKit and Firefox safe-area checks; a physical phone check and a real screen reader pass (owner actions).
+
+Decision log: `docs/decisions/wave4-carryovers.md`. Browser proof: `docs/reports/wave4-carryovers/{home-footer-notch-390,home-landscape-notch-844}.png`; measurements in `docs/reports/wave4-carryovers/{swipe.json,frame-noise.jsonl}`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #127 (row 5-0, Wave 4 carryovers and queue triage, Yellow) merged as squash `ef542fb`, reviewed head `246ade2` (the coordinator's merge of `origin/main` at `32d0b69`, a STATE-only conflict, on top of `170fda6`), GLM 5.3 Flash APPROVE in round 1 with canary `wave4-carryovers-05f3b97dc9b0d977a8d15d7b4f43377b` echoed. At `246ade2` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,827 unit tests passed in 217 files and Prettier passed on 16 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `ef542fb` with `db.status` ok; `safe-area-insets`, `pwa-viewport`, `engine-v4` and `wheel-results` against production (chromium) passed 24 of 24. NOT RUN: physical phone check including real notch insets in landscape (owner action), a real screen reader, WebKit and Firefox safe-area checks.
+
+## Health cron
+
+Branch `ci/health-cron` off `5932775`, merged with `origin/main` at `3b821d1`. Green: one new workflow, `.github/workflows/health.yml`, and docs. No change under `src/`, `e2e/` or `scripts/`. A Wave 7 item landed early in Wave 5, right after 5f1, as the hand-off orders.
+
+- Every 30 minutes (minutes 7 and 37, UTC) GitHub checks that production `/api/health?db=1` answers 200 with `db.status` ok and serves the sha at the head of `main`. A mismatch counts only once `main` is 20 minutes old, so a deploy in progress does not alarm.
+- On failure it comments on the open "Production health check failing" issue, or opens one, and the run turns red. Players see no change.
+
+Proof (no RED: a new workflow has no prior behaviour to fail): `actionlint` exit 0 with shellcheck; Prettier passed. The check step's script, run locally with `gh` and GNU `date` shimmed, returned no problem when the served sha equals main, a mismatch problem for a main merged 11,570 s earlier, no problem inside the grace window, and `HTTP 404` for a missing URL.
+
+NOT RUN: the scheduled run and the issue step on GitHub before merge (`workflow_dispatch` runs only from the default branch; the first run is a manual dispatch after merge, recorded in the next STATE update); a real failure path on GitHub.
+
+Decision log: `docs/decisions/health-cron.md`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #128 (health cron, Green) merged as squash `32d0b69`, reviewed head `c6f3f68`, GLM 5.3 Flash APPROVE in round 1 with canary `health-cron-90dd1579d5b60a67192da16d502be7fb` echoed. At `c6f3f68` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,824 unit tests passed in 217 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `32d0b69` with `db.status` ok. The first run of the workflow, dispatched by hand on `main` (run 39345587862), concluded success: `main=32d0b69... served=32d0b69... http=200 db=ok`. NOT RUN: a failing run on GitHub (it would open a real issue).
+
+## Run fingerprint and coached column, expand
+
+Branch `feat/leaderboard-fingerprint` off `origin/main` at `5932775`. Wave 5 row 5f1 (Red). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Players see no change: the board, its ranking, the Coached chip and the counts stay as they were.
+- Every new board entry now records whether it was coached and a fingerprint of the run (squad, results and goals), which 5f2 will use to refuse a copied run. A command, `pnpm db:backfill-runs`, fills both for entries that already exist and refuses rather than guesses when an entry does not replay.
+- Submitting a run takes 2 database queries instead of 3, and a board row reads its stored run once instead of twice.
+- Migration `0004_run_fingerprint_coached` adds the two nullable columns and drops the unused `leaderboard_entries_ip_recent_idx`, with a paired down file.
+
+RED commits: `8b879af` migration (2 of 5 failed), `179186a` fingerprint (file failed to load), `4d5f87b` submit writes (2 of 2 selected failed), `3e52136` insert plus rank (1 of 1 selected failed), `873b148` daily probe (1 of 2 selected failed), `021feba` one decode per row (2 of 3 failed), `688a5b9` backfill (file failed to load). Each GREEN follows its RED.
+
+Gates at `1cf9c77`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0, `check-retained-replays` with "10 emitted golden replays passed". Prettier passed on the 22 touched non-SQL files.
+- Unit tests: 1,824 passed in 217 files.
+- Playwright (`CI=1`, headless, chromium): the five leaderboard and board-theme specs passed 30 of 30.
+- `backfillRuns` under `node --conditions=react-server --import tsx` on a migrated PGlite: dry run 2 rows, real run "updated 2 row(s)", second run "updated 0 row(s)", 0 NULLs, 0 duplicate fingerprints. The `db:smoke` SQL passed on PGlite.
+- NOT RUN: every Neon step (preview and production migrate, smoke, rollback, backfill, NULL check and duplicate query; the coordinator runs them), review and hosted CI, the full Playwright suite, the CI data rebuild, the phone check and screen reader pass. No UI change; browser proof not applicable.
+
+Decision log: `docs/decisions/leaderboard-fingerprint.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #126 (row 5f1, run fingerprint and coached column, expand, Red) merged as squash `3b821d1`, reviewed head `ce1ad25` (`ba48f46` plus the PR #125 STATE paragraph, landed ahead of 5-0 because the Red lane is the critical path and the files are disjoint). Receipts on the same head: GLM 5.3 Flash APPROVE with canary `leaderboard-fingerprint-r2-b92aeca53940a9b396d7219df1b5f53a` echoed (round 1 at `ba48f46` also APPROVE), and the independent executing Red reviewer (a fresh pokedraft-mode subagent, interrogate rubric) PASS after re-running every gate and the preview cycle. At `ce1ad25` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,824 unit tests passed in 217 files and Prettier passed on 24 touched files; hosted check and all eight e2e shards green on the first run. Database receipt: the preview branch ran migrate, smoke, rollback and migrate (5 migrations) and the backfill dry run (2 rows), real run (2 updated, fingerprints equal the pd3 and pd6 literals) and a second run (0); restore point `pre-0004_run_fingerprint_coached` (`br-snowy-surf-b7yk5m7w`) created from production before the migration; production `db:migrate` before merge recorded 5 migrations with both columns nullable, `leaderboard_entries_ip_recent_idx` gone and row counts unchanged (3 entries, 9 rate-limit events). After merge the production backfill updated 3 rows (2 `pd3`, 1 `pd6`, all `coached` false) and a second run updated 0; 0 NULLs and 0 duplicate `(mode, run_fingerprint)` groups. Real-API smoke on the 2026-10-19 Daily as `w5proof1019`: 201 (rank 1, 3-0-1, Team Score 429, as replayed locally) then 200 on retry, the stored row had `coached` false and a fingerprint, the board listed it, and `db:delete-entry` removed exactly that row (`0402517c`). Production `/api/health?db=1` served `3b821d1` with `db.status` ok; `leaderboard`, `leaderboard-date` and `theme-board` against production (chromium) passed 17 of 17. NOT RUN: physical phone check and screen reader (no UI change).
+
 ## Wave 4 summary
 
 Branch `docs/wave4-summary` off `b4f8ca7`. Green: docs only, no change under `src/` or `e2e/`.
@@ -39,6 +145,8 @@ Branch `docs/wave4-summary` off `b4f8ca7`. Green: docs only, no change under `sr
 Gates: Prettier passed on the touched Markdown. CI runs the rest. NOT RUN: unit tests and e2e locally (no code changed), the physical phone check and screen reader pass (owner actions).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #125 (Wave 4 summary, Green) merged as squash `5932775`, reviewed head `4605872`, GLM 5.3 Flash APPROVE in round 1 with canary `wave4-summary-c9a240051fa41dd01a1bfa8e31bba22f` echoed. At `4605872` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,805 unit tests passed in 214 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green. Production `/api/health?db=1` served `5932775` with `db.status` ok. No runtime change.
 
 ## PWA and viewport
 

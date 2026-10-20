@@ -27,6 +27,7 @@ import { parseNickname } from "../nickname";
 import { logServerError, requestIdOf } from "@/observability/log";
 import type { LeaderboardRow } from "@/db/schema";
 import { isCoached } from "@/ui/manager/coached";
+import { runFingerprint } from "./fingerprint";
 import { toBoardEntry, type Board, type Conflict, type LeaderboardStore } from "./store";
 
 export const RATE_LIMIT = { max: 10, windowMs: 60 * 60 * 1000 } as const;
@@ -73,10 +74,21 @@ function tokenError(e: unknown): Response {
   throw e;
 }
 
-function conflictError(conflict: Conflict): Response {
-  return conflict === "daily"
-    ? submitError("DAILY_ALREADY_SUBMITTED", "That nickname already has a run on this daily board.")
-    : submitError("DUPLICATE_TOKEN", "This run is already on the leaderboard.");
+function conflictError(conflict: Conflict, nickname: string | null): Response {
+  if (conflict === "daily") {
+    return submitError(
+      "DAILY_ALREADY_SUBMITTED",
+      "That nickname already has a run on this daily board.",
+    );
+  }
+  const body: ApiError<SubmitErrorCode> = {
+    error: {
+      code: "DUPLICATE_TOKEN",
+      message: "This exact run is already on the board.",
+      ...(nickname === null ? {} : { nickname }),
+    },
+  };
+  return json(body, SUBMIT_ERROR_STATUS.DUPLICATE_TOKEN);
 }
 
 // Vercel sets x-real-ip to the client address (it is what @vercel/functions ipAddress() reads).
@@ -158,6 +170,7 @@ interface Submission {
   readonly token: string;
   readonly board: Board;
   readonly coach: CoachFilter;
+  readonly coached: boolean;
 }
 
 // Everything that can be checked without the database. These rejections spend no attempt and
@@ -214,11 +227,12 @@ async function parseSubmission(
   // canonical one, so the token index sees one run as one row.
   const token = encodeToken(run);
   const coach = body.data.coach ?? "all";
-  if (coach !== "all" && (coach === "coached") !== isCoached(token)) {
+  const coached = isCoached(token);
+  if (coach !== "all" && (coach === "coached") !== coached) {
     return reject(submitError("INVALID_BODY", `This run is not on the ${coach} board.`));
   }
   const board: Board = { mode: run.settings.mode, dailyDate };
-  return { ok: true, sub: { nickname: nick.nickname, run, token, board, coach } };
+  return { ok: true, sub: { nickname: nick.nickname, run, token, board, coach, coached } };
 }
 
 // A retry of an accepted run (same run, same nickname) gets the saved entry back with 200.
@@ -265,7 +279,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
       "retry-after": "3600",
     });
   if (!parsed.ok) return parsed.res;
-  const { nickname, run, token, board, coach } = parsed.sub;
+  const { nickname, run, token, board, coach, coached } = parsed.sub;
   try {
     const admission = await deps.store.admitSubmission(
       token,
@@ -277,7 +291,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     );
     if (admission.kind === "retry") return savedEntry(admission.row, deps.store, coach, rid);
     if (admission.kind === "limited") return limited();
-    if (admission.kind === "conflict") return conflictError(admission.conflict);
+    if (admission.kind === "conflict") return conflictError(admission.conflict, admission.nickname);
   } catch (e) {
     return unavailable("submit.admission", rid, e);
   }
@@ -288,32 +302,39 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
   } catch (e) {
     return tokenError(e);
   }
-  const { cup } = result;
+  const { draft, cup } = result;
+  const fingerprint = runFingerprint(draft, cup);
 
   try {
-    const inserted = await deps.store.insert({
-      nickname,
-      mode: board.mode,
-      variant: variantOf(run.settings),
-      dailyDate: board.dailyDate,
-      seed: run.seed,
-      token,
-      teamScore: cup.rating.score,
-      wins: cup.wins,
-      draws: cup.draws,
-      losses: cup.losses,
-      engineVersion: cup.engine,
-      ipHash,
-    });
+    const inserted = await deps.store.insert(
+      {
+        nickname,
+        mode: board.mode,
+        variant: variantOf(run.settings),
+        dailyDate: board.dailyDate,
+        seed: run.seed,
+        token,
+        teamScore: cup.rating.score,
+        wins: cup.wins,
+        draws: cup.draws,
+        losses: cup.losses,
+        engineVersion: cup.engine,
+        coached,
+        runFingerprint: fingerprint,
+        ipHash,
+      },
+      coach,
+    );
     if (!inserted.ok) {
-      // A concurrent copy of this same submission won the insert race.
-      const winner = await deps.store.byToken(token);
-      if (winner?.nickname === nickname) return savedEntry(winner, deps.store, coach, rid);
-      return conflictError(inserted.conflict);
+      // Another copy of this run is listed: a concurrent retry that won the insert race, or a
+      // token that differs only in moves that change nothing on the pitch.
+      const listed = await deps.store.listedRun(token, board.mode, fingerprint);
+      if (listed?.token === token && listed.nickname === nickname) {
+        return savedEntry(listed, deps.store, coach, rid);
+      }
+      return conflictError(inserted.conflict, listed?.nickname ?? null);
     }
-    // The run is saved. A rank that cannot be computed must not turn that into a failure.
-    const rank = await rankOrNull(deps.store, inserted.row, board, coach, rid);
-    const ok: SubmitOk = { entry: toBoardEntry(inserted.row, rank) };
+    const ok: SubmitOk = { entry: toBoardEntry(inserted.row, inserted.rank) };
     return json(ok, 201);
   } catch (e) {
     return unavailable("submit.insert", rid, e);

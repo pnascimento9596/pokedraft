@@ -410,7 +410,7 @@ export function MatchPlayer({
   };
 
   const side = SIDE_COPY[variant];
-  const teams: Teams = { user: side.xi, opp: match.opponent.name };
+  const teams: Teams = { user: side.xiInSentence, opp: match.opponent.name };
   const clock = state.minute;
   const shown = timeline.beats.filter(
     (b) =>

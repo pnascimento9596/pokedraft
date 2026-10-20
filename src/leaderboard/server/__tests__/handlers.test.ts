@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { PGlite } from "@electric-sql/pglite";
+import { eq } from "drizzle-orm";
 import {
   ENGINE_VERSION,
   dailySeed,
@@ -16,7 +17,7 @@ import type { BoardEntry } from "../../contract";
 import { dailySettings } from "../../daily";
 import { RATE_LIMIT, handleBoard, handleSubmit, hashIp } from "../handlers";
 import { drizzleStore, type LeaderboardStore } from "../store";
-import { migratedDb, scriptedToken } from "./fixtures";
+import { GOLDEN_CUP8_V6, migratedDb, scriptedToken } from "./fixtures";
 import { A11Y_RUN_V1 } from "@/engine/versions/__tests__/fixtures";
 
 const NOW = new Date("2026-10-09T16:00:00Z");
@@ -40,7 +41,7 @@ const BUILDER: DraftSettings = {
 interface Body {
   entry: BoardEntry;
   entries: BoardEntry[];
-  error: { code: string; message: string };
+  error: { code: string; message: string; nickname?: string };
 }
 
 let db: Db;
@@ -254,6 +255,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       draws: 0,
       losses: 0,
       engineVersion: ENGINE_VERSION,
+      coached: true,
+      runFingerprint: `fp-${nickname}`,
       ipHash: "seeded",
       createdAt: new Date("2026-10-01T12:00:00Z"),
     });
@@ -323,11 +326,15 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect([res.status, res.body.error.code]).toEqual([422, "DAILY_SETTINGS_MISMATCH"]);
   });
 
-  it("rejects the same token twice with 409 DUPLICATE_TOKEN", async () => {
+  it("rejects the same token twice with 409 DUPLICATE_TOKEN and names the listed run's nickname", async () => {
     const token = scriptedToken(CUP8, "lb-cup8");
     expect((await submit({ nickname: "Ash", token })).status).toBe(201);
     const res = await submit({ nickname: "Misty", token });
-    expect([res.status, res.body.error.code]).toEqual([409, "DUPLICATE_TOKEN"]);
+    expect([res.status, res.body.error.code, res.body.error.nickname]).toEqual([
+      409,
+      "DUPLICATE_TOKEN",
+      "Ash",
+    ]);
   });
 
   it("rejects a re-encoded copy of a listed run with 409 DUPLICATE_TOKEN (catches one run listed under many names)", async () => {
@@ -568,11 +575,11 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     return {
       ...store,
       inserts,
-      insert: async (row) => {
+      insert: async (row, coach) => {
         inserts.push("held");
         if (inserts.length === 2) release();
         await bothThere;
-        const out = await store.insert(row);
+        const out = await store.insert(row, coach);
         inserts.push(out.ok ? "saved" : `conflict:${out.conflict}`);
         return out;
       },
@@ -681,10 +688,10 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     async (_, err) => {
       const failing: LeaderboardStore = {
         ...store,
-        insert: (row) =>
+        insert: (row, coach) =>
           drizzleStore(() => {
             throw err;
-          }).insert(row),
+          }).insert(row, coach),
       };
       const token = scriptedToken(CUP8, "lb-cup8");
       const res = await submit({ nickname: "Ash", token }, undefined, failing);
@@ -696,10 +703,10 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
   it("maps any other insert failure to 503 DB_UNAVAILABLE", async () => {
     const failing: LeaderboardStore = {
       ...store,
-      insert: (row) =>
+      insert: (row, coach) =>
         drizzleStore(() => {
           throw Object.assign(new Error("connection reset"), { code: "08006" });
-        }).insert(row),
+        }).insert(row, coach),
     };
     const res = await submit(
       { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
@@ -708,6 +715,134 @@ describe("double submit (catches a race that makes two rows, a lost row or a 503
     );
     expect([res.status, res.body.error.code]).toEqual([503, "DB_UNAVAILABLE"]);
   });
+});
+
+describe("stored run identity (catches a submit that leaves coached or run_fingerprint unwritten)", () => {
+  it("writes coached false and the pdfp1 fingerprint for an uncoached run", async () => {
+    const res = await submit({ nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") });
+    expect(res.status).toBe(201);
+    const [row] = await rows();
+    expect([row!.coached, row!.runFingerprint]).toEqual([
+      false,
+      "34615bd71749325c79a1bab9a3c4d820fdd96b08dd461c0f6bc57e7f5d7b3f87",
+    ]);
+  });
+
+  it("writes coached true and the pdfp1 fingerprint for a run with a manager decision", async () => {
+    const token = encodeToken({
+      ...decodeToken(scriptedToken(CUP8, "lb-coach")),
+      manager: [{ type: "tactic", match: 0, minute: 30, tactic: "attack" }],
+    });
+    const res = await submit({ nickname: "Misty", token });
+    expect(res.status).toBe(201);
+    const [row] = await rows();
+    expect([row!.coached, row!.runFingerprint]).toEqual([
+      true,
+      "7e21b3d9e68a0b6437de6cd1f7cfa7fd8b3b0d1a125e7aa45767db835eda3262",
+    ]);
+  });
+});
+
+// The golden pd6 run with one touchline decision. A second identical decision a minute later
+// changes nothing on the pitch, so it is the cheapest copy a player can make of someone's run.
+const tactic = (minute: number) =>
+  ({ type: "tactic", match: 0, minute, tactic: "attack" }) as const;
+const COACHED_PD6 = encodeToken({ ...decodeToken(GOLDEN_CUP8_V6), manager: [tactic(0)] });
+const NO_OP_COPY = encodeToken({
+  ...decodeToken(GOLDEN_CUP8_V6),
+  manager: [tactic(0), tactic(1)],
+});
+
+describe("copy guard (catches one run listed twice under two nicknames)", () => {
+  it("rejects a no-op manager copy of another player's run", async () => {
+    const original = await submit({ nickname: "Misty", token: COACHED_PD6 });
+    expect(original.status).toBe(201);
+    const copy = await submit({ nickname: "Brock", token: NO_OP_COPY });
+    expect([copy.status, copy.body.error?.code, copy.body.error?.nickname]).toEqual([
+      409,
+      "DUPLICATE_TOKEN",
+      "Misty",
+    ]);
+    expect((await rows()).map((r) => [r.nickname, r.token])).toEqual([["Misty", COACHED_PD6]]);
+  });
+
+  it("the no-op copy replays to the original's W-D-L and Team Score (regression guard, no RED: behaviour already correct)", () => {
+    expect(NO_OP_COPY).not.toBe(COACHED_PD6);
+    const record = (token: string) => {
+      const { cup } = replay(decodeToken(token));
+      return [cup.wins, cup.draws, cup.losses, cup.rating.score];
+    };
+    expect([record(COACHED_PD6), record(NO_OP_COPY)]).toEqual([
+      [5, 0, 1, 593],
+      [5, 0, 1, 593],
+    ]);
+  });
+});
+
+describe("insert plus rank (catches a saved run that needs a second round trip for its rank)", () => {
+  it("saves and ranks a run in one statement after admission: rank 1 on an empty board, rank 2 behind a better row", async () => {
+    const queries: string[] = [];
+    const logged = await migratedDb({ logQuery: (query) => void queries.push(query) });
+    const using = drizzleStore(() => logged.db);
+    try {
+      const first = await submit(
+        { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
+        undefined,
+        using,
+      );
+      expect([first.status, first.body.entry.rank, queries.length]).toEqual([201, 1, 2]);
+
+      await logged.db.insert(leaderboardEntries).values({
+        nickname: "Leader",
+        mode: "cup8",
+        variant: "classic3.squadFirst.g123456789",
+        seed: "leader",
+        token: "pd6.leader",
+        teamScore: 900,
+        wins: 8,
+        draws: 0,
+        losses: 0,
+        engineVersion: ENGINE_VERSION,
+        coached: false,
+        runFingerprint: "fp-leader",
+        ipHash: "test",
+      });
+      await logged.db.delete(leaderboardEntries).where(eq(leaderboardEntries.nickname, "Ash"));
+      queries.length = 0;
+      const second = await submit(
+        { nickname: "Ash", token: scriptedToken(CUP8, "lb-cup8") },
+        "203.0.113.8",
+        using,
+      );
+      expect([second.status, second.body.entry.rank, queries.length]).toEqual([201, 2, 2]);
+    } finally {
+      await logged.client.close();
+    }
+  });
+});
+
+describe("admission SQL (catches an all-time submit paying for the daily nickname probe)", () => {
+  it.each([
+    ["an all-time", false, () => scriptedToken(CUP8, "lb-cup8")],
+    ["a daily", true, () => scriptedToken(dailySettings("4-3-3"), dailySeed(TODAY))],
+  ] as const)(
+    "%s run has the daily_date probe in its admission SQL: %s",
+    async (_, daily, token) => {
+      const queries: string[] = [];
+      const logged = await migratedDb({ logQuery: (query) => void queries.push(query) });
+      try {
+        const res = await submit(
+          { nickname: "Ash", token: token() },
+          undefined,
+          drizzleStore(() => logged.db),
+        );
+        expect(res.status).toBe(201);
+        expect(queries[0]!.includes("daily_date =")).toBe(daily);
+      } finally {
+        await logged.client.close();
+      }
+    },
+  );
 });
 
 describe("GET /api/leaderboard (catches a wrong board order or a read that writes)", () => {
@@ -734,6 +869,8 @@ describe("GET /api/leaderboard (catches a wrong board order or a read that write
       draws,
       losses: 8 - wins - draws,
       engineVersion: ENGINE_VERSION,
+      coached: false,
+      runFingerprint: `fp-${nickname}`,
       ipHash: "h",
       createdAt: new Date(Date.UTC(2026, 9, 9, 12, minute)),
     });
@@ -773,6 +910,8 @@ describe("GET /api/leaderboard (catches a wrong board order or a read that write
         draws: 0,
         losses: 2,
         engineVersion: ENGINE_VERSION,
+        coached: false,
+        runFingerprint: `fp${i}`,
         ipHash: "h",
       })),
     );

@@ -1,16 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { PGlite } from "@electric-sql/pglite";
 import { sql } from "drizzle-orm";
-import { encodeToken } from "@/engine/token";
+import { decodeToken, encodeToken } from "@/engine/token";
 import type { DraftSettings, ManagerAction, Seed } from "@/engine/types";
 import { leaderboardEntries, type NewLeaderboardRow } from "@/db/schema";
 import type { Db } from "@/db/types";
 import { isCoached } from "@/ui/manager/coached";
 import type { BoardEntry } from "../../contract";
-import { handleBoard } from "../handlers";
-import { coachedSql, drizzleStore, type LeaderboardStore } from "../store";
-import { migratedDb } from "./fixtures";
-import { A11Y_RUN_V1 } from "@/engine/versions/__tests__/fixtures";
+import { handleBoard, handleSubmit } from "../handlers";
+import { drizzleStore, type LeaderboardStore } from "../store";
+import { GOLDEN_CUP8_V6, migratedDb, scriptedToken } from "./fixtures";
+
+const NOW = new Date("2026-10-09T16:00:00Z");
 
 const CUP8: DraftSettings = {
   mode: "cup8",
@@ -19,15 +20,8 @@ const CUP8: DraftSettings = {
   style: "classic3",
   order: "squadFirst",
 };
-const BUILDER: DraftSettings = {
-  mode: "builder",
-  formation: "4-3-3",
-  gens: [1],
-  legendaries: false,
-};
-
-function token(seed: string, manager: readonly ManagerAction[] = [], settings = CUP8): string {
-  return encodeToken({ v: 6, settings, seed: seed as Seed, actions: [], manager });
+function token(seed: string, manager: readonly ManagerAction[] = []): string {
+  return encodeToken({ v: 6, settings: CUP8, seed: seed as Seed, actions: [], manager });
 }
 
 const tactic = (minute: number): ManagerAction => ({
@@ -37,7 +31,13 @@ const tactic = (minute: number): ManagerAction => ({
   tactic: "attack",
 });
 
-function row(nickname: string, tok: string, wins: number, teamScore: number): NewLeaderboardRow {
+function row(
+  nickname: string,
+  tok: string,
+  wins: number,
+  teamScore: number,
+  coached = isCoached(tok),
+): NewLeaderboardRow {
   return {
     nickname,
     mode: "cup8",
@@ -50,6 +50,8 @@ function row(nickname: string, tok: string, wins: number, teamScore: number): Ne
     draws: 0,
     losses: 8 - wins,
     engineVersion: "pokedraft-engine-6",
+    coached,
+    runFingerprint: `fp-${nickname}`,
     ipHash: "test",
     createdAt: new Date("2026-10-16T12:00:00Z"),
   };
@@ -139,137 +141,64 @@ describe("coach filter is its own ranked top 50 (catches an Uncoached view cut s
   });
 });
 
-describe("coachedSql equals isCoached row by row (catches the SQL and the TypeScript rule drifting apart)", () => {
-  it("agrees on coached, uncoached, retained and builder tokens", async () => {
-    const tokens: [string, string, boolean][] = [
-      ["pd6 coached", token("eq-1", [tactic(0)]), true],
-      ["pd6 coached twice", token("eq-2", [tactic(0), tactic(45)]), true],
-      ["pd6 uncoached", token("eq-3"), false],
-      ["pd6 builder coached", token("eq-4", [tactic(10)], BUILDER), true],
-      ["pd5", "pd5.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwib3RoZXItc2VlZCIsW11d", false],
-      ["pd3", "pd3.e30", false],
-      ["pd1 golden", A11Y_RUN_V1, false],
-    ];
-    await db
-      .insert(leaderboardEntries)
-      .values(tokens.map(([name, tok], i) => row(name, tok, 1, i)));
-    const result = await db.execute(
-      sql`SELECT nickname, ${coachedSql} AS coached FROM ${leaderboardEntries}`,
-    );
-    const fromSql = Object.fromEntries(
-      (result as unknown as { rows: { nickname: string; coached: boolean }[] }).rows.map((r) => [
-        r.nickname,
-        r.coached,
-      ]),
-    );
-    expect(tokens.map(([name]) => [name, fromSql[name]])).toEqual(
-      tokens.map(([name, , want]) => [name, want]),
-    );
-    expect(tokens.map(([name, tok]) => [name, isCoached(tok)])).toEqual(
-      tokens.map(([name, , want]) => [name, want]),
-    );
-  });
-});
-
-const pd6 = (payload: string | Uint8Array) => `pd6.${Buffer.from(payload).toString("base64url")}`;
-
-const MALFORMED: [string, string, boolean][] = [
-  ["pd6 bad charset", "pd6.not base64!", false],
-  ["pd6 empty body", "pd6.", false],
-  ["pd6 base64 length 1 mod 4", "pd6.AAAAA", false],
-  ["pd6 not json", pd6("not json at all"), false],
-  ["pd6 truncated json", pd6('["c","s",[],[["t"'), false],
-  ["pd6 json object", pd6("{}"), false],
-  ["pd6 json scalar", pd6("7"), false],
-  ["pd6 nul byte", pd6(new Uint8Array([...Buffer.from("[1,2,3,4]"), 0])), false],
-  ["pd6 invalid utf8 outside a string", pd6(new Uint8Array([0x5b, 0xff, 0x5d])), false],
-  [
-    "pd6 invalid utf8 inside a string",
-    pd6(new Uint8Array([...Buffer.from('["'), 0xff, ...Buffer.from('",1,2,3]')])),
-    true,
-  ],
-  ["pd6 numeric overflow", pd6("[1e1000000]"), false],
-  ["pd6 leading byte order mark", pd6('\uFEFF["c","s",[],[["t"]]]'), false],
-];
-
-describe("coachedSql is total on malformed pd6 tokens (catches a tampered row turning the filtered boards into 503s)", () => {
-  it("agrees with isCoached on every malformed token instead of throwing", async () => {
-    await db
-      .insert(leaderboardEntries)
-      .values(MALFORMED.map(([, tok], i) => row(`Bad ${i}`, tok, 1, i)));
-    const result = await db.execute(
-      sql`SELECT nickname, ${coachedSql} AS coached FROM ${leaderboardEntries}`,
-    );
-    const fromSql = Object.fromEntries(
-      (result as unknown as { rows: { nickname: string; coached: boolean }[] }).rows.map((r) => [
-        r.nickname,
-        r.coached,
-      ]),
-    );
-    expect(MALFORMED.map(([name], i) => [name, fromSql[`Bad ${i}`]])).toEqual(
-      MALFORMED.map(([name, , want]) => [name, want]),
-    );
-    expect(MALFORMED.map(([name, tok]) => [name, isCoached(tok)])).toEqual(
-      MALFORMED.map(([name, , want]) => [name, want]),
-    );
-  });
-
-  it("pins the tampered-only payloads PostgreSQL jsonb rejects and JSON.parse accepts", async () => {
-    const divergent: [string, string][] = [
-      ["pd6 nul escape", pd6('["\\u0000",1,2,3]')],
-      ["pd6 lone surrogate", pd6('["\\ud800",1,2,3]')],
-      ["pd6 overflow x4", pd6("[1e1000000,1,2,3]")],
-    ];
-    await db
-      .insert(leaderboardEntries)
-      .values(divergent.map(([name, tok], i) => row(name, tok, 1, i)));
-    const result = await db.execute(
-      sql`SELECT nickname, ${coachedSql} AS coached FROM ${leaderboardEntries}`,
-    );
-    const fromSql = Object.fromEntries(
-      (result as unknown as { rows: { nickname: string; coached: boolean }[] }).rows.map((r) => [
-        r.nickname,
-        r.coached,
-      ]),
-    );
-    expect(divergent.map(([name, tok]) => [name, fromSql[name], isCoached(tok)])).toEqual([
-      ["pd6 nul escape", false, true],
-      ["pd6 lone surrogate", false, true],
-      ["pd6 overflow x4", false, true],
-    ]);
-  });
-
-  it("keeps every coach view at 200 with a malformed row on the board", async () => {
+describe("coach views read the stored coached column (catches the filter and the chip following different rules)", () => {
+  it("files a row by its coached column, not by its token, in every view and on the chip", async () => {
     await db
       .insert(leaderboardEntries)
       .values([
-        row("Coach", token("tamper-1", [tactic(0)]), 5, 500),
-        row("Plain", token("tamper-2"), 4, 400),
-        row("Tampered", pd6("{}"), 3, 300),
+        row("Column coached", token("column-1"), 5, 500, true),
+        row("Column plain", token("column-2", [tactic(0)]), 4, 400, false),
       ]);
     const views = await Promise.all(["all", "uncoached", "coached"].map((c) => board(c)));
     expect(
-      views.map((v) => [
-        v.status,
-        v.body.entries?.map((e) => [e.nickname, e.coached]) ?? v.body.error?.code,
-      ]),
+      views.map((v) => [v.status, v.body.entries.map((e) => [e.nickname, e.coached])]),
     ).toEqual([
       [
         200,
         [
-          ["Coach", true],
-          ["Plain", false],
-          ["Tampered", false],
+          ["Column coached", true],
+          ["Column plain", false],
         ],
       ],
-      [
-        200,
-        [
-          ["Plain", false],
-          ["Tampered", false],
-        ],
-      ],
-      [200, [["Coach", true]]],
+      [200, [["Column plain", false]]],
+      [200, [["Column coached", true]]],
     ]);
+  });
+
+  it("stores coached equal to isCoached(token) for every fixture token a submit accepts (regression guard, no RED: behaviour already correct)", async () => {
+    const plain = scriptedToken(CUP8, "eq-1");
+    const coached = encodeToken({
+      ...decodeToken(scriptedToken(CUP8, "eq-2")),
+      manager: [tactic(30)],
+    });
+    const goldenCoached = encodeToken({ ...decodeToken(GOLDEN_CUP8_V6), manager: [tactic(0)] });
+    const fixtures: [string, string][] = [
+      ["Plain", plain],
+      ["Coached", coached],
+      ["Golden", GOLDEN_CUP8_V6],
+      ["Golden coached", goldenCoached],
+    ];
+    for (const [nickname, tok] of fixtures) {
+      const res = await handleSubmit(
+        new Request("http://local/api/leaderboard", {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-real-ip": "198.51.100.9" },
+          body: JSON.stringify({ nickname, token: tok }),
+        }),
+        { store, ipHashSecret: "test-secret-0123456789abcdef01234567", now: () => NOW },
+      );
+      expect([nickname, res.status]).toEqual([nickname, 201]);
+    }
+    const stored = Object.fromEntries(
+      (await db.select().from(leaderboardEntries)).map((r) => [r.nickname, r.coached]),
+    );
+    expect(fixtures.map(([nickname, tok]) => [nickname, isCoached(tok), stored[nickname]])).toEqual(
+      [
+        ["Plain", false, false],
+        ["Coached", true, true],
+        ["Golden", false, false],
+        ["Golden coached", true, true],
+      ],
+    );
   });
 });

@@ -29,6 +29,20 @@
       "when": 1792066817368,
       "tag": "0003_serialized_rate_limit",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792451815904,
+      "tag": "0004_run_fingerprint_coached",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792454403045,
+      "tag": "0005_leaderboard_integrity",
+      "breakpoints": true
     }
   ]
 }

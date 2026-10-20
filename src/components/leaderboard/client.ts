@@ -48,7 +48,9 @@ const submitEntrySchema = entrySchema.extend({
   rank: z.number().nullable(),
 }) satisfies z.ZodType<SubmitEntry>;
 const submitOkSchema = z.object({ entry: submitEntrySchema });
-const apiErrorSchema = z.object({ error: z.object({ code: z.string() }) });
+const apiErrorSchema = z.object({
+  error: z.object({ code: z.string(), nickname: z.string().optional() }),
+});
 
 export function parseBoardView(q: URLSearchParams, today: string): BoardView {
   const mode = (BOARD_MODES as readonly (string | null)[]).includes(q.get("mode"))
@@ -123,7 +125,7 @@ export type SubmitFailure = SubmitErrorCode | "NETWORK" | "UNEXPECTED";
 
 export type SubmitResult =
   | { readonly kind: "ok"; readonly entry: SubmitEntry }
-  | { readonly kind: "error"; readonly code: SubmitFailure };
+  | { readonly kind: "error"; readonly code: SubmitFailure; readonly nickname?: string };
 
 function isSubmitCode(code: string): code is SubmitErrorCode {
   return Object.hasOwn(SUBMIT_ERROR_STATUS, code);
@@ -158,7 +160,8 @@ export async function submitRun(
   }
   const err = apiErrorSchema.safeParse(body);
   if (err.success && isSubmitCode(err.data.error.code)) {
-    return { kind: "error", code: err.data.error.code };
+    const { code, nickname } = err.data.error;
+    return nickname === undefined ? { kind: "error", code } : { kind: "error", code, nickname };
   }
   return { kind: "error", code: "UNEXPECTED" };
 }

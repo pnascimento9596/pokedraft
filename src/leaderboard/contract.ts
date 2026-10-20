@@ -51,7 +51,12 @@ export const BOARD_ERROR_STATUS = {
 export type BoardErrorCode = keyof typeof BOARD_ERROR_STATUS;
 
 export interface ApiError<C extends string> {
-  readonly error: { readonly code: C; readonly message: string };
+  readonly error: {
+    readonly code: C;
+    readonly message: string;
+    /** DUPLICATE_TOKEN only: the nickname the identical run is listed under, when it is known. */
+    readonly nickname?: string;
+  };
 }
 
 export interface BoardEntry {
@@ -67,7 +72,7 @@ export interface BoardEntry {
   readonly draws: number;
   readonly losses: number;
   readonly createdAt: string;
-  /** The run's token carries touchline decisions. Derived from the token when the board is read. */
+  /** The run's token carries touchline decisions. Stored with the run when it is submitted. */
   readonly coached: boolean;
 }
 

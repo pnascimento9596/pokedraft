@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { encodeToken } from "@/engine/token";
 import { RUN_TOKEN_VERSION, type DraftSettings, type Seed } from "@/engine/types";
-import { MANAGER_TOKEN_VERSIONS, isCoached, type PositiveIntegers } from "../coached";
+import { MANAGER_TOKEN_VERSIONS, isCoached } from "../coached";
 
 const SETTINGS: DraftSettings = {
   mode: "cup8",
@@ -54,20 +54,5 @@ describe("isCoached reads every manager-capable version (catches retained coache
     expect(MANAGER_TOKEN_VERSIONS.map((v) => isCoached(`pd${v}.${plain}`))).toEqual([false]);
     expect(isCoached(`pd5.${coached}`)).toBe(false);
     expect(isCoached(`pd99.${coached}`)).toBe(false);
-  });
-});
-
-describe("PositiveIntegers rejects a version list that is unsafe to splice into SQL (catches a future edit compiling a fraction or a widened number)", () => {
-  it("admits positive integer literals and nothing else", () => {
-    const ok: PositiveIntegers<readonly [5, 6]> = [5, 6];
-    // @ts-expect-error a fraction is not a token version
-    const fraction: PositiveIntegers<readonly [6, 1.5]> = [6, 1.5];
-    // @ts-expect-error zero is not a token version
-    const zero: PositiveIntegers<readonly [0]> = [0];
-    // @ts-expect-error a negative is not a token version
-    const negative: PositiveIntegers<readonly [-6]> = [-6];
-    // @ts-expect-error a widened number could hold anything
-    const widened: PositiveIntegers<readonly number[]> = [6];
-    expect([ok, fraction, zero, negative, widened]).toEqual([[5, 6], [6, 1.5], [0], [-6], [6]]);
   });
 });
