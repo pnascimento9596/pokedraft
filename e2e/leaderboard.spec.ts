@@ -127,9 +127,9 @@ test("/leaderboard renders the stubbed rows and each links to its /r/ replay", a
   await expect(rows.nth(1).getByRole("link")).toHaveAttribute("href", "/r/pd1.e2e-two");
   expect(seen).toContain("?mode=cup8&scope=daily&date=2026-10-09");
 
-  await page.getByRole("tab", { name: "All-time" }).click();
+  await page.getByRole("button", { name: "All-time" }).click();
   await expect(page).toHaveURL(/\/leaderboard\?mode=cup8&scope=all$/);
-  await page.getByRole("radio", { name: "151 Challenge" }).click();
+  await page.getByRole("button", { name: "151 Challenge" }).click();
   await expect(page).toHaveURL(/\/leaderboard\?mode=kanto151&scope=all$/);
   await expect.poll(() => seen).toContain("?mode=kanto151&scope=all");
 });
@@ -194,7 +194,7 @@ test("a /leaderboard link with coach=uncoached opens the Uncoached view and keep
     path: "docs/reports/security-integrity-quick-fixes/leaderboard-coach-url-390x844.png",
   });
 
-  await page.getByRole("radio", { name: "151 Challenge" }).click();
+  await page.getByRole("button", { name: "151 Challenge" }).click();
   await expect(page).toHaveURL(/\/leaderboard\?mode=kanto151&scope=all&coach=uncoached$/);
   await expect.poll(() => seen).toContain("?mode=kanto151&scope=all&coach=uncoached");
 

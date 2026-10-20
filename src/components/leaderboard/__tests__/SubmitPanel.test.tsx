@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
 import type { BoardEntry } from "@/leaderboard/contract";
@@ -191,5 +191,82 @@ describe("SubmitPanel", () => {
     expect((await screen.findByTestId("submit-error")).textContent).toBe(
       "Could not reach the leaderboard. Check your connection and try again.",
     );
+  });
+});
+
+describe("Share my rank", () => {
+  function phoneSheet(): ShareData[] {
+    vi.stubGlobal("matchMedia", (q: string) => ({ matches: q === "(pointer: coarse)", media: q }));
+    const calls: ShareData[] = [];
+    Object.assign(navigator, {
+      canShare: () => true,
+      share: async (data: ShareData) => {
+        calls.push(data);
+      },
+    });
+    return calls;
+  }
+
+  afterEach(() => {
+    Reflect.deleteProperty(navigator, "share");
+    Reflect.deleteProperty(navigator, "canShare");
+  });
+
+  it("shares the daily rank with the run link next to View leaderboard (catches a submitted rank with no way to send it)", async () => {
+    const sheet = phoneSheet();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json(201, { entry: ENTRY })),
+    );
+    render(<SubmitPanel token="pd1.abc" daily />);
+    typeAndSubmit("Misty");
+    await screen.findByTestId("submit-success");
+    const panel = screen.getByTestId("submit-panel");
+    expect(
+      within(panel)
+        .getAllByRole("link")
+        .concat(within(panel).getAllByRole("button"))
+        .map((el) => el.textContent),
+    ).toEqual(["View leaderboard", "Share my rank"]);
+    fireEvent.click(screen.getByRole("button", { name: "Share my rank" }));
+    expect(await screen.findByText("Link shared")).toBeTruthy();
+    expect(sheet).toEqual([
+      {
+        title: "pokedraft",
+        text: "I'm #3 on the October 9 daily. Beat it?",
+        url: "http://localhost:3000/r/pd1?t=abc",
+      },
+    ]);
+  });
+
+  it("names the all-time board in the all-time share text", async () => {
+    const sheet = phoneSheet();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json(201, { entry: { ...ENTRY, rank: 12, dailyDate: null } })),
+    );
+    render(<SubmitPanel token="pd6.xyz" daily={false} />);
+    typeAndSubmit("Misty");
+    fireEvent.click(await screen.findByRole("button", { name: "Share my rank" }));
+    await screen.findByText("Link shared");
+    expect(sheet).toEqual([
+      {
+        title: "pokedraft",
+        text: "I'm #12 on the all-time board. Beat it?",
+        url: "http://localhost:3000/r/pd6?t=xyz",
+      },
+    ]);
+  });
+
+  it("offers no Share my rank when the rank is unavailable (catches a share that would say #null)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json(201, { entry: { ...ENTRY, rank: null } })),
+    );
+    render(<SubmitPanel token="pd1.abc" daily />);
+    typeAndSubmit("Misty");
+    await screen.findByTestId("rank-unavailable");
+    expect(screen.queryByRole("button", { name: "Share my rank" })).toBeNull();
+    expect(screen.getByRole("link", { name: "View leaderboard" })).toBeTruthy();
   });
 });
