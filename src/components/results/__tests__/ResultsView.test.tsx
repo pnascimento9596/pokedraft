@@ -12,6 +12,9 @@ import { GOLDEN_CUP8_V5 } from "@/engine/versions/__tests__/fixtures";
 afterEach(cleanup);
 beforeEach(() => {
   localStorage.clear();
+  sessionStorage.clear();
+  // jsdom has no scrollIntoView; a star badge tap scrolls the highlights stage.
+  Element.prototype.scrollIntoView = () => {};
   HTMLDialogElement.prototype.showModal = function () {
     this.open = true;
   };
@@ -378,5 +381,147 @@ describe("ResultsView", () => {
     const shown = spoken.textContent ?? "";
     expect(shown).toContain("Hero");
     expect(shown).not.toMatch(/\p{Extended_Pictographic}/u);
+  });
+});
+
+function hero(): HTMLElement {
+  return screen.getByRole("heading", { level: 1 }).closest("section")!;
+}
+
+function preferReducedMotion(reduce: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: reduce && query === "(prefers-reduced-motion: reduce)",
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+    }),
+  });
+}
+
+describe("results reveal (Wave 5 row 5e)", () => {
+  afterEach(() => {
+    Reflect.deleteProperty(window, "matchMedia");
+  });
+
+  it("stages the hero reveal on the first live view of a run only (catches the count-up replaying on a revisit)", async () => {
+    await view(FLAWLESS, "live");
+    expect(hero().getAttribute("data-reveal")).toBe("staged");
+    expect(screen.getByTestId("results-score").style.getPropertyValue("--score")).toBe("845");
+    expect(screen.getByTestId("results-score").textContent).toBe("845");
+    expect(Object.keys(sessionStorage).filter((k) => k.startsWith("pokedraft:revealed:"))).toEqual([
+      expect.stringMatching(/^pokedraft:revealed:[0-9a-f]{16}$/),
+    ]);
+    cleanup();
+    await view(FLAWLESS, "live");
+    expect(hero().hasAttribute("data-reveal")).toBe(false);
+    expect(screen.getByTestId("results-score").textContent).toBe("845");
+  });
+
+  it("never stages the reveal on a shared run (catches a friend's link waiting on an animation)", async () => {
+    await view(FLAWLESS, "shared");
+    expect(hero().hasAttribute("data-reveal")).toBe(false);
+    expect(Object.keys(sessionStorage)).toEqual([]);
+  });
+
+  it("reduced motion renders no count-up overlay on a first live view", async () => {
+    preferReducedMotion(true);
+    await view(FLAWLESS, "live");
+    expect(hero().hasAttribute("data-reveal")).toBe(false);
+    expect(screen.getByTestId("results-score").textContent).toBe("845");
+    expect(screen.getByTestId("results-record").textContent).toBe("8-0-0");
+  });
+
+  it("puts a decorative trophy beside Champions and none on an eliminated run", async () => {
+    await view(FLAWLESS, "shared");
+    const trophy = within(hero()).getByTestId("results-trophy");
+    expect(trophy.getAttribute("aria-hidden")).toBe("true");
+    expect(within(hero()).getByText("Champions")).toBeTruthy();
+    cleanup();
+    await view(ELIMINATED, "shared");
+    expect(screen.queryByTestId("results-trophy")).toBeNull();
+  });
+
+  it("shows the player of the tournament once, on a hero MVP card with the breakdown (catches the same fact on the card and an award tile)", async () => {
+    const { cup } = await replay(FLAWLESS);
+    const potContribution = {
+      species: cup.awards.playerOfTournament.species,
+      goals: 4,
+      assists: 1,
+      cleanSheets: 0,
+      minutes: 720,
+      points: { goals: 12, assists: 2, cleanSheets: 0, minutes: 4 },
+      total: 18,
+    };
+    await view(FLAWLESS, "shared", { ...cup, awards: { ...cup.awards, potContribution } });
+    const mvp = within(hero()).getByTestId("results-mvp");
+    expect(within(mvp).getByText("Zarude")).toBeTruthy();
+    expect(within(mvp).getByTestId("pot-contribution").textContent).toBe(
+      "18 pts: goals 12, assists 2, clean sheets 0, minutes 4",
+    );
+    expect(screen.getAllByText("Player of the tournament")).toHaveLength(1);
+    const awards = screen.getByRole("heading", { level: 2, name: "Awards" }).closest("section")!;
+    expect([...awards.querySelectorAll(".kicker")].map((k) => k.textContent)).toEqual([
+      "Golden Boot",
+      "Top assister",
+    ]);
+  });
+
+  it("an old-engine run's MVP card shows the name only, with no invented breakdown", async () => {
+    await view(FLAWLESS, "shared");
+    const mvp = within(hero()).getByTestId("results-mvp");
+    expect(mvp.textContent).toBe("Player of the tournamentZarude");
+    expect(within(mvp).queryByTestId("pot-contribution")).toBeNull();
+  });
+});
+
+describe("results sync (Wave 5 row 5e)", () => {
+  const scrolls = vi.fn();
+
+  beforeEach(() => {
+    scrolls.mockReset();
+    Object.defineProperty(Element.prototype, "scrollIntoView", {
+      configurable: true,
+      value: scrolls,
+    });
+  });
+  afterEach(() => {
+    Reflect.deleteProperty(Element.prototype, "scrollIntoView");
+    Reflect.deleteProperty(window, "matchMedia");
+  });
+
+  it("a star badge tap scrolls the highlights stage into view and focuses its heading (catches a tap that changes a stage off screen)", async () => {
+    await view(FLAWLESS, "shared");
+    fireEvent.click(screen.getByTestId("match-star-G3"));
+    expect(scrolls.mock.calls).toEqual([[{ block: "nearest", behavior: "smooth" }]]);
+    expect(scrolls.mock.contexts).toEqual([screen.getByTestId("highlights-stage")]);
+    expect(document.activeElement).toBe(screen.getByTestId("star-name"));
+    expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
+  });
+
+  it("a star badge tap jumps without smooth scrolling under reduced motion", async () => {
+    preferReducedMotion(true);
+    await view(FLAWLESS, "shared");
+    fireEvent.click(screen.getByTestId("match-star-G2"));
+    expect(scrolls.mock.calls).toEqual([[{ block: "nearest", behavior: "auto" }]]);
+  });
+
+  it("a highlights chip tap does not scroll the page (regression guard, no RED: behaviour already correct)", async () => {
+    await view(FLAWLESS, "shared");
+    fireEvent.click(screen.getByTestId("highlight-chip-G2"));
+    expect(scrolls).not.toHaveBeenCalled();
+  });
+
+  it("the highlights have one visible h2 and the star's name is an h3 (catches a skipped heading level)", async () => {
+    await view(FLAWLESS, "shared");
+    const highlights = screen.getByTestId("match-highlights");
+    expect(
+      within(highlights)
+        .getAllByRole("heading", { level: 2 })
+        .map((h) => h.textContent),
+    ).toEqual(["Highlights"]);
+    expect(within(highlights).getByText("Silph Stadium Highlights").tagName).toBe("SPAN");
+    expect(screen.getByTestId("star-name").tagName).toBe("H3");
   });
 });

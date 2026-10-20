@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Results reveal and sync
+
+Branch `feat/results-reveal` off `origin/main` at `9f01b8c`. Wave 5 row 5e (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- The first time you see a run's results after playing it, the Team Score counts up from 0, the W-D-L record flips in, a gold trophy appears beside Champions and the gold flawless mark pops in, then a "Player of the tournament" card rises in with the player's picture, name and points breakdown. It takes under 2 seconds.
+- A friend opening your link, a reload or a second look in the same tab shows the final numbers at once, and so does a phone set to reduce motion.
+- An 8-0 flawless run's mark is gold instead of green, in both themes.
+- The player of the tournament is shown once, on the new card at the top; the Awards box keeps Golden Boot and Top assister. A run from an older engine shows the name only.
+- Tapping a match's star player scrolls the highlights into view and moves focus to the star's name. Closing Watch live puts focus and the page back where you were, and after a goal link it lands on that match's Watch live button.
+- The highlights have a visible "Highlights" heading and the star's name is a sub-heading, so screen reader heading lists read in order.
+
+RED commit: `e2ce665` (7 of 36 unit tests failed in `ResultsView.test.tsx`; `e2e/results-reveal.spec.ts` failed 5 of 7 against a build of `e2ce665`). GREEN `dbab0bf`. `f13d897` watches the console on the live reveal, and `94fc71b` adds a zero layout shift guard (regression guard, no RED).
+
+Gates at `dbab0bf` (the later commits change only `e2e/results-reveal.spec.ts`):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 11 touched code and test files.
+- Unit tests: 1,873 passed in 221 files.
+- Playwright (`CI=1`, headless, `--retries=0`, build of the `dbab0bf` code): `results-reveal` passed 14 of 14 at `94fc71b`; with `watch-live`, `theme-results`, `layout-shift`, `highlights-honesty`, `results-interactions`, `head-to-head` and 18 more related specs, 187 passed and 5 skipped by their own project gates. Full suite once with the specs of `f13d897`: 1,039 passed, 67 skipped by their own project gates, 0 failed, 0 flaky.
+- NOT RUN: review and hosted CI; WebKit and a real phone for the reveal and the focus return, and a screen reader pass over the MVP card and highlights headings (owner actions).
+
+Decision log: `docs/decisions/results-reveal.md`. Browser proof: `docs/reports/results-reveal/` (`reveal-{0ms,600ms,2000ms}-390.png`, `hero-{390,360,320}-{light,dark}.png`, `highlights-{390,360,320}-{light,dark}.png`).
+
 ## Badge loop budget
 
 Branch `test/badge-loop-budget` off `origin/main` at `9f01b8c`. Out-of-band side fix (Green) that unblocks Wave 5 row 5e (PR #134). Only `e2e/team-readability.spec.ts` changed. No product code changed.
@@ -16,6 +38,8 @@ Gates at the head: recorded in the PR review receipt. NOT RUN: the full Playwrig
 Decision log: `docs/decisions/badge-loop-budget.md`.
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #135 (out-of-band side fix for 5e, badge loop budget, Green) merged as squash `36ac415`, reviewed head `c896ac8`, GLM 5.3 Flash APPROVE in round 1 with canary `badge-loop-budget-df969b100b9d1780af8e0191df73502e` echoed. At `c896ac8` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,863 unit tests passed in 221 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green on the first run, with the play badge test at 2.7 minutes per width on shard 4 (3.1 to 3.3 minutes before). Production `/api/health?db=1` served `36ac415` with `db.status` ok; `team-readability` against production (chromium) passed 7 of 7.
 
 ## Head-to-head challenges
 

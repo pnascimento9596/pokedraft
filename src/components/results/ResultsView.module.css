@@ -35,12 +35,19 @@
   color: var(--text);
 }
 .finish {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 15px;
   font-weight: 600;
   color: var(--text);
 }
 .finish[data-finish="champion"] {
   color: var(--ok-text);
+}
+.trophy {
+  flex: none;
+  color: var(--gold-edge);
 }
 .flawless {
   display: flex;
@@ -49,9 +56,10 @@
   gap: 8px;
   margin: 12px 0 0;
   padding: 10px 12px;
+  border: 1px solid var(--gold-edge);
   border-radius: var(--radius-md);
-  background: var(--ok-bg);
-  color: var(--ok-text);
+  background: var(--gold-bg);
+  color: var(--gold-ink);
   font-weight: 600;
 }
 .flawlessMark {
@@ -59,6 +67,110 @@
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
+.mvp {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+.mvpLabel {
+  display: block;
+}
+.mvpName {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/*
+ * The staged reveal on a run's first live view. The real figures stay in the DOM the whole time:
+ * the Team Score's text is transparent only while a counter overlay counts up from 0 over it, so
+ * text reads, the font pins and the box size never change.
+ */
+@property --n {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+.hero[data-reveal] .count {
+  position: relative;
+  animation: inkHidden 900ms step-end;
+}
+.hero[data-reveal] .count::after {
+  content: counter(n);
+  counter-reset: n var(--n);
+  position: absolute;
+  inset: 0;
+  color: var(--text);
+  visibility: hidden;
+  animation:
+    countUp 900ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    overlayShown 900ms step-end;
+}
+.hero[data-reveal] .flip {
+  animation: flipIn 300ms ease-out 900ms both;
+}
+.hero[data-reveal] .trophy,
+.hero[data-reveal] .flawless {
+  animation: popIn 300ms ease-out 1200ms both;
+}
+.hero[data-reveal] .mvp {
+  animation: riseIn 300ms ease-out 1500ms both;
+}
+@keyframes countUp {
+  from {
+    --n: 0;
+  }
+  to {
+    --n: var(--score);
+  }
+}
+@keyframes inkHidden {
+  0%,
+  100% {
+    color: transparent;
+  }
+}
+@keyframes overlayShown {
+  0%,
+  100% {
+    visibility: visible;
+  }
+}
+@keyframes flipIn {
+  from {
+    transform: perspective(240px) rotateX(90deg);
+    opacity: 0;
+  }
+}
+@keyframes popIn {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+@keyframes riseIn {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero[data-reveal] .count::after {
+    content: none;
+  }
+  .hero[data-reveal] .count,
+  .hero[data-reveal] .flip,
+  .hero[data-reveal] .trophy,
+  .hero[data-reveal] .flawless,
+  .hero[data-reveal] .mvp {
+    animation: none;
+  }
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

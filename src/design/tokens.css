@@ -36,6 +36,7 @@
 
   /* Status */
   --ok-text: #1F5A41; --ok-bg: #E3EFE6; --ok-border: #BBD7C4;
+  --gold-bg: #F4D77A; --gold-ink: #3A2A08; --gold-edge: #8F6414; /* flawless mark, trophy */
   --info-bg: #E4EDF3;
   --warn-bg: #F4ECDA;
   --risk-mark: #BD4A40;
@@ -247,6 +248,7 @@
   --accent-fg: #0B1220;
   --selected: #1B3545;
   --ok-text: #79C8A0; --ok-bg: #15271D; --ok-border: #2C4636;
+  --gold-bg: #2E2410; --gold-ink: #F4D77A; --gold-edge: #C28A22;
   --info-bg: #13222D;
   --warn-bg: #28220F;
   --risk-mark: #D5675C;
