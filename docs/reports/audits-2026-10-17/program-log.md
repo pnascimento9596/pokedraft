@@ -334,3 +334,135 @@ previous merged" rule; the price was one expected merge per pair, both STATE-onl
 - Engine 7 (W6b) checklist from Wave 3 stands unchanged.
 - A physical phone check, Add to Home Screen, on-device sound and a real screen reader were not run
   for any row (owner action; the checklist is in the Wave 4 summary's decision log).
+
+## Wave 5. Social loop and leaderboard
+
+All eleven rows (5-0, 5a, 5b, 5c1, 5c2, 5d, 5e, 5f1, 5f2, 5g, 5h) merged, one PR each, each
+live-checked on production before the next landed, plus three side PRs. Production serves `e1f2c38`
+(PR #139), engine 6, token versions 1 to 6, `db.status` ok. No file under `src/engine`, `src/data`
+or `src/scouting` changed in the wave, and the engine goldens are untouched. Wave 5 is the first
+wave since dispatch 5 to change the production schema (migrations 0004 and 0005).
+
+| Row | PR | Squash | Reviewed head | Review | Production check |
+| --- | --- | --- | --- | --- | --- |
+| 5f1 fingerprint and coached columns, expand (Red) | #126 | `3b821d1` | `ce1ad25` | GLM APPROVE (round 1 at `ba48f46`, again at `ce1ad25`) and Red reviewer PASS | real-API smoke 201 then 200; `leaderboard`, `leaderboard-date`, `theme-board` 17 of 17 |
+| Health cron (side, Green) | #128 | `32d0b69` | `c6f3f68` | GLM APPROVE, round 1 | first workflow run succeeded |
+| 5-0 Wave 4 carryovers and queue triage | #127 | `ef542fb` | `246ade2` | GLM APPROVE, round 1 | 24 of 24 |
+| Health cron removed (side, Green) | #130 | `f27f17c` | `8e6a39c` | GLM APPROVE, round 1 | health served `f27f17c`; workflow gone |
+| 5f2 integrity contract and copy guard (Red) | #129 | `07beda9` | `1039845` | GLM APPROVE, round 2 (round 1 a load flake) and Red reviewer PASS | real-API smoke 201, 200, 409 `DUPLICATE_TOKEN`; 18 of 18 |
+| 5a share sheet, card prefetch, run metadata | #131 | `71a86ec` | `53bd08c` | GLM APPROVE, round 1 | 30 with one retry, then `share-sheet` 27 of 27 at `--repeat-each=3` |
+| 5b head-to-head challenges | #132 | `9f01b8c` | `960539b` | GLM APPROVE, round 1 | 16 of 16 |
+| Badge loop budget (side, Green) | #135 | `36ac415` | `c896ac8` | GLM APPROVE, round 1 | `team-readability` 7 of 7 |
+| 5e results reveal and sync | #134 | `afaa695` | `32b082c` | GLM APPROVE, round 1 at `cbd0ba3` and again at `32b082c` | 28 of 28 |
+| 5g seed boards and engine filter (Red) | #133 | `783ddbf` | `5cf4f47` | round 2: GLM APPROVE and Red reviewer PASS (round 1 voided by a CI layout failure) | API checks below; 26 of 26 |
+| 5h achievements | #136 | `fc657f4` | `2306816` | GLM APPROVE, round 1 | 38 of 38, including a real `/card` render |
+| 5d board UX | #137 | `54c6a58` | `d4ff01a` | GLM APPROVE, round 1 | 38 of 38 |
+| 5c1 exhibition route, picker, entry points | #138 | `aeb66b6` | `1b2c8dd` | GLM APPROVE, round 1 | 24 of 24 |
+| 5c2 exhibitions on the Broadcast | #139 | `e1f2c38` | `997d93a` | GLM APPROVE, round 1 | 21 of 21 |
+
+All reviews were GLM 5.3 Flash with an echoed per-head canary; no fallback reviewer ran. The Red
+rows (5f1, 5f2, 5g) also carry the new second receipt: a fresh `pokedraft-mode` subagent with no
+implementer context re-executed the gates, the PGlite tests and the preview database steps at the
+same head, and both receipts named that head before the merge. Production checks ran on chromium
+against `https://pokedraft-woad.vercel.app`.
+
+Order: the hand-off listed 5-0, 5f1, 5f2, 5g, 5a, 5d, 5b, 5c1, 5c2, 5e, 5h. The landed order was
+5f1, 5-0, 5f2, 5a, 5b, 5e, 5g, 5h, 5d, 5c1, 5c2. Each swap landed a row that was ready while the one
+ahead of it was still building or in review, with disjoint files, as the hand-off allows. 5f1 went
+before 5-0 because the Red lane is the critical path. 5a, 5b and 5e went before 5g, which was still
+building and needed two receipts and its database steps; 5b and 5e share only one mount line each
+with 5g in the results views. 5h went before 5d because 5h was ready while 5d waited for 5g's
+`formation` field. 5c1 and 5c2 came last, as planned. The health cron landed as a side PR and was
+removed the same day at the owner's request (#130).
+
+### Hosted CI failures treated as real
+
+- 5e's head failed shard e2e (4) twice (attempt and a rerun of the failed job): the whole-match play
+  badge test hit its 240 s timeout. Per hand-off 3.5 it got its own PR first (#135): two browser
+  round trips per clock step instead of three, an assertion that the loop reaches minute 90, and a
+  480 s budget. Hosted time per width went from 3.1 to 3.3 minutes to 2.7 (2.8 with 5e).
+- 5g's head failed shard e2e (3): the seed table was 3 px wider than its wrapper at 320 px on the
+  runner's Linux fonts, which local macOS runs could not show (3 px to spare). Cell and tag padding
+  dropped and both receipts were rerun at the fix head. Every later brief required 12 px of
+  headroom at 320 px and a measurement at 308 px.
+- Merging 5g's seed board into results pages made two console-checking specs (5e's reveal, 5h's
+  achievements) see the board's 503 from the database-less local server. Both stub the board now,
+  as `seed-board.spec.ts` does.
+
+### Database receipts
+
+- Migrations: 4 before the wave, 6 after (0004 `run_fingerprint_coached`, 0005
+  `leaderboard_integrity`). Each was proved on the Neon preview branch (migrate, smoke, rollback,
+  migrate) by the coordinator and again by the Red reviewer before production.
+- Restore points created from production before each migration:
+  `pre-0004_run_fingerprint_coached` (`br-snowy-surf-b7yk5m7w`) and
+  `pre-0005_leaderboard_integrity` (`br-noisy-bread-b7gzc2s4`).
+- 5f1 backfill on production: 3 rows updated (2 `pd3`, 1 `pd6`, all `coached` false), a second run
+  0; afterwards 0 NULLs and 0 duplicate `(mode, run_fingerprint)` groups. The backfill script was
+  deleted in 5f2.
+- 5f2: both columns NOT NULL, `leaderboard_entries_fingerprint_uq` and
+  `leaderboard_entries_coached_board_idx` present, 3 entries unchanged.
+- Real-API smokes wrote one row each (`0402517c` in 5f1, `ee1af1e3` in 5f2); `db:delete-entry`
+  removed exactly those rows. Production ends the wave with 3 entries.
+- 5g needed no migration. Production read-only checks after merge: the all-time default returned
+  1 engine 6 row, `engine=all` 3 rows (adding two engine 3 rows), the 16 October daily seed its
+  engine 6 row, an empty seed 400 `INVALID_QUERY`.
+
+### Measurements that moved
+
+- Unit tests, 1,805 in 214 files at the Wave 4 summary to 1,998 in 229 at 5c2's head. `check:*`
+  scripts stay at 9. Full local Playwright at 5c2's branch head: 1,077 passed, 67 skipped by
+  project gates, 0 failed.
+- Play badge test on hosted runners, 3.1 to 3.3 minutes per width to 2.7; locally 54.6 s to 35.0 s
+  for the three widths with identical coverage (13 badges, closest margin 0 px, none clipped).
+- Seed table minimum width, 254 to about 239 px (fits down to 306 px on macOS fonts).
+- 5h Giant killer threshold, 150 to 100, by the hand-off's 2% to 20% rule: over 200 good-bot cups
+  150 earned 1.0% and 100 earned 2.5%. Hat-trick hero is earned in 68.0% of those runs under its
+  literal definition.
+- Exhibition pins moved in 5c2 because subs and injuries are now on (one match 4-1 to 4-0); no
+  stored or ranked data depends on them.
+
+### Brief vs code
+
+- 5-0: the home footer is the last block on `/`, so it keeps the bottom inset and the page drops
+  its own; the body already padded the side insets, so they moved into `max()` gutters instead of
+  being added twice.
+- 5f1: `toBoardEntry` already decoded once per row (`decodeToken` 1 call, `JSON.parse` 2), so the
+  guard spies on `JSON.parse`, 2 to 1.
+- 5a: the nickname on the card was not shipped; `/?b=` previews moved to Wave 7.
+- 5g: the 400 code is the existing `INVALID_QUERY`, not `BAD_QUERY`; an unplayed seed is 200 with
+  no rows rather than 400 (a 400 would show "Board unavailable" on every fresh results page); the
+  table sits after the squad card because the spec's position measured a CLS failure.
+- 5h: the card chip never shows First Flawless or Every formation, because a card sees one run and
+  cannot know it was the first; Giant killer counts any match won, Comeback excludes shootouts.
+- 5d: row sprites keep their species-name alts (4g's decision), not `alt=""`.
+- 5c1: `?ex=<a>.<b>.<n>` became named params (every token contains a dot); run tokens decode by
+  walking their actions, so pd1 to pd5 links play on the client without replaying the draft.
+- 5c2: the text replay is gone for both formats; two legs plays on the Broadcast without manager
+  stops, and its extra time and penalties are described rather than drawn.
+- Production has no `FRIENDS_PASSCODE` (checked 2026-10-19), so the 4.0 premise that `/api/*`
+  answers 401 without the gate cookie does not hold. Server replay, the per-IP limits and the 5f2
+  copy guard still apply. Reported to the owner.
+
+### Open carryovers
+
+- 5g: a misleading comment on the rank test in `seed-board.test.ts`; "This run" compares token
+  strings, so a non-canonical link to the same run shows its row as a link; no `(mode, seed)` index
+  (threshold recorded in `store.ts`).
+- 5d: at 320 px the coach chips' labels touch their borders (not measured on main).
+- 5c1: the empty state's Play and Builder links both go to `/`.
+- 5c2: the touchline sheet's content reaches 310 px at 320 (10 px of headroom; existing Wave 3 UI).
+- The Neon restore-point branches and the preview's `w5seed` rows remain; deleting them is the
+  owner's call.
+- Engine 7 (W6b) checklist from Wave 3 stands unchanged. Dossier ability and move contributions
+  still wait on a Red data change.
+- A physical phone check, on-device share sheet and a real screen reader were not run for any row
+  (owner action; the checklist is in the Wave 5 summary's decision log).
+
+### Wave 7 list additions
+
+- `/?b=` link previews, from 5a.
+- Credential rotation as a runbook row (owner item 2 in the Wave 5 summary).
+- The WAF rate-limit rule on `/card` and `/r/*/opengraph-image`, applied by the agent after the
+  `/card` canonical query (owner item 3).
+- No scheduled health or uptime monitoring: removed at the owner's request (#130).
