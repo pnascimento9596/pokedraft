@@ -102,9 +102,9 @@ export interface Frame {
   readonly from: number;
   readonly to: number;
   /**
-   * -1 (pinned in the user's half) to 1 (camped in the opponent's), from the goals and saves of the
-   * window that just finished, so it never leans toward a chance before it happens. The first
-   * window reads 0.
+   * -1 (pinned in the user's half) to 1 (camped in the opponent's), from the window that just
+   * finished, so it never leans toward a chance before it happens: its territory when the live
+   * engine's story is known, its goals and saves otherwise. The first window reads 0.
    */
   readonly ball: number;
   /** Pitch-length percent each side's shape sits above its default. */
@@ -416,10 +416,15 @@ export function buildTimeline(match: PlayedMatch, input: TimelineInput): Timelin
     const u = pressure("user");
     const o = pressure("opp");
     const snap = match.windows?.find((w) => w.minute === to);
+    const played = input.territory?.find((w) => w.minute === from);
     frames.push({
       from,
       to,
-      ball: (u - o) / (u + o + 1),
+      ball: input.territory
+        ? played === undefined
+          ? 0
+          : 2 * played.territory - 1
+        : (u - o) / (u + o + 1),
       line: snap
         ? { user: TACTIC_LINE[snap.tactic.user], opp: TACTIC_LINE[snap.tactic.opp] }
         : { user: 0, opp: 0 },

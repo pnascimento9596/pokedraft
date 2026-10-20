@@ -15,6 +15,7 @@ import {
   type RefObject,
 } from "react";
 import { FORMATIONS, speciesById } from "@/engine";
+import { matchStory } from "@/engine/story";
 import type {
   BenchIndex,
   FullLineup,
@@ -46,6 +47,8 @@ import {
   type PlayState,
 } from "@/ui/matchday/player";
 import { frameSource, type LiveFrame } from "@/ui/matchday/feed";
+import { goalNotes } from "@/ui/matchday/commentary";
+import { completedWindows, type StorySource } from "@/ui/matchday/river";
 import { PHASE_LEN, buildTimeline, frameAt, type Beat, type Kick } from "@/ui/matchday/timeline";
 import { crowdGain, kickPassDue, penRoar, roarFor } from "@/ui/matchday/crowd";
 import { kickCues, kickProgress, kicksShown, type KickCue } from "@/ui/matchday/shootout";
@@ -70,6 +73,7 @@ import { useReducedMotion } from "@/components/wheel/useReducedMotion";
 import { ShareGoalButton } from "@/components/share/ShareGoalButton";
 import { buzz } from "./haptics";
 import { Touchline } from "./Touchline";
+import { XgRiver } from "./XgRiver";
 import { setCamera, useCamera } from "./useCamera";
 import { exitFullscreen, toggleFullscreen, useFullscreen } from "./useFullscreen";
 import { useMovesets } from "./useMovesets";
@@ -132,6 +136,7 @@ export function MatchPlayer({
   shareGoal,
   variant = "live",
   label,
+  story: source = null,
 }: {
   readonly match: PlayedMatch;
   readonly matchIndex: number;
@@ -156,16 +161,44 @@ export function MatchPlayer({
   readonly variant?: ResultsVariant;
   /** The player's accessible name; a cup match is named by its round. */
   readonly label?: string;
+  /**
+   * What the live engine needs to replay this match's chances: the xG river, the territory lean and
+   * the run-of-play line. Null or absent for a run the live engine cannot replay.
+   */
+  readonly story?: StorySource | null;
 }) {
   // Quick is a still pitch with beat sounds only, so only a live broadcast with motion stages.
   const motion = !useReducedMotion() && view === "live";
   const soundOn = useSoundEnabled();
   const cameraChoice = useCamera();
   const movesOf = useMovesets();
-  const timeline = useMemo(
-    () => buildTimeline(match, { matchIndex, seed, lineup, movesOf }),
-    [match, matchIndex, seed, lineup, movesOf],
+  // Once per match and per decision, at kickoff: it replays the cup, so never on the frame loop.
+  const storySeed = source?.seed ?? null;
+  const storyMode = source?.mode ?? null;
+  const storyManager = source?.manager ?? null;
+  const story = useMemo(
+    () =>
+      storySeed === null || storyMode === null || storyManager === null
+        ? null
+        : matchStory(storySeed, matchIndex, { lineup, mode: storyMode, manager: storyManager }),
+    [storySeed, matchIndex, lineup, storyMode, storyManager],
   );
+  const timeline = useMemo(
+    () =>
+      buildTimeline(match, {
+        matchIndex,
+        seed,
+        lineup,
+        movesOf,
+        territory: story?.windows ?? null,
+      }),
+    [match, matchIndex, seed, lineup, movesOf, story],
+  );
+  const notes = useMemo(() => {
+    const goals = timeline.beats.filter((b) => b.kind === "goal");
+    const lines = goalNotes(goals, story?.chances ?? null);
+    return new Map(goals.map((g, i) => [beatKey(g), lines[i]!]));
+  }, [timeline, story]);
   const stops = useMemo(
     () =>
       manager === undefined
@@ -661,6 +694,15 @@ export function MatchPlayer({
             {TACTIC_LABEL[oppTactic]}
           </span>
         </div>
+        {story !== null && view === "live" ? (
+          <XgRiver
+            windows={story.windows}
+            upTo={completedWindows(story.windows, clock)}
+            finalMinute={timeline.finalMinute}
+            shared={variant === "shared"}
+            motion={motion}
+          />
+        ) : null}
       </div>
 
       <div ref={pitchRef} className={s.pitch} data-fullscreen={fullscreenOn || undefined}>
@@ -911,6 +953,7 @@ export function MatchPlayer({
 
       <Ticker
         shown={shown}
+        notes={notes}
         teams={teams}
         shared={variant === "shared"}
         kicks={kicks}
@@ -1088,12 +1131,15 @@ function changed(prev: PlayState, next: PlayState): boolean {
 
 function Ticker({
   shown,
+  notes,
   teams,
   shared,
   kicks,
   shareGoal,
 }: {
   readonly shown: readonly ReturnType<typeof buildTimeline>["beats"][number][];
+  /** Each goal's commentary lines, by beat key. */
+  readonly notes: ReadonlyMap<string, readonly string[]>;
   readonly teams: Teams;
   readonly shared: boolean;
   readonly kicks: readonly ReturnType<typeof buildTimeline>["kicks"][number][];
@@ -1105,6 +1151,7 @@ function Ticker({
       kind: b.kind,
       side: "side" in b ? b.side : undefined,
       text: beatLine(b, teams, shared),
+      notes: notes.get(beatKey(b)) ?? [],
       minute: b.minute,
       share:
         shareGoal !== undefined && b.kind === "goal" && b.side === "user"
@@ -1116,9 +1163,12 @@ function Ticker({
       kind: "kick" as const,
       side: k.side,
       text: kickLine(k, teams),
+      notes: [],
     })),
   ].reverse();
-  const latest = useAnnouncement(lines);
+  const latest = useAnnouncement(
+    lines.map((l) => ({ key: l.key, text: [l.text, ...l.notes].join(". ") })),
+  );
   return (
     <div className={s.ticker}>
       <p className={s.srOnly} aria-live="polite" data-testid="ticker-latest">
@@ -1131,6 +1181,11 @@ function Ticker({
             {"share" in l && l.share !== undefined ? (
               <ShareGoalButton path={l.share} minute={l.minute} className={s.tickerShare} />
             ) : null}
+            {l.notes.map((n) => (
+              <span key={n} className={s.tickerNote} data-testid="ticker-note">
+                {n}
+              </span>
+            ))}
           </li>
         ))}
       </ol>

@@ -7,6 +7,7 @@ import { toFullLineup } from "@/engine/draft";
 import { MatchPlayer } from "@/components/matchday/MatchPlayer";
 import { unlockAudio, useAudioLocked } from "@/components/wheel/sound";
 import { ROUND_LABEL } from "@/ui/labels";
+import { storySource } from "@/ui/matchday/river";
 import { broadcastTable } from "./broadcast-table";
 import { SIDE_COPY, type PlayedMatch, type ResultsVariant } from "./format";
 import s from "./MatchReplay.module.css";
@@ -22,6 +23,7 @@ export function MatchReplay({
   cup,
   draft,
   matchIndex,
+  manager,
   goal,
   shareGoal,
   variant = "live",
@@ -40,6 +42,7 @@ export function MatchReplay({
 }) {
   const match = cup.matches[matchIndex] as PlayedMatch;
   const lineup = useMemo(() => toFullLineup(draft), [draft]);
+  const story = useMemo(() => storySource(cup, manager), [cup, manager]);
   const heading = useRef<HTMLHeadingElement>(null);
   // A goal link plays without a tap, which browsers do not let start audio.
   const locked = useAudioLocked();
@@ -100,6 +103,7 @@ export function MatchReplay({
         startAt={goal === undefined ? undefined : goal - 1}
         shareGoal={shareGoal}
         variant={variant}
+        story={story}
       />
     </section>
   );

@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import {
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -34,6 +35,7 @@ import {
 import { recordCompletedRun } from "@/ui/lifetime";
 import { isCoached } from "@/ui/manager/coached";
 import { markRevealed, wasRevealed } from "@/ui/reveal";
+import { readAnyToken } from "@/ui/read-token";
 import { goalHref, watchIndex } from "@/ui/run-link";
 import { toRecord } from "@/ui/runs";
 import { contributionLine, dragLabel, SIDE_COPY, type ResultsVariant } from "./format";
@@ -125,6 +127,7 @@ export function ResultsView({
   const [watching, setWatching] = useState<{ matchIndex: number; goal?: number } | null>(
     watch === null ? null : { matchIndex: watch.matchIndex, goal: watch.minute },
   );
+  const manager = useMemo(() => readAnyToken(token)?.manager ?? [], [token]);
   const goalLink = (matchIndex: number, minute: number) =>
     goalHref(token, watchIndex(cup, matchIndex), minute);
   const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
@@ -230,6 +233,7 @@ export function ResultsView({
           cup={cup}
           draft={draft}
           matchIndex={watching.matchIndex}
+          manager={manager}
           goal={watching.goal}
           shareGoal={(minute) => goalLink(watching.matchIndex, minute)}
           variant={variant}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { StoryWindow } from "@/engine/story";
-import { ENGINE_VERSION, type ManagerAction } from "@/engine/types";
+import { ENGINE_VERSION, type ManagerAction, type Seed } from "@/engine/types";
 import { completedWindows, riverLabel, riverTotals, storySource } from "../river";
 
 const WINDOWS: readonly StoryWindow[] = [
@@ -11,13 +11,15 @@ const WINDOWS: readonly StoryWindow[] = [
 
 describe("storySource (catches a river drawn for a run the live engine cannot replay)", () => {
   const manager: readonly ManagerAction[] = [];
+  const seed = "s" as Seed;
 
   it("gives no story for a retained engine-5 run", () => {
-    expect(storySource({ engine: "pokedraft-engine-5", mode: "cup8" }, manager)).toBeNull();
+    expect(storySource({ engine: "pokedraft-engine-5", seed, mode: "cup8" }, manager)).toBeNull();
   });
 
-  it("replays a live-engine run with its own mode and decisions", () => {
-    expect(storySource({ engine: ENGINE_VERSION, mode: "kanto151" }, manager)).toEqual({
+  it("replays a live-engine run with its own seed, mode and decisions", () => {
+    expect(storySource({ engine: ENGINE_VERSION, seed, mode: "kanto151" }, manager)).toEqual({
+      seed: "s",
       mode: "kanto151",
       manager,
     });

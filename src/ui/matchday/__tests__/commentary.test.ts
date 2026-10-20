@@ -96,7 +96,7 @@ describe("goalNotes (catches commentary that reads the future or a goal it does 
       chance(4, "user", 0.6),
       chance(20, "user", 0.4),
       chance(29, "opp", 0.1),
-      chance(31, "opp", 2.0),
+      chance(31, "opp", 0.5),
     ];
     expect(goalNotes(goals, chances)).toEqual([
       [],
