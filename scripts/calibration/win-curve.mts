@@ -1,29 +1,17 @@
-import { readFileSync } from "node:fs";
-import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "@/engine/coefficients";
+import type { EngineCoefficients } from "@/engine/coefficients";
 import { simulateMatch, type MatchStarter } from "@/engine/match";
 import { FORMATIONS } from "@/engine/formations";
 import { bossStarters, buildLadder } from "@/engine/opponents";
 import { speciesById } from "@/engine/species";
 import type { LineStrength, Opponent, Seed } from "@/engine/types";
+import { loadCoefficients } from "./coeffs";
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
   return i === -1 ? undefined : process.argv[i + 1];
 }
 
-function merge<T>(base: T, over: unknown): T {
-  if (over === null || typeof over !== "object" || Array.isArray(over)) return over as T;
-  const out = { ...(base as Record<string, unknown>) };
-  for (const [k, v] of Object.entries(over as Record<string, unknown>)) {
-    if (!(k in out)) throw new Error(`unknown coefficient key ${k}`);
-    out[k] = merge(out[k], v);
-  }
-  return out as T;
-}
-
-const c: EngineCoefficients = arg("coeffs")
-  ? merge(ENGINE_COEFFICIENTS, JSON.parse(readFileSync(arg("coeffs")!, "utf8")))
-  : ENGINE_COEFFICIENTS;
+const c: EngineCoefficients = loadCoefficients(arg("coeffs"));
 const n = Number(arg("n") ?? 4000);
 const base = Number(arg("score") ?? 800);
 
