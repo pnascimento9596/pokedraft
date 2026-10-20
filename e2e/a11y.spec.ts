@@ -11,6 +11,7 @@ const BOARD = {
   scope: "daily",
   date: "2026-10-09",
   coach: "all",
+  engine: "all",
   entries: [
     {
       rank: 1,
@@ -25,6 +26,9 @@ const BOARD = {
       losses: 0,
       createdAt: "2026-10-09T12:00:00.000Z",
       coached: false,
+      engineVersion: "pokedraft-engine-6",
+      seed: "e2e-seed",
+      formation: "4-3-3",
     },
   ],
 };

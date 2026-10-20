@@ -17,6 +17,9 @@ const ENTRY = {
   losses: 0,
   createdAt: "2026-10-09T12:00:00.000Z",
   coached: false,
+  engineVersion: "pokedraft-engine-6",
+  seed: "e2e-seed",
+  formation: "4-3-3",
 };
 
 const SECOND = {
@@ -112,6 +115,7 @@ test("/leaderboard renders the stubbed rows and each links to its /r/ replay", a
     scope: "daily",
     date: "2026-10-09",
     coach: "all",
+    engine: "all",
     entries: [ENTRY, SECOND],
   });
   await page.goto("/leaderboard?mode=cup8&scope=daily&date=2026-10-09");
@@ -143,7 +147,7 @@ test("pressing Uncoached asks the server for coach=uncoached and shows the rows 
         ? [{ ...SECOND, rank: 1, nickname: "Plain", token: "pd1.e2e-plain" }]
         : [{ ...ENTRY, coached: true }];
     return route.fulfill({
-      json: { mode: "cup8", scope: "all", date: null, coach, entries },
+      json: { mode: "cup8", scope: "all", date: null, coach, engine: "current", entries },
     });
   });
   await page.goto("/leaderboard?mode=cup8&scope=all");
@@ -176,6 +180,7 @@ test("a /leaderboard link with coach=uncoached opens the Uncoached view and keep
         scope: url.searchParams.get("scope"),
         date: url.searchParams.get("date"),
         coach,
+        engine: url.searchParams.get("scope") === "all" ? "current" : "all",
         entries: [{ ...SECOND, rank: 1, nickname: "Plain", token: "pd1.e2e-plain" }],
       },
     });
@@ -226,6 +231,7 @@ for (const width of [390, 1440]) {
       scope: "daily",
       date: "2026-10-09",
       coach: "all",
+      engine: "all",
       entries: [ENTRY, SECOND],
     });
 

@@ -1,7 +1,8 @@
 // Type only: a value import of the contract would pull `@/engine` and the species data into every
 // page that formats a date (the /play and /daily start panels; e2e/data-split.spec.ts).
 import type { CoachFilter } from "@/leaderboard/contract";
-import { GENS, type DraftOrder, type DraftStyle } from "@/engine/types";
+import { ENGINE_VERSION, GENS, type DraftOrder, type DraftStyle } from "@/engine/types";
+import { engineLabel } from "@/engine/versions/label";
 import { ORDER_LABEL, STYLE_LABEL } from "@/ui/labels";
 
 function isStyle(v: string): v is DraftStyle {
@@ -43,3 +44,9 @@ export const COACH_FILTER_LABEL: Readonly<Record<CoachFilter, string>> = {
   uncoached: "Uncoached",
   coached: "Coached",
 };
+
+// Only a run from another engine is labelled, the same rule as the shared page's kicker. A label on
+// every current row would say nothing.
+export function engineRowLabel(engineVersion: string): string | null {
+  return engineVersion === ENGINE_VERSION ? null : `Engine ${engineLabel(engineVersion)}`;
+}

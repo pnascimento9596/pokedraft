@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import sharp from "sharp";
-import { draftSixteen } from "./helpers";
+import { draftSixteen, emptySeedBoard } from "./helpers";
 
 // Dispatch 7 theme 7E. Text needs 4.5:1 and UI boundaries, state rings and focus rings need 3:1
 // (WCAG 1.4.3 and 1.4.11), in both themes. axe scores flat text; it cannot score text on the
@@ -25,6 +25,9 @@ const ENTRY = {
   losses: 0,
   createdAt: "2026-10-09T12:00:00.000Z",
   coached: false,
+  engineVersion: "pokedraft-engine-6",
+  seed: "e2e-seed",
+  formation: "4-3-3",
 };
 
 const BODY_BACKGROUND = { dark: "rgb(11, 18, 32)", light: "rgb(231, 234, 226)" };
@@ -191,17 +194,21 @@ for (const colorScheme of ["dark", "light"] as const) {
     test.use({ colorScheme, reducedMotion: "reduce" });
 
     test.beforeEach(async ({ page }) => {
-      await page.route("**/api/leaderboard?**", (route) =>
-        route.fulfill({
+      await page.route("**/api/leaderboard?**", (route) => {
+        // Results pages show the seed table with one row, so both themes score it.
+        const seed = emptySeedBoard(route.request().url());
+        if (seed !== null) return route.fulfill({ json: { ...seed, entries: [ENTRY] } });
+        return route.fulfill({
           json: {
             mode: "cup8",
             scope: "daily",
             date: "2026-10-09",
             coach: "all",
+            engine: "all",
             entries: [ENTRY],
           },
-        }),
-      );
+        });
+      });
       await page.route("**/api/leaderboard", (route) =>
         route.fulfill({ status: 201, json: { entry: { ...ENTRY, rank: 4 } } }),
       );

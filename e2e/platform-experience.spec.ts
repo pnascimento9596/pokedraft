@@ -150,6 +150,7 @@ for (const width of [1280, 320]) {
             mode: "cup8",
             scope: "all",
             coach: "all",
+            engine: "current",
             entries: [
               {
                 rank: 1,
@@ -164,6 +165,9 @@ for (const width of [1280, 320]) {
                 losses: 2,
                 createdAt: "2026-10-15T00:00:00Z",
                 coached: false,
+                engineVersion: "pokedraft-engine-6",
+                seed: "e2e-seed",
+                formation: "4-3-3",
                 squadSpeciesIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1025],
               },
               {
@@ -179,6 +183,9 @@ for (const width of [1280, 320]) {
                 losses: 3,
                 createdAt: "2026-10-14T00:00:00Z",
                 coached: false,
+                engineVersion: "pokedraft-engine-6",
+                seed: "e2e-seed",
+                formation: "4-3-3",
               },
             ],
           },
