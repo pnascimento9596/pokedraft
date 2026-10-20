@@ -23,6 +23,7 @@ import {
   type Score,
   type SaveEvent,
   type Seed,
+  type SetPiece,
   type Shootout,
   type Side,
   type Species,
@@ -67,13 +68,17 @@ export interface MatchInput {
 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
-/** One chance trial, read after the engine rolled it. `slot` is the shooter's formation slot. */
+/**
+ * One chance trial, read after the engine rolled it. `slot` is the shooter's formation slot. An
+ * engine 7 penalty is a chance too: its kind is "penalty" and `p` is the conversion chance.
+ */
 export interface ChanceObservation {
   readonly window: number;
   readonly minute: number;
   readonly side: Side;
   readonly p: number;
-  readonly outcome: "goal" | "saved" | "off";
+  /** "missed" only for a penalty the taker put wide. */
+  readonly outcome: "goal" | "saved" | "off" | "missed";
   readonly kind: GoalKind | null;
   readonly shooter: SpeciesId;
   readonly slot: StarterIndex;
@@ -206,6 +211,18 @@ function convertProb(edge: number, c: EngineCoefficients): number {
   return clamp(base + (band * edge) / PERCENT, base - band, base + band);
 }
 
+// Of the kicks a penalty misses, the keeper saves this share: the keeper's rating against the
+// taker's, so a strong keeper stops what a weak one would watch go wide.
+function keeperShare(taker: Species, keeper: Species): number {
+  const shot = 0.75 * taker.attrs.SHO + 0.25 * taker.attrs.TEC;
+  const stop = (keeper.attrs.REF + keeper.attrs.DIV + keeper.attrs.HAN + keeper.attrs.GKP) / 4;
+  return shot + stop <= 0 ? 0.5 : stop / (shot + stop);
+}
+
+function bestShooter(pool: readonly MatchStarter[]): MatchStarter {
+  return canonicalSortBy(pool, (s) => [-s.species.attrs.SHO, s.species.id])[0]!;
+}
+
 function goalTieKey(g: GoalEvent): readonly [number, number] {
   if (g.side === "user") return [0, g.scorer];
   return g.scorer.kind === "species" ? [0, g.scorer.id] : [1, g.scorer.number];
@@ -267,6 +284,14 @@ type Item =
       readonly slot: StarterIndex;
       readonly injury: number;
       readonly card: number;
+    }
+  | {
+      readonly kind: "penalty";
+      readonly minute: number;
+      readonly side: Side;
+      readonly order: number;
+      /** The window's second set-piece draw, rolled against the conversion chance. */
+      readonly convert: number;
     };
 
 function invalid(message: string): never {
@@ -372,6 +397,7 @@ function pickScorer(
   kind: GoalKind,
   rng: EngineRng,
   c: EngineCoefficients,
+  freeKickTaker: SpeciesId | null,
 ): MatchStarter {
   return weightedPick(
     pool.filter((s) => c.match.roleFactor[s.role] > 0),
@@ -386,7 +412,10 @@ function pickScorer(
             : kind === "free-kick"
               ? 0.6 * a.SHO + 0.4 * a.TEC
               : a.SHO;
-      return Math.max(1, skill) * c.match.roleFactor[s.role];
+      const weight = Math.max(1, skill) * c.match.roleFactor[s.role];
+      return kind === "free-kick" && s.species.id === freeKickTaker
+        ? weight * c.takers.freeKickWeight
+        : weight;
     },
     rng,
   );
@@ -399,6 +428,7 @@ function goalEvent(
   penalty: boolean,
   rng: EngineRng,
   c: EngineCoefficients,
+  freeKickTaker: SpeciesId | null,
 ): GoalEvent {
   const roll = penalty ? 1 : rng.next();
   const kind: GoalKind = penalty
@@ -410,9 +440,7 @@ function goalEvent(
         : roll < 0.38
           ? "solo"
           : "open-play";
-  const scorer = penalty
-    ? canonicalSortBy(pool, (s) => [-s.species.attrs.SHO, s.species.id])[0]!
-    : pickScorer(pool, kind, rng, c);
+  const scorer = penalty ? bestShooter(pool) : pickScorer(pool, kind, rng, c, freeKickTaker);
   const creators = pool.filter((s) => s !== scorer && c.match.assistRoleFactor[s.role] > 0);
   const assisted = (kind === "open-play" || kind === "header") && rng.next() < c.match.assistProb;
   const assist =
@@ -460,8 +488,17 @@ function shootoutOf(
   opp: SideState,
   rng: EngineRng,
   c: EngineCoefficients,
+  penaltyTaker: Species | null,
 ): Shootout {
-  const userTakers = canonicalSortBy(onField(user), (s) => [-s.species.attrs.SHO, s.species.id]);
+  const bySho = canonicalSortBy(onField(user), (s) => [-s.species.attrs.SHO, s.species.id]);
+  // The nominated penalty taker kicks first; everyone else keeps the shooting order.
+  const userTakers =
+    penaltyTaker === null
+      ? bySho
+      : [
+          ...bySho.filter((s) => s.species.id === penaltyTaker.id),
+          ...bySho.filter((s) => s.species.id !== penaltyTaker.id),
+        ];
   const oppTakers = canonicalSortBy(onField(opp), (s) => [-s.species.attrs.SHO, s.species.id]);
   const userKeeper = keeperOf(user);
   const oppKeeper = keeperOf(opp);
@@ -577,6 +614,8 @@ export function playMatchCore(
   // The tactic the assistant returns to when the score no longer calls for a change: Balanced, or
   // the manager's own early choice, which the assistant keeps until the late game needs it.
   let userBase: Tactic = "balanced";
+  // Engine 7: the formation slot whose player takes each set piece; null is the automatic choice.
+  const takers: Record<SetPiece, StarterIndex | null> = { penalty: null, freeKick: null };
   let lastMinute = 0;
 
   const advance = (minute: number): void => {
@@ -623,7 +662,10 @@ export function playMatchCore(
     refreshUserLines();
   };
 
+  // A nominated taker is a set-piece choice, not a tactic or a substitution, so the assistant keeps
+  // both halves of its job.
   const takeOver = (a: ManagerAction): void => {
+    if (a.type === "taker") return;
     if (!m.splitManaged) {
       tacticManaged = true;
       subsManaged = true;
@@ -647,8 +689,10 @@ export function playMatchCore(
       }
       return;
     }
-    // RED scaffolding: a nominated taker is accepted and does nothing yet.
-    if (a.type === "taker") return;
+    if (a.type === "taker") {
+      takers[a.set] = a.slot;
+      return;
+    }
     if (bench === null) invalid("this match has no bench to bring on");
     const current = user.onPitch[a.slot];
     if (!current) invalid(`slot ${a.slot} has nobody to take off at minute ${a.minute}`);
@@ -720,6 +764,12 @@ export function playMatchCore(
       opp.tactic = oppNext;
       incidents.push({ kind: "tactic", side: "opp", minute: t, tactic: oppNext, by: "auto" });
     }
+  };
+
+  // The user's nominee for a set piece while they are on the pitch; null hands it to the default.
+  const nominee = (side: SideState, set: SetPiece): Species | null => {
+    const slot = side.side === "user" ? takers[set] : null;
+    return slot === null ? null : (side.onPitch[slot]?.species ?? null);
   };
 
   const rate = (attacking: SideState, defending: SideState, base: number): number => {
@@ -812,6 +862,64 @@ export function playMatchCore(
     }
   };
 
+  const takePenalty = (it: Extract<Item, { kind: "penalty" }>, index: number): void => {
+    const attacking = it.side === "user" ? user : opp;
+    const defending = it.side === "user" ? opp : user;
+    const taker = nominee(attacking, "penalty") ?? bestShooter(onField(attacking)).species;
+    const keeper = keeperOf(defending);
+    const p = convertProb(penaltyEdge(taker, keeper), c);
+    const slot = slotOf(attacking, taker.id);
+    const outcome =
+      it.convert < p
+        ? "goal"
+        : it.convert < p + (1 - p) * keeperShare(taker, keeper)
+          ? "saved"
+          : "missed";
+    if (outcome === "goal") {
+      // The same key order as goalEvent's, so a penalty goal serialises like any other goal.
+      goals.push(
+        it.side === "user"
+          ? {
+              side: "user",
+              minute: it.minute,
+              penalty: true,
+              kind: "penalty",
+              scorer: taker.id,
+              assist: null,
+            }
+          : {
+              side: "opp",
+              minute: it.minute,
+              penalty: true,
+              kind: "penalty",
+              scorer: { kind: "species", id: taker.id },
+              assist: null,
+            },
+      );
+      attacking.goals++;
+    } else {
+      incidents.push({
+        kind: "penalty",
+        side: it.side,
+        minute: it.minute,
+        slot,
+        taker: taker.id,
+        keeper: keeper.id,
+        outcome,
+      });
+    }
+    observe?.chance({
+      window: index,
+      minute: it.minute,
+      side: it.side,
+      p,
+      outcome,
+      kind: "penalty",
+      shooter: taker.id,
+      slot,
+    });
+  };
+
   const playWindow = (
     index: number,
     first: number,
@@ -852,14 +960,39 @@ export function playMatchCore(
         });
       }
     });
+    boundary(first - 1);
+    // Engine 7: two draws per side per window on their own substream, award then conversion,
+    // whether or not a penalty is given. The award scales with the side's expected goals in this
+    // window as the boundary left it, and the award draw also places the kick inside the window.
+    if (c.penalty.missable) {
+      (["user", "opp"] as const).forEach((side, sideOrder) => {
+        const pens = createEngineRng(deriveSubseed(input.seed, "set_pieces", `${w}:${side}`));
+        const award = pens.next();
+        const convert = pens.next();
+        const attacking = side === "user" ? user : opp;
+        const defending = side === "user" ? opp : user;
+        const p = Math.min(
+          rate(attacking, defending, base[side]) / total,
+          c.match.chances.maxGoalProb,
+        );
+        const given = Math.min(1, c.penalty.awardShare * p * chancesPerSide);
+        if (award < given) {
+          const minute = first + Math.floor((award / given) * span);
+          items.push({ kind: "penalty", minute, side, order: 500 + sideOrder, convert });
+        }
+      });
+    }
     items.sort((a, b) => a.minute - b.minute || a.order - b.order);
 
-    boundary(first - 1);
     for (const it of items) {
       applyDecisionsUpTo(it.minute - 1);
       advance(it.minute);
       if (it.kind === "incident") {
         incident(it);
+        continue;
+      }
+      if (it.kind === "penalty") {
+        takePenalty(it, index);
         continue;
       }
       const attacking = it.side === "user" ? user : opp;
@@ -870,8 +1003,18 @@ export function playMatchCore(
       );
       const pool = onField(attacking);
       if (struct.next() < p) {
-        const penalty = event.next() < c.match.penaltyShare;
-        const goal = goalEvent(it.side, pool, it.minute, penalty, event, c);
+        // The relabel draw stays with the rule on, so the event stream keeps its count.
+        const relabel = event.next() < c.match.penaltyShare;
+        const penalty = relabel && !c.penalty.missable;
+        const goal = goalEvent(
+          it.side,
+          pool,
+          it.minute,
+          penalty,
+          event,
+          c,
+          nominee(attacking, "freeKick")?.id ?? null,
+        );
         goals.push(goal);
         attacking.goals++;
         observe?.chance({
@@ -971,6 +1114,8 @@ export function playMatchCore(
         opp,
         createEngineRng(deriveSubseed(input.seed, "match_sim", `${scope}:shootout`)),
         c,
+        // Nominations are an engine 7 rule; engine 6 keeps its shootout order whatever arrives.
+        c.penalty.missable ? nominee(user, "penalty") : null,
       );
       outcome =
         penalties.coinWinner === null

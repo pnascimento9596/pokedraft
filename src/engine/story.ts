@@ -35,8 +35,11 @@ export interface StoryChance {
   readonly side: Side;
   /** The trial's goal probability, the same `p` the engine rolled against. */
   readonly p: number;
-  /** "saved" when the engine recorded a save for this trial, "off" for every other miss. */
-  readonly outcome: "goal" | "saved" | "off";
+  /**
+   * "saved" when the engine recorded a save for this trial (or an engine 7 keeper stopped a
+   * penalty), "missed" for an engine 7 penalty put wide, "off" for every other miss.
+   */
+  readonly outcome: "goal" | "saved" | "off" | "missed";
   /** The goal's kind; null when the trial did not score. */
   readonly kind: GoalKind | null;
   /** The scorer for a goal, the attacker the save roll picked otherwise. */

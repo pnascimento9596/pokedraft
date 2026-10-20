@@ -145,18 +145,16 @@ const subTuple = z.tuple([
 ]);
 // Nominated takers: p for penalties, f for free kicks; a null slot is the automatic choice.
 const takerTuple = z.tuple([z.enum(["p", "f"]), cupMatch, matchMinute, starter.nullable()]);
+const TAKER_SINCE = 7;
 
 /**
  * The coach decisions a token of `version` may carry. Nominated takers arrive with engine 7, so a
  * pd6 token never carries one: the frozen engine 6 codec would refuse it after the flip.
  */
 export function managerSchemaFor(version: number) {
-  // RED scaffolding: no version has the taker tuple yet.
-  void version;
-  void takerTuple;
-  return z.union([tacticTuple, subTuple]) as unknown as z.ZodUnion<
-    [typeof tacticTuple, typeof subTuple, typeof takerTuple]
-  >;
+  return version >= TAKER_SINCE
+    ? z.union([tacticTuple, subTuple, takerTuple])
+    : z.union([tacticTuple, subTuple]);
 }
 const managerSchema = managerSchemaFor(RUN_TOKEN_VERSION);
 
@@ -285,6 +283,12 @@ function expandAction(c: CompactAction): DraftAction {
 }
 
 export function encodeToken(t: RunToken): string {
+  if (RUN_TOKEN_VERSION < TAKER_SINCE && t.manager?.some((a) => a.type === "taker")) {
+    throw new RunTokenError(
+      "invalidAction",
+      `a pd${RUN_TOKEN_VERSION} token cannot carry a nominated taker`,
+    );
+  }
   const payload: unknown[] = [compactSettings(t.settings), t.seed, t.actions.map(compactAction)];
   if (t.manager !== undefined && t.manager.length > 0) payload.push(t.manager.map(compactManager));
   return `pd${RUN_TOKEN_VERSION}.${toBase64Url(new TextEncoder().encode(JSON.stringify(payload)))}`;

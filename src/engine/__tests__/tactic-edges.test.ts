@@ -80,7 +80,8 @@ describe("engine 7 press fades with energy (catches a tired press costing nothin
 
 describe("engine 7 press against a direct side (catches pressing a direct side going unpunished)", () => {
   // Match 4 against a direct side. Press hands the direct side's first chance 25% more than
-  // Balanced does, and Press itself adds nothing to the user's own chance.
+  // Balanced does, and Press itself adds nothing to the user's own chance. Engine 7 also awards the
+  // direct side a penalty that goes in, at 57' against Press and 58' against Balanced.
   const press = story(4, "press", ENGINE_COEFFICIENTS_V7);
   const balanced = story(4, "balanced", ENGINE_COEFFICIENTS_V7);
 
@@ -94,9 +95,9 @@ describe("engine 7 press against a direct side (catches pressing a direct side g
     expect(balanced.userAt(1).map((ch) => ch.p)).toEqual([0.0016646022950114173]);
   });
 
-  it("Press loses it 6-2, Balanced 4-2", () => {
-    expect(press.s.result.regulation).toEqual({ user: 2, opp: 6 });
-    expect(balanced.s.result.regulation).toEqual({ user: 2, opp: 4 });
+  it("Press loses it 7-2, Balanced 5-2", () => {
+    expect(press.s.result.regulation).toEqual({ user: 2, opp: 7 });
+    expect(balanced.s.result.regulation).toEqual({ user: 2, opp: 5 });
   });
 });
 
