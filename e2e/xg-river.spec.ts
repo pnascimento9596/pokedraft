@@ -1,14 +1,14 @@
 import { expect, test, type Page } from "@playwright/test";
 import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { LIVE_GOLDEN_CUP8, XG_RIVER as PIN } from "./pins";
 
-// The golden cup8 draft under the live engine-6 prefix, and the same run as engine 5 played it.
-// G1 is a 1-0 win over Goldenrod United; the live engine's story gives this squad 5.0 xG to 0.1.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// The golden cup8 draft under the live prefix, and the same run as engine 5 played it.
+const LIVE = LIVE_GOLDEN_CUP8;
 const RETAINED = GOLDEN_CUP8_V5;
 const SHOT = "docs/reports/xg-river";
 const LABEL = /^Chances so far: this squad \d+\.\d, them \d+\.\d$/;
 
-async function watchG1(page: Page, token: string): Promise<string[]> {
+async function watchPinned(page: Page, token: string): Promise<string[]> {
   const hydration: string[] = [];
   page.on("console", (m) => {
     if (m.type() === "error" && /hydrat/i.test(m.text())) hydration.push(m.text());
@@ -30,7 +30,7 @@ async function watchG1(page: Page, token: string): Promise<string[]> {
   });
   await page.goto(`/r/${token}`);
   await expect(page.getByTestId("results-record")).toBeVisible();
-  await page.getByTestId("match-G1").getByTestId("watch-live").click();
+  await page.getByTestId(`match-${PIN.round}`).getByTestId("watch-live").click();
   await expect(page.getByTestId("match-replay").getByTestId("broadcast")).toBeVisible();
   return hydration;
 }
@@ -87,20 +87,20 @@ test("a retained engine-5 run draws no river and a live-engine run does (catches
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  const old = await watchG1(page, RETAINED);
+  const old = await watchPinned(page, RETAINED);
   await expect(page.getByTestId("match-hud")).toBeVisible();
   await expect(page.getByTestId("xg-river")).toHaveCount(0);
   expect(old).toEqual([]);
 
-  const live = await watchG1(page, LIVE);
+  const live = await watchPinned(page, LIVE);
   const river = page.getByTestId("xg-river");
   await expect(river).toBeVisible();
   await expect(river).toHaveAttribute("role", "img");
   await expect(river).toHaveAttribute("aria-label", LABEL);
   await expect(river).toContainText("Chances (xG)");
   await page.getByTestId("skip-ft").click();
-  await expect(river).toHaveAttribute("aria-label", "Chances so far: this squad 5.0, them 0.1");
-  await expect(river).toHaveAttribute("data-windows", "18");
+  await expect(river).toHaveAttribute("aria-label", PIN.fullTime);
+  await expect(river).toHaveAttribute("data-windows", String(PIN.windows));
   expect(live).toEqual([]);
 });
 
@@ -113,7 +113,7 @@ for (const { width, height } of [
     page,
   }) => {
     await page.setViewportSize({ width, height });
-    await watchG1(page, LIVE);
+    await watchPinned(page, LIVE);
     const river = page.getByTestId("xg-river");
     // The follow camera zooms on phones; the full pitch keeps the screenshot comparable.
     await page.getByTestId("camera-full").click();
@@ -130,7 +130,7 @@ for (const { width, height } of [
     await shoot(page, `${SHOT}/river-ht-${width}.png`);
 
     await page.getByTestId("skip-ft").click();
-    await expect(river).toHaveAttribute("aria-label", "Chances so far: this squad 5.0, them 0.1");
+    await expect(river).toHaveAttribute("aria-label", PIN.fullTime);
     const mFt = await measure(page);
     await shoot(page, `${SHOT}/river-ft-${width}.png`);
 
@@ -149,12 +149,9 @@ test("the river still fits at 308px (hosted Linux fonts run wider than macOS)", 
   page,
 }) => {
   await page.setViewportSize({ width: 308, height: 640 });
-  await watchG1(page, LIVE);
+  await watchPinned(page, LIVE);
   await page.getByTestId("skip-ft").click();
-  await expect(page.getByTestId("xg-river")).toHaveAttribute(
-    "aria-label",
-    "Chances so far: this squad 5.0, them 0.1",
-  );
+  await expect(page.getByTestId("xg-river")).toHaveAttribute("aria-label", PIN.fullTime);
   const m = await measure(page);
   console.log(`308px FT: ${JSON.stringify(m)}`);
   expect(m.riverTop).toBeGreaterThanOrEqual(m.meterBottom);
