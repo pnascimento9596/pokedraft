@@ -64,6 +64,30 @@ describe("tacticEdge (catches a pill badge that disagrees with the engine's mult
   });
 });
 
+// Regression guard, no RED: behaviour already correct. The scout reads the live engine 6 table, so
+// the engine 7 candidate's larger edges (6b2) must not reach a badge or a scout line before the flip.
+describe("tacticEdge and scoutLine before the flip (catches the engine 7 tactic table leaking into the scout)", () => {
+  const ALL = ["balanced", "attack", "defend", "press", "counter"] as const;
+
+  it("gives every style and tactic its engine 6 badge", () => {
+    expect(
+      (["pressing", "possession", "direct"] as const).map((s) => ALL.map((t) => tacticEdge(s, t))),
+    ).toEqual([
+      ["neutral", "neutral", "unfavourable", "favourable", "favourable"],
+      ["neutral", "neutral", "unfavourable", "favourable", "favourable"],
+      ["neutral", "neutral", "favourable", "unfavourable", "neutral"],
+    ]);
+  });
+
+  it("keeps the three engine 6 scout lines", () => {
+    expect((["pressing", "possession", "direct"] as const).map(scoutLine)).toEqual([
+      "Scout: a pressing side. Best edge: Counter, then Press. Avoid Defend.",
+      "Scout: a possession side. Best edge: Press, then Counter. Avoid Defend.",
+      "Scout: a direct side. Best edge: Defend. Avoid Press.",
+    ]);
+  });
+});
+
 describe("fatigueLine (catches a half-time line that names the keeper or the wrong players)", () => {
   // 4-3-3: slot 0 is the keeper.
   const onPitch = [1, 4, 7, 10, 13, 16, 19, 21, 23, 27, 25].map(id);

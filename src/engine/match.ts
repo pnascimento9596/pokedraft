@@ -308,6 +308,24 @@ function tacticMultipliers(
   return c.manager.tactics[side.tactic];
 }
 
+function meanOutfieldEnergy(side: SideState): number {
+  const outfield = side.onPitch.filter((o, i) => o !== null && side.slots[i]!.role !== "GK");
+  if (outfield.length === 0) return FRESH;
+  return outfield.reduce((sum, o) => sum + o!.energy, 0) / outfield.length;
+}
+
+// Engine 7's state terms on the attacking side's own multiplier. At the engine 6 values they
+// multiply by exactly 1 and subtract exactly 0, so the rate keeps its bits.
+function stateOwn(own: number, side: SideState, other: SideState, c: EngineCoefficients): number {
+  const m = c.manager;
+  if (side.tactic === "counter" && side.goals > other.goals) return own * m.counterLead;
+  if (side.tactic === "press") {
+    const short = m.pressFade.below - meanOutfieldEnergy(side);
+    if (short > 0) return own - m.pressFade.perPoint * short;
+  }
+  return own;
+}
+
 function onField(side: SideState): MatchStarter[] {
   const out: MatchStarter[] = [];
   side.onPitch.forEach((o, i) => {
@@ -705,7 +723,12 @@ export function playMatchCore(
   const rate = (attacking: SideState, defending: SideState, base: number): number => {
     const attLines = tiredLines(attacking.side === "user" ? userLines : oppLines, attacking, c);
     const defLines = tiredLines(defending.side === "user" ? userLines : oppLines, defending, c);
-    const [own] = tacticMultipliers(attacking, input.opponent, c);
+    const own = stateOwn(
+      tacticMultipliers(attacking, input.opponent, c)[0],
+      attacking,
+      defending,
+      c,
+    );
     const [, gives] = tacticMultipliers(defending, input.opponent, c);
     const [vacOwn, vacGives] = m.vacancy;
     let lambda = expectedGoals(attLines, defLines, c) * factor * epsilon * base * own * gives;
