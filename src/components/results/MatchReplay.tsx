@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import type { CupResult, DraftState } from "@/engine";
-import type { GroupRow, Score } from "@/engine/types";
+import type { GroupRow, ManagerAction, Score } from "@/engine/types";
 import { toFullLineup } from "@/engine/draft";
 import { MatchPlayer } from "@/components/matchday/MatchPlayer";
 import { unlockAudio, useAudioLocked } from "@/components/wheel/sound";
@@ -30,6 +30,8 @@ export function MatchReplay({
   readonly cup: CupResult;
   readonly draft: DraftState;
   readonly matchIndex: number;
+  /** The run's coach decisions, which the live engine needs to replay the match's chances. */
+  readonly manager: readonly ManagerAction[];
   /** A goal link's minute: the replay opens a minute before it. */
   readonly goal?: number;
   readonly shareGoal?: (minute: number) => string;

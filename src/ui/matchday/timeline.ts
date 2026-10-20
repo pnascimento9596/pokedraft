@@ -1,6 +1,7 @@
 import { createRng } from "@/lib/rng";
 import type { Moveset } from "@/data/movesets";
 import { FORMATIONS } from "@/engine/formations";
+import type { StoryWindow } from "@/engine/story";
 import { speciesById } from "@/engine/species";
 import type {
   FormationId,
@@ -169,6 +170,11 @@ export interface TimelineInput {
   readonly lineup: FullLineup;
   /** Canon movesets once loaded; without them the callouts are generic. */
   readonly movesOf?: ((id: number) => Moveset | null) | null;
+  /**
+   * The share of each window's chances that were the user's, from the live engine's story. Without
+   * it (a retained run, an exhibition) the lean reads the goals and saves instead.
+   */
+  readonly territory?: readonly Pick<StoryWindow, "minute" | "territory">[] | null;
 }
 
 export const TACTIC_LINE: Readonly<Record<Tactic, number>> = {
