@@ -3,6 +3,31 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wave 5 carryovers and queue hygiene
+
+Branch `chore/wave5-carryovers` off `origin/main` at `9e4802b`. Wave 6 row 6-0 (Yellow). No file under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #140 merge below.
+
+- A friend opening a link to their own run, spelled differently from the stored token, sees "This run" on their seed table row instead of a link.
+- A run submitted from live results shows in "Friends on this seed" without a reload.
+- The coach chips keep their labels inside their borders on every phone width. They sit on one row at 390 px and wrap at 360 px and below, and a late font load moves nothing.
+- "Open the Builder" on the empty exhibition page goes to `/#builder`, the builder section.
+- A fast double tap on "Play rematch" plays two rematches on.
+- The touchline sheet has 12 px sides, so its content keeps 12 px of headroom at 320 px.
+- An empty current-engine all-time board with older runs says "No runs on this engine yet." with a "Show all engines" button.
+- Queue hygiene: SF-20 and SF-29 closed (fixed in #61), engine follow-up 5 closed as won't fix, `api-timing.mjs` reads `ENGINE_VERSION`, the Wave 7 CI item drops Dependabot (it runs on a schedule), and the seed-board rank test comment says what it asserts.
+
+RED commit: `010414e` (unit 4 of 25 failed in the three touched files; Playwright chromium 5 of 18 failed in the three touched specs). GREEN `ff4d44a`, `fc05305`, then `52dc6be` and `72a46ca` re-decided the chips after the full suite caught a font-swap shift (`leaderboard-font-cls.spec.ts`, 2 of 4 at 412 px).
+
+Gates at `72a46ca` (later commits add docs and screenshots only):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `check-retained-replays.mts`, `measure-retained-json.mjs` and all nine `check:*` scripts exited 0. Prettier passed on 22 touched files.
+- Unit tests: 2,002 passed in 229 files.
+- Playwright (`CI=1`, headless, `--retries=0`), the full suite, all projects: 1,081 passed, 67 skipped, 0 failed (18.3m).
+- At 320 and 308 px: the touchline sheet content right edge 308 and 296 (was 310 and 298); every coach chip keeps at least 11 px between its label and its border; the empty-engine note's right edge is 287 and 275.
+- NOT RUN: the new specs on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/wave5-carryovers.md`. Browser proof: `docs/reports/wave5-carryovers/` (`coach-chips-{390,360,320}.png`, `empty-engine-board-{390,360,320}.png`, `open-the-builder-390.png`, `touchline-halftime-{390,360,320}.png`, `touchline-expanded-{390,360,320}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 5 summary
 
 Branch `docs/wave5-summary` off `origin/main` at `e1f2c38`. Green: docs only, no runtime change.
