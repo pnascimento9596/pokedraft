@@ -3,6 +3,31 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Share sheet and run metadata
+
+Branch `feat/share-sheet` off `origin/main` at `5932775`. Wave 5 row 5a (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- On a phone, Share on results opens the phone's share sheet with "7-1-0, Team Score 812. Beat it?" style text and the link. A friendly says "Friendly: 7-0-1, Team Score 845." with no dare. Share this goal says "Watch this goal." and the Builder's button, now "Share link", says "My pokedraft XI.". On a computer each one copies the link, as before.
+- When the link cannot be copied, a "Link" box shows the full link, selected, so it can be copied by hand.
+- On a phone, Download image hands the card to the share sheet with the link and the same words, straight from the tap: results fetch the card in the background once they settle, unless Data Saver is on. A computer still fetches the card only when Download is pressed.
+- A run link's preview now has a line under the title, "Champions with 4-3-3. Draft your own XI on pokedraft.", and the card's alt text carries the record and Team Score. Gated links show the same preview.
+- A coached run's card shows a "Coached" chip after the formation.
+- Not built: the nickname on the card (anyone could print any name on any run through the public card URL), and `/?b=` link previews (moved to Wave 7).
+
+RED commit: `c003ef9` (12 of 87 unit tests failed in 6 of 9 files, and `shareLink.test.ts` failed to load; `e2e/share-sheet.spec.ts` failed 6 of 8 against a build of `5932775`, the other 2 being a labelled regression guard and a proof capture). GREEN `6cff46f`. `25b5665` adds the goal and Builder fallback proof and the screenshots. `0ddcaa6` matches the repo's doc comment layout (comments only).
+
+Gates at `0ddcaa6`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 24 touched text files.
+- Unit tests: 1,828 passed in 217 files.
+- Playwright (`CI=1`, headless, build of `0ddcaa6`): `share-sheet` passed 9 of 9, and with `share`, `challenge`, `draft-modes`, `manager-mode` (chromium and pixel-7), `run-persist`, `swap-a11y`, `images`, `builder`, `server-html`, `old-links` and `replay-deep-links` 73 passed and 1 skipped by its own touch gate.
+- Full Playwright suite once, on a build of `6cff46f` with the specs of `25b5665` (code identical to `0ddcaa6` except comments): 1,013 passed, 67 skipped by their own project gates, 0 failed, 0 flaky.
+- NOT RUN: review and hosted CI; the real share sheet on a phone and a screen reader pass over the Link field (owner actions).
+
+Decision log: `docs/decisions/share-sheet.md`. Browser proof: `docs/reports/share-sheet/` (`share-sheet-stubbed-390.png`, `manual-link-{390,360,320}.png`, `manual-goal-link-390.png`, `manual-builder-link-390.png`, `coached-card.png`).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 4 summary
 
 Branch `docs/wave4-summary` off `b4f8ca7`. Green: docs only, no change under `src/` or `e2e/`.
