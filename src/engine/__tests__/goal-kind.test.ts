@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "../coefficients";
 import { ENGINE_COEFFICIENTS_V7 } from "../coefficients-v7";
+import { runCup } from "../cup";
 import { goalKindOf, type MatchStarter } from "../match";
 import { createEngineRng } from "../rng";
 import { asSpeciesId, speciesById } from "../species";
-import type { GoalKind } from "../types";
+import type { GoalKind, Seed } from "../types";
+import { CUP8, draftLineup } from "./story-panel";
 
 const TRIALS = 10_000;
 
@@ -66,6 +68,39 @@ describe("engine 7 goal kinds follow the attack (catches a header share blind to
       "free-kick": 793,
       solo: 1301,
       "open-play": 6144,
+    });
+  });
+});
+
+/** Goals whose kind changes when only the weighting is switched on, over golden panel runs 0 to 49. */
+function weightedPanel() {
+  const weighted = structuredClone(ENGINE_COEFFICIENTS);
+  weighted.goalKind = { weighted: true, header: 1, solo: 1 };
+  const t = { user: { goals: 0, changed: 0 }, opp: { goals: 0, changed: 0 }, moved: 0 };
+  for (let r = 0; r < 50; r++) {
+    const seed = `panel-${r}` as Seed;
+    const lineup = draftLineup(CUP8, seed);
+    const live = runCup(lineup, seed, "cup8").matches;
+    runCup(lineup, seed, "cup8", weighted).matches.forEach((m, k) => {
+      const base = live[k]!;
+      if (m.status !== "played" || base.status !== "played") return;
+      base.goals.forEach((g, i) => {
+        const w = m.goals[i];
+        if (w?.side !== g.side || w.minute !== g.minute) t.moved++;
+        t[g.side].goals++;
+        if (w?.kind !== g.kind) t[g.side].changed++;
+      });
+    });
+  }
+  return t;
+}
+
+describe("a match weights both sides' goal kinds (catches the weighting reaching only one side)", () => {
+  it("panel runs 0 to 49: 63 of 495 user goals and 7 of 177 opponent goals change kind, none moves", () => {
+    expect(weightedPanel()).toEqual({
+      user: { goals: 495, changed: 63 },
+      opp: { goals: 177, changed: 7 },
+      moved: 0,
     });
   });
 });
