@@ -92,7 +92,8 @@ for (const width of [390, 360, 320]) {
     page,
   }) => {
     test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
-    test.setTimeout(240_000);
+    // Up to 3,000 clock steps; hosted runners took 3.1 to 3.3 minutes here before Wave 5 5e.
+    test.setTimeout(480_000);
     await page.setViewportSize({ width, height: 844 });
     await page.clock.install({ time: new Date("2026-10-18T12:00:00Z") });
     const replay = await watchLive(page);
@@ -103,23 +104,32 @@ for (const width of [390, 360, 320]) {
     // A badge's margin is its closest distance to a pitch edge; below zero it is clipped.
     const badges = new Map<string, number>();
     let closest = Infinity;
-    for (let i = 0; i < 3_000 && (await player.getAttribute("data-minute")) !== "90"; i++) {
+    // One round trip per step reads the minute and the badge together.
+    let minute = await player.getAttribute("data-minute");
+    for (let i = 0; i < 3_000 && minute !== "90"; i++) {
       await page.clock.runFor(50);
-      const seen = await broadcast.evaluate((root) => {
+      const step = await broadcast.evaluate((root) => {
+        const minute =
+          root.closest('[data-testid="match-player"]')?.getAttribute("data-minute") ?? null;
         const badge = root.querySelector('[data-testid="pitch-ability"]');
-        if (badge === null) return null;
+        if (badge === null) return { minute, seen: null };
         const pitch = root.firstElementChild!.getBoundingClientRect();
         const r = badge.getBoundingClientRect();
         return {
-          text: badge.textContent ?? "",
-          margin: Math.min(
-            r.left - pitch.left,
-            pitch.right - r.right,
-            r.top - pitch.top,
-            pitch.bottom - r.bottom,
-          ),
+          minute,
+          seen: {
+            text: badge.textContent ?? "",
+            margin: Math.min(
+              r.left - pitch.left,
+              pitch.right - r.right,
+              r.top - pitch.top,
+              pitch.bottom - r.bottom,
+            ),
+          },
         };
       });
+      minute = step.minute;
+      const seen = step.seen;
       if (seen === null) continue;
       badges.set(seen.text, Math.min(badges.get(seen.text) ?? Infinity, seen.margin));
       if (seen.margin < closest) {
@@ -133,6 +143,7 @@ for (const width of [390, 360, 320]) {
     console.log(
       `${width}px: ${badges.size} badges, closest margin ${Math.round(closest * 10) / 10}px, clipped ${JSON.stringify(clipped)}`,
     );
+    expect(minute).toBe("90");
     expect(badges.size).toBeGreaterThan(5);
     expect(clipped).toEqual([]);
   });
