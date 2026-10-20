@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine 7 split managed and scaffolding
+
+Branch `feat/engine7-split-managed` off `origin/main` at `7045ccd` (the 6g squash). Wave 6 row 6b1 (Red). Dormant: the live coefficients keep `manager.splitManaged: false`, so production engine output is exactly engine 6's. Only `src/engine`, `scripts/calibration` and `eslint.config.mjs` changed among code paths; `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #146 merge.
+
+- Nothing changes for a player yet.
+- From the flip, a sub (including a chosen injury replacement) switches off only the assistant's fatigue subs, and a tactic from 45' switches off only its tactics. An early tactic still applies and the assistant keeps its late reaction on top of it. Balanced at kickoff plays exactly the uncoached match.
+- For the next rows: `src/engine/coefficients-v7.ts` holds the engine 7 candidate (`ENGINE_COEFFICIENTS_V7`), `--coeffs v7` runs it in `pnpm calibrate` and the probe, ESLint keeps it out of `src/ui`, `src/components` and `src/app`, and a parity guard plays the live engine against the frozen engine 6 bundle (50 runs in `pnpm test`, 200 in `v6-parity.slow.test.ts`).
+- `recap.ts` no longer reads `ENGINE_COEFFICIENTS` at module scope; a source scan refuses any such read in `src/engine`.
+
+RED commit `1f9d738` (11 of 17 failed), GREEN `6dbe958`. Parity guard `1eed662`, regression guard with no RED (behaviour already correct); a mutation (`autoSubEnergy` 82 to 83) made it fail, then was reverted.
+
+Gates at `610a5ee` (GREEN `6dbe958` plus a test comment; code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files. `pnpm e2e:pins --check` reported the pins current.
+- Unit tests: 2,064 passed in 237 files. `pnpm vitest run src/engine`: 301 passed in 27 files. Slow parity: 200 runs byte-identical (871 played matches, 638 coached, 95 chosen injury answers, all four shapes, 8 formations).
+- `check-retained-replays.mts`: 10 golden replays passed. `measure-retained-json.mjs`: 4 copies, 2,891,853 bytes.
+- Probes at n 400 (bots good and random, 4-3-3): engine 6 reproduces the 6p baseline hashes. Under V7, P3 no-op cost is 0.0000 with 0 discordant pairs for both bots (baseline -0.0075 good, -0.0529 random); P1 informed minus auto is -0.0022 [-0.0211, +0.0168] good and +0.0016 [-0.0279, +0.0311] random (baseline -0.0111 and -0.0466), so P1 still fails until 6b2 and 6b8.
+- NOT RUN: review and hosted CI, Playwright (no UI change, engine output unchanged), the other probe modes, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine7-split-managed.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Engine grace window and version plumbing
 
 Branch `feat/engine-grace` off `origin/main` at `8059458` (the 6b0 squash). Wave 6 row 6g (Red). Dormant: `GRACE` is `null`, so production behaviour is exactly today's. No file under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #144 merge, and the branch merged `origin/main` at `2992500` (PR #145) with its merged paragraph below.
