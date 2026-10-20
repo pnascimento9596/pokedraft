@@ -50,6 +50,7 @@ describe("playHref and parsePlayQuery (catches a home Start link that loses the 
         order: "squadFirst",
       },
       seed: null,
+      vs: null,
     });
     expect(parse(playHref("cup8", POSITION_CLASSIC, "s1"))).toEqual({
       settings: {
@@ -60,6 +61,7 @@ describe("playHref and parsePlayQuery (catches a home Start link that loses the 
         order: "positionFirst",
       },
       seed: "s1",
+      vs: null,
     });
   });
 
@@ -67,10 +69,12 @@ describe("playHref and parsePlayQuery (catches a home Start link that loses the 
     expect(parse(playHref("kanto151", DEFAULT_PANEL))).toEqual({
       settings: { mode: "kanto151", formation: "4-3-3", order: "squadFirst" },
       seed: null,
+      vs: null,
     });
     expect(parse(playHref("kanto151", POSITION_CLASSIC))).toEqual({
       settings: { mode: "kanto151", formation: "3-5-2", order: "positionFirst" },
       seed: null,
+      vs: null,
     });
   });
 

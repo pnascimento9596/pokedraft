@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ShareActions } from "@/components/results/ShareActions";
 import { ShareGoalButton } from "@/components/share/ShareGoalButton";
 import { replayAnyVersion as replay } from "@/engine/versions";
+import { GOLDEN_CUP8_V5 } from "@/engine/versions/__tests__/fixtures";
 
 // Engine 1, cup8 Open 4-3-3 seed "seed-9": observed 8-0-0, Team Score 845. The same 16 as a
 // builder friendly with seed "friendly-1": observed 7-0-1, Team Score 845.
@@ -32,9 +33,9 @@ function shareSheet() {
   });
 }
 
-async function show(token: string) {
+async function show(token: string, variant: "live" | "shared" = "shared") {
   const { draft, cup } = await replay(token);
-  render(<ShareActions token={token} draft={draft} cup={cup} variant="shared" />);
+  render(<ShareActions token={token} draft={draft} cup={cup} variant={variant} />);
 }
 
 async function flushIdle() {
@@ -173,5 +174,39 @@ describe("Share this goal (catches a goal link shared with no words)", () => {
         url: "http://localhost:3000/r/pd6?t=abc&watch=0&at=49",
       },
     ]);
+  });
+});
+
+// The golden engine-5 cup8 draft under the live prefix: seed golden-cup8, observed 5-0-1.
+const LIVE_CUP8 = GOLDEN_CUP8_V5.replace(/^pd5\./, "pd6.");
+const GOLDEN_CHALLENGE =
+  "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=golden-cup8";
+
+describe("Challenge a friend (catches live results with no way to dare a friend on the same seed)", () => {
+  it("opens the share sheet with the record dare and the same-seed link carrying the run", async () => {
+    pointer(true);
+    shareSheet();
+    await show(LIVE_CUP8, "live");
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Challenge a friend" }));
+    });
+    expect(sheets).toEqual([
+      {
+        title: "pokedraft",
+        text: "I went 5-0-1. Can you beat it on the same seed?",
+        url: `http://localhost:3000${GOLDEN_CHALLENGE}&vs=${LIVE_CUP8}`,
+      },
+    ]);
+  });
+
+  it("is not offered on a builder friendly, which has no seed to challenge", async () => {
+    await show(FRIENDLY, "live");
+    expect(screen.queryByRole("button", { name: "Challenge a friend" })).toBeNull();
+  });
+
+  it("is not offered on someone else's shared run, which keeps Challenge this Seed (regression guard, no RED: behaviour already correct)", async () => {
+    await show(LIVE_CUP8);
+    expect(screen.queryByRole("button", { name: "Challenge a friend" })).toBeNull();
+    expect(screen.getByTestId("challenge-seed").getAttribute("href")).toBe(GOLDEN_CHALLENGE);
   });
 });
