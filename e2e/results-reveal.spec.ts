@@ -59,6 +59,10 @@ test.describe("staged reveal", () => {
   test("the first live view counts the Team Score up from 0, and a reload shows the final hero at once (catches a reveal on every visit)", async ({
     page,
   }) => {
+    const errors: string[] = [];
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+    });
     await openLiveResults(page);
     await expect(hero(page)).toHaveAttribute("data-reveal", "staged");
     await expect(hero(page).getByTestId("results-trophy")).toBeVisible();
@@ -84,6 +88,7 @@ test.describe("staged reveal", () => {
     await expect(page.getByTestId("results-record")).toHaveText("8-0-0");
     await expect(hero(page)).not.toHaveAttribute("data-reveal", /.*/);
     expect((await overlay(page)).content).toBe("none");
+    expect(errors).toEqual([]);
   });
 
   test("a shared run shows the final hero with no count-up", async ({ page }) => {
