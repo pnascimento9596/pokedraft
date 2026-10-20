@@ -1,0 +1,411 @@
+import { matchLineup } from "./availability";
+import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
+import { FORMATIONS } from "./formations";
+import {
+  simulateMatch,
+  simulateScore,
+  type MatchInput,
+  type MatchStarter,
+  type Phase,
+} from "./match";
+import { buildLadder } from "./opponents";
+import { canonicalSortBy, createEngineRng, deriveSubseed } from "./rng";
+import { speciesById } from "./species";
+import { awards, type PlayerTally } from "./stats";
+import { benchQuality, matchLines, rateTeam } from "./team";
+import { bossStarters } from "./opponents";
+import {
+  CUP_ROUNDS,
+  ENGINE_VERSION,
+  type CupFinish,
+  type CupResult,
+  type CupRound,
+  type FullLineup,
+  type GroupRow,
+  type GroupFixture,
+  type MatchResult,
+  type ManagerAction,
+  type Mode,
+  type Opponent,
+  RunTokenError,
+  type Seed,
+  type SpeciesId,
+  type TeamRating,
+} from "./types";
+
+type PlayedMatch = Extract<MatchResult, { status: "played" }>;
+
+interface Fixture {
+  readonly a: string;
+  readonly b: string;
+  readonly aGoals: number;
+  readonly bGoals: number;
+}
+
+const USER = "user";
+const USER_NAME = "You";
+const GROUP_ROUNDS = ["G1", "G2", "G3"] as const;
+const OTHER_PAIRS = [
+  ["G1", "G2"],
+  ["G1", "G3"],
+  ["G2", "G3"],
+] as const;
+const ADVANCE = 2;
+const REGULATION_MINUTES = 90;
+const EXTRA_TIME_MINUTES = 120;
+const POINTS = { win: 3, draw: 1 } as const;
+
+function pointsFor(own: number, other: number): number {
+  if (own > other) return POINTS.win;
+  return own === other ? POINTS.draw : 0;
+}
+
+function groupTable(
+  seed: Seed,
+  teams: readonly { id: string; name: string }[],
+  fixtures: readonly Fixture[],
+): GroupRow[] {
+  const rows = teams.map(({ id, name }): GroupRow => {
+    const sides = fixtures.flatMap((f) =>
+      f.a === id ? [[f.aGoals, f.bGoals]] : f.b === id ? [[f.bGoals, f.aGoals]] : [],
+    );
+    const goalsFor = sides.reduce((s, [g]) => s + g!, 0);
+    const goalsAgainst = sides.reduce((s, [, g]) => s + g!, 0);
+    return {
+      team: id,
+      name,
+      played: sides.length,
+      won: sides.filter(([f, a]) => f! > a!).length,
+      drawn: sides.filter(([f, a]) => f === a).length,
+      lost: sides.filter(([f, a]) => f! < a!).length,
+      goalsFor,
+      goalsAgainst,
+      points: sides.reduce((s, [f, a]) => s + pointsFor(f!, a!), 0),
+    };
+  });
+
+  const lotsRng = createEngineRng(deriveSubseed(seed, "group_table"));
+  const lots = canonicalSortBy(
+    teams.map((t) => t.id),
+    (id) => [id],
+  );
+  for (let i = lots.length - 1; i > 0; i--) {
+    const j = lotsRng.int(i + 1);
+    [lots[i], lots[j]] = [lots[j]!, lots[i]!];
+  }
+
+  const triple = (r: GroupRow): readonly number[] => [
+    -r.points,
+    -(r.goalsFor - r.goalsAgainst),
+    -r.goalsFor,
+  ];
+  const sameTriple = (x: GroupRow, y: GroupRow): boolean =>
+    triple(x).every((v, i) => v === triple(y)[i]);
+  const headToHead = (r: GroupRow): number => {
+    const tied = new Set(rows.filter((o) => sameTriple(o, r)).map((o) => o.team));
+    return fixtures
+      .filter((f) => tied.has(f.a) && tied.has(f.b))
+      .reduce((s, f) => {
+        if (f.a === r.team) return s + pointsFor(f.aGoals, f.bGoals);
+        if (f.b === r.team) return s + pointsFor(f.bGoals, f.aGoals);
+        return s;
+      }, 0);
+  };
+  return canonicalSortBy(rows, (r) => [...triple(r), -headToHead(r), lots.indexOf(r.team)]);
+}
+
+interface Stint {
+  readonly species: SpeciesId;
+  readonly slot: number;
+  readonly from: number;
+  to: number | null;
+}
+
+// Who stood in each slot and for how long, rebuilt from the starting eleven and the incidents.
+function stints(
+  starters: readonly SpeciesId[],
+  match: PlayedMatch,
+  fullTime: number,
+): readonly Stint[] {
+  const all: Stint[] = starters.map((species, slot) => ({ species, slot, from: 0, to: null }));
+  const open = new Map<number, Stint>(all.map((s) => [s.slot, s]));
+  const close = (slot: number, minute: number): void => {
+    const s = open.get(slot);
+    if (s !== undefined) s.to = minute;
+    open.delete(slot);
+  };
+  for (const i of match.incidents ?? []) {
+    if (i.side !== "user") continue;
+    if (i.kind === "red" || i.kind === "injury") close(i.slot, i.minute);
+    if (i.kind === "sub") {
+      close(i.slot, i.minute);
+      const s: Stint = { species: i.in, slot: i.slot, from: i.minute, to: null };
+      all.push(s);
+      open.set(i.slot, s);
+    }
+  }
+  for (const s of all) if (s.to === null) s.to = fullTime;
+  return all;
+}
+
+// Coach decisions must come in match then minute order; anything else is a forged token.
+function managerByMatch(manager: readonly ManagerAction[]): Map<number, ManagerAction[]> {
+  const out = new Map<number, ManagerAction[]>();
+  manager.forEach((a, i) => {
+    const prev = manager[i - 1];
+    if (prev && (a.match < prev.match || (a.match === prev.match && a.minute < prev.minute))) {
+      throw new RunTokenError("invalidAction", `manager action ${i} is out of order`);
+    }
+    out.set(a.match, [...(out.get(a.match) ?? []), a]);
+  });
+  return out;
+}
+
+interface CupMatch {
+  readonly input: MatchInput;
+  readonly fielded: FullLineup;
+}
+
+// What match `matchIndex` of a run is played from. runCup and matchStory both build it here.
+function cupMatch(
+  lineup: FullLineup,
+  seed: Seed,
+  ladder: Record<CupRound, Opponent>,
+  rating: TeamRating,
+  matchIndex: number,
+  manager: readonly ManagerAction[],
+  c: EngineCoefficients,
+): CupMatch {
+  const formation = FORMATIONS[lineup.formation];
+  const phase: Phase = matchIndex < GROUP_ROUNDS.length ? "group" : "knockout";
+  const { lineup: fielded, absence } = matchLineup(lineup, seed, matchIndex, c);
+  const matchRating = absence === null ? rating : rateTeam(fielded, c);
+  const starters = fielded.starters.map((id, i): MatchStarter => ({
+    species: speciesById(id),
+    line: formation.slots[i]!.line,
+    role: formation.slots[i]!.role,
+  }));
+  const round = CUP_ROUNDS[matchIndex]!;
+  return {
+    fielded,
+    input: {
+      matchIndex,
+      round,
+      phase,
+      seed,
+      rating: matchRating.score,
+      userLines: matchLines(matchRating, c),
+      starters,
+      keeper: starters.find((s) => s.line === "GK")!.species,
+      opponent: ladder[round],
+      opponentStarters: bossStarters(ladder[round]),
+      absences: absence === null ? [] : [absence],
+      lineup: fielded,
+      unavailable: absence === null ? [] : [absence.out],
+      manager,
+    },
+  };
+}
+
+/**
+ * The `MatchInput` runCup plays match `matchIndex` from, whether or not the run reaches it.
+ * `manager` is the whole run's decisions, checked for order the same way runCup checks them.
+ */
+export function cupMatchInput(
+  lineup: FullLineup,
+  seed: Seed,
+  mode: Mode,
+  matchIndex: number,
+  manager: readonly ManagerAction[] = [],
+  c: EngineCoefficients = ENGINE_COEFFICIENTS,
+): MatchInput {
+  if (!Number.isInteger(matchIndex) || matchIndex < 0 || matchIndex >= CUP_ROUNDS.length) {
+    throw new RangeError(`match index ${matchIndex} is outside the cup`);
+  }
+  const decisions = managerByMatch(manager).get(matchIndex) ?? [];
+  return cupMatch(
+    lineup,
+    seed,
+    buildLadder(seed, mode, c),
+    rateTeam(lineup, c),
+    matchIndex,
+    decisions,
+    c,
+  ).input;
+}
+
+export function runCup(
+  lineup: FullLineup,
+  seed: Seed,
+  mode: Mode,
+  c: EngineCoefficients = ENGINE_COEFFICIENTS,
+  manager: readonly ManagerAction[] = [],
+): CupResult {
+  const decisions = managerByMatch(manager);
+  const formation = FORMATIONS[lineup.formation];
+  const ladder = buildLadder(seed, mode, c);
+  const rating = rateTeam(lineup, c);
+  const roles = [...new Set(formation.slots.map((s) => s.role))];
+
+  const tally = new Map<SpeciesId, PlayerTally>([
+    ...lineup.starters.map((id, i): [SpeciesId, PlayerTally] => [
+      id,
+      {
+        species: id,
+        goals: 0,
+        assists: 0,
+        appearances: 0,
+        cleanSheets: 0,
+        cleanSheetPoints: 0,
+        minutes: 0,
+        quality: speciesById(id).quality[formation.slots[i]!.role],
+      },
+    ]),
+    ...lineup.bench.map((id): [SpeciesId, PlayerTally] => [
+      id,
+      {
+        species: id,
+        goals: 0,
+        assists: 0,
+        appearances: 0,
+        cleanSheets: 0,
+        cleanSheetPoints: 0,
+        minutes: 0,
+        quality: benchQuality(speciesById(id), roles),
+      },
+    ]),
+  ]);
+  const bump = (id: SpeciesId, change: Partial<Record<keyof PlayerTally, number>>): void => {
+    const t = tally.get(id)!;
+    tally.set(id, {
+      ...t,
+      goals: t.goals + (change.goals ?? 0),
+      assists: t.assists + (change.assists ?? 0),
+      appearances: t.appearances + (change.appearances ?? 0),
+      cleanSheets: t.cleanSheets + (change.cleanSheets ?? 0),
+      cleanSheetPoints: t.cleanSheetPoints + (change.cleanSheetPoints ?? 0),
+      minutes: t.minutes + (change.minutes ?? 0),
+    });
+  };
+
+  const play = (matchIndex: number): PlayedMatch => {
+    const { input, fielded } = cupMatch(
+      lineup,
+      seed,
+      ladder,
+      rating,
+      matchIndex,
+      decisions.get(matchIndex) ?? [],
+      c,
+    );
+    const match = simulateMatch(input, c);
+    decisions.delete(matchIndex);
+    const conceded = match.regulation.opp + (match.extraTime?.opp ?? 0);
+    const minutes = match.extraTime === null ? REGULATION_MINUTES : EXTRA_TIME_MINUTES;
+    const seen = new Set<SpeciesId>();
+    for (const st of stints(fielded.starters, match, minutes)) {
+      const played = st.to! - st.from;
+      const role = formation.slots[st.slot]!.role;
+      // A clean sheet needs half of regulation (45 minutes), not half of the minutes played, so
+      // extra time never raises the bar for a defender or keeper who held the shutout.
+      const sheet =
+        conceded === 0 && played * 2 >= REGULATION_MINUTES ? c.awards.cleanSheet[role] : undefined;
+      bump(st.species, {
+        appearances: seen.has(st.species) ? 0 : 1,
+        cleanSheets: sheet === undefined ? 0 : 1,
+        cleanSheetPoints: sheet ?? 0,
+        minutes: played,
+      });
+      seen.add(st.species);
+    }
+    for (const g of match.goals) {
+      if (g.side !== "user") continue;
+      bump(g.scorer, { goals: 1 });
+      if (g.assist !== null) bump(g.assist, { assists: 1 });
+    }
+    return match;
+  };
+
+  const matches: MatchResult[] = GROUP_ROUNDS.map((_, i) => play(i));
+  const fixtures: GroupFixture[] = matches.map((m, i) => {
+    const played = m as PlayedMatch;
+    return {
+      round: GROUP_ROUNDS[i]!,
+      a: USER,
+      b: ladder[GROUP_ROUNDS[i]!].id,
+      aGoals: played.regulation.user,
+      bGoals: played.regulation.opp,
+    };
+  });
+  OTHER_PAIRS.forEach(([ra, rb], k) => {
+    const [aGoals, bGoals] = simulateScore(
+      ladder[ra].lines,
+      ladder[rb].lines,
+      seed,
+      `group-other:${k}`,
+      c,
+    );
+    fixtures.push({
+      round: GROUP_ROUNDS[2 - k]!,
+      a: ladder[ra].id,
+      b: ladder[rb].id,
+      aGoals,
+      bGoals,
+    });
+  });
+  const group = groupTable(
+    seed,
+    [
+      { id: USER, name: USER_NAME },
+      ...GROUP_ROUNDS.map((r) => ({ id: ladder[r].id, name: ladder[r].name })),
+    ],
+    fixtures,
+  );
+
+  let finish: CupFinish = "champion";
+  let alive = group.findIndex((r) => r.team === USER) < ADVANCE;
+  if (!alive) finish = "group";
+  CUP_ROUNDS.slice(GROUP_ROUNDS.length).forEach((round, k) => {
+    if (!alive) {
+      matches.push({ status: "notPlayed", round, opponent: ladder[round] });
+      return;
+    }
+    const match = play(GROUP_ROUNDS.length + k);
+    matches.push(match);
+    if (match.outcome !== "W") {
+      alive = false;
+      finish = round as CupFinish;
+    }
+  });
+
+  if (decisions.size > 0) {
+    throw new RunTokenError("invalidAction", "a coach decision names a match the run never played");
+  }
+  const played = matches.filter((m): m is PlayedMatch => m.status === "played");
+  const wins = played.filter((m) => m.outcome === "W").length;
+  const draws = played.filter((m) => m.outcome === "D").length;
+  const losses = played.filter((m) => m.outcome === "L").length;
+  const tallies = canonicalSortBy([...tally.values()], (t) => [t.species]);
+
+  return {
+    engine: ENGINE_VERSION,
+    seed,
+    mode,
+    rating,
+    group,
+    groupFixtures: fixtures,
+    matches,
+    wins,
+    draws,
+    losses,
+    finish,
+    flawless: wins === CUP_ROUNDS.length && draws === 0 && losses === 0,
+    players: tallies.map(({ species, goals, assists, appearances }) => ({
+      species,
+      goals,
+      assists,
+      appearances,
+    })),
+    awards: awards(tallies, c),
+  };
+}
