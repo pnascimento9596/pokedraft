@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "@/engine/coefficients";
+import { ENGINE_COEFFICIENTS_V7 } from "@/engine/coefficients-v7";
 import { tacticEdge } from "@/ui/manager/intel";
 import { DEFAULT_BOTS, PROBE_MODES, informedTactic, runProbe } from "./probe-modes";
 import { difference, quartileOf, wilson } from "./stats";
@@ -71,6 +72,25 @@ describe("probe modes at n 2", () => {
       expect(Array.isArray(first) ? first[0] : first).toMatchObject(SHAPES[mode]);
     });
   }
+});
+
+// probe-4-3-3-good-28 match 4 goes to a shootout after a Boss Club reserve came on, so the
+// opponent's takers must include the reserve, not the injured starter.
+describe("shootouts probe under V7 (catches the taker order ignoring opponent injuries)", () => {
+  it("n 28 reconstructs every taker: 107 knockout matches, 9 shootouts, 3 won", () => {
+    const report = runProbe("shootouts", {
+      n: 28,
+      seeds: 1,
+      bots: ["good"],
+      formation: "4-3-3",
+      c: ENGINE_COEFFICIENTS_V7,
+    });
+    expect(report.results[0]).toMatchObject({
+      knockoutMatches: 107,
+      shootouts: 9,
+      userWin: { count: 3, n: 9 },
+    });
+  });
 });
 
 describe("informedTactic", () => {
