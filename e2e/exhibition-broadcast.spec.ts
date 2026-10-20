@@ -65,17 +65,28 @@ async function setWidth(page: Page, width: number, height: number) {
 }
 
 // The widest right edge of anything inside `selector` outside `skip`, and the page's scroll width.
+// A box that clips its overflow (the pitch, the ticker) caps what is inside it: a sprite running
+// past the touchline is cut off by the pitch, not drawn past the screen edge.
 async function rightEdge(page: Page, selector: string, skip: string | null) {
   return page.evaluate(
     ({ sel, skip }) => {
       let right = 0;
+      let unclipped = 0;
       for (const root of document.querySelectorAll(sel)) {
         for (const el of [root, ...root.querySelectorAll("*")]) {
           if (skip !== null && el.closest(skip) !== null) continue;
-          right = Math.max(right, el.getBoundingClientRect().right);
+          const own = el.getBoundingClientRect().right;
+          let edge = own;
+          for (let p = el.parentElement; p !== null && p !== document.body; p = p.parentElement) {
+            if (getComputedStyle(p).overflowX !== "visible") {
+              edge = Math.min(edge, p.getBoundingClientRect().right);
+            }
+          }
+          right = Math.max(right, edge);
+          unclipped = Math.max(unclipped, own);
         }
       }
-      return { right, scroll: document.documentElement.scrollWidth };
+      return { right, unclipped, scroll: document.documentElement.scrollWidth };
     },
     { sel: selector, skip },
   );
@@ -92,7 +103,7 @@ async function fitsWithHeadroom(page: Page, label: string, height: number) {
     const edge = await rightEdge(page, "main > *", SHEET);
     const sheet = await rightEdge(page, '[data-testid="touchline"] > *', null);
     console.log(
-      `${label} at ${width}px: right edge ${edge.right.toFixed(1)}, sheet content ${sheet.right.toFixed(1)}, scroll ${edge.scroll}`,
+      `${label} at ${width}px: right edge ${edge.right.toFixed(1)} (unclipped ${edge.unclipped.toFixed(1)}), sheet content ${sheet.right.toFixed(1)}, scroll ${edge.scroll}`,
     );
     expect(edge.scroll).toBeLessThanOrEqual(width);
     expect(edge.right).toBeLessThanOrEqual(308);
@@ -236,6 +247,15 @@ test("the managed exhibition keeps 12 px of headroom at 320 and fits at 308 befo
     ] as const) {
       await setWidth(page, width, height);
       await page.getByTestId("exhibition-fulltime").scrollIntoViewIfNeeded();
+      // Buttons ease their colours after a theme switch; shoot the settled colours.
+      await page.evaluate(() =>
+        Promise.all(
+          document
+            .getAnimations()
+            .filter((a) => a instanceof CSSTransition)
+            .map((a) => a.finished.catch(() => undefined)),
+        ),
+      );
       await page.screenshot({ path: `${PROOF}/fulltime-${width}-${theme}.png` });
     }
   }
