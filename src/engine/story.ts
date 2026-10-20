@@ -1,5 +1,5 @@
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
-import { cupMatchInput } from "./cup";
+import { cupMatchInput, runCup } from "./cup";
 import { FORMATIONS } from "./formations";
 import { playMatchCore, type MatchObserver } from "./match";
 import { BOSS_FORMATION } from "./opponents";
@@ -87,6 +87,8 @@ export function chanceZone(line: Line, channel: Channel, kind: GoalKind | null):
 /**
  * Replays match `matchIndex` of a run and returns every chance trial and per-window xG next to
  * the result. Nothing here feeds back into the engine: the result is the one runCup produces.
+ * The whole run plays first, so a run runCup rejects throws the same RunTokenError, and a match
+ * the run never reaches throws a RangeError.
  */
 export function matchStory(
   seed: Seed,
@@ -94,6 +96,10 @@ export function matchStory(
   run: StoryRun,
   c: EngineCoefficients = ENGINE_COEFFICIENTS,
 ): MatchStory {
+  const cup = runCup(run.lineup, seed, run.mode, c, run.manager ?? []);
+  if (cup.matches[matchIndex]?.status !== "played") {
+    throw new RangeError(`the run never plays match ${matchIndex}`);
+  }
   const input = cupMatchInput(run.lineup, seed, run.mode, matchIndex, run.manager ?? [], c);
   const slots: Readonly<Record<Side, readonly Slot[]>> = {
     user: FORMATIONS[run.lineup.formation].slots,
