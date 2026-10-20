@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { challengeHref } from "@/ui/challenge-href";
+import { exhibitionHref, squadFromToken } from "@/ui/exhibition-route";
 import { PlayerImage } from "@/components/PlayerImage";
 import { pokedexById } from "@/data/pokedex";
 import { StatusNote } from "@/components/ui/primitives";
@@ -283,14 +284,27 @@ export function Board({
                 </span>
               </span>
             </Link>
-            {challengeHref(e.token) !== null ? (
-              <Link
-                className={`btn btn--ghost ${s.challenge}`}
-                href={challengeHref(e.token)!}
-                aria-label={`Challenge this Seed: ${e.nickname}, ${record(e.wins, e.draws, e.losses)}`}
-              >
-                Challenge this Seed
-              </Link>
+            {challengeHref(e.token) !== null || squadFromToken(e.token) !== null ? (
+              <div className={s.rowActions}>
+                {challengeHref(e.token) !== null ? (
+                  <Link
+                    className={`btn btn--ghost ${s.challenge}`}
+                    href={challengeHref(e.token)!}
+                    aria-label={`Challenge this Seed: ${e.nickname}, ${record(e.wins, e.draws, e.losses)}`}
+                  >
+                    Challenge this Seed
+                  </Link>
+                ) : null}
+                {squadFromToken(e.token) !== null ? (
+                  <Link
+                    className={`btn btn--ghost ${s.challenge}`}
+                    href={exhibitionHref({ away: e.token, name: e.nickname })}
+                    aria-label={`Exhibition vs this squad: ${e.nickname}, ${record(e.wins, e.draws, e.losses)}`}
+                  >
+                    Exhibition vs this squad
+                  </Link>
+                ) : null}
+              </div>
             ) : null}
           </li>
         ))}

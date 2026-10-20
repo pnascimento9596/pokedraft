@@ -136,8 +136,13 @@
   margin-top: 6px;
 }
 
-.challenge {
+.rowActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin: 0 4px 10px;
+}
+.challenge {
   min-height: 44px;
 }
 /* Fixed columns: the chips keep their boxes when a late web font changes the label widths. */

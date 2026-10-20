@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Exhibition route
+
+Branch `feat/exhibition-route` off `origin/main` at `54c6a58`. Wave 5 row 5c1 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Exhibitions have their own page, `/exhibition`, instead of a modal on shared runs. "Exhibition vs this squad" sits on every History row, every leaderboard row and the shared run page.
+- Your side defaults to your newest saved run that kept its 16 species, else your Builder squad. A "Your squad" picker lists those runs (date, formation, record) and "Builder lineup". With neither, the page links to Play and the Builder.
+- The other side reads "Misty's squad" when you came from Misty's board row, else "Their squad". "Shared squad" is gone. A squad against itself says "Same squad on both sides" and still plays.
+- One match or two legs, and every rematch, are in the link (`?home=&away=&n=&legs=&name=`), so a link replays the same match. Exhibitions stay unranked and never reach History.
+- Links from retained engines (pd1 to pd5) play too: the page reads each squad from the token's picks and swaps without replaying the draft.
+
+RED commit: `c441240` (2 of 18 unit tests failed in the 2 files that loaded; `exhibition-route.test.ts`, 25 tests, and `ExhibitionScreen.test.tsx`, 8 tests, failed to load). GREEN `8839ff7`.
+
+Gates at `8839ff7`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 26 touched code and test files.
+- Unit tests: 1,996 passed in 228 files.
+- Playwright (`CI=1`, headless, `--retries=0`): `exhibition-route` 5 of 5, and with `exhibition-two-legs`, `platform-experience`, `board-ux`, `history-controls`, `lifetime-history`, `achievements`, `leaderboard`, `seed-board`, `share`, `challenge`, `a11y` and `server-html` 103 of 103 (chromium). The full suite once, all projects: 1,071 passed, 67 skipped, 0 failed (17.8m).
+- At 320 px and at 308 px the page never scrolls sideways. Widest right edges: the exhibition page with a 20-W nickname 304 and 292, History rows 287 and 275, the widest own board row 275 and 275. `exhibition-route.spec.ts` asserts all of them at 308 or less.
+- NOT RUN: the e2e specs against the RED build, `exhibition-route.spec.ts` on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/exhibition-route.md`. Browser proof: `docs/reports/exhibition-route/` (`history-row-{390,360,320}.png`, `exhibition-{390,360,320}.png`, `route-{390,360,320}-{light,dark}.png`, `board-row-320.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Board UX
 
 Branch `feat/board-ux` off `origin/main` at `783ddbf`. Wave 5 row 5d (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.

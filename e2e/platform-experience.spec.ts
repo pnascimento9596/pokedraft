@@ -106,7 +106,8 @@ for (const width of [1280, 320]) {
       await page.goto(`/r/${GOLDEN_CUP8_V3}`);
       const history = await page.evaluate(() => localStorage.getItem("pokedraft:history:v1"));
       await page.getByTestId("play-exhibition").click();
-      const modal = page.getByTestId("exhibition-modal");
+      await expect(page).toHaveURL(`/exhibition?away=${GOLDEN_CUP8_V3}`);
+      const modal = page.getByRole("main");
       const final = await modal.getByTestId("exhibition-score").textContent();
       const goals = await modal.getByRole("list", { name: "Exhibition goals" }).textContent();
       await modal.getByRole("button", { name: "Replay highlights" }).click();

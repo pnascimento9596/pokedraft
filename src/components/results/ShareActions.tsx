@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { GENS, type CupResult, type DraftState } from "@/engine/types";
 import { builderToken } from "@/ui/builder-token";
 import { BUILDER_URL_SEED } from "@/ui/lineup";
 import { challengeHref, versusHref } from "@/ui/challenge-href";
+import { exhibitionHref, squadFromToken } from "@/ui/exhibition-route";
 import { challengeText } from "@/ui/versus";
 import { runHref } from "@/ui/run-link";
 import { ManualLink } from "@/components/share/ManualLink";
@@ -17,7 +17,6 @@ import {
   useCardDownload,
 } from "@/components/share/useCardDownload";
 import s from "./ResultsView.module.css";
-import { ExhibitionMatchModal } from "./ExhibitionMatchModal";
 
 export function ShareActions({
   token,
@@ -32,7 +31,6 @@ export function ShareActions({
   cup: CupResult;
   onNewRun?: () => void;
 }) {
-  const [exhibition, setExhibition] = useState(false);
   const card = useCardDownload({ t: token });
   const link = useLinkShare();
   const settings = draft.settings;
@@ -51,6 +49,8 @@ export function ShareActions({
   )}`;
   const sameSeed = variant === "shared" ? challengeHref(token) : null;
   const dare = variant === "live" ? versusHref(token) : null;
+  const exhibition =
+    variant === "shared" && squadFromToken(token) !== null ? exhibitionHref({ away: token }) : null;
 
   const share = () => {
     card.reset();
@@ -103,14 +103,11 @@ export function ShareActions({
           <Link href={builderHref} className="btn" data-testid="open-in-builder">
             Open in Builder
           </Link>
-          <button
-            type="button"
-            className="btn"
-            data-testid="play-exhibition"
-            onClick={() => setExhibition(true)}
-          >
-            Play Exhibition vs Squad
-          </button>
+          {exhibition !== null ? (
+            <Link href={exhibition} className="btn" data-testid="play-exhibition">
+              Exhibition vs this squad
+            </Link>
+          ) : null}
         </>
       ) : null}
       <span className={s.status}>
@@ -120,9 +117,6 @@ export function ShareActions({
         <span role="alert">{card.state.kind === "failed" ? DOWNLOAD_FAILED : ""}</span>
       </span>
       <ManualLink url={link.manual} />
-      {exhibition ? (
-        <ExhibitionMatchModal opponent={draft} onClose={() => setExhibition(false)} />
-      ) : null}
     </div>
   );
 }

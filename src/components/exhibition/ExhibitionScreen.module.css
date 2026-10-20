@@ -1,0 +1,37 @@
+/* A board nickname is up to 20 characters with no spaces, so labels break anywhere. */
+.screen {
+  overflow-wrap: anywhere;
+}
+.body {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.picker {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.picker label {
+  font-weight: 600;
+}
+.select {
+  height: 44px;
+  width: 100%;
+  min-width: 0;
+  font-size: 16px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+}
+.note {
+  margin: 0;
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}

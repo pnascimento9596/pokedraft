@@ -1,32 +1,11 @@
-.dialog {
-  width: min(680px, calc(100% - 24px));
-  max-height: 88dvh;
-  padding: 0;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: var(--shadow-raised);
-}
-.dialog::backdrop {
-  background: var(--overlay);
-}
-.content {
+.replay {
   display: grid;
   gap: 16px;
-  padding: 20px;
   min-width: 0;
 }
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.header h2 {
-  font-family: var(--font-display);
-  font-size: 24px;
-  margin: 4px 0 0;
+.mirror {
+  margin: 0;
+  font-weight: 600;
 }
 .note {
   color: var(--text-muted);
