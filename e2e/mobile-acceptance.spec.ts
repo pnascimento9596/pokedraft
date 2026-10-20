@@ -528,6 +528,16 @@ test("0 self-check: pageScrollReach passes a page that scrolls to its end and fl
   );
   const closed = await pageScrollReach(page);
   expect(closed.contentBottom).toBeLessThan(closed.clientHeight);
+
+  // A list that scrolls inside its own 200 px box, like the Broadcast ticker at full time, is
+  // reached by scrolling the box, so only the box's bottom edge counts.
+  await load(
+    page,
+    `<ol style="height:200px;overflow:auto;margin:0">${"<li>line</li>".repeat(200)}</ol>`,
+  );
+  const inner = await pageScrollReach(page);
+  expect(inner.contentBottom).toBeLessThanOrEqual(200);
+  expect(inner.contentBottom).toBeLessThanOrEqual(inner.reachableBottom + 1);
 });
 
 test("0 self-check: clippedText flags text with no box or wholly outside a clipping ancestor and leaves scrollable content alone", async ({

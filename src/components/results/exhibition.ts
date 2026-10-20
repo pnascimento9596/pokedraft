@@ -7,15 +7,23 @@ import {
   type Seed,
   type Shootout,
 } from "@/engine";
-import { simulateMatch, type MatchInput, type MatchStarter, type Phase } from "@/engine/match";
+import { simulateMatch, type MatchStarter, type Phase } from "@/engine/match";
 import { matchLines, rateTeam } from "@/engine/team";
 import type { FullLineup } from "@/engine";
+import type { ExhibitionFixture } from "@/ui/manager/exhibition-decide";
 import type { PlayedMatch } from "./format";
 
 export type ExhibitionFormat = "single" | "two-legs";
 export type TieDecision = "aggregate" | "extra-time" | "penalties";
 
-type Fixture = Omit<MatchInput, "seed" | "phase">;
+type Fixture = ExhibitionFixture;
+
+interface Scope {
+  readonly seed: Seed;
+  readonly own: FullLineup;
+  readonly other: FullLineup;
+  readonly rematch: number;
+}
 
 export interface TwoLegTie {
   readonly legs: readonly [PlayedMatch, PlayedMatch];
@@ -73,6 +81,7 @@ export function exhibitionFixture(
     },
     opponentStarters: starters(other),
     absences: [],
+    lineup: own,
   };
 }
 
@@ -80,12 +89,21 @@ function play(fixture: Fixture, phase: Phase, scope: readonly unknown[]): Played
   return simulateMatch({ ...fixture, phase, seed: JSON.stringify(scope) as Seed });
 }
 
-// The scope is the one the single exhibition has always used, so its results never move.
-export function playSingle(
-  fixture: Fixture,
-  scope: { readonly seed: Seed; own: FullLineup; other: FullLineup; rematch: number },
-): PlayedMatch {
-  return play(fixture, "group", [scope.seed, scope.own, scope.other, scope.rematch]);
+// The scope is the one the single exhibition has always used.
+export function singleSeed(scope: Scope): Seed {
+  return JSON.stringify([scope.seed, scope.own, scope.other, scope.rematch]) as Seed;
+}
+
+export function playSingle(fixture: Fixture, scope: Scope): PlayedMatch {
+  return simulateMatch({ ...fixture, phase: "group", seed: singleSeed(scope) });
+}
+
+export function legSeed(scope: Scope, leg: 1 | 2): Seed {
+  return JSON.stringify([...twoLegBase(scope), leg]) as Seed;
+}
+
+function twoLegBase(scope: Scope) {
+  return [scope.seed, scope.own, scope.other, scope.rematch, "two-legs"] as const;
 }
 
 function add(a: Score, b: Score): Score {
@@ -96,14 +114,11 @@ function add(a: Score, b: Score): Score {
 // when a knockout match is level after its own 90 minutes, so a level aggregate takes its extra
 // time and penalties from the first knockout simulation, in its own numbered scope, whose 90
 // minutes ended level. Only that match's minutes 91 to 120 and its shootout are used.
-export function playTwoLegs(
-  fixture: Fixture,
-  scope: { readonly seed: Seed; own: FullLineup; other: FullLineup; rematch: number },
-): TwoLegTie {
-  const base = [scope.seed, scope.own, scope.other, scope.rematch, "two-legs"] as const;
+export function playTwoLegs(fixture: Fixture, scope: Scope): TwoLegTie {
+  const base = twoLegBase(scope);
   const legs = [
-    play(fixture, "group", [...base, 1]),
-    play(fixture, "group", [...base, 2]),
+    simulateMatch({ ...fixture, phase: "group", seed: legSeed(scope, 1) }),
+    simulateMatch({ ...fixture, phase: "group", seed: legSeed(scope, 2) }),
   ] as const;
   const afterNinety = add(legs[0].regulation, legs[1].regulation);
   if (afterNinety.user !== afterNinety.opp) {

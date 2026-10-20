@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Lineup, Seed } from "@/engine";
 import { GOLDEN_CUP8_V3 } from "@/engine/versions/__tests__/fixtures";
@@ -48,8 +48,30 @@ const GOLDEN_RECORD = {
 beforeEach(() => {
   localStorage.clear();
   replace.mockClear();
+  vi.useFakeTimers({
+    toFake: ["requestAnimationFrame", "cancelAnimationFrame", "performance", "setTimeout"],
+  });
+  vi.stubGlobal("matchMedia", (query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  }));
 });
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+  vi.useRealTimers();
+});
+
+// Manager mode is off by default, so Skip to full time ends the match at once.
+async function playToFullTime() {
+  fireEvent.click(screen.getByTestId("exhibition-kickoff"));
+  await act(async () => {
+    await vi.dynamicImportSettled();
+  });
+  fireEvent.click(screen.getByTestId("skip-ft"));
+}
 
 function open(search: string) {
   query.value = search;
@@ -57,34 +79,40 @@ function open(search: string) {
 }
 
 describe("mirror match", () => {
-  it("says Same squad on both sides when home and away decode to one squad, and still plays it (catches a mirror reading as two teams)", () => {
+  it("says Same squad on both sides when home and away decode to one squad, and still plays it (catches a mirror reading as two teams)", async () => {
     open(`home=${BUILDER}&away=${OPPONENT}`);
     expect(screen.getByTestId("exhibition-mirror").textContent).toBe("Same squad on both sides");
-    // Engine 6: the builder squad against itself on seed opponent-0, rematch 0.
-    expect(screen.getByTestId("exhibition-score").textContent).toBe("4-1");
+    await playToFullTime();
+    // Engine 6 with both benches: the builder squad against itself on seed opponent-0, rematch 0.
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("4-0");
   });
 
-  it("shows no mirror note for two different squads", () => {
+  it("shows no mirror note for two different squads", async () => {
     open(`home=${BUILDER}&away=${GOLDEN_CUP8_V3}`);
     expect(screen.queryByTestId("exhibition-mirror")).toBeNull();
+    await playToFullTime();
     expect(screen.getByTestId("exhibition-score").textContent).toMatch(/^\d+-\d+$/);
   });
 });
 
 describe("side labels", () => {
-  it("names the other side after the board nickname, else Their squad (catches the hardcoded Shared squad)", () => {
+  it("names the other side after the board nickname, else Their squad (catches the hardcoded Shared squad)", async () => {
     open(`home=${BUILDER}&away=${GOLDEN_CUP8_V3}&name=Misty`);
-    const board = screen.getByLabelText("Exhibition final score");
-    expect(board.textContent).toContain("Your squad");
-    expect(board.textContent).toContain("Misty's squad");
-    expect(board.textContent).not.toContain("Shared squad");
     expect(screen.getByRole("heading", { level: 2 }).textContent).toBe(
       "Your squad vs Misty's squad",
     );
+    await playToFullTime();
+    const board = screen.getByTestId("matchday-scoreboard");
+    expect(board.textContent).toContain("Misty's squad");
+    expect(board.textContent).not.toContain("Shared squad");
+    expect(screen.getByTestId("exhibition-fulltime").textContent).toMatch(
+      /^Full time, \d+-\d+\. (Your squad wins|Misty's squad wins|Honours even)\./,
+    );
     cleanup();
     open(`home=${BUILDER}&away=${GOLDEN_CUP8_V3}`);
-    expect(screen.getByLabelText("Exhibition final score").textContent).toContain("Their squad");
     expect(screen.getByRole("heading", { level: 2 }).textContent).toBe("Your squad vs their squad");
+    await playToFullTime();
+    expect(screen.getByTestId("matchday-scoreboard").textContent).toContain("Their squad");
   });
 });
 
@@ -114,19 +142,26 @@ describe("challenger", () => {
     expect(screen.queryByTestId("exhibition-score")).toBeNull();
   });
 
-  it("never writes history or lifetime totals (catches an exhibition counted as a run)", () => {
+  it("never writes history or lifetime totals (catches an exhibition counted as a run)", async () => {
     localStorage.setItem("pokedraft.builder", JSON.stringify(BUILDER));
     open(`away=${OPPONENT}&legs=2&n=3`);
+    await playToFullTime();
+    fireEvent.click(screen.getByRole("button", { name: "Play leg 2" }));
+    await act(async () => {
+      await vi.dynamicImportSettled();
+    });
+    fireEvent.click(screen.getByTestId("skip-ft"));
     expect(screen.getByTestId("exhibition-aggregate").textContent).toBe("0-1");
     expect(Object.keys(localStorage)).toEqual(["pokedraft.builder"]);
   });
 });
 
 describe("route state", () => {
-  it("moves the rematch counter and the legs through the URL (catches rematches that a shared link cannot replay)", () => {
+  it("moves the rematch counter and the legs through the URL (catches rematches that a shared link cannot replay)", async () => {
     localStorage.setItem("pokedraft.builder", JSON.stringify(BUILDER));
     open(`away=${OPPONENT}&n=1`);
-    expect(screen.getByTestId("exhibition-score").textContent).toBe("0-1");
+    await playToFullTime();
+    expect(screen.getByTestId("exhibition-score").textContent).toBe("1-1");
     fireEvent.click(screen.getByRole("button", { name: "Play rematch" }));
     expect(replace).toHaveBeenLastCalledWith(`/exhibition?away=${OPPONENT}&n=2`, {
       scroll: false,

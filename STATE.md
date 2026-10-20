@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Exhibitions on the Broadcast
+
+Branch `feat/exhibition-broadcast` off `origin/main` at `aeb66b6`. Wave 5 row 5c2 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- "Kick off" plays an exhibition on the 2D Broadcast, the same pitch, ticker and scoreboard as a cup match. The text replay is gone.
+- One match with manager mode on opens the touchline: it stops at half time, at an injury and at 65 minutes, and a sub or tactic made there changes the result. With manager mode off it plays like a sim.
+- Two legs play both legs on the Broadcast with no stop. The picker says "Manager controls in one match only." When leg 2 needed extra time, the card under the pitch says so and lists the extra time goals.
+- Squads field their bench now (injury and fatigue subs), so an old exhibition link can show a different score than before.
+- "Play rematch" sits under the full-time line and moves focus back to "Kick off". Exhibitions stay unranked and never reach History.
+
+RED commits: `05ca319` (8 of 17 unit tests failed in the 2 files that loaded; `exhibition-decide.test.ts`, 4 tests, and `ExhibitionMatch.test.tsx`, 4 tests, failed to load), `f8bc6ea` (1 of 5 failed: focus after a rematch), `a3c87ac` (2 of 4 run failed: the landscape page-reach probe counted ticker lines inside their own scroll box). GREEN `39990b9`, `521d5aa`, `6e29059`.
+
+Gates at `849d2ad` (later commits change only e2e files, docs and screenshots):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files. Lint and typecheck exited 0 again at `6e29059`.
+- Unit tests: 1,998 passed in 229 files.
+- Playwright (`CI=1`, headless, `--retries=0`): the full suite at `6e29059`, all projects, 1,077 passed, 67 skipped, 0 failed (18.0m). An earlier full run at `849d2ad` had 1 failure, fixed by `6e29059`. At `cee7a76`: `exhibition-broadcast`, `touchline-sheet`, `exhibition-route` and `exhibition-two-legs` 21 of 21 (chromium).
+- At 320 px and 308 px the page never scrolls sideways. Widest right edges before kick off, at the half-time stop and at full time: 304 and 292. The touchline sheet's content: 310 and 298, inside the viewport.
+- NOT RUN: the e2e specs against the RED builds, `exhibition-broadcast.spec.ts` on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/exhibition-broadcast.md`. Browser proof: `docs/reports/exhibition-broadcast/` (`{390,360,320}-halftime-stop.png`, `{390,360,320}-sub-made.png`, `{390,360,320}-fulltime.png`, `390-two-legs.png`, `fulltime-{390,360,320}-{light,dark}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Exhibition route
 
 Branch `feat/exhibition-route` off `origin/main` at `54c6a58`. Wave 5 row 5c1 (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.

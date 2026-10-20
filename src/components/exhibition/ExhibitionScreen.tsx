@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useId, useMemo, useSyncExternalStore } from "react";
 import { ModuleCard, StatusNote } from "@/components/ui/primitives";
-import { ExhibitionReplay } from "@/components/results/ExhibitionReplay";
 import {
   awayName,
   challengers,
@@ -18,6 +17,7 @@ import {
 import { record } from "@/ui/labels";
 import { HISTORY_KEY, loadHistory } from "@/ui/runs";
 import { readJson } from "@/ui/storage";
+import { ExhibitionMatch } from "./ExhibitionMatch";
 import s from "./ExhibitionScreen.module.css";
 
 const BUILDER_SAVE_KEY = "pokedraft.builder";
@@ -150,7 +150,7 @@ export function ExhibitionScreen() {
             Your squad in this link could not be read. Choose another squad.
           </StatusNote>
         ) : (
-          <ExhibitionReplay
+          <ExhibitionMatch
             home={home.lineup}
             away={away.lineup}
             seed={away.seed}

@@ -131,6 +131,7 @@ export function MatchPlayer({
   startAt,
   shareGoal,
   variant = "live",
+  label,
 }: {
   readonly match: PlayedMatch;
   readonly matchIndex: number;
@@ -153,6 +154,8 @@ export function MatchPlayer({
   /** The link a user goal's ticker line offers to share. */
   readonly shareGoal?: (minute: number) => string;
   readonly variant?: ResultsVariant;
+  /** The player's accessible name; a cup match is named by its round. */
+  readonly label?: string;
 }) {
   // Quick is a still pitch with beat sounds only, so only a live broadcast with motion stages.
   const motion = !useReducedMotion() && view === "live";
@@ -581,7 +584,7 @@ export function MatchPlayer({
       className={s.player}
       tabIndex={-1}
       onKeyDown={onKeyDown}
-      aria-label={`${ROUND_LABEL[match.round]} against ${match.opponent.name}`}
+      aria-label={label ?? `${ROUND_LABEL[match.round]} against ${match.opponent.name}`}
       data-testid="match-player"
       data-view={view}
       data-stage={state.stage}

@@ -30,11 +30,11 @@ export const RUN_POSITION_FIRST = {
 // The golden engine-3 cup8 squad saved as the Builder squad and played against itself.
 export const MIRROR_EXHIBITION = {
   firstSingle: "1-3",
-  extraTimeRematch: 1,
-  extraTime: { leg1: "0-1", leg2: "5-6", aggregate: "5-7", goal: "117' Talonflame (solo run)" },
-  singleAtExtraTimeRematch: "3-1",
-  aggregateRematch: 2,
-  aggregate: "5-10",
+  extraTimeRematch: 7,
+  extraTime: { leg1: "3-3", leg2: "2-3", aggregate: "5-6", goal: "103' Zeraora, assist Dragalge" },
+  singleAtExtraTimeRematch: "5-5",
+  aggregateRematch: 8,
+  aggregate: "10-2",
 } as const;
 
 // A Builder friendly and the golden engine-3 squad played from the exhibition route.
@@ -43,6 +43,13 @@ export const EXHIBITION_ROUTE = {
     "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiZXhoaWJpdGlvbi1yb3V0ZS1mcmllbmRseSIsW1sibCIsMSwiczAiXSxbImwiLDIsInMxIl0sWyJsIiwzLCJzMiJdLFsibCIsNCwiczMiXSxbImwiLDUsInM0Il0sWyJsIiw2LCJzNSJdLFsibCIsNywiczYiXSxbImwiLDgsInM3Il0sWyJsIiw5LCJzOCJdLFsibCIsMTAsInM5Il0sWyJsIiwxMSwiczEwIl0sWyJsIiwxMiwiYjAiXSxbImwiLDEzLCJiMSJdLFsibCIsMTQsImIyIl0sWyJsIiwxNSwiYjMiXSxbImwiLDE2LCJiNCJdXV0",
   friendlyVsGolden: "0-6",
   goldenMirror: "1-3",
+} as const;
+
+// The route's friendly against the golden squad in manager mode, with a sub at the 45' stop.
+export const EXHIBITION_BROADCAST = {
+  assistant: "0-6",
+  withSub: "0-5",
+  sub: "45' Butterfree on for Metapod (tactical, your call)",
 } as const;
 
 // A manager-mode run with Attack at the 45' stop of match 0: the full-time card's two scores.

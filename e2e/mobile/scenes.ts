@@ -536,6 +536,10 @@ export const SCENES: readonly Scene[] = [
     open: async (page) => {
       await seedStorage(page, { "pokedraft.builder": BUILDER_SQUAD });
       await page.goto(`/exhibition?away=${SHARED_RUN}&legs=2`);
+      await page.getByTestId("exhibition-kickoff").click();
+      await page.getByTestId("skip-ft").click();
+      await page.getByRole("button", { name: "Play leg 2" }).click();
+      await page.getByTestId("skip-ft").click();
       await ready(page, page.getByRole("button", { name: "Play rematch" }));
       await expect(page.getByTestId("exhibition-aggregate")).toBeVisible();
       await settle(page);

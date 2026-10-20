@@ -96,7 +96,7 @@ for (const width of [1280, 320]) {
       });
     });
 
-    test("exhibition replays genuine recorded goals without writing ranked history", async ({
+    test("exhibition plays on the Broadcast with its recorded goals and writes no ranked history", async ({
       page,
     }) => {
       await page.addInitScript(
@@ -107,14 +107,16 @@ for (const width of [1280, 320]) {
       const history = await page.evaluate(() => localStorage.getItem("pokedraft:history:v1"));
       await page.getByTestId("play-exhibition").click();
       await expect(page).toHaveURL(`/exhibition?away=${GOLDEN_CUP8_V3}`);
-      const modal = page.getByRole("main");
-      const final = await modal.getByTestId("exhibition-score").textContent();
-      const goals = await modal.getByRole("list", { name: "Exhibition goals" }).textContent();
-      await modal.getByRole("button", { name: "Replay highlights" }).click();
-      await expect(modal.getByTestId("exhibition-score")).toHaveText("0-0");
-      await modal.getByRole("button", { name: "Show full time" }).click();
-      await expect(modal.getByTestId("exhibition-score")).toHaveText(final!);
-      await expect(modal.getByRole("list", { name: "Exhibition goals" })).toHaveText(goals!);
+      const main = page.getByRole("main");
+      await main.getByTestId("exhibition-kickoff").click();
+      await expect(main.getByTestId("broadcast")).toBeVisible();
+      await main.getByTestId("skip-ft").click();
+      const final = await main.getByTestId("exhibition-score").textContent();
+      await expect(main.getByTestId("matchday-score")).toHaveText(final!);
+      const [user, opp] = final!.split("-").map(Number);
+      await expect(main.getByTestId("ticker").locator('li[data-kind="goal"]')).toHaveCount(
+        user! + opp!,
+      );
       expect(await page.evaluate(() => localStorage.getItem("pokedraft:history:v1"))).toBe(history);
       await noOverflow(page);
       await page.screenshot({

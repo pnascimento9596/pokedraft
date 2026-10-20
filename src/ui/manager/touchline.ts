@@ -246,6 +246,34 @@ function precheck(
   return null;
 }
 
+export type Recorded =
+  | { readonly ok: true; readonly actions: readonly ManagerAction[] }
+  | { readonly ok: false; readonly reason: string };
+
+/**
+ * Appends a decision at `minute` of match `matchIndex` to `actions` after checking it against the
+ * touchline, so the copy can say why a refused decision never reaches the engine.
+ */
+export function record(
+  match: PlayedMatch,
+  matchIndex: number,
+  lineup: FullLineup,
+  actions: readonly ManagerAction[],
+  minute: number,
+  decision: Decision,
+): Recorded {
+  const why = precheck(match, matchIndex, lineup, actions, minute, decision);
+  if (why !== null) return { ok: false, reason: why };
+  const action: ManagerAction =
+    decision.kind === "tactic"
+      ? { type: "tactic", match: matchIndex, minute, tactic: decision.tactic }
+      : { type: "sub", match: matchIndex, minute, slot: decision.slot, bench: decision.bench };
+  return { ok: true, actions: [...actions, action] };
+}
+
+/** The reason the engine refuses a decision the touchline let through. */
+export const ENGINE_REFUSAL = "That decision is not allowed right now.";
+
 /**
  * Records a decision at `minute` of match `matchIndex` and replays the cup with it. The decision
  * is checked against the touchline first and then by the engine itself, so a refused decision
@@ -261,21 +289,16 @@ export function decide(
 ): Verdict {
   const match = cup.matches[matchIndex];
   if (match?.status !== "played") return refuse("That match was not played.");
-  const why = precheck(match, matchIndex, ctx.lineup, actions, minute, decision);
-  if (why !== null) return refuse(why);
-  const action: ManagerAction =
-    decision.kind === "tactic"
-      ? { type: "tactic", match: matchIndex, minute, tactic: decision.tactic }
-      : { type: "sub", match: matchIndex, minute, slot: decision.slot, bench: decision.bench };
-  const next = [...actions, action];
+  const recorded = record(match, matchIndex, ctx.lineup, actions, minute, decision);
+  if (!recorded.ok) return recorded;
   try {
     return {
       ok: true,
-      actions: next,
-      cup: runCup(ctx.lineup, ctx.seed, ctx.mode, undefined, next),
+      actions: recorded.actions,
+      cup: runCup(ctx.lineup, ctx.seed, ctx.mode, undefined, recorded.actions),
     };
   } catch (e) {
-    if (e instanceof RunTokenError) return refuse("That decision is not allowed right now.");
+    if (e instanceof RunTokenError) return refuse(ENGINE_REFUSAL);
     throw e;
   }
 }
