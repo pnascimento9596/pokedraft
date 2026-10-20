@@ -135,4 +135,21 @@ describe("row details", () => {
     ]);
     expect(links.map((a) => a.textContent)).toEqual(["Challenge this Seed", "Challenge this Seed"]);
   });
+
+  it("links each row to an exhibition against its squad, carrying the nickname (catches board rows with no exhibition entry)", async () => {
+    serve(ALL_TIME, [
+      { ...MISTY, token: GOLDEN_CUP8_V3, wins: 3, draws: 0, losses: 2 },
+      { ...BROCK, nickname: "Ash & Brock", token: "pd1.undecodable" },
+    ]);
+    render(<StatefulBoard view={ALL_TIME} />);
+    await screen.findAllByTestId("board-row");
+    const links = screen.getAllByRole("link", { name: /^Exhibition vs this squad/ });
+    expect(links.map((a) => a.getAttribute("href"))).toEqual([
+      `/exhibition?away=${GOLDEN_CUP8_V3}&name=Misty`,
+    ]);
+    expect(links.map((a) => a.getAttribute("aria-label"))).toEqual([
+      "Exhibition vs this squad: Misty, 3-0-2",
+    ]);
+    expect(links.map((a) => a.textContent)).toEqual(["Exhibition vs this squad"]);
+  });
 });

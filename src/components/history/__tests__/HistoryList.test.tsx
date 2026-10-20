@@ -237,3 +237,21 @@ it("names each history challenge link by its run (catches every row reading the 
   expect(links[0].textContent).toBe("Challenge this Seed");
   expect(links[0].getAttribute("aria-label")).toMatch(/^Challenge this Seed: .*2026.*, 3-0-2$/);
 });
+
+it("links each history row to an exhibition against its squad (catches the exhibition only opening from a shared page)", () => {
+  localStorage.setItem(
+    "pokedraft:history:v1",
+    JSON.stringify([
+      { ...runs[2], token: GOLDEN_CUP8_V3 },
+      { ...runs[0], token: "no-squad" },
+    ]),
+  );
+  render(<HistoryList />);
+  const links = screen.getAllByRole("link", { name: /^Exhibition vs this squad/ });
+  expect(links).toHaveLength(1);
+  expect(links[0].getAttribute("href")).toBe(`/exhibition?away=${GOLDEN_CUP8_V3}`);
+  expect(links[0].textContent).toBe("Exhibition vs this squad");
+  expect(links[0].getAttribute("aria-label")).toMatch(
+    /^Exhibition vs this squad: .*2026.*, 3-0-2$/,
+  );
+});
