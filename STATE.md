@@ -23,6 +23,8 @@ Gates at `7a9e7d2`:
 
 Merges of `origin/main` into the branch (no rebase): `e54e9e2` (#131 share sheet; only `STATE.md` conflicted) and `026c596` (#132 head-to-head; `STATE.md` and `src/ui/challenge-href.ts` conflicted; main's `challenge-href.ts` taken, and `readTokenRun` in `src/ui/versus.ts` now reads through `readAnyToken`, same result). Gates at `026c596`: `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0, all nine `check:*` scripts exited 0, unit tests 1,905 passed in 224 files, and the full Playwright suite passed 1,034 with 67 skipped and 0 failed (19.2m; `seed-board` 8, `head-to-head` 5, `share-sheet` 9, `layout-shift` 7 and `server-html` 3 among them). The seed board screenshots came out byte-identical.
 
+Merge `da86f41` (#135 badge loop budget and #134 results reveal; `STATE.md` and the `ResultsView.tsx` imports conflicted, both the `SeedBoard` and `Trophy` imports kept). With the seed board now on 5e's live results, `results-reveal.spec.ts`'s no-console-error check saw two 503s from `/api/leaderboard` (the local server has no database), deterministically, 3 of 3. That spec now stubs an empty seed board, like `seed-board.spec.ts`; it passed 14 of 14. Full Playwright suite after that (`CI=1`, `--retries=0`, 4 workers): 1,047 passed, 67 skipped, 1 failed, an `iphone-14` `mobile-draft` test with the harness error "Cannot find parent object browser", which passed 3 of 3 on a rerun.
+
 Decision log: `docs/decisions/seed-boards.md`. Browser proof: `docs/reports/seed-boards/` (seed table at 390, 360 and 320, the unavailable state, All engines at 390, 360 and 320). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 ## Results reveal and sync
