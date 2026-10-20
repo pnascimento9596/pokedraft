@@ -213,7 +213,7 @@ export function penaltyEdge(taker: Species, keeper: Species): number {
   );
 }
 
-function convertProb(edge: number, c: EngineCoefficients): number {
+export function convertProb(edge: number, c: EngineCoefficients): number {
   const { base, band } = c.shootout;
   return clamp(base + (band * edge) / PERCENT, base - band, base + band);
 }
