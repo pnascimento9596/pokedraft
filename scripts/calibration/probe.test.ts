@@ -50,6 +50,7 @@ const SHAPES: Record<(typeof PROBE_MODES)[number], object> = {
   kinds: {
     user: expect.objectContaining({ share: expect.objectContaining({ header: PROPORTION }) }),
     penalty: expect.objectContaining({ conversion: PROPORTION }),
+    injuries: expect.objectContaining({ matchesWithOppInjury: PROPORTION }),
     headerShareByAttackerAer: expect.objectContaining({ quartiles: expect.any(Array) }),
   },
 };

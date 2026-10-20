@@ -544,6 +544,7 @@ function kindsFor(bot: BotName, o: ProbeOptions) {
   let matches = 0;
   let penalties = 0;
   const missed = { saved: 0, missed: 0 };
+  const injuries = { user: 0, opp: 0, oppSubs: 0, rotations: 0, matchesWithOppInjury: 0 };
   for (let i = 1; i <= o.n; i++) {
     const { seed, lineup } = draftSquad(bot, o.formation, i);
     const cup = runCup(lineup, seed, "cup8", o.c);
@@ -568,7 +569,15 @@ function kindsFor(bot: BotName, o: ProbeOptions) {
         if (g.kind === "header") headers++;
       }
       byAer.push({ aer: mean(attackers.map((s) => s.attrs.AER)), goals, headers });
-      for (const x of m.incidents ?? []) if (x.kind === "penalty") missed[x.outcome]++;
+      let oppInjured = false;
+      for (const x of m.incidents ?? []) {
+        if (x.kind === "penalty") missed[x.outcome]++;
+        if (x.kind === "injury") injuries[x.side]++;
+        if (x.kind === "injury" && x.side === "opp") oppInjured = true;
+        if (x.kind === "sub" && x.side === "opp") injuries.oppSubs++;
+        if (x.kind === "rotate") injuries.rotations++;
+      }
+      if (oppInjured) injuries.matchesWithOppInjury++;
     }
   }
   const shares = (side: "user" | "opp") => {
@@ -595,6 +604,16 @@ function kindsFor(bot: BotName, o: ProbeOptions) {
       missed: missed.missed,
       conversion: wilson(penalties, penalties + missed.saved + missed.missed),
       note: "Awarded is scored penalties plus engine 7's saved and missed penalty incidents. Engine 6 has no missed penalty: a penalty is a goal relabelled, so its conversion is 1 by construction.",
+    },
+    injuries: {
+      user: injuries.user,
+      opp: injuries.opp,
+      userPerMatch: injuries.user / matches,
+      oppPerMatch: injuries.opp / matches,
+      oppReplaced: injuries.oppSubs,
+      oppRotationsPerMatch: injuries.rotations / matches,
+      matchesWithOppInjury: wilson(injuries.matchesWithOppInjury, matches),
+      note: "Injury incidents per played match. Engine 6 logs only the user's; engine 7 also injures the Boss Club, replaces each from its reserve while subs remain, and logs its 60' and 75' rotations.",
     },
     headerShareByAttackerAer: {
       unit: "user side per played match; mean AER of the ATT-line starters after absences",
