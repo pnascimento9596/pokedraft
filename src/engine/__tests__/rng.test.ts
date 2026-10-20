@@ -175,3 +175,30 @@ describe("canonicalSortBy", () => {
     expect(items).toEqual([3, 1, 2]);
   });
 });
+
+// Regression guard, no RED: behaviour already correct. A substream's seed hashes only its own name
+// and scope, so appending set_pieces to SUBSTREAMS moves no existing stream. These are each
+// stream's first uint32 for one pinned seed and scope, recorded before set_pieces existed.
+describe("existing substreams after set_pieces (catches a new substream shifting the old ones)", () => {
+  it.each([
+    ["draft_roll", 215573847],
+    ["daily", 4131021248],
+    ["match_sim", 1207680324],
+    ["event_gen", 3270728704],
+    ["save_events", 2995405083],
+    ["opponent_selection", 899050560],
+    ["opponent_roster", 1045031952],
+    ["availability", 1294830160],
+    ["group_table", 2085862453],
+    ["match_timing", 2544151489],
+    ["match_incidents", 1280181310],
+  ] as const)("%s draws %i first", (name, first) => {
+    expect(createEngineRng(deriveSubseed("pin-seed", name, "match:0:w0")).uint32()).toBe(first);
+  });
+
+  it("set_pieces is its own stream: 3503216661 first", () => {
+    expect(createEngineRng(deriveSubseed("pin-seed", "set_pieces", "match:0:w0")).uint32()).toBe(
+      3503216661,
+    );
+  });
+});
