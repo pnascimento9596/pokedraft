@@ -102,6 +102,11 @@ test("Challenge a friend and Send it back share the same-seed link with the run,
   const dare = await clipboard(page);
   expect(dare).toMatch(new RegExp(`^${origin}${url.replace(/\?/g, "\\?")}&vs=pd6\\.[\\w-]+$`));
 
+  // This browser would reopen its own finished run on the same seed, so the friend starts clean.
+  await page.evaluate(() => {
+    sessionStorage.removeItem("pokedraft.run.cup8");
+    localStorage.removeItem("pokedraft.run.cup8");
+  });
   await playTo(page, dare);
   const h2h = page.getByTestId("head-to-head");
   await expect(h2h.getByTestId("h2h-verdict")).toHaveText("Level on the seed");

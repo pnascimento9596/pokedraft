@@ -43,6 +43,7 @@
   text-align: left;
 }
 .table tbody th {
+  white-space: nowrap;
   color: var(--text-soft);
   text-transform: none;
   letter-spacing: 0;
