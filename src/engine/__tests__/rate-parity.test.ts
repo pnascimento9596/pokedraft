@@ -61,4 +61,11 @@ describe("per-trial rate parity self-test (catches a comparison too blind to see
     });
     expect(divergences(c).sides).toEqual({ user: 23, opp: 15, length: 0 });
   });
+
+  it("opponent injuries: 11 user-side and 23 opponent-side divergences", () => {
+    const c = mutate((m) => {
+      m.opponent.injuries = true;
+    });
+    expect(divergences(c).sides).toEqual({ user: 11, opp: 23, length: 0 });
+  });
 });
