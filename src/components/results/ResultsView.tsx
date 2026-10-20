@@ -21,6 +21,7 @@ import { speciesById } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { Pitch } from "@/components/pitch/Pitch";
 import { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
+import { ACHIEVEMENT_LABEL, chipAchievement, runAchievements } from "@/ui/achievements";
 import { valueAt } from "@/ui/lineup";
 import {
   FINISH_LABEL,
@@ -114,6 +115,7 @@ export function ResultsView({
 
   const friendly = draft.settings.mode === "builder";
   const formation = draft.settings.formation;
+  const achievement = chipAchievement(runAchievements(draft, cup));
   const [selectedHighlightRound, setSelectedHighlightRound] = useState<CupRound | "mvp" | null>(
     null,
   );
@@ -198,6 +200,12 @@ export function ResultsView({
             {cup.finish === "champion" ? <Trophy className={s.trophy} /> : null}
             {FINISH_LABEL[cup.finish]}
           </span>
+          {achievement !== null ? (
+            <span className={s.achievement} data-testid="results-achievement">
+              <span className="visually-hidden">Achievement: </span>
+              {ACHIEVEMENT_LABEL[achievement]}
+            </span>
+          ) : null}
         </div>
         {cup.flawless ? (
           <p className={s.flawless} data-testid="results-flawless">

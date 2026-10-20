@@ -525,3 +525,31 @@ describe("results sync (Wave 5 row 5e)", () => {
     expect(screen.getByTestId("star-name").tagName).toBe("H3");
   });
 });
+
+// Bot-drafted cup8 Classic 4-3-3 runs on the live engine (scripts/audit/tokens.mts botCup8Token):
+// "achievements-19" beat a Boss Club 116 above its rating from 0-1 down; "achievements-0" earned nothing.
+const GIANT_KILLER_V6 =
+  "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiYWNoaWV2ZW1lbnRzLTE5IixbWyJwIiw5NzMsInMyIl0sWyJwIiw3OTIsInMwIl0sWyJwIiw4ODAsInMzIl0sWyJwIiwxMjIsInM1Il0sWyJwIiw4MCwiczEiXSxbInAiLDYyMCwiczgiXSxbInAiLDcyNywiczkiXSxbInAiLDg3MSwiczYiXSxbInAiLDE2OSwiczEwIl0sWyJwIiwxNDksInM0Il0sWyJwIiwyMjcsInM3Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw0MzAsImIwIl0sWyJwIiwzLCJiMSJdLFsicCIsMTk2LCJiMiJdLFsicCIsOTQsImIzIl0sWyJwIiwzODEsImI0Il1dXQ";
+const NO_CHIP_V6 =
+  "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiYWNoaWV2ZW1lbnRzLTAiLFtbInAiLDgxNSwiczgiXSxbInAiLDgwNCwiczkiXSxbInAiLDY5OSwiczIiXSxbInAiLDU2OSwiczAiXSxbInAiLDk1MiwiczEwIl0sWyJwIiw3NTgsInM1Il0sWyJwIiw3MzgsInMzIl0sWyJwIiwyODYsInM2Il0sWyJwIiw4OTksInM3Il0sWyJwIiw1NDcsInMxIl0sWyJwIiw4OTcsInM0Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw3NzEsImIwIl0sWyJwIiw4NjYsImIxIl0sWyJwIiw2NjgsImIyIl0sWyJwIiwxOTUsImIzIl0sWyJwIiw2OTEsImI0Il1dXQ";
+
+describe("achievement chip on the results hero (catches a run's best moment missing from its results)", () => {
+  it("shows the run's most notable earn beside the finish on a shared run", async () => {
+    await view(GIANT_KILLER_V6, "shared");
+    expect(screen.getByTestId("results-achievement").textContent).toBe("Achievement: Giant killer");
+  });
+
+  it("shows the same chip on live results", async () => {
+    await view(GIANT_KILLER_V6, "live");
+    expect(screen.getByTestId("results-achievement").textContent).toBe("Achievement: Giant killer");
+    expect(loadHistory()[0]!.achievements).toEqual(["hat-trick-hero", "comeback", "giant-killer"]);
+  });
+
+  it("shows no chip for a run with no notable earn or for a builder friendly", async () => {
+    await view(NO_CHIP_V6, "shared");
+    expect(screen.queryByTestId("results-achievement")).toBeNull();
+    cleanup();
+    await view(FRIENDLY, "shared");
+    expect(screen.queryByTestId("results-achievement")).toBeNull();
+  });
+});

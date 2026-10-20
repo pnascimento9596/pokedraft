@@ -127,3 +127,55 @@ it("orders merged history newest first and trims it to 50 runs", () => {
 it("names the file after the export date", () => {
   expect(backupFileName("2026-10-16T09:30:00.000Z")).toBe("pokedraft-backup-2026-10-16.json");
 });
+
+describe("achievements in a backup (catches a restore that drops earns or rejects an old file)", () => {
+  it("round-trips run achievements, lifetime earns and formation titles", () => {
+    const text = backupOf([
+      run("pd6.later", "2026-10-22T12:00:00.000Z", {
+        bucket: "cup8:open",
+        formation: "3-5-2",
+        finish: "champion",
+        achievements: ["giant-killer"],
+      }),
+      run("pd6.earlier", "2026-10-21T12:00:00.000Z", { achievements: ["comeback"] }),
+    ]);
+    const parsed = parseBackup(text);
+    if (!parsed.ok) throw new Error(parsed.message);
+    restoreBackup(parsed.backup);
+    expect(loadHistory().map((r) => r.achievements)).toEqual([["giant-killer"], ["comeback"]]);
+    const lifetime = loadLifetime()!;
+    expect(lifetime.earned).toEqual({
+      comeback: { at: "2026-10-21T12:00:00.000Z", token: "pd6.earlier" },
+      "giant-killer": { at: "2026-10-22T12:00:00.000Z", token: "pd6.later" },
+    });
+    expect(lifetime.formationTitles).toEqual(["3-5-2"]);
+  });
+
+  it("restores a backup written before achievements existed", () => {
+    const text = backupOf([run("pd5.old", "2026-10-14T00:00:00.000Z")]);
+    const raw = JSON.parse(text) as { lifetime: Record<string, unknown> };
+    delete raw.lifetime.earned;
+    delete raw.lifetime.formationTitles;
+    const parsed = parseBackup(JSON.stringify(raw));
+    if (!parsed.ok) throw new Error(parsed.message);
+    expect(restoreBackup(parsed.backup)).toEqual({ addedRuns: 1 });
+    expect(loadLifetime()!.earned).toEqual({});
+    expect(loadLifetime()!.formationTitles).toEqual([]);
+  });
+
+  it("an imported earlier earn replaces this browser's later one", () => {
+    const text = backupOf([
+      run("pd6.remote", "2026-10-20T12:00:00.000Z", { achievements: ["comeback"] }),
+    ]);
+    recordCompletedRun(
+      run("pd6.local", "2026-10-23T12:00:00.000Z", { achievements: ["comeback"] }),
+    );
+    const parsed = parseBackup(text);
+    if (!parsed.ok) throw new Error(parsed.message);
+    restoreBackup(parsed.backup);
+    expect(loadLifetime()!.earned.comeback).toEqual({
+      at: "2026-10-20T12:00:00.000Z",
+      token: "pd6.remote",
+    });
+  });
+});

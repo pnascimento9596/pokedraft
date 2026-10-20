@@ -7,6 +7,7 @@ import {
   type FormationId,
   type Lineup,
 } from "@/engine/types";
+import { ACHIEVEMENT_IDS, runAchievements, type AchievementId } from "./achievements";
 import { MODE_LABEL, STYLE_LABEL } from "./labels";
 import { readJson, writeJson } from "./storage";
 
@@ -42,6 +43,8 @@ export interface RunRecord {
   /** Goals across the cup's played matches, extra time included. Absent on older records. */
   readonly goalsFor?: number;
   readonly goalsAgainst?: number;
+  /** What this run earned, from its full cup. Absent on records saved before achievements. */
+  readonly achievements?: readonly AchievementId[];
 }
 
 export interface BucketStats {
@@ -77,6 +80,7 @@ export const RunRecordSchema = z.object({
   at: z.string().min(1),
   goalsFor: Count.optional(),
   goalsAgainst: Count.optional(),
+  achievements: z.array(z.enum(ACHIEVEMENT_IDS)).max(ACHIEVEMENT_IDS.length).optional(),
 });
 const BucketStatsSchema = z.object({
   runs: Count,
@@ -123,6 +127,7 @@ export function toRecord(
     flawless: cup.flawless,
     at,
     ...goalTotals(cup),
+    achievements: runAchievements({ settings }, cup),
   };
 }
 

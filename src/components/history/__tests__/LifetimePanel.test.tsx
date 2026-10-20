@@ -65,3 +65,36 @@ it("rejects a malformed backup file with a clear message and keeps the totals", 
   expect(metric("Runs completed")).toBe("0");
   expect(screen.queryByTestId("lifetime-backfill")).toBeNull();
 });
+
+it("shows six achievement tiles with the earned date, Not yet and the formation progress (catches a missing or invented earn)", () => {
+  const newer: RunRecord = {
+    ...older,
+    token: "pd6.newer",
+    formation: "3-5-2",
+    flawless: false,
+    wins: 7,
+    losses: 1,
+    at: "2026-10-21T12:00:00Z",
+    achievements: ["giant-killer"],
+  };
+  localStorage.setItem("pokedraft:history:v1", JSON.stringify([newer, older]));
+  render(<LifetimePanel />);
+  const grid = screen.getByRole("region", { name: "Achievements" });
+  expect(
+    within(grid)
+      .getAllByRole("listitem")
+      .map((item) => [item.textContent, item.getAttribute("data-earned")]),
+  ).toEqual([
+    ["First FlawlessEarned 14 October 2026", "true"],
+    ["Hat-trick heroNot yet", "false"],
+    ["Champion with every formationNot yet2 of 8", "false"],
+    ["151 championNot yet", "false"],
+    ["ComebackNot yet", "false"],
+    ["Giant killerEarned 21 October 2026", "true"],
+  ]);
+  expect(
+    within(grid)
+      .getAllByText(/count runs played from/)
+      .map((p) => p.textContent),
+  ).toEqual(["Hat-trick hero, Comeback and Giant killer count runs played from 20 October 2026."]);
+});

@@ -10,6 +10,7 @@ import {
   type Lineup,
   type SpeciesId,
 } from "@/engine";
+import { chipAchievement, runAchievements, type AchievementId } from "@/ui/achievements";
 import { MODE_LABEL, STYLE_LABEL } from "@/ui/labels";
 import { draftFromBuilderToken } from "@/ui/builder-token";
 import { filledCount } from "@/ui/lineup";
@@ -34,6 +35,7 @@ export type CardHeadline =
       readonly losses: number;
       readonly finish: CupFinish;
       readonly coached: boolean;
+      readonly achievement: AchievementId | null;
     }
   | { readonly kind: "lineup"; readonly score: number | null };
 
@@ -68,6 +70,7 @@ export function runCardModel(token: string, { draft, cup }: ReplayedRun): CardMo
       losses: cup.losses,
       finish: cup.finish,
       coached: isCoached(token),
+      achievement: chipAchievement(runAchievements(draft, cup)),
     },
   };
 }
