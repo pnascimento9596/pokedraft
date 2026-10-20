@@ -20,7 +20,7 @@ const own = draftFromBuilderToken(builderToken(settings, lineup, "builder" as Se
   .lineup as FullLineup;
 const opponent = draftFromBuilderToken(builderToken(settings, lineup, "opponent-0" as Seed))!;
 const other = opponent.lineup as FullLineup;
-const fixture = exhibitionFixture(own, other)!;
+const fixture = exhibitionFixture(own, other, "Their squad")!;
 const scope = (rematch: number) => ({ seed: opponent.seed, own, other, rematch });
 
 describe("one-match exhibition", () => {

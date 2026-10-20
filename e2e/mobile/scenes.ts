@@ -532,20 +532,15 @@ export const SCENES: readonly Scene[] = [
   },
   {
     id: "two-leg exhibition",
-    route: "/r/<token> exhibition",
-    modal: true,
+    route: "/exhibition",
     open: async (page) => {
       await seedStorage(page, { "pokedraft.builder": BUILDER_SQUAD });
-      await page.goto(`/r/${SHARED_RUN}`);
-      await ready(page, page.getByTestId("play-exhibition"));
-      await page.getByTestId("play-exhibition").click();
-      const modal = page.getByTestId("exhibition-modal");
-      await modal.getByRole("button", { name: "Two legs" }).click();
-      await expect(modal.getByTestId("exhibition-aggregate")).toBeVisible();
+      await page.goto(`/exhibition?away=${SHARED_RUN}&legs=2`);
+      await ready(page, page.getByRole("button", { name: "Play rematch" }));
+      await expect(page.getByTestId("exhibition-aggregate")).toBeVisible();
       await settle(page);
     },
-    primary: (page) =>
-      page.getByTestId("exhibition-modal").getByRole("button", { name: "Play rematch" }),
+    primary: (page) => page.getByRole("button", { name: "Play rematch" }),
   },
   {
     id: "broken run link",

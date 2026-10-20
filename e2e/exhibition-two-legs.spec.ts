@@ -26,7 +26,9 @@ for (const width of [1280, 360]) {
       const history = await page.evaluate(() => localStorage.getItem("pokedraft:history:v1"));
       const lifetime = await page.evaluate(() => localStorage.getItem("pokedraft:lifetime:v1"));
       await page.getByTestId("play-exhibition").click();
-      const modal = page.getByTestId("exhibition-modal");
+      await expect(page).toHaveURL(`/exhibition?away=${GOLDEN_CUP8_V3}`);
+      const modal = page.getByRole("main");
+      await expect(modal.getByTestId("exhibition-mirror")).toHaveText("Same squad on both sides");
       const format = modal.getByRole("group", { name: "Exhibition format" });
       await expect(format.getByRole("button", { name: "One match" })).toHaveAttribute(
         "aria-pressed",
@@ -43,6 +45,7 @@ for (const width of [1280, 360]) {
       // The first rematch of this mirror whose tie reaches extra time comes from the engine.
       for (let rematch = 0; rematch < PIN.extraTimeRematch; rematch++) {
         await modal.getByRole("button", { name: "Play rematch" }).click();
+        await expect(page).toHaveURL(new RegExp(`[?&]n=${rematch + 1}(&|$)`));
       }
       await expect(modal.getByTestId("exhibition-leg-1-score")).toHaveText(PIN.extraTime.leg1);
       await expect(modal.getByTestId("exhibition-leg-2-score")).toHaveText(PIN.extraTime.leg2);
@@ -70,6 +73,7 @@ for (const width of [1280, 360]) {
       await format.getByRole("button", { name: "Two legs" }).click();
       for (let rematch = PIN.extraTimeRematch; rematch < PIN.aggregateRematch; rematch++) {
         await modal.getByRole("button", { name: "Play rematch" }).click();
+        await expect(page).toHaveURL(new RegExp(`[?&]n=${rematch + 1}(&|$)`));
       }
       await expect(modal.getByTestId("exhibition-aggregate")).toHaveText(PIN.aggregate);
       await expect(modal.getByTestId("exhibition-decided")).toHaveText("On aggregate");

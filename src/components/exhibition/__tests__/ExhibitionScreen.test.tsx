@@ -78,9 +78,13 @@ describe("side labels", () => {
     expect(board.textContent).toContain("Your squad");
     expect(board.textContent).toContain("Misty's squad");
     expect(board.textContent).not.toContain("Shared squad");
+    expect(screen.getByRole("heading", { level: 2 }).textContent).toBe(
+      "Your squad vs Misty's squad",
+    );
     cleanup();
     open(`home=${BUILDER}&away=${GOLDEN_CUP8_V3}`);
     expect(screen.getByLabelText("Exhibition final score").textContent).toContain("Their squad");
+    expect(screen.getByRole("heading", { level: 2 }).textContent).toBe("Your squad vs their squad");
   });
 });
 

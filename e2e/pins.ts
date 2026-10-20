@@ -37,6 +37,14 @@ export const MIRROR_EXHIBITION = {
   aggregate: "5-10",
 } as const;
 
+// A Builder friendly and the golden engine-3 squad played from the exhibition route.
+export const EXHIBITION_ROUTE = {
+  friendly:
+    "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiZXhoaWJpdGlvbi1yb3V0ZS1mcmllbmRseSIsW1sibCIsMSwiczAiXSxbImwiLDIsInMxIl0sWyJsIiwzLCJzMiJdLFsibCIsNCwiczMiXSxbImwiLDUsInM0Il0sWyJsIiw2LCJzNSJdLFsibCIsNywiczYiXSxbImwiLDgsInM3Il0sWyJsIiw5LCJzOCJdLFsibCIsMTAsInM5Il0sWyJsIiwxMSwiczEwIl0sWyJsIiwxMiwiYjAiXSxbImwiLDEzLCJiMSJdLFsibCIsMTQsImIyIl0sWyJsIiwxNSwiYjMiXSxbImwiLDE2LCJiNCJdXV0",
+  friendlyVsGolden: "0-6",
+  goldenMirror: "1-3",
+} as const;
+
 // A manager-mode run with Attack at the 45' stop of match 0: the full-time card's two scores.
 export const YOUR_CALLS = {
   url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach",

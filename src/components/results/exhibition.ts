@@ -47,7 +47,11 @@ function starters(lineup: FullLineup): MatchStarter[] {
   }));
 }
 
-export function exhibitionFixture(own: FullLineup, other: FullLineup): Fixture | null {
+export function exhibitionFixture(
+  own: FullLineup,
+  other: FullLineup,
+  otherName: string,
+): Fixture | null {
   const rating = rateTeam(own);
   const opposition = rateTeam(other);
   const ownStarters = starters(own);
@@ -61,8 +65,8 @@ export function exhibitionFixture(own: FullLineup, other: FullLineup): Fixture |
     starters: ownStarters,
     keeper: keeper.species,
     opponent: {
-      id: "shared-squad",
-      name: "Shared squad",
+      id: "exhibition",
+      name: otherName,
       score: opposition.score,
       lines: matchLines(opposition),
       roster: other.starters.map((id) => ({ kind: "species", id }) as OpponentPlayerRef),

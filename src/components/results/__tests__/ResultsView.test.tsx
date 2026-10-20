@@ -5,8 +5,7 @@ import { ResultsView } from "@/components/results/ResultsView";
 import { type CupResult, type PenKick, type Shirt, type SpeciesId } from "@/engine";
 import { replayAnyVersion as replay } from "@/engine/versions";
 import { loadHistory } from "@/ui/runs";
-import { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
-import { BUILDER_URL_SEED } from "@/ui/lineup";
+import { draftFromBuilderToken } from "@/ui/builder-token";
 import { GOLDEN_CUP8_V5 } from "@/engine/versions/__tests__/fixtures";
 
 afterEach(cleanup);
@@ -105,15 +104,6 @@ describe("ResultsView", () => {
     fireEvent.click(screen.getByRole("button", { name: "Scout Misdreavus" }));
     expect(screen.getByRole("dialog").textContent).toContain("Misdreavus");
   });
-  it("closes the native exhibition dialog when the results page is hidden or unmounted", async () => {
-    const viewResult = await view(ELIMINATED, "shared");
-    fireEvent.click(screen.getByTestId("play-exhibition"));
-    const dialog = screen.getByTestId("exhibition-modal") as HTMLDialogElement;
-    expect(dialog.open).toBe(true);
-    viewResult.unmount();
-    expect(dialog.open).toBe(false);
-  });
-
   it("shows the replayed record and Team Score, not a placeholder or a recomputed value", async () => {
     await view(FLAWLESS);
     expect(screen.getByTestId("results-record").textContent).toBe("8-0-0");
@@ -309,23 +299,7 @@ describe("ResultsView", () => {
     expect(screen.getByTestId("highlight-title").textContent).toContain("Group match 3");
   });
 
-  it("offers Challenge this Seed, Open in Builder, and Play Exhibition vs Squad on shared runs", async () => {
-    const { draft: challenger } = await replay(FLAWLESS);
-    localStorage.setItem(
-      "pokedraft.builder",
-      JSON.stringify(
-        builderToken(
-          {
-            mode: "builder",
-            formation: challenger.lineup.formation,
-            gens: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            legendaries: true,
-          },
-          challenger.lineup,
-          BUILDER_URL_SEED,
-        ),
-      ),
-    );
+  it("offers Challenge this Seed, Open in Builder, and Exhibition vs this squad on shared runs", async () => {
     await view(ELIMINATED, "shared");
     const challengeLink = screen.getByTestId("challenge-seed");
     expect(challengeLink.getAttribute("href")).toBe(
@@ -338,26 +312,12 @@ describe("ResultsView", () => {
     );
     expect(copied?.lineup).toEqual((await replay(ELIMINATED)).draft.lineup);
 
-    fireEvent.click(screen.getByTestId("play-exhibition"));
-    const modal = screen.getByTestId("exhibition-modal");
-    expect(modal.textContent).toContain("Exhibition Match");
-    expect(screen.getByTestId("exhibition-score").textContent).toMatch(/^\d+-\d+$/);
+    const exhibition = screen.getByTestId("play-exhibition");
+    expect(exhibition.textContent).toBe("Exhibition vs this squad");
+    expect(exhibition.getAttribute("href")).toBe(`/exhibition?away=${ELIMINATED}`);
+    expect(screen.queryByRole("dialog")).toBeNull();
     expect(loadHistory()).toEqual([]);
   });
-
-  it.each([null, "bad-token", JSON.stringify("bad-token")])(
-    "does not invent an exhibition challenger when the saved squad is missing or invalid (%s)",
-    async (saved) => {
-      if (saved !== null) localStorage.setItem("pokedraft.builder", saved);
-      await view(ELIMINATED, "shared");
-      fireEvent.click(screen.getByTestId("play-exhibition"));
-      expect(screen.getByTestId("exhibition-modal").textContent).toContain(
-        "Save a complete squad in the Builder",
-      );
-      expect(screen.queryByTestId("exhibition-score")).toBeNull();
-      expect(loadHistory()).toEqual([]);
-    },
-  );
 
   it("shows a zero weak-spot drag as 0, not -0", async () => {
     const { cup } = await replay(FLAWLESS);

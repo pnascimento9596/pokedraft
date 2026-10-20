@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { POKEDEX, pokedexById } from "@/data/pokedex";
 import { challengeHref } from "@/ui/challenge-href";
+import { exhibitionHref, squadFromToken } from "@/ui/exhibition-route";
 import { careerSummary } from "@/ui/career";
 import { PlayerImage } from "@/components/PlayerImage";
 import { StatusNote } from "@/components/ui/primitives";
@@ -16,6 +17,40 @@ function when(at: string): string {
   const d = new Date(at);
   if (Number.isNaN(d.getTime())) return "Unknown date";
   return d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+}
+
+function RowActions({
+  challenge,
+  exhibition,
+  label,
+}: {
+  readonly challenge: string | null;
+  readonly exhibition: string | null;
+  readonly label: string;
+}) {
+  if (challenge === null && exhibition === null) return null;
+  return (
+    <div className={s.rowActions}>
+      {challenge !== null ? (
+        <Link
+          className={`btn btn--ghost ${s.challenge}`}
+          href={challenge}
+          aria-label={`Challenge this Seed: ${label}`}
+        >
+          Challenge this Seed
+        </Link>
+      ) : null}
+      {exhibition !== null ? (
+        <Link
+          className={`btn btn--ghost ${s.challenge}`}
+          href={exhibition}
+          aria-label={`Exhibition vs this squad: ${label}`}
+        >
+          Exhibition vs this squad
+        </Link>
+      ) : null}
+    </div>
+  );
 }
 
 export function HistoryList() {
@@ -239,15 +274,13 @@ export function HistoryList() {
                   <span className={s.scoreValue}>{r.score}</span>
                 </span>
               </Link>
-              {challengeHref(r.token) !== null ? (
-                <Link
-                  className={`btn btn--ghost ${s.challenge}`}
-                  href={challengeHref(r.token)!}
-                  aria-label={`Challenge this Seed: ${when(r.at)}, ${record(r.wins, r.draws, r.losses)}`}
-                >
-                  Challenge this Seed
-                </Link>
-              ) : null}
+              <RowActions
+                challenge={challengeHref(r.token)}
+                exhibition={
+                  squadFromToken(r.token) === null ? null : exhibitionHref({ away: r.token })
+                }
+                label={`${when(r.at)}, ${record(r.wins, r.draws, r.losses)}`}
+              />
             </li>
           ))}
         </ol>
