@@ -23,6 +23,8 @@ Gates at `e54e63c`:
 
 Decision log: `docs/decisions/freeze-engine-6.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #144 (freeze engine 6, Red) merged as squash `8059458`, reviewed head `243963a`. GLM 5.3 Flash APPROVE in round 1 with canary `6b0-dcfa6180736f240403def6c19db393f8` echoed, and the independent executing Red reviewer (fresh pokedraft-mode subagent, Opus) returned PASS on the same head: lint, typecheck, build, both retained-bundle checks (10 golden replays, `totalCopies` 4) and all nine `check:*` scripts exited 0, 2,030 unit tests passed in 231 files, `pnpm vitest run src/engine` 286 passed in 24 files, `goldens.test.ts` byte-identical to `origin/main`, a re-freeze from `969ca1c` was `diff -r` identical to the committed bundle, `check-bundle-provenance.sh v6 969ca1c` exited 0, bundle digest `b0b922bc...`, and the `retained-engine-bundle:v6` marker appeared in no `.next/static` or `.next/server` file. Hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `8059458` with engine `pokedraft-engine-6` and `db.status` ok; live `health`, `old-links` and `share` 19/19 on chromium. Engine output unchanged; the v6 bundle is dormant.
+
 ## matchStory core
 
 Branch `feat/match-story` off `origin/main` at `9e4802b`. Wave 6 row 6a1 (Red). Engine change with no output change: engine 6 stays live and every run, token and board row replays exactly as before. Nothing under `src/scouting`, `scripts/data` or `src/data` changed, and `goldens.test.ts` is byte-identical.
