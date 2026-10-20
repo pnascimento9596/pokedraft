@@ -29,13 +29,12 @@ const ctx: ExhibitionContext = { fixture, seed };
 const assistant = playSingle(fixture, scope);
 
 function userCalls(match: typeof assistant): string[] {
-  return (match.incidents ?? [])
-    .filter((i) => i.side === "user" && (i.kind === "sub" || i.kind === "tactic"))
-    .map((i) =>
-      i.kind === "sub"
-        ? `${i.minute}' ${i.by} sub ${i.out} for ${i.in}`
-        : `${i.minute}' ${i.by} ${i.tactic}`,
-    );
+  return (match.incidents ?? []).flatMap((i) => {
+    if (i.side !== "user") return [];
+    if (i.kind === "sub") return [`${i.minute}' ${i.by} sub ${i.out} for ${i.in}`];
+    if (i.kind === "tactic") return [`${i.minute}' ${i.by} ${i.tactic}`];
+    return [];
+  });
 }
 
 describe("exhibition decide", () => {
