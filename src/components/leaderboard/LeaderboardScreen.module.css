@@ -26,7 +26,7 @@
   color: var(--text-soft);
   cursor: pointer;
 }
-.tab[aria-selected="true"] {
+.tab[aria-pressed="true"] {
   background: var(--selected);
   color: var(--text);
 }

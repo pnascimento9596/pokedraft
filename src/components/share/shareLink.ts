@@ -36,6 +36,17 @@ export function runShareText(run: {
   return run.friendly ? `Friendly: ${line}.` : `${line}. Beat it?`;
 }
 
+function dayOf(date: string): string {
+  const d = new Date(`${date}T12:00:00Z`);
+  if (Number.isNaN(d.getTime())) return date;
+  return d.toLocaleDateString("en-US", { timeZone: "UTC", month: "long", day: "numeric" });
+}
+
+export function rankShareText(rank: number, dailyDate: string | null): string {
+  const board = dailyDate === null ? "all-time board" : `${dayOf(dailyDate)} daily`;
+  return `I'm #${rank} on the ${board}. Beat it?`;
+}
+
 export function absoluteUrl(path: string): string {
   return `${location.origin}${path}`;
 }
