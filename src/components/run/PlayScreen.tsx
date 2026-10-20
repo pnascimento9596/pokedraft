@@ -11,6 +11,7 @@ import { focusHeading } from "@/ui/focus";
 import { DAILY_RULE, MODE_LABEL } from "@/ui/labels";
 import { DEFAULT_PANEL, playHref, freshSeed, parsePlayQuery } from "@/ui/settings";
 import { settingsSummary } from "@/ui/settingsSummary";
+import type { Versus } from "@/ui/versus";
 import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/storage";
 import type { LiveRun } from "./LiveRun";
 import type { Restored } from "./savedRun";
@@ -70,7 +71,12 @@ export function PlayScreen() {
     );
   }
   return (
-    <Challenge key={JSON.stringify(parsed)} settings={parsed.settings} querySeed={parsed.seed} />
+    <Challenge
+      key={JSON.stringify(parsed)}
+      settings={parsed.settings}
+      querySeed={parsed.seed}
+      vs={parsed.vs}
+    />
   );
 }
 
@@ -78,11 +84,13 @@ export function PlayScreen() {
 export function Challenge({
   settings,
   querySeed,
+  vs = null,
   daily,
   renderSetup,
 }: {
   readonly settings: DraftSettings;
   readonly querySeed: string | null;
+  readonly vs?: Versus | null;
   readonly daily?: IsoDate;
   readonly renderSetup?: (loading: boolean) => ReactNode;
 }) {
@@ -171,9 +179,10 @@ export function Challenge({
   const newRun = () => {
     setUseQuerySeed(false);
     setLive(null);
-    if (params.has("seed")) {
+    if (params.has("seed") || params.has("vs")) {
       const q = new URLSearchParams(params.toString());
       q.delete("seed");
+      q.delete("vs");
       router.replace(`${pathname}?${q.toString()}`, { scroll: false });
     }
     window.scrollTo({ top: 0 });
@@ -189,6 +198,7 @@ export function Challenge({
         daily={daily}
         title={title}
         initial={live.initial}
+        vs={useQuerySeed ? vs : null}
         onNewRun={newRun}
       />
     );

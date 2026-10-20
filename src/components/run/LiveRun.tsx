@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   decodeToken,
   encodeToken,
@@ -17,8 +17,10 @@ import { MatchdayFlow } from "@/components/matchday/MatchdayFlow";
 import type { CupContext } from "@/ui/manager/touchline";
 import { SubmitPanel } from "@/components/leaderboard/SubmitPanel";
 import { ResultsView } from "@/components/results/ResultsView";
+import { HeadToHead, opponentOf } from "@/components/results/HeadToHead";
 import { focusHeading } from "@/ui/focus";
 import { loadPanel, playHref, playsMatchday, type MatchView } from "@/ui/settings";
+import type { Versus } from "@/ui/versus";
 import { DraftBoard } from "./DraftBoard";
 import { runToken, startRun, step, type Run } from "./runState";
 import { forgetRun, saveRun, type MatchdayAt, type Restored, type RunSlot } from "./savedRun";
@@ -96,6 +98,7 @@ export function LiveRun({
   daily,
   title,
   initial,
+  vs = null,
   onNewRun,
 }: {
   readonly settings: DraftSettings;
@@ -103,6 +106,7 @@ export function LiveRun({
   readonly daily?: IsoDate;
   readonly title: string;
   readonly initial: Restored | null;
+  readonly vs?: Versus | null;
   readonly onNewRun: () => void;
 }) {
   const slot: RunSlot = { settings, seed, daily: daily ?? null };
@@ -182,6 +186,12 @@ export function LiveRun({
     [matchdayToken, settings, seed, daily],
   );
 
+  const atResults = screen.kind === "results";
+  const opponent = useMemo(
+    () => (atResults && vs !== null ? opponentOf(vs) : null),
+    [atResults, vs],
+  );
+
   const newRun = () => {
     // A matchday's snapshot changes with every decision, so this tab's own copy names it.
     forgetRun(
@@ -219,6 +229,11 @@ export function LiveRun({
         draft={screen.draft}
         cup={screen.cup}
         variant="live"
+        versus={
+          opponent === null ? undefined : (
+            <HeadToHead token={screen.token} mine={screen} theirs={opponent} />
+          )
+        }
         navFamily={daily === undefined ? "play" : "daily"}
         onNewRun={daily === undefined ? newRun : undefined}
         submit={

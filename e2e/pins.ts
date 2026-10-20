@@ -54,3 +54,25 @@ export const DEEP_LINK = {
   after: "1-0",
   opponent: "Goldenrod United",
 } as const;
+
+// The golden engine-5 drafts under the live prefix as the runs to beat on their own seeds.
+export const HEAD_TO_HEAD = {
+  cup8: {
+    url: "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=golden-cup8",
+    theirs:
+      "pd6.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
+    retained:
+      "pd5.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
+    you: { record: "1-1-2", score: 406 },
+    them: { record: "5-0-1", score: 593 },
+  },
+  kanto151: {
+    url: "/play?mode=kanto151&f=3-5-2&order=positionFirst&seed=golden-kanto151",
+    theirs:
+      "pd6.W1siayIsIjMtNS0yIiwicCJdLCJnb2xkZW4ta2FudG8xNTEiLFtbImMiLCJzMCJdLFsicCIsMTQ5LCJzMCJdLFsiYyIsInMxIl0sWyJyIiwicyJdLFsicCIsNzMsInMxIl0sWyJjIiwiczIiXSxbInAiLDY5LCJzMiJdLFsiYyIsInMzIl0sWyJwIiw1MywiczMiXSxbImMiLCJzNCJdLFsicCIsNzgsInM0Il0sWyJjIiwiczUiXSxbInIiLCJzIl0sWyJwIiwxMTYsInM1Il0sWyJjIiwiczYiXSxbInAiLDM3LCJzNiJdLFsiYyIsInM3Il0sWyJwIiw3MSwiczciXSxbImMiLCJzOCJdLFsicCIsMTM0LCJzOCJdLFsiYyIsInM5Il0sWyJyIiwicyJdLFsicCIsMSwiczkiXSxbImMiLCJzMTAiXSxbInAiLDExNywiczEwIl0sWyJjIiwiYjAiXSxbInAiLDksImIwIl0sWyJjIiwiYjEiXSxbInAiLDIyLCJiMSJdLFsiYyIsImIyIl0sWyJyIiwicyJdLFsicCIsMTUsImIyIl0sWyJjIiwiYjMiXSxbInAiLDEyNiwiYjMiXSxbImMiLCJiNCJdLFsicCIsNzcsImI0Il1dXQ",
+    retained:
+      "pd5.W1siayIsIjMtNS0yIiwicCJdLCJnb2xkZW4ta2FudG8xNTEiLFtbImMiLCJzMCJdLFsicCIsMTQ5LCJzMCJdLFsiYyIsInMxIl0sWyJyIiwicyJdLFsicCIsNzMsInMxIl0sWyJjIiwiczIiXSxbInAiLDY5LCJzMiJdLFsiYyIsInMzIl0sWyJwIiw1MywiczMiXSxbImMiLCJzNCJdLFsicCIsNzgsInM0Il0sWyJjIiwiczUiXSxbInIiLCJzIl0sWyJwIiwxMTYsInM1Il0sWyJjIiwiczYiXSxbInAiLDM3LCJzNiJdLFsiYyIsInM3Il0sWyJwIiw3MSwiczciXSxbImMiLCJzOCJdLFsicCIsMTM0LCJzOCJdLFsiYyIsInM5Il0sWyJyIiwicyJdLFsicCIsMSwiczkiXSxbImMiLCJzMTAiXSxbInAiLDExNywiczEwIl0sWyJjIiwiYjAiXSxbInAiLDksImIwIl0sWyJjIiwiYjEiXSxbInAiLDIyLCJiMSJdLFsiYyIsImIyIl0sWyJyIiwicyJdLFsicCIsMTUsImIyIl0sWyJjIiwiYjMiXSxbInAiLDEyNiwiYjMiXSxbImMiLCJiNCJdLFsicCIsNzcsImI0Il1dXQ",
+    you: { record: "5-0-1", score: 580 },
+    them: { record: "3-0-1", score: 480 },
+  },
+} as const;

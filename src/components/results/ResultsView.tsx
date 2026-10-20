@@ -59,6 +59,8 @@ export interface ResultsViewProps {
   readonly onNewRun?: () => void;
   /** Leaderboard submit panel; rendered for `live` runs only. */
   readonly submit?: ReactNode;
+  /** A challenge's comparison with the run it dared you to beat, right after the hero. */
+  readonly versus?: ReactNode;
   readonly navFamily?: NavFamily;
   /** A goal link's replay: the match to open and the goal's minute. */
   readonly watch?: { readonly matchIndex: number; readonly minute: number } | null;
@@ -78,6 +80,7 @@ export function ResultsView({
   variant,
   onNewRun,
   submit,
+  versus,
   navFamily = "play",
   watch = null,
 }: ResultsViewProps) {
@@ -146,6 +149,7 @@ export function ResultsView({
           </p>
         ) : null}
       </ModuleCard>
+      {versus}
 
       <ShareActions token={token} draft={draft} cup={cup} variant={variant} onNewRun={onNewRun} />
       {variant === "live" ? submit : null}

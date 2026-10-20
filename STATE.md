@@ -25,6 +25,29 @@ Merge of `origin/main` at `71a86ec` (#131) into the branch: `e54e9e2` (only `STA
 
 Decision log: `docs/decisions/seed-boards.md`. Browser proof: `docs/reports/seed-boards/` (seed table at 390, 360 and 320, the unavailable state, All engines at 390, 360 and 320). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Head-to-head challenges
+
+Branch `feat/head-to-head` off `origin/main` at `71a86ec`. Wave 5 row 5b (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- Live results of a ranked run have a "Challenge a friend" button. It shares a link to the same seed and settings that carries your run, with "I went 1-1-2. Can you beat it on the same seed?". A builder friendly has no such button.
+- A friend who plays that link sees a "Head to head" card right under the results hero: who won the seed ("You win the seed", "They win the seed" or "Level on the seed", decided like the board by wins, then draws, then Team Score), both records and Team Scores, and each round's score side by side. "Send it back" shares their own run the same way.
+- A link whose run is from another seed or other settings plays normally with no comparison. New run drops the run to beat from the address.
+- A run from an older engine still sets the challenge, and the card says "Their run used engine v5, so there is no side by side." instead of inventing a result.
+- A shared run's "Challenge this Seed" now uses the same link builder; it goes to the same place as before.
+
+RED commit: `0a7df7b` (5 of 31 unit tests failed in 3 of 5 files, and `versus.test.ts` and `HeadToHead.test.tsx` failed to load). GREEN `d46b88a`. `37b4091` adds `e2e/head-to-head.spec.ts` and the generated `HEAD_TO_HEAD` pins. `67039e2` keeps round names on one line at 320 px.
+
+Gates at `67039e2`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 17 touched files.
+- Unit tests: 1,863 passed in 221 files.
+- Playwright (`CI=1`, headless, `--retries=0`, build of `67039e2`): `head-to-head` passed 5 of 5, and with `challenge`, `share`, `share-sheet`, `draft-modes`, `platform-experience`, `run-persist`, `leaderboard`, `history-controls`, `lifetime-history`, `results-interactions`, `theme-results`, `layout-shift`, `old-links`, `server-html`, `one-tap-play` and `a11y` 128 passed and 5 skipped by their own project gates.
+- NOT RUN: review and hosted CI; the full Playwright suite; the real share sheet on a phone and a screen reader pass over the head-to-head card (owner actions).
+
+Decision log: `docs/decisions/head-to-head.md`. Browser proof: `docs/reports/head-to-head/` (`they-win-{390,360,320}.png`, `you-win-390.png`, `level-send-it-back-390.png`, `retained-390.png`).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Share sheet and run metadata
 
 Branch `feat/share-sheet` off `origin/main` at `5932775`. Wave 5 row 5a (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -49,6 +72,8 @@ Gates at `0ddcaa6`:
 Decision log: `docs/decisions/share-sheet.md`. Browser proof: `docs/reports/share-sheet/` (`share-sheet-stubbed-390.png`, `manual-link-{390,360,320}.png`, `manual-goal-link-390.png`, `manual-builder-link-390.png`, `coached-card.png`).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #131 (row 5a, share sheet, card prefetch and run metadata, Yellow) merged as squash `71a86ec`, reviewed head `53bd08c` (the coordinator's merge of `origin/main` at `07beda9`, a STATE-only conflict, on top of `3f6a3b7`), GLM 5.3 Flash APPROVE in round 1 with canary `share-sheet-d2b2ddc842d2b015340ab24d042b90d4` echoed. At `53bd08c` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,839 unit tests passed in 218 files and Prettier passed on 25 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `71a86ec` with `db.status` ok; `share-sheet`, `share`, `server-html` and `challenge` against production (chromium) passed 30, with one retry of the phone prefetch-and-share case on a cold `/card` render, then `share-sheet` passed 27 of 27 with `--retries=0 --repeat-each=3`. A production `/r/<token>` page served `og:description` "Out in the Round of 32 with 4-3-3. Draft your own XI on pokedraft." and `og:image:alt` "pokedraft run card: 2-1-1, Team Score 333". NOT RUN: the real share sheet on a phone and a screen reader pass over the Link field (owner actions), WebKit share-sheet e2e.
 
 ## Leaderboard integrity contract and copy guard
 

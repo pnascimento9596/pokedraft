@@ -5,7 +5,8 @@ import { useState } from "react";
 import { GENS, type CupResult, type DraftState } from "@/engine/types";
 import { builderToken } from "@/ui/builder-token";
 import { BUILDER_URL_SEED } from "@/ui/lineup";
-import { DEFAULT_PANEL, playHref } from "@/ui/settings";
+import { challengeHref, versusHref } from "@/ui/challenge-href";
+import { challengeText } from "@/ui/versus";
 import { runHref } from "@/ui/run-link";
 import { ManualLink } from "@/components/share/ManualLink";
 import { SHARE_TITLE, runShareText } from "@/components/share/shareLink";
@@ -48,23 +49,17 @@ export function ShareActions({
     draft.lineup,
     BUILDER_URL_SEED,
   )}`;
-  const challengeHref =
-    settings.mode === "builder"
-      ? null
-      : playHref(
-          settings.mode,
-          {
-            ...DEFAULT_PANEL,
-            formation: settings.formation,
-            order: settings.order,
-            ...(settings.mode === "cup8" ? { gens: settings.gens, style: settings.style } : {}),
-          },
-          draft.seed,
-        );
+  const sameSeed = variant === "shared" ? challengeHref(token) : null;
+  const dare = variant === "live" ? versusHref(token) : null;
 
   const share = () => {
     card.reset();
     void link.share({ title: SHARE_TITLE, text, path });
+  };
+
+  const challenge = (path: string) => {
+    card.reset();
+    void link.share({ title: SHARE_TITLE, text: challengeText(cup), path });
   };
 
   const download = () => {
@@ -85,6 +80,11 @@ export function ShareActions({
       >
         Download image
       </button>
+      {dare !== null ? (
+        <button type="button" className="btn" onClick={() => challenge(dare)}>
+          Challenge a friend
+        </button>
+      ) : null}
       {variant === "live" && onNewRun ? (
         <button type="button" className="btn btn--ghost" onClick={onNewRun}>
           New run
@@ -95,8 +95,8 @@ export function ShareActions({
           <Link href="/" className="btn btn--ghost">
             Play your own
           </Link>
-          {challengeHref !== null ? (
-            <Link href={challengeHref} className="btn" data-testid="challenge-seed">
+          {sameSeed !== null ? (
+            <Link href={sameSeed} className="btn" data-testid="challenge-seed">
               Challenge this Seed
             </Link>
           ) : null}

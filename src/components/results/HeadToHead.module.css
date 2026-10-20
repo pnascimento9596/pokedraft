@@ -1,0 +1,50 @@
+.card {
+  min-width: 0;
+  width: 100%;
+  max-width: 760px;
+}
+.verdict {
+  margin: 0 0 12px;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 600;
+  color: var(--text);
+}
+.line {
+  margin: 0 0 12px;
+  color: var(--text-soft);
+}
+.sides {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin-bottom: 12px;
+}
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.score {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.table {
+  width: 100%;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.table th,
+.table td {
+  padding: 8px 4px;
+  text-align: left;
+}
+.table tbody th {
+  white-space: nowrap;
+  color: var(--text-soft);
+  text-transform: none;
+  letter-spacing: 0;
+}
