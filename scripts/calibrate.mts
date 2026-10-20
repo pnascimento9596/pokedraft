@@ -1,10 +1,10 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { performance } from "node:perf_hooks";
 import { POKEDEX } from "@/data/pokedex";
-import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "@/engine/coefficients";
+import type { EngineCoefficients } from "@/engine/coefficients";
 import { runCup } from "@/engine/cup";
 import { applyAction, createDraft, toFullLineup } from "@/engine/draft";
 import { FORMATIONS } from "@/engine/formations";
@@ -29,6 +29,7 @@ import {
   type SpeciesId,
 } from "@/engine/types";
 import { BOT_NAMES, BOTS, GOOD, bestFor, pickable, type BotName } from "./calibration/bots";
+import { loadCoefficients } from "./calibration/coeffs";
 
 interface Row {
   readonly id: string;
@@ -103,41 +104,7 @@ const N = Number(args.n);
 if (!Number.isSafeInteger(N) || N < 1)
   throw new RangeError(`--n must be a positive integer, got ${args.n}`);
 
-type Json = number | string | boolean | null | Json[] | { [k: string]: Json };
-
-function deepMerge(base: Json, patch: Json, at: string): Json {
-  const isObject = (v: Json): v is { [k: string]: Json } =>
-    typeof v === "object" && v !== null && !Array.isArray(v);
-  if (!isObject(patch)) {
-    if (
-      isObject(base) ||
-      typeof base !== typeof patch ||
-      Array.isArray(base) !== Array.isArray(patch)
-    ) {
-      throw new TypeError(
-        `--coeffs ${at || "root"}: expected ${JSON.stringify(base)}-shaped value`,
-      );
-    }
-    return patch;
-  }
-  if (!isObject(base))
-    throw new TypeError(`--coeffs ${at}: expected a ${typeof base}, got an object`);
-  const out: { [k: string]: Json } = { ...base };
-  for (const [k, v] of Object.entries(patch)) {
-    if (!(k in base)) throw new TypeError(`--coeffs ${at}.${k}: unknown coefficient`);
-    out[k] = deepMerge(base[k]!, v, `${at}.${k}`);
-  }
-  return out;
-}
-
-const COEFFS: EngineCoefficients =
-  args.coeffs === undefined
-    ? ENGINE_COEFFICIENTS
-    : (deepMerge(
-        ENGINE_COEFFICIENTS as unknown as Json,
-        JSON.parse(readFileSync(args.coeffs, "utf8")) as Json,
-        "",
-      ) as unknown as EngineCoefficients);
+const COEFFS: EngineCoefficients = loadCoefficients(args.coeffs);
 
 const selectedRows: readonly Row[] =
   args.rows === undefined

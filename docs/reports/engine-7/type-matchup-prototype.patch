@@ -1,0 +1,60 @@
+diff --git a/src/engine/match.ts b/src/engine/match.ts
+index 79936b1..c9c2bb5 100644
+--- a/src/engine/match.ts
++++ b/src/engine/match.ts
+@@ -3,6 +3,7 @@ import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
+ import { recapLines } from "./recap";
+ import { canonicalSortBy, createEngineRng, deriveSubseed, type EngineRng } from "./rng";
+ import { speciesById } from "./species";
++import { superEffective } from "./type-chart";
+ import { matchLines, rateTeam } from "./team";
+ import {
+   RunTokenError,
+@@ -464,6 +465,31 @@ export function simulateMatch(
+   const structMatch = createEngineRng(deriveSubseed(input.seed, "match_sim", scope));
+   const epsilon = dispersion(structMatch, input.phase, c);
+   const factor = input.phase === "knockout" ? c.match.knockoutFactor : 1;
++  // Decision 10 prototype (audit A P1-1): typeEdge = mean over user ATT starters of "hits the
++  // opponent's theme super effectively" minus mean over opponent ATT starters of the share of
++  // user DEF starters they hit super effectively. Own rate x (1 + 0.06 * edge), capped at 8%.
++  const hits = (a: Species, d: Species): boolean =>
++    a.types.some((ta) => d.types.some((td) => superEffective(ta, td)));
++  const oppTheme =
++    input.opponent.theme ??
++    input.opponentStarters[0]!.species.types.find((t) =>
++      input.opponentStarters.every((s) => s.species.types.includes(t)),
++    );
++  const userAtt = input.starters.filter((s) => s.line === "ATT").map((s) => s.species);
++  const userDef = input.starters.filter((s) => s.line === "DEF").map((s) => s.species);
++  const oppAtt = input.opponentStarters.filter((s) => s.line === "ATT").map((s) => s.species);
++  const avg = (xs: readonly number[]): number =>
++    xs.length === 0 ? 0 : xs.reduce((a, b) => a + b, 0) / xs.length;
++  const userTypeSide =
++    oppTheme === undefined
++      ? 0
++      : avg(userAtt.map((a) => (a.types.some((t) => superEffective(t, oppTheme)) ? 1 : 0)));
++  const oppTypeSide = avg(oppAtt.map((a) => avg(userDef.map((d) => (hits(a, d) ? 1 : 0)))));
++  const typeEdge = userTypeSide - oppTypeSide;
++  const typeScale = {
++    user: clamp(1 + 0.06 * typeEdge, 0.92, 1.08),
++    opp: clamp(1 - 0.06 * typeEdge, 0.92, 1.08),
++  };
+ 
+   const fresh = (species: Species): Occupant => ({
+     species,
+@@ -651,7 +677,14 @@ export function simulateMatch(
+     const [own] = tacticMultipliers(attacking, input.opponent, c);
+     const [, gives] = tacticMultipliers(defending, input.opponent, c);
+     const [vacOwn, vacGives] = m.vacancy;
+-    let lambda = expectedGoals(attLines, defLines, c) * factor * epsilon * base * own * gives;
++    let lambda =
++      expectedGoals(attLines, defLines, c) *
++      factor *
++      epsilon *
++      base *
++      own *
++      gives *
++      typeScale[attacking.side];
+     for (let k = 0; k < attacking.vacancies; k++) lambda *= vacOwn;
+     for (let k = 0; k < defending.vacancies; k++) lambda *= vacGives;
+     return lambda;
