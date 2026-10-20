@@ -25,6 +25,46 @@ Merges of `origin/main` into the branch (no rebase): `e54e9e2` (#131 share sheet
 
 Decision log: `docs/decisions/seed-boards.md`. Browser proof: `docs/reports/seed-boards/` (seed table at 390, 360 and 320, the unavailable state, All engines at 390, 360 and 320). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Results reveal and sync
+
+Branch `feat/results-reveal` off `origin/main` at `9f01b8c`. Wave 5 row 5e (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- The first time you see a run's results after playing it, the Team Score counts up from 0, the W-D-L record flips in, a gold trophy appears beside Champions and the gold flawless mark pops in, then a "Player of the tournament" card rises in with the player's picture, name and points breakdown. It takes under 2 seconds.
+- A friend opening your link, a reload or a second look in the same tab shows the final numbers at once, and so does a phone set to reduce motion.
+- An 8-0 flawless run's mark is gold instead of green, in both themes.
+- The player of the tournament is shown once, on the new card at the top; the Awards box keeps Golden Boot and Top assister. A run from an older engine shows the name only.
+- Tapping a match's star player scrolls the highlights into view and moves focus to the star's name. Closing Watch live puts focus and the page back where you were, and after a goal link it lands on that match's Watch live button.
+- The highlights have a visible "Highlights" heading and the star's name is a sub-heading, so screen reader heading lists read in order.
+
+RED commit: `e2ce665` (7 of 36 unit tests failed in `ResultsView.test.tsx`; `e2e/results-reveal.spec.ts` failed 5 of 7 against a build of `e2ce665`). GREEN `dbab0bf`. `f13d897` watches the console on the live reveal, and `94fc71b` adds a zero layout shift guard (regression guard, no RED).
+
+Gates at `dbab0bf` (the later commits change only `e2e/results-reveal.spec.ts`):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 11 touched code and test files.
+- Unit tests: 1,873 passed in 221 files.
+- Playwright (`CI=1`, headless, `--retries=0`, build of the `dbab0bf` code): `results-reveal` passed 14 of 14 at `94fc71b`; with `watch-live`, `theme-results`, `layout-shift`, `highlights-honesty`, `results-interactions`, `head-to-head` and 18 more related specs, 187 passed and 5 skipped by their own project gates. Full suite once with the specs of `f13d897`: 1,039 passed, 67 skipped by their own project gates, 0 failed, 0 flaky.
+- NOT RUN: review and hosted CI; WebKit and a real phone for the reveal and the focus return, and a screen reader pass over the MVP card and highlights headings (owner actions).
+
+Decision log: `docs/decisions/results-reveal.md`. Browser proof: `docs/reports/results-reveal/` (`reveal-{0ms,600ms,2000ms}-390.png`, `hero-{390,360,320}-{light,dark}.png`, `highlights-{390,360,320}-{light,dark}.png`).
+
+PR #134 (row 5e, results reveal and sync, Yellow) merged as squash `afaa695`, reviewed head `32b082c` (`cbd0ba3` plus a merge of main bringing in PR #135), GLM 5.3 Flash APPROVE at `cbd0ba3` (canary `results-reveal-72c25fd5263faef1c355d672c87ff28c`) and again at `32b082c` (canary `results-reveal-r2-63637163fa52ca8be0db7d712147b2f3`), both echoed. At `cbd0ba3` hosted shard e2e (4) failed twice (first attempt and a rerun of the failed job) on the play badge test's 240 s timeout; per hand-off 3.5 that went to its own fix, PR #135, before this row landed. At `32b082c` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,873 unit tests passed in 221 files and Prettier passed on 13 touched files; hosted check and all eight e2e shards green on the first run (play badge test 2.8 minutes per width). Production `/api/health?db=1` served `afaa695` with `db.status` ok; `results-reveal`, `watch-live`, `theme-results` and `layout-shift` against production (chromium) passed 28 of 28. NOT RUN: the reveal on a real phone and a screen reader pass over the staged reveal (owner actions).
+
+## Badge loop budget
+
+Branch `test/badge-loop-budget` off `origin/main` at `9f01b8c`. Out-of-band side fix (Green) that unblocks Wave 5 row 5e (PR #134). Only `e2e/team-readability.spec.ts` changed. No product code changed.
+
+- PR #134 failed shard e2e (4) on hosted run 39357079608 twice (first attempt and a rerun of the failed job): all three widths of the play badge test hit their 240 s timeout. Per hand-off 3.5 that is not a flake, so it gets its own PR first.
+- The test steps a fake clock through a whole match, up to 3,000 steps, and made three browser round trips per step. One `evaluate` now reads the minute and the badge together, the test asserts the loop reached minute 90, and the timeout is 480 s.
+- Local, same build, chromium, `CI=1`, `--retries=0`: main's spec ran the three widths in 54.6 s and this branch in 35.0 s (11.7, 11.3 and 11.3 s). Both found 13 badges with a closest margin of 0 px and none clipped.
+
+Gates at the head: recorded in the PR review receipt. NOT RUN: the full Playwright suite locally (hosted CI runs it).
+
+Decision log: `docs/decisions/badge-loop-budget.md`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #135 (out-of-band side fix for 5e, badge loop budget, Green) merged as squash `36ac415`, reviewed head `c896ac8`, GLM 5.3 Flash APPROVE in round 1 with canary `badge-loop-budget-df969b100b9d1780af8e0191df73502e` echoed. At `c896ac8` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,863 unit tests passed in 221 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green on the first run, with the play badge test at 2.7 minutes per width on shard 4 (3.1 to 3.3 minutes before). Production `/api/health?db=1` served `36ac415` with `db.status` ok; `team-readability` against production (chromium) passed 7 of 7.
+
 ## Head-to-head challenges
 
 Branch `feat/head-to-head` off `origin/main` at `71a86ec`. Wave 5 row 5b (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -47,6 +87,8 @@ Gates at `67039e2`:
 Decision log: `docs/decisions/head-to-head.md`. Browser proof: `docs/reports/head-to-head/` (`they-win-{390,360,320}.png`, `you-win-390.png`, `level-send-it-back-390.png`, `retained-390.png`).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #132 (row 5b, head-to-head challenges, Yellow) merged as squash `9f01b8c`, reviewed head `960539b` (`84969bb` plus the PR #131 STATE paragraph), GLM 5.3 Flash APPROVE in round 1 with canary `head-to-head-853bc57b4f1a89df1104672e88324070` echoed. Landed ahead of 5g, which was still building: its files are disjoint apart from one mount line each in the results views, and the Red row still needed two receipts and its database steps. At `960539b` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,863 unit tests passed in 221 files and Prettier passed on 19 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `9f01b8c` with `db.status` ok; `head-to-head`, `challenge` and `share-sheet` against production (chromium) passed 16 of 16. NOT RUN: the challenge loop on two real phones and a screen reader pass over the head-to-head table (owner actions).
 
 ## Share sheet and run metadata
 

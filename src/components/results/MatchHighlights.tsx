@@ -5,6 +5,7 @@ import type { CupResult, CupRound, DraftState } from "@/engine";
 import { PlayerImage } from "@/components/PlayerImage";
 import { TypeIcon } from "@/components/TypeIcon";
 import { playGoalHorn, unlockAudio } from "@/components/wheel/sound";
+import { prefersReducedMotion } from "@/components/wheel/useReducedMotion";
 import { TYPE_PALETTE } from "@/design/stadium";
 import { getAllMatchStars, type MatchStar } from "./starCalculation";
 import { RecordedSaves } from "./RecordedSaves";
@@ -17,6 +18,8 @@ export interface MatchHighlightsProps {
   readonly draft: DraftState;
   readonly selectedRound?: CupRound | "mvp" | null;
   readonly onSelectRound?: (round: CupRound | "mvp") => void;
+  /** Counts star badge taps in the match list; each one brings the stage into view. */
+  readonly focusStage?: number;
   readonly variant?: ResultsVariant;
 }
 
@@ -25,6 +28,7 @@ export function MatchHighlights({
   draft,
   selectedRound = null,
   onSelectRound,
+  focusStage = 0,
   variant = "live",
 }: MatchHighlightsProps) {
   const stars = useMemo(() => getAllMatchStars(cup, draft), [cup, draft]);
@@ -58,6 +62,17 @@ export function MatchHighlights({
   };
 
   useEffect(() => cancelStrikeTimers, [selectedRound]);
+
+  const stage = useRef<HTMLDivElement>(null);
+  const starHeading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (focusStage === 0) return;
+    stage.current?.scrollIntoView({
+      block: "nearest",
+      behavior: prefersReducedMotion() ? "auto" : "smooth",
+    });
+    starHeading.current?.focus({ preventScroll: true });
+  }, [focusStage]);
 
   if (stars.length === 0) return null;
 
@@ -130,6 +145,7 @@ export function MatchHighlights({
 
       <div className={s.topRow}>
         <div className={s.headlineGroup}>
+          <h2 className={s.heading}>Highlights</h2>
           <span className={s.eyebrow}>Silph Stadium Highlights</span>
           <span className={s.matchTitle} data-testid="highlight-title">
             {currentStar.isTournamentMvp
@@ -193,7 +209,7 @@ export function MatchHighlights({
       </div>
 
       {/* Interactive Stadium Pitch Stage */}
-      <div className={s.stage} data-testid="highlights-stage">
+      <div className={s.stage} data-testid="highlights-stage" ref={stage}>
         <div className={s.turfMarking} aria-hidden="true" />
 
         {/* Player & Dribbling Ball Arena */}
@@ -215,9 +231,9 @@ export function MatchHighlights({
           <div className={s.starBadgeRow}>
             <span className={s.rolePill}>{currentStar.role}</span>
             <TypeIcon type={currentStar.element} size={18} decorative />
-            <h2 className={s.starName} data-testid="star-name">
+            <h3 className={s.starName} data-testid="star-name" tabIndex={-1} ref={starHeading}>
               {currentStar.name}
-            </h2>
+            </h3>
           </div>
 
           <div className={s.headlineText} data-testid="star-headline">

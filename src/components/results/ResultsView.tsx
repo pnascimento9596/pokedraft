@@ -1,7 +1,14 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import type {
   Contribution,
   CupResult,
@@ -25,6 +32,7 @@ import {
 } from "@/ui/labels";
 import { recordCompletedRun } from "@/ui/lifetime";
 import { isCoached } from "@/ui/manager/coached";
+import { markRevealed, wasRevealed } from "@/ui/reveal";
 import { goalHref, watchIndex } from "@/ui/run-link";
 import { toRecord } from "@/ui/runs";
 import { contributionLine, dragLabel, SIDE_COPY, type ResultsVariant } from "./format";
@@ -33,10 +41,12 @@ import { MatchHighlights } from "./MatchHighlights";
 import { MatchList } from "./MatchList";
 import { ShareActions } from "./ShareActions";
 import { SeedBoard } from "@/components/leaderboard/SeedBoard";
+import { Trophy } from "./Trophy";
 import s from "./ResultsView.module.css";
 import { ModuleCard, Pill, Table } from "@/components/ui/primitives";
 import { NavIcon, type NavFamily } from "@/components/ui/nav-icons";
 import { SoundToggle } from "@/components/wheel/SoundToggle";
+import { prefersReducedMotion } from "@/components/wheel/useReducedMotion";
 
 // Watch live loads the match player and its broadcast only when a match is opened.
 const MatchReplay = dynamic(() => import("./MatchReplay").then((m) => m.MatchReplay), {
@@ -93,6 +103,15 @@ export function ResultsView({
     );
   }, [variant, token, draft.settings, draft.lineup, cup]);
 
+  // The count-up is the payoff of a cup just played: a shared link or a revisit shows the numbers.
+  // Live results mount only on the client, after the run, so reading the tab's storage here is safe.
+  const [staged] = useState(
+    () => variant === "live" && !prefersReducedMotion() && !wasRevealed(token),
+  );
+  useEffect(() => {
+    if (variant === "live") markRevealed(token);
+  }, [variant, token]);
+
   const friendly = draft.settings.mode === "builder";
   const formation = draft.settings.formation;
   const [selectedHighlightRound, setSelectedHighlightRound] = useState<CupRound | "mvp" | null>(
@@ -104,11 +123,43 @@ export function ResultsView({
   const goalLink = (matchIndex: number, minute: number) =>
     goalHref(token, watchIndex(cup, matchIndex), minute);
   const [inspectId, setInspectId] = useState<SpeciesId | null>(null);
+  const [starTaps, setStarTaps] = useState(0);
+
+  // Watch live hands focus and scroll back to whatever opened it. A goal link opens the replay
+  // with no opener, so its close lands on that match's own Watch live button.
+  const results = useRef<HTMLElement>(null);
+  const openedFrom = useRef<{ opener: Element | null; scrollY: number } | null>(null);
+  const closed = useRef<number | null>(null);
+  const openWatch = (matchIndex: number) => {
+    openedFrom.current = { opener: document.activeElement, scrollY: window.scrollY };
+    setWatching({ matchIndex });
+  };
+  const closeWatch = () => {
+    closed.current = watching?.matchIndex ?? null;
+    setWatching(null);
+  };
+  useLayoutEffect(() => {
+    if (watching !== null || closed.current === null) return;
+    const round = cup.matches[closed.current]?.round;
+    const from = openedFrom.current;
+    closed.current = null;
+    openedFrom.current = null;
+    const opener = from?.opener;
+    const target =
+      opener instanceof HTMLElement && opener.isConnected && opener !== document.body
+        ? opener
+        : results.current?.querySelector<HTMLElement>(
+            `[data-testid="match-${round}"] [data-testid="watch-live"]`,
+          );
+    target?.focus({ preventScroll: from !== null });
+    if (from !== null) window.scrollTo({ top: from.scrollY });
+  }, [watching, cup]);
 
   return (
-    <section className={s.results} data-testid="results" aria-label="Run results">
+    <section ref={results} className={s.results} data-testid="results" aria-label="Run results">
       <ModuleCard
         className={s.hero}
+        data-reveal={staged ? "staged" : undefined}
         eyebrow="Run results"
         title={modeLine(draft)}
         headingLevel={1}
@@ -118,13 +169,17 @@ export function ResultsView({
           <div className={s.heroMain}>
             <div className={s.recordBlock}>
               <span className={s.recordLabel}>Record W-D-L</span>
-              <span className={s.record} data-testid="results-record">
+              <span className={`${s.record} ${s.flip}`} data-testid="results-record">
                 {record(cup.wins, cup.draws, cup.losses)}
               </span>
             </div>
             <div className={s.recordBlock}>
               <span className={s.recordLabel}>Team Score</span>
-              <span className={s.record} data-testid="results-score">
+              <span
+                className={`${s.record} ${s.count}`}
+                data-testid="results-score"
+                style={{ "--score": cup.rating.score } as CSSProperties}
+              >
                 {cup.rating.score}
               </span>
             </div>
@@ -140,14 +195,16 @@ export function ResultsView({
             </Pill>
           ) : null}
           <span className={s.finish} data-finish={cup.finish}>
+            {cup.finish === "champion" ? <Trophy className={s.trophy} /> : null}
             {FINISH_LABEL[cup.finish]}
           </span>
         </div>
         {cup.flawless ? (
-          <p className={s.flawless}>
+          <p className={s.flawless} data-testid="results-flawless">
             <span className={s.flawlessMark}>8-0</span> Flawless. Every match won, cup lifted.
           </p>
         ) : null}
+        <MvpCard line={cup.awards.playerOfTournament} contribution={cup.awards.potContribution} />
       </ModuleCard>
       {versus}
 
@@ -165,7 +222,7 @@ export function ResultsView({
           goal={watching.goal}
           shareGoal={(minute) => goalLink(watching.matchIndex, minute)}
           variant={variant}
-          onClose={() => setWatching(null)}
+          onClose={closeWatch}
         />
       ) : null}
 
@@ -174,6 +231,7 @@ export function ResultsView({
         draft={draft}
         selectedRound={selectedHighlightRound}
         onSelectRound={setSelectedHighlightRound}
+        focusStage={starTaps}
         variant={variant}
       />
 
@@ -187,8 +245,11 @@ export function ResultsView({
           <MatchList
             cup={cup}
             draft={draft}
-            onSelectStar={(round) => setSelectedHighlightRound(round)}
-            onWatch={(matchIndex) => setWatching({ matchIndex })}
+            onSelectStar={(round) => {
+              setSelectedHighlightRound(round);
+              setStarTaps((n) => n + 1);
+            }}
+            onWatch={openWatch}
             goalHref={goalLink}
             variant={variant}
           />
@@ -260,13 +321,6 @@ export function ResultsView({
                 line={cup.awards.topAssister}
                 stat="assists"
                 empty="No assists"
-              />
-              <Award
-                title="Player of the tournament"
-                line={cup.awards.playerOfTournament}
-                stat="apps"
-                empty="No appearances recorded"
-                contribution={cup.awards.potContribution}
               />
             </div>
           </ModuleCard>
@@ -390,18 +444,34 @@ export function ResultsView({
   );
 }
 
+function MvpCard({ line, contribution }: { line: PlayerLine; contribution: Contribution | null }) {
+  const species = speciesById(line.species);
+  return (
+    <div className={s.mvp} data-testid="results-mvp">
+      <PlayerImage dexId={species.id} size={56} alt="" />
+      <div>
+        <span className={`kicker ${s.mvpLabel}`}>Player of the tournament</span>
+        <div className={s.mvpName}>{species.name}</div>
+        {contribution !== null ? (
+          <div className={s.awardStat} data-testid="pot-contribution">
+            {contributionLine(contribution)}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function Award({
   title,
   line,
   stat,
   empty,
-  contribution = null,
 }: {
   title: string;
   line: PlayerLine | null;
-  stat: "goals" | "assists" | "apps";
+  stat: "goals" | "assists";
   empty: string;
-  contribution?: Contribution | null;
 }) {
   const species = line === null ? null : speciesById(line.species);
   const value =
@@ -409,9 +479,7 @@ function Award({
       ? null
       : stat === "goals"
         ? `${line.goals} ${line.goals === 1 ? "goal" : "goals"}`
-        : stat === "assists"
-          ? `${line.assists} ${line.assists === 1 ? "assist" : "assists"}`
-          : `${line.goals} G, ${line.assists} A, ${line.appearances} apps`;
+        : `${line.assists} ${line.assists === 1 ? "assist" : "assists"}`;
   return (
     <div className={s.award}>
       <span className="kicker">{title}</span>
@@ -423,11 +491,6 @@ function Award({
           <div>
             <div className={s.awardName}>{species.name}</div>
             <div className={s.awardStat}>{value}</div>
-            {contribution !== null ? (
-              <div className={s.awardStat} data-testid="pot-contribution">
-                {contributionLine(contribution)}
-              </div>
-            ) : null}
           </div>
         </div>
       )}
