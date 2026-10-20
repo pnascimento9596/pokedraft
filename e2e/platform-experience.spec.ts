@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { FORMATION_IDS } from "../src/engine/types";
 import { GOLDEN_CUP8_V3 } from "../src/engine/versions/__tests__/fixtures";
+import { ENGINE_VERSION } from "./pins";
 
 function squad(formation = "4-3-3") {
   return `pd5.${Buffer.from(
@@ -173,7 +174,7 @@ for (const width of [1280, 320]) {
                 losses: 2,
                 createdAt: "2026-10-15T00:00:00Z",
                 coached: false,
-                engineVersion: "pokedraft-engine-6",
+                engineVersion: ENGINE_VERSION,
                 seed: "e2e-seed",
                 formation: "4-3-3",
                 squadSpeciesIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1025],
@@ -191,7 +192,7 @@ for (const width of [1280, 320]) {
                 losses: 3,
                 createdAt: "2026-10-14T00:00:00Z",
                 coached: false,
-                engineVersion: "pokedraft-engine-6",
+                engineVersion: ENGINE_VERSION,
                 seed: "e2e-seed",
                 formation: "4-3-3",
               },

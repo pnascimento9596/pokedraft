@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { LIVE_GOLDEN_CUP8 } from "./pins";
 
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+const LIVE = LIVE_GOLDEN_CUP8;
 const SHOT = "docs/reports/audio-polish";
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });

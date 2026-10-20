@@ -1,20 +1,19 @@
 import { expect, test, type Page } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { LIVE_GOLDEN_CUP8, TEAM_READABILITY } from "./pins";
 
-// Group match 1 of the golden cup8 run under engine 6. The user's starting eleven carries poison
-// and grass four times each, and poison comes first in slot order (Toxtricity in slot 0), so the
-// user wears poison. The opponent, Goldenrod United, is a water theme.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// A group match of the golden cup8 run under the live prefix. Each side wears the kit ring
+// e2e/pins.ts computes from its starters and theme.
+const LIVE = LIVE_GOLDEN_CUP8;
 const SHOT = "docs/reports/team-readability";
-const POISON = "rgb(166, 62, 170)";
-const WATER = "rgb(99, 144, 240)";
+const USER_KIT = TEAM_READABILITY.user;
+const OPP_KIT = TEAM_READABILITY.opp;
 
 test.use({ hasTouch: true, isMobile: true });
 
 async function watchLive(page: Page) {
   await page.goto(`/r/${LIVE}`);
   await expect(page.getByTestId("results-record")).toBeVisible();
-  await page.getByTestId("match-G1").getByTestId("watch-live").click();
+  await page.getByTestId(`match-${TEAM_READABILITY.round}`).getByTestId("watch-live").click();
   const replay = page.getByTestId("match-replay");
   await expect(replay.getByTestId("broadcast")).toBeVisible();
   return replay;
@@ -66,8 +65,8 @@ for (const width of [390, 360, 320]) {
     const rings = (side: string) => seen.filter((p) => p.side === side && !p.hot);
     expect(rings("user").length).toBeGreaterThanOrEqual(9);
     expect(rings("opp").length).toBeGreaterThanOrEqual(9);
-    expect(rings("user").every((p) => p.ring.includes(POISON))).toBe(true);
-    expect(rings("opp").every((p) => p.ring.includes(WATER))).toBe(true);
+    expect(rings("user").every((p) => p.ring.includes(USER_KIT))).toBe(true);
+    expect(rings("opp").every((p) => p.ring.includes(OPP_KIT))).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
@@ -83,8 +82,8 @@ test("the kit rings still show with reduced motion at 390px (catches identity ti
   await watchLive(page);
   const seen = await sprites(page);
   expect(seen).toHaveLength(22);
-  expect(seen.filter((p) => p.side === "user").every((p) => p.ring.includes(POISON))).toBe(true);
-  expect(seen.filter((p) => p.side === "opp").every((p) => p.ring.includes(WATER))).toBe(true);
+  expect(seen.filter((p) => p.side === "user").every((p) => p.ring.includes(USER_KIT))).toBe(true);
+  expect(seen.filter((p) => p.side === "opp").every((p) => p.ring.includes(OPP_KIT))).toBe(true);
 });
 
 for (const width of [390, 360, 320]) {

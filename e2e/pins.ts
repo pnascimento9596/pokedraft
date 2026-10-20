@@ -8,6 +8,13 @@ export const TOKEN_VERSIONS: readonly number[] = [1, 2, 3, 4, 5, 6];
 export const LIVE_TOKEN = /^pd6\./;
 /** A copied share link, in the query form message apps keep. */
 export const SHARE_LINK = /\/r\/pd6\?t=[A-Za-z0-9_-]+$/;
+/** The live token prefix, for tokens the specs build or fake. */
+export const LIVE_PREFIX = "pd6.";
+/** The golden engine-5 drafts under the live prefix, so the live engine replays them. */
+export const LIVE_GOLDEN_CUP8 =
+  "pd6.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0";
+export const LIVE_GOLDEN_KANTO151 =
+  "pd6.W1siayIsIjMtNS0yIiwicCJdLCJnb2xkZW4ta2FudG8xNTEiLFtbImMiLCJzMCJdLFsicCIsMTQ5LCJzMCJdLFsiYyIsInMxIl0sWyJyIiwicyJdLFsicCIsNzMsInMxIl0sWyJjIiwiczIiXSxbInAiLDY5LCJzMiJdLFsiYyIsInMzIl0sWyJwIiw1MywiczMiXSxbImMiLCJzNCJdLFsicCIsNzgsInM0Il0sWyJjIiwiczUiXSxbInIiLCJzIl0sWyJwIiwxMTYsInM1Il0sWyJjIiwiczYiXSxbInAiLDM3LCJzNiJdLFsiYyIsInM3Il0sWyJwIiw3MSwiczciXSxbImMiLCJzOCJdLFsicCIsMTM0LCJzOCJdLFsiYyIsInM5Il0sWyJyIiwicyJdLFsicCIsMSwiczkiXSxbImMiLCJzMTAiXSxbInAiLDExNywiczEwIl0sWyJjIiwiYjAiXSxbInAiLDksImIwIl0sWyJjIiwiYjEiXSxbInAiLDIyLCJiMSJdLFsiYyIsImIyIl0sWyJyIiwicyJdLFsicCIsMTUsImIyIl0sWyJjIiwiYjMiXSxbInAiLDEyNiwiYjMiXSxbImMiLCJiNCJdLFsicCIsNzcsImI0Il1dXQ";
 
 // Seeded challenges drafted with the first offered player into the first open slot.
 export const RUN_151 = {
@@ -90,4 +97,101 @@ export const HEAD_TO_HEAD = {
     you: { record: "5-0-1", score: 580 },
     them: { record: "3-0-1", score: 480 },
   },
+} as const;
+
+// The golden cup8 match where the user scores before conceding: the score then, and the goals.
+export const HAPTICS = { round: "G3", scoreAtConceded: "2-1", goalsBefore: 2, goals: 6 } as const;
+
+// The golden cup8 run's first injury answered with a substitute.
+export const INJURY_STAGING = {
+  round: "QF",
+  minute: 42,
+  slot: 1,
+  injured: "Roselia",
+  injuredDex: "0315",
+  sub: "Kommo-o",
+  subDex: "0784",
+} as const;
+
+// The golden cup8 run's first user red card.
+export const RED_CARD = { round: "QF", minute: 6, slot: 2 } as const;
+
+// A golden cup8 save the 2x ball bound is probed through.
+export const CONTINUOUS_BALL = { round: "G1", save: 59 } as const;
+
+// The golden cup8 opponent on the scoreboard and the score bug.
+export const FULLSCREEN_SCORE_BUG = {
+  round: "G1",
+  opponent: "Goldenrod United",
+  short: "Goldenrod",
+} as const;
+
+// Each side's kit ring in a golden cup8 match, as computed CSS.
+export const TEAM_READABILITY = {
+  round: "G1",
+  user: "rgb(166, 62, 170)",
+  opp: "rgb(99, 144, 240)",
+} as const;
+
+// The golden runs' first user goal of each set-piece kind, as the broadcast stages it.
+export const SET_PIECES = {
+  solo: { round: "G1", minute: 49, slot: 8, scorer: "Talonflame", presser: 3 },
+  header: { round: "R32", minute: 9 },
+  penalty: { round: "R32", minute: 84, slot: 10, taker: "Zeraora" },
+  freeKick: {
+    round: "R32",
+    minute: 17,
+    wall: [
+      { slot: 3, y: 46 },
+      { slot: 9, y: 50 },
+      { slot: 5, y: 54 },
+    ],
+  },
+} as const;
+
+// The first key duel's cut-in in a golden cup8 match.
+export const MATCHDAY_CARRYOVERS = { round: "G1", duel: "Remoraid used Hyper Beam!" } as const;
+
+// The momentum bar in a golden cup8 match's first window and the one after.
+export const HONEST_MOMENTUM = { round: "G1", kickoff: "50%50%", second: "36%64%" } as const;
+
+// A bot-drafted cup8 run that earns Hat-trick hero, Comeback and Giant killer.
+export const GIANT_KILLER = {
+  url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=achievements-19",
+  token:
+    "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiYWNoaWV2ZW1lbnRzLTE5IixbWyJwIiw5NzMsInMyIl0sWyJwIiw3OTIsInMwIl0sWyJwIiw4ODAsInMzIl0sWyJwIiwxMjIsInM1Il0sWyJwIiw4MCwiczEiXSxbInAiLDYyMCwiczgiXSxbInAiLDcyNywiczkiXSxbInAiLDg3MSwiczYiXSxbInAiLDE2OSwiczEwIl0sWyJwIiwxNDksInM0Il0sWyJwIiwyMjcsInM3Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw0MzAsImIwIl0sWyJwIiwzLCJiMSJdLFsicCIsMTk2LCJiMiJdLFsicCIsOTQsImIzIl0sWyJwIiwzODEsImI0Il1dXQ",
+  earned: ["hat-trick-hero", "comeback", "giant-killer"],
+  chip: "Giant killer",
+} as const;
+
+// A bot-drafted cup8 champion.
+export const CHAMPION = {
+  url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-reveal-59",
+  token:
+    "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiZTJlLXJldmVhbC01OSIsW1sicCIsMjU3LCJzOCJdLFsicCIsMjMyLCJzMSJdLFsicCIsOTQzLCJzMiJdLFsicCIsMTAwNywiczMiXSxbInAiLDMzNCwiczQiXSxbInAiLDQ0NSwiczkiXSxbInAiLDg4NywiczEwIl0sWyJwIiwyMTQsInMwIl0sWyJwIiwxNTEsInM1Il0sWyJwIiw0OTEsInM2Il0sWyJwIiw4NzMsInM3Il0sWyJyIiwidCJdLFsicCIsNjUyLCJiMCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw4MjgsImIxIl0sWyJwIiwyNzcsImIyIl0sWyJwIiw2ODcsImIzIl0sWyJwIiw4NDEsImI0Il1dXQ",
+  score: "868",
+  record: "8-0-0",
+  mvp: "Dragapult",
+} as const;
+
+// A Builder run whose shootout opens with a user goal and an opponent miss and reaches sudden death.
+export const SHOOTOUT = {
+  token:
+    "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwic2hvb3RvdXQtMSIsW1sibCIsOSwiczAiXSxbImwiLDU5LCJzMSJdLFsibCIsMTQ5LCJzMiJdLFsibCIsMTMwLCJzMyJdLFsibCIsMywiczQiXSxbImwiLDgwLCJzNSJdLFsibCIsNiwiczYiXSxbImwiLDU1LCJzNyJdLFsibCIsMjYsInM4Il0sWyJsIiw4NSwiczkiXSxbImwiLDEzNSwiczEwIl0sWyJsIiwyNSwiYjAiXSxbImwiLDk0LCJiMSJdLFsibCIsNjUsImIyIl0sWyJsIiw2OCwiYjMiXSxbImwiLDE0MywiYjQiXV1d",
+  round: "F",
+} as const;
+
+// A seeded challenge whose first match stops for one injury and then for half time.
+export const INJURY_STOP = {
+  url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-a11y-47",
+} as const;
+
+// A pressing Builder squad with one spent and one tired slot late in extra time.
+export const FATIGUE = {
+  token:
+    "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwwXSwiZmF0aWd1ZS0xIixbWyJsIiw3ODQsInMwIl0sWyJsIiwxMDA5LCJzMSJdLFsibCIsMTI5LCJzMiJdLFsibCIsMjg5LCJzMyJdLFsibCIsODg3LCJzNCJdLFsibCIsMzczLCJzNSJdLFsibCIsMTAxMCwiczYiXSxbImwiLDk5OCwiczciXSxbImwiLDEwMjIsInM4Il0sWyJsIiwxMDE4LCJzOSJdLFsibCIsMTAwNiwiczEwIl0sWyJsIiw5OTMsImIwIl0sWyJsIiw3MDYsImIxIl0sWyJsIiwyNDgsImIyIl0sWyJsIiwxMDIzLCJiMyJdLFsibCIsOTg5LCJiNCJdXSxbWyJ0IiwwLDAsInAiXSxbInQiLDEsMCwicCJdLFsidCIsMiwwLCJwIl0sWyJ0IiwzLDAsInAiXSxbInQiLDQsMCwicCJdLFsidCIsNSwwLCJwIl1dXQ",
+  round: "R16",
+  minute: 116,
+  spent: 2,
+  tired: 10,
 } as const;

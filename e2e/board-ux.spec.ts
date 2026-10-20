@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { accessibleName, draftSixteen } from "./helpers";
-import { SHARE_LINK } from "./pins";
+import { ENGINE_VERSION, LIVE_PREFIX, SHARE_LINK } from "./pins";
 
 test.use({ reducedMotion: "reduce", permissions: ["clipboard-read", "clipboard-write"] });
 
@@ -15,7 +15,7 @@ const ROW = {
   variant: "open.squadFirst.g123456789",
   dailyDate: "2026-10-09",
   createdAt: "2026-10-09T12:00:00.000Z",
-  engineVersion: "pokedraft-engine-6",
+  engineVersion: ENGINE_VERSION,
   seed: "daily-2026-10-09",
 };
 
@@ -41,7 +41,7 @@ const ROWS = [
     ...ROW,
     rank: 2,
     nickname: "Brock",
-    token: "pd6.e2e-brock",
+    token: `${LIVE_PREFIX}e2e-brock`,
     teamScore: 790,
     wins: 6,
     draws: 1,
@@ -53,7 +53,7 @@ const ROWS = [
     ...ROW,
     rank: 3,
     nickname: "Old run",
-    token: "pd6.e2e-old",
+    token: `${LIVE_PREFIX}e2e-old`,
     teamScore: 700,
     wins: 5,
     draws: 0,
@@ -200,7 +200,9 @@ test("Share my rank sits next to View leaderboard and copies the run link, at 39
   await page.route("**/api/leaderboard", (route) =>
     route.fulfill({
       status: 201,
-      json: { entry: { ...ROWS[1], rank: 4, nickname: "Misty", token: "pd6.e2e-posted" } },
+      json: {
+        entry: { ...ROWS[1], rank: 4, nickname: "Misty", token: `${LIVE_PREFIX}e2e-posted` },
+      },
     }),
   );
   await page.goto("/daily");

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { GOLDEN_CUP8_V3 } from "../src/engine/versions/__tests__/fixtures";
+import { ENGINE_VERSION, LIVE_PREFIX } from "./pins";
 
 // Row 6-0: the Wave 5 carryovers a player can see. The coach chips at 320 px, the exhibition empty
 // state's Builder link and the empty current-engine board.
@@ -13,11 +14,11 @@ const ROW = {
   variant: "open.squadFirst.g123456789",
   dailyDate: "2026-10-09",
   createdAt: "2026-10-09T12:00:00.000Z",
-  engineVersion: "pokedraft-engine-6",
+  engineVersion: ENGINE_VERSION,
   seed: "daily-2026-10-09",
   rank: 1,
   nickname: "Brock",
-  token: "pd6.e2e-brock",
+  token: `${LIVE_PREFIX}e2e-brock`,
   teamScore: 790,
   wins: 6,
   draws: 1,

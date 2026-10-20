@@ -1,9 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { LIVE_GOLDEN_CUP8, MATCHDAY_CARRYOVERS } from "./pins";
 import { draftSixteen } from "./helpers";
 
-// Group match 1 of the golden cup8 run under engine 6, watched live.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// The golden cup8 run under the live prefix, watched live.
+const LIVE = LIVE_GOLDEN_CUP8;
 const SHOT = "docs/reports/matchday-carryovers";
 const MANAGED =
   "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach";
@@ -13,7 +13,7 @@ test.use({ hasTouch: true });
 async function watchLive(page: Page) {
   await page.goto(`/r/${LIVE}`);
   await expect(page.getByTestId("results-record")).toBeVisible();
-  await page.getByTestId("match-G1").getByTestId("watch-live").click();
+  await page.getByTestId(`match-${MATCHDAY_CARRYOVERS.round}`).getByTestId("watch-live").click();
   const replay = page.getByTestId("match-replay");
   await expect(replay.getByTestId("broadcast")).toBeVisible();
   return replay;
@@ -26,7 +26,7 @@ for (const [width, height, circle] of [
   [320, 640, 36],
   [1280, 720, 56],
 ] as const) {
-  test(`cut-in sprite is not empty: the key duel's Remoraid fills its ${circle}px circle at ${width}px (catches the 80px picture box cropped to its transparent middle)`, async ({
+  test(`cut-in sprite is not empty: the key duel's sprite fills its ${circle}px circle at ${width}px (catches the 80px picture box cropped to its transparent middle)`, async ({
     page,
   }) => {
     test.skip(test.info().project.name !== "chromium", "one viewport is set explicitly");
@@ -51,7 +51,7 @@ for (const [width, height, circle] of [
       { timeout: 90_000 },
     );
     const duel = replay.locator('[data-testid="cut-in"][data-kind="duel"]');
-    await expect(duel.getByTestId("duel-callout")).toHaveText("Remoraid used Hyper Beam!");
+    await expect(duel.getByTestId("duel-callout")).toHaveText(MATCHDAY_CARRYOVERS.duel);
     await expect
       .poll(() => duel.locator("img").evaluate((el: HTMLImageElement) => el.naturalWidth))
       .toBeGreaterThan(0);
