@@ -51,6 +51,8 @@ Decision log: `docs/decisions/share-sheet.md`. Browser proof: `docs/reports/shar
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #131 (row 5a, share sheet, card prefetch and run metadata, Yellow) merged as squash `71a86ec`, reviewed head `53bd08c` (the coordinator's merge of `origin/main` at `07beda9`, a STATE-only conflict, on top of `3f6a3b7`), GLM 5.3 Flash APPROVE in round 1 with canary `share-sheet-d2b2ddc842d2b015340ab24d042b90d4` echoed. At `53bd08c` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,839 unit tests passed in 218 files and Prettier passed on 25 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `71a86ec` with `db.status` ok; `share-sheet`, `share`, `server-html` and `challenge` against production (chromium) passed 30, with one retry of the phone prefetch-and-share case on a cold `/card` render, then `share-sheet` passed 27 of 27 with `--retries=0 --repeat-each=3`. A production `/r/<token>` page served `og:description` "Out in the Round of 32 with 4-3-3. Draft your own XI on pokedraft." and `og:image:alt` "pokedraft run card: 2-1-1, Team Score 333". NOT RUN: the real share sheet on a phone and a screen reader pass over the Link field (owner actions), WebKit share-sheet e2e.
+
 ## Leaderboard integrity contract and copy guard
 
 Branch `feat/leaderboard-integrity` off `origin/main` at `3b821d1`. Wave 5 row 5f2 (Red). No file under `src/engine`, `src/data` or `src/scouting` changed.
