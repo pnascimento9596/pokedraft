@@ -28,6 +28,8 @@ Gates at `72a46ca` (later commits add docs and screenshots only):
 
 Decision log: `docs/decisions/wave5-carryovers.md`. Browser proof: `docs/reports/wave5-carryovers/` (`coach-chips-{390,360,320}.png`, `empty-engine-board-{390,360,320}.png`, `open-the-builder-390.png`, `touchline-halftime-{390,360,320}.png`, `touchline-expanded-{390,360,320}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #143 (Wave 5 carryovers and queue hygiene, Yellow) merged as squash `eceb581`, reviewed head `ef7b4c1`, GLM 5.3 Flash APPROVE in round 1 with canary `6-0-6632ecd6e93d242ba2bc899b610f4567` echoed. At `ef7b4c1` lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main`, 2,017 unit tests passed in 230 files and Prettier passed on 23 touched files; hosted check and all eight e2e shards green on the first run. The implementer's full local Playwright suite at code head `72a46ca` was 1,081 passed, 67 skipped, 0 failed. Production `/api/health?db=1` served `eceb581` with `db.status` ok; live check on chromium `wave5-carryovers`, `seed-board`, `exhibition-broadcast`, `board-ux`, `leaderboard` and `health` 30/30.
+
 ## Calibration probe and engine 6 baselines
 
 Branch `chore/calibration-probe` off `origin/main` at `9e4802b`. Wave 6 row 6p (Green). Scripts and docs only: `git diff origin/main -- src` is empty, so no player sees a change.
