@@ -74,10 +74,21 @@ function tokenError(e: unknown): Response {
   throw e;
 }
 
-function conflictError(conflict: Conflict): Response {
-  return conflict === "daily"
-    ? submitError("DAILY_ALREADY_SUBMITTED", "That nickname already has a run on this daily board.")
-    : submitError("DUPLICATE_TOKEN", "This run is already on the leaderboard.");
+function conflictError(conflict: Conflict, nickname: string | null): Response {
+  if (conflict === "daily") {
+    return submitError(
+      "DAILY_ALREADY_SUBMITTED",
+      "That nickname already has a run on this daily board.",
+    );
+  }
+  const body: ApiError<SubmitErrorCode> = {
+    error: {
+      code: "DUPLICATE_TOKEN",
+      message: "This exact run is already on the board.",
+      ...(nickname === null ? {} : { nickname }),
+    },
+  };
+  return json(body, SUBMIT_ERROR_STATUS.DUPLICATE_TOKEN);
 }
 
 // Vercel sets x-real-ip to the client address (it is what @vercel/functions ipAddress() reads).
@@ -280,7 +291,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     );
     if (admission.kind === "retry") return savedEntry(admission.row, deps.store, coach, rid);
     if (admission.kind === "limited") return limited();
-    if (admission.kind === "conflict") return conflictError(admission.conflict);
+    if (admission.kind === "conflict") return conflictError(admission.conflict, admission.nickname);
   } catch (e) {
     return unavailable("submit.admission", rid, e);
   }
@@ -292,6 +303,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     return tokenError(e);
   }
   const { draft, cup } = result;
+  const fingerprint = runFingerprint(draft, cup);
 
   try {
     const inserted = await deps.store.insert(
@@ -308,16 +320,19 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
         losses: cup.losses,
         engineVersion: cup.engine,
         coached,
-        runFingerprint: runFingerprint(draft, cup),
+        runFingerprint: fingerprint,
         ipHash,
       },
       coach,
     );
     if (!inserted.ok) {
-      // A concurrent copy of this same submission won the insert race.
-      const winner = await deps.store.byToken(token);
-      if (winner?.nickname === nickname) return savedEntry(winner, deps.store, coach, rid);
-      return conflictError(inserted.conflict);
+      // Another copy of this run is listed: a concurrent retry that won the insert race, or a
+      // token that differs only in moves that change nothing on the pitch.
+      const listed = await deps.store.listedRun(token, board.mode, fingerprint);
+      if (listed?.token === token && listed.nickname === nickname) {
+        return savedEntry(listed, deps.store, coach, rid);
+      }
+      return conflictError(inserted.conflict, listed?.nickname ?? null);
     }
     const ok: SubmitOk = { entry: toBoardEntry(inserted.row, inserted.rank) };
     return json(ok, 201);

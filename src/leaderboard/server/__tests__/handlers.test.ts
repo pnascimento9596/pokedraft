@@ -17,7 +17,7 @@ import type { BoardEntry } from "../../contract";
 import { dailySettings } from "../../daily";
 import { RATE_LIMIT, handleBoard, handleSubmit, hashIp } from "../handlers";
 import { drizzleStore, type LeaderboardStore } from "../store";
-import { migratedDb, scriptedToken } from "./fixtures";
+import { GOLDEN_CUP8_V6, migratedDb, scriptedToken } from "./fixtures";
 import { A11Y_RUN_V1 } from "@/engine/versions/__tests__/fixtures";
 
 const NOW = new Date("2026-10-09T16:00:00Z");
@@ -41,7 +41,7 @@ const BUILDER: DraftSettings = {
 interface Body {
   entry: BoardEntry;
   entries: BoardEntry[];
-  error: { code: string; message: string };
+  error: { code: string; message: string; nickname?: string };
 }
 
 let db: Db;
@@ -255,6 +255,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       draws: 0,
       losses: 0,
       engineVersion: ENGINE_VERSION,
+      coached: true,
+      runFingerprint: `fp-${nickname}`,
       ipHash: "seeded",
       createdAt: new Date("2026-10-01T12:00:00Z"),
     });
@@ -324,11 +326,15 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect([res.status, res.body.error.code]).toEqual([422, "DAILY_SETTINGS_MISMATCH"]);
   });
 
-  it("rejects the same token twice with 409 DUPLICATE_TOKEN", async () => {
+  it("rejects the same token twice with 409 DUPLICATE_TOKEN and names the listed run's nickname", async () => {
     const token = scriptedToken(CUP8, "lb-cup8");
     expect((await submit({ nickname: "Ash", token })).status).toBe(201);
     const res = await submit({ nickname: "Misty", token });
-    expect([res.status, res.body.error.code]).toEqual([409, "DUPLICATE_TOKEN"]);
+    expect([res.status, res.body.error.code, res.body.error.nickname]).toEqual([
+      409,
+      "DUPLICATE_TOKEN",
+      "Ash",
+    ]);
   });
 
   it("rejects a re-encoded copy of a listed run with 409 DUPLICATE_TOKEN (catches one run listed under many names)", async () => {
@@ -737,6 +743,42 @@ describe("stored run identity (catches a submit that leaves coached or run_finge
   });
 });
 
+// The golden pd6 run with one touchline decision. A second identical decision a minute later
+// changes nothing on the pitch, so it is the cheapest copy a player can make of someone's run.
+const tactic = (minute: number) =>
+  ({ type: "tactic", match: 0, minute, tactic: "attack" }) as const;
+const COACHED_PD6 = encodeToken({ ...decodeToken(GOLDEN_CUP8_V6), manager: [tactic(0)] });
+const NO_OP_COPY = encodeToken({
+  ...decodeToken(GOLDEN_CUP8_V6),
+  manager: [tactic(0), tactic(1)],
+});
+
+describe("copy guard (catches one run listed twice under two nicknames)", () => {
+  it("rejects a no-op manager copy of another player's run", async () => {
+    const original = await submit({ nickname: "Misty", token: COACHED_PD6 });
+    expect(original.status).toBe(201);
+    const copy = await submit({ nickname: "Brock", token: NO_OP_COPY });
+    expect([copy.status, copy.body.error?.code, copy.body.error?.nickname]).toEqual([
+      409,
+      "DUPLICATE_TOKEN",
+      "Misty",
+    ]);
+    expect((await rows()).map((r) => [r.nickname, r.token])).toEqual([["Misty", COACHED_PD6]]);
+  });
+
+  it("the no-op copy replays to the original's W-D-L and Team Score (regression guard, no RED: behaviour already correct)", () => {
+    expect(NO_OP_COPY).not.toBe(COACHED_PD6);
+    const record = (token: string) => {
+      const { cup } = replay(decodeToken(token));
+      return [cup.wins, cup.draws, cup.losses, cup.rating.score];
+    };
+    expect([record(COACHED_PD6), record(NO_OP_COPY)]).toEqual([
+      [5, 0, 1, 593],
+      [5, 0, 1, 593],
+    ]);
+  });
+});
+
 describe("insert plus rank (catches a saved run that needs a second round trip for its rank)", () => {
   it("saves and ranks a run in one statement after admission: rank 1 on an empty board, rank 2 behind a better row", async () => {
     const queries: string[] = [];
@@ -761,6 +803,8 @@ describe("insert plus rank (catches a saved run that needs a second round trip f
         draws: 0,
         losses: 0,
         engineVersion: ENGINE_VERSION,
+        coached: false,
+        runFingerprint: "fp-leader",
         ipHash: "test",
       });
       await logged.db.delete(leaderboardEntries).where(eq(leaderboardEntries.nickname, "Ash"));
@@ -825,6 +869,8 @@ describe("GET /api/leaderboard (catches a wrong board order or a read that write
       draws,
       losses: 8 - wins - draws,
       engineVersion: ENGINE_VERSION,
+      coached: false,
+      runFingerprint: `fp-${nickname}`,
       ipHash: "h",
       createdAt: new Date(Date.UTC(2026, 9, 9, 12, minute)),
     });
@@ -864,6 +910,8 @@ describe("GET /api/leaderboard (catches a wrong board order or a read that write
         draws: 0,
         losses: 2,
         engineVersion: ENGINE_VERSION,
+        coached: false,
+        runFingerprint: `fp${i}`,
         ipHash: "h",
       })),
     );

@@ -76,6 +76,36 @@ test("the daily run completes on /daily and its submission posts the token and s
   );
 });
 
+test("a copy of a listed run is refused with the nickname it is listed under, at 390x844", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.route("**/api/leaderboard", (route) =>
+    route.fulfill({
+      status: 409,
+      json: {
+        error: {
+          code: "DUPLICATE_TOKEN",
+          message: "This exact run is already on the board.",
+          nickname: "Misty",
+        },
+      },
+    }),
+  );
+
+  await page.goto("/daily");
+  await page.getByTestId("run-start").click();
+  await draftSixteen(page);
+  await page.getByTestId("see-results").click();
+  await page.getByTestId("submit-nickname").fill("Brock");
+  await page.getByTestId("submit-button").click();
+  const error = page.getByTestId("submit-error");
+  await expect(error).toHaveText("This exact run is already on the board, listed under Misty.");
+  await expect(page.getByTestId("submit-success")).toHaveCount(0);
+  await error.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: "docs/reports/leaderboard-integrity/duplicate-run-390x844.png" });
+});
+
 test("/leaderboard renders the stubbed rows and each links to its /r/ replay", async ({ page }) => {
   const seen = await stubBoard(page, 200, {
     mode: "cup8",

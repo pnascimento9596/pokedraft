@@ -33,7 +33,6 @@
     "db:rollback": "tsx scripts/db/rollback.mts",
     "db:smoke": "tsx scripts/db/smoke.mts",
     "db:delete-entry": "tsx scripts/db/delete-entry.mts",
-    "db:backfill-runs": "node --conditions=react-server --import tsx scripts/db/backfill-runs.mts",
     "test:live": "playwright test -c playwright.live.config.ts",
     "check:theme-contrast": "tsx scripts/audit/theme-contrast.mts",
     "check:theme-colors": "node scripts/audit/theme-color-lint.mjs",

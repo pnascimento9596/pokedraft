@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Leaderboard integrity contract and copy guard
+
+Branch `feat/leaderboard-integrity` off `origin/main` at `3b821d1`. Wave 5 row 5f2 (Red). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- A copy of a run that is already on the board is refused, even when the copy adds touchline decisions that change nothing. The player sees "This exact run is already on the board, listed under Misty." with the nickname of the listed run.
+- Two friends who play the same Daily with the same XI in the same slots and get the same result count as one run: the second is refused and sees the first's nickname. This is the decided tradeoff.
+- The Coached filter and the Coached chip read the same stored value, so they always agree.
+- Migration `0005_leaderboard_integrity` makes `coached` and `run_fingerprint` NOT NULL and adds the unique `(mode, run_fingerprint)` index and the coached board index, with a paired down file. `db:smoke` now also proves the fingerprint index refuses a copy. The one-shot `db:backfill-runs` is deleted. Production met the precondition on 2026-10-19 (0 NULLs, 0 duplicate groups, 3 rows).
+
+RED commit: `186a5cd` (8 of 85 unit tests failed in 6 of 6 files; the new `leaderboard.spec.ts` case failed 1 of 1 against a build of `186a5cd`). GREEN `2b799a4`.
+
+Gates at `2b799a4`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 22 touched non-SQL files.
+- Unit tests: 1,813 passed in 215 files.
+- Playwright (`CI=1`, headless, chromium): `leaderboard`, `leaderboard-cls`, `leaderboard-date`, `leaderboard-font-cls` and `theme-board` passed 31 of 31; `a11y`, `contrast`, `platform-experience` and `manager-mode` passed 73 of 73.
+- PGlite: the `db:smoke` statements printed both 23505 lines and `[db:smoke] OK`; the 0005 down file restores nullable columns and drops both indexes; the coached all-time query plans an index scan on `leaderboard_entries_coached_board_idx`. The 5f1 code with 0005 applied answers a copy with 409 `DUPLICATE_TOKEN`.
+- NOT RUN: every Neon step (preview migrate, smoke, rollback, migrate; production restore point, migration and real-API smoke; the coordinator runs them), review and hosted CI, the full Playwright suite, the CI data rebuild, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/leaderboard-integrity.md`. Browser proof: `docs/reports/leaderboard-integrity/duplicate-run-390x844.png`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Health cron removed
 
 Branch `ci/remove-health-cron` off `ef542fb`. Green: deletes `.github/workflows/health.yml` and updates docs. No change under `src/`, `e2e/` or `scripts/`.
@@ -16,6 +37,8 @@ Gates: Prettier passed on the touched Markdown. The coordinator re-runs every ga
 Decision log: `docs/decisions/health-cron.md` ("Removed").
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #130 (health cron removed, Green) merged as squash `f27f17c`, reviewed head `8e6a39c`, GLM 5.3 Flash APPROVE in round 1 with canary `remove-health-cron-73a686964b58b634d8d8c03d1b701fa8` echoed. At `8e6a39c` lint, typecheck, build and all nine `check:*` scripts exited 0 and Prettier passed on 2 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `f27f17c` with `db.status` ok, and `gh workflow list` no longer lists the health workflow. No runtime change.
 
 ## Wave 4 carryovers and queue triage
 

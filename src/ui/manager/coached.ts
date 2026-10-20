@@ -1,27 +1,10 @@
 /**
- * `T` when every element is a positive integer literal, `never` otherwise. The leaderboard store
- * splices these versions into SQL text, so a fraction, a negative, zero or a widened `number`
- * must not compile. `coachedSqlFor` repeats the check at module load.
- */
-export type PositiveIntegers<T extends readonly number[]> = {
-  [K in keyof T]: `${T[K]}` extends `-${string}` | "0"
-    ? false
-    : `${T[K]}` extends `${bigint}`
-      ? true
-      : false;
-}[number] extends true
-  ? T
-  : never;
-
-const VERSIONS = [6] as const;
-
-/**
  * Token versions whose payload carries the manager list as its fourth element:
  * `[compactSettings, seed, actions, manager?]`, with `manager` written only when non-empty. A new
  * token version that keeps this layout is appended here, so runs stored under a retained version
  * keep their Coached marker after the live decoder moves on.
  */
-export const MANAGER_TOKEN_VERSIONS: PositiveIntegers<typeof VERSIONS> = VERSIONS;
+export const MANAGER_TOKEN_VERSIONS: readonly number[] = [6];
 
 const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
 
@@ -34,12 +17,11 @@ function payloadOf(token: string): string | null {
 }
 
 /**
- * Whether a stored run was coached from the touchline: its token carries at least one manager
- * decision. Submit and db:backfill-runs store it in the `coached` column. The rule is the payload
- * array having more than three elements, read straight from the JSON without the live decoder,
- * so it also holds for retained versions. `coachedSql` in the leaderboard store is the same rule
- * in SQL, and a PGlite test pins the two together. Tokens of any other version, and any token that
- * does not parse, were not coached.
+ * Whether a run was coached from the touchline: its token carries at least one manager decision.
+ * Submit stores it in the `coached` column, which the board filter and the Coached chip read. The
+ * rule is the payload array having more than three elements, read straight from the JSON without
+ * the live decoder, so it also holds for retained versions. Tokens of any other version, and any
+ * token that does not parse, were not coached.
  */
 export function isCoached(token: string): boolean {
   const body = payloadOf(token);

@@ -28,8 +28,8 @@ export const leaderboardEntries = pgTable(
     draws: integer("draws").notNull(),
     losses: integer("losses").notNull(),
     engineVersion: text("engine_version").notNull(),
-    coached: boolean("coached"),
-    runFingerprint: text("run_fingerprint"),
+    coached: boolean("coached").notNull(),
+    runFingerprint: text("run_fingerprint").notNull(),
     ipHash: text("ip_hash").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).notNull().defaultNow(),
   },
@@ -38,6 +38,7 @@ export const leaderboardEntries = pgTable(
       .on(t.nickname, t.mode, t.dailyDate)
       .where(sql`${t.dailyDate} IS NOT NULL`),
     uniqueIndex("leaderboard_entries_token_uq").on(sql`md5(${t.token})`),
+    uniqueIndex("leaderboard_entries_fingerprint_uq").on(t.mode, t.runFingerprint),
     index("leaderboard_entries_board_idx").on(
       t.mode,
       t.dailyDate,
@@ -51,6 +52,14 @@ export const leaderboardEntries = pgTable(
       t.wins.desc(),
       t.draws.desc(),
       t.teamScore.desc(),
+      t.createdAt,
+    ),
+    index("leaderboard_entries_coached_board_idx").on(
+      t.mode,
+      t.coached,
+      t.wins.desc().nullsFirst(),
+      t.draws.desc().nullsFirst(),
+      t.teamScore.desc().nullsFirst(),
       t.createdAt,
     ),
     check("leaderboard_entries_mode_chk", sql`${t.mode} IN ('cup8', 'kanto151')`),

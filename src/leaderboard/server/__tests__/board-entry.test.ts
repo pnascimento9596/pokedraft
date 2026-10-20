@@ -15,7 +15,7 @@ const COACHED_V6 = encodeToken({
   manager: [{ type: "tactic", match: 0, minute: 30, tactic: "attack" }],
 });
 
-function row(token: string): LeaderboardRow {
+function row(token: string, coached: boolean): LeaderboardRow {
   return {
     id: "00000000-0000-4000-8000-000000000001",
     nickname: "Ash",
@@ -29,8 +29,8 @@ function row(token: string): LeaderboardRow {
     draws: 0,
     losses: 1,
     engineVersion: "pokedraft-engine-6",
-    coached: null,
-    runFingerprint: null,
+    coached,
+    runFingerprint: "fp",
     ipHash: "h",
     createdAt: new Date("2026-10-19T12:00:00Z"),
   };
@@ -49,7 +49,7 @@ describe("toBoardEntry (catches every board row decoding its token twice)", () =
     "parses the payload of %s once for its squad and Coached chip",
     (_, token, squad, coached) => {
       const parse = vi.spyOn(JSON, "parse");
-      const entry = toBoardEntry(row(token), 1);
+      const entry = toBoardEntry(row(token, coached), 1);
       expect([parse.mock.calls.length, entry.squadSpeciesIds, entry.coached]).toEqual([
         1,
         squad,
@@ -58,11 +58,14 @@ describe("toBoardEntry (catches every board row decoding its token twice)", () =
     },
   );
 
-  it("pins the tamper-only empty manager list, which isCoached counts and the live decoder drops", () => {
+  it("shows the Coached chip from the stored column for an empty manager list the live decoder drops (catches the chip and the coach filter disagreeing on a row)", () => {
     const payload = JSON.parse(
       Buffer.from(GOLDEN_CUP8_V6.slice("pd6.".length), "base64url").toString("utf8"),
     ) as unknown[];
     const token = `pd6.${Buffer.from(JSON.stringify([...payload, []])).toString("base64url")}`;
-    expect([isCoached(token), toBoardEntry(row(token), 1).coached]).toEqual([true, false]);
+    expect([isCoached(token), toBoardEntry(row(token, isCoached(token)), 1).coached]).toEqual([
+      true,
+      true,
+    ]);
   });
 });
