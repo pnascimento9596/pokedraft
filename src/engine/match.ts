@@ -826,6 +826,7 @@ export function playMatchCore(
           slot,
           role,
           oppUsed,
+          oppSubs,
         );
 
   const incident = (it: Extract<Item, { kind: "incident" }>): void => {

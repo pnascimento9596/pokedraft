@@ -100,7 +100,8 @@ export function bossHasReserve(
  * Engine 7: the reserve a Boss Club sends on for an injured player, or null when its themed pool
  * has nobody left. The window bossRoster takes for this ladder step slides over the theme's members
  * not yet used, and one of the three best fits there for the injured slot's role comes on, drawn
- * on the `opponent_roster` scope `inj:<match>:<slot>`.
+ * on the `opponent_roster` scope `inj:<match>:<slot>:<n>`, where `n` counts the reserves the club
+ * has already sent on in this match.
  */
 export function bossReserve(
   mode: Mode,
@@ -111,6 +112,7 @@ export function bossReserve(
   slot: number,
   role: Role,
   used: ReadonlySet<SpeciesId>,
+  n: number,
 ): Species | null {
   const remaining = themedPool(mode, opponent).filter((s) => !used.has(s.id));
   if (remaining.length === 0) return null;
@@ -118,7 +120,9 @@ export function bossReserve(
     -s.fits[role],
     s.id,
   ]).slice(0, RESERVE_CHOICES);
-  const rng = createEngineRng(deriveSubseed(seed, "opponent_roster", `inj:${matchIndex}:${slot}`));
+  const rng = createEngineRng(
+    deriveSubseed(seed, "opponent_roster", `inj:${matchIndex}:${slot}:${n}`),
+  );
   return rng.pick(choices);
 }
 
