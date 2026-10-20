@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine 7 tactic edges with state dependence
+
+Branch `feat/engine7-tactic-edges` off `origin/main` at `233be7e` (the 6b1 squash). Wave 6 row 6b2 (Red). Dormant: the live coefficients keep the engine 6 tactic table, `manager.counterLead: 1` and `manager.pressFade.perPoint: 0`, so production engine output is exactly engine 6's. Only `src/engine` changed among code paths (plus a UI test); `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #148 merge.
+
+- Nothing changes for a player yet.
+- From the flip, the right tactic against a pressing, possession or direct side moves the goal rate in the user's favour by 25 to 32% (engine 6: 5 to 20%), and pressing a direct side hands it 25% more chances.
+- From the flip, Counter gets 10% more from each chance while its side leads, and a pressing side whose mean outfield energy is below 70 loses 0.004 of its own multiplier per point. Both apply to either side, so a tired pressing opponent fades late.
+- The scout line and tactic badges keep the engine 6 table until the flip.
+
+RED commit `045fb20` (8 of 8 failed), GREEN `8bdaad0`. Regression guards with no RED (behaviour already correct): `8ba5d60` pins the scout's engine 6 badges and lines, and a per-trial rate parity guard in `8bdaad0` compares the live `playMatchCore` with the frozen engine 6 bundle on three runs that reach both new terms. Output parity alone missed a live `pressFade.perPoint` of 0.004 in both the 50 and 200-run panels; the rate guard failed 3 of 3 on it and 2 of 3 on a live `counterLead` of 1.1 (both mutations reverted).
+
+Gates at `8bdaad0` (code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files. `pnpm e2e:pins --check` reported the pins current.
+- Unit tests: 2,105 passed in 240 files. `pnpm vitest run src/engine`: 313 passed in 28 files. Parity: 50 runs byte-identical; slow parity, 200 runs byte-identical (871 played matches, 638 coached, 95 chosen injury answers, 58 extra time, 36 shootouts, all four shapes, 8 formations); rate parity 3 of 3. `goldens.test.ts` is byte-identical to `origin/main`.
+- `check-retained-replays.mts`: 10 golden replays passed. `measure-retained-json.mjs`: 4 copies, 2,891,853 bytes.
+- Probes at n 400 (bots good and random, 4-3-3): engine 6 reproduces the 6p baseline hashes for informed, noop and oracle. Under V7, P1 informed minus auto is +0.0144 [-0.0041, +0.0328] good and +0.0272 [-0.0020, +0.0564] random (6b1: -0.0022 and +0.0016), so P1 still falls short of 3 points; P2 oracle minus auto is +0.0474 [+0.0298, +0.0649] good and +0.0880 [+0.0597, +0.1160] random (baseline +0.0380 and +0.0586), the random interval already above 10 points; P3 stays 0.0000 with 0 discordant pairs.
+- NOT RUN: review and hosted CI, Playwright (no UI source change, engine output unchanged), the other probe modes, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine7-tactic-edges.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Engine 7 split managed and scaffolding
 
 Branch `feat/engine7-split-managed` off `origin/main` at `7045ccd` (the 6g squash). Wave 6 row 6b1 (Red). Dormant: the live coefficients keep `manager.splitManaged: false`, so production engine output is exactly engine 6's. Only `src/engine`, `scripts/calibration` and `eslint.config.mjs` changed among code paths; `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #146 merge.
