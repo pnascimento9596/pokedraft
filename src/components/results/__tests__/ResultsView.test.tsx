@@ -13,6 +13,8 @@ afterEach(cleanup);
 beforeEach(() => {
   localStorage.clear();
   sessionStorage.clear();
+  // jsdom has no scrollIntoView; a star badge tap scrolls the highlights stage.
+  Element.prototype.scrollIntoView = () => {};
   HTMLDialogElement.prototype.showModal = function () {
     this.open = true;
   };
@@ -460,9 +462,10 @@ describe("results reveal (Wave 5 row 5e)", () => {
     );
     expect(screen.getAllByText("Player of the tournament")).toHaveLength(1);
     const awards = screen.getByRole("heading", { level: 2, name: "Awards" }).closest("section")!;
-    expect(within(awards).queryByText("Zarude")).toBeNull();
-    expect(within(awards).getByText("Golden Boot")).toBeTruthy();
-    expect(within(awards).getByText("Top assister")).toBeTruthy();
+    expect([...awards.querySelectorAll(".kicker")].map((k) => k.textContent)).toEqual([
+      "Golden Boot",
+      "Top assister",
+    ]);
   });
 
   it("an old-engine run's MVP card shows the name only, with no invented breakdown", async () => {

@@ -127,7 +127,7 @@ for (const [theme, bg, ink] of [
         };
       }),
     ).toEqual({
-      tokens: theme === "light" ? ["#F4D77A", "#3A2A08"] : ["#2E2410", "#F4D77A"],
+      tokens: theme === "light" ? ["#f4d77a", "#3a2a08"] : ["#2e2410", "#f4d77a"],
       background: bg,
       color: ink,
     });
@@ -172,3 +172,23 @@ test.describe("Watch live focus", () => {
     ).toEqual({ testid: "watch-live", round: "match-G1" });
   });
 });
+
+for (const width of [390, 360, 320]) {
+  for (const theme of ["light", "dark"] as const) {
+    test(`proof: the final hero, trophy, gold mark and MVP card fit at ${width} ${theme}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
+      await page.goto(`/r/${CHAMPION.token}`);
+      await expect(hero(page).getByTestId("results-mvp")).toContainText("Dragapult");
+      await expect(hero(page).getByTestId("results-flawless")).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+      await page.screenshot({ path: `${PROOF}/hero-${width}-${theme}.png` });
+      const highlights = page.getByTestId("match-highlights");
+      await highlights.scrollIntoViewIfNeeded();
+      await expect(highlights.getByRole("heading", { level: 2 })).toHaveText("Highlights");
+      await highlights.screenshot({ path: `${PROOF}/highlights-${width}-${theme}.png` });
+    });
+  }
+}

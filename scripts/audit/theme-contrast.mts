@@ -69,6 +69,8 @@ export function checkContrast(css: string) {
         add(role, surface, 4.5);
     for (const surface of ["--accent", "--accent-hover"]) add("--accent-fg", surface, 4.5);
     add("--ok-text", "--ok-bg", 4.5);
+    add("--gold-ink", "--gold-bg", 4.5);
+    add("--gold-edge", "--surface", 3);
     for (const surface of ["--info-bg", "--warn-bg"]) add("--text-soft", surface, 4.5);
     add(
       "--risk-text",

@@ -10,6 +10,11 @@ function media(): MediaQueryList | null {
     : null;
 }
 
+/** The preference right now, for a one-off choice such as a scroll behaviour. */
+export function prefersReducedMotion(): boolean {
+  return media()?.matches ?? false;
+}
+
 export function useReducedMotion(): boolean {
   return useSyncExternalStore(
     (onChange) => {
