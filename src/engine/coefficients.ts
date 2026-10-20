@@ -44,6 +44,15 @@ export interface EngineCoefficients {
     oppScorerWeights: readonly number[];
   };
   shootout: { kicks: number; maxSuddenDeath: number; base: number; band: number };
+  /**
+   * Engine 7: with `missable`, each side may be awarded a penalty in each five-minute window, with
+   * probability `awardShare` times that window's expected goals, and it scores with the shootout's
+   * conversion chance. `match.penaltyShare` then relabels nothing. Off, penalties are goals
+   * relabelled by `match.penaltyShare`, as in engine 6.
+   */
+  penalty: { missable: boolean; awardShare: number };
+  /** Engine 7: a nominated free-kick taker's weight in the scorer pick for a free-kick goal. */
+  takers: { freeKickWeight: number };
   availability: { eventProb: number; familiarityFloor: number };
   awards: {
     goal: number;
@@ -169,6 +178,8 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     oppScorerWeights: [0, 1, 1, 1, 1, 3, 3, 3, 6, 8, 6],
   },
   shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.1 },
+  penalty: { missable: false, awardShare: 0 },
+  takers: { freeKickWeight: 1 },
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
   awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, CB: 1, FB: 1, DM: 1 }, minutesPerPoint: 180 },
   ladder: {

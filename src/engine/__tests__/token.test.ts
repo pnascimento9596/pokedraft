@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { decodeToken, encodeToken } from "../token";
+import { decodeToken, encodeToken, managerSchemaFor } from "../token";
+import { decodeToken as decodeTokenV6 } from "../versions/v6/src/engine/token";
+import { GOLDEN_CUP8_V6 } from "../versions/__tests__/fixtures";
 import type { DraftAction, RunToken, RunTokenErrorCode, Seed, SlotRef, SpeciesId } from "../types";
 
 const GOLDEN_TOKEN =
@@ -140,5 +142,43 @@ describe("run token errors (catches decoding untrusted input into an invalid run
     ["unknown action", token([["k", "4-3-3", "s"], "x", [["z"]]]), "invalidAction"],
   ] as const)("%s -> %s", (_, input, code) => {
     expect(codeOf(() => decodeToken(input))).toBe(code);
+  });
+});
+
+describe("nominated takers in the codec (catches a pd6 token carrying an engine 7 decision)", () => {
+  const PENALTY_TAKER = ["p", 2, 0, 10] as const;
+  const FREE_KICK_AUTO = ["f", 2, 45, null] as const;
+
+  it("the engine 7 schema accepts a penalty taker and a free-kick taker back on Auto", () => {
+    expect(managerSchemaFor(7).safeParse(PENALTY_TAKER).success).toBe(true);
+    expect(managerSchemaFor(7).safeParse(FREE_KICK_AUTO).success).toBe(true);
+  });
+
+  it("encodeToken refuses a nominated taker while tokens are pd6", () => {
+    const run: RunToken = {
+      ...GOLDEN,
+      manager: [{ type: "taker", match: 2, minute: 0, set: "penalty", slot: 10 as never }],
+    };
+    expect(codeOf(() => encodeToken(run))).toBe("invalidAction");
+  });
+
+  // Regression guard, no RED: behaviour already correct. The engine 6 schema has no taker tuple,
+  // so the live decoder and the frozen engine 6 codec both refuse a pd6 token that carries one.
+  it("the engine 6 schema rejects the taker tuple", () => {
+    expect(managerSchemaFor(6).safeParse(PENALTY_TAKER).success).toBe(false);
+  });
+
+  it("decodeToken and the frozen engine 6 codec both reject a pd6 token with a p decision", () => {
+    const forged = token([["c", "4-3-3", "1", "o", "s"], "x", [], [PENALTY_TAKER]]);
+    // The same body with a tactic in place of the taker decodes, so the p tuple is what fails.
+    const control = token([["c", "4-3-3", "1", "o", "s"], "x", [], [["t", 2, 0, "a"]]]);
+    expect(codeOf(() => decodeToken(control))).toBe("no error");
+    expect(codeOf(() => decodeTokenV6(control))).toBe("no error");
+    expect(codeOf(() => decodeToken(forged))).toBe("invalidAction");
+    expect(codeOf(() => decodeTokenV6(forged))).toBe("invalidAction");
+  });
+
+  it("re-encoding the decoded engine 6 golden token is byte-identical", () => {
+    expect(encodeToken(decodeToken(GOLDEN_CUP8_V6))).toBe(GOLDEN_CUP8_V6);
   });
 });

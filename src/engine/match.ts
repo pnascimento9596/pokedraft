@@ -647,6 +647,8 @@ export function playMatchCore(
       }
       return;
     }
+    // RED scaffolding: a nominated taker is accepted and does nothing yet.
+    if (a.type === "taker") return;
     if (bench === null) invalid("this match has no bench to bring on");
     const current = user.onPitch[a.slot];
     if (!current) invalid(`slot ${a.slot} has nobody to take off at minute ${a.minute}`);

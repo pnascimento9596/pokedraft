@@ -48,6 +48,14 @@ export type IncidentCopy =
       readonly side: Side;
       readonly tactic: Tactic;
       readonly by: "manager" | "auto";
+    }
+  | {
+      readonly kind: "penalty";
+      readonly minute: number;
+      readonly side: Side;
+      readonly taker: Named;
+      readonly keeper: Named;
+      readonly outcome: "saved" | "missed";
     };
 
 /** A card names the player's team; `user` is null where the user's own side goes unnamed. */
@@ -103,7 +111,20 @@ export function incidentText(c: IncidentCopy, teams: CardTeams, shared = false):
         ? `${at} You switch to ${label}`
         : `${at} Your assistant switches to ${label}`;
     }
+    case "penalty":
+      return penaltyText(c);
   }
+}
+
+function penaltyText(c: {
+  minute: number;
+  taker: Named;
+  keeper: Named;
+  outcome: "saved" | "missed";
+}): string {
+  return c.outcome === "saved"
+    ? `${c.minute}' Penalty saved. ${c.keeper.name} stops ${c.taker.name}`
+    : `${c.minute}' Penalty missed. ${c.taker.name} puts it wide`;
 }
 
 function team(teams: Teams, side: Side): string {

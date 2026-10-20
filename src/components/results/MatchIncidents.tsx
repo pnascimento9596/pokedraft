@@ -8,6 +8,7 @@ const MARK: Readonly<Record<Incident["kind"], string>> = {
   yellow: "Yellow",
   red: "Red",
   tactic: "Tactic",
+  penalty: "Penalty",
 };
 
 // Engine 6 logs injuries, substitutions, cards and tactic changes; a retained run has none.

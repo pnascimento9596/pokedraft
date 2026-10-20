@@ -163,6 +163,8 @@ function incidentCopy(i: Incident): IncidentCopy {
       };
     case "tactic":
       return i;
+    case "penalty":
+      return { ...i, taker: named(i.taker), keeper: named(i.keeper) };
   }
 }
 
