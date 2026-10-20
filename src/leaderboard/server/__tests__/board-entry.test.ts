@@ -1,10 +1,20 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { decodeToken, encodeToken } from "@/engine/token";
-import { GOLDEN_CUP8_V3 } from "@/engine/versions/__tests__/fixtures";
+import {
+  GOLDEN_CUP8_V1,
+  GOLDEN_CUP8_V2,
+  GOLDEN_CUP8_V3,
+  GOLDEN_CUP8_V4,
+  GOLDEN_CUP8_V5,
+  GOLDEN_KANTO151_V1,
+  GOLDEN_KANTO151_V2,
+  GOLDEN_KANTO151_V4,
+  GOLDEN_KANTO151_V5,
+} from "@/engine/versions/__tests__/fixtures";
 import type { LeaderboardRow } from "@/db/schema";
 import { isCoached } from "@/ui/manager/coached";
 import { toBoardEntry } from "../store";
-import { GOLDEN_CUP8_V6 } from "./fixtures";
+import { GOLDEN_CUP8_V6, scriptedToken } from "./fixtures";
 
 const GOLDEN_SQUAD = [
   849, 315, 272, 691, 453, 754, 785, 175, 663, 188, 807, 784, 703, 942, 145, 884,
@@ -67,5 +77,53 @@ describe("toBoardEntry (catches every board row decoding its token twice)", () =
       true,
       true,
     ]);
+  });
+});
+
+describe("toBoardEntry engine, seed and formation (catches a board row that cannot say which engine, seed or shape it was)", () => {
+  it.each([
+    ["pd1", GOLDEN_CUP8_V1, "4-2-3-1"],
+    ["pd2", GOLDEN_CUP8_V2, "4-2-3-1"],
+    ["pd3", GOLDEN_CUP8_V3, "4-2-3-1"],
+    ["pd4", GOLDEN_CUP8_V4, "4-2-3-1"],
+    ["pd5", GOLDEN_CUP8_V5, "4-2-3-1"],
+    ["pd6", GOLDEN_CUP8_V6, "4-2-3-1"],
+    ["pd1 151", GOLDEN_KANTO151_V1, "3-5-2"],
+    ["pd2 151", GOLDEN_KANTO151_V2, "3-5-2"],
+    ["pd4 151", GOLDEN_KANTO151_V4, "3-5-2"],
+    ["pd5 151", GOLDEN_KANTO151_V5, "3-5-2"],
+  ] as const)(
+    "decodes the %s golden's formation in the same single parse",
+    (_, token, formation) => {
+      const parse = vi.spyOn(JSON, "parse");
+      const entry = toBoardEntry(row(token, false), 1);
+      expect([parse.mock.calls.length, entry.formation]).toEqual([1, formation]);
+    },
+  );
+
+  it("returns formation 4-3-3 for a 4-3-3 run", () => {
+    const token = scriptedToken(
+      {
+        mode: "cup8",
+        formation: "4-3-3",
+        gens: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        style: "classic3",
+        order: "squadFirst",
+      },
+      "board-entry-433",
+    );
+    expect(toBoardEntry(row(token, false), 1).formation).toBe("4-3-3");
+  });
+
+  it("returns a null formation, never a guess, for a token that does not decode", () => {
+    expect(toBoardEntry(row("pd3.e30", false), 1).formation).toBeNull();
+  });
+
+  it("passes the stored engine version and seed through", () => {
+    const entry = toBoardEntry(
+      { ...row(GOLDEN_CUP8_V3, false), engineVersion: "pokedraft-engine-3" },
+      1,
+    );
+    expect([entry.engineVersion, entry.seed]).toEqual(["pokedraft-engine-3", "golden-cup8"]);
   });
 });
