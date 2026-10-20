@@ -2,6 +2,7 @@ import { createHmac } from "node:crypto";
 import { isIPv6 } from "node:net";
 import {
   ENGINE_VERSION,
+  RUN_TOKEN_VERSION,
   RunTokenError,
   decodeToken,
   encodeToken,
@@ -26,8 +27,11 @@ import { dailyDateForSeed, isDailySettings } from "../daily";
 import { parseNickname } from "../nickname";
 import { logServerError, requestIdOf } from "@/observability/log";
 import type { LeaderboardRow } from "@/db/schema";
+import { replayAnyVersion } from "@/engine/versions";
 import { isCoached } from "@/ui/manager/coached";
+import { canonicalToken } from "@/ui/read-token";
 import { runFingerprint } from "./fingerprint";
+import { GRACE, openGrace, type Grace } from "./grace";
 import {
   rankedBoard,
   toBoardEntry,
@@ -45,6 +49,7 @@ export interface SubmitDeps {
   readonly ipHashSecret: string | undefined;
   readonly now: () => Date;
   readonly replay?: (token: RunToken) => ReturnType<typeof engineReplay>;
+  readonly grace?: Grace | null;
 }
 
 function json(body: unknown, status: number, headers: Record<string, string> = {}): Response {
@@ -76,7 +81,10 @@ const TOKEN_ERROR: Record<RunTokenErrorCode, SubmitErrorCode> = {
 };
 
 function tokenError(e: unknown): Response {
-  if (e instanceof RunTokenError) return submitError(TOKEN_ERROR[e.code], e.message);
+  // A retained bundle throws its own copy of RunTokenError, so the class alone misses it.
+  if (e instanceof Error && e.name === "RunTokenError") {
+    return submitError(TOKEN_ERROR[(e as RunTokenError).code], e.message);
+  }
   throw e;
 }
 
@@ -177,6 +185,8 @@ interface Submission {
   readonly board: Board;
   readonly coach: CoachFilter;
   readonly coached: boolean;
+  /** The grace window that admitted a retired engine's run, or null for a live run. */
+  readonly grace: Grace | null;
 }
 
 // Everything that can be checked without the database. These rejections spend no attempt and
@@ -184,6 +194,7 @@ interface Submission {
 async function parseSubmission(
   req: Request,
   now: Date,
+  graceSetting: Grace | null,
 ): Promise<
   { readonly ok: true; readonly sub: Submission } | { readonly ok: false; readonly res: Response }
 > {
@@ -196,7 +207,9 @@ async function parseSubmission(
   }
   const body = submitBodySchema.safeParse(raw);
   if (!body.success) return reject(submitError("INVALID_BODY", "Expected { nickname, token }."));
-  if (body.data.engineVersion !== undefined && body.data.engineVersion !== ENGINE_VERSION) {
+  const grace = openGrace(graceSetting, body.data.token, now);
+  const pages = grace === null ? [ENGINE_VERSION] : [ENGINE_VERSION, grace.engine];
+  if (body.data.engineVersion !== undefined && !pages.includes(body.data.engineVersion)) {
     return reject(
       submitError(
         "ENGINE_VERSION_MISMATCH",
@@ -211,7 +224,11 @@ async function parseSubmission(
 
   let run: RunToken;
   try {
-    run = decodeToken(body.data.token);
+    run = decodeToken(
+      grace === null
+        ? body.data.token
+        : body.data.token.replace(/^pd\d+\./, `pd${RUN_TOKEN_VERSION}.`),
+    );
   } catch (e) {
     return reject(tokenError(e));
   }
@@ -221,6 +238,14 @@ async function parseSubmission(
     );
   }
   const dailyDate = dailyDateForSeed(run.seed, now);
+  if (grace !== null && dailyDate !== null && dailyDate >= grace.flipDate) {
+    return reject(
+      submitError(
+        "ENGINE_VERSION_MISMATCH",
+        `This run was played on ${grace.engine}; the ${dailyDate} daily board runs ${ENGINE_VERSION}. Reload and play again.`,
+      ),
+    );
+  }
   if (dailyDate !== null && !isDailySettings(run.settings)) {
     return reject(
       submitError(
@@ -231,14 +256,16 @@ async function parseSubmission(
   }
   // One run has many encodings (JSON spacing, gens order, 25.0 for 25). Dedupe and store the
   // canonical one, so the token index sees one run as one row.
-  const token = encodeToken(run);
+  // A retired run keeps its own prefix, so its canonical spelling is the one stored before the flip.
+  const token = grace === null ? encodeToken(run) : canonicalToken(body.data.token);
+  if (token === null) return reject(submitError("TOKEN_MALFORMED", "This run does not decode."));
   const coach = body.data.coach ?? "all";
   const coached = isCoached(token);
   if (coach !== "all" && (coach === "coached") !== coached) {
     return reject(submitError("INVALID_BODY", `This run is not on the ${coach} board.`));
   }
-  const board = rankedBoard(run.settings.mode, dailyDate);
-  return { ok: true, sub: { nickname: nick.nickname, run, token, board, coach, coached } };
+  const board = rankedBoard(run.settings.mode, dailyDate, grace?.engine ?? ENGINE_VERSION);
+  return { ok: true, sub: { nickname: nick.nickname, run, token, board, coach, coached, grace } };
 }
 
 // A retry of an accepted run (same run, same nickname) gets the saved entry back with 200.
@@ -263,7 +290,7 @@ async function savedEntry(
   coach: CoachFilter,
   requestId: string,
 ): Promise<Response> {
-  const board = rankedBoard(row.mode, row.dailyDate);
+  const board = rankedBoard(row.mode, row.dailyDate, row.engineVersion);
   const rank = await rankOrNull(store, row, board, coach, requestId);
   const ok: SubmitOk = { entry: toBoardEntry(row, rank) };
   return json(ok, 200);
@@ -278,14 +305,14 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
     return submitError("DB_UNAVAILABLE", "The leaderboard is unavailable.");
   }
   const ipHash = hashIp(clientIp(req), deps.ipHashSecret);
-  const parsed = await parseSubmission(req, now);
+  const parsed = await parseSubmission(req, now, deps.grace === undefined ? GRACE : deps.grace);
 
   const limited = () =>
     submitError("RATE_LIMITED", "Ten submissions per hour. Try again later.", {
       "retry-after": "3600",
     });
   if (!parsed.ok) return parsed.res;
-  const { nickname, run, token, board, coach, coached } = parsed.sub;
+  const { nickname, run, token, board, coach, coached, grace } = parsed.sub;
   try {
     const admission = await deps.store.admitSubmission(
       token,
@@ -304,7 +331,7 @@ export async function handleSubmit(req: Request, deps: SubmitDeps): Promise<Resp
 
   let result: ReturnType<typeof engineReplay>;
   try {
-    result = replay(run);
+    result = grace === null ? replay(run) : await replayAnyVersion(token);
   } catch (e) {
     return tokenError(e);
   }

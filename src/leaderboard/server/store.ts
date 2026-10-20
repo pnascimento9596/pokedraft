@@ -14,16 +14,22 @@ import {
   type EngineFilter,
 } from "../contract";
 
+/** An all-time board lists every engine, the live one, or one named engine. */
 export type Board =
   | { readonly mode: BoardMode; readonly dailyDate: string }
-  | { readonly mode: BoardMode; readonly dailyDate: null; readonly engine: EngineFilter };
+  | {
+      readonly mode: BoardMode;
+      readonly dailyDate: null;
+      readonly engine: EngineFilter | { readonly version: string };
+    };
 
 /**
- * The board a submitted run is ranked on: its daily board, or the current-engine all-time board,
- * which is the view the submit panel's board link opens.
+ * The board a submitted run is ranked on: its daily board, or the all-time board of the engine
+ * that replayed it. For a live run that is the current-engine board the submit panel's link opens.
  */
-export function rankedBoard(mode: BoardMode, dailyDate: string | null): Board {
-  return dailyDate === null ? { mode, dailyDate, engine: "current" } : { mode, dailyDate };
+export function rankedBoard(mode: BoardMode, dailyDate: string | null, engine: string): Board {
+  if (dailyDate !== null) return { mode, dailyDate };
+  return { mode, dailyDate, engine: engine === ENGINE_VERSION ? "current" : { version: engine } };
 }
 
 export type Conflict = "daily" | "token" | "fingerprint";
@@ -74,9 +80,9 @@ function boardFilter(board: Board): SQL {
   if (board.dailyDate !== null) {
     return and(eq(t.mode, board.mode), eq(t.dailyDate, board.dailyDate))!;
   }
-  return board.engine === "all"
-    ? eq(t.mode, board.mode)
-    : and(eq(t.mode, board.mode), eq(t.engineVersion, ENGINE_VERSION))!;
+  if (board.engine === "all") return eq(t.mode, board.mode);
+  const engine = board.engine === "current" ? ENGINE_VERSION : board.engine.version;
+  return and(eq(t.mode, board.mode), eq(t.engineVersion, engine))!;
 }
 
 const ORDER = [desc(t.wins), desc(t.draws), desc(t.teamScore), asc(t.createdAt), asc(t.id)];
@@ -190,7 +196,7 @@ export function drizzleStore(getDb: () => Db): LeaderboardStore {
       return row ?? null;
     },
     async insert(row, coach) {
-      const board = rankedBoard(row.mode, row.dailyDate ?? null);
+      const board = rankedBoard(row.mode, row.dailyDate ?? null, row.engineVersion);
       try {
         const db = getDb();
         // The outer query reads the table as it was before the insert, and a row is never ahead
