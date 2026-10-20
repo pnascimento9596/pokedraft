@@ -83,6 +83,28 @@ describe("Friends on this seed (catches a results page that hides who else playe
     expect(marks.map((m) => m.closest("tr")?.textContent?.startsWith("2Lance"))).toEqual([true]);
   });
 
+  it("marks this run for a link whose JSON spacing differs from the stored token (catches a string compare that shows the player's own row as a link)", async () => {
+    const [prefix, body] = GOLDEN_CUP8_V6.split(".") as [string, string];
+    const spaced = JSON.stringify(JSON.parse(Buffer.from(body, "base64url").toString()), null, 1);
+    const link = `${prefix}.${Buffer.from(spaced).toString("base64url")}`;
+    expect(link).not.toBe(GOLDEN_CUP8_V6);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json(200, { ...SEED_OK, entries: [ASH, LANCE] })),
+    );
+    render(<SeedBoard token={link} />);
+    const table = await screen.findByRole("table", { name: "Friends on this seed" });
+    const rows = within(table).getAllByRole("row").slice(1);
+    expect(rows.map((r) => r.textContent)).toEqual([
+      "1AshThis run4-2-3-15-0-1593",
+      "2LanceEngine v33-5-25-0-1500",
+    ]);
+    expect(rows.map((r) => within(r).queryByRole("link")?.textContent ?? null)).toEqual([
+      null,
+      "Lance",
+    ]);
+  });
+
   it("renders nothing when nobody has submitted the seed", async () => {
     const fetchMock = vi.fn(async () => json(200, { ...SEED_OK, entries: [] }));
     vi.stubGlobal("fetch", fetchMock);

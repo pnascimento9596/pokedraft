@@ -95,8 +95,7 @@ async function rightEdge(page: Page, selector: string, skip: string | null) {
 const SHEET = '[data-testid="touchline-sheet"]';
 
 // Hosted CI fonts run a few px wider than macOS, so 320 keeps 12 px of headroom and the same
-// content must still fit at 308. The touchline sheet is the matchday's own edge-to-edge sheet,
-// unchanged here, so its content only has to fit; e2e/touchline-sheet.spec.ts owns its layout.
+// content must still fit at 308. The touchline sheet's content keeps the same 12 px.
 async function fitsWithHeadroom(page: Page, label: string, height: number) {
   for (const width of [320, 308]) {
     await setWidth(page, width, height);
@@ -107,7 +106,7 @@ async function fitsWithHeadroom(page: Page, label: string, height: number) {
     );
     expect(edge.scroll).toBeLessThanOrEqual(width);
     expect(edge.right).toBeLessThanOrEqual(308);
-    expect(sheet.right).toBeLessThanOrEqual(width);
+    expect(sheet.right).toBeLessThanOrEqual(width - 12);
   }
 }
 

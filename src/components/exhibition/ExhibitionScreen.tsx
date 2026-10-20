@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useId, useMemo, useSyncExternalStore } from "react";
+import { useId, useMemo, useRef, useSyncExternalStore } from "react";
 import { ModuleCard, StatusNote } from "@/components/ui/primitives";
 import {
   awayName,
@@ -73,7 +73,7 @@ function NoSquad() {
         <Link href="/" className="btn btn--primary">
           Play a cup
         </Link>
-        <Link href="/" className="btn">
+        <Link href="/#builder" className="btn">
           Open the Builder
         </Link>
       </span>
@@ -95,6 +95,8 @@ export function ExhibitionScreen() {
   const homeToken = query.home ?? options[0]?.token ?? null;
   const home = useMemo(() => (homeToken === null ? null : squadFromToken(homeToken)), [homeToken]);
   const name = awayName(query.name);
+  // Taps faster than the URL update read the same `n`, so each one counts on from the last asked.
+  const asked = useRef<{ readonly from: number; readonly to: number } | null>(null);
 
   if (stored === null) {
     return <p className="kicker">Loading the exhibition</p>;
@@ -102,6 +104,11 @@ export function ExhibitionScreen() {
 
   const go = (next: Partial<ExhibitionQuery>) => {
     router.replace(exhibitionHref({ ...query, ...next, away: query.away! }), { scroll: false });
+  };
+  const rematch = () => {
+    const last = asked.current?.from === query.rematch ? asked.current.to : query.rematch;
+    asked.current = { from: query.rematch, to: last + 1 };
+    go({ rematch: last + 1 });
   };
 
   if (query.away === null || away === null) {
@@ -159,7 +166,7 @@ export function ExhibitionScreen() {
             awayName={name}
             mirror={sameSquad(home.lineup, away.lineup)}
             onLegs={(legs) => go({ legs })}
-            onRematch={() => go({ rematch: query.rematch + 1 })}
+            onRematch={rematch}
           />
         )}
       </div>

@@ -177,6 +177,46 @@ test("live results ask for the drafted seed's board and list it", async ({ page 
   expect(seen).toEqual(["?mode=cup8&seed=e2e-80"]);
 });
 
+test("live results show a run submitted from the page in the seed table without a reload (catches a table fetched once on mount)", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const posted = {
+    ...ROW,
+    seed: "e2e-80",
+    rank: 2,
+    nickname: "Brock",
+    token: "pd6.e2e-brock",
+    teamScore: 700,
+    wins: 8,
+    draws: 0,
+    losses: 0,
+    engineVersion: "pokedraft-engine-6",
+    formation: "4-3-3",
+  };
+  let submitted = false;
+  const seen = await stubSeedBoard(page, (url) => ({
+    status: 200,
+    json: seedReply(url, submitted ? [ROWS[0], posted] : [ROWS[0]]),
+  }));
+  await page.route("**/api/leaderboard", (route) => {
+    if (route.request().method() !== "POST") return route.fallback();
+    submitted = true;
+    return route.fulfill({ status: 201, json: { entry: posted } });
+  });
+  await page.goto(RUN_8_0.url);
+  await page.getByTestId("run-start").click();
+  await draftSixteen(page);
+  await page.getByTestId("see-results").click();
+  const rows = page.getByRole("table", { name: "Friends on this seed" }).locator("tbody tr");
+  await expect(rows).toHaveText([`1${"W".repeat(20)}3-4-2-17-1-0812`]);
+  await page.getByTestId("submit-nickname").fill("Brock");
+  await page.getByTestId("submit-button").click();
+  await expect(page.getByTestId("submit-success")).toBeVisible();
+  await expect(rows).toHaveText([`1${"W".repeat(20)}3-4-2-17-1-0812`, "2Brock4-3-38-0-0700"]);
+  expect(seen).toEqual(["?mode=cup8&seed=e2e-80", "?mode=cup8&seed=e2e-80"]);
+});
+
 test("All engines shows the engine 3 run, labelled, and the default all-time board does not", async ({
   page,
 }) => {

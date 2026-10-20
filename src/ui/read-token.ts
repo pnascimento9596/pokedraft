@@ -1,4 +1,4 @@
-import { decodeToken } from "@/engine/token";
+import { decodeToken, encodeToken } from "@/engine/token";
 import { RUN_TOKEN_VERSION, type RunToken } from "@/engine/types";
 import { RETAINED_TOKEN_VERSIONS } from "@/engine/versions/label";
 
@@ -8,10 +8,23 @@ import { RETAINED_TOKEN_VERSIONS } from "@/engine/versions/label";
  * codec reads any known version once its prefix is rewritten.
  */
 export function readAnyToken(token: string): RunToken | null {
+  return readVersioned(token)?.run ?? null;
+}
+
+/**
+ * The run's one spelling, its own version prefix on the live codec's re-encoding, or null when it
+ * does not decode. Two links to the same run can differ in JSON spacing.
+ */
+export function canonicalToken(token: string): string | null {
+  const read = readVersioned(token);
+  return read === null ? null : encodeToken(read.run).replace(/^pd\d+\./, `pd${read.version}.`);
+}
+
+function readVersioned(token: string): { readonly version: number; readonly run: RunToken } | null {
   const version = Number(/^pd(\d+)\./.exec(token)?.[1]);
   if (version !== RUN_TOKEN_VERSION && !RETAINED_TOKEN_VERSIONS.includes(version)) return null;
   try {
-    return decodeToken(token.replace(/^pd\d+\./, `pd${RUN_TOKEN_VERSION}.`));
+    return { version, run: decodeToken(token.replace(/^pd\d+\./, `pd${RUN_TOKEN_VERSION}.`)) };
   } catch {
     return null;
   }

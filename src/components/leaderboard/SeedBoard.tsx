@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { BoardMode } from "@/leaderboard/contract";
 import { ModuleCard, StatusNote, Table } from "@/components/ui/primitives";
-import { readAnyToken } from "@/ui/read-token";
+import { canonicalToken, readAnyToken } from "@/ui/read-token";
 import { record } from "@/ui/labels";
 import { fetchSeedBoard, type BoardResult } from "./client";
 import { engineRowLabel } from "./format";
@@ -19,9 +19,15 @@ function seedBoardOf(token: string): { readonly mode: BoardMode; readonly seed: 
 
 /**
  * Every submitted run on this run's seed. It is fetched after mount, so the shared page's server
- * render stays free of database reads.
+ * render stays free of database reads, and again whenever `refresh` changes.
  */
-export function SeedBoard({ token }: { readonly token: string }) {
+export function SeedBoard({
+  token,
+  refresh = 0,
+}: {
+  readonly token: string;
+  readonly refresh?: number;
+}) {
   const target = seedBoardOf(token);
   const mode = target?.mode;
   const seed = target?.seed;
@@ -38,11 +44,12 @@ export function SeedBoard({ token }: { readonly token: string }) {
       if (!ctrl.signal.aborted) setLoaded({ key: `${mode}|${seed}`, result });
     });
     return () => ctrl.abort();
-  }, [mode, seed]);
+  }, [mode, seed, refresh]);
 
   const result = loaded?.key === key ? loaded.result : null;
   if (target === null || result === null) return null;
   if (result.kind === "ok" && result.entries.length === 0) return null;
+  const self = canonicalToken(token);
 
   return (
     <ModuleCard
@@ -74,7 +81,7 @@ export function SeedBoard({ token }: { readonly token: string }) {
             </thead>
             <tbody>
               {result.entries.map((e) => {
-                const mine = e.token === token;
+                const mine = canonicalToken(e.token) === self;
                 const engine = engineRowLabel(e.engineVersion);
                 return (
                   <tr key={e.token} data-mine={mine || undefined}>

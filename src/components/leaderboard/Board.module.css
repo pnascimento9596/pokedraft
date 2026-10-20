@@ -102,6 +102,15 @@
 .error {
   margin-top: 12px;
 }
+.emptyActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.empty .emptyActions :global(.btn) {
+  margin-top: 0;
+}
 .empty :global(.btn),
 .error :global(.btn) {
   display: inline-flex;
@@ -145,17 +154,27 @@
 .challenge {
   min-height: 44px;
 }
-/* Fixed columns: the chips keep their boxes when a late web font changes the label widths. */
+/* Fixed widths, each sized for its own label with room to spare, so a late web font never moves a
+   chip and "Uncoached" never meets its border. On a narrow phone the row wraps. */
 .coachFilter {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 7.5rem));
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   margin: 0 0 8px;
 }
 .coachFilter :global(.chip) {
+  flex: none;
   justify-content: center;
-  width: 100%;
   min-height: 44px;
+}
+.coachFilter .chipAll {
+  width: 4rem;
+}
+.coachFilter .chipUncoached {
+  width: 8.5rem;
+}
+.coachFilter .chipCoached {
+  width: 7rem;
 }
 .filterEmpty {
   margin: 0 0 8px;

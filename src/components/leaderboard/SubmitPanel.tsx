@@ -52,7 +52,15 @@ function savedNickname(): string {
   return typeof raw === "string" ? raw : "";
 }
 
-export function SubmitPanel({ token, daily }: { readonly token: string; readonly daily: boolean }) {
+export function SubmitPanel({
+  token,
+  daily,
+  onSubmitted,
+}: {
+  readonly token: string;
+  readonly daily: boolean;
+  readonly onSubmitted?: () => void;
+}) {
   const [nickname, setNickname] = useState(savedNickname);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const link = useLinkShare();
@@ -75,6 +83,7 @@ export function SubmitPanel({ token, daily }: { readonly token: string; readonly
     setStatus({ kind: "submitting" });
     const result = await submitRun(trimmed, token, coach);
     setStatus(result.kind === "ok" ? { kind: "done", entry: result.entry } : result);
+    if (result.kind === "ok") onSubmitted?.();
   };
 
   const target = daily ? "today's daily board" : "the all-time board";
