@@ -6,7 +6,7 @@ under `src/` changed, and `src/engine/__tests__/goldens.test.ts` is byte-identic
 
 ## Goal
 
-Before this row, about 40 e2e specs built a "live" token as `"pd6." + GOLDEN_CUP8_V5.slice(4)`, held
+Before this row, 35 e2e sources built a "live" token as `"pd6." + GOLDEN_CUP8_V5.slice(4)`, held
 literal `pd6.` tokens, or asserted engine 6 outcomes (rounds, minutes, slots, species, scores) as
 literals. After the 6b9 flip, `pd6` routes to a frozen bundle, so those specs would keep passing
 while testing the retained engine 6 bundle instead of the live engine. Now every such spec reads
@@ -28,7 +28,7 @@ hand-off 4.2 lists under 6t. The prefix and engine are read from `@/engine/types
 follows the bump. `pnpm e2e:pins --check` (and the first test in the same file) fails when
 `pins.ts` is stale.
 
-RED: `37d9ee1`, 1 of 2 tests failed with 45 offender lines across 37 files.
+RED: `37d9ee1`, 1 of 2 tests failed with 45 offender lines across 33 files (keyboard and fatigue held engine literals without the prefix and moved too).
 
 ## Pins
 
@@ -85,3 +85,9 @@ Searches are capped at 200 seeds and throw when none matches, so a bump that los
 ## Carryovers
 
 - Unit tests under `src/` still build `pd6.` tokens. Out of scope (no `src/` change in this row).
+
+## Evidence
+
+- Full Playwright suite (`CI=1`, headless, 4 workers, all projects): before at `b3199e9` 1,081
+  passed, 67 skipped, 0 failed; after at `9340dec` 1,081 passed, 67 skipped, 0 failed.
+- `pnpm e2e:pins --check` exits 0 at `9340dec`; the source scan passes.

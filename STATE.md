@@ -3,6 +3,25 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Live-token pins
+
+Branch `test/live-token-pins` off `origin/main` at `eceb581`. Wave 6 row 6t (Green). Only e2e specs, the generated `e2e/pins.ts`, `scripts/e2e/render-pins.ts` and its test changed. No file under `src/` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #143 merge below.
+
+- Every e2e spec that built a live token from a v5 body, held a literal `pd6` token, or asserted an engine 6 outcome (round, minute, slot, species, score) reads it from `e2e/pins.ts`, which `pnpm e2e:pins` regenerates from the live engine. After an engine bump the specs replay the new engine, not a retained bundle.
+- Property pins (giant killer, champion, shootout, injury stop) search seed families for the first match and reproduce today's seeds; fixed-round pins throw in the generator when the event is gone.
+- Guard: `render-pins.test.ts` fails on the live token prefix, `pd${` or the live engine name in any e2e source outside `pins.ts`; `pnpm e2e:pins --check` fails on a stale `pins.ts`.
+
+RED commit: `37d9ee1` (`scripts/e2e`, 1 of 2 tests failed, 45 offender lines in 33 files). GREEN `9340dec`.
+
+Gates at `9340dec` (later commits add docs only):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `check-retained-replays.mts`, `measure-retained-json.mjs`, all nine `check:*` scripts and `pnpm e2e:pins --check` exited 0. Prettier passed on 40 touched files.
+- Unit tests: 2,018 passed in 230 files.
+- Playwright (`CI=1`, headless, 4 workers), the full suite, all projects: before at `b3199e9` 1,081 passed, 67 skipped, 0 failed (18.4m); after at `9340dec` 1,081 passed, 67 skipped, 0 failed (18.7m). No retries in either run.
+- NOT RUN: review and hosted CI, the phone check.
+
+Decision log: `docs/decisions/live-token-pins.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 5 carryovers and queue hygiene
 
 Branch `chore/wave5-carryovers` off `origin/main` at `9e4802b`. Wave 6 row 6-0 (Yellow). No file under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #140 merge below.
