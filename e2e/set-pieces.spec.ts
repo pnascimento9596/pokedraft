@@ -93,7 +93,9 @@ test("solo: Talonflame dribbles past the defender who steps in, cup8 G1 49'", as
       return p !== null &&
         p.clock === "49'" &&
         p.trail === "dribble" &&
-        p.players.some((q) => q.side === "opp" && q.slot === 3 && q.pose === "press") &&
+        // Opp slot 5, the nearest outfielder once the territory lean (xg-river) moves the shape;
+        // it was slot 3 under the old xG lean.
+        p.players.some((q) => q.side === "opp" && q.slot === 5 && q.pose === "press") &&
         p.players.some(
           (q) =>
             q.side === "user" &&
