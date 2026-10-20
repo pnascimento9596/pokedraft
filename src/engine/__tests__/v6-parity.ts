@@ -143,6 +143,8 @@ export interface ParityTally {
   matches: number;
   coachedMatches: number;
   injuryAnswers: number;
+  extraTime: number;
+  shootouts: number;
   shapes: Set<string>;
   formations: Set<string>;
 }
@@ -152,6 +154,8 @@ export const emptyTally = (): ParityTally => ({
   matches: 0,
   coachedMatches: 0,
   injuryAnswers: 0,
+  extraTime: 0,
+  shootouts: 0,
   shapes: new Set(),
   formations: new Set(),
 });
@@ -175,6 +179,8 @@ export function checkParity(run: ParityRun, tally: ParityTally): void {
   for (const [k, m] of live.matches.entries()) {
     if (m.status !== "played") continue;
     tally.matches++;
+    if (m.extraTime !== null) tally.extraTime++;
+    if (m.shootout !== null) tally.shootouts++;
     if (run.manager.some((a) => a.match === k)) tally.coachedMatches++;
     tally.injuryAnswers += (m.incidents ?? []).filter(
       (x) => x.kind === "sub" && x.reason === "injury" && x.by === "manager",

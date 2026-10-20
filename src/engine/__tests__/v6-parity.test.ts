@@ -12,5 +12,8 @@ describe("live engine against the frozen engine 6 bundle (catches engine 6 drift
     expect(tally.formations.size).toBe(8);
     expect(tally.coachedMatches).toBeGreaterThan(0);
     expect(tally.injuryAnswers).toBeGreaterThan(0);
+    expect(tally.extraTime).toBeGreaterThan(0);
+    // Shootouts exercise recapLines' injected c.shootout.kicks.
+    expect(tally.shootouts).toBeGreaterThan(0);
   });
 });

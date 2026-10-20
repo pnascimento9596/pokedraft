@@ -9,6 +9,9 @@ describe("live engine against the frozen engine 6 bundle, 200 runs (the Red revi
     expect(tally.runs).toBe(200);
     expect(tally.formations.size).toBe(8);
     expect(tally.injuryAnswers).toBeGreaterThan(0);
+    expect(tally.extraTime).toBeGreaterThan(0);
+    // Shootouts exercise recapLines' injected c.shootout.kicks.
+    expect(tally.shootouts).toBeGreaterThan(0);
     console.log(
       `v6 parity: ${JSON.stringify({ ...tally, shapes: [...tally.shapes], formations: tally.formations.size })}`,
     );
