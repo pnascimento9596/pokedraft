@@ -50,6 +50,8 @@ Decision log: `docs/decisions/head-to-head.md`. Browser proof: `docs/reports/hea
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #132 (row 5b, head-to-head challenges, Yellow) merged as squash `9f01b8c`, reviewed head `960539b` (`84969bb` plus the PR #131 STATE paragraph), GLM 5.3 Flash APPROVE in round 1 with canary `head-to-head-853bc57b4f1a89df1104672e88324070` echoed. Landed ahead of 5g, which was still building: its files are disjoint apart from one mount line each in the results views, and the Red row still needed two receipts and its database steps. At `960539b` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,863 unit tests passed in 221 files and Prettier passed on 19 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `9f01b8c` with `db.status` ok; `head-to-head`, `challenge` and `share-sheet` against production (chromium) passed 16 of 16. NOT RUN: the challenge loop on two real phones and a screen reader pass over the head-to-head table (owner actions).
+
 ## Share sheet and run metadata
 
 Branch `feat/share-sheet` off `origin/main` at `5932775`. Wave 5 row 5a (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
