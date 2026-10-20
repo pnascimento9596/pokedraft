@@ -3,6 +3,30 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Achievements
+
+Branch `feat/achievements` off `origin/main` at `afaa695`. Wave 5 row 5h (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- The history page has an Achievements grid with six tiles: First Flawless, Hat-trick hero, Champion with every formation (with "n of 8"), 151 champion, Comeback and Giant killer. An earned tile is gold and shows the date of the first earn; the others say "Not yet".
+- Only ranked runs count. A builder friendly never earns one.
+- Older saved runs still earn First Flawless, 151 champion and their formation titles. The grid says once that Hat-trick hero, Comeback and Giant killer count runs played from 20 October 2026, because older runs did not store per-match results.
+- Earns are kept with the lifetime totals, so trimming the 50-run history never loses one, and a backup carries them. Restoring keeps the earliest date. Old backups still restore.
+- A run's results and its share card show its most notable earn as a gold chip: Giant killer, then Comeback, then Hat-trick hero, then 151 champion. Cards already shared keep their old picture.
+- Giant killer means beating a Boss Club at least 100 above the rating you fielded. At 150 only 1.0% of 200 good-bot cups earned it, under the 2% floor, so the gap moved to 100 (2.5%).
+
+RED commit: `2a74138` (9 of 65 unit tests failed in 4 files, and `achievements.test.ts`, 28 tests, failed to load). GREEN `73d5767`. `0e2bfde` adds `e2e/achievements.spec.ts` and the browser proof.
+
+Gates at `0e2bfde` (code identical to `73d5767` plus the e2e spec):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 16 touched code and test files.
+- Unit tests at `73d5767`: 1,911 passed in 222 files.
+- Playwright (`CI=1`, headless chromium, `--retries=0`, build of the `73d5767` code): `achievements` passed 15 of 15, and with `results-reveal`, `theme-results`, `layout-shift`, `lifetime-history`, `history-controls`, `watch-live`, `highlights-honesty`, `results-interactions`, `head-to-head`, `share`, `share-sheet`, `challenge`, `run-persist`, `a11y`, `contrast`, `old-links`, `server-html`, `platform-experience`, `exhibition-two-legs` and `draft-modes` 167 passed and 1 skipped by its own project gate.
+- NOT RUN: review and hosted CI; the full Playwright suite; WebKit and the phone projects; a real phone check and a screen reader pass over the grid and the chip (owner actions).
+
+Decision log: `docs/decisions/achievements.md`. Browser proof: `docs/reports/achievements/` (`grid-{390,360,320}-{light,dark}.png`, `chip-{390,360,320}-{light,dark}.png`, `card-giant-killer.png`, `card-coached-giant-killer.png`).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Results reveal and sync
 
 Branch `feat/results-reveal` off `origin/main` at `9f01b8c`. Wave 5 row 5e (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
