@@ -20,6 +20,8 @@ const FILTER_EMPTY: Readonly<Record<Exclude<CoachFilter, "all">, string>> = {
   uncoached: "No uncoached runs on this board yet.",
 };
 
+const NO_ENGINE_RUNS = "No runs on this engine yet.";
+
 const ERROR_COPY: Readonly<Record<Extract<BoardResult, { kind: "error" }>["reason"], string>> = {
   offline: "The leaderboard is offline right now.",
   network: "Could not reach the leaderboard. Check your connection.",
@@ -54,16 +56,28 @@ export function Board({
   const engine = view.scope === "all" ? view.engine : "current";
   const board = `${view.mode}|${view.scope}|${view.scope === "daily" ? view.date : ""}`;
   const key = `${board}|${coach}|${engine}|${attempt}`;
-  const [loaded, setLoaded] = useState<{ key: string; result: BoardResult } | null>(null);
+  // `older`: the current-engine all-time board is empty but All engines has runs.
+  const [loaded, setLoaded] = useState<{
+    key: string;
+    result: BoardResult;
+    older: boolean;
+  } | null>(null);
   // The board this player has seen rows on. Once it has, the chips stay mounted through every
   // filtered load, empty view or error, so switching views never moves the page.
   const [filtered, setFiltered] = useState<string | null>(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
-    fetchBoard(view, ctrl.signal).then((result) => {
+    fetchBoard(view, ctrl.signal).then(async (result) => {
+      const askOlder =
+        engine === "current" &&
+        view.scope === "all" &&
+        coach === "all" &&
+        result.kind === "ok" &&
+        result.entries.length === 0;
+      const all = askOlder ? await fetchBoard({ ...view, engine: "all" }, ctrl.signal) : null;
       if (ctrl.signal.aborted) return;
-      setLoaded({ key, result });
+      setLoaded({ key, result, older: all?.kind === "ok" && all.entries.length > 0 });
       if (result.kind === "ok" && result.entries.length > 0) setFiltered(board);
     });
     return () => ctrl.abort();
@@ -72,6 +86,7 @@ export function Board({
   }, [key]);
 
   const result = loaded?.key === key ? loaded.result : null;
+  const older = loaded?.key === key && loaded.older;
   const hasRows = result?.kind === "ok" && result.entries.length > 0;
   const showChips = hasRows || coach !== "all" || filtered === board;
 
@@ -93,16 +108,18 @@ export function Board({
           ? n === 1
             ? "1 entry."
             : `${n} entries.`
-          : coach === "all"
-            ? "No entries yet."
-            : FILTER_EMPTY[coach],
+          : coach !== "all"
+            ? FILTER_EMPTY[coach]
+            : older
+              ? NO_ENGINE_RUNS
+              : "No entries yet.",
       );
     }
     if (focusAttempt.current === attempt) {
       focusAttempt.current = null;
       focusTarget.current?.focus({ preventScroll: true });
     }
-  }, [result, attempt, coach]);
+  }, [result, attempt, coach, older]);
 
   const chips = showChips ? (
     <div
@@ -186,6 +203,33 @@ export function Board({
         <p ref={target} className={s.filterEmpty} data-testid="coach-filter-empty" tabIndex={-1}>
           {FILTER_EMPTY[coach]}
         </p>
+      </>
+    );
+  }
+
+  if (result.entries.length === 0 && older) {
+    return (
+      <>
+        {engineToggle}
+        <StatusNote className={s.empty} title={NO_ENGINE_RUNS} data-testid="board-empty-engine">
+          <span>Runs from older engines are on the All engines board.</span>
+          <span className={s.emptyActions}>
+            <button
+              ref={target}
+              type="button"
+              className="btn btn--primary"
+              onClick={() => {
+                focusAttempt.current = attempt;
+                onEngineChange("all");
+              }}
+            >
+              Show all engines
+            </button>
+            <Link href="/" className="btn">
+              Play a run
+            </Link>
+          </span>
+        </StatusNote>
       </>
     );
   }

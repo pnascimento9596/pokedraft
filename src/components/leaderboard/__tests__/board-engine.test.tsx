@@ -182,7 +182,7 @@ describe("All engines toggle and engine labels (catches older-engine runs shown 
     expect(screen.queryByTestId("board-empty")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Show all engines" }));
     expect((await screen.findAllByTestId("board-row")).map((r) => r.textContent)).toEqual([
-      expect.stringContaining("Lance"),
+      "1LanceEngine v3Classic, Squad First, All regionsSquad preview unavailable.W-D-L5-0-1Team Score500Challenge this SeedExhibition vs this squad",
     ]);
     expect(screen.getByRole("button", { name: "All engines" }).getAttribute("aria-pressed")).toBe(
       "true",

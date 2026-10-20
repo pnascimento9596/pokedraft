@@ -239,9 +239,10 @@
 }
 
 @media (max-width: 719.98px) {
+  /* 12 px sides, as the sheet's prompts: 12 px of headroom at 320 px. */
   .touchline[data-sheet] {
     gap: 8px;
-    padding: 8px 10px 10px;
+    padding: 8px 12px 10px;
     border: 0;
     border-radius: 0;
     background: transparent;

@@ -163,7 +163,10 @@ test("an empty current-engine board with older runs says why and switches to All
     console.log(`${width}px empty engine board right edge ${edge.right}, scroll ${edge.scroll}`);
     expect(edge.scroll).toBeLessThanOrEqual(width);
     expect(edge.right).toBeLessThanOrEqual(width === 308 ? 308 : width - 12);
-    if (width !== 308) await page.screenshot({ path: `${PROOF}/empty-engine-board-${width}.png` });
+    if (width !== 308) {
+      await empty.scrollIntoViewIfNeeded();
+      await page.screenshot({ path: `${PROOF}/empty-engine-board-${width}.png` });
+    }
   }
   await setWidth(page, 390, 844);
   await page.getByRole("button", { name: "Show all engines" }).click();
