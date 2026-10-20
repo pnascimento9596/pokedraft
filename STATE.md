@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Freeze engine 6
+
+Branch `chore/freeze-engine-6` off `origin/main` at `969ca1c` (the 6a1 squash). Wave 6 row 6b0 (Red). Engine 6 is frozen into `src/engine/versions/v6/` as a dormant retained bundle: nothing imports it until the engine 7 flip (6b9). No live engine file, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`.
+
+- Nothing changes for a player. Engine 6 stays live and every run, link and board row replays exactly as before.
+- When engine 7 goes live, every engine 6 link can replay through this exact copy of the engine.
+- One `GOLDEN_CUP8_V6` literal now exists, in `src/engine/versions/__tests__/fixtures.ts`, next to the new `GOLDEN_KANTO151_V6`. The leaderboard fixtures re-export it and `check-retained-replays.mts` imports it.
+
+Parity guard: RED commit `35bf588` (1 of 1 file failed to load on the missing `../v6` import, 0 tests ran), GREEN `ae838a2`. The v6 block replays both goldens through the bundle to the live engine's `2b26ee82...` and `eb366464...` and pins the bundle digest `b0b922bc1eef6e7ec4af9bf64e4af10206e894fdfc5d5f317eaf75b85d604397`. `check-bundle-provenance.sh v6 969ca1c` exited 0 (34 files, only `@/` import lines differ), and a re-freeze from a `git archive` of `969ca1c` was `diff -r` identical.
+
+Gates at `e54e63c`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 2,030 passed in 231 files. `pnpm vitest run src/engine`: 286 passed in 24 files.
+- `check-retained-replays.mts`: 10 golden replays passed, live v6 replay `2b26ee82...`. `measure-retained-json.mjs`: 4 payloads, 2,891,853 bytes.
+- `retained-engine-bundle:v6` appears in 0 files under `.next/static` and 0 under `.next/server` (the v5 marker, as a control, in 4 server files).
+- NOT RUN: review and hosted CI, Playwright (no UI changed), the calibration probes (engine output cannot move), the phone check and screen reader pass.
+
+Decision log: `docs/decisions/freeze-engine-6.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## matchStory core
 
 Branch `feat/match-story` off `origin/main` at `9e4802b`. Wave 6 row 6a1 (Red). Engine change with no output change: engine 6 stays live and every run, token and board row replays exactly as before. Nothing under `src/scouting`, `scripts/data` or `src/data` changed, and `goldens.test.ts` is byte-identical.
