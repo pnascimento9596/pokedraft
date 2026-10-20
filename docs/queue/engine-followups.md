@@ -24,3 +24,9 @@ Logged by dispatch 3 (UI). The engine and scouting were frozen in that lane, so 
 | 3 | Done: sudden death runs to 200 pairs, then a seeded coin from the match stream decides (`decider: "coin"`). Old engine-1 and engine-2 decrees still read as decrees |
 | 4 | Open |
 | 5 | Three of five addressed with calibration-sized samples: the quarter-final cliff (max ladder step 280 to 125), Golden Boot to non-attackers (scorer and assist weight by slot role; attackers score 71.5% of user goals in 4-3-3, was 51.0%), and Player of the Tournament (a typed contribution score with its breakdown shown). Keeper fit versus quality and `weakest` by quality stay open in the engine. Dispatch 7 PR 7A changed the display only: the cards now show each player's quality for the role (0 to 100, labelled "vs other" plus the role, the quantity `weakest` ranks by) with the raw fit inside Scouting notes, so the three Weak spot tags sit on the three lowest numbers shown (ties follow the engine's order). The ranking rule and the coefficients are unchanged and were not re-judged |
+
+## Status after Wave 6 row 6-0
+
+| # | Status |
+|---|---|
+| 5 | Closed. Keeper fit versus quality and `weakest` ranked by quality are won't fix. Changing either moves every Team Score, and the "All engines" board compares Team Scores across engines; the 0 to 1000 scale is the one number friends quote. Dispatch 7 already made the display honest (each card shows the quality `weakest` ranks by) |

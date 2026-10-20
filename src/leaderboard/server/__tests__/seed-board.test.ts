@@ -138,7 +138,8 @@ describe("all-time engine filter (catches an engine 3 run ranked against engine 
     );
     const body = (await res.json()) as { entry: BoardEntry };
     const listed = (await board("mode=cup8&scope=all")).body.entries;
-    // Misty's scripted run replays to 6-0-1, behind Lance's engine 3 8-0-0 and ahead of Ash.
+    // Lance's engine 3 run is not on the default board, so the reply ranks Misty first among the
+    // current-engine runs, and the board lists her above Ash.
     expect([res.status, body.entry.rank, ranked(listed)]).toEqual([
       201,
       1,

@@ -466,3 +466,7 @@ removed the same day at the owner's request (#130).
 - The WAF rate-limit rule on `/card` and `/r/*/opengraph-image`, applied by the agent after the
   `/card` canonical query (owner item 3).
 - No scheduled health or uptime monitoring: removed at the owner's request (#130).
+- The CI hygiene item (brief section 3, Wave 7) drops Dependabot. Dependabot runs on a schedule,
+  and the owner wants no scheduled jobs on GitHub or locally (2026-10-20). The rest of the item
+  stays: `format:check`, `timeout-minutes: 30`, SHA-pinned actions, Node matching production and
+  the `postgres:16` migrate job, all on PRs and pushes only. Recorded by Wave 6 row 6-0.
