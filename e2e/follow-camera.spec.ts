@@ -1,8 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { LIVE_GOLDEN_CUP8 } from "./pins";
 
-// Group match 1 of the golden cup8 run under engine 6, watched live at 1x.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// Group match 1 of the golden cup8 run under the live prefix, watched live at 1x.
+const LIVE = LIVE_GOLDEN_CUP8;
 const SHOT = "docs/reports/follow-camera";
 
 test.use({ hasTouch: true, isMobile: true });

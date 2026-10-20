@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import sharp from "sharp";
 import { draftSixteen, emptySeedBoard } from "./helpers";
+import { ENGINE_VERSION } from "./pins";
 
 // Dispatch 7 theme 7E. Text needs 4.5:1 and UI boundaries, state rings and focus rings need 3:1
 // (WCAG 1.4.3 and 1.4.11), in both themes. axe scores flat text; it cannot score text on the
@@ -25,7 +26,7 @@ const ENTRY = {
   losses: 0,
   createdAt: "2026-10-09T12:00:00.000Z",
   coached: false,
-  engineVersion: "pokedraft-engine-6",
+  engineVersion: ENGINE_VERSION,
   seed: "e2e-seed",
   formation: "4-3-3",
 };

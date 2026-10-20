@@ -1,9 +1,9 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { SHOOTOUT } from "./pins";
 
-// Builder seed "shootout-1" (4-3-3, the engine-v4 fixture squad) under engine 6: the final goes to
-// a 12-kick shootout, u+ o- u+ o+ u+ o+ u- o+ u+ o+ then sudden death u- o+.
-const TOKEN =
-  "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwic2hvb3RvdXQtMSIsW1sibCIsOSwiczAiXSxbImwiLDU5LCJzMSJdLFsibCIsMTQ5LCJzMiJdLFsibCIsMTMwLCJzMyJdLFsibCIsMywiczQiXSxbImwiLDgwLCJzNSJdLFsibCIsNiwiczYiXSxbImwiLDU1LCJzNyJdLFsibCIsMjYsInM4Il0sWyJsIiw4NSwiczkiXSxbImwiLDEzNSwiczEwIl0sWyJsIiwyNSwiYjAiXSxbImwiLDk0LCJiMSJdLFsibCIsNjUsImIyIl0sWyJsIiw2OCwiYjMiXSxbImwiLDE0MywiYjQiXV1d";
+// A Builder run whose shootout opens with a user goal and an opponent miss and reaches sudden
+// death (e2e/pins.ts searches the engine-v4 fixture squad on seeds "shootout-<n>").
+const TOKEN = SHOOTOUT.token;
 const SHOT = "docs/reports/shootout-suspense";
 const KICK_MS = 1_200;
 
@@ -13,7 +13,7 @@ async function toShootout(page: Page): Promise<Locator> {
   await page.clock.install({ time: new Date("2026-10-18T12:00:00Z") });
   await page.goto(`/r/${TOKEN}`);
   await expect(page.getByTestId("results-record")).toBeVisible();
-  await page.getByTestId("match-F").getByTestId("watch-live").tap();
+  await page.getByTestId(`match-${SHOOTOUT.round}`).getByTestId("watch-live").tap();
   const replay = page.getByTestId("match-replay");
   await expect(replay.getByTestId("broadcast")).toBeVisible();
   await page.clock.pauseAt(new Date("2026-10-18T12:00:10Z"));

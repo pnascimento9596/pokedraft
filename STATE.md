@@ -3,6 +3,25 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Live-token pins
+
+Branch `test/live-token-pins` off `origin/main` at `eceb581`. Wave 6 row 6t (Green). Only e2e specs, the generated `e2e/pins.ts`, `scripts/e2e/render-pins.ts` and its test changed. No file under `src/` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #143 merge below.
+
+- Every e2e spec that built a live token from a v5 body, held a literal `pd6` token, or asserted an engine 6 outcome (round, minute, slot, species, score) reads it from `e2e/pins.ts`, which `pnpm e2e:pins` regenerates from the live engine. After an engine bump the specs replay the new engine, not a retained bundle.
+- Property pins (giant killer, champion, shootout, injury stop) search seed families for the first match and reproduce today's seeds; fixed-round pins throw in the generator when the event is gone.
+- Guard: `render-pins.test.ts` fails on the live token prefix, `pd${` or the live engine name in any e2e source outside `pins.ts`; `pnpm e2e:pins --check` fails on a stale `pins.ts`.
+
+RED commit: `37d9ee1` (`scripts/e2e`, 1 of 2 tests failed, 45 offender lines in 33 files). GREEN `9340dec`.
+
+Gates at `9340dec` (later commits add docs only):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. `check-retained-replays.mts`, `measure-retained-json.mjs`, all nine `check:*` scripts and `pnpm e2e:pins --check` exited 0. Prettier passed on 40 touched files.
+- Unit tests: 2,018 passed in 230 files.
+- Playwright (`CI=1`, headless, 4 workers), the full suite, all projects: before at `b3199e9` 1,081 passed, 67 skipped, 0 failed (18.4m); after at `9340dec` 1,081 passed, 67 skipped, 0 failed (18.7m). No retries in either run.
+- NOT RUN: review and hosted CI, the phone check.
+
+Decision log: `docs/decisions/live-token-pins.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Freeze engine 6
 
 Branch `chore/freeze-engine-6` off `origin/main` at `969ca1c` (the 6a1 squash). Wave 6 row 6b0 (Red). Engine 6 is frozen into `src/engine/versions/v6/` as a dormant retained bundle: nothing imports it until the engine 7 flip (6b9). No live engine file, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`.
@@ -22,6 +41,8 @@ Gates at `e54e63c`:
 - NOT RUN: review and hosted CI, Playwright (no UI changed), the calibration probes (engine output cannot move), the phone check and screen reader pass.
 
 Decision log: `docs/decisions/freeze-engine-6.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #144 (freeze engine 6, Red) merged as squash `8059458`, reviewed head `243963a`. GLM 5.3 Flash APPROVE in round 1 with canary `6b0-dcfa6180736f240403def6c19db393f8` echoed, and the independent executing Red reviewer (fresh pokedraft-mode subagent, Opus) returned PASS on the same head: lint, typecheck, build, both retained-bundle checks (10 golden replays, `totalCopies` 4) and all nine `check:*` scripts exited 0, 2,030 unit tests passed in 231 files, `pnpm vitest run src/engine` 286 passed in 24 files, `goldens.test.ts` byte-identical to `origin/main`, a re-freeze from `969ca1c` was `diff -r` identical to the committed bundle, `check-bundle-provenance.sh v6 969ca1c` exited 0, bundle digest `b0b922bc...`, and the `retained-engine-bundle:v6` marker appeared in no `.next/static` or `.next/server` file. Hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `8059458` with engine `pokedraft-engine-6` and `db.status` ok; live `health`, `old-links` and `share` 19/19 on chromium. Engine output unchanged; the v6 bundle is dormant.
 
 ## matchStory core
 

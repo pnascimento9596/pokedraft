@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { draftSixteen } from "./helpers";
-import { HEAD_TO_HEAD } from "./pins";
+import { HEAD_TO_HEAD, LIVE_PREFIX } from "./pins";
 
 const SHOT = "docs/reports/head-to-head";
 
@@ -100,7 +100,8 @@ test("Challenge a friend and Send it back share the same-seed link with the run,
   await page.getByRole("button", { name: "Challenge a friend" }).click();
   const origin = new URL(page.url()).origin;
   const dare = await clipboard(page);
-  expect(dare).toMatch(new RegExp(`^${origin}${url.replace(/\?/g, "\\?")}&vs=pd6\\.[\\w-]+$`));
+  const live = LIVE_PREFIX.replace(".", "\\.");
+  expect(dare).toMatch(new RegExp(`^${origin}${url.replace(/\?/g, "\\?")}&vs=${live}[\\w-]+$`));
 
   // This browser would reopen its own finished run on the same seed, so the friend starts clean.
   await page.evaluate(() => {

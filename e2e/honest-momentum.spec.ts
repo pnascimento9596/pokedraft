@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { GOLDEN_CUP8_V5 } from "../src/engine/versions/__tests__/fixtures";
+import { HONEST_MOMENTUM as PIN, LIVE_GOLDEN_CUP8 } from "./pins";
 
-// Group match 1 of the golden cup8 run under the live engine-6 prefix. The user's keeper saves at
-// 3', so the opening window leans to the opponent once it has been played.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+// A group match of the golden cup8 run under the live prefix whose opening window has a goal or a
+// save, so the bar leans once that window has been played.
+const LIVE = LIVE_GOLDEN_CUP8;
 const SHOT = "docs/reports/honest-momentum";
 
 test("the momentum bar reads 50/50 until the first window is played, at 390px", async ({
@@ -28,7 +28,7 @@ test("the momentum bar reads 50/50 until the first window is played, at 390px", 
 
   await page.goto(`/r/${LIVE}`);
   await expect(page.getByTestId("results-record")).toBeVisible();
-  await page.getByTestId("match-G1").getByTestId("watch-live").click();
+  await page.getByTestId(`match-${PIN.round}`).getByTestId("watch-live").click();
   const replay = page.getByTestId("match-replay");
   await expect(replay.getByTestId("broadcast")).toBeVisible();
   await page.screenshot({ path: `${SHOT}/390-kickoff.png` });
@@ -47,17 +47,17 @@ test("the momentum bar reads 50/50 until the first window is played, at 390px", 
   );
   console.log(`momentum by minute: ${JSON.stringify(leans)}`);
   expect([0, 1, 2, 3, 4].map((m) => leans[m])).toEqual([
-    ["50%50%"],
-    ["50%50%"],
-    ["50%50%"],
-    ["50%50%"],
-    ["50%50%"],
+    [PIN.kickoff],
+    [PIN.kickoff],
+    [PIN.kickoff],
+    [PIN.kickoff],
+    [PIN.kickoff],
   ]);
   expect([6, 7, 8, 9].map((m) => leans[m])).toEqual([
-    ["36%64%"],
-    ["36%64%"],
-    ["36%64%"],
-    ["36%64%"],
+    [PIN.second],
+    [PIN.second],
+    [PIN.second],
+    [PIN.second],
   ]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

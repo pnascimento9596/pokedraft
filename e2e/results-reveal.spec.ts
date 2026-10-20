@@ -1,13 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
-import { DEEP_LINK } from "./pins";
+import { CHAMPION, DEEP_LINK } from "./pins";
 
-// A bot-drafted cup8 run on the live engine (scripts/audit/tokens.mts botCup8Token("e2e-reveal-59")):
-// 8-0-0, Champions, Team Score 868, player of the tournament Dragapult.
-const CHAMPION = {
-  url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-reveal-59",
-  token:
-    "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiZTJlLXJldmVhbC01OSIsW1sicCIsMjU3LCJzOCJdLFsicCIsMjMyLCJzMSJdLFsicCIsOTQzLCJzMiJdLFsicCIsMTAwNywiczMiXSxbInAiLDMzNCwiczQiXSxbInAiLDQ0NSwiczkiXSxbInAiLDg4NywiczEwIl0sWyJwIiwyMTQsInMwIl0sWyJwIiwxNTEsInM1Il0sWyJwIiw0OTEsInM2Il0sWyJwIiw4NzMsInM3Il0sWyJyIiwidCJdLFsicCIsNjUyLCJiMCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw4MjgsImIxIl0sWyJwIiwyNzcsImIyIl0sWyJwIiw2ODcsImIzIl0sWyJwIiw4NDEsImI0Il1dXQ",
-};
+// A bot-drafted cup8 champion on the live engine (e2e/pins.ts searches scripts/audit/tokens.mts
+// botCup8Token("e2e-reveal-<n>") for the first).
 
 // An engine-1 cup8 run (ResultsView.test.tsx FLAWLESS): 8-0-0, flawless, Team Score 845.
 const FLAWLESS =
@@ -42,7 +37,7 @@ async function openLiveResults(page: Page): Promise<void> {
     );
   }, CHAMPION.token);
   await page.goto(CHAMPION.url);
-  await expect(page.getByTestId("results-score")).toHaveText("868");
+  await expect(page.getByTestId("results-score")).toHaveText(CHAMPION.score);
 }
 
 const hero = (page: Page) => page.locator("section.module-card:has(> header h1)");
@@ -82,7 +77,7 @@ test.describe("staged reveal", () => {
     await openLiveResults(page);
     await expect(hero(page)).toHaveAttribute("data-reveal", "staged");
     await expect(hero(page).getByTestId("results-trophy")).toBeVisible();
-    await expect(hero(page).getByTestId("results-mvp")).toContainText("Dragapult");
+    await expect(hero(page).getByTestId("results-mvp")).toContainText(CHAMPION.mvp);
 
     await holdHeroAt(page, 0);
     expect(await overlay(page)).toEqual({
@@ -100,8 +95,8 @@ test.describe("staged reveal", () => {
     await page.screenshot({ path: `${PROOF}/reveal-2000ms-390.png` });
 
     await page.reload();
-    await expect(page.getByTestId("results-score")).toHaveText("868");
-    await expect(page.getByTestId("results-record")).toHaveText("8-0-0");
+    await expect(page.getByTestId("results-score")).toHaveText(CHAMPION.score);
+    await expect(page.getByTestId("results-record")).toHaveText(CHAMPION.record);
     await expect(hero(page)).not.toHaveAttribute("data-reveal", /.*/);
     expect((await overlay(page)).content).toBe("none");
     expect(errors).toEqual([]);
@@ -134,7 +129,7 @@ test.describe("staged reveal", () => {
 
   test("a shared run shows the final hero with no count-up", async ({ page }) => {
     await page.goto(`/r/${CHAMPION.token}`);
-    await expect(page.getByTestId("results-score")).toHaveText("868");
+    await expect(page.getByTestId("results-score")).toHaveText(CHAMPION.score);
     await expect(hero(page)).not.toHaveAttribute("data-reveal", /.*/);
     expect((await overlay(page)).content).toBe("none");
   });
@@ -227,7 +222,7 @@ for (const width of [390, 360, 320]) {
       await page.setViewportSize({ width, height: 844 });
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       await page.goto(`/r/${CHAMPION.token}`);
-      await expect(hero(page).getByTestId("results-mvp")).toContainText("Dragapult");
+      await expect(hero(page).getByTestId("results-mvp")).toContainText(CHAMPION.mvp);
       await expect(hero(page).getByTestId("results-flawless")).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
       await page.screenshot({ path: `${PROOF}/hero-${width}-${theme}.png` });

@@ -1,6 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { draftSixteen } from "./helpers";
-import { RUN_KEYBOARD } from "./pins";
+import { INJURY_STOP, RUN_KEYBOARD } from "./pins";
 
 test.use({ reducedMotion: "reduce" });
 
@@ -87,9 +87,8 @@ test("every tab stop on / shows a focus ring", async ({ page }) => {
   expect(missing).toEqual([]);
 });
 
-// Match 0 of this run stops for an injury at 16', then at half time (engine 6).
-const MANAGED =
-  "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-a11y-47";
+// Match 0 of this run stops for an injury, then at half time.
+const MANAGED = INJURY_STOP.url;
 const MATCHDAY_SHOT = "docs/reports/accessible-controls";
 
 test("a managed live match by keyboard: Space and 2 on the player, focus on each stop and back, and the skip warning, at 390px", async ({

@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { emptySeedBoard, openHomeSettings } from "../helpers";
-import { RUN_151, RUN_8_0 } from "../pins";
+import { ENGINE_VERSION, RUN_151, RUN_8_0 } from "../pins";
 import { settle, waitForHydration } from "./helpers";
 
 // ---------------------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ export function boardRow(rank: number): BoardRow {
     createdAt: "2026-10-09T12:00:00.000Z",
     // Every fourth row was coached from the touchline, so the chip shows in the phone scenes.
     coached: rank % 4 === 2,
-    engineVersion: "pokedraft-engine-6",
+    engineVersion: ENGINE_VERSION,
     seed: `e2e-row-${rank}`,
     formation: "4-3-3",
   };
