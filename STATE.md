@@ -3,6 +3,56 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine 7 opponent injuries and rotation incidents
+
+Branch `feat/engine7-opponent-injuries` off `origin/main` at `cee1ad1` (the 6b3 squash). Wave 6 row 6b4 (Red). Dormant: the live coefficients keep `opponent.injuries: false` and tokens stay pd6, so production engine output is exactly engine 6's. `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #150 merge.
+
+- Nothing changes for a player yet.
+- From the flip, a Boss Club player can be injured, with the same chance and the same draw as one of yours (0.296 per match on the kinds probe). A reserve from the club's own themed pool comes on, about as strong as its starting eleven. When it has no reserve or no sub left, it plays a player short.
+- From the flip, the ticker reads "Tinkatink is injured. Tinkatuff comes on." and "Hau'oli City rotate: Magnemite rested." at the 60' and 75' rotations. Both lines get a border in the opponent's colour. The injured opponent lies down on the pitch, as your players already do. The results list shows the same lines. An opponent's injury never stops a managed match, and it never counts against your match star.
+- Each window records the Boss Club's rounded outfield energy (`oppEnergy`) under engine 7.
+- The e2e engine 7 switch now also matches Vercel's `/_next/static/immutable/chunks/` path (6b3 live-check carryover). A guard keeps live `takers.freeKickWeight` at 1 while tokens are pd6 (6b3 review carryover).
+
+RED commits:
+
+- `b42ab5a7`: 5 of 9 failed.
+- `5fbcff44`: 7 of 7 failed.
+- `cb7382cf`: 1 of 1 failed (the route saw only `/_next/static/chunks/`).
+
+GREEN commits are `91e1a27d`, `508e65e4` and `df0e1e53`.
+
+Regression guards with no RED, because the behaviour was already correct:
+
+- Engine 6 output carries none of the new output: 241 matches over panel runs 0 to 49.
+- The rung scopes of `opponent_roster` draw what they drew, and `buildLadder` under V7 equals live.
+- Two pd6 coefficient guards, each checked by mutation.
+- A rate parity self-test: `opponent.injuries` gives 11 user-side and 23 opponent-side divergences.
+
+Gates at `dceeb6ef` (code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` (fresh `.next`) exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files. `pnpm e2e:pins --check` reported the pins current.
+- Unit tests: 2,176 passed in 249 files. `pnpm vitest run src/engine`: 358 passed in 32 files.
+- Parity: the 50-run test and the 200-run slow test are byte-identical. Rate parity passed 5 of 5: 123 matches and 12,946 trials at the live coefficients, plus four mutation self-tests. `goldens.test.ts` is byte-identical to `origin/main`.
+- `check-retained-replays.mts`: 10 golden replays passed, live v6 replay `2b26ee82...`. `measure-retained-json.mjs`: 4 copies, 2,891,853 bytes.
+- Kinds probe (n 2000, good, 4-3-3):
+  - Live reproduces the 6p baseline: 13,914 matches, 42,344 user goals and 5,466 opponent goals.
+  - V7 has 4,129 opponent injuries in 13,949 matches, 0.296 per match, each one replaced.
+  - Matches with an opponent injury: 0.2551 [0.2479, 0.2624].
+  - User injuries: 0.2182 per match (live 0.2186).
+  - Rotation incidents: 1.53 per match.
+  - Penalty goals: 0.2037 per match.
+- Playwright (Chromium, headless, `CI=1`):
+  - `e2e/opponent-injuries.spec.ts` 5 passed. At engine 6 there is no injury or rotation line. With `opponent.injuries` rewritten in the downloaded chunks (test only), seed `e2e-opp-11` shows Tinkatink down in the opponent's slot 4 at 25', and the injury line and both rotation lines show with a 3 px border in the opponent's colour. Each line stays inside the viewport with no side scroll at 390x844, 360 and 320; 308 is measured only.
+  - The related specs on the same build passed 44: opponent-injuries, v7-switch, penalty-takers, injury-staging, fatigue, watch-live, results-reveal, results-interactions, touchline-intel and your-calls. Screenshot churn in other reports was reverted.
+- NOT RUN:
+  - Review and hosted CI.
+  - The production run of `penalty-takers` with the widened glob (the coordinator's live check).
+  - The full Playwright suite, and WebKit and phone projects for the new spec.
+  - A probe with only this row's flag flipped.
+  - The phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine7-opponent-injuries.md`. Browser proof: `docs/reports/engine7-opponent-injuries/`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Engine 7 missable penalties and nominated takers
 
 Branch `feat/engine7-penalties` off `origin/main` at `6b7d40a` (the 6b2 squash). Wave 6 row 6b3 (Red). Dormant: the live coefficients keep `penalty.missable: false`, `penalty.awardShare: 0` and `takers.freeKickWeight: 1`, and tokens stay pd6, so production engine output is exactly engine 6's and the new control is hidden. `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #149 merge.
