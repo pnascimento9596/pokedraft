@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine grace window and version plumbing
+
+Branch `feat/engine-grace` off `origin/main` at `8059458` (the 6b0 squash). Wave 6 row 6g (Red). Dormant: `GRACE` is `null`, so production behaviour is exactly today's. No file under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`. The first commit records the PR #144 merge below.
+
+- Nothing changes for a player yet.
+- When engine 7 goes live and 6b9 sets `GRACE`, an engine 6 run finished just before the flip can still be submitted for about a day, whether the page says engine 6 or engine 7. It replays on the frozen engine 6 bundle, is stored as an engine 6 row and is ranked among engine 6 rows. The submit result says "Ranked on the engine 6 board." and its board link opens All engines.
+- The flip day's Daily accepts only engine 7 runs, so one date never mixes engines. The day before stays open to engine 6 runs.
+- Coached engine 7 runs keep their Coached marker (`MANAGER_TOKEN_VERSIONS = [6, 7]`).
+- A new proxy guard checks a golden share link of every retained and live version plus engine 6. It passes today and goes RED at the flip until pd6 links get their own codec branch.
+
+RED commit `82e5bcd` (9 of 19 failed), GREEN `c93e5ea`. Regression guards with no RED, behaviour already correct: the proxy guard `cd524a2` and the canonical-form guard (a stored engine 6 token, plain and coached, re-encodes to the exact stored string). Build fix `34069ba`: a static import of the retained dispatcher emitted a second live scouting payload (`measure-retained-json.mjs`: `5 !== 4`); it is now loaded only for a grace run.
+
+Gates at `34069ba`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files.
+- Unit tests: 2,045 passed in 233 files. `pnpm vitest run src/engine`: 286 passed in 24 files.
+- `check-retained-replays.mts`: 10 golden replays passed. `measure-retained-json.mjs`: 4 payloads, 2,891,853 bytes.
+- Playwright on chromium against a fresh build: `grace-submit`, `leaderboard`, `seed-board`, `board-ux`, `old-links`, `share` and `health`, 43 passed. The grace line has 37 px of headroom at 320 and 25 px at 308. Browser proof: `docs/reports/engine-grace/`.
+- NOT RUN: review and hosted CI, the preview-branch API proof (the coordinator runs it with the Red reviewer), the full Playwright suite, the calibration probes (engine output cannot move), the phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine-grace.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Freeze engine 6
 
 Branch `chore/freeze-engine-6` off `origin/main` at `969ca1c` (the 6a1 squash). Wave 6 row 6b0 (Red). Engine 6 is frozen into `src/engine/versions/v6/` as a dormant retained bundle: nothing imports it until the engine 7 flip (6b9). No live engine file, `src/scouting`, `scripts/data` or `src/data` changed; `goldens.test.ts` is byte-identical to `origin/main`.
