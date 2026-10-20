@@ -168,13 +168,13 @@
   min-height: 44px;
 }
 .coachFilter .chipAll {
-  width: 4.5rem;
+  width: 4rem;
 }
 .coachFilter .chipUncoached {
-  width: 8.75rem;
+  width: 8.5rem;
 }
 .coachFilter .chipCoached {
-  width: 7.5rem;
+  width: 7rem;
 }
 .filterEmpty {
   margin: 0 0 8px;

@@ -59,7 +59,12 @@ async function chipGaps(page: Page) {
         text.top - box.top - parseFloat(css.borderTopWidth),
         box.bottom - parseFloat(css.borderBottomWidth) - text.bottom,
       ];
-      return { label: chip.textContent, min: Math.round(Math.min(...gaps) * 10) / 10 };
+      const round = (n: number) => Math.round(n * 10) / 10;
+      return {
+        label: chip.textContent,
+        min: round(Math.min(...gaps)),
+        sides: round(Math.min(gaps[0]!, gaps[1]!)),
+      };
     }),
   );
 }
