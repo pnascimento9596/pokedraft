@@ -2,6 +2,8 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { ESLint } from "eslint";
 import { describe, expect, it } from "vitest";
+import { ENGINE_COEFFICIENTS } from "../coefficients";
+import { ENGINE_COEFFICIENTS_V7 } from "../coefficients-v7";
 
 const ROOT = path.resolve(import.meta.dirname, "../../..");
 const ENGINE = path.join(ROOT, "src/engine");
@@ -66,5 +68,28 @@ describe("engine 7 candidate import boundary (catches the candidate reaching cli
     "src/components/run/__tests__/x.test.tsx",
   ])("allows it in %s", { timeout: 60_000 }, async (file) => {
     expect(await restricted(IMPORT, file)).toEqual([]);
+  });
+});
+
+describe("engine 7 candidate (catches a V7 tweak leaking into the live engine 6 coefficients)", () => {
+  it("shares no nested object with ENGINE_COEFFICIENTS", () => {
+    const live = JSON.stringify(ENGINE_COEFFICIENTS);
+    const saved = ENGINE_COEFFICIENTS_V7.team.synergy.edgeCap;
+    try {
+      ENGINE_COEFFICIENTS_V7.team.synergy.edgeCap = 9;
+      ENGINE_COEFFICIENTS_V7.match.chances.regulation = 99;
+      ENGINE_COEFFICIENTS_V7.manager.tactics.attack = [9, 9];
+      expect(ENGINE_COEFFICIENTS.team.synergy.edgeCap).toBe(1);
+      expect(ENGINE_COEFFICIENTS.match.chances.regulation).toBe(50);
+      expect(ENGINE_COEFFICIENTS.manager.tactics.attack).toEqual([1.25, 1.3]);
+    } finally {
+      ENGINE_COEFFICIENTS_V7.team.synergy.edgeCap = saved;
+      ENGINE_COEFFICIENTS_V7.match.chances.regulation = 50;
+      ENGINE_COEFFICIENTS_V7.manager.tactics.attack = [1.25, 1.3];
+      ENGINE_COEFFICIENTS.team.synergy.edgeCap = 1;
+      ENGINE_COEFFICIENTS.match.chances.regulation = 50;
+      ENGINE_COEFFICIENTS.manager.tactics.attack = [1.25, 1.3];
+    }
+    expect(JSON.stringify(ENGINE_COEFFICIENTS)).toBe(live);
   });
 });
