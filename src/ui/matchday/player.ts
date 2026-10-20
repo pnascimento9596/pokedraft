@@ -26,10 +26,18 @@ export function beatKey(b: Beat): string {
       return `save:${b.minute}:${b.side}:${b.keeper.name}:${b.attacker.name}`;
     case "card":
       return `card:${b.minute}:${b.side}:${b.player.slot}:${b.color}`;
+    // The user's keys predate engine 7's opponent injuries and name the injury stops, so only the
+    // opponent's carry a side.
     case "injury":
-      return `injury:${b.minute}:${b.player.slot}`;
+      return b.player.side === "user"
+        ? `injury:${b.minute}:${b.player.slot}`
+        : `injury:${b.minute}:opp:${b.player.slot}`;
     case "sub":
-      return `sub:${b.minute}:${b.slot}:${b.in.name}`;
+      return b.in.side === "user"
+        ? `sub:${b.minute}:${b.slot}:${b.in.name}`
+        : `sub:${b.minute}:opp:${b.slot}:${b.in.name}`;
+    case "rotate":
+      return `rotate:${b.minute}:${b.player.slot}`;
     case "tactic":
       return `tactic:${b.minute}:${b.side}:${b.tactic}`;
   }
@@ -79,6 +87,7 @@ function replacementFor(timeline: Timeline, injury: InjuryBeat): SubBeat | undef
     (b): b is SubBeat =>
       b.kind === "sub" &&
       b.reason === "injury" &&
+      b.in.side === injury.player.side &&
       b.minute === injury.minute &&
       b.slot === injury.player.slot,
   );
@@ -87,7 +96,10 @@ function replacementFor(timeline: Timeline, injury: InjuryBeat): SubBeat | undef
 function injuryFor(timeline: Timeline, sub: SubBeat): InjuryBeat | undefined {
   return timeline.beats.find(
     (b): b is InjuryBeat =>
-      b.kind === "injury" && b.minute === sub.minute && b.player.slot === sub.slot,
+      b.kind === "injury" &&
+      b.player.side === sub.in.side &&
+      b.minute === sub.minute &&
+      b.player.slot === sub.slot,
   );
 }
 
@@ -436,7 +448,7 @@ export function awaitingAnswer(
   answered: readonly string[],
   stops: readonly Stop[],
 ): boolean {
-  if (b.kind !== "sub" || b.reason !== "injury") return false;
+  if (b.kind !== "sub" || b.reason !== "injury" || b.in.side !== "user") return false;
   const key = `injury:${b.minute}:${b.slot}`;
   return stops.some((s) => s.key === key) && !answered.includes(key);
 }

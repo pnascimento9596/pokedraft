@@ -11,6 +11,7 @@ import {
   type OpponentPlayerRef,
   type Score,
   type SaveEvent,
+  type SpeciesId,
   type Tactic,
 } from "@/engine";
 import { incidentText, type IncidentCopy } from "@/ui/matchday/copy";
@@ -144,11 +145,39 @@ export const TACTIC_HINT: Readonly<Record<Tactic, string>> = {
   counter: "Sit and spring. Fewer chances, harder to break down.",
 };
 
-function incidentCopy(i: Incident): IncidentCopy {
+/** An opponent's injury and the reserve who replaced it in the same slot, if one came on. */
+function reserveFor(i: Incident, all: readonly Incident[]): SpeciesId | null {
+  if (i.kind !== "injury" || i.side !== "opp") return null;
+  const sub = all.find(
+    (x) =>
+      x.kind === "sub" &&
+      x.side === "opp" &&
+      x.reason === "injury" &&
+      x.minute === i.minute &&
+      x.slot === i.slot,
+  );
+  return sub?.kind === "sub" ? sub.in : null;
+}
+
+/** The incidents the results list shows: an opponent's reserve is named in its injury's line. */
+export function listedIncidents(all: readonly Incident[]): readonly Incident[] {
+  return all.filter((i) => !(i.kind === "sub" && i.side === "opp"));
+}
+
+function incidentCopy(i: Incident, all: readonly Incident[]): IncidentCopy {
   const named = (id: Parameters<typeof speciesById>[0]) => ({ name: speciesById(id).name });
   switch (i.kind) {
-    case "injury":
-      return { kind: "injury", minute: i.minute, player: named(i.player) };
+    case "injury": {
+      const reserve = reserveFor(i, all);
+      return reserve === null
+        ? { kind: "injury", minute: i.minute, player: named(i.player) }
+        : {
+            kind: "injury",
+            minute: i.minute,
+            player: named(i.player),
+            replacement: named(reserve),
+          };
+    }
     case "rotate":
       return { kind: "rotate", minute: i.minute, player: named(i.player) };
     case "sub":
@@ -174,6 +203,11 @@ function incidentCopy(i: Incident): IncidentCopy {
  * One line for an injury, substitution, card or tactic change. `team` names the opponent; the
  * user's own cards go unnamed in the results.
  */
-export function incidentLine(i: Incident, team: string, variant: ResultsVariant = "live"): string {
-  return incidentText(incidentCopy(i), { user: null, opp: team }, variant === "shared");
+export function incidentLine(
+  i: Incident,
+  team: string,
+  variant: ResultsVariant = "live",
+  all: readonly Incident[] = [],
+): string {
+  return incidentText(incidentCopy(i, all), { user: null, opp: team }, variant === "shared");
 }

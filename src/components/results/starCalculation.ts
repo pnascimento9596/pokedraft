@@ -69,7 +69,7 @@ function pickSignatureMove(
 function leftEarly(match: PlayedMatch, id: SpeciesId): boolean {
   return (match.incidents ?? []).some(
     (i) =>
-      (i.kind === "sub" && i.out === id) ||
+      (i.kind === "sub" && i.side === "user" && i.out === id) ||
       ((i.kind === "injury" || i.kind === "red") && i.side === "user" && i.player === id),
   );
 }
