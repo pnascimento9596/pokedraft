@@ -17,7 +17,7 @@ import {
   type StarterIndex,
 } from "../types";
 
-const CUP8: DraftSettings = {
+export const CUP8: DraftSettings = {
   mode: "cup8",
   formation: "4-2-3-1",
   gens: [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -33,7 +33,7 @@ function rolled(state: DraftState): number {
 }
 
 // The goldens' fixed draft scripts, so the panel's first 20 runs are goldens.test.ts's panel.
-function draftLineup(settings: DraftSettings, seed: Seed): FullLineup {
+export function draftLineup(settings: DraftSettings, seed: Seed): FullLineup {
   let state = createDraft(settings, seed);
   const push = (a: Parameters<typeof applyAction>[1]): void => {
     state = applyAction(state, a);

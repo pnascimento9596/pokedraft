@@ -2,8 +2,9 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { chanceZone, matchStory } from "../story";
-import type { Seed } from "../types";
-import { checkRun, panel, type PanelTally } from "./story-panel";
+import { runCup } from "../cup";
+import { RunTokenError, type ManagerAction, type Seed } from "../types";
+import { checkRun, CUP8, draftLineup, panel, type PanelTally } from "./story-panel";
 
 describe("matchStory parity (a story that drifts from simulateMatch would show a match that never happened)", () => {
   it("replays every played match of the 20-run golden panel and 30 more seeds byte for byte", () => {
@@ -43,6 +44,41 @@ describe("matchStory parity (a story that drifts from simulateMatch would show a
       expect(w.territory).toBeGreaterThan(0);
       expect(w.territory).toBeLessThan(1);
     }
+  });
+});
+
+describe("matchStory run checks (a story of a match runCup never plays would show a result that never happened)", () => {
+  // goldens.test.ts pins this run at 5-0-1, out in the QF: matches 0 to 5 played, 6 and 7 not.
+  const seed = "golden-cup8" as Seed;
+  const lineup = draftLineup(CUP8, seed);
+
+  it("refuses a knockout the run never reached", () => {
+    expect(runCup(lineup, seed, "cup8").matches.map((m) => m.status)).toEqual([
+      "played",
+      "played",
+      "played",
+      "played",
+      "played",
+      "played",
+      "notPlayed",
+      "notPlayed",
+    ]);
+    expect(() => matchStory(seed, 6, { lineup, mode: "cup8" })).toThrow(RangeError);
+    expect(() => matchStory(seed, 7, { lineup, mode: "cup8" })).toThrow(RangeError);
+  });
+
+  it("rejects a token runCup rejects: a decision for a match the run never played", () => {
+    const manager: ManagerAction[] = [{ type: "tactic", match: 7, minute: 10, tactic: "attack" }];
+    expect(() => matchStory(seed, 0, { lineup, mode: "cup8", manager })).toThrow(
+      new RunTokenError("invalidAction", "a coach decision names a match the run never played"),
+    );
+  });
+
+  it("rejects a token runCup rejects: a decision after the final whistle of another match", () => {
+    const manager: ManagerAction[] = [{ type: "tactic", match: 0, minute: 100, tactic: "attack" }];
+    expect(() => matchStory(seed, 1, { lineup, mode: "cup8", manager })).toThrow(
+      new RunTokenError("invalidAction", "a coach decision falls after the final whistle"),
+    );
   });
 });
 
