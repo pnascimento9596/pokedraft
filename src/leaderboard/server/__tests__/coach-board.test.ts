@@ -106,7 +106,9 @@ describe("coach filter is its own ranked top 50 (catches an Uncoached view cut s
       .select()
       .from(leaderboardEntries)
       .where(sql`${leaderboardEntries.nickname} = 'Coach 50'`);
-    expect(await store.rankOf(last!, { mode: "cup8", dailyDate: null, engine: "current" }, "coached")).toBe(51);
+    expect(
+      await store.rankOf(last!, { mode: "cup8", dailyDate: null, engine: "current" }, "coached"),
+    ).toBe(51);
   });
 
   it("coach=uncoached returns the one uncoached run at rank 1", async () => {
