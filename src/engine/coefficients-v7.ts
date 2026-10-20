@@ -20,6 +20,8 @@ export const ENGINE_COEFFICIENTS_V7: EngineCoefficients = {
     counterLead: 1.1,
     pressFade: { below: 70, perPoint: 0.004 },
   },
+  // Starting value (6b6); 6b8 tunes it between 0.15 and 0.25. A +100 edge converts at 0.93.
+  shootout: { ...base.shootout, band: 0.18 },
   penalty: { missable: true, awardShare: 0.077 },
   takers: { freeKickWeight: 1.5 },
   opponent: { injuries: true },

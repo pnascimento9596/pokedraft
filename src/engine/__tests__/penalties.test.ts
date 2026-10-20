@@ -37,7 +37,7 @@ const taker = (match: number, set: "penalty" | "freeKick", slot: number | null):
 
 describe("engine 7 missable penalties (catches every awarded penalty going in)", () => {
   // panel-7 match 1: the set_pieces award draw gives the user a penalty at 9'. 802 takes it at
-  // 0.80725 to score and puts it wide; a second award at 11' goes in.
+  // 0.85305 to score and puts it wide; a second award at 11' goes in.
   const v7 = play("panel-7", 1);
 
   it("panel-7 match 1: 802 misses a penalty at 9', the keeper is 88", () => {
@@ -54,13 +54,13 @@ describe("engine 7 missable penalties (catches every awarded penalty going in)",
     ]);
   });
 
-  it("the 9' kick is observed as a missed penalty chance at 0.80725, then 11' scores", () => {
+  it("the 9' kick is observed as a missed penalty chance at 0.85305, then 11' scores", () => {
     expect(v7.penaltyChances).toEqual([
       {
         window: 1,
         minute: 9,
         side: "user",
-        p: 0.80725,
+        p: 0.85305,
         outcome: "missed",
         kind: "penalty",
         shooter: 802,
@@ -70,7 +70,7 @@ describe("engine 7 missable penalties (catches every awarded penalty going in)",
         window: 2,
         minute: 11,
         side: "user",
-        p: 0.80725,
+        p: 0.85305,
         outcome: "goal",
         kind: "penalty",
         shooter: 802,
@@ -96,7 +96,7 @@ describe("engine 7 missable penalties (catches every awarded penalty going in)",
       },
     ]);
     expect(run.penaltyChances.map((ch) => [ch.minute, ch.p, ch.outcome])).toEqual([
-      [71, 0.7695, "saved"],
+      [71, 0.7851, "saved"],
     ]);
     expect(run.result.regulation).toEqual({ user: 2, opp: 2 });
   });

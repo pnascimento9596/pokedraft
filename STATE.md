@@ -3,6 +3,43 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine 7 shootout band
+
+Branch `feat/engine7-shootout-band` off `origin/main` at `5190287` (the 6b5 squash). Wave 6 row 6b6 (Red). Dormant: the live coefficients keep `shootout.band: 0.1` and tokens stay pd6, so production engine output is exactly engine 6's. `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green.
+
+- Nothing changes for a player yet.
+- From the flip, the better penalty taker wins more often. A kick converts at 0.75 plus 0.18 times the taker's edge over the keeper per 100 points, between 0.57 and 0.93 (engine 6 uses 0.1, so 0.65 to 0.85). This covers shootout kicks and engine 7's missable penalties in play. The nominated penalty taker still kicks first (6b3, already guarded).
+- On the shootouts probe the band alone widens the gap in shootout wins between the best and worst taker quartiles from 0.103 to 0.164. In-play penalty conversion under V7 rises from 0.779 to 0.806.
+- The shootouts probe runs under V7 again. It now follows a Boss Club reserve onto the pitch instead of throwing.
+
+RED commits:
+
+- `d5f8876b`: 5 of 11 failed (V7 conversion at +100, -100, +50 and past the clamp, and the rate comparison blind to kicks).
+- `16c0473a`: 1 of 16 failed (the V7 shootouts probe threw at `probe-4-3-3-good-28` match 4).
+
+GREEN commits are `ede2373d`, `acadcb7a` and `2215ce01`. `77eaf566` exports `convertProb` with no behaviour change.
+
+Regression guard with no RED, because the behaviour was already correct: at the live coefficients +100 converts at 0.85, -100 at 0.65 and an even kick at 0.75.
+
+Gates at `2215ce01` (code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` (fresh `.next`) exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files. `pnpm e2e:pins --check` reported the pins current.
+- Unit tests: 2,188 passed in 251 files. `pnpm vitest run src/engine`: 369 passed in 34 files.
+- Parity: the 50-run test and the 200-run slow test are byte-identical. Rate parity passed 7 of 7: 123 matches with 12,946 chances and 110 shootout kicks at the live coefficients, plus six mutation self-tests. The new one sets `shootout.band` to 0.18 and sees 2 user-side divergences, each at a shootout kick. It sees kick outcomes only, so it is thin (the decision log measures how thin). `goldens.test.ts` is byte-identical to `origin/main`.
+- `check-retained-replays.mts`: 10 golden replays passed, live v6 replay `2b26ee82...`. `measure-retained-json.mjs`: 4 copies, 2,891,853 bytes.
+- Shootouts probe (n 15000, good, 4-3-3):
+  - Live is byte-identical to the 6p baseline (`10db0f0f...`): 5,245 shootouts in 59,226 knockout matches.
+  - Top minus bottom edge quartile: live 0.1029 [0.0647, 0.1407], band only 0.1641 [0.1261, 0.2014], V7 0.1930 [0.1534, 0.2318].
+  - Shootout rate: live 0.0886 [0.0863, 0.0909], band only 0.0885 [0.0862, 0.0908], V7 0.0806 [0.0784, 0.0828]. The band does not change how often a shootout happens.
+- Kinds probe (n 2000, good, 4-3-3): V7 in-play penalty conversion 0.8062 [0.7931, 0.8187], against 0.7789 [0.7652, 0.7921] for V7 without the band.
+- Playwright (Chromium, headless, `CI=1`): 34 passed over `penalty-takers` 6, `v7-switch` 1, `opponent-injuries` 5, `shootout-suspense` 1, `results-reveal` 14, `watch-live` 3 and `set-pieces` 4. No UI changed. Screenshot churn was reverted.
+- NOT RUN:
+  - Review and hosted CI.
+  - The full Playwright suite.
+  - The phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine7-shootout-band.md`. No browser proof: the row has no UI change. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Engine 7 goal kind weighted by attributes
 
 Branch `feat/engine7-goal-kind` off `origin/main` at `f7448f9` (the 6b4 squash). Wave 6 row 6b5 (Red). Dormant: the live coefficients keep `goalKind.weighted: false` and tokens stay pd6, so production engine output is exactly engine 6's. `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #151 merge.
@@ -43,6 +80,8 @@ Gates at `c5050a04` (code-identical to this docs commit):
   - The phone check and screen reader pass.
 
 Decision log: `docs/decisions/engine7-goal-kind.md`. No browser proof: the row has no UI change. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #152 (goal kind weighted by attributes, plus the 6b4 reserve cleanups, dormant, Red) merged as squash `5190287`, reviewed head `999565b`, GLM 5.3 Flash APPROVE in round 1 with canary `6b5-b30d47f94e569338b539fcaf8fabad64` echoed and the independent executing Red reviewer PASS on the same head. At `999565b` lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main`, `pnpm e2e:pins --check` reported the pins current and 2,182 unit tests passed in 250 files (364 in `src/engine`); hosted check and all eight e2e shards green on the first run. Parity against the frozen v6 bundle held on the 50-run and 200-run panels and the per-trial rate guard (with a goal kind self-test); the Red reviewer's own 150-run script found 0 output, rate or full-observation mismatches over 71,716 trials, the live kind branch is engine 6's literal thresholds, and the keeper-cover cleanup cut V7 `inj:` draws from 7,848 to 156 over 90 runs. The adversarial parity review found parity holds. Deploy note: Vercel did not start a production build for the merge (preview builds kept working); after 15 minutes production still served `f7448f9`, the connector was refused (403) and the classifier blocked the CLI call, so the owner approved a Git-sourced production deployment of exactly `5190287` through `vercel api /v13/deployments`. Production `/api/health?db=1` then served `5190287` with engine `pokedraft-engine-6` and `db.status` ok; live check on chromium `penalty-takers` 6, `opponent-injuries` 5, `v7-switch` 1, `share` 17, `old-links` 1, `watch-live` 3, `set-pieces` 4, `results-reveal` 14 and `health` 1, 52/52 with retries off. Engine 6 output unchanged.
 
 ## Engine 7 opponent injuries and rotation incidents
 
