@@ -135,7 +135,7 @@ export const TEAM_READABILITY = {
 
 // The golden runs' first user goal of each set-piece kind, as the broadcast stages it.
 export const SET_PIECES = {
-  solo: { round: "G1", minute: 49, slot: 8, scorer: "Talonflame", presser: 3 },
+  solo: { round: "G1", minute: 49, slot: 8, scorer: "Talonflame", presser: 5 },
   header: { round: "R32", minute: 9 },
   penalty: { round: "R32", minute: 84, slot: 10, taker: "Zeraora" },
   freeKick: {
@@ -153,7 +153,14 @@ export const SET_PIECES = {
 export const MATCHDAY_CARRYOVERS = { round: "G1", duel: "Remoraid used Hyper Beam!" } as const;
 
 // The momentum bar in a golden cup8 match's first window and the one after.
-export const HONEST_MOMENTUM = { round: "G1", kickoff: "50%50%", second: "36%64%" } as const;
+export const HONEST_MOMENTUM = { round: "G1", kickoff: "50%50%", second: "77%23%" } as const;
+
+// The xG river at full time in a golden cup8 match, on a friend's link.
+export const XG_RIVER = {
+  round: "G1",
+  windows: 18,
+  fullTime: "Chances so far: this squad 5.0, them 0.1",
+} as const;
 
 // A bot-drafted cup8 run that earns Hat-trick hero, Comeback and Giant killer.
 export const GIANT_KILLER = {

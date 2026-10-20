@@ -226,6 +226,36 @@ describe("buildTimeline (catches choreography that changes between two viewings 
   });
 });
 
+describe("territory lean (catches possession that ignores the engine's chances or reads a window early)", () => {
+  // Window 1 (to 5') is 70% the user's chances; window 2 (to 10') is even; window 3 (to 15') is
+  // all the opponent's.
+  const territory = [
+    { minute: 5, territory: 0.7 },
+    { minute: 10, territory: 0.5 },
+    { minute: 15, territory: 0 },
+  ];
+  const t = () => buildTimeline(match(), { ...input, territory });
+
+  it("reads 0 at kickoff", () => {
+    expect(frameAt(t(), 0)?.ball).toBe(0);
+    expect(t().frames[0]!.ball).toBe(0);
+  });
+
+  it("leans the window after a 0.7-territory window toward the user", () => {
+    expect(t().frames[1]!.ball).toBeCloseTo(0.4, 12);
+    expect(frameAt(t(), 5.01)?.ball).toBeCloseTo(0.4, 12);
+  });
+
+  it("moves nothing before the window completes", () => {
+    expect([0, 1, 4, 4.99, 5].map((m) => frameAt(t(), m)?.ball)).toEqual([0, 0, 0, 0, 0]);
+  });
+
+  it("reads territory instead of the goal and save at 12', and an all-opponent window leans fully away", () => {
+    expect(t().frames[2]!.ball).toBe(0);
+    expect(t().frames[3]!.ball).toBe(-1);
+  });
+});
+
 describe("momentum (catches a lean that shows a goal or a save before it happens)", () => {
   const goalAt4 = (seed = "tl") =>
     buildTimeline(

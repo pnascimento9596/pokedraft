@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { HONEST_MOMENTUM as PIN, LIVE_GOLDEN_CUP8 } from "./pins";
 
-// A group match of the golden cup8 run under the live prefix whose opening window has a goal or a
-// save, so the bar leans once that window has been played.
+// A group match of the golden cup8 run under the live prefix whose opening window the story gives
+// to one side, so the bar leans once that window has been played.
 const LIVE = LIVE_GOLDEN_CUP8;
 const SHOT = "docs/reports/honest-momentum";
 

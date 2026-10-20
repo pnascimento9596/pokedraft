@@ -18,6 +18,7 @@ import {
 } from "@/ui/manager/touchline";
 import { focusHeading } from "@/ui/focus";
 import { scoutLine } from "@/ui/manager/intel";
+import { storySource } from "@/ui/matchday/river";
 import { MatchPlayer } from "./MatchPlayer";
 import { TacticPills } from "./TacticPills";
 import { YourCalls } from "./YourCalls";
@@ -164,6 +165,7 @@ export function MatchdayFlow({
           lineup={ctx.lineup}
           view={matchdayView({ managerMode, matchView: view })}
           manager={managerMode ? { actions, decide: onDecide } : undefined}
+          story={storySource(cup, actions)}
           ratings={showRatings}
           autoStart
           takeFocus

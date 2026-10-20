@@ -38,7 +38,9 @@ import {
 import { decodeToken, encodeToken } from "@/engine/token";
 import { movesetFor, type Moveset } from "@/data/movesets";
 import { ACHIEVEMENT_LABEL, chipAchievement, runAchievements } from "@/ui/achievements";
+import { matchStory } from "@/engine/story";
 import { stopsFor } from "@/ui/matchday/clock";
+import { riverLabel, riverTotals, storySource } from "@/ui/matchday/river";
 import { clubShort } from "@/ui/matchday/copy";
 import { energyAt, isSpent, isTired } from "@/ui/matchday/fatigue";
 import { kitsFor } from "@/ui/matchday/kit";
@@ -303,10 +305,14 @@ function exhibitionBroadcast() {
 }
 
 type Played = Extract<MatchResult, { status: "played" }>;
-type Run = ReturnType<typeof replay>;
+// A replayed run with its coach decisions, which the story needs to replay a coached match.
+type Run = ReturnType<typeof replay> & { readonly manager: readonly ManagerAction[] };
 type GoalBeat = Extract<Beat, { kind: "goal" }>;
 
-const liveRun = (token: string): Run => replay(decodeToken(token));
+const liveRun = (token: string): Run => {
+  const run = decodeToken(token);
+  return { ...replay(run), manager: run.manager ?? [] };
+};
 const dex = (id: SpeciesId) => String(id).padStart(4, "0");
 const nameOf = (id: SpeciesId) => speciesById(id).name;
 const recordOf = (cup: CupResult) => `${cup.wins}-${cup.draws}-${cup.losses}`;
@@ -332,15 +338,25 @@ function movesOf(id: number): Moveset | null {
   }
 }
 
-/** The broadcast's timeline of one match, with the canon movesets the browser loads. */
+/**
+ * The broadcast's timeline of one match, with the canon movesets the browser loads and, as
+ * MatchPlayer does, the story's territory when the live engine played the cup.
+ */
 function timelineOf(run: Run, index: number): Timeline {
   const match = run.cup.matches[index];
   if (match?.status !== "played") throw new Error(`match ${index} was not played`);
+  const lineup = toFullLineup(run.draft);
+  const source = storySource(run.cup, run.manager);
+  const story =
+    source === null
+      ? null
+      : matchStory(source.seed, index, { lineup, mode: source.mode, manager: source.manager });
   return buildTimeline(match, {
     matchIndex: index,
     seed: run.cup.seed,
-    lineup: toFullLineup(run.draft),
+    lineup,
     movesOf,
+    territory: story?.windows ?? null,
   });
 }
 
@@ -455,14 +471,16 @@ function goalScene(run: Run, kind: GoalKind) {
 function setPieces() {
   const cup8 = liveRun(LIVE_GOLDEN_CUP8);
   const solo = goalScene(cup8, "solo");
-  // The defender who steps in presses mid-run, ahead of the scorer before and behind them after.
+  // The defender who steps in reaches the middle of the run level with the scorer and is behind
+  // them by the shot. Under the territory lean the stepping defender can come from upfield of the
+  // scorer, so where it starts is not part of the rule; the open-play presser is never level.
   const x = (age: number, side: "user" | "opp", slot: number) =>
     solo.at(age).players[side][slot]?.point.x ?? Number.NaN;
   const pressers = solo
     .at(520)
     .players.opp.flatMap((p) =>
       p?.pose === "press" &&
-      x(260, "opp", p.slot) > x(260, "user", solo.slot) &&
+      Math.abs(x(520, "opp", p.slot) - x(520, "user", solo.slot)) < 4 &&
       x(910, "user", solo.slot) > x(910, "opp", p.slot)
         ? [p.slot]
         : [],
@@ -515,7 +533,8 @@ function matchdayCarryovers() {
 }
 
 // e2e/honest-momentum.spec.ts: the momentum bar's text in the first window and the next, as
-// MatchPlayer rounds the frame's lean (50 + lean * 28).
+// MatchPlayer rounds the frame's lean (50 + lean * 28). The lean is the story's territory for the
+// window the frame follows, so the bar reads 50/50 until the first window has been played.
 function honestMomentum() {
   const round = "G1";
   const run = liveRun(LIVE_GOLDEN_CUP8);
@@ -529,6 +548,26 @@ function honestMomentum() {
   if (kickoff !== "50%50%" || second === kickoff)
     throw new Error(`${round} does not lean after its first window`);
   return { round, kickoff, second };
+}
+
+// e2e/xg-river.spec.ts: the river's full-time label and window count in a golden cup8 match, as a
+// friend's link reads it.
+function xgRiver() {
+  const round = "G1";
+  const run = liveRun(LIVE_GOLDEN_CUP8);
+  const { index } = playedIn(run, round);
+  const source = storySource(run.cup, run.manager);
+  if (source === null) throw new Error("the live golden cup8 run has no story");
+  const { windows } = matchStory(source.seed, index, {
+    lineup: toFullLineup(run.draft),
+    mode: source.mode,
+    manager: source.manager,
+  });
+  return {
+    round,
+    windows: windows.length,
+    fullTime: riverLabel(riverTotals(windows, windows.length), true),
+  };
 }
 
 // The property pins: each searches a seed family in order and keeps the first run that has what
@@ -736,6 +775,9 @@ export async function renderPins(): Promise<string> {
     ``,
     `// The momentum bar in a golden cup8 match's first window and the one after.`,
     `export const HONEST_MOMENTUM = ${JSON.stringify(honestMomentum())} as const;`,
+    ``,
+    `// The xG river at full time in a golden cup8 match, on a friend's link.`,
+    `export const XG_RIVER = ${JSON.stringify(xgRiver())} as const;`,
     ``,
     `// A bot-drafted cup8 run that earns Hat-trick hero, Comeback and Giant killer.`,
     `export const GIANT_KILLER = ${JSON.stringify(giantKiller())} as const;`,
