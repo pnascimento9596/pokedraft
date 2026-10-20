@@ -20,7 +20,9 @@ import {
   type FullLineup,
   type ManagerAction,
   type Mode,
+  type PenKick,
   type Seed,
+  type Shootout,
   type StarterIndex,
 } from "../types";
 import { CUP8, draftLineup } from "./story-panel";
@@ -230,26 +232,39 @@ export function rateInputs(runs: number): RateInput[] {
   return out;
 }
 
-/** Every trial the live engine observes under `c`, and every trial the frozen engine 6 bundle does. */
+/** A shootout kick as a trial. The observer never sees kicks, so they come from the result. */
+export type ShootoutTrial = PenKick & { readonly kind: "shootout" };
+
+export type Trial = ChanceObservation | ShootoutTrial;
+
+const kickTrials = (m: { shootout: Shootout | null }): ShootoutTrial[] =>
+  (m.shootout?.kicks ?? []).map((k) => ({ ...k, kind: "shootout" }));
+
+/**
+ * Every trial the live engine plays under `c`, and every trial the frozen engine 6 bundle does: each
+ * observed chance, then each shootout kick.
+ */
 export function rateTraces(
   input: MatchInput,
   c: EngineCoefficients = ENGINE_COEFFICIENTS,
-): { live: ChanceObservation[]; frozen: ChanceObservation[] } {
-  const live: ChanceObservation[] = [];
-  const frozen: ChanceObservation[] = [];
-  playMatchCore(input, c, { chance: (ch) => live.push(ch), window: () => {} });
-  // The cast only bridges the bundle's own copy of the branded types, as checkParity does.
-  playMatchCoreV6(input as never, V6_COEFFICIENTS, {
+): { live: Trial[]; frozen: Trial[] } {
+  const live: Trial[] = [];
+  const frozen: Trial[] = [];
+  const liveMatch = playMatchCore(input, c, { chance: (ch) => live.push(ch), window: () => {} });
+  // The casts only bridge the bundle's own copy of the branded types, as checkParity does.
+  const frozenMatch = playMatchCoreV6(input as never, V6_COEFFICIENTS, {
     chance: (ch) => frozen.push(ch as unknown as ChanceObservation),
     window: () => {},
-  });
+  }) as unknown as { shootout: Shootout | null };
+  live.push(...kickTrials(liveMatch));
+  frozen.push(...kickTrials(frozenMatch));
   return { live, frozen };
 }
 
 /** The side of the first trial where live and frozen differ in any field, or null. */
 export function firstDivergence(t: {
-  live: readonly ChanceObservation[];
-  frozen: readonly ChanceObservation[];
+  live: readonly Trial[];
+  frozen: readonly Trial[];
 }): "user" | "opp" | "length" | null {
   const n = Math.max(t.live.length, t.frozen.length);
   for (let i = 0; i < n; i++) {
