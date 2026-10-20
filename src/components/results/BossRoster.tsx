@@ -53,7 +53,7 @@ export function BossRoster({
               <span className={s.role}>{formation.slots[index]!.label}</span>
             ) : null}
             {ref.kind === "species" ? (
-              <PlayerImage dexId={ref.id} size={36} alt={opponentRefLabel(ref)} eager={eager} />
+              <PlayerImage dexId={ref.id} size={36} alt="" eager={eager} />
             ) : null}
             <span className={s.name}>{opponentRefLabel(ref)}</span>
           </li>

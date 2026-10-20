@@ -6,27 +6,16 @@ S3 findings from `docs/reports/platform-audit.md` that no dispatch 7 fix PR took
 |---|---|---|---|---|---|
 | SA-13 | A-mobile | S3 | yes | Filled pitch tokens have overlapping hit boxes on phones in every formation, and the bench gap is under 8px at 390 | Yellow |
 | SA-14 | A-mobile | S3 | yes | The nickname and Picker search inputs lack the mobile keyboard attributes, and the keyboard cover case is unverified | Yellow |
-| SA-15 | A-mobile | S3 | yes | The Image style select is 14.4px, below the 16px at which iOS Safari stops zooming on focus | Yellow |
-| SA-16 | A-mobile | S3 | yes | layout.tsx exports no viewport, so there is no theme colour, color scheme, viewport-fit or interactive-widget setting | Yellow |
-| SA-17 | A-mobile | S3 | yes | No web manifest, no 192 or 512 icons and no apple-touch-icon, so Add to Home Screen gives a plain shortcut | Red |
-| SA-18 | A-mobile | S3 | yes | The stored theme is applied after hydration, so a person whose choice differs from the OS setting sees a flash of the other theme | Yellow |
 | SA-19 | A-mobile | S3 | yes | Copy link and Share rely on navigator.clipboard alone, with no Web Share and no manual fallback | Yellow |
 | SA-21 | A-mobile | S3 | yes | No touch defaults are set, so long-press callouts, tap highlights and double-tap zoom behave as the browser likes | Yellow |
 | SA-22 | A-mobile | S3 | yes | Pressed feedback exists only on .btn, and hover rules are not gated, so hover can stick after a tap | Yellow |
 | SA-23 | A-mobile | S3 | yes | No haptics today, and adding them behind the existing sound setting would be a small progressive enhancement | Yellow |
 | SA-24 | D-perf | S3 | yes | The wheel mounts about 38 eager image elements and animates a blur filter every frame, a risk on slow phones | Yellow |
-| SA-25 | C-a11y | S3 | yes | Picking or clearing in the Picker unmounts the dialog without close(), so focus does not return to the slot | Yellow |
 | SA-32 | C-a11y | S3 | yes | Pitch rings and overlays on the light grass are 1.30 to 2.22:1, and the drag drop-target ring is the lowest | Yellow |
 | SA-33 | C-a11y | S3 | yes | No ::placeholder rule exists, so placeholder text uses the engine default, assumed at 1.93:1 | Yellow |
-| SA-34 | C-a11y | S3 | yes | The faded unplayed match card (opacity .7) drops its text to 2.56 to 3.78:1 | Yellow |
 | SA-35 | C-a11y | S3 | yes | At 200 percent text several fixed-size parts would clip, collide or truncate, chiefly the pitch tokens, wheel faces and the Picker header | Yellow |
 | SA-36 | C-a11y | S3 | yes | body is pinned to 16px, so inherited text ignores a browser default-size setting while rem text follows it | Yellow |
-| SA-37 | A-mobile | S3 | yes | overflow-x: hidden on both html and body makes body a scroll container, which likely stops position: sticky and masks overflow | Yellow |
-| SA-38 | F-tests | S3 | yes | The e2e suite has no mobile project, no touch and no tap-size check, and its draft helper hides scroll problems | Yellow |
 | SA-39 | A-mobile | S3 | yes | The narrow-width nav override is declared before the base rule and never applies | Yellow |
-| SA-40 | A-mobile | S3 | yes | After a touch drag the suppressClick flag may stay set, swallowing the next genuine tap on any token | Yellow |
-| SA-41 | A-mobile | S3 | yes | No overscroll-behavior on html or body, so pull-to-refresh and bounce can fire mid-draft | Yellow |
-| SA-42 | A-mobile | S3 | yes | The bench row needs 310px and has 274px at 320, so tokens shrink or overflow | Yellow |
 | SA-43 | A-mobile | S3 | yes | The Open-style candidate list is a nested scroller capped at 320px, which can trap the swipe in the middle of the page | Yellow |
 | SB-22 | B-desktop | S3 | yes | Share-preview wording: generic description, title without challenge or finish, unlabelled record, static alt text, and no og or twitter tags on / and the other routes | Yellow |
 | SB-31 | B-desktop | S3 | yes | There is no Web Share API: 'Share' only copies a link to the clipboard | Yellow |
@@ -139,6 +128,35 @@ S3 findings from `docs/reports/platform-audit.md` that no dispatch 7 fix PR took
 | SF-28 | F-tests | S3 | no | The History list and the theme toggle have no behavior test, and axe sees History only when it is empty | Yellow |
 | SF-30 | F-tests | S3 | no | The accessibility scan of an 8-0-0 result page runs while a 600 ms banner animation may still be playing | Yellow |
 | SF-31 | F-tests | S3 | no | role="alert" on the gate, submit and board errors is asserted by no test | Yellow |
+
+## Wave 5 triage of SA-13 to SA-43 (row 5-0)
+
+Checked against the code at `5932775`. These rows are fixed and deleted from the table above:
+SA-15 (#26), SA-16 (#22, #37, #122), SA-17 (#123), SA-18 (#37, #122, #124), SA-25 (#22), SA-34
+(#26), SA-37 (#84), SA-38 (#13, #21), SA-40 (#23), SA-41 (#123) and SA-42 (#42). Each remaining
+SA row keeps one disposition:
+
+- SA-13: Wave 7. The bench gap is still 4px (`Pitch.module.css:334`), and no test covers filled
+  token hit boxes.
+- SA-14: Wave 7. The nickname input has no `autoCapitalize`, `autoCorrect`, `spellCheck` or
+  `enterKeyHint` (`SubmitPanel.tsx:122-132`).
+- SA-19: Wave 5 row 5a. Links still copy only (`copyLink.ts`); the card already uses Web Share.
+- SA-21: Wave 7. Tap highlight and `touch-action` are set (#37); `-webkit-touch-callout` is not.
+- SA-22: Wave 7. Most hover rules are gated (#37); `MatchHighlights.module.css`,
+  `primitives.css:195` and `RoadStrip.module.css` still have bare `:hover`, and pitch tokens have
+  no `:active`.
+- SA-23: won't fix for the draft. Row 3e (#107) added haptics on goals, red cards and full time;
+  a buzz on every draft tap would add noise to the most frequent action.
+- SA-24: Wave 7. The wheel still writes a blur every frame and loads every face eagerly.
+- SA-32: Wave 7. The pitch is night turf in both themes (#42, #124) and the rings have 3:1 tests
+  (#20), but the drag drop ring itself is not measured.
+- SA-33: Wave 7. There is no `::placeholder` rule.
+- SA-35: Wave 7. Nothing is tested at 200 percent text.
+- SA-36: Wave 7. Body text is still set in px (15px, 14px from 720px).
+- SA-39: Wave 7. The phone menu (#21) replaced the symptom, but the misordered rule is still dead
+  code (`globals.css`, the `max-width: 479.98px` block before the base nav rule).
+- SA-43: Wave 7. The 320px scroller is gone (#42) and the phone drawer is fixed (#44); a nested
+  `.cards[data-scrollable]` scroller of 340px remains (`DraftBoard.module.css:150-154`).
 
 ## Found during fix verification (2026-10-11, lane owner)
 

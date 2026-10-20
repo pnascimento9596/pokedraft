@@ -1,0 +1,646 @@
+{
+  "throttle": 4,
+  "dragMs": 2000,
+  "stepMs": 16,
+  "viewport": "390x844@3x",
+  "summary": {
+    "candidate": {
+      "head": {
+        "moves": {
+          "median": 64,
+          "min": 64,
+          "max": 66
+        },
+        "frames": {
+          "median": 122,
+          "min": 121,
+          "max": 122
+        },
+        "p50": {
+          "median": 16.7,
+          "min": 16.7,
+          "max": 16.7
+        },
+        "p95": {
+          "median": 16.7,
+          "min": 16.7,
+          "max": 16.7
+        },
+        "maxGap": {
+          "median": 16.8,
+          "min": 16.8,
+          "max": 16.8
+        },
+        "dropped": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTasks": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskMs": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "mutationsPerSec": {
+          "median": 39,
+          "min": 38,
+          "max": 39
+        },
+        "taskMs": {
+          "median": 214,
+          "min": 161,
+          "max": 248
+        },
+        "scriptMs": {
+          "median": 54,
+          "min": 43,
+          "max": 63
+        },
+        "layoutMs": {
+          "median": 2,
+          "min": 2,
+          "max": 4
+        },
+        "styleMs": {
+          "median": 35,
+          "min": 25,
+          "max": 37
+        }
+      }
+    },
+    "token": {
+      "head": {
+        "moves": {
+          "median": 67,
+          "min": 64,
+          "max": 72
+        },
+        "frames": {
+          "median": 121,
+          "min": 121,
+          "max": 122
+        },
+        "p50": {
+          "median": 16.7,
+          "min": 16.7,
+          "max": 16.7
+        },
+        "p95": {
+          "median": 16.8,
+          "min": 16.7,
+          "max": 16.8
+        },
+        "maxGap": {
+          "median": 16.8,
+          "min": 16.8,
+          "max": 16.8
+        },
+        "dropped": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTasks": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskMs": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "mutationsPerSec": {
+          "median": 41,
+          "min": 40,
+          "max": 44
+        },
+        "taskMs": {
+          "median": 123,
+          "min": 92,
+          "max": 200
+        },
+        "scriptMs": {
+          "median": 51,
+          "min": 44,
+          "max": 75
+        },
+        "layoutMs": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "styleMs": {
+          "median": 19,
+          "min": 10,
+          "max": 35
+        }
+      }
+    },
+    "swipe": {
+      "head": {
+        "moves": {
+          "median": 65,
+          "min": 59,
+          "max": 67
+        },
+        "frames": {
+          "median": 121,
+          "min": 121,
+          "max": 122
+        },
+        "p50": {
+          "median": 16.7,
+          "min": 16.7,
+          "max": 16.7
+        },
+        "p95": {
+          "median": 16.7,
+          "min": 16.7,
+          "max": 16.8
+        },
+        "maxGap": {
+          "median": 16.8,
+          "min": 16.8,
+          "max": 16.8
+        },
+        "dropped": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTasks": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskMs": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "mutationsPerSec": {
+          "median": 33,
+          "min": 30,
+          "max": 33
+        },
+        "taskMs": {
+          "median": 239,
+          "min": 212,
+          "max": 340
+        },
+        "scriptMs": {
+          "median": 144,
+          "min": 138,
+          "max": 189
+        },
+        "layoutMs": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "styleMs": {
+          "median": 10,
+          "min": 9,
+          "max": 16
+        }
+      }
+    },
+    "picker": {
+      "head": {
+        "moves": {
+          "median": 66,
+          "min": 64,
+          "max": 67
+        },
+        "frames": {
+          "median": 121,
+          "min": 121,
+          "max": 122
+        },
+        "p50": {
+          "median": 16.7,
+          "min": 16.7,
+          "max": 16.7
+        },
+        "p95": {
+          "median": 16.7,
+          "min": 16.7,
+          "max": 16.8
+        },
+        "maxGap": {
+          "median": 16.8,
+          "min": 16.8,
+          "max": 16.8
+        },
+        "dropped": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTasks": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskMs": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "mutationsPerSec": {
+          "median": 131,
+          "min": 128,
+          "max": 133
+        },
+        "taskMs": {
+          "median": 629,
+          "min": 577,
+          "max": 736
+        },
+        "scriptMs": {
+          "median": 270,
+          "min": 260,
+          "max": 304
+        },
+        "layoutMs": {
+          "median": 11,
+          "min": 5,
+          "max": 17
+        },
+        "styleMs": {
+          "median": 25,
+          "min": 18,
+          "max": 35
+        }
+      }
+    }
+  },
+  "runs": [
+    {
+      "target": "head",
+      "scene": "candidate",
+      "run": 1,
+      "moves": 66,
+      "frames": 122,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 39,
+      "taskMs": 214,
+      "scriptMs": 58,
+      "layoutMs": 2,
+      "styleMs": 33
+    },
+    {
+      "target": "head",
+      "scene": "token",
+      "run": 1,
+      "moves": 64,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 40,
+      "taskMs": 200,
+      "scriptMs": 75,
+      "layoutMs": 0,
+      "styleMs": 35
+    },
+    {
+      "target": "head",
+      "scene": "swipe",
+      "run": 1,
+      "moves": 64,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 32,
+      "taskMs": 279,
+      "scriptMs": 166,
+      "layoutMs": 0,
+      "styleMs": 13
+    },
+    {
+      "target": "head",
+      "scene": "picker",
+      "run": 1,
+      "moves": 66,
+      "frames": 122,
+      "p50": 16.7,
+      "p95": 16.8,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 131,
+      "taskMs": 677,
+      "scriptMs": 286,
+      "layoutMs": 17,
+      "styleMs": 25
+    },
+    {
+      "target": "head",
+      "scene": "candidate",
+      "run": 2,
+      "moves": 64,
+      "frames": 122,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 38,
+      "taskMs": 232,
+      "scriptMs": 54,
+      "layoutMs": 2,
+      "styleMs": 37
+    },
+    {
+      "target": "head",
+      "scene": "token",
+      "run": 2,
+      "moves": 66,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.8,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 41,
+      "taskMs": 130,
+      "scriptMs": 58,
+      "layoutMs": 0,
+      "styleMs": 20
+    },
+    {
+      "target": "head",
+      "scene": "swipe",
+      "run": 2,
+      "moves": 59,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 30,
+      "taskMs": 340,
+      "scriptMs": 189,
+      "layoutMs": 0,
+      "styleMs": 16
+    },
+    {
+      "target": "head",
+      "scene": "picker",
+      "run": 2,
+      "moves": 64,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.8,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 128,
+      "taskMs": 736,
+      "scriptMs": 304,
+      "layoutMs": 13,
+      "styleMs": 35
+    },
+    {
+      "target": "head",
+      "scene": "candidate",
+      "run": 3,
+      "moves": 64,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 39,
+      "taskMs": 248,
+      "scriptMs": 63,
+      "layoutMs": 4,
+      "styleMs": 36
+    },
+    {
+      "target": "head",
+      "scene": "token",
+      "run": 3,
+      "moves": 68,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 42,
+      "taskMs": 123,
+      "scriptMs": 51,
+      "layoutMs": 0,
+      "styleMs": 19
+    },
+    {
+      "target": "head",
+      "scene": "swipe",
+      "run": 3,
+      "moves": 66,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 33,
+      "taskMs": 220,
+      "scriptMs": 142,
+      "layoutMs": 0,
+      "styleMs": 9
+    },
+    {
+      "target": "head",
+      "scene": "picker",
+      "run": 3,
+      "moves": 64,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 128,
+      "taskMs": 629,
+      "scriptMs": 270,
+      "layoutMs": 11,
+      "styleMs": 18
+    },
+    {
+      "target": "head",
+      "scene": "candidate",
+      "run": 4,
+      "moves": 64,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 39,
+      "taskMs": 161,
+      "scriptMs": 43,
+      "layoutMs": 2,
+      "styleMs": 25
+    },
+    {
+      "target": "head",
+      "scene": "token",
+      "run": 4,
+      "moves": 67,
+      "frames": 122,
+      "p50": 16.7,
+      "p95": 16.8,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 41,
+      "taskMs": 100,
+      "scriptMs": 47,
+      "layoutMs": 0,
+      "styleMs": 13
+    },
+    {
+      "target": "head",
+      "scene": "swipe",
+      "run": 4,
+      "moves": 67,
+      "frames": 122,
+      "p50": 16.7,
+      "p95": 16.8,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 33,
+      "taskMs": 239,
+      "scriptMs": 144,
+      "layoutMs": 0,
+      "styleMs": 10
+    },
+    {
+      "target": "head",
+      "scene": "picker",
+      "run": 4,
+      "moves": 66,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 132,
+      "taskMs": 629,
+      "scriptMs": 266,
+      "layoutMs": 9,
+      "styleMs": 26
+    },
+    {
+      "target": "head",
+      "scene": "candidate",
+      "run": 5,
+      "moves": 64,
+      "frames": 122,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 39,
+      "taskMs": 208,
+      "scriptMs": 52,
+      "layoutMs": 2,
+      "styleMs": 35
+    },
+    {
+      "target": "head",
+      "scene": "token",
+      "run": 5,
+      "moves": 72,
+      "frames": 122,
+      "p50": 16.7,
+      "p95": 16.8,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 44,
+      "taskMs": 92,
+      "scriptMs": 44,
+      "layoutMs": 0,
+      "styleMs": 10
+    },
+    {
+      "target": "head",
+      "scene": "swipe",
+      "run": 5,
+      "moves": 65,
+      "frames": 121,
+      "p50": 16.7,
+      "p95": 16.8,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 33,
+      "taskMs": 212,
+      "scriptMs": 138,
+      "layoutMs": 0,
+      "styleMs": 9
+    },
+    {
+      "target": "head",
+      "scene": "picker",
+      "run": 5,
+      "moves": 67,
+      "frames": 122,
+      "p50": 16.7,
+      "p95": 16.7,
+      "maxGap": 16.8,
+      "dropped": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "mutationsPerSec": 133,
+      "taskMs": 577,
+      "scriptMs": 260,
+      "layoutMs": 5,
+      "styleMs": 21
+    }
+  ]
+}

@@ -3,6 +3,31 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wave 4 carryovers and queue triage
+
+Branch `fix/wave4-carryovers` off `origin/main` at `5932775`. Wave 5 row 5-0 (Yellow; the queue triage is Green). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- On a friend's shared replay the goal line reads "Goal for this squad!" instead of "Goal for This squad!". Cards and penalties name "(this squad)" the same way.
+- Screen readers hear the wheel's landed Pokémon and each Boss XI player once, by the written name, instead of the picture repeating it.
+- On the home page of a phone with a home bar, the gap between the last card and the footer is 32px again instead of 66px; the footer keeps its own clearance, so its text ends 65px above the bottom edge.
+- On a notched phone turned to landscape, the header and page content sit 47px from each side (the notch) instead of 63px; 820px-wide pages sit at 59px. Phones without a notch look the same as before.
+- Docs only: the deferred audit queue loses 11 fixed SA rows (each with its PR), and the 13 left get one disposition each.
+- Closed by measurement, no code change: the 4h2 4-pixel matchday diffs also appear between two shots of one build (frame noise), and both swipes (draft drawer and Builder Picker) kept every frame at 4x CPU throttle (p95 16.7 ms).
+
+RED commits: `456d436` (3 of 60 unit tests failed in 3 files; `e2e/safe-area-insets.spec.ts` failed 6 of 7 against a build of `5932775`, the no-notch case passing as a labelled regression guard) and `051b0dc` (the re-decided footer guard and the 820px edges; 6 of 7 failed against a build of `051b0dc`, whose code equals `5932775`). GREEN `90442aa`. `b2f000c` adds the Builder Picker scene to `scripts/perf/draft-drag.mts` and the measurement files; `34b26b6` updates `engine-v4` and `pwa-viewport` to the new literals.
+
+Gates at `b2f000c` (code-identical to `34b26b6` outside `e2e/`):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0 (lint and typecheck again at `34b26b6`). All nine `check:*` scripts exited 0.
+- Unit tests: 1,808 passed in 214 files.
+- Full Playwright suite (`CI=1`, headless, build of `b2f000c`): 1,008 passed, 67 skipped, 3 failed, no flaky. The 3 were spec churn (two `engine-v4` cases counting Boss XI pictures by role, and `pwa-viewport` expecting the home page's 66px). After `34b26b6`, `engine-v4`, `pwa-viewport`, `safe-area-insets`, `a11y`, `wheel-results`, `mobile-acceptance` and `theme-breakpoints` passed 356 with 54 skipped, 0 failed.
+- Safe areas measured with Chromium's `Emulation.setSafeAreaInsetsOverride`: portrait top 47 and bottom 34 at 390x844; landscape left 47, right 47 and bottom 21 at 844x390.
+- NOT RUN: review and hosted CI; WebKit and Firefox safe-area checks; a physical phone check and a real screen reader pass (owner actions).
+
+Decision log: `docs/decisions/wave4-carryovers.md`. Browser proof: `docs/reports/wave4-carryovers/{home-footer-notch-390,home-landscape-notch-844}.png`; measurements in `docs/reports/wave4-carryovers/{swipe.json,frame-noise.jsonl}`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Health cron
 
 Branch `ci/health-cron` off `5932775`, merged with `origin/main` at `3b821d1`. Green: one new workflow, `.github/workflows/health.yml`, and docs. No change under `src/`, `e2e/` or `scripts/`. A Wave 7 item landed early in Wave 5, right after 5f1, as the hand-off orders.
@@ -17,6 +42,8 @@ NOT RUN: the scheduled run and the issue step on GitHub before merge (`workflow_
 Decision log: `docs/decisions/health-cron.md`.
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #128 (health cron, Green) merged as squash `32d0b69`, reviewed head `c6f3f68`, GLM 5.3 Flash APPROVE in round 1 with canary `health-cron-90dd1579d5b60a67192da16d502be7fb` echoed. At `c6f3f68` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,824 unit tests passed in 217 files and Prettier passed on 3 touched files; hosted check and all eight e2e shards green on the first run. Production `/api/health?db=1` served `32d0b69` with `db.status` ok. The first run of the workflow, dispatched by hand on `main` (run 39345587862), concluded success: `main=32d0b69... served=32d0b69... http=200 db=ok`. NOT RUN: a failing run on GitHub (it would open a real issue).
 
 ## Run fingerprint and coached column, expand
 
