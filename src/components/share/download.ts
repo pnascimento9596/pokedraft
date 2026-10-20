@@ -1,4 +1,5 @@
 import { readSettings } from "@/images/settings";
+import { absoluteUrl, isCoarsePointer } from "./shareLink";
 
 // What the PNG card renders: a finished run (`t`, any replayable token, builder tokens are
 // friendlies) or a builder lineup that may be incomplete (`b`, see `builderToken`).
@@ -20,14 +21,28 @@ export function cardHref(source: CardSource, look?: CardLook): string {
 /** How the PNG reached the player: the share sheet, the download link, or a share sheet they closed. */
 export type CardDelivery = "shared" | "saved" | "cancelled";
 
+/** The link and words that travel with the PNG when the share sheet takes it. */
+export interface CardShare {
+  readonly path: string;
+  readonly text: string;
+}
+
+export async function fetchCard(href: string): Promise<Blob> {
+  const res = await fetch(href);
+  if (!res.ok) throw new Error(`card request failed with ${res.status}`);
+  const type = res.headers.get("content-type") ?? "";
+  if (!type.startsWith("image/png")) throw new Error(`card is ${type || "untyped"}, not a PNG`);
+  return res.blob();
+}
+
 // On a phone the share sheet is where Save Image lives, and iOS handles a download link to a blob
 // unevenly. A desktop keeps the plain download, even where it could share files.
-async function shareFile(file: File): Promise<CardDelivery | null> {
-  if (typeof navigator.share !== "function" || !navigator.canShare?.({ files: [file] }))
-    return null;
-  if (!window.matchMedia("(pointer: coarse)").matches) return null;
+async function shareFile(file: File, share: CardShare): Promise<CardDelivery | null> {
+  const data: ShareData = { files: [file], url: absoluteUrl(share.path), text: share.text };
+  if (typeof navigator.share !== "function" || !navigator.canShare?.(data)) return null;
+  if (!isCoarsePointer()) return null;
   try {
-    await navigator.share({ files: [file] });
+    await navigator.share(data);
     return "shared";
   } catch (e) {
     if (e instanceof DOMException && e.name === "AbortError") return "cancelled";
@@ -50,18 +65,22 @@ function saveWithLink(blob: Blob, filename: string): void {
   }
 }
 
-export async function downloadCard(
-  source: CardSource,
+export async function deliverCard(
+  blob: Blob,
   filename: string,
-  look: CardLook = readSettings(),
+  share: CardShare,
 ): Promise<CardDelivery> {
-  const res = await fetch(cardHref(source, look));
-  if (!res.ok) throw new Error(`card request failed with ${res.status}`);
-  const type = res.headers.get("content-type") ?? "";
-  if (!type.startsWith("image/png")) throw new Error(`card is ${type || "untyped"}, not a PNG`);
-  const blob = await res.blob();
-  const shared = await shareFile(new File([blob], filename, { type: "image/png" }));
+  const shared = await shareFile(new File([blob], filename, { type: "image/png" }), share);
   if (shared !== null) return shared;
   saveWithLink(blob, filename);
   return "saved";
+}
+
+export async function downloadCard(
+  source: CardSource,
+  filename: string,
+  share: CardShare,
+  look: CardLook = readSettings(),
+): Promise<CardDelivery> {
+  return deliverCard(await fetchCard(cardHref(source, look)), filename, share);
 }

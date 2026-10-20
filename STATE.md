@@ -23,6 +23,31 @@ Gates at `7a9e7d2`:
 
 Decision log: `docs/decisions/seed-boards.md`. Browser proof: `docs/reports/seed-boards/` (seed table at 390, 360 and 320, the unavailable state, All engines at 390, 360 and 320). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Share sheet and run metadata
+
+Branch `feat/share-sheet` off `origin/main` at `5932775`. Wave 5 row 5a (Yellow). No file under `src/engine`, `src/data` or `src/scouting` changed.
+
+- On a phone, Share on results opens the phone's share sheet with "7-1-0, Team Score 812. Beat it?" style text and the link. A friendly says "Friendly: 7-0-1, Team Score 845." with no dare. Share this goal says "Watch this goal." and the Builder's button, now "Share link", says "My pokedraft XI.". On a computer each one copies the link, as before.
+- When the link cannot be copied, a "Link" box shows the full link, selected, so it can be copied by hand.
+- On a phone, Download image hands the card to the share sheet with the link and the same words, straight from the tap: results fetch the card in the background once they settle, unless Data Saver is on. A computer still fetches the card only when Download is pressed.
+- A run link's preview now has a line under the title, "Champions with 4-3-3. Draft your own XI on pokedraft.", and the card's alt text carries the record and Team Score. Gated links show the same preview.
+- A coached run's card shows a "Coached" chip after the formation.
+- Not built: the nickname on the card (anyone could print any name on any run through the public card URL), and `/?b=` link previews (moved to Wave 7).
+
+RED commit: `c003ef9` (12 of 87 unit tests failed in 6 of 9 files, and `shareLink.test.ts` failed to load; `e2e/share-sheet.spec.ts` failed 6 of 8 against a build of `5932775`, the other 2 being a labelled regression guard and a proof capture). GREEN `6cff46f`. `25b5665` adds the goal and Builder fallback proof and the screenshots. `0ddcaa6` matches the repo's doc comment layout (comments only).
+
+Gates at `0ddcaa6`:
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the 24 touched text files.
+- Unit tests: 1,828 passed in 217 files.
+- Playwright (`CI=1`, headless, build of `0ddcaa6`): `share-sheet` passed 9 of 9, and with `share`, `challenge`, `draft-modes`, `manager-mode` (chromium and pixel-7), `run-persist`, `swap-a11y`, `images`, `builder`, `server-html`, `old-links` and `replay-deep-links` 73 passed and 1 skipped by its own touch gate.
+- Full Playwright suite once, on a build of `6cff46f` with the specs of `25b5665` (code identical to `0ddcaa6` except comments): 1,013 passed, 67 skipped by their own project gates, 0 failed, 0 flaky.
+- NOT RUN: review and hosted CI; the real share sheet on a phone and a screen reader pass over the Link field (owner actions).
+
+Decision log: `docs/decisions/share-sheet.md`. Browser proof: `docs/reports/share-sheet/` (`share-sheet-stubbed-390.png`, `manual-link-{390,360,320}.png`, `manual-goal-link-390.png`, `manual-builder-link-390.png`, `coached-card.png`).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Leaderboard integrity contract and copy guard
 
 Branch `feat/leaderboard-integrity` off `origin/main` at `3b821d1`. Wave 5 row 5f2 (Red). No file under `src/engine`, `src/data` or `src/scouting` changed.
@@ -43,6 +68,8 @@ Gates at `2b799a4`:
 - NOT RUN: every Neon step (preview migrate, smoke, rollback, migrate; production restore point, migration and real-API smoke; the coordinator runs them), review and hosted CI, the full Playwright suite, the CI data rebuild, the phone check and screen reader pass.
 
 Decision log: `docs/decisions/leaderboard-integrity.md`. Browser proof: `docs/reports/leaderboard-integrity/duplicate-run-390x844.png`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #129 (row 5f2, leaderboard integrity contract and copy guard, Red) merged as squash `07beda9`, reviewed head `1039845` (the coordinator's merge of `origin/main` at `f27f17c`, a STATE-only conflict, on top of `b094210`). Receipts on the same head: GLM 5.3 Flash APPROVE in round 2 with canary `leaderboard-integrity-r2-34bf5f0f7ff3cdbfb61351962c093c19` echoed (round 1 at the same head returned REQUEST_CHANGES only because `coach-mark.test.tsx`, a file this PR does not touch, failed once while the Red reviewer's gates ran concurrently at load average 12; it passed 5 of 5 alone and the full gates were re-run quietly), and the independent executing Red reviewer (a fresh pokedraft-mode subagent, interrogate rubric) PASS. At `1039845` lint, typecheck, build and all nine `check:*` scripts exited 0, 1,816 unit tests passed in 215 files and Prettier passed on 24 touched files; hosted check and all eight e2e shards green on the first run. Database receipt: preview ran migrate, smoke (both 23505 cases), rollback and migrate (6 migrations) twice, once by the coordinator and once by the Red reviewer; no backfill (the script is deleted). Before the production migration the precondition held (0 NULLs, 0 duplicate `(mode, run_fingerprint)` groups, 3 entries); restore point `pre-0005_leaderboard_integrity` (`br-noisy-bread-b7gzc2s4`) created; production `db:migrate` before merge recorded 6 migrations with both columns NOT NULL, `leaderboard_entries_fingerprint_uq` and `leaderboard_entries_coached_board_idx` present and 3 entries unchanged. Real-API smoke on the 2026-10-19 Daily as `w5proof1019`: 201 (rank 1, 3-0-1, Team Score 429) then 200 on retry, and the same run as `w5proof1019b` got 409 `DUPLICATE_TOKEN` with `nickname` `w5proof1019`; `db:delete-entry` removed exactly the smoke row (`ee1af1e3`), leaving 3 entries and 0 NULLs. Production `/api/health?db=1` served `07beda9` with `db.status` ok; `leaderboard`, `leaderboard-date` and `theme-board` against production (chromium) passed 18 of 18. NOT RUN: physical phone check and screen reader pass of the duplicate message (owner actions).
 
 ## Health cron removed
 

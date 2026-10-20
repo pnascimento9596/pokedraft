@@ -39,24 +39,43 @@ describe("gate page error copy (catches a silent or unannounced unlock failure)"
 const CURRENT_RUN =
   "pd3.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwibyIsInMiXSwiMDE0OGVhNzFlMWFjNTFlMyIsW1sicCIsNzQ5LCJzMCJdLFsicCIsNjMsInMxIl0sWyJwIiw5NDQsInMyIl0sWyJwIiwyNywiczMiXSxbInAiLDgyMSwiczQiXSxbInAiLDY1NiwiczUiXSxbInAiLDIwMCwiczYiXSxbInAiLDUyNCwiczciXSxbInAiLDI2OSwiczgiXSxbInAiLDQzMywiczkiXSxbInAiLDU0MywiczEwIl0sWyJwIiw5NDgsImIwIl0sWyJwIiw1MjksImIxIl0sWyJwIiw4MzQsImIyIl0sWyJwIiwzOTMsImIzIl0sWyJwIiwyNSwiYjQiXV1d";
 
-describe("gated share metadata (catches query links losing their title and card)", () => {
+describe("gated share metadata (catches query links losing their title, description and card)", () => {
   it.each([
-    [CURRENT_RUN, "pokedraft run: 1-1-1, Team Score 283"],
-    [A11Y_RUN_V1, "pokedraft run: 8-0-0, Team Score 845"],
-    [GOLDEN_CUP8_V2, "pokedraft run: 3-0-2, Team Score 593"],
-  ])("replays a query-format link through its own engine", async (token, title) => {
-    const [version, payload] = token.split(".");
-    const meta = await generateMetadata({
-      params: Promise.resolve({}),
-      searchParams: Promise.resolve({ next: `/r/${version}?t=${payload}` }),
-    });
-    const image = `/r/${token}/opengraph-image`;
-    expect(meta).toEqual({
-      title,
-      openGraph: { title, images: [{ url: image, width: 1200, height: 630 }] },
-      twitter: { card: "summary_large_image", title, images: [image] },
-    });
-  });
+    [
+      CURRENT_RUN,
+      "pokedraft run: 1-1-1, Team Score 283",
+      "Out in the group stage with 4-3-3. Draft your own XI on pokedraft.",
+      "pokedraft run card: 1-1-1, Team Score 283",
+    ],
+    [
+      A11Y_RUN_V1,
+      "pokedraft run: 8-0-0, Team Score 845",
+      "Champions with 4-3-3. Draft your own XI on pokedraft.",
+      "pokedraft run card: 8-0-0, Team Score 845",
+    ],
+    [
+      GOLDEN_CUP8_V2,
+      "pokedraft run: 3-0-2, Team Score 593",
+      "Out in the Round of 16 with 4-2-3-1. Draft your own XI on pokedraft.",
+      "pokedraft run card: 3-0-2, Team Score 593",
+    ],
+  ])(
+    "replays a query-format link through its own engine",
+    async (token, title, description, alt) => {
+      const [version, payload] = token.split(".");
+      const meta = await generateMetadata({
+        params: Promise.resolve({}),
+        searchParams: Promise.resolve({ next: `/r/${version}?t=${payload}` }),
+      });
+      const image = { url: `/r/${token}/opengraph-image`, width: 1200, height: 630, alt };
+      expect(meta).toEqual({
+        title,
+        description,
+        openGraph: { title, description, images: [image] },
+        twitter: { card: "summary_large_image", title, description, images: [image] },
+      });
+    },
+  );
 
   it("keeps legacy dot links previewable", async () => {
     const meta = await generateMetadata({
@@ -67,7 +86,15 @@ describe("gated share metadata (catches query links losing their title and card)
     expect(meta.twitter).toEqual({
       card: "summary_large_image",
       title: "pokedraft run: 8-0-0, Team Score 845",
-      images: [`/r/${A11Y_RUN_V1}/opengraph-image`],
+      description: "Champions with 4-3-3. Draft your own XI on pokedraft.",
+      images: [
+        {
+          url: `/r/${A11Y_RUN_V1}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: "pokedraft run card: 8-0-0, Team Score 845",
+        },
+      ],
     });
   });
 });

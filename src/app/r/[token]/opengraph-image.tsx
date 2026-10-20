@@ -5,7 +5,6 @@ import { CARD_SIZE, Card, runCardModel } from "@/components/share/card";
 import { CARD_CACHE_CONTROL, cardImages } from "@/components/share/card-images";
 import { loadRun } from "./run";
 
-export const alt = "pokedraft run card";
 export const size = CARD_SIZE;
 export const contentType = "image/png";
 
@@ -32,7 +31,7 @@ export default async function Image({ params }: { params: Promise<{ token: strin
       { ...size, fonts: await cardFonts(), headers: { "cache-control": "public, max-age=3600" } },
     );
   }
-  const model = runCardModel(run);
+  const model = runCardModel(token, run);
   return new ImageResponse(<Card model={model} images={await cardImages(model)} />, {
     ...size,
     fonts: await cardFonts(),

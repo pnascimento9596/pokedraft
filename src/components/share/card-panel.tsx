@@ -276,6 +276,11 @@ export function ResultPanel({
           <Chip>{run.mode}</Chip>
         )}
         <Chip>{formation}</Chip>
+        {run?.coached ? (
+          <Chip bg={CARD_THEME.accent} fg={CARD_THEME.accentFg}>
+            Coached
+          </Chip>
+        ) : null}
       </div>
       {headline.score === null ? (
         <ProgressBlock placed={placed} />
