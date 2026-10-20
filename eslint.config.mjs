@@ -59,12 +59,33 @@ const engineDeterminism = {
   },
 };
 
+// The engine 7 candidate stays out of client code until the flip: whether an unused export is
+// tree-shaken out of a client chunk is a bundler property nothing checks.
+const engineCandidate = {
+  files: ["src/ui/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}", "src/app/**/*.{ts,tsx}"],
+  ignores: ["**/__tests__/**"],
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          {
+            group: ["**/coefficients-v7", "@/engine/coefficients-v7"],
+            message: "The engine 7 candidate is for tests and scripts until the flip.",
+          },
+        ],
+      },
+    ],
+  },
+};
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   prettier,
   determinism,
   engineDeterminism,
+  engineCandidate,
   globalIgnores([
     ".next/**",
     "out/**",

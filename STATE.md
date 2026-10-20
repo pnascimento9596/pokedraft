@@ -3,6 +3,27 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine 7 split managed and scaffolding
+
+Branch `feat/engine7-split-managed` off `origin/main` at `7045ccd` (the 6g squash). Wave 6 row 6b1 (Red). Dormant: the live coefficients keep `manager.splitManaged: false`, so production engine output is exactly engine 6's. Only `src/engine`, `scripts/calibration` and `eslint.config.mjs` changed among code paths; `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #146 merge.
+
+- Nothing changes for a player yet.
+- From the flip, a sub (including a chosen injury replacement) switches off only the assistant's fatigue subs, and a tactic from 45' switches off only its tactics. An early tactic still applies and the assistant keeps its late reaction on top of it. Balanced at kickoff plays exactly the uncoached match.
+- For the next rows: `src/engine/coefficients-v7.ts` holds the engine 7 candidate (`ENGINE_COEFFICIENTS_V7`), `--coeffs v7` runs it in `pnpm calibrate` and the probe, ESLint keeps it out of `src/ui`, `src/components` and `src/app`, and a parity guard plays the live engine against the frozen engine 6 bundle (50 runs in `pnpm test`, 200 in `v6-parity.slow.test.ts`).
+- `recap.ts` no longer reads `ENGINE_COEFFICIENTS` at module scope; a source scan refuses any such read in `src/engine`.
+
+RED commit `1f9d738` (11 of 17 failed), GREEN `6dbe958`. Parity guard `1eed662`, regression guard with no RED (behaviour already correct); a mutation (`autoSubEnergy` 82 to 83) made it fail, then was reverted. Review-driven: RED `b11eaa8` (1 of 9 failed: the spread V7 shared nested objects with the live coefficients), GREEN `55cdad3` (V7 built from `structuredClone`; the parity tally now asserts extra-time matches and shootouts, so recap's injected `c.shootout.kicks` is exercised). The branch merged `origin/main` at `2551dce` (PR #147) in `34aac0f`.
+
+Gates at `55cdad3` (after the `origin/main` merge, code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files. `pnpm e2e:pins --check` reported the pins current.
+- Unit tests: 2,092 passed in 239 files. `pnpm vitest run src/engine`: 302 passed in 27 files. Parity: 50 runs byte-identical (211 played matches, 17 extra time, 13 shootouts); slow parity, 200 runs byte-identical (871 played matches, 638 coached, 95 chosen injury answers, 58 extra time, 36 shootouts, all four shapes, 8 formations). `goldens.test.ts` is byte-identical to `origin/main`.
+- `check-retained-replays.mts`: 10 golden replays passed. `measure-retained-json.mjs`: 4 copies, 2,891,853 bytes.
+- Probes at n 400 (bots good and random, 4-3-3): engine 6 reproduces the 6p baseline hashes. Under V7, P3 no-op cost is 0.0000 with 0 discordant pairs for both bots (baseline -0.0075 good, -0.0529 random); P1 informed minus auto is -0.0022 [-0.0211, +0.0168] good and +0.0016 [-0.0279, +0.0311] random (baseline -0.0111 and -0.0466), so P1 still fails until 6b2 and 6b8.
+- NOT RUN: review and hosted CI, Playwright (no UI change, engine output unchanged), the other probe modes, the phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine7-split-managed.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Territory, xG river and real commentary
 
 Branch `feat/xg-river` off `origin/main` at `969ca1c`. Wave 6 row 6a2 (Yellow). UI only: nothing under `src/engine`, `src/scouting`, `scripts/data` or `src/data` changed, and `goldens.test.ts` is byte-identical. The first commit records the PR #142 merge above.
@@ -23,6 +44,8 @@ Gates at `aaa64d2`:
 - NOT RUN: the full suite after the #146 merge, the new spec on WebKit and the phone projects, review and hosted CI, the phone check and screen reader pass.
 
 Decision log: `docs/decisions/xg-river.md`. Browser proof: `docs/reports/xg-river/` (`river-{30,ht,ft}-{390,360,320}.png`) and `docs/reports/set-pieces/390-solo.png`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #147 (xG river on the Broadcast, Yellow) merged as squash `2551dce`, reviewed head `d9eaba6`, GLM 5.3 Flash APPROVE in round 1 with canary `6a2-3b896958e455926b70b6a79a86892bd0` echoed. At `aaa64d2` (code-identical to the head) lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main`, `pnpm e2e:pins --check` reported the pins current, 2,073 unit tests passed in 235 files and Prettier passed on 20 touched files; hosted check and all eight e2e shards green on the first run. The implementer's full local Playwright suite at `3d6a972` gave 1,086 passed, 67 skipped, 0 failed. Pins moved: `HONEST_MOMENTUM.second` 36%64% to 77%23% and `SET_PIECES.solo.presser` 3 to 5 (the bar and the shape now follow the story's territory); `XG_RIVER` is new. Browser proof at 390, 360 and 320 with a 308 measurement (chart 95 px, no overlap, no page scroll). Production `/api/health?db=1` served `2551dce` with `db.status` ok; live check on chromium `xg-river` 5, `honest-momentum` 1, `set-pieces` 4, `watch-live` 3 and `health` 1, 14/14. Engine untouched.
 
 ## Engine grace window and version plumbing
 

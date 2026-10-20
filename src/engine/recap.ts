@@ -1,4 +1,4 @@
-import { ENGINE_COEFFICIENTS } from "./coefficients";
+import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
 import { speciesById } from "./species";
 import type { GoalEvent, Opponent, Score, Shootout } from "./types";
 
@@ -15,7 +15,6 @@ export interface RecapInput {
 type UserGoal = Extract<GoalEvent, { side: "user" }>;
 type Template = (scorer: string, minute: string, assist: string) => string;
 
-const REGULATION_KICKS = ENGINE_COEFFICIENTS.shootout.kicks;
 // Engine-1 and engine-2 ended a capped shootout with one extra pair, the user scoring and the
 // opponent missing. It is an award, not a sudden-death round.
 const DECREE_AWARD_PAIRS = 1;
@@ -69,7 +68,10 @@ function goalLine(goal: UserGoal, variant: number): string {
   return ASSISTED[variant % ASSISTED.length]!(scorer, minute, speciesById(goal.assist).name);
 }
 
-export function recapLines(input: RecapInput): string[] {
+export function recapLines(
+  input: RecapInput,
+  c: EngineCoefficients = ENGINE_COEFFICIENTS,
+): string[] {
   const user = input.regulation.user + (input.extraTime?.user ?? 0);
   const opp = input.regulation.opp + (input.extraTime?.opp ?? 0);
   const score = `${Math.max(user, opp)}-${Math.min(user, opp)}`;
@@ -91,7 +93,7 @@ export function recapLines(input: RecapInput): string[] {
       // Level at the cap means every regulation kick was taken, so the pairs past them are the
       // sudden-death rounds.
       const awarded = decider === "decree" ? DECREE_AWARD_PAIRS : 0;
-      const rounds = kicks.length / 2 - REGULATION_KICKS - awarded;
+      const rounds = kicks.length / 2 - c.shootout.kicks - awarded;
       const how = decider === "coin" ? "on a coin toss" : "by the engine";
       lines.push(
         `${input.outcome === "W" ? "Won" : "Lost"} ${how} after ${rounds} rounds of sudden death.`,

@@ -85,6 +85,11 @@ export interface EngineCoefficients {
     /** The auto coach brings on fresh legs once a starter's energy falls below this. */
     autoSubEnergy: number;
     autoSubMinutes: readonly number[];
+    /**
+     * Engine 7: a tactic from 45' on hands tactics to the manager and any substitution hands subs
+     * to them, each on its own. Off, any decision hands both over.
+     */
+    splitManaged: boolean;
   };
 }
 
@@ -194,5 +199,6 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     cardLineWeight: { GK: 0, DEF: 1.3, MID: 1.1, ATT: 0.6 },
     autoSubEnergy: 82,
     autoSubMinutes: [60, 75],
+    splitManaged: false,
   },
 };
