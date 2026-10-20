@@ -3,7 +3,7 @@
 }
 .table th,
 .table td {
-  padding: 8px 3px;
+  padding: 8px 2px;
   text-align: right;
 }
 .table td,
@@ -33,7 +33,7 @@
   margin-top: 2px;
 }
 .tag {
-  padding: 0 6px;
+  padding: 0 4px;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
   font-size: 11px;

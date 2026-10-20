@@ -239,3 +239,20 @@ No migration, so no Neon step changes the schema. Read-only checks:
 - At 320 px the existing coach chips clip "Uncoached" and "Coached" inside their 3-column grid
   (`all-engines-320x640.png`). It was there before this row; the chips are unchanged.
 - Add `(mode, seed)` to an index once `leaderboard_entries` passes 10,000 rows.
+
+## Narrow table on Linux fonts (fix after review)
+
+Hosted CI at `3eac05a` failed `seed-board.spec.ts` at 320 px: the seed table was 3 px wider than
+its wrapper on Linux font metrics, deterministically (attempt and retry). macOS fonts fit with 3 px
+to spare, which is why local runs passed. Real Android phones use metrics close to the CI fonts, so
+this is a product fix, not a test fix.
+
+Measured locally before the fix: overflow 0 at 320, 7 px at 310, 17 px at 300. The floor is set by
+the nowrap "Engine v3" tag (player column 74 px) and the "Formation" header (65 px). Letting the
+player cell wrap changed nothing, because its tbody `th` already wraps.
+
+Decision: cell side padding 3 to 2 px and tag side padding 6 to 4 px. The table's minimum width
+drops from 254 to about 239 px (overflow 0 down to 306 px, 5 px at 300). Rejected: a shorter
+"Formation" header or engine tag (copy the spec fixed), hiding a column at narrow widths (drops
+data), and two-line pill tags (the stadium shape breaks).
+
