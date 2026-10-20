@@ -1,0 +1,2929 @@
+{
+ "engine": "pokedraft-engine-6",
+ "head": "55aabb2",
+ "note": "Rounded to 4 decimals. Proportions are count of n with a 95% Wilson interval; differences use Newcombe's hybrid score interval; squad share of variance and luck mean wins use a seeded 1,000-resample percentile bootstrap over squads.",
+ "pins": {
+  "P1_informed": {
+   "n": 400,
+   "seeds": 1,
+   "bots": [
+    "good",
+    "random"
+   ],
+   "formation": "4-3-3",
+   "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; each played match of the auto cup replayed with the informed kickoff tactic",
+   "byBot": {
+    "good": {
+     "matches": 2787,
+     "auto": {
+      "count": 2363,
+      "n": 2787,
+      "p": 0.8479,
+      "lo": 0.8341,
+      "hi": 0.8607
+     },
+     "arm": {
+      "count": 2332,
+      "n": 2787,
+      "p": 0.8367,
+      "lo": 0.8226,
+      "hi": 0.85
+     },
+     "winMinusAuto": {
+      "value": -0.0111,
+      "lo": -0.0303,
+      "hi": 0.008,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": {
+      "armOnly": 43,
+      "autoOnly": 74
+     }
+    },
+    "random": {
+     "matches": 1910,
+     "auto": {
+      "count": 1303,
+      "n": 1910,
+      "p": 0.6822,
+      "lo": 0.661,
+      "hi": 0.7027
+     },
+     "arm": {
+      "count": 1214,
+      "n": 1910,
+      "p": 0.6356,
+      "lo": 0.6138,
+      "hi": 0.6569
+     },
+     "winMinusAuto": {
+      "value": -0.0466,
+      "lo": -0.0765,
+      "hi": -0.0165,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": {
+      "armOnly": 41,
+      "autoOnly": 130
+     }
+    }
+   }
+  },
+  "P2_oracle": {
+   "n": 400,
+   "seeds": 1,
+   "bots": [
+    "good",
+    "random"
+   ],
+   "formation": "4-3-3",
+   "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; each played match of the auto cup replayed with every fixed kickoff tactic",
+   "byBot": {
+    "good": {
+     "matches": 2787,
+     "auto": {
+      "count": 2363,
+      "n": 2787,
+      "p": 0.8479,
+      "lo": 0.8341,
+      "hi": 0.8607
+     },
+     "arm": {
+      "count": 2469,
+      "n": 2787,
+      "p": 0.8859,
+      "lo": 0.8736,
+      "hi": 0.8972
+     },
+     "winMinusAuto": {
+      "value": 0.038,
+      "lo": 0.0202,
+      "hi": 0.0559,
+      "method": "newcombe-hybrid-score"
+     }
+    },
+    "random": {
+     "matches": 1910,
+     "auto": {
+      "count": 1303,
+      "n": 1910,
+      "p": 0.6822,
+      "lo": 0.661,
+      "hi": 0.7027
+     },
+     "arm": {
+      "count": 1415,
+      "n": 1910,
+      "p": 0.7408,
+      "lo": 0.7207,
+      "hi": 0.76
+     },
+     "winMinusAuto": {
+      "value": 0.0586,
+      "lo": 0.0299,
+      "hi": 0.0872,
+      "method": "newcombe-hybrid-score"
+     }
+    }
+   }
+  },
+  "P3_noop": {
+   "n": 400,
+   "seeds": 1,
+   "bots": [
+    "good",
+    "random"
+   ],
+   "formation": "4-3-3",
+   "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; each played match of the auto cup replayed with Balanced at kickoff",
+   "byBot": {
+    "good": {
+     "matches": 2787,
+     "auto": {
+      "count": 2363,
+      "n": 2787,
+      "p": 0.8479,
+      "lo": 0.8341,
+      "hi": 0.8607
+     },
+     "arm": {
+      "count": 2342,
+      "n": 2787,
+      "p": 0.8403,
+      "lo": 0.8263,
+      "hi": 0.8535
+     },
+     "winMinusAuto": {
+      "value": -0.0075,
+      "lo": -0.0266,
+      "hi": 0.0115,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": {
+      "armOnly": 1,
+      "autoOnly": 22
+     }
+    },
+    "random": {
+     "matches": 1910,
+     "auto": {
+      "count": 1303,
+      "n": 1910,
+      "p": 0.6822,
+      "lo": 0.661,
+      "hi": 0.7027
+     },
+     "arm": {
+      "count": 1202,
+      "n": 1910,
+      "p": 0.6293,
+      "lo": 0.6074,
+      "hi": 0.6507
+     },
+     "winMinusAuto": {
+      "value": -0.0529,
+      "lo": -0.0829,
+      "hi": -0.0227,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": {
+      "armOnly": 2,
+      "autoOnly": 103
+     }
+    }
+   }
+  },
+  "P4_shootouts": {
+   "n": 15000,
+   "seeds": 1,
+   "bots": [
+    "good"
+   ],
+   "formation": "4-3-3",
+   "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; cup seed probe-<formation>-<bot>-<i> for s = 0, then probe-<formation>-<bot>-<i>:<s>",
+   "byBot": {
+    "good": {
+     "bot": "good",
+     "formation": "4-3-3",
+     "squads": 15000,
+     "seedsPerSquad": 1,
+     "cups": 15000,
+     "knockoutMatches": 59226,
+     "shootouts": 5245,
+     "shootoutRate": {
+      "count": 5245,
+      "n": 59226,
+      "p": 0.0886,
+      "lo": 0.0863,
+      "hi": 0.0909
+     },
+     "coinDeciders": 0,
+     "userWin": {
+      "count": 2650,
+      "n": 5245,
+      "p": 0.5052,
+      "lo": 0.4917,
+      "hi": 0.5188
+     },
+     "edgeCuts": [
+      -7.65,
+      3.1,
+      14.95
+     ],
+     "quartiles": [
+      {
+       "quartile": 1,
+       "n": 1315,
+       "edgeRange": [
+        -50.1,
+        -7.65
+       ],
+       "meanEdge": -16.5911,
+       "userWin": {
+        "count": 604,
+        "n": 1315,
+        "p": 0.4593,
+        "lo": 0.4325,
+        "hi": 0.4863
+       }
+      },
+      {
+       "quartile": 2,
+       "n": 1310,
+       "edgeRange": [
+        -7.6,
+        3.1
+       ],
+       "meanEdge": -2.1779,
+       "userWin": {
+        "count": 667,
+        "n": 1310,
+        "p": 0.5092,
+        "lo": 0.4821,
+        "hi": 0.5362
+       }
+      },
+      {
+       "quartile": 3,
+       "n": 1311,
+       "edgeRange": [
+        3.1,
+        14.95
+       ],
+       "meanEdge": 8.787,
+       "userWin": {
+        "count": 643,
+        "n": 1311,
+        "p": 0.4905,
+        "lo": 0.4635,
+        "hi": 0.5175
+       }
+      },
+      {
+       "quartile": 4,
+       "n": 1309,
+       "edgeRange": [
+        15,
+        71.75
+       ],
+       "meanEdge": 27.0244,
+       "userWin": {
+        "count": 736,
+        "n": 1309,
+        "p": 0.5623,
+        "lo": 0.5352,
+        "hi": 0.5889
+       }
+      }
+     ],
+     "topMinusBottom": {
+      "value": 0.1029,
+      "lo": 0.0647,
+      "hi": 0.1407,
+      "method": "newcombe-hybrid-score"
+     }
+    }
+   }
+  },
+  "P9_squadShareOfVariance": {
+   "n": 150,
+   "seeds": 40,
+   "bots": [
+    "random",
+    "good",
+    "oracle"
+   ],
+   "formation": "4-3-3",
+   "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; cup seeds luck-<bot>-<i>-<s>, s = 0..seeds-1",
+   "byBot": {
+    "random": {
+     "value": 0.3786,
+     "lo": 0.3267,
+     "hi": 0.4291,
+     "method": "bootstrap-percentile-1000"
+    },
+    "good": {
+     "value": 0.1134,
+     "lo": 0.0948,
+     "hi": 0.1327,
+     "method": "bootstrap-percentile-1000"
+    },
+    "oracle": {
+     "value": 0.0719,
+     "lo": 0.0544,
+     "hi": 0.0895,
+     "method": "bootstrap-percentile-1000"
+    }
+   }
+  }
+ },
+ "P5_P6_P8_calibrate": {
+  "command": "pnpm calibrate --n 5000",
+  "n": 5000,
+  "seedScheme": "cal:<row>:<i>, bot rng bot:<row>:<i>, i = 0..n-1",
+  "buckets": [
+   {
+    "label": "840±20",
+    "lo": 820,
+    "hi": 860,
+    "count": 8678,
+    "meanWins": 6.1042,
+    "flawless": {
+     "count": 357,
+     "n": 8678,
+     "p": 0.0411,
+     "lo": 0.0372,
+     "hi": 0.0455
+    }
+   },
+   {
+    "label": "900±20",
+    "lo": 880,
+    "hi": 920,
+    "count": 8063,
+    "meanWins": 6.521,
+    "flawless": {
+     "count": 1036,
+     "n": 8063,
+     "p": 0.1285,
+     "lo": 0.1214,
+     "hi": 0.136
+    }
+   },
+   {
+    "label": "950±20",
+    "lo": 930,
+    "hi": 970,
+    "count": 20194,
+    "meanWins": 6.9614,
+    "flawless": {
+     "count": 6085,
+     "n": 20194,
+     "p": 0.3013,
+     "lo": 0.295,
+     "hi": 0.3077
+    }
+   }
+  ],
+  "meanWins": [
+   {
+    "row": "cup8-full",
+    "bot": "random",
+    "cups": 5000,
+    "meanWins": 3.2412,
+    "flawless": {
+     "count": 0,
+     "n": 5000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0008
+    }
+   },
+   {
+    "row": "cup8-full",
+    "bot": "good",
+    "cups": 5000,
+    "meanWins": 5.8644,
+    "flawless": {
+     "count": 141,
+     "n": 5000,
+     "p": 0.0282,
+     "lo": 0.024,
+     "hi": 0.0332
+    }
+   },
+   {
+    "row": "cup8-full",
+    "bot": "oracle",
+    "cups": 5000,
+    "meanWins": 6.2612,
+    "flawless": {
+     "count": 367,
+     "n": 5000,
+     "p": 0.0734,
+     "lo": 0.0665,
+     "hi": 0.081
+    }
+   },
+   {
+    "row": "cup8-full-open",
+    "bot": "random",
+    "cups": 5000,
+    "meanWins": 3.2364,
+    "flawless": {
+     "count": 0,
+     "n": 5000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0008
+    }
+   },
+   {
+    "row": "cup8-full-open",
+    "bot": "good",
+    "cups": 5000,
+    "meanWins": 6.3192,
+    "flawless": {
+     "count": 438,
+     "n": 5000,
+     "p": 0.0876,
+     "lo": 0.0801,
+     "hi": 0.0958
+    }
+   },
+   {
+    "row": "cup8-full-open",
+    "bot": "oracle",
+    "cups": 5000,
+    "meanWins": 6.5758,
+    "flawless": {
+     "count": 740,
+     "n": 5000,
+     "p": 0.148,
+     "lo": 0.1384,
+     "hi": 0.1581
+    }
+   },
+   {
+    "row": "cup8-retro",
+    "bot": "random",
+    "cups": 5000,
+    "meanWins": 3.063,
+    "flawless": {
+     "count": 0,
+     "n": 5000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0008
+    }
+   },
+   {
+    "row": "cup8-retro",
+    "bot": "good",
+    "cups": 5000,
+    "meanWins": 5.7464,
+    "flawless": {
+     "count": 89,
+     "n": 5000,
+     "p": 0.0178,
+     "lo": 0.0145,
+     "hi": 0.0219
+    }
+   },
+   {
+    "row": "cup8-retro",
+    "bot": "oracle",
+    "cups": 5000,
+    "meanWins": 6.1712,
+    "flawless": {
+     "count": 269,
+     "n": 5000,
+     "p": 0.0538,
+     "lo": 0.0479,
+     "hi": 0.0604
+    }
+   },
+   {
+    "row": "kanto151",
+    "bot": "random",
+    "cups": 5000,
+    "meanWins": 3.298,
+    "flawless": {
+     "count": 0,
+     "n": 5000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0008
+    }
+   },
+   {
+    "row": "kanto151",
+    "bot": "good",
+    "cups": 5000,
+    "meanWins": 4.8228,
+    "flawless": {
+     "count": 11,
+     "n": 5000,
+     "p": 0.0022,
+     "lo": 0.0012,
+     "hi": 0.0039
+    }
+   },
+   {
+    "row": "kanto151",
+    "bot": "oracle",
+    "cups": 5000,
+    "meanWins": 5.0934,
+    "flawless": {
+     "count": 25,
+     "n": 5000,
+     "p": 0.005,
+     "lo": 0.0034,
+     "hi": 0.0074
+    }
+   },
+   {
+    "row": "builder-leg-on",
+    "bot": "random",
+    "cups": 5000,
+    "meanWins": 2.999,
+    "flawless": {
+     "count": 0,
+     "n": 5000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0008
+    }
+   },
+   {
+    "row": "builder-leg-on",
+    "bot": "good",
+    "cups": 5000,
+    "meanWins": 6.8942,
+    "flawless": {
+     "count": 1317,
+     "n": 5000,
+     "p": 0.2634,
+     "lo": 0.2514,
+     "hi": 0.2758
+    }
+   },
+   {
+    "row": "builder-leg-on",
+    "bot": "oracle",
+    "cups": 5000,
+    "meanWins": 7.0258,
+    "flawless": {
+     "count": 1643,
+     "n": 5000,
+     "p": 0.3286,
+     "lo": 0.3157,
+     "hi": 0.3417
+    }
+   },
+   {
+    "row": "builder-leg-off",
+    "bot": "random",
+    "cups": 5000,
+    "meanWins": 2.7826,
+    "flawless": {
+     "count": 0,
+     "n": 5000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0008
+    }
+   },
+   {
+    "row": "builder-leg-off",
+    "bot": "good",
+    "cups": 5000,
+    "meanWins": 7.0048,
+    "flawless": {
+     "count": 1644,
+     "n": 5000,
+     "p": 0.3288,
+     "lo": 0.3159,
+     "hi": 0.3419
+    }
+   },
+   {
+    "row": "builder-leg-off",
+    "bot": "oracle",
+    "cups": 5000,
+    "meanWins": 6.9256,
+    "flawless": {
+     "count": 1427,
+     "n": 5000,
+     "p": 0.2854,
+     "lo": 0.2731,
+     "hi": 0.2981
+    }
+   }
+  ],
+  "goals": {
+   "total": 1640586,
+   "attackingShare": 0.6853
+  }
+ },
+ "P7_winCurve": {
+  "command": "pnpm exec tsx scripts/calibration/win-curve.mts --n 5000",
+  "n": 5000,
+  "seedScheme": "curve:<gap>:<i>, flat user lines at 800, G1 roster of buildLadder(\"probe\")",
+  "rows": [
+   {
+    "gap": -300,
+    "groupW": 0.005,
+    "groupD": 0.061,
+    "koW": 0.024
+   },
+   {
+    "gap": -250,
+    "groupW": 0.004,
+    "groupD": 0.078,
+    "koW": 0.034
+   },
+   {
+    "gap": -200,
+    "groupW": 0.014,
+    "groupD": 0.109,
+    "koW": 0.053
+   },
+   {
+    "gap": -150,
+    "groupW": 0.047,
+    "groupD": 0.167,
+    "koW": 0.119
+   },
+   {
+    "gap": -100,
+    "groupW": 0.124,
+    "groupD": 0.23,
+    "koW": 0.233
+   },
+   {
+    "gap": -50,
+    "groupW": 0.233,
+    "groupD": 0.271,
+    "koW": 0.377
+   },
+   {
+    "gap": 0,
+    "groupW": 0.372,
+    "groupD": 0.289,
+    "koW": 0.548
+   },
+   {
+    "gap": 50,
+    "groupW": 0.535,
+    "groupD": 0.268,
+    "koW": 0.717
+   },
+   {
+    "gap": 100,
+    "groupW": 0.683,
+    "groupD": 0.211,
+    "koW": 0.838
+   },
+   {
+    "gap": 150,
+    "groupW": 0.817,
+    "groupD": 0.147,
+    "koW": 0.931
+   },
+   {
+    "gap": 200,
+    "groupW": 0.897,
+    "groupD": 0.097,
+    "koW": 0.977
+   },
+   {
+    "gap": 250,
+    "groupW": 0.922,
+    "groupD": 0.071,
+    "koW": 0.982
+   },
+   {
+    "gap": 300,
+    "groupW": 0.937,
+    "groupD": 0.059,
+    "koW": 0.984
+   },
+   {
+    "gap": 350,
+    "groupW": 0.949,
+    "groupD": 0.047,
+    "koW": 0.99
+   },
+   {
+    "gap": 400,
+    "groupW": 0.968,
+    "groupD": 0.03,
+    "koW": 0.993
+   },
+   {
+    "gap": 450,
+    "groupW": 0.97,
+    "groupD": 0.029,
+    "koW": 0.995
+   },
+   {
+    "gap": 500,
+    "groupW": 0.98,
+    "groupD": 0.018,
+    "koW": 0.996
+   }
+  ]
+ },
+ "decision10Prototype": {
+  "patch": "docs/reports/engine-7/type-matchup-prototype.patch",
+  "pass": "good-bot squad share of variance at least 0.18 (P9) and every win-curve row within 0.03 of the v4 table (P7)",
+  "luckGood": {
+   "n": 150,
+   "seeds": 40,
+   "bots": [
+    "good"
+   ],
+   "formation": "4-3-3",
+   "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; cup seeds luck-<bot>-<i>-<s>, s = 0..seeds-1",
+   "result": {
+    "bot": "good",
+    "formation": "4-3-3",
+    "squads": 150,
+    "seedsPerSquad": 40,
+    "cups": 6000,
+    "meanWins": {
+     "value": 5.8665,
+     "lo": 5.8117,
+     "hi": 5.921,
+     "method": "bootstrap-percentile-1000"
+    },
+    "champion": {
+     "count": 153,
+     "n": 6000,
+     "p": 0.0255,
+     "lo": 0.0218,
+     "hi": 0.0298
+    },
+    "groupExit": {
+     "count": 0,
+     "n": 6000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0006
+    },
+    "sdWithinSquad": 0.9499,
+    "sdBetweenSquads": 0.3361,
+    "squadShareOfVariance": {
+     "value": 0.1112,
+     "lo": 0.0926,
+     "hi": 0.131,
+     "method": "bootstrap-percentile-1000"
+    },
+    "squadMeanRange": [
+     5.05,
+     6.6
+    ]
+   }
+  },
+  "winCurve": [
+   {
+    "gap": -300,
+    "groupW": 0.005,
+    "groupD": 0.053,
+    "koW": 0.02
+   },
+   {
+    "gap": -250,
+    "groupW": 0.003,
+    "groupD": 0.07,
+    "koW": 0.027
+   },
+   {
+    "gap": -200,
+    "groupW": 0.011,
+    "groupD": 0.099,
+    "koW": 0.046
+   },
+   {
+    "gap": -150,
+    "groupW": 0.04,
+    "groupD": 0.157,
+    "koW": 0.108
+   },
+   {
+    "gap": -100,
+    "groupW": 0.111,
+    "groupD": 0.22,
+    "koW": 0.212
+   },
+   {
+    "gap": -50,
+    "groupW": 0.214,
+    "groupD": 0.262,
+    "koW": 0.349
+   },
+   {
+    "gap": 0,
+    "groupW": 0.346,
+    "groupD": 0.287,
+    "koW": 0.519
+   },
+   {
+    "gap": 50,
+    "groupW": 0.508,
+    "groupD": 0.278,
+    "koW": 0.692
+   },
+   {
+    "gap": 100,
+    "groupW": 0.663,
+    "groupD": 0.221,
+    "koW": 0.823
+   },
+   {
+    "gap": 150,
+    "groupW": 0.795,
+    "groupD": 0.163,
+    "koW": 0.923
+   },
+   {
+    "gap": 200,
+    "groupW": 0.885,
+    "groupD": 0.107,
+    "koW": 0.973
+   },
+   {
+    "gap": 250,
+    "groupW": 0.906,
+    "groupD": 0.085,
+    "koW": 0.978
+   },
+   {
+    "gap": 300,
+    "groupW": 0.929,
+    "groupD": 0.067,
+    "koW": 0.982
+   },
+   {
+    "gap": 350,
+    "groupW": 0.942,
+    "groupD": 0.055,
+    "koW": 0.988
+   },
+   {
+    "gap": 400,
+    "groupW": 0.961,
+    "groupD": 0.036,
+    "koW": 0.992
+   },
+   {
+    "gap": 450,
+    "groupW": 0.966,
+    "groupD": 0.033,
+    "koW": 0.994
+   },
+   {
+    "gap": 500,
+    "groupW": 0.975,
+    "groupD": 0.022,
+    "koW": 0.995
+   }
+  ]
+ },
+ "wallSecondsOnThisMachine": {
+  "luck": 108,
+  "manager": 132,
+  "upsets": 11,
+  "formations": 44,
+  "informed": 32,
+  "noop": 34,
+  "oracle": 143,
+  "shootouts": 108,
+  "kinds": 13,
+  "calibrate-5000": 679,
+  "win-curve-5000": 91
+ },
+ "luck": {
+  "n": 150,
+  "seeds": 40,
+  "bots": [
+   "random",
+   "good",
+   "oracle"
+  ],
+  "formation": "4-3-3",
+  "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; cup seeds luck-<bot>-<i>-<s>, s = 0..seeds-1",
+  "byBot": {
+   "random": {
+    "bot": "random",
+    "formation": "4-3-3",
+    "squads": 150,
+    "seedsPerSquad": 40,
+    "cups": 6000,
+    "meanWins": {
+     "value": 3.2408,
+     "lo": 3.1248,
+     "hi": 3.3657,
+     "method": "bootstrap-percentile-1000"
+    },
+    "champion": {
+     "count": 0,
+     "n": 6000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0006
+    },
+    "groupExit": {
+     "count": 217,
+     "n": 6000,
+     "p": 0.0362,
+     "lo": 0.0317,
+     "hi": 0.0412
+    },
+    "sdWithinSquad": 0.9681,
+    "sdBetweenSquads": 0.7556,
+    "squadShareOfVariance": {
+     "value": 0.3786,
+     "lo": 0.3267,
+     "hi": 0.4291,
+     "method": "bootstrap-percentile-1000"
+    },
+    "squadMeanRange": [
+     1.375,
+     5.475
+    ]
+   },
+   "good": {
+    "bot": "good",
+    "formation": "4-3-3",
+    "squads": 150,
+    "seedsPerSquad": 40,
+    "cups": 6000,
+    "meanWins": {
+     "value": 5.8852,
+     "lo": 5.8297,
+     "hi": 5.9378,
+     "method": "bootstrap-percentile-1000"
+    },
+    "champion": {
+     "count": 167,
+     "n": 6000,
+     "p": 0.0278,
+     "lo": 0.024,
+     "hi": 0.0323
+    },
+    "groupExit": {
+     "count": 0,
+     "n": 6000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0006
+    },
+    "sdWithinSquad": 0.9444,
+    "sdBetweenSquads": 0.3378,
+    "squadShareOfVariance": {
+     "value": 0.1134,
+     "lo": 0.0948,
+     "hi": 0.1327,
+     "method": "bootstrap-percentile-1000"
+    },
+    "squadMeanRange": [
+     5.075,
+     6.625
+    ]
+   },
+   "oracle": {
+    "bot": "oracle",
+    "formation": "4-3-3",
+    "squads": 150,
+    "seedsPerSquad": 40,
+    "cups": 6000,
+    "meanWins": {
+     "value": 6.2863,
+     "lo": 6.247,
+     "hi": 6.3282,
+     "method": "bootstrap-percentile-1000"
+    },
+    "champion": {
+     "count": 495,
+     "n": 6000,
+     "p": 0.0825,
+     "lo": 0.0758,
+     "hi": 0.0897
+    },
+    "groupExit": {
+     "count": 0,
+     "n": 6000,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.0006
+    },
+    "sdWithinSquad": 0.942,
+    "sdBetweenSquads": 0.2621,
+    "squadShareOfVariance": {
+     "value": 0.0719,
+     "lo": 0.0544,
+     "hi": 0.0895,
+     "method": "bootstrap-percentile-1000"
+    },
+    "squadMeanRange": [
+     5.325,
+     6.925
+    ]
+   }
+  }
+ },
+ "manager": {
+  "n": 400,
+  "seeds": 1,
+  "bots": [
+   "good",
+   "random"
+  ],
+  "formation": "4-3-3",
+  "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; each played match of the auto cup replayed with every fixed kickoff tactic",
+  "byBot": {
+   "good": {
+    "bot": "good",
+    "formation": "4-3-3",
+    "squads": 400,
+    "matches": 2787,
+    "flipShare": {
+     "count": 328,
+     "n": 2787,
+     "p": 0.1177,
+     "lo": 0.1062,
+     "hi": 0.1302
+    },
+    "table": {
+     "auto": {
+      "n": 2787,
+      "win": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "draw": {
+       "count": 27,
+       "n": 2787,
+       "p": 0.0097,
+       "lo": 0.0067,
+       "hi": 0.0141
+      },
+      "loss": {
+       "count": 397,
+       "n": 2787,
+       "p": 0.1424,
+       "lo": 0.13,
+       "hi": 0.1559
+      },
+      "autoWin": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "winMinusAuto": {
+       "value": 0,
+       "lo": -0.0189,
+       "hi": 0.0189,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "balanced": {
+      "n": 2787,
+      "win": {
+       "count": 2342,
+       "n": 2787,
+       "p": 0.8403,
+       "lo": 0.8263,
+       "hi": 0.8535
+      },
+      "draw": {
+       "count": 28,
+       "n": 2787,
+       "p": 0.01,
+       "lo": 0.007,
+       "hi": 0.0145
+      },
+      "loss": {
+       "count": 417,
+       "n": 2787,
+       "p": 0.1496,
+       "lo": 0.1369,
+       "hi": 0.1633
+      },
+      "autoWin": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "winMinusAuto": {
+       "value": -0.0075,
+       "lo": -0.0266,
+       "hi": 0.0115,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "attack": {
+      "n": 2787,
+      "win": {
+       "count": 2377,
+       "n": 2787,
+       "p": 0.8529,
+       "lo": 0.8393,
+       "hi": 0.8656
+      },
+      "draw": {
+       "count": 8,
+       "n": 2787,
+       "p": 0.0029,
+       "lo": 0.0015,
+       "hi": 0.0057
+      },
+      "loss": {
+       "count": 402,
+       "n": 2787,
+       "p": 0.1442,
+       "lo": 0.1317,
+       "hi": 0.1578
+      },
+      "autoWin": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "winMinusAuto": {
+       "value": 0.005,
+       "lo": -0.0137,
+       "hi": 0.0238,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "defend": {
+      "n": 2787,
+      "win": {
+       "count": 2234,
+       "n": 2787,
+       "p": 0.8016,
+       "lo": 0.7864,
+       "hi": 0.816
+      },
+      "draw": {
+       "count": 103,
+       "n": 2787,
+       "p": 0.037,
+       "lo": 0.0306,
+       "hi": 0.0446
+      },
+      "loss": {
+       "count": 450,
+       "n": 2787,
+       "p": 0.1615,
+       "lo": 0.1483,
+       "hi": 0.1756
+      },
+      "autoWin": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "winMinusAuto": {
+       "value": -0.0463,
+       "lo": -0.0662,
+       "hi": -0.0263,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "press": {
+      "n": 2787,
+      "win": {
+       "count": 2351,
+       "n": 2787,
+       "p": 0.8436,
+       "lo": 0.8296,
+       "hi": 0.8566
+      },
+      "draw": {
+       "count": 20,
+       "n": 2787,
+       "p": 0.0072,
+       "lo": 0.0047,
+       "hi": 0.0111
+      },
+      "loss": {
+       "count": 416,
+       "n": 2787,
+       "p": 0.1493,
+       "lo": 0.1365,
+       "hi": 0.163
+      },
+      "autoWin": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "winMinusAuto": {
+       "value": -0.0043,
+       "lo": -0.0233,
+       "hi": 0.0147,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "counter": {
+      "n": 2787,
+      "win": {
+       "count": 2338,
+       "n": 2787,
+       "p": 0.8389,
+       "lo": 0.8248,
+       "hi": 0.8521
+      },
+      "draw": {
+       "count": 38,
+       "n": 2787,
+       "p": 0.0136,
+       "lo": 0.0099,
+       "hi": 0.0187
+      },
+      "loss": {
+       "count": 411,
+       "n": 2787,
+       "p": 0.1475,
+       "lo": 0.1348,
+       "hi": 0.1611
+      },
+      "autoWin": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "winMinusAuto": {
+       "value": -0.009,
+       "lo": -0.0281,
+       "hi": 0.0101,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "styleRule": {
+      "n": 2787,
+      "win": {
+       "count": 2358,
+       "n": 2787,
+       "p": 0.8461,
+       "lo": 0.8322,
+       "hi": 0.859
+      },
+      "draw": {
+       "count": 27,
+       "n": 2787,
+       "p": 0.0097,
+       "lo": 0.0067,
+       "hi": 0.0141
+      },
+      "loss": {
+       "count": 402,
+       "n": 2787,
+       "p": 0.1442,
+       "lo": 0.1317,
+       "hi": 0.1578
+      },
+      "autoWin": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "winMinusAuto": {
+       "value": -0.0018,
+       "lo": -0.0207,
+       "hi": 0.0171,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "informed": {
+      "n": 2787,
+      "win": {
+       "count": 2332,
+       "n": 2787,
+       "p": 0.8367,
+       "lo": 0.8226,
+       "hi": 0.85
+      },
+      "draw": {
+       "count": 47,
+       "n": 2787,
+       "p": 0.0169,
+       "lo": 0.0127,
+       "hi": 0.0224
+      },
+      "loss": {
+       "count": 408,
+       "n": 2787,
+       "p": 0.1464,
+       "lo": 0.1338,
+       "hi": 0.16
+      },
+      "autoWin": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "winMinusAuto": {
+       "value": -0.0111,
+       "lo": -0.0303,
+       "hi": 0.008,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "oracle": {
+      "n": 2787,
+      "win": {
+       "count": 2469,
+       "n": 2787,
+       "p": 0.8859,
+       "lo": 0.8736,
+       "hi": 0.8972
+      },
+      "draw": {
+       "count": 9,
+       "n": 2787,
+       "p": 0.0032,
+       "lo": 0.0017,
+       "hi": 0.0061
+      },
+      "loss": {
+       "count": 309,
+       "n": 2787,
+       "p": 0.1109,
+       "lo": 0.0997,
+       "hi": 0.1231
+      },
+      "autoWin": {
+       "count": 2363,
+       "n": 2787,
+       "p": 0.8479,
+       "lo": 0.8341,
+       "hi": 0.8607
+      },
+      "winMinusAuto": {
+       "value": 0.038,
+       "lo": 0.0202,
+       "hi": 0.0559,
+       "method": "newcombe-hybrid-score"
+      }
+     }
+    },
+    "discordantWins": {
+     "informed": {
+      "armOnly": 43,
+      "autoOnly": 74
+     },
+     "balanced": {
+      "armOnly": 1,
+      "autoOnly": 22
+     }
+    },
+    "winByStyle": {
+     "pressing": {
+      "n": 1330,
+      "informedTactic": "counter",
+      "balanced": {
+       "count": 1220,
+       "n": 1330,
+       "p": 0.9173,
+       "lo": 0.9013,
+       "hi": 0.9309
+      },
+      "attack": {
+       "count": 1234,
+       "n": 1330,
+       "p": 0.9278,
+       "lo": 0.9126,
+       "hi": 0.9405
+      },
+      "defend": {
+       "count": 1160,
+       "n": 1330,
+       "p": 0.8722,
+       "lo": 0.8532,
+       "hi": 0.8891
+      },
+      "press": {
+       "count": 1225,
+       "n": 1330,
+       "p": 0.9211,
+       "lo": 0.9053,
+       "hi": 0.9344
+      },
+      "counter": {
+       "count": 1224,
+       "n": 1330,
+       "p": 0.9203,
+       "lo": 0.9045,
+       "hi": 0.9337
+      },
+      "auto": {
+       "count": 1224,
+       "n": 1330,
+       "p": 0.9203,
+       "lo": 0.9045,
+       "hi": 0.9337
+      },
+      "informed": {
+       "count": 1224,
+       "n": 1330,
+       "p": 0.9203,
+       "lo": 0.9045,
+       "hi": 0.9337
+      }
+     },
+     "direct": {
+      "n": 889,
+      "informedTactic": "defend",
+      "balanced": {
+       "count": 706,
+       "n": 889,
+       "p": 0.7942,
+       "lo": 0.7663,
+       "hi": 0.8194
+      },
+      "attack": {
+       "count": 715,
+       "n": 889,
+       "p": 0.8043,
+       "lo": 0.7769,
+       "hi": 0.829
+      },
+      "defend": {
+       "count": 680,
+       "n": 889,
+       "p": 0.7649,
+       "lo": 0.7359,
+       "hi": 0.7916
+      },
+      "press": {
+       "count": 698,
+       "n": 889,
+       "p": 0.7852,
+       "lo": 0.757,
+       "hi": 0.8109
+      },
+      "counter": {
+       "count": 690,
+       "n": 889,
+       "p": 0.7762,
+       "lo": 0.7476,
+       "hi": 0.8023
+      },
+      "auto": {
+       "count": 713,
+       "n": 889,
+       "p": 0.802,
+       "lo": 0.7746,
+       "hi": 0.8269
+      },
+      "informed": {
+       "count": 680,
+       "n": 889,
+       "p": 0.7649,
+       "lo": 0.7359,
+       "hi": 0.7916
+      }
+     },
+     "possession": {
+      "n": 568,
+      "informedTactic": "press",
+      "balanced": {
+       "count": 416,
+       "n": 568,
+       "p": 0.7324,
+       "lo": 0.6945,
+       "hi": 0.7672
+      },
+      "attack": {
+       "count": 428,
+       "n": 568,
+       "p": 0.7535,
+       "lo": 0.7165,
+       "hi": 0.7872
+      },
+      "defend": {
+       "count": 394,
+       "n": 568,
+       "p": 0.6937,
+       "lo": 0.6546,
+       "hi": 0.7302
+      },
+      "press": {
+       "count": 428,
+       "n": 568,
+       "p": 0.7535,
+       "lo": 0.7165,
+       "hi": 0.7872
+      },
+      "counter": {
+       "count": 424,
+       "n": 568,
+       "p": 0.7465,
+       "lo": 0.7091,
+       "hi": 0.7805
+      },
+      "auto": {
+       "count": 426,
+       "n": 568,
+       "p": 0.75,
+       "lo": 0.7128,
+       "hi": 0.7839
+      },
+      "informed": {
+       "count": 428,
+       "n": 568,
+       "p": 0.7535,
+       "lo": 0.7165,
+       "hi": 0.7872
+      }
+     }
+    }
+   },
+   "random": {
+    "bot": "random",
+    "formation": "4-3-3",
+    "squads": 400,
+    "matches": 1910,
+    "flipShare": {
+     "count": 497,
+     "n": 1910,
+     "p": 0.2602,
+     "lo": 0.241,
+     "hi": 0.2804
+    },
+    "table": {
+     "auto": {
+      "n": 1910,
+      "win": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "draw": {
+       "count": 177,
+       "n": 1910,
+       "p": 0.0927,
+       "lo": 0.0805,
+       "hi": 0.1065
+      },
+      "loss": {
+       "count": 430,
+       "n": 1910,
+       "p": 0.2251,
+       "lo": 0.207,
+       "hi": 0.2444
+      },
+      "autoWin": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "winMinusAuto": {
+       "value": 0,
+       "lo": -0.0295,
+       "hi": 0.0295,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "balanced": {
+      "n": 1910,
+      "win": {
+       "count": 1202,
+       "n": 1910,
+       "p": 0.6293,
+       "lo": 0.6074,
+       "hi": 0.6507
+      },
+      "draw": {
+       "count": 207,
+       "n": 1910,
+       "p": 0.1084,
+       "lo": 0.0952,
+       "hi": 0.1231
+      },
+      "loss": {
+       "count": 501,
+       "n": 1910,
+       "p": 0.2623,
+       "lo": 0.2431,
+       "hi": 0.2825
+      },
+      "autoWin": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "winMinusAuto": {
+       "value": -0.0529,
+       "lo": -0.0829,
+       "hi": -0.0227,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "attack": {
+      "n": 1910,
+      "win": {
+       "count": 1249,
+       "n": 1910,
+       "p": 0.6539,
+       "lo": 0.6323,
+       "hi": 0.6749
+      },
+      "draw": {
+       "count": 146,
+       "n": 1910,
+       "p": 0.0764,
+       "lo": 0.0654,
+       "hi": 0.0892
+      },
+      "loss": {
+       "count": 515,
+       "n": 1910,
+       "p": 0.2696,
+       "lo": 0.2502,
+       "hi": 0.29
+      },
+      "autoWin": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "winMinusAuto": {
+       "value": -0.0283,
+       "lo": -0.0581,
+       "hi": 0.0016,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "defend": {
+      "n": 1910,
+      "win": {
+       "count": 1090,
+       "n": 1910,
+       "p": 0.5707,
+       "lo": 0.5484,
+       "hi": 0.5927
+      },
+      "draw": {
+       "count": 333,
+       "n": 1910,
+       "p": 0.1743,
+       "lo": 0.158,
+       "hi": 0.192
+      },
+      "loss": {
+       "count": 487,
+       "n": 1910,
+       "p": 0.255,
+       "lo": 0.2359,
+       "hi": 0.275
+      },
+      "autoWin": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "winMinusAuto": {
+       "value": -0.1115,
+       "lo": -0.1418,
+       "hi": -0.0809,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "press": {
+      "n": 1910,
+      "win": {
+       "count": 1220,
+       "n": 1910,
+       "p": 0.6387,
+       "lo": 0.6169,
+       "hi": 0.66
+      },
+      "draw": {
+       "count": 192,
+       "n": 1910,
+       "p": 0.1005,
+       "lo": 0.0878,
+       "hi": 0.1148
+      },
+      "loss": {
+       "count": 498,
+       "n": 1910,
+       "p": 0.2607,
+       "lo": 0.2415,
+       "hi": 0.2809
+      },
+      "autoWin": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "winMinusAuto": {
+       "value": -0.0435,
+       "lo": -0.0734,
+       "hi": -0.0134,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "counter": {
+      "n": 1910,
+      "win": {
+       "count": 1213,
+       "n": 1910,
+       "p": 0.6351,
+       "lo": 0.6132,
+       "hi": 0.6564
+      },
+      "draw": {
+       "count": 209,
+       "n": 1910,
+       "p": 0.1094,
+       "lo": 0.0962,
+       "hi": 0.1242
+      },
+      "loss": {
+       "count": 488,
+       "n": 1910,
+       "p": 0.2555,
+       "lo": 0.2364,
+       "hi": 0.2755
+      },
+      "autoWin": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "winMinusAuto": {
+       "value": -0.0471,
+       "lo": -0.0771,
+       "hi": -0.017,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "styleRule": {
+      "n": 1910,
+      "win": {
+       "count": 1232,
+       "n": 1910,
+       "p": 0.645,
+       "lo": 0.6233,
+       "hi": 0.6662
+      },
+      "draw": {
+       "count": 194,
+       "n": 1910,
+       "p": 0.1016,
+       "lo": 0.0888,
+       "hi": 0.1159
+      },
+      "loss": {
+       "count": 484,
+       "n": 1910,
+       "p": 0.2534,
+       "lo": 0.2344,
+       "hi": 0.2734
+      },
+      "autoWin": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "winMinusAuto": {
+       "value": -0.0372,
+       "lo": -0.067,
+       "hi": -0.0072,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "informed": {
+      "n": 1910,
+      "win": {
+       "count": 1214,
+       "n": 1910,
+       "p": 0.6356,
+       "lo": 0.6138,
+       "hi": 0.6569
+      },
+      "draw": {
+       "count": 222,
+       "n": 1910,
+       "p": 0.1162,
+       "lo": 0.1026,
+       "hi": 0.1314
+      },
+      "loss": {
+       "count": 474,
+       "n": 1910,
+       "p": 0.2482,
+       "lo": 0.2293,
+       "hi": 0.268
+      },
+      "autoWin": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "winMinusAuto": {
+       "value": -0.0466,
+       "lo": -0.0765,
+       "hi": -0.0165,
+       "method": "newcombe-hybrid-score"
+      }
+     },
+     "oracle": {
+      "n": 1910,
+      "win": {
+       "count": 1415,
+       "n": 1910,
+       "p": 0.7408,
+       "lo": 0.7207,
+       "hi": 0.76
+      },
+      "draw": {
+       "count": 134,
+       "n": 1910,
+       "p": 0.0702,
+       "lo": 0.0595,
+       "hi": 0.0825
+      },
+      "loss": {
+       "count": 361,
+       "n": 1910,
+       "p": 0.189,
+       "lo": 0.1721,
+       "hi": 0.2072
+      },
+      "autoWin": {
+       "count": 1303,
+       "n": 1910,
+       "p": 0.6822,
+       "lo": 0.661,
+       "hi": 0.7027
+      },
+      "winMinusAuto": {
+       "value": 0.0586,
+       "lo": 0.0299,
+       "hi": 0.0872,
+       "method": "newcombe-hybrid-score"
+      }
+     }
+    },
+    "discordantWins": {
+     "informed": {
+      "armOnly": 41,
+      "autoOnly": 130
+     },
+     "balanced": {
+      "armOnly": 2,
+      "autoOnly": 103
+     }
+    },
+    "winByStyle": {
+     "pressing": {
+      "n": 1114,
+      "informedTactic": "counter",
+      "balanced": {
+       "count": 749,
+       "n": 1114,
+       "p": 0.6724,
+       "lo": 0.6442,
+       "hi": 0.6993
+      },
+      "attack": {
+       "count": 790,
+       "n": 1114,
+       "p": 0.7092,
+       "lo": 0.6818,
+       "hi": 0.7351
+      },
+      "defend": {
+       "count": 675,
+       "n": 1114,
+       "p": 0.6059,
+       "lo": 0.5769,
+       "hi": 0.6342
+      },
+      "press": {
+       "count": 766,
+       "n": 1114,
+       "p": 0.6876,
+       "lo": 0.6598,
+       "hi": 0.7141
+      },
+      "counter": {
+       "count": 773,
+       "n": 1114,
+       "p": 0.6939,
+       "lo": 0.6662,
+       "hi": 0.7203
+      },
+      "auto": {
+       "count": 817,
+       "n": 1114,
+       "p": 0.7334,
+       "lo": 0.7067,
+       "hi": 0.7585
+      },
+      "informed": {
+       "count": 773,
+       "n": 1114,
+       "p": 0.6939,
+       "lo": 0.6662,
+       "hi": 0.7203
+      }
+     },
+     "direct": {
+      "n": 508,
+      "informedTactic": "defend",
+      "balanced": {
+       "count": 282,
+       "n": 508,
+       "p": 0.5551,
+       "lo": 0.5116,
+       "hi": 0.5978
+      },
+      "attack": {
+       "count": 292,
+       "n": 508,
+       "p": 0.5748,
+       "lo": 0.5314,
+       "hi": 0.6171
+      },
+      "defend": {
+       "count": 264,
+       "n": 508,
+       "p": 0.5197,
+       "lo": 0.4763,
+       "hi": 0.5628
+      },
+      "press": {
+       "count": 277,
+       "n": 508,
+       "p": 0.5453,
+       "lo": 0.5018,
+       "hi": 0.5881
+      },
+      "counter": {
+       "count": 267,
+       "n": 508,
+       "p": 0.5256,
+       "lo": 0.4821,
+       "hi": 0.5687
+      },
+      "auto": {
+       "count": 307,
+       "n": 508,
+       "p": 0.6043,
+       "lo": 0.5612,
+       "hi": 0.6459
+      },
+      "informed": {
+       "count": 264,
+       "n": 508,
+       "p": 0.5197,
+       "lo": 0.4763,
+       "hi": 0.5628
+      }
+     },
+     "possession": {
+      "n": 288,
+      "informedTactic": "press",
+      "balanced": {
+       "count": 171,
+       "n": 288,
+       "p": 0.5938,
+       "lo": 0.5362,
+       "hi": 0.6489
+      },
+      "attack": {
+       "count": 167,
+       "n": 288,
+       "p": 0.5799,
+       "lo": 0.5222,
+       "hi": 0.6354
+      },
+      "defend": {
+       "count": 151,
+       "n": 288,
+       "p": 0.5243,
+       "lo": 0.4667,
+       "hi": 0.5813
+      },
+      "press": {
+       "count": 177,
+       "n": 288,
+       "p": 0.6146,
+       "lo": 0.5572,
+       "hi": 0.6689
+      },
+      "counter": {
+       "count": 173,
+       "n": 288,
+       "p": 0.6007,
+       "lo": 0.5432,
+       "hi": 0.6556
+      },
+      "auto": {
+       "count": 179,
+       "n": 288,
+       "p": 0.6215,
+       "lo": 0.5643,
+       "hi": 0.6756
+      },
+      "informed": {
+       "count": 177,
+       "n": 288,
+       "p": 0.6146,
+       "lo": 0.5572,
+       "hi": 0.6689
+      }
+     }
+    }
+   }
+  }
+ },
+ "upsets": {
+  "n": 600,
+  "seeds": 1,
+  "bots": [
+   "random",
+   "good",
+   "oracle"
+  ],
+  "formation": "4-3-3",
+  "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n",
+  "result": {
+   "bots": [
+    "random",
+    "good",
+    "oracle"
+   ],
+   "formation": "4-3-3",
+   "squadsPerBot": 600,
+   "curve": [
+    {
+     "gap": -400,
+     "n": 4,
+     "win": {
+      "count": 0,
+      "n": 4,
+      "p": 0,
+      "lo": 0,
+      "hi": 0.4899
+     },
+     "draw": {
+      "count": 0,
+      "n": 4,
+      "p": 0,
+      "lo": 0,
+      "hi": 0.4899
+     }
+    },
+    {
+     "gap": -300,
+     "n": 38,
+     "win": {
+      "count": 2,
+      "n": 38,
+      "p": 0.0526,
+      "lo": 0.0146,
+      "hi": 0.1729
+     },
+     "draw": {
+      "count": 0,
+      "n": 38,
+      "p": 0,
+      "lo": 0,
+      "hi": 0.0918
+     }
+    },
+    {
+     "gap": -200,
+     "n": 272,
+     "win": {
+      "count": 29,
+      "n": 272,
+      "p": 0.1066,
+      "lo": 0.0753,
+      "hi": 0.1489
+     },
+     "draw": {
+      "count": 0,
+      "n": 272,
+      "p": 0,
+      "lo": 0,
+      "hi": 0.0139
+     }
+    },
+    {
+     "gap": -100,
+     "n": 817,
+     "win": {
+      "count": 223,
+      "n": 817,
+      "p": 0.2729,
+      "lo": 0.2435,
+      "hi": 0.3045
+     },
+     "draw": {
+      "count": 0,
+      "n": 817,
+      "p": 0,
+      "lo": 0,
+      "hi": 0.0047
+     }
+    },
+    {
+     "gap": 0,
+     "n": 1350,
+     "win": {
+      "count": 701,
+      "n": 1350,
+      "p": 0.5193,
+      "lo": 0.4926,
+      "hi": 0.5458
+     },
+     "draw": {
+      "count": 32,
+      "n": 1350,
+      "p": 0.0237,
+      "lo": 0.0168,
+      "hi": 0.0333
+     }
+    },
+    {
+     "gap": 100,
+     "n": 1646,
+     "win": {
+      "count": 1338,
+      "n": 1646,
+      "p": 0.8129,
+      "lo": 0.7933,
+      "hi": 0.831
+     },
+     "draw": {
+      "count": 109,
+      "n": 1646,
+      "p": 0.0662,
+      "lo": 0.0552,
+      "hi": 0.0793
+     }
+    },
+    {
+     "gap": 200,
+     "n": 1633,
+     "win": {
+      "count": 1485,
+      "n": 1633,
+      "p": 0.9094,
+      "lo": 0.8945,
+      "hi": 0.9223
+     },
+     "draw": {
+      "count": 92,
+      "n": 1633,
+      "p": 0.0563,
+      "lo": 0.0462,
+      "hi": 0.0686
+     }
+    },
+    {
+     "gap": 300,
+     "n": 1255,
+     "win": {
+      "count": 1206,
+      "n": 1255,
+      "p": 0.961,
+      "lo": 0.9488,
+      "hi": 0.9703
+     },
+     "draw": {
+      "count": 26,
+      "n": 1255,
+      "p": 0.0207,
+      "lo": 0.0142,
+      "hi": 0.0302
+     }
+    },
+    {
+     "gap": 400,
+     "n": 1108,
+     "win": {
+      "count": 1087,
+      "n": 1108,
+      "p": 0.981,
+      "lo": 0.9712,
+      "hi": 0.9876
+     },
+     "draw": {
+      "count": 11,
+      "n": 1108,
+      "p": 0.0099,
+      "lo": 0.0056,
+      "hi": 0.0177
+     }
+    },
+    {
+     "gap": 500,
+     "n": 1885,
+     "win": {
+      "count": 1837,
+      "n": 1885,
+      "p": 0.9745,
+      "lo": 0.9664,
+      "hi": 0.9807
+     },
+     "draw": {
+      "count": 44,
+      "n": 1885,
+      "p": 0.0233,
+      "lo": 0.0174,
+      "hi": 0.0312
+     }
+    },
+    {
+     "gap": 600,
+     "n": 1408,
+     "win": {
+      "count": 1389,
+      "n": 1408,
+      "p": 0.9865,
+      "lo": 0.979,
+      "hi": 0.9913
+     },
+     "draw": {
+      "count": 19,
+      "n": 1408,
+      "p": 0.0135,
+      "lo": 0.0087,
+      "hi": 0.021
+     }
+    },
+    {
+     "gap": 700,
+     "n": 1,
+     "win": {
+      "count": 1,
+      "n": 1,
+      "p": 1,
+      "lo": 0.2065,
+      "hi": 1
+     },
+     "draw": {
+      "count": 0,
+      "n": 1,
+      "p": 0,
+      "lo": 0,
+      "hi": 0.7935
+     }
+    }
+   ],
+   "knockout": {
+    "matches": 6017,
+    "extraTime": {
+     "count": 1116,
+     "n": 6017,
+     "p": 0.1855,
+     "lo": 0.1759,
+     "hi": 0.1955
+    },
+    "shootout": {
+     "count": 587,
+     "n": 6017,
+     "p": 0.0976,
+     "lo": 0.0903,
+     "hi": 0.1053
+    },
+    "shootoutUserWin": {
+     "count": 290,
+     "n": 587,
+     "p": 0.494,
+     "lo": 0.4538,
+     "hi": 0.5344
+    },
+    "coinDeciders": 0
+   }
+  }
+ },
+ "formations": {
+  "n": 400,
+  "seeds": 1,
+  "bots": [
+   "good",
+   "oracle"
+  ],
+  "formation": "4-3-3",
+  "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n",
+  "rows": [
+   {
+    "formation": "4-3-3",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 816.7,
+     "lo": 812.8012,
+     "hi": 820.5988,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.9075,
+     "lo": 5.8171,
+     "hi": 5.9979,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 7,
+     "n": 400,
+     "p": 0.0175,
+     "lo": 0.0085,
+     "hi": 0.0357
+    }
+   },
+   {
+    "formation": "4-4-2",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 819.245,
+     "lo": 815.4798,
+     "hi": 823.0102,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.9325,
+     "lo": 5.8306,
+     "hi": 6.0344,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 18,
+     "n": 400,
+     "p": 0.045,
+     "lo": 0.0287,
+     "hi": 0.07
+    }
+   },
+   {
+    "formation": "4-2-3-1",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 809.3575,
+     "lo": 805.6441,
+     "hi": 813.0709,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.865,
+     "lo": 5.7675,
+     "hi": 5.9625,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 12,
+     "n": 400,
+     "p": 0.03,
+     "lo": 0.0172,
+     "hi": 0.0517
+    }
+   },
+   {
+    "formation": "4-1-4-1",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 817.905,
+     "lo": 814.2195,
+     "hi": 821.5905,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.0025,
+     "lo": 5.907,
+     "hi": 6.098,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 16,
+     "n": 400,
+     "p": 0.04,
+     "lo": 0.0248,
+     "hi": 0.064
+    }
+   },
+   {
+    "formation": "3-5-2",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 808.295,
+     "lo": 804.6681,
+     "hi": 811.9219,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.8425,
+     "lo": 5.7485,
+     "hi": 5.9365,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 9,
+     "n": 400,
+     "p": 0.0225,
+     "lo": 0.0119,
+     "hi": 0.0422
+    }
+   },
+   {
+    "formation": "3-4-3",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 814.7575,
+     "lo": 810.4364,
+     "hi": 819.0786,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.885,
+     "lo": 5.7977,
+     "hi": 5.9723,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 7,
+     "n": 400,
+     "p": 0.0175,
+     "lo": 0.0085,
+     "hi": 0.0357
+    }
+   },
+   {
+    "formation": "3-4-2-1",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 813.7225,
+     "lo": 809.6755,
+     "hi": 817.7695,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.7575,
+     "lo": 5.6556,
+     "hi": 5.8594,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 10,
+     "n": 400,
+     "p": 0.025,
+     "lo": 0.0136,
+     "hi": 0.0454
+    }
+   },
+   {
+    "formation": "5-3-2",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 810.7375,
+     "lo": 806.979,
+     "hi": 814.496,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.835,
+     "lo": 5.732,
+     "hi": 5.938,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 12,
+     "n": 400,
+     "p": 0.03,
+     "lo": 0.0172,
+     "hi": 0.0517
+    }
+   },
+   {
+    "formation": "4-3-3",
+    "bot": "oracle",
+    "n": 400,
+    "meanScore": {
+     "value": 864.555,
+     "lo": 862.1272,
+     "hi": 866.9828,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.2625,
+     "lo": 6.1664,
+     "hi": 6.3586,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 27,
+     "n": 400,
+     "p": 0.0675,
+     "lo": 0.0468,
+     "hi": 0.0964
+    }
+   },
+   {
+    "formation": "4-4-2",
+    "bot": "oracle",
+    "n": 400,
+    "meanScore": {
+     "value": 862.99,
+     "lo": 860.4257,
+     "hi": 865.5543,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.22,
+     "lo": 6.1206,
+     "hi": 6.3194,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 28,
+     "n": 400,
+     "p": 0.07,
+     "lo": 0.0489,
+     "hi": 0.0993
+    }
+   },
+   {
+    "formation": "4-2-3-1",
+    "bot": "oracle",
+    "n": 400,
+    "meanScore": {
+     "value": 864.0975,
+     "lo": 861.5505,
+     "hi": 866.6445,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.315,
+     "lo": 6.2224,
+     "hi": 6.4076,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 31,
+     "n": 400,
+     "p": 0.0775,
+     "lo": 0.0551,
+     "hi": 0.1079
+    }
+   },
+   {
+    "formation": "4-1-4-1",
+    "bot": "oracle",
+    "n": 400,
+    "meanScore": {
+     "value": 865.66,
+     "lo": 863.2116,
+     "hi": 868.1084,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.28,
+     "lo": 6.1818,
+     "hi": 6.3782,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 32,
+     "n": 400,
+     "p": 0.08,
+     "lo": 0.0572,
+     "hi": 0.1108
+    }
+   },
+   {
+    "formation": "3-5-2",
+    "bot": "oracle",
+    "n": 400,
+    "meanScore": {
+     "value": 858.46,
+     "lo": 856.0208,
+     "hi": 860.8992,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.28,
+     "lo": 6.1796,
+     "hi": 6.3804,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 33,
+     "n": 400,
+     "p": 0.0825,
+     "lo": 0.0593,
+     "hi": 0.1136
+    }
+   },
+   {
+    "formation": "3-4-3",
+    "bot": "oracle",
+    "n": 400,
+    "meanScore": {
+     "value": 863.98,
+     "lo": 861.51,
+     "hi": 866.45,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.3075,
+     "lo": 6.208,
+     "hi": 6.407,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 31,
+     "n": 400,
+     "p": 0.0775,
+     "lo": 0.0551,
+     "hi": 0.1079
+    }
+   },
+   {
+    "formation": "3-4-2-1",
+    "bot": "oracle",
+    "n": 400,
+    "meanScore": {
+     "value": 864.205,
+     "lo": 861.5402,
+     "hi": 866.8698,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.2525,
+     "lo": 6.1549,
+     "hi": 6.3501,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 26,
+     "n": 400,
+     "p": 0.065,
+     "lo": 0.0447,
+     "hi": 0.0935
+    }
+   },
+   {
+    "formation": "5-3-2",
+    "bot": "oracle",
+    "n": 400,
+    "meanScore": {
+     "value": 857.8425,
+     "lo": 855.0614,
+     "hi": 860.6236,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.3175,
+     "lo": 6.2174,
+     "hi": 6.4176,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 35,
+     "n": 400,
+     "p": 0.0875,
+     "lo": 0.0636,
+     "hi": 0.1193
+    }
+   }
+  ]
+ },
+ "kinds": {
+  "n": 2000,
+  "seeds": 1,
+  "bots": [
+   "good"
+  ],
+  "formation": "4-3-3",
+  "seedScheme": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n",
+  "byBot": {
+   "good": {
+    "bot": "good",
+    "formation": "4-3-3",
+    "squads": 2000,
+    "matches": 13914,
+    "user": {
+     "goals": 42344,
+     "share": {
+      "open-play": {
+       "count": 24916,
+       "n": 42344,
+       "p": 0.5884,
+       "lo": 0.5837,
+       "hi": 0.5931
+      },
+      "header": {
+       "count": 4733,
+       "n": 42344,
+       "p": 0.1118,
+       "lo": 0.1088,
+       "hi": 0.1148
+      },
+      "solo": {
+       "count": 7084,
+       "n": 42344,
+       "p": 0.1673,
+       "lo": 0.1638,
+       "hi": 0.1709
+      },
+      "free-kick": {
+       "count": 3105,
+       "n": 42344,
+       "p": 0.0733,
+       "lo": 0.0709,
+       "hi": 0.0758
+      },
+      "penalty": {
+       "count": 2506,
+       "n": 42344,
+       "p": 0.0592,
+       "lo": 0.057,
+       "hi": 0.0615
+      }
+     }
+    },
+    "opp": {
+     "goals": 5466,
+     "share": {
+      "open-play": {
+       "count": 3161,
+       "n": 5466,
+       "p": 0.5783,
+       "lo": 0.5652,
+       "hi": 0.5913
+      },
+      "header": {
+       "count": 588,
+       "n": 5466,
+       "p": 0.1076,
+       "lo": 0.0996,
+       "hi": 0.1161
+      },
+      "solo": {
+       "count": 930,
+       "n": 5466,
+       "p": 0.1701,
+       "lo": 0.1604,
+       "hi": 0.1803
+      },
+      "free-kick": {
+       "count": 460,
+       "n": 5466,
+       "p": 0.0842,
+       "lo": 0.0771,
+       "hi": 0.0918
+      },
+      "penalty": {
+       "count": 327,
+       "n": 5466,
+       "p": 0.0598,
+       "lo": 0.0538,
+       "hi": 0.0664
+      }
+     }
+    },
+    "penalty": {
+     "goals": 2833,
+     "perMatch": 0.2036,
+     "awardedObservable": 2833,
+     "conversion": {
+      "count": 2833,
+      "n": 2833,
+      "p": 1,
+      "lo": 0.9986,
+      "hi": 1
+     },
+     "note": "Engine 6 has no missed penalty: a penalty is a goal relabelled (match.ts:790-791), so conversion is 1 by construction."
+    },
+    "headerShareByAttackerAer": {
+     "unit": "user side per played match; mean AER of the ATT-line starters after absences",
+     "cuts": [
+      69,
+      75,
+      80.6667
+     ],
+     "quartiles": [
+      {
+       "quartile": 1,
+       "matches": 3574,
+       "meanAer": 63.6131,
+       "headerShare": {
+        "count": 1169,
+        "n": 10459,
+        "p": 0.1118,
+        "lo": 0.1059,
+        "hi": 0.118
+       }
+      },
+      {
+       "quartile": 2,
+       "matches": 3493,
+       "meanAer": 72.1113,
+       "headerShare": {
+        "count": 1221,
+        "n": 10700,
+        "p": 0.1141,
+        "lo": 0.1082,
+        "hi": 0.1203
+       }
+      },
+      {
+       "quartile": 3,
+       "matches": 3376,
+       "meanAer": 77.8954,
+       "headerShare": {
+        "count": 1130,
+        "n": 10443,
+        "p": 0.1082,
+        "lo": 0.1024,
+        "hi": 0.1143
+       }
+      },
+      {
+       "quartile": 4,
+       "matches": 3471,
+       "meanAer": 85.0379,
+       "headerShare": {
+        "count": 1213,
+        "n": 10742,
+        "p": 0.1129,
+        "lo": 0.1071,
+        "hi": 0.119
+       }
+      }
+     ]
+    }
+   }
+  }
+ },
+ "sources": {
+  "luck.json": "4876d47c0799014437bc02c87dd0d4e03b9ee0b40c6fc3ba1299352b9c2d6ba2",
+  "manager.json": "25ef9fe6b50712403ea9aea29cccf7672688d0d08d356a499be18a82679215cb",
+  "informed.json": "5c651fcf3c9517698cbced3fa89d509a4677afcd4e9921748ca2f38d6c38bea7",
+  "noop.json": "37ef10f10e3cee683babc845fee3cba143a22de906b54216e0fefdccfddf2f05",
+  "oracle.json": "313fc02978d8f57954d4757e88b6305ca52adbfef4058fa9cfc0c41270bdc416",
+  "upsets.json": "fe688ff957889d54251c8df2a3f272f42c2456401e99d0511f1d52c409354d22",
+  "formations.json": "2ffb573af138c4831a20e4f6e5e98ed4085939c02f52f5cf15ad44b5f5a38497",
+  "shootouts.json": "10db0f0f47c7791d71ef182bbef905fee033a1a2933049ea2bcc5734575396fc",
+  "kinds.json": "569517ef32541df7feb314ad6b1fbc640e1c881027d6a9f2b89011eb9ab0983b",
+  "calibrate-5000.json": "9bf7876fe17ca07dc894b2c89e47f5e37c8ae221a59ffb0ed1cdf52b7063623c",
+  "win-curve-5000.md": "ea58d02b1842cc3138a0f5212083153a7d74444b69a57d7675c054917f9b83db",
+  "proto-luck-good.json": "f0e9c3350dde5b1b73f18837914421a3658f2e421c205ac66a0695c2e2eba085",
+  "proto-win-curve-5000.md": "b5848d5f0d047394db7f5c6601fb3884c90e2876e67c841ec00bd664d5c2f1e4"
+ }
+}

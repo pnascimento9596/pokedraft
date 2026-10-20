@@ -28,6 +28,26 @@ Gates at `72a46ca` (later commits add docs and screenshots only):
 
 Decision log: `docs/decisions/wave5-carryovers.md`. Browser proof: `docs/reports/wave5-carryovers/` (`coach-chips-{390,360,320}.png`, `empty-engine-board-{390,360,320}.png`, `open-the-builder-390.png`, `touchline-halftime-{390,360,320}.png`, `touchline-expanded-{390,360,320}.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Calibration probe and engine 6 baselines
+
+Branch `chore/calibration-probe` off `origin/main` at `9e4802b`. Wave 6 row 6p (Green). Scripts and docs only: `git diff origin/main -- src` is empty, so no player sees a change.
+
+- `scripts/calibration/probe.mts` is audit A's gameplay probe, committed with `@/` imports, `--coeffs`, `--out` and the same `probe-<formation>-<bot>-<i>` seeds. New modes: `informed`, `noop`, `oracle`, `shootouts`, `kinds`. Every proportion carries a 95% Wilson interval. `pnpm calibrate` and the probe share one `--coeffs` loader (byte-identical calibrate output before and after).
+- Audit A reproduces exactly: good-bot squad share of variance 0.113, manager auto .848, styleRule .846, oracle .886, the upset curve and the formation table.
+- Engine 6 baselines in `docs/reports/engine-7/baseline-v6.json`. Informed minus auto: good -1.1 points [-3.0, +0.8], random -4.7 [-7.7, -1.7]. No-op cost: good -0.75 [-2.7, +1.2], random -5.3 [-8.3, -2.3]. Oracle: good +3.8 [+2.0, +5.6], random +5.9 [+3.0, +8.7]. Shootouts (5,245): top edge quartile 56.2% [53.5, 58.9] against bottom 45.9% [43.3, 48.6]. Calibrate `--n 5000`: buckets 4.1%, 12.8%, 30.1%, attacking goal share 68.5%, wall time 678.4 s.
+- Decision 10 prototype failed: the good-bot squad share went from 11.3% to 11.1% [9.3, 13.1] against an 18% pin. 6b7 is dropped. The patch is kept as `docs/reports/engine-7/type-matchup-prototype.patch`.
+- Regression guard, no RED: new tooling, behaviour already correct.
+
+Gates at `2a92ad3` (the docs commit after it changes only `STATE.md` and the decision log):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. `check-retained-replays.mts` and `measure-retained-json.mjs` exited 0. Prettier passed on the touched files.
+- Unit tests: 2,013 passed in 230 files. `scripts/calibration`: 20 passed in 2 files.
+- NOT RUN: review, hosted CI, the coordinator's `luck` re-run at the head, Playwright (no UI change).
+
+Decision log: `docs/decisions/calibration-probe.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #141 (calibration probe and engine 6 baselines, Green) merged as squash `38b1bb4`, reviewed head `b2c6eaf`, GLM 5.3 Flash APPROVE in round 1 with canary `6p-bcca13fc972112ea9529edaf8cb70f9c` echoed. At `b2c6eaf` lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main`, 2,013 unit tests passed in 230 files and Prettier passed on 10 touched files; hosted check and all eight e2e shards green on the first run. The coordinator re-ran `probe.mts --probe luck --bot good --n 150 --seeds 40` at the head: squad share of variance 0.113 [0.095, 0.133], mean wins 5.885, matching audit A. Production `/api/health?db=1` served `38b1bb4` with engine `pokedraft-engine-6` and `db.status` ok; live `health.spec.ts` 1/1 on chromium. No runtime change.
+
 ## Wave 5 summary
 
 Branch `docs/wave5-summary` off `origin/main` at `e1f2c38`. Green: docs only, no runtime change.
