@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { safeNext } from "@/passcode";
 import { runTokenFromUrl } from "@/ui/run-link";
+import { builderMetadata, builderTokenFromUrl } from "../builder-metadata";
 import { loadRun } from "../r/[token]/run";
 import { runMetadata } from "../r/[token]/title";
 import { ModuleCard } from "@/components/ui/primitives";
@@ -9,12 +10,19 @@ import { NavIcon } from "@/components/ui/nav-icons";
 import s from "./page.module.css";
 
 // Preview bots follow the redirect to this page, so a gated share link still carries the
-// run's title and its (public) card image.
+// run's or builder squad's title and its (public) card image.
 export async function generateMetadata({ searchParams }: PageProps<"/gate">): Promise<Metadata> {
   const next = safeNext(firstParam((await searchParams).next));
-  const token = runTokenFromUrl(new URL(next, "https://pokedraft.invalid"));
-  if (token === null) return { title: "pokedraft" };
-  return runMetadata(token, await loadRun(token));
+  const nextUrl = new URL(next, "https://pokedraft.invalid");
+  const token = runTokenFromUrl(nextUrl);
+  if (token !== null) {
+    return runMetadata(token, await loadRun(token));
+  }
+  const b = builderTokenFromUrl(nextUrl);
+  if (b !== null) {
+    return builderMetadata(b);
+  }
+  return { title: "pokedraft" };
 }
 
 function firstParam(v: string | string[] | undefined): string | undefined {

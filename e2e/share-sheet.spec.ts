@@ -1,7 +1,8 @@
 import { writeFile } from "node:fs/promises";
 import { expect, test, type Page } from "@playwright/test";
+import sharp from "sharp";
 import { decodeToken, encodeToken } from "../src/engine/token";
-import { LIVE_GOLDEN_CUP8 } from "./pins";
+import { LIVE_GOLDEN_CUP8, LIVE_PREFIX } from "./pins";
 
 const SHOT = "docs/reports/share-sheet";
 // e2e/share.spec.ts's run: cup8 Open 4-3-3 on engine 3, 1-1-1, Team Score 283, out in the group.
@@ -10,6 +11,12 @@ const RUN =
 const RUN_PATH = `/r/pd3?t=${RUN.slice(4)}`;
 const DESCRIPTION = "Out in the group stage with 4-3-3. Draft your own XI on pokedraft.";
 const ALT = "pokedraft run card: 1-1-1, Team Score 283";
+
+const FULL_BUILDER = `${LIVE_PREFIX}W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiYnVpbGRlciIsW1sibCIsMSwiczAiXSxbImwiLDIsInMxIl0sWyJsIiwzLCJzMiJdLFsibCIsNCwiczMiXSxbImwiLDUsInM0Il0sWyJsIiw2LCJzNSJdLFsibCIsNywiczYiXSxbImwiLDgsInM3Il0sWyJsIiw5LCJzOCJdLFsibCIsMTAsInM5Il0sWyJsIiwxMSwiczEwIl0sWyJsIiwxMiwiYjAiXSxbImwiLDEzLCJiMSJdLFsibCIsMTQsImIyIl0sWyJsIiwxNSwiYjMiXSxbImwiLDE2LCJiNCJdXV0`;
+const BUILDER_PATH = `/?b=${encodeURIComponent(FULL_BUILDER)}`;
+const BUILDER_TITLE = "pokedraft squad: 4-3-3, Team Score 375";
+const BUILDER_DESCRIPTION = "4-3-3 squad with Team Score 375. Build your own XI on pokedraft.";
+const BUILDER_ALT = "pokedraft squad card: 4-3-3, Team Score 375";
 
 function metaContent(html: string, key: string): string[] {
   const out: string[] = [];
@@ -38,6 +45,45 @@ test.describe("link preview metadata (catches a preview with no description or a
       [DESCRIPTION],
       [ALT],
     ]);
+  });
+
+  test("/?b= server HTML carries the squad title, description, card alt, and card image", async ({
+    request,
+  }) => {
+    const html = await (await request.get(BUILDER_PATH)).text();
+    expect(
+      ["description", "og:description", "twitter:description", "og:image:alt"].map((k) =>
+        metaContent(html, k),
+      ),
+    ).toEqual([[BUILDER_DESCRIPTION], [BUILDER_DESCRIPTION], [BUILDER_DESCRIPTION], [BUILDER_ALT]]);
+    expect(metaContent(html, "og:title")).toEqual([BUILDER_TITLE]);
+    const [image] = metaContent(html, "og:image");
+    const imageUrl = new URL(image!);
+    expect(imageUrl.pathname).toBe("/card");
+    expect(imageUrl.search).toBe(`?b=${encodeURIComponent(FULL_BUILDER)}`);
+
+    const cardRes = await request.get(`${imageUrl.pathname}${imageUrl.search}`);
+    expect(cardRes.status()).toBe(200);
+    expect(cardRes.headers()["content-type"]).toContain("image/png");
+    const metadata = await sharp(await cardRes.body()).metadata();
+    expect([metadata.width, metadata.height]).toEqual([1200, 630]);
+  });
+
+  test("the passcode gate preview carries the same squad title, description and alt for ?b=", async ({
+    request,
+  }) => {
+    const html = await (await request.get(`/gate?next=${encodeURIComponent(BUILDER_PATH)}`)).text();
+    expect([
+      metaContent(html, "og:title"),
+      metaContent(html, "og:description"),
+      metaContent(html, "og:image:alt"),
+    ]).toEqual([[BUILDER_TITLE], [BUILDER_DESCRIPTION], [BUILDER_ALT]]);
+  });
+
+  test("invalid ?b= leaves default site metadata and no squad description", async ({ request }) => {
+    const html = await (await request.get(`/?b=${LIVE_PREFIX}invalid`)).text();
+    expect(metaContent(html, "og:title")).toEqual([]);
+    expect(metaContent(html, "og:image:alt")).toEqual([]);
   });
 });
 
