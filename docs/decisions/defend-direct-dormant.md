@@ -15,7 +15,7 @@ Wave 7 row 8c, Red. Branch `feat/defend-direct-dormant` off `origin/main` at `f2
 
 ## Parity and guards
 
-- RED commit `0c250a9f` added `src/engine/__tests__/direct-defend.test.ts` asserting the live field value, V8 candidate export, `loadCoefficients("v8")`, and exact output parity against frozen bundle `v7`. Failed RED before implementation.
+- RED commit `0c250a9f` added `src/engine/__tests__/direct-defend.test.ts` with 3 assertions: the live field value, the V8 candidate export and `loadCoefficients("v8")`. It failed with `Cannot find module '../coefficients-v8'` before the implementation. The frozen v7 replay parity test and the literal chance pin were added with the implementation.
 - GREEN implementation satisfies all boundary, coeffs, and parity assertions.
 - Live goldens test `src/engine/__tests__/goldens.test.ts` is byte-identical to `origin/main` (exit code 0).
 
@@ -32,3 +32,6 @@ The Defend-against-direct branch is the one this row changed, and it is exercise
 
 The literal-pin test was added with the implementation, after the RED commit. The RED commit covers the other four assertions in that file.
 
+## Carryovers
+
+- `match.ts` applies `directDefendOwn` only when `styleEdges.direct.defend` exists, while `intel.ts` and `probe-modes.ts` apply it whenever the style is direct and the tactic is Defend. Live and V8 both define the edge, and a `--coeffs` patch cannot delete a key, so the two cannot disagree today. `styleEdges.direct.defend[0]` is now unread in live code and holds the same number as `directDefendOwn` by convention. Row 8x can drop one of them when it copies the calibrated V8 values into the live object.

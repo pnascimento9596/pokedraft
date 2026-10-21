@@ -5,7 +5,7 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Defend against direct, dormant
 
-Branch `feat/defend-direct-dormant` off `origin/main` at `f2f01113`. Wave 7 row 8c (Red). The first commit (`20d75ed9`) records the PR #171 merge. The second commit (`0c250a9f`) adds the RED guard test asserting that `directDefendOwn` is present in live coefficients and candidate `ENGINE_COEFFICIENTS_V8`, and parity holds against frozen v7.
+Branch `feat/defend-direct-dormant` off `origin/main` at `f2f01113`. Wave 7 row 8c (Red). The first commit (`20d75ed9`) records the PR #171 merge. The second commit (`0c250a9f`) adds the RED guard test with 3 assertions (the live `directDefendOwn` value, the `ENGINE_COEFFICIENTS_V8` export, and `loadCoefficients("v8")`); it fails because `../coefficients-v8` does not exist. The frozen v7 replay parity test and the literal chance pin were added with the implementation, after RED.
 
 - Added `directDefendOwn: number` to `EngineCoefficients["manager"]` and `ENGINE_COEFFICIENTS.manager` at `0.655` (engine 7 value).
 - Created `src/engine/coefficients-v8.ts` exporting `ENGINE_COEFFICIENTS_V8: EngineCoefficients` with candidate `directDefendOwn: 0.95` and `styleEdges.direct.defend: [0.95, 0.7]` (the s = 1.5 variant explored in 6b8).
