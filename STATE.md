@@ -3,6 +3,25 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## App surfaces carryover sweep
+
+Branch `fix/app-surface-carryovers` off `origin/main` at `d23e15f6`. Wave 7 row 7q2 (Yellow). The first commit (`da055b5e`) records the PR #167 merge.
+
+- Full audit and resolution of all Wave 4 and Wave 6 app surface carryover items (brief section 4.4):
+  - 4j (draft drawer and builder picker swipes set React state on every move): removed `[swipeY, setSwipeY]` React state from `src/components/builder/Picker.tsx` and `src/components/run/DraftBoard.tsx`. Transforms are applied directly to the element refs (`ref.current.style.transform` and `drawerRef.current.style.transform`) on `pointermove` and reset to `""` on pointer up or cancel.
+  - Guard tests committed in RED-then-GREEN order (`src/components/builder/__tests__/picker-swipe-render.test.tsx` and `src/components/run/__tests__/drawer-swipe-render.test.tsx`) assert that pointer moves update the transform on the element directly without triggering component re-renders (spying on `valueAt` and `useCoachDismissed`).
+  - Test runner determinism: pre-warmed dynamic imports (`import("@/components/builder/live")` and `import("../LiveRun")`) in `beforeAll` blocks in `src/components/builder/__tests__/Builder.test.tsx` and `src/components/run/__tests__/coach-mark.test.tsx` to eliminate lazy-import race on hosted runners.
+  - 4e ("Goal for This squad!" capitalization): closed by PR #127 commit `ef542fb0b8773d3dc924a01252331342e09393c9` (`src/components/results/format.ts:25` and `MatchReplay.test.tsx:96-110`).
+  - 4g (alt text repeating visible name): closed by PR #127 commit `ef542fb0b8773d3dc924a01252331342e09393c9` (`src/components/wheel/Wheel.tsx:57` and `src/components/results/BossRoster.tsx:56` both use `alt=""`).
+  - 4i (landscape side insets): closed by `e2e/safe-area-insets.spec.ts:101-134`.
+  - 4h2 (two 4 px frame-noise diffs): closed as measured raster noise between identical builds in `docs/decisions/wave4-carryovers.md:105-118`.
+  - 6b3 (320 px and 308 px touchline set-piece select truncation): closed by PR #156, guarded by `e2e/penalty-takers.spec.ts:47-80`.
+- Gates at branch HEAD: `pnpm vitest run src/components/builder/__tests__/picker-swipe-render.test.tsx src/components/run/__tests__/drawer-swipe-render.test.tsx src/components/builder/__tests__/Builder.test.tsx src/components/run/__tests__/coach-mark.test.tsx` passed 53 tests in 4 files; full ladder (`lint`, `typecheck`, `test` 2,277 passed in 257 files, `build`, `format:check`, all 9 `check:*` scripts) clean.
+- Decision log: `docs/decisions/app-surface-carryovers.md`.
+- NOT RUN: Owner physical device test (iPhone Safari, Android Chrome); owner VoiceOver screen reader pass.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Matchday and broadcast carryovers sweep
 
 Branch `fix/matchday-broadcast-carryovers` off `origin/main` at `a560015e`. Wave 7 row 7q1 (Yellow). The first commit (`657f87ec`) records the PR #166 merge.
