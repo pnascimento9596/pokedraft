@@ -8,21 +8,22 @@ async function headersFor(source: string): Promise<Record<string, string>> {
 }
 
 describe("security headers (catches a site that can be framed, sniffed or loaded with any script)", () => {
-  it("sends nosniff, a referrer policy, a permissions policy, frame denial and a report-only CSP on every path", async () => {
+  it("sends nosniff, a referrer policy, a permissions policy, frame denial and enforcing CSP on every path", async () => {
     expect(await headersFor("/:path*")).toEqual({
       "X-Robots-Tag": "noindex, nofollow",
       "X-Content-Type-Options": "nosniff",
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
       "X-Frame-Options": "DENY",
-      "Content-Security-Policy-Report-Only":
+      "Content-Security-Policy":
         "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; report-uri /api/csp-report",
     });
   });
 
-  it("does not enforce a CSP yet", async () => {
+  it("enforces Content-Security-Policy and does not send report-only CSP", async () => {
     const rules = (await nextConfig.headers?.()) ?? [];
     const keys = rules.flatMap((r) => r.headers.map((h) => h.key.toLowerCase()));
-    expect(keys).not.toContain("content-security-policy");
+    expect(keys).toContain("content-security-policy");
+    expect(keys).not.toContain("content-security-policy-report-only");
   });
 });
