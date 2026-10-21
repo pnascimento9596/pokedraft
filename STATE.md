@@ -3,6 +3,20 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine 8 calibration, dormant
+
+Branch `feat/engine8-calibration` off `origin/main` at `d6a165d1`. Wave 7 row 8e (Red). The first commit (`51c9977a`) records the PR #172 merge. RED commit `37894142` pins the V8 value (2 of 21 failed against the old V8 file); `ae1af58c` is the V8 change (21 of 21 passed).
+
+- `ENGINE_COEFFICIENTS_V8` now holds `directDefendOwn` 1.05 and `styleEdges.direct.defend` `[1.05, 0.52]` (engine 7: 0.655 and `[0.655, 0.4825]`). Chosen from a 33-combination informed and oracle grid (66 probes) at 400 squads per bot as the smallest measured change that puts P1 good at or above +3 with P2 at or below +10 for both bots. Live coefficients, `match.ts` and `goldens.test.ts` are identical to `origin/main`, so production output is engine 7's.
+- Pins at `50127bc7` (one run, `--coeffs v8`): P1 good +3.07, random +6.50; P2 good +4.64, random +9.91; P3 0.00 and 0.00; P4 +18.37 over 5,438 shootouts in 17,000 cups; P5 buckets 3.65%, 11.79%, 29.53% (all inside the v4 intervals); P6 good 5.912 wins, careless 151 3.331. P7 worst +0.046 and P8 68.61% fail and are recorded as measured, as the hand-off allows. Giant killer 5 of 200 (inside 2% to 20%, threshold stays 100); Hat-trick hero 146 of 200.
+- Row 8d (goal-kind centring) is dropped: no pin P1 to P6 depends on goal kind and the owner did not ask for it. Reasoning in the decision log.
+- `scripts/calibration/summarize-calibration.mts` takes `--coeffs v8`; its default output is unchanged.
+- Gates at `50127bc7` plus docs: `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm format:check` and all nine `check:*` scripts exit 0; `pnpm test` 2,293 passed in 259 files; `check-retained-replays.mts` 13 replays passed; `measure-retained-json.mjs` 4 copies, 2,891,853 bytes.
+- Decision log: `docs/decisions/engine-8-calibration.md`; summary JSON `docs/reports/engine-8/calibration.json`.
+- NOT RUN: the oracle probe on formations, P9 (6b7 does not exist), live checks (post-merge), owner device test.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Defend against direct, dormant
 
 Branch `feat/defend-direct-dormant` off `origin/main` at `f2f01113`. Wave 7 row 8c (Red). The first commit (`20d75ed9`) records the PR #171 merge. The second commit (`0c250a9f`) adds the RED guard test with 3 assertions (the live `directDefendOwn` value, the `ENGINE_COEFFICIENTS_V8` export, and `loadCoefficients("v8")`); it fails because `../coefficients-v8` does not exist. The frozen v7 replay parity test and the literal chance pin were added with the implementation, after RED.
