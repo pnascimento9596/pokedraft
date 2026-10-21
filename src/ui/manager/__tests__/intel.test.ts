@@ -19,9 +19,9 @@ describe("scoutLine (catches a scout line that is hand-written or ignores the co
     );
   });
 
-  it("ranks Counter over Press against a pressing side", () => {
+  it("ranks Counter over Press against a pressing side and warns off Attack and Defend", () => {
     expect(scoutLine("pressing")).toBe(
-      "Scout: a pressing side. Best edge: Counter, then Press. Avoid Defend.",
+      "Scout: a pressing side. Best edge: Counter, then Press. Avoid Attack and Defend.",
     );
   });
 
@@ -48,8 +48,8 @@ describe("tacticEdge (catches a pill badge that disagrees with the engine's mult
     ).toEqual(["neutral", "neutral", "unfavourable", "favourable", "favourable"]);
   });
 
-  it("against pressing: Attack stays neutral (1.3 for, 1.35 against)", () => {
-    expect(tacticEdge("pressing", "attack")).toBe("neutral");
+  it("against pressing: Attack is unfavourable (1.345 for, 1.46 against) and Counter is favourable", () => {
+    expect(tacticEdge("pressing", "attack")).toBe("unfavourable");
     expect(tacticEdge("pressing", "counter")).toBe("favourable");
   });
 
@@ -64,24 +64,26 @@ describe("tacticEdge (catches a pill badge that disagrees with the engine's mult
   });
 });
 
-// Regression guard, no RED: behaviour already correct. The scout reads the live engine 6 table, so
-// the engine 7 candidate's larger edges (6b2) must not reach a badge or a scout line before the flip.
-describe("tacticEdge and scoutLine before the flip (catches the engine 7 tactic table leaking into the scout)", () => {
+describe("tacticEdge and scoutLine under engine 7 (catches badges or scout lines drifting from the live table)", () => {
   const ALL = ["balanced", "attack", "defend", "press", "counter"] as const;
 
-  it("gives every style and tactic its engine 6 badge", () => {
-    expect(
-      (["pressing", "possession", "direct"] as const).map((s) => ALL.map((t) => tacticEdge(s, t))),
-    ).toEqual([
-      ["neutral", "neutral", "unfavourable", "favourable", "favourable"],
+  it("gives every style and tactic its engine 7 badge, with at most two favourable per style", () => {
+    const badges = (["pressing", "possession", "direct"] as const).map((s) =>
+      ALL.map((t) => tacticEdge(s, t)),
+    );
+    expect(badges).toEqual([
+      ["neutral", "unfavourable", "unfavourable", "favourable", "favourable"],
       ["neutral", "neutral", "unfavourable", "favourable", "favourable"],
       ["neutral", "neutral", "favourable", "unfavourable", "neutral"],
     ]);
+    for (const row of badges) {
+      expect(row.filter((b) => b === "favourable").length).toBeLessThanOrEqual(2);
+    }
   });
 
-  it("keeps the three engine 6 scout lines", () => {
+  it("keeps the three engine 7 scout lines", () => {
     expect((["pressing", "possession", "direct"] as const).map(scoutLine)).toEqual([
-      "Scout: a pressing side. Best edge: Counter, then Press. Avoid Defend.",
+      "Scout: a pressing side. Best edge: Counter, then Press. Avoid Attack and Defend.",
       "Scout: a possession side. Best edge: Press, then Counter. Avoid Defend.",
       "Scout: a direct side. Best edge: Defend. Avoid Press.",
     ]);
@@ -108,10 +110,20 @@ describe("fatigueLine (catches a half-time line that names the keeper or the wro
   });
 });
 
-describe("assistantStatus (catches a status line that claims engine 7's split before it ships)", () => {
-  it("reads subs on, tactics on before any decision and subs off, tactics off after one", () => {
-    expect(assistantStatus(false)).toBe("Assistant: subs on, tactics on");
-    expect(assistantStatus(true)).toBe("Assistant: subs off, tactics off");
+describe("assistantStatus (catches a status line that collapses the split assistant states)", () => {
+  it("reports each half of the assistant independently: subs then tactics", () => {
+    expect((assistantStatus as (t: boolean, s: boolean) => string)(false, false)).toBe(
+      "Assistant: subs on, tactics on",
+    );
+    expect((assistantStatus as (t: boolean, s: boolean) => string)(true, false)).toBe(
+      "Assistant: subs on, tactics off",
+    );
+    expect((assistantStatus as (t: boolean, s: boolean) => string)(false, true)).toBe(
+      "Assistant: subs off, tactics on",
+    );
+    expect((assistantStatus as (t: boolean, s: boolean) => string)(true, true)).toBe(
+      "Assistant: subs off, tactics off",
+    );
     expect([ASSISTANT_ON, ASSISTANT_OFF]).toEqual([
       "Assistant: subs on, tactics on",
       "Assistant: subs off, tactics off",

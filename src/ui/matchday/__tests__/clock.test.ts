@@ -85,7 +85,7 @@ describe("stopsFor (catches manager mode that skips an injury prompt or stops a 
   });
 });
 
-describe("the 65' managed stop (catches a managed match that lets a tired side run on past 65')", () => {
+describe("no 65' fatigue stop under engine 7 (catches the interim engine 6 stop lingering after splitManaged ships)", () => {
   // 4-3-3: slot 0 is the keeper.
   function at65(energy: readonly number[]): PlayedMatch {
     return {
@@ -104,19 +104,8 @@ describe("the 65' managed stop (catches a managed match that lets a tired side r
     } as unknown as PlayedMatch;
   }
   const outfield64 = [90, 80, 80, 80, 80, 64, 80, 80, 80, 80, 80];
-  const outfield65 = [90, 80, 80, 80, 80, 65, 80, 80, 80, 80, 80];
 
-  it("65' stop appears when managed and an outfield starter is at 64 energy, not at 65", () => {
-    expect(stopsFor(at65(outfield64), LINEUP, true)).toEqual([
-      { key: "halftime", kind: "halftime", minute: 45 },
-      { key: "fatigue:65", kind: "fatigue", minute: 65 },
-    ]);
-    expect(stopsFor(at65(outfield65), LINEUP, true).map((s) => s.key)).toEqual(["halftime"]);
-  });
-
-  it("never stops at 65' while the assistant still runs the side, or for a tired keeper", () => {
-    expect(stopsFor(at65(outfield64), LINEUP, false).map((s) => s.key)).toEqual(["halftime"]);
-    const keeper40 = [40, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80];
-    expect(stopsFor(at65(keeper40), LINEUP, true).map((s) => s.key)).toEqual(["halftime"]);
+  it("stops only at half-time even when an outfield starter is below 65 energy at 65'", () => {
+    expect((stopsFor as (m: PlayedMatch, l: FullLineup, managed?: boolean) => readonly { key: string }[])(at65(outfield64), LINEUP, true).map((s) => s.key)).toEqual(["halftime"]);
   });
 });
