@@ -153,24 +153,6 @@ describe("a re-injured slot draws a fresh reserve (catches two injuries in one s
   });
 });
 
-// Regression guard, no RED: behaviour already correct. Engine 6 bytes must not move before the
-// flip, so none of engine 7's new keys or kinds may appear at the live coefficients.
-describe("engine 6 output carries no opponent injury, rotation or oppEnergy (catches dormant output leaking into live runs)", () => {
-  it("golden panel runs 0 to 49 at the live coefficients: 241 matches, none of the new output", () => {
-    expect(census(ENGINE_COEFFICIENTS, 50)).toEqual({
-      matches: 241,
-      oppInjuries: 0,
-      oppSubs: 0,
-      rotations: 0,
-      oppEnergyKeys: 0,
-    });
-  });
-
-  it("panel-10 match 0 at the live coefficients keeps Tyrogue on and logs no rotation", () => {
-    expect(opponentChanges(match0(ENGINE_COEFFICIENTS))).toEqual([]);
-  });
-});
-
 // Regression guard, no RED: behaviour already correct. A reserve is drawn on its own
 // `opponent_roster` scope, `inj:<match>:<slot>:<n>`, so the ladder's rung scopes draw what they drew.
 describe("the reserve's scope leaves the opponent rosters alone (catches a reserve draw shifting a ladder)", () => {
@@ -183,13 +165,11 @@ describe("the reserve's scope leaves the opponent rosters alone (catches a reser
     expect(first("inj:0:9:0")).toBe(2134766504);
   });
 
-  // Engine 7 calibrates the Final Boss score, so engine 6 is built with engine 7's ladder scores.
-  it("panel runs 0 to 9 field the same Boss Clubs under engine 7 as under engine 6", () => {
-    const v6WithV7Ladder = { ...ENGINE_COEFFICIENTS, ladder: ENGINE_COEFFICIENTS_V7.ladder };
+  it("panel runs 0 to 9 field the same Boss Clubs under live coefficients as under ENGINE_COEFFICIENTS_V7", () => {
     for (let r = 0; r < 10; r++) {
       const seed = `panel-${r}` as Seed;
-      expect(buildLadder(seed, "cup8", ENGINE_COEFFICIENTS_V7)).toEqual(
-        buildLadder(seed, "cup8", v6WithV7Ladder),
+      expect(buildLadder(seed, "cup8", ENGINE_COEFFICIENTS)).toEqual(
+        buildLadder(seed, "cup8", ENGINE_COEFFICIENTS_V7),
       );
     }
   });

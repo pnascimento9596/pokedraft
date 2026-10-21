@@ -283,12 +283,6 @@ function expandAction(c: CompactAction): DraftAction {
 }
 
 export function encodeToken(t: RunToken): string {
-  if (RUN_TOKEN_VERSION < TAKER_SINCE && t.manager?.some((a) => a.type === "taker")) {
-    throw new RunTokenError(
-      "invalidAction",
-      `a pd${RUN_TOKEN_VERSION} token cannot carry a nominated taker`,
-    );
-  }
   const payload: unknown[] = [compactSettings(t.settings), t.seed, t.actions.map(compactAction)];
   if (t.manager !== undefined && t.manager.length > 0) payload.push(t.manager.map(compactManager));
   return `pd${RUN_TOKEN_VERSION}.${toBase64Url(new TextEncoder().encode(JSON.stringify(payload)))}`;

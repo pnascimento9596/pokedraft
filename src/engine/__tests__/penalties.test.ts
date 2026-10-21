@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "../coefficients";
-import { ENGINE_COEFFICIENTS_V7 } from "../coefficients-v7";
 import { cupMatchInput } from "../cup";
 import { playMatchCore, type ChanceObservation } from "../match";
 import type { ManagerAction, Seed, StarterIndex } from "../types";
@@ -11,7 +10,7 @@ function play(
   seed: string,
   match: number,
   manager: readonly ManagerAction[] = [],
-  c: EngineCoefficients = ENGINE_COEFFICIENTS_V7,
+  c: EngineCoefficients = ENGINE_COEFFICIENTS,
 ) {
   const lineup = draftLineup(CUP8, seed as Seed);
   const input = cupMatchInput(lineup, seed as Seed, "cup8", match, manager, c);
@@ -129,18 +128,5 @@ describe("engine 7 nominated penalty taker (catches the shootout ignoring the no
     const run = play("panel-2", 3, [taker(3, "penalty", 10)]);
     expect(run.userKickers).toEqual([857, 149, 392, 727, 638]);
     expect(run.result.outcome).toBe("L");
-  });
-});
-
-// Regression guard, no RED: behaviour already correct. Engine 6 keeps every penalty a relabelled
-// goal: no penalty incident, and the two penalty goals of panel-7 match 1 both go in.
-describe("engine 6 penalties stay relabelled goals (catches the dormant rule reaching engine 6)", () => {
-  it("panel-7 match 1 at engine 6: no penalty incident, penalty goals at 36' and 70'", () => {
-    const run = play("panel-7", 1, [], ENGINE_COEFFICIENTS);
-    expect(run.penalties).toEqual([]);
-    expect(run.result.goals.filter((g) => g.penalty).map((g) => [g.minute, g.scorer])).toEqual([
-      [36, 802],
-      [70, 802],
-    ]);
   });
 });

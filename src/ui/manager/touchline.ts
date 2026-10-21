@@ -20,8 +20,7 @@ import {
 export type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 export const MAX_SUBS = ENGINE_COEFFICIENTS.manager.maxSubs;
-/** Nominated set-piece takers arrive with missable penalties (engine 7); hidden until then. */
-export const SET_PIECES_ON = ENGINE_COEFFICIENTS.penalty.missable;
+export const SET_PIECES_ON = true;
 const FRESH = 100;
 const REGULATION = 90;
 const EXTRA_TIME = 120;

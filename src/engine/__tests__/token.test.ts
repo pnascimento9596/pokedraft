@@ -1,10 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { ENGINE_COEFFICIENTS } from "../coefficients";
 import { decodeToken, encodeToken, managerSchemaFor } from "../token";
 import { decodeToken as decodeTokenV6 } from "../versions/v6/src/engine/token";
 import { GOLDEN_CUP8_V6 } from "../versions/__tests__/fixtures";
 import {
-  RUN_TOKEN_VERSION,
   type DraftAction,
   type RunToken,
   type RunTokenErrorCode,
@@ -14,13 +12,13 @@ import {
 } from "../types";
 
 const GOLDEN_TOKEN =
-  "pd6.W1siYyIsIjQtMi0zLTEiLCIxNCIsImMiLCJwIl0sImFiYyIsW1siYyIsInMzIl0sWyJyIiwidCJdLFsicCIsMjUsbnVsbF0sWyJ3IiwiczAiLCJiNCJdXV0";
+  "pd7.W1siYyIsIjQtMi0zLTEiLCIxNCIsImMiLCJwIl0sImFiYyIsW1siYyIsInMzIl0sWyJyIiwidCJdLFsicCIsMjUsbnVsbF0sWyJ3IiwiczAiLCJiNCJdXV0";
 const FULL_TOKEN_LENGTH = 407;
 const id = (n: number): SpeciesId => n as SpeciesId;
 const s = (index: number): SlotRef => ({ kind: "starter", index }) as SlotRef;
 const b = (index: number): SlotRef => ({ kind: "bench", index }) as SlotRef;
-const token = (body: unknown): string =>
-  `pd6.${Buffer.from(JSON.stringify(body), "utf8").toString("base64url")}`;
+const token = (body: unknown, v = 7): string =>
+  `pd${v}.${Buffer.from(JSON.stringify(body), "utf8").toString("base64url")}`;
 
 function codeOf(fn: () => unknown): RunTokenErrorCode | "no error" {
   try {
@@ -32,7 +30,7 @@ function codeOf(fn: () => unknown): RunTokenErrorCode | "no error" {
 }
 
 const GOLDEN: RunToken = {
-  v: 6,
+  v: 7,
   settings: {
     mode: "cup8",
     formation: "4-2-3-1",
@@ -55,7 +53,7 @@ describe("run token golden (catches drift in the compact token encoding)", () =>
   });
 
   it("the body is base64url of the compact JSON, checked with Node's own decoder", () => {
-    const body = encodeToken(GOLDEN).slice("pd6.".length);
+    const body = encodeToken(GOLDEN).slice("pd7.".length);
     expect(Buffer.from(body, "base64url").toString("utf8")).toBe(
       '[["c","4-2-3-1","14","c","p"],"abc",[["c","s3"],["r","t"],["p",25,null],["w","s0","b4"]]]',
     );
@@ -66,7 +64,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
   const cases: readonly RunToken[] = [
     GOLDEN,
     {
-      v: 6,
+      v: 7,
       settings: { mode: "builder", formation: "5-3-2", gens: [2, 9], legendaries: true },
       seed: "builder seed é" as Seed,
       actions: [
@@ -77,7 +75,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
       ],
     },
     {
-      v: 6,
+      v: 7,
       settings: { mode: "kanto151", formation: "3-4-3", order: "squadFirst" },
       seed: "k" as Seed,
       actions: [
@@ -113,7 +111,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
       slot: b(i),
     }));
     const full: RunToken = {
-      v: 6,
+      v: 7,
       settings: {
         mode: "cup8",
         formation: "4-3-3",
@@ -130,16 +128,17 @@ describe("run token round trip (catches lossy encoding of any action or setting)
 
 describe("run token errors (catches decoding untrusted input into an invalid run)", () => {
   it.each([
-    ["a future version", "pd7.W10", "unknownVersion"],
+    ["a future version", "pd8.W10", "unknownVersion"],
     ["a retired version, replayed only by its retained bundle", "pd1.W10", "unknownVersion"],
     ["a retired version, engine 4", "pd4.W10", "unknownVersion"],
-    ["the newest retired version, engine 5", "pd5.W10", "unknownVersion"],
+    ["a retired version, engine 5", "pd5.W10", "unknownVersion"],
+    ["the newest retired version, engine 6", "pd6.W10", "unknownVersion"],
     ["an older retired version", "pd3.W10", "unknownVersion"],
     ["the other retired version", "pd2.W10", "unknownVersion"],
     ["no prefix", "hello", "malformed"],
-    ["bad base64url characters", "pd6.!!!!", "malformed"],
-    ["non-zero trailing bits", "pd6.W11", "malformed"],
-    ["non-JSON body", `pd6.${Buffer.from("not json").toString("base64url")}`, "malformed"],
+    ["bad base64url characters", "pd7.!!!!", "malformed"],
+    ["non-zero trailing bits", "pd7.W11", "malformed"],
+    ["non-JSON body", `pd7.${Buffer.from("not json").toString("base64url")}`, "malformed"],
     ["wrong top-level shape", token({ settings: 1 }), "malformed"],
     ["empty seed", token([["k", "4-3-3", "s"], " ", []]), "malformed"],
     ["unknown mode", token([["z", "4-3-3", "s"], "x", []]), "invalidSettings"],
@@ -163,53 +162,28 @@ describe("nominated takers in the codec (catches a pd6 token carrying an engine 
     expect(managerSchemaFor(7).safeParse(FREE_KICK_AUTO).success).toBe(true);
   });
 
-  it("encodeToken refuses a nominated taker while tokens are pd6", () => {
+  it("encodeToken and decodeToken round-trip a nominated taker in a pd7 token", () => {
     const run: RunToken = {
       ...GOLDEN,
       manager: [{ type: "taker", match: 2, minute: 0, set: "penalty", slot: 10 as never }],
     };
-    expect(codeOf(() => encodeToken(run))).toBe("invalidAction");
+    expect(decodeToken(encodeToken(run))).toEqual(run);
   });
 
-  // Regression guard, no RED: behaviour already correct. The engine 6 schema has no taker tuple,
-  // so the live decoder and the frozen engine 6 codec both refuse a pd6 token that carries one.
   it("the engine 6 schema rejects the taker tuple", () => {
     expect(managerSchemaFor(6).safeParse(PENALTY_TAKER).success).toBe(false);
   });
 
-  it("decodeToken and the frozen engine 6 codec both reject a pd6 token with a p decision", () => {
-    const forged = token([["c", "4-3-3", "1", "o", "s"], "x", [], [PENALTY_TAKER]]);
-    // The same body with a tactic in place of the taker decodes, so the p tuple is what fails.
-    const control = token([["c", "4-3-3", "1", "o", "s"], "x", [], [["t", 2, 0, "a"]]]);
-    expect(codeOf(() => decodeToken(control))).toBe("no error");
+  it("the frozen engine 6 codec rejects a pd6 token with a p decision", () => {
+    const forged = token([["c", "4-3-3", "1", "o", "s"], "x", [], [PENALTY_TAKER]], 6);
+    const control = token([["c", "4-3-3", "1", "o", "s"], "x", [], [["t", 2, 0, "a"]]], 6);
     expect(codeOf(() => decodeTokenV6(control))).toBe("no error");
-    expect(codeOf(() => decodeToken(forged))).toBe("invalidAction");
     expect(codeOf(() => decodeTokenV6(forged))).toBe("invalidAction");
   });
 
-  it("re-encoding the decoded engine 6 golden token is byte-identical", () => {
-    expect(encodeToken(decodeToken(GOLDEN_CUP8_V6))).toBe(GOLDEN_CUP8_V6);
-  });
-});
-
-// Regression guard, no RED: behaviour already correct. The touchline offers nominations whenever
-// penalties are missable, and encodeToken refuses a nomination in a token older than pd7, so
-// switching the rule on without the token version would break saving a run.
-describe("missable penalties and the token version (catches a flip that leaves tokens at pd6)", () => {
-  it("penalty.missable is on only with RUN_TOKEN_VERSION 7 or later", () => {
-    expect(!ENGINE_COEFFICIENTS.penalty.missable || RUN_TOKEN_VERSION >= 7).toBe(true);
-  });
-});
-
-// Regression guard, no RED: behaviour already correct. A free-kick weight acts only on a nominated
-// taker, which a pd6 token cannot carry, so no parity run can see it. Both rules keep their engine 6
-// values until the token version flips with them.
-describe("engine 7 rules stay off while tokens are pd6 (catches a rule switched on before the flip)", () => {
-  it("takers.freeKickWeight is 1 while RUN_TOKEN_VERSION is below 7", () => {
-    expect(RUN_TOKEN_VERSION < 7 ? ENGINE_COEFFICIENTS.takers.freeKickWeight : 1).toBe(1);
-  });
-
-  it("opponent.injuries is false while RUN_TOKEN_VERSION is below 7", () => {
-    expect(RUN_TOKEN_VERSION < 7 ? ENGINE_COEFFICIENTS.opponent.injuries : false).toBe(false);
+  it("re-encoding the decoded engine 6 golden token produces its pd7 counterpart", () => {
+    expect(encodeToken({ ...decodeTokenV6(GOLDEN_CUP8_V6), v: 7 })).toBe(
+      `pd7.${GOLDEN_CUP8_V6.slice("pd6.".length)}`,
+    );
   });
 });
