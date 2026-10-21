@@ -470,3 +470,122 @@ removed the same day at the owner's request (#130).
   and the owner wants no scheduled jobs on GitHub or locally (2026-10-20). The rest of the item
   stays: `format:check`, `timeout-minutes: 30`, SHA-pinned actions, Node matching production and
   the `postgres:16` migrate job, all on PRs and pushes only. Recorded by Wave 6 row 6-0.
+
+## Wave 6. Engine 7
+
+Every planned row except 6b7 merged, one PR each, each live-checked on production before the next
+landed: sixteen PRs. 6b7 was never built because 6p's decision 10 prototype failed (P9 short by 7
+points). Production serves `2f03113` (PR #156), engine 7 (`pokedraft-engine-7`), token versions 1
+to 7, `db.status` ok. Engine 6 lives on as the frozen bundle that replays `pd6` links. No migration
+ran in the wave.
+
+| Row | PR | Squash | Reviewed head | Review | Production check |
+| --- | --- | --- | --- | --- | --- |
+| 6p calibration probe and engine 6 baselines (Green) | #141 | `38b1bb4` | `b2c6eaf` | GLM APPROVE, round 1 | `health` 1 of 1 |
+| 6-0 Wave 5 carryovers and queue hygiene (Yellow) | #143 | `eceb581` | `ef7b4c1` | GLM APPROVE, round 1 | 30 of 30 |
+| 6a1 `matchStory` core (Red) | #142 | `969ca1c` | `2c5fddf` | GLM APPROVE and Red reviewer PASS | 19 of 19 |
+| 6b0 freeze engine 6 (Red) | #144 | `8059458` | `243963a` | GLM APPROVE and Red reviewer PASS | 19 of 19 |
+| 6t live-token pins (Green) | #145 | `2992500` | `19cac51` | GLM APPROVE, round 1 | 43 of 43 |
+| 6g grace window and version plumbing, dormant (Red) | #146 | `7045ccd` | `242c169` | GLM APPROVE and Red reviewer PASS | 40 of 40 |
+| 6a2 xG river on the Broadcast (Yellow) | #147 | `2551dce` | `d9eaba6` | GLM APPROVE, round 1 | 14 of 14 |
+| 6b1 split managed, engine 7 scaffolding, dormant (Red) | #148 | `233be7e` | `4262f07` | GLM APPROVE and Red reviewer PASS | 26 of 26 |
+| 6b2 tactic edges with state dependence, dormant (Red) | #149 | `6b7d40a` | `002ee80` | GLM APPROVE and Red reviewer PASS | 26 of 26 |
+| 6b3 missable penalties and nominated takers, dormant (Red) | #150 | `cee1ad1` | `9487be0` | GLM APPROVE and Red reviewer PASS | 27 of 32 (the 5 failures are a test-harness glob defect, below) |
+| 6b4 opponent injuries and rotation incidents, dormant (Red) | #151 | `f7448f9` | `7057871` | GLM APPROVE and Red reviewer PASS | 38 of 38 |
+| 6b5 goal kind weighted by attributes, dormant (Red) | #152 | `5190287` | `999565b` | GLM APPROVE and Red reviewer PASS | 52 of 52, after a manual production deploy (below) |
+| 6b6 shootout band, dormant (Red) | #153 | `6aad55b` | `f806b11` | GLM APPROVE and Red reviewer PASS | 53 of 53 |
+| 6b8 engine 7 calibration, dormant (Red) | #154 | `d457e72` | `eaee2ba` | GLM APPROVE and Red reviewer PASS (Gemini lane) | 53 of 53 |
+| 6b9 the flip to engine 7 (Red) | #155 | `e927608` | `943da02` | round 3: GLM APPROVE, Red reviewer PASS and cross-vendor review clean (both Gemini lanes) | production smoke 201 then 200, smoke row deleted; 92 of 92 |
+| 6d dossier ability and move contributions (Red) | #156 | `2f03113` | `c69de5f` | round 3: GLM APPROVE and Red reviewer PASS (Gemini lane) | 63 of 63 |
+
+GLM reviews were GLM 5.3 Flash with an echoed per-head canary. From 6a1 to 6b6 the Red reviewer was
+a fresh `pokedraft-mode` subagent with no implementer context. From 6b8 on, by the owner's
+decision to save Claude usage, the Red reviewer and the 6b9 cross-vendor review were Gemini 4 Argon
+(High) lanes through the Antigravity CLI, with the project skills loaded. 6b9 had no Sol review:
+the owner has no Sol usage. Production checks ran on chromium against
+`https://pokedraft-woad.vercel.app`, with retries off from 6b4 on.
+
+Order: the hand-off listed 6-0, 6p, 6a1, 6b0, 6a2, 6t, 6g, 6b1 to 6b7, 6b8, 6b9, 6d. The landed
+order was 6p, 6-0, 6a1, 6b0, 6t, 6g, 6a2, 6b1 to 6b6, 6b8, 6b9, 6d. 6p went before 6-0 because it
+was ready first and touches scripts and docs only. 6t and 6g went before 6a2 for the same reason,
+with disjoint files. The fixed orderings held: 6a1 before 6b0, and nothing under `src/engine`
+merged between 6b0 and 6b9 except 6g and 6b1 to 6b8.
+
+### The flip
+
+- 6b9 landed outside the hand-off's 00:00 to 01:59 New York window: the owner waived the window
+  ("ignore the hand-off instructions here, just go ahead with the merge/cleanup when you get to it,
+  the time does not matter"). Landing slipped past New York midnight, so `GRACE` moved to
+  `flipDate` `2026-10-21`, `until` `2026-10-23T04:00:00Z`, with its tests shifted by one day.
+- Production smoke on the 2026-10-21 Daily as `w6proof1021`: POST 201, GET 200. The existing `pd6`
+  Daily row of 2026-10-16 rendered through the v6 bundle (2-1-1, Team Score 333).
+  `db:delete-entry` removed exactly the smoke row (`6706ca94`).
+- Goldens re-pinned in 6b9: `CUP8_TOKEN` and `KANTO_TOKEN` token and replay hashes moved, their
+  outcomes (`[593, 5, 0, 1, "QF"]`, `[480, 3, 0, 1, "R32"]`) did not, and the 20-run panel did not
+  move. The goal-kind panel moved from user 495 goals (63 changed) and opponent 177 (7) to 529 (65)
+  and 193 (9), `moved` 0.
+
+### Engine 7 calibration (6b8, live since 6b9)
+
+Calibrated V7 values: style edges scaled by 1.15, `penalty.awardShare` 0.0745, shootout ladder F
+992, band 0.18.
+
+| Pin | Result | Verdict |
+| --- | --- | --- |
+| P1 good | +1.07 [-0.77, +2.91] | fail under the P1/P2 conflict rule |
+| P1 random | +3.41 | pass |
+| P2 good | +4.21 | pass |
+| P2 random | +9.59 | pass |
+| P3 | 0.00 | pass |
+| P4 | +18.31 (5,448 shootouts) | pass |
+| P5 | 840 3.65%, 900 11.81%, 950 29.55% | pass |
+| P6 | cup8-full good 5.912, kanto151 random 3.331 | pass |
+| P7 | worst +0.046 | fail, recorded under fallback 4 |
+| P8 | 68.78% | fail, recorded under fallback 4 (68.5% at engine 6) |
+| P9 | not applicable | 6b7 does not exist |
+
+Achievements under V7: Giant killer 2.5% (threshold unchanged at 100), Hat-trick hero 71.5%.
+
+### Hosted and production failures
+
+- 6g: the first hosted `check` job failed one test in `coach-mark.test.tsx`, a file 6g did not
+  touch and which passed 3 of 3 locally. The failed job was rerun with no commit and passed.
+- 6b3: 5 of the 32 live tests failed because `e2e/penalty-takers.spec.ts` routed
+  `/_next/static/chunks/` while Vercel serves `/_next/static/immutable/chunks/`, so its rewrite
+  never ran. A harness defect, not a production one; 6b4 fixed the spec and the live check passed
+  38 of 38.
+- 6b5: Vercel did not start a production build for the merge. After 15 minutes production still
+  served `f7448f9`; the owner approved a Git-sourced production deployment of exactly `5190287`,
+  and the live check then passed.
+
+### Review lessons
+
+- The Gemini lanes repeatedly reported false content: RED logs that were never printed, symbols
+  that do not exist, test counts and artifact sizes. 6b9 and 6d each failed two review rounds on
+  their decision logs and STATE alone. The coordinator re-ran every gate itself, checked every
+  lane number against its log file and ran `git grep` on every cited symbol before a merge, and
+  wrote the round 2 fixes itself. A Gemini reviewer's suggested literal test values were also
+  wrong. Treat lane reports as claims to verify.
+
+### Measurements that moved
+
+- Unit tests, 1,998 in 229 files at the Wave 5 summary to 2,187 in 249 at 6d's head. `check:*`
+  scripts stay at 9. Full local chromium Playwright at 6d's code head: 650 passed, 5 skipped, 0
+  failed.
+- Engine: `pokedraft-engine-6` to `pokedraft-engine-7`, `RUN_TOKEN_VERSION` 6 to 7, token versions
+  1 to 7. Retained golden replays 10 to 13.
+- 6d's new artifact `src/data/scouting-contributions.json`: 76,204 bytes raw, 6,570 bytes
+  `gzip -9`. `pokedex.json` and `scouting.json` unchanged.
+
+### Open carryovers
+
+- Calibration, for the owner: P1 good (+1.07 against +3 to +6), P7 (+0.046, from engine 7's
+  penalty rules on the synthetic win curve), P8 (68.78%, needs `match.roleFactor`) and the
+  open-play goal-kind share (49.5% under V7, 58.8% at engine 6). Each fix is an engine change.
+- Engine 8 freeze tooling: include `src/engine/story.ts` in the frozen bundle roots if retained
+  replays should render the xG river. Shared `pd6` runs show no river today.
+- The grace window closes at `2026-10-23T04:00:00Z`. Its receipt (a read-only count of `pd6` runs
+  accepted after the flip) is NOT RUN until then.
+- The Neon restore points from Wave 5 remain until the owner's yes.
+- A physical phone check and a real screen reader were not run for any row (owner action; the
+  checklist is in `docs/decisions/wave6-summary.md`).
