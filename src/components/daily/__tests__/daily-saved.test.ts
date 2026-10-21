@@ -43,12 +43,35 @@ describe("parseDailySaved (catches divergence from savedSchema accept and reject
     { name: "daily as boolean", input: { screen: "draft", token: "tok", daily: false } },
     { name: "daily as undefined", input: { screen: "draft", token: "tok", daily: undefined } },
     { name: "daily as empty object", input: { screen: "draft", token: "tok", daily: {} } },
-    { name: "valid draft with date", input: { screen: "draft", token: "pd7.abc", daily: "2026-10-21" } },
-    { name: "valid draft with null daily", input: { screen: "draft", token: "pd7.abc", daily: null } },
-    { name: "valid results with null daily", input: { screen: "results", token: "pd7.res", daily: null } },
-    { name: "valid matchday with extra properties", input: { screen: "matchday", token: "pd7.md", daily: "2026-10-21", matchday: { match: 0, view: "field" } } },
-    { name: "empty string token is allowed by schema", input: { screen: "draft", token: "", daily: null } },
-    { name: "empty string daily is allowed by schema", input: { screen: "draft", token: "t", daily: "" } },
+    {
+      name: "valid draft with date",
+      input: { screen: "draft", token: "pd7.abc", daily: "2026-10-21" },
+    },
+    {
+      name: "valid draft with null daily",
+      input: { screen: "draft", token: "pd7.abc", daily: null },
+    },
+    {
+      name: "valid results with null daily",
+      input: { screen: "results", token: "pd7.res", daily: null },
+    },
+    {
+      name: "valid matchday with extra properties",
+      input: {
+        screen: "matchday",
+        token: "pd7.md",
+        daily: "2026-10-21",
+        matchday: { match: 0, view: "field" },
+      },
+    },
+    {
+      name: "empty string token is allowed by schema",
+      input: { screen: "draft", token: "", daily: null },
+    },
+    {
+      name: "empty string daily is allowed by schema",
+      input: { screen: "draft", token: "t", daily: "" },
+    },
   ];
 
   it.each(cases)("matches savedSchema for $name", ({ input }) => {
