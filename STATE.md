@@ -3,6 +3,25 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Freeze engine 7
+
+Branch `feat/freeze-engine-7` off `origin/main` at `363fed60`. Wave 7 row 8b (Red). The first commit (`3bff8b08`) records the PR #170 merge. The second commit (`bdd3fe3f`) adds the RED guard test asserting that `v7` can be imported from `@/engine/versions/v7`, its bundle digest matches the pinned sha256, and `matchStory` runs.
+
+- Froze live engine 7 into `src/engine/versions/v7` using `scripts/engine/freeze-version.mts --name v7`.
+- Included `src/engine/story.ts` in freeze roots alongside `replay.ts` and `types.ts`, exporting `matchStory` so retained v7 replays can render the xG river.
+- All 4 data files (`move-traits.json`, `pokedex.json`, `scouting.json`, `type-chart.json`) mapped to existing content-addressed blobs in `src/engine/versions/_blobs/`.
+- Pinned v7 bundle digest in `src/engine/versions/__tests__/versions.test.ts`: `f9cf999233e9a2b87ff169a4c64754ba34227f47387ac668a0b6184d6a7f25ef`.
+- Bundle provenance verified: `bash scripts/engine/check-bundle-provenance.sh v7 363fed60` exited 0 (31 sources and 4 blobs match `origin/main`).
+- Bundle isolation verified: `retained-engine-bundle:v7` marker completely absent from `.next/static` and `.next/server`.
+- Replay parity verified: 13 emitted golden replays passed in `scripts/build/check-retained-replays.mts`.
+- Retained JSON: 4 copies, 2,891,853 bytes measured by `scripts/build/measure-retained-json.mjs`.
+- Client bundle: 0 retained bundles in `.next/static`.
+- Unit tests: 2,284 passed in 258 files.
+- Decision log: `docs/decisions/freeze-engine-7.md`.
+- NOT RUN: Owner physical device test; live checks (run post-merge).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Content-addressed engine blobs
 
 Branch `feat/engine-blobs` off `origin/main` at `9c1db3b4`. Wave 7 row 8a (Red). The first commit (`a5d1a953`) records the PR #169 merge.

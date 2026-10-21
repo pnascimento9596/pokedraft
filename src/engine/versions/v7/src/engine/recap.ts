@@ -1,0 +1,104 @@
+import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
+import { speciesById } from "./species";
+import type { GoalEvent, Opponent, Score, Shootout } from "./types";
+
+export interface RecapInput {
+  readonly matchIndex: number;
+  readonly opponent: Opponent;
+  readonly regulation: Score;
+  readonly extraTime: Score | null;
+  readonly shootout: Shootout | null;
+  readonly outcome: "W" | "D" | "L";
+  readonly goals: readonly GoalEvent[];
+}
+
+type UserGoal = Extract<GoalEvent, { side: "user" }>;
+type Template = (scorer: string, minute: string, assist: string) => string;
+
+// Engine-1 and engine-2 ended a capped shootout with one extra pair, the user scoring and the
+// opponent missing. It is an award, not a sudden-death round.
+const DECREE_AWARD_PAIRS = 1;
+
+const OPENING: Readonly<
+  Record<"W" | "D" | "L", readonly ((score: string, club: string) => string)[]>
+> = {
+  W: [(score, club) => `Beat ${club} ${score}.`, (score, club) => `A ${score} win over ${club}.`],
+  D: [
+    (score, club) => `Drew ${score} with ${club}.`,
+    (score, club) => `A ${score} draw against ${club}.`,
+  ],
+  L: [
+    (score, club) => `Lost ${score} to ${club}.`,
+    (score, club) => `A ${score} defeat to ${club}.`,
+  ],
+};
+
+const ASSISTED: readonly Template[] = [
+  (s, m, a) => `${s} scores in the ${m} minute, set up by ${a}.`,
+  (s, m, a) => `${a} sets up ${s} in the ${m} minute.`,
+  (s, m, a) => `${s} finishes in the ${m} minute after a pass from ${a}.`,
+];
+
+const SOLO: readonly Template[] = [
+  (s, m) => `${s} scores in the ${m} minute.`,
+  (s, m) => `${s} finds the net in the ${m} minute.`,
+];
+
+const PENALTY: readonly Template[] = [
+  (s, m) => `${s} converts a penalty in the ${m} minute.`,
+  (s, m) => `${s} scores from the spot in the ${m} minute.`,
+];
+
+function ordinal(n: number): string {
+  const lastTwo = n % 100;
+  if (lastTwo >= 11 && lastTwo <= 13) return `${n}th`;
+  const suffix = { 1: "st", 2: "nd", 3: "rd" }[n % 10] ?? "th";
+  return `${n}${suffix}`;
+}
+
+function goalLine(goal: UserGoal, variant: number): string {
+  const scorer = speciesById(goal.scorer).name;
+  const minute = ordinal(goal.minute);
+  if (goal.penalty) return PENALTY[variant % PENALTY.length]!(scorer, minute, "");
+  if (goal.kind === "header")
+    return `${scorer} heads home in the ${minute} minute${goal.assist === null ? "." : `, set up by ${speciesById(goal.assist).name}.`}`;
+  if (goal.kind === "solo") return `${scorer} scores after a solo run in the ${minute} minute.`;
+  if (goal.kind === "free-kick") return `${scorer} scores a free kick in the ${minute} minute.`;
+  if (goal.assist === null) return SOLO[variant % SOLO.length]!(scorer, minute, "");
+  return ASSISTED[variant % ASSISTED.length]!(scorer, minute, speciesById(goal.assist).name);
+}
+
+export function recapLines(
+  input: RecapInput,
+  c: EngineCoefficients = ENGINE_COEFFICIENTS,
+): string[] {
+  const user = input.regulation.user + (input.extraTime?.user ?? 0);
+  const opp = input.regulation.opp + (input.extraTime?.opp ?? 0);
+  const score = `${Math.max(user, opp)}-${Math.min(user, opp)}`;
+  const templates = OPENING[input.shootout === null ? input.outcome : "D"];
+  let opening = templates[input.matchIndex % templates.length]!(score, input.opponent.name);
+  if (input.extraTime !== null) opening = `${opening.slice(0, -1)} after extra time.`;
+  const lines = [opening];
+
+  const userGoals = input.goals.filter((g): g is UserGoal => g.side === "user");
+  userGoals.forEach((goal, goalIndex) => lines.push(goalLine(goal, input.matchIndex + goalIndex)));
+
+  if (input.shootout !== null) {
+    const { user: u, opp: o, decider, kicks } = input.shootout;
+    if (decider === "kicks") {
+      lines.push(
+        input.outcome === "W" ? `Won the shootout ${u}-${o}.` : `Lost the shootout ${o}-${u}.`,
+      );
+    } else {
+      // Level at the cap means every regulation kick was taken, so the pairs past them are the
+      // sudden-death rounds.
+      const awarded = decider === "decree" ? DECREE_AWARD_PAIRS : 0;
+      const rounds = kicks.length / 2 - c.shootout.kicks - awarded;
+      const how = decider === "coin" ? "on a coin toss" : "by the engine";
+      lines.push(
+        `${input.outcome === "W" ? "Won" : "Lost"} ${how} after ${rounds} rounds of sudden death.`,
+      );
+    }
+  }
+  return lines;
+}

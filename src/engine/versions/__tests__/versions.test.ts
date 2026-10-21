@@ -289,9 +289,20 @@ describe("retained engine-7 bundle (catches an engine-7 run replaying differentl
     ]);
   });
 
+  it("exports matchStory for retained river rendering", () => {
+    expect(typeof v7.matchStory).toBe("function");
+    const run = v7.replay(GOLDEN_CUP8_V7);
+    const story = v7.matchStory(run.draft.seed, 0, {
+      lineup: run.draft.lineup as unknown as Parameters<typeof v7.matchStory>[2]["lineup"],
+      mode: "cup8",
+    });
+    expect(story.chances.length).toBeGreaterThan(0);
+    expect(story.windows.length).toBe(18);
+  });
+
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v7"))).toBe(
-      "placeholder-v7-digest",
+      "f9cf999233e9a2b87ff169a4c64754ba34227f47387ac668a0b6184d6a7f25ef",
     );
   });
 });

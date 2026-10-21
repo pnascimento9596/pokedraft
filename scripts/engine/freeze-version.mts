@@ -12,7 +12,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 
 const ROOT = path.resolve(import.meta.dirname, "../..");
-const ROOTS = ["src/engine/replay.ts", "src/engine/types.ts"];
+const ROOTS = ["src/engine/replay.ts", "src/engine/types.ts", "src/engine/story.ts"];
 const SPECIFIER = /(?:from|import)\s+"([^"]+)"/g;
 const EXTENSIONS = ["", ".ts", ".tsx", "/index.ts"];
 
@@ -113,6 +113,7 @@ writeFileSync(
   `import "server-only";
 
 export { replay } from "./src/engine/replay";
+export { matchStory } from "./src/engine/story";
 export { ENGINE_VERSION, RUN_TOKEN_VERSION } from "./src/engine/types";
 export const BUNDLE_MARKER = "retained-engine-bundle:${name}";
 `,

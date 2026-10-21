@@ -15,6 +15,7 @@ src/engine/versions/v3
 src/engine/versions/v4
 src/engine/versions/v5
 src/engine/versions/v6
+src/engine/versions/v7
 src/engine/versions/_blobs
 
 # drizzle-kit writes these snapshots and the journal; db:generate would undo a reformat
