@@ -19,6 +19,8 @@ Branch `fix/rollback-drop-data-guard` off `origin/main` at `040781bb`. Wave 7 ro
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #163 (rollback drop-data guard, Red) merged as squash `90ee0f72`, reviewed head `6021b1d4`. Receipts on `6021b1d4`: GLM 5.3 Flash APPROVE with canary `7rb-15a589c05cfd88b05c5679f5e1fb2270` echoed (round 1) and the independent executing Red reviewer PASS (a Gemini 4 Argon (High) lane through the Antigravity CLI with the pokedraft-mode skills loaded and no implementer context; it re-ran all gates, verified the RED commit fe654504 failed 3 of 3 in a detached worktree, verified code claims, line counts and d1463e45). At `6021b1d4` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, and prettier, unit tests 2,234 passed in 252 files; hosted check, db (53s) and all eight e2e shards green. Neon preview branch proof run by the coordinator: migrate recorded 6, smoke OK, rollback logged leaderboard_entries rows: 2 before rolling back 0005_leaderboard_integrity, migrate restored 6. Production `/api/health?db=1` served `90ee0f72` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard) passed with retries off.
+
 ## Card canonical query
 
 Branch `fix/card-canonical-query` off `origin/main` at `8a29610`. Wave 7 row 7cq (Red). Normalizes `/card` queries to one canonical parameter order (`t` or `b`, then non-default known `pack`, then `mirror=0`) and redirects non-canonical `/card` queries with HTTP `308`. `src/passcode.ts`, `src/proxy.ts`, `src/engine`, `src/scouting`, and `src/data` are untouched.
