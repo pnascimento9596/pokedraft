@@ -106,7 +106,9 @@ describe("gated share metadata (catches query links losing their title, descript
       searchParams: Promise.resolve({ next: `/?b=${encodeURIComponent(fullToken)}` }),
     });
     expect(meta.title).toBe("pokedraft squad: 4-3-3, Team Score 375");
-    expect(meta.description).toBe("4-3-3 squad with Team Score 375. Build your own XI on pokedraft.");
+    expect(meta.description).toBe(
+      "4-3-3 squad with Team Score 375. Build your own XI on pokedraft.",
+    );
     expect(meta.openGraph?.images).toEqual([
       {
         url: `/card?b=${encodeURIComponent(fullToken)}`,

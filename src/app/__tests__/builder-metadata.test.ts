@@ -15,7 +15,10 @@ describe("builderTokenFromUrl (catches invalid or malformed builder link extract
   });
 
   it("returns null when pathname is not root", () => {
-    const url = new URL(`/daily?b=${encodeURIComponent(FULL_BUILDER)}`, "https://pokedraft.invalid");
+    const url = new URL(
+      `/daily?b=${encodeURIComponent(FULL_BUILDER)}`,
+      "https://pokedraft.invalid",
+    );
     expect(builderTokenFromUrl(url)).toBeNull();
   });
 
@@ -84,7 +87,9 @@ describe("home page generateMetadata (catches missing ?b= preview on root)", () 
       searchParams: Promise.resolve({ b: FULL_BUILDER }),
     });
     expect(meta.title).toBe("pokedraft squad: 4-3-3, Team Score 375");
-    expect(meta.description).toBe("4-3-3 squad with Team Score 375. Build your own XI on pokedraft.");
+    expect(meta.description).toBe(
+      "4-3-3 squad with Team Score 375. Build your own XI on pokedraft.",
+    );
     expect(meta.openGraph?.images).toEqual([
       {
         url: `/card?b=${encodeURIComponent(FULL_BUILDER)}`,
