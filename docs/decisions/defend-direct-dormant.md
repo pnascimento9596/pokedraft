@@ -18,3 +18,17 @@ Wave 7 row 8c, Red. Branch `feat/defend-direct-dormant` off `origin/main` at `f2
 - RED commit `0c250a9f` added `src/engine/__tests__/direct-defend.test.ts` asserting the live field value, V8 candidate export, `loadCoefficients("v8")`, and exact output parity against frozen bundle `v7`. Failed RED before implementation.
 - GREEN implementation satisfies all boundary, coeffs, and parity assertions.
 - Live goldens test `src/engine/__tests__/goldens.test.ts` is byte-identical to `origin/main` (exit code 0).
+
+## Parity against frozen v7
+
+A scratch run, not committed (script kept in the coordinator scratch dir as `8c-parity.test.ts`), compared `matchStory` on the live engine with `matchStory` from the frozen `v7` bundle for `panel-0` to `panel-(N-1)` (cup8, 4-2-3-1), every match index of each run, once unmanaged and once with Defend held at 0' and 45'. Results are JSON-compared, and a thrown error counts as a result.
+
+| N seeds | cases | identical | mismatches | thrown in both (match never reached) | compared played matches | Defend held against a direct side |
+| --- | --- | --- | --- | --- | --- | --- |
+| 50 | 800 | 800 | 0 | 316 | 484 | 73 |
+| 200 | 3,200 | 3,200 | 0 | 1,286 | 1,914 | 286 |
+
+The Defend-against-direct branch is the one this row changed, and it is exercised in 73 and 286 played matches with no difference. Per-trial rate parity for the new field is the literal pin in `direct-defend.test.ts`: the user's first Defend chance against the direct side in `panel-0` match 4 is 0.0010903145032324785 at `directDefendOwn` 0.655 and 0.0015813721802608463 at 0.95.
+
+The literal-pin test was added with the implementation, after the RED commit. The RED commit covers the other four assertions in that file.
+

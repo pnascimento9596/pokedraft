@@ -13,7 +13,7 @@ Branch `feat/defend-direct-dormant` off `origin/main` at `f2f01113`. Wave 7 row 
 - Updated `src/ui/manager/intel.ts` and `scripts/calibration/probe-modes.ts` to reflect `directDefendOwn`.
 - Supported `--coeffs v8` in `scripts/calibration/coeffs.ts` and added unit test in `scripts/calibration/coeffs.test.ts`.
 - Restricted `coefficients-v8` in `eslint.config.mjs` and verified boundary isolation and independent copy in `src/engine/__tests__/coefficient-boundaries.test.ts`.
-- Replay parity verified: live engine replaying `GOLDEN_CUP8_V7` produces exact byte-identical JSON as frozen bundle `v7`.
+- Replay parity verified: live engine replaying `GOLDEN_CUP8_V7` produces exact byte-identical JSON as frozen bundle `v7`. Scratch story parity over 50 and 200 seeds (live against frozen v7, unmanaged and Defend held): 800 and 3,200 cases, 0 mismatches, with Defend held against a direct side in 73 and 286 played matches.
 - Live goldens test `src/engine/__tests__/goldens.test.ts` is byte-identical to `origin/main` (exit code 0).
 - Gates at branch HEAD: `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,293 passed in 259 files), `pnpm build`, `pnpm format:check`, and all nine `check:*` scripts clean; `check-retained-replays.mts` 13 passed, `measure-retained-json.mjs` 4 copies (2,891,853 bytes).
 - Decision log: `docs/decisions/defend-direct-dormant.md`.
