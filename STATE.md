@@ -3,6 +3,53 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Proxy matcher trim
+
+Branch `fix/proxy-matcher-trim` off `origin/main` at `6606585`. Wave 7 row 7pm (Red, owner
+decision 7).
+
+What changed for players:
+
+- Creature images under `/creatures/` (for example `/creatures/pokeapi-art/0001.webp`),
+  `/api/health` (including `/api/health?db=1`), and `/api/csp-report` are excluded in `matcher` on
+  `config` in `src/proxy.ts`
+  (`["/((?!_next/static|creatures/|api/health$|api/csp-report$|favicon.ico|robots.txt).*)"]`), so
+  they no longer run `proxy` or redirect to `/gate` when `FRIENDS_PASSCODE` is set.
+- Prefix lookalikes such as `/api/healthz` and `/creaturesx` still match `matcher` on `config` and
+  run `proxy`. `isPublicPath` in `src/passcode.ts` stays unchanged as defence in depth.
+
+RED commit:
+
+- `42c2f0db`: 1 of 18 failed in `src/__tests__/proxy.test.ts`
+  (`creature images and health checks run the proxy and hit the passcode gate` failed on
+  `/creatures/pokeapi-art/0001.webp`, `/api/health`, `/api/health?db=1`, and `/api/csp-report`);
+  fixed in `81bf5fef` (18 of 18 passed).
+
+Gates at `81bf5fef` (code-identical to this docs commit):
+
+- `pnpm vitest run src/__tests__/proxy.test.ts`: 18 of 18 passed in 1 file.
+- `pnpm lint`, `pnpm typecheck`, and `pnpm build` exited 0 (`pnpm data:validate` validated 1,025
+  Pokedex, 1,025 scouting, and 1,025 contribution records).
+- `pnpm test`: 2,188 unit tests passed in 249 files.
+- All nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`,
+  `check:client-bundle` with 0 client files and 24 server files, `check:theme-contrast`,
+  `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) exited 0, and
+  `pnpm exec prettier --check` passed on the 4 touched files (`src/proxy.ts`,
+  `src/__tests__/proxy.test.ts`, `STATE.md`, `docs/decisions/proxy-matcher-trim.md`).
+- Playwright (`CI=1 PLAYWRIGHT_PORT=3972 pnpm exec playwright test e2e/health.spec.ts e2e/old-links.spec.ts e2e/share.spec.ts --project=chromium`):
+  20 passed across `e2e/health.spec.ts` (1), `e2e/old-links.spec.ts` (1), and `e2e/share.spec.ts`
+  (18).
+- NOT RUN:
+  - Production verification (run by the coordinator after merge).
+  - Non-Chromium Playwright projects and the remaining Chromium e2e specs locally.
+  - Hosted CI, coordinator review, and merge.
+  - The phone check, the screen reader pass, and the final grace-window receipt after
+    `2026-10-23T04:00:00Z`.
+
+Coordinator check on a real build (`next start` from this branch at `81bf5fef` with a dummy `FRIENDS_PASSCODE`, no cookie, stopped by PID): `/creatures/pokeapi-art/0001.webp` 200, `/api/health` 200, `/api/health?db=1` 503 (no local database, not the gate), `POST /api/csp-report` 204, `/api/healthz` 401, `/api/leaderboard` 401, `/` 307, `/creaturesx` 307. The coordinator re-ran the RED commit `42c2f0db` in a detached worktree: 1 of 18 failed.
+
+Decision log: `docs/decisions/proxy-matcher-trim.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## CI hygiene
 
 Branch `chore/ci-hygiene` off `origin/main` at `6606585`. Wave 7 row 7ci (Green).
@@ -16,6 +63,8 @@ Branch `chore/ci-hygiene` off `origin/main` at `6606585`. Wave 7 row 7ci (Green)
 - Hosted proof, read by the coordinator from run `39639606007` at `646b8bd1` (this branch's code before the merge of `origin/main` at `8a29610`; the head's own hosted run must also pass before the merge): every job passed, `check` 5.2 min, `db` 0.8 min, e2e shards 2.5 to 13.0 min. The `check` log shows `node: v24.22.0` and `pnpm format:check` passing; the `db` log shows `6 migration(s) recorded`, both smoke duplicates refused with `23505`, rollbacks of `0005` to `0002`, `[db:count] 2 migration(s) recorded`, then `6 migration(s) recorded` again. The coordinator re-ran the RED commit `4beb76c7` in a detached worktree (3 of 3 failed) and re-resolved all five action SHAs with `gh api` (all match).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #160 (CI hygiene, Green) merged as squash `040781b`, reviewed head `43aed65`, GLM 5.3 Flash APPROVE with canary `7ci-eab0520a436dab4a617b54e1b5ee2d53` echoed (round 1). At `43aed65` the coordinator re-ran lint, typecheck, test, build, both retained-bundle checks, all nine `check:*` scripts and prettier on the 7 touched files (all exit 0) and `goldens.test.ts` was byte-identical to `origin/main`. Hosted `check`, `db` and all eight e2e shards green at the head on Node 24. Production `/api/health?db=1` served `040781b` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok; live check on chromium through the gate (`health`, `old-links`, `share`, `leaderboard`) 28/28 with retries off. No Vercel setting changed (CI moved to Node 24 to match Vercel).
 
 ## Live checks through the passcode gate
 
