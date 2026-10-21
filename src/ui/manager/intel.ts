@@ -86,10 +86,6 @@ export function fatigueLine(
 export const ASSISTANT_ON = "Assistant: subs on, tactics on";
 export const ASSISTANT_OFF = "Assistant: subs off, tactics off";
 
-/**
- * Engine 6 switches the assistant's tactic and fatigue subs off together on the user's first
- * decision in a match, so the status has only these two states until engine 7 splits them.
- */
-export function assistantStatus(managed: boolean): string {
-  return managed ? ASSISTANT_OFF : ASSISTANT_ON;
+export function assistantStatus(tacticManaged: boolean, subsManaged: boolean): string {
+  return `Assistant: subs ${subsManaged ? "off" : "on"}, tactics ${tacticManaged ? "off" : "on"}`;
 }

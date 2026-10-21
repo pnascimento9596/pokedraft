@@ -7,7 +7,6 @@ import { PlayerImage } from "@/components/PlayerImage";
 import { assistantStatus, type OpponentStyle } from "@/ui/manager/intel";
 import {
   MAX_SUBS,
-  SET_PIECES_ON,
   type Decision,
   type Touchline as TouchlineState,
 } from "@/ui/manager/touchline";
@@ -19,6 +18,17 @@ import s from "./Touchline.module.css";
 
 export const TAKEOVER_COPY =
   "You have the touchline. Your assistant stops making changes this match.";
+export const SUBS_TAKEOVER_COPY =
+  "You're making the subs now. Your assistant still manages tactics.";
+export const TACTICS_TAKEOVER_COPY =
+  "You have the tactics now. Your assistant still makes fatigue subs.";
+
+function takeoverCopy(tacticManaged: boolean, subsManaged: boolean): string | null {
+  if (tacticManaged && subsManaged) return TAKEOVER_COPY;
+  if (subsManaged) return SUBS_TAKEOVER_COPY;
+  if (tacticManaged) return TACTICS_TAKEOVER_COPY;
+  return null;
+}
 
 export function Touchline({
   line,
@@ -87,12 +97,12 @@ export function Touchline({
       </header>
 
       <p className={s.assistant} data-testid="assistant-status">
-        {assistantStatus(line.managed)}
+        {assistantStatus(line.tacticManaged, line.subsManaged)}
       </p>
 
-      {line.managed ? (
+      {takeoverCopy(line.tacticManaged, line.subsManaged) !== null ? (
         <p className={`${s.takeover} ${s.extra}`} role="status" data-testid="takeover">
-          {TAKEOVER_COPY}
+          {takeoverCopy(line.tacticManaged, line.subsManaged)}
         </p>
       ) : null}
 
@@ -113,17 +123,15 @@ export function Touchline({
         </p>
       ) : null}
 
-      {SET_PIECES_ON ? (
-        <div className={s.extra}>
-          <SetPieceTakers
-            formation={formation}
-            onPitch={line.onPitch}
-            value={line.takers}
-            disabled={closed}
-            onPick={(set, slot) => onDecide({ kind: "taker", set, slot })}
-          />
-        </div>
-      ) : null}
+      <div className={s.extra}>
+        <SetPieceTakers
+          formation={formation}
+          onPitch={line.onPitch}
+          value={line.takers}
+          disabled={closed}
+          onPick={(set, slot) => onDecide({ kind: "taker", set, slot })}
+        />
+      </div>
 
       <div className={`${s.pick} ${s.extra}`}>
         <h3 className={s.pickTitle} id={offId}>

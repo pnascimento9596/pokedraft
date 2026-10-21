@@ -15,10 +15,9 @@ const seat = (index: number, species: number, available = true) => ({
 });
 
 // 4-3-3 eleven: Bulbasaur (1) in goal, Pikachu (25) as the last starter, slot 10.
-const LINE = {
+const LINE: TouchlineState = {
   minute: 46,
   tactic: "balanced",
-  managed: false,
   tacticManaged: false,
   subsManaged: false,
   subsUsed: 2,
@@ -28,7 +27,7 @@ const LINE = {
   bench: [seat(0, 133), seat(1, 143, false), seat(2, 150), seat(3, 151, false), seat(4, 152)],
   takers: { penalty: null, freeKick: null },
   open: true,
-} as unknown as TouchlineState;
+};
 
 describe("Touchline (catches a panel that offers used players or records nothing)", () => {
   it("shows the minute, the sub count and only the bench players who can still come on", () => {
@@ -65,7 +64,7 @@ describe("Touchline (catches a panel that offers used players or records nothing
   it("closes the substitution once all five are used, and says the assistant has stepped back", () => {
     render(
       <Touchline
-        line={{ ...LINE, subsUsed: 5, tacticManaged: true, subsManaged: true } as unknown as TouchlineState}
+        line={{ ...LINE, subsUsed: 5, tacticManaged: true, subsManaged: true }}
         formation="4-3-3"
         onDecide={() => {}}
         error={null}
@@ -154,7 +153,7 @@ describe("Touchline intelligence (catches a touchline that hides the assistant's
 
     rerender(
       <Touchline
-        line={{ ...LINE, tacticManaged: false, subsManaged: true } as unknown as TouchlineState}
+        line={{ ...LINE, tacticManaged: false, subsManaged: true }}
         formation="4-3-3"
         onDecide={() => {}}
         error={null}
@@ -169,7 +168,7 @@ describe("Touchline intelligence (catches a touchline that hides the assistant's
 
     rerender(
       <Touchline
-        line={{ ...LINE, tacticManaged: true, subsManaged: false } as unknown as TouchlineState}
+        line={{ ...LINE, tacticManaged: true, subsManaged: false }}
         formation="4-3-3"
         onDecide={() => {}}
         error={null}
@@ -184,7 +183,7 @@ describe("Touchline intelligence (catches a touchline that hides the assistant's
 
     rerender(
       <Touchline
-        line={{ ...LINE, tacticManaged: true, subsManaged: true } as unknown as TouchlineState}
+        line={{ ...LINE, tacticManaged: true, subsManaged: true }}
         formation="4-3-3"
         onDecide={() => {}}
         error={null}

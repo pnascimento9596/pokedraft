@@ -20,10 +20,10 @@ import {
 export type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 export const MAX_SUBS = ENGINE_COEFFICIENTS.manager.maxSubs;
-export const SET_PIECES_ON = true;
 const FRESH = 100;
 const REGULATION = 90;
 const EXTRA_TIME = 120;
+const SPLIT_TACTIC_MINUTE = 45;
 
 /** What a run needs to replay its cup with a new coach decision. */
 export interface CupContext {
@@ -88,8 +88,10 @@ export interface BenchSeat {
 export interface Touchline {
   readonly minute: number;
   readonly tactic: Tactic;
-  /** The user decided something in this match at or before this minute; the assistant is off. */
-  readonly managed: boolean;
+  /** The user picked a tactic at or after 45' in this match; the assistant's tactics are off. */
+  readonly tacticManaged: boolean;
+  /** The user made a substitution in this match; the assistant's fatigue subs are off. */
+  readonly subsManaged: boolean;
   readonly subsUsed: number;
   readonly onPitch: readonly (SpeciesId | null)[];
   readonly energy: readonly (number | null)[];
@@ -132,16 +134,26 @@ function sideState(fielded: Fielded, incidents: readonly Incident[]) {
   return { onPitch, since, yellow, subs, tactic, bench };
 }
 
-/**
- * Whether a decision takes the touchline from the assistant. A nominated taker does not: it is a
- * set-piece choice, and the engine leaves the assistant's tactics and subs on for it.
- */
-export function takesOver(a: ManagerAction): boolean {
-  return a.type !== "taker";
+function tacticManagedAt(
+  actions: readonly ManagerAction[],
+  matchIndex: number,
+  minute: number,
+): boolean {
+  return actions.some(
+    (a) =>
+      a.match === matchIndex &&
+      a.minute <= minute &&
+      a.type === "tactic" &&
+      a.minute >= SPLIT_TACTIC_MINUTE,
+  );
 }
 
-function managedAt(actions: readonly ManagerAction[], matchIndex: number, minute: number): boolean {
-  return actions.some((a) => a.match === matchIndex && a.minute <= minute && takesOver(a));
+function subsManagedAt(
+  actions: readonly ManagerAction[],
+  matchIndex: number,
+  minute: number,
+): boolean {
+  return actions.some((a) => a.match === matchIndex && a.minute <= minute && a.type === "sub");
 }
 
 function takersAt(
@@ -173,7 +185,8 @@ export function touchlineAt(
   return {
     minute,
     tactic: state.tactic,
-    managed: managedAt(actions, matchIndex, minute),
+    tacticManaged: tacticManagedAt(actions, matchIndex, minute),
+    subsManaged: subsManagedAt(actions, matchIndex, minute),
     subsUsed: state.subs,
     onPitch: state.onPitch,
     energy,

@@ -112,18 +112,10 @@ describe("fatigueLine (catches a half-time line that names the keeper or the wro
 
 describe("assistantStatus (catches a status line that collapses the split assistant states)", () => {
   it("reports each half of the assistant independently: subs then tactics", () => {
-    expect((assistantStatus as (t: boolean, s: boolean) => string)(false, false)).toBe(
-      "Assistant: subs on, tactics on",
-    );
-    expect((assistantStatus as (t: boolean, s: boolean) => string)(true, false)).toBe(
-      "Assistant: subs on, tactics off",
-    );
-    expect((assistantStatus as (t: boolean, s: boolean) => string)(false, true)).toBe(
-      "Assistant: subs off, tactics on",
-    );
-    expect((assistantStatus as (t: boolean, s: boolean) => string)(true, true)).toBe(
-      "Assistant: subs off, tactics off",
-    );
+    expect(assistantStatus(false, false)).toBe("Assistant: subs on, tactics on");
+    expect(assistantStatus(true, false)).toBe("Assistant: subs on, tactics off");
+    expect(assistantStatus(false, true)).toBe("Assistant: subs off, tactics on");
+    expect(assistantStatus(true, true)).toBe("Assistant: subs off, tactics off");
     expect([ASSISTANT_ON, ASSISTANT_OFF]).toEqual([
       "Assistant: subs on, tactics on",
       "Assistant: subs off, tactics off",

@@ -28,7 +28,7 @@ import { ROUND_LABEL } from "@/ui/labels";
 import type { MatchView } from "@/ui/settings";
 import { SIDE_COPY, type ResultsVariant } from "@/components/results/format";
 import { fatigueLine, scoutLine } from "@/ui/manager/intel";
-import { injuries, takesOver, touchlineAt, type Decision } from "@/ui/manager/touchline";
+import { injuries, touchlineAt, type Decision } from "@/ui/manager/touchline";
 import { PACE, stopsFor, type Pace, type Stop } from "@/ui/matchday/clock";
 import { TACTIC_LABEL, beatLine, clubShort, kickLine, type Teams } from "@/ui/matchday/copy";
 import {
@@ -122,7 +122,6 @@ const STOP_COPY: Readonly<Record<Stop["kind"], { title: string; go: string } | n
     title: "Half time. Make your changes for the second half.",
     go: "Start the second half",
   },
-  fatigue: { title: "Make a change or play on.", go: "Play on" },
   extraTime: { title: "Level after 90 minutes. Extra time is next.", go: "Start extra time" },
   injury: null,
 };
@@ -207,15 +206,8 @@ export function MatchPlayer({
     return new Map(goals.map((g, i) => [beatKey(g), lines[i]!]));
   }, [timeline, story]);
   const stops = useMemo(
-    () =>
-      manager === undefined
-        ? []
-        : stopsFor(
-            match,
-            lineup,
-            manager.actions.some((a) => a.match === matchIndex && a.minute <= 65 && takesOver(a)),
-          ),
-    [manager, match, matchIndex, lineup],
+    () => (manager === undefined ? [] : stopsFor(match, lineup)),
+    [manager, match, lineup],
   );
   const env: PlayEnv = useMemo(
     () => ({ timeline, stops, pace: PACE[view], replays: motion }),
@@ -532,10 +524,14 @@ export function MatchPlayer({
     line?.tactic ?? latestTactic("user") ?? snapWindow?.tactic.user ?? "balanced";
   const oppTactic: Tactic = latestTactic("opp") ?? snapWindow?.tactic.opp ?? "balanced";
   const userShots = shown.filter(
-    (b) => (b.kind === "goal" && b.side === "user") || (b.kind === "save" && b.side === "opp"),
+    (b) =>
+      (b.kind === "goal" && b.side === "user") ||
+      (b.kind === "save" && b.side === "opp" && b.penalty !== "missed"),
   ).length;
   const oppShots = shown.filter(
-    (b) => (b.kind === "goal" && b.side === "opp") || (b.kind === "save" && b.side === "user"),
+    (b) =>
+      (b.kind === "goal" && b.side === "opp") ||
+      (b.kind === "save" && b.side === "user" && b.penalty !== "missed"),
   ).length;
   const lean = frameAt(timeline, clock)?.ball ?? 0;
   const userMomentum = Math.round(50 + lean * 28);
@@ -544,7 +540,7 @@ export function MatchPlayer({
   const onPitch = staged(state, now);
   const hintId = useId();
   const stop = state.stop;
-  const breather = stop?.kind === "halftime" || stop?.kind === "fatigue" ? stop.minute : null;
+  const breather = stop?.kind === "halftime" ? stop.minute : null;
   const actions = manager?.actions;
   const tired = useMemo(
     () =>
@@ -877,11 +873,7 @@ export function MatchPlayer({
               aria-label={STOP_COPY[stop.kind]!.go}
               data-testid={`stop-${stop.kind}`}
             >
-              <p className={s.promptTitle}>
-                {stop.kind === "fatigue" && tired !== null
-                  ? `${stop.minute}'. ${tired} ${STOP_COPY.fatigue!.title}`
-                  : STOP_COPY[stop.kind]!.title}
-              </p>
+              <p className={s.promptTitle}>{STOP_COPY[stop.kind]!.title}</p>
               {stop.kind === "halftime" ? (
                 <>
                   <p className={s.promptLine} data-testid="halftime-scout">
