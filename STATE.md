@@ -15,7 +15,7 @@ What changed for players:
 - About 1 in 5 penalties in play is saved or missed, a stronger penalty taker converts more often (`shootout.band = 0.18`, 57% to 93% over +/-100 edge), and missed penalties no longer count as shots on target on the live scoreboard.
 - Forwards strong in the air score more headers and forwards strong on the ball score more solo goals.
 - Opponents suffer injuries and bring on position-matched reserves, style edges sit 15% further from neutral, and the Final Boss plays at Team Score 992.
-- Shared `pd6` links continue to replay byte-for-byte on the frozen `v6` engine bundle, leaderboard rows from Engine 6 carry the `Engine v6` chip alongside the `All engines` toggle, and in-flight `pd6` runs can still submit during the grace window (`Ranked under Engine v6 (in-flight run)`).
+- Shared `pd6` links continue to replay byte-for-byte on the frozen `v6` engine bundle, leaderboard rows from Engine 6 carry the `Engine v6` chip alongside the `All engines` toggle, and in-flight `pd6` runs can still submit during the grace window (`Ranked on the engine 6 board.`).
 
 Engine 7 calibration pins (from 6b8 at `c1f4f838`, `docs/reports/engine-7/calibration.json`):
 
@@ -31,19 +31,20 @@ RED commits:
 
 - `fe830cb7`: 4 of 7 failed in `src/engine/__tests__/goldens.test.ts` when switching `ENGINE_VERSION`, `RUN_TOKEN_VERSION`, and `ENGINE_COEFFICIENTS` to Engine 7; `0256f355` re-pinned goldens (7 of 7 passed), and `9f3cd902` deleted the Engine 6 branches and rule flags with `goldens.test.ts` unchanged and green (7 of 7 passed).
 - `9b02b64e`: 1 of 5 failed in `src/engine/__tests__/goal-kind.test.ts` (empty attacking pool in `goalKindOf` returned `NaN` scales); fixed in `69567762` (5 of 5 passed).
-- `f7548b0f`: 2 of 17 failed in `src/__tests__/proxy.test.ts` (`pd6.` dot share links not redirected); fixed in `0b3a6df2` (59 of 59 passed across 4 files).
-- `2b53091d`: 3 of 14 failed in `src/leaderboard/server/__tests__/grace.test.ts` (`pd6` grace submission, pre-flip `dailyDate < GRACE.flipDate` guard on `pd7` Daily submissions, and version-aware `decodeToken(token, v)` rejecting forged `pd6` taker tuples); fixed in `d399963c` (66 of 66 passed across 2 files).
-- `5d431a45`: 8 of 61 failed across `intel.test.ts`, `clock.test.ts`, `Touchline.test.tsx`, `MatchdayFlow.intel.test.tsx`, and `Broadcast.test.tsx` (four-state `assistantStatus`, per-part `TAKEOVER_COPY`, 65' fatigue stop removal, and missed-penalty SoT exclusion); fixed in `e2cacbd5` (61 of 61 passed across 5 files).
+- `f7548b0f`: 2 of 17 failed in `src/__tests__/proxy.test.ts` (`pd6.` share links not routed through `brokenShareLink`); fixed in `0b3a6df2` (59 of 59 passed across 4 files).
+- `2b53091d`: 3 of 14 failed in `src/leaderboard/server/__tests__/grace.test.ts` (`GRACE` constant, pre-flip `dailyDate < graceSetting.flipDate` guard in `parseSubmission` on `pd7` Daily submissions, and version-aware `decodeToken(token, version)` in `parseSubmission`, `canonicalToken`, and `readVersioned` rejecting forged `pd6` taker tuples); fixed in `d399963c` (66 of 66 passed across 2 files).
+- `5d431a45`: 8 of 61 failed across `intel.test.ts`, `clock.test.ts`, `touchline.test.ts`, `Touchline.test.tsx`, and `MatchPlayer.fatigueStop.test.tsx` (four-state `assistantStatus`, per-part `TAKEOVER_COPY` / `SUBS_TAKEOVER_COPY` / `TACTICS_TAKEOVER_COPY`, 65' fatigue stop removal, and missed-penalty SoT exclusion); fixed in `e2cacbd5` (61 of 61 passed across 5 files).
 
 Owner overrides recorded: the owner waived the 00:00 to 01:59 New York landing window (`"ignore the hand-off instructions here, just go ahead with the merge/cleanup when you get to it, the time does not matter"`, consequence: `GRACE` refuses an Engine 6 run for the `2026-10-21` flip-day Daily if submitted after a daytime flip) and replaced the 6b9 Sol review with a Gemini review (`agy -p <prompt> --model gemini-4-argon-high --effort high --mode plan`).
 
-Gates at `97f355d2` (code-identical to this docs commit):
+Gates at `77736a9d` (code-identical to this docs commit):
 
-- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0 (`check:client-bundle`: 0 client files, 24 server files). Prettier passed on the touched files. `pnpm e2e:pins --check` reported the pins current.
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0 (`check:client-bundle`: 0 client files, 24 server files). Prettier passed on all touched files. `pnpm e2e:pins --check` reported the pins current.
 - Unit tests: 2,174 passed in 249 files. `pnpm vitest run src/engine`: 354 passed in 32 files.
 - `check-retained-replays.mts`: 13 emitted golden replays passed, 1 dispatcher (`v1` 2, `v2` 2, `v3` 1, `v4` 2, `v5` 2, `v6` 2 `2b26ee82...` / `eb366464...`, live `v7` 2 `c91cb42c...` / `2b7223f3...`). `measure-retained-json.mjs`: 4 copies, 2,891,853 bytes.
-- Playwright (`CI=1`, headless, against fresh build on port 3950): 77 passed on the 11 row and related specs; full suite 1,102 passed, 67 skipped, 0 failed across all projects.
+- Playwright (`CI=1`, headless, port 3955 against fresh build): `e2e/copy-pass.spec.ts` 7 passed (failed 1 of 7 at `ac067baf` before `b4749fda` updated the scoreboard assertion to `DEEP_LINK.after`); full Chromium project (`--project=chromium`) 640 passed, 5 skipped, 0 failed.
 - NOT RUN:
+  - Non-Chromium Playwright projects in this fix round.
   - Review, calibration re-runs on the head, preview smoke, merge, and post-merge production check (run by the coordinator).
   - Hosted CI.
   - The phone check and screen reader pass.
