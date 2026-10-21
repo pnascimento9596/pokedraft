@@ -25,6 +25,8 @@ Branch `fix/matchday-broadcast-carryovers` off `origin/main` at `a560015e`. Wave
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #167 (matchday and broadcast carryovers sweep, Yellow) merged as squash `d23e15f6`, reviewed head `e108c833`. Receipts on `e108c833`: GLM 5.3 Flash APPROVE with canary `7q1-cb11368e3e8089b340a4bca3a60cf0fb` echoed. At `e108c833` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,248 passed in 255 files; hosted check, db (42s) and all eight e2e shards green. Production `/api/health?db=1` served `d23e15f6` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard, score-lands-with-ball) passed with retries off (29 passed); score-lands-with-ball verified score held 0-0 in flight and landed 1-0 on flash.
+
 ## Client Zod and daily first paint
 
 Branch `feat/client-zod-daily-paint` off `origin/main` at `a26daf01`. Wave 7 row 7zd (Yellow). The first commit (`8ced5cc8`) records the PR #165 merge.
