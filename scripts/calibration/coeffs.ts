@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "@/engine/coefficients";
 import { ENGINE_COEFFICIENTS_V7 } from "@/engine/coefficients-v7";
+import { ENGINE_COEFFICIENTS_V8 } from "@/engine/coefficients-v8";
 
 type Json = number | string | boolean | null | Json[] | { [k: string]: Json };
 
@@ -37,6 +38,7 @@ function deepMerge(base: Json, patch: Json, at: string): Json {
 export function loadCoefficients(patchPath: string | undefined): EngineCoefficients {
   if (patchPath === undefined) return ENGINE_COEFFICIENTS;
   if (patchPath === "v7") return ENGINE_COEFFICIENTS_V7;
+  if (patchPath === "v8") return ENGINE_COEFFICIENTS_V8;
   return deepMerge(
     ENGINE_COEFFICIENTS as unknown as Json,
     JSON.parse(readFileSync(patchPath, "utf8")) as Json,

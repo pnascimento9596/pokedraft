@@ -70,8 +70,13 @@ const engineCandidate = {
       {
         patterns: [
           {
-            group: ["**/coefficients-v7", "@/engine/coefficients-v7"],
-            message: "The engine 7 candidate is for tests and scripts until the flip.",
+            group: [
+              "**/coefficients-v7",
+              "@/engine/coefficients-v7",
+              "**/coefficients-v8",
+              "@/engine/coefficients-v8",
+            ],
+            message: "Engine candidates are for tests and scripts until the flip.",
           },
         ],
       },

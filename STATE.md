@@ -3,6 +3,24 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Defend against direct, dormant
+
+Branch `feat/defend-direct-dormant` off `origin/main` at `f2f01113`. Wave 7 row 8c (Red). The first commit (`20d75ed9`) records the PR #171 merge. The second commit (`0c250a9f`) adds the RED guard test asserting that `directDefendOwn` is present in live coefficients and candidate `ENGINE_COEFFICIENTS_V8`, and parity holds against frozen v7.
+
+- Added `directDefendOwn: number` to `EngineCoefficients["manager"]` and `ENGINE_COEFFICIENTS.manager` at `0.655` (engine 7 value).
+- Created `src/engine/coefficients-v8.ts` exporting `ENGINE_COEFFICIENTS_V8: EngineCoefficients` with candidate `directDefendOwn: 0.95` and `styleEdges.direct.defend: [0.95, 0.7]` (the s = 1.5 variant explored in 6b8).
+- Wired `tacticMultipliers` in `src/engine/match.ts` to use `c.manager.directDefendOwn` when the user plays Defend against direct opponents.
+- Updated `src/ui/manager/intel.ts` and `scripts/calibration/probe-modes.ts` to reflect `directDefendOwn`.
+- Supported `--coeffs v8` in `scripts/calibration/coeffs.ts` and added unit test in `scripts/calibration/coeffs.test.ts`.
+- Restricted `coefficients-v8` in `eslint.config.mjs` and verified boundary isolation and independent copy in `src/engine/__tests__/coefficient-boundaries.test.ts`.
+- Replay parity verified: live engine replaying `GOLDEN_CUP8_V7` produces exact byte-identical JSON as frozen bundle `v7`.
+- Live goldens test `src/engine/__tests__/goldens.test.ts` is byte-identical to `origin/main` (exit code 0).
+- Gates at branch HEAD: `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,293 passed in 259 files), `pnpm build`, `pnpm format:check`, and all nine `check:*` scripts clean; `check-retained-replays.mts` 13 passed, `measure-retained-json.mjs` 4 copies (2,891,853 bytes).
+- Decision log: `docs/decisions/defend-direct-dormant.md`.
+- NOT RUN: Owner physical device test; live checks (run post-merge).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Freeze engine 7
 
 Branch `feat/freeze-engine-7` off `origin/main` at `363fed60`. Wave 7 row 8b (Red). The first commit (`3bff8b08`) records the PR #170 merge. The second commit (`bdd3fe3f`) adds the RED guard test asserting that `v7` can be imported from `@/engine/versions/v7`, its bundle digest matches the pinned sha256, and `matchStory` runs.

@@ -28,6 +28,11 @@ function edgeStyle(style: OpponentStyle): EdgeStyle | null {
 
 // The engine replaces the tactic's own multipliers with the style edge when there is one.
 function ratio(style: EdgeStyle, tactic: Tactic): number {
+  if (style === "direct" && tactic === "defend") {
+    const edge = styleEdges.direct.defend;
+    const gives = edge ? edge[1] : tactics.defend[1];
+    return ENGINE_COEFFICIENTS.manager.directDefendOwn / gives;
+  }
   const [own, gives] = styleEdges[style][tactic] ?? tactics[tactic];
   return own / gives;
 }

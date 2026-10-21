@@ -114,6 +114,11 @@ function tacticRatio(
   style: "pressing" | "possession" | "direct",
   t: Tactic,
 ) {
+  if (style === "direct" && t === "defend") {
+    const edge = c.manager.styleEdges.direct.defend;
+    const gives = edge ? edge[1] : c.manager.tactics.defend[1];
+    return c.manager.directDefendOwn / gives;
+  }
   const [own, gives] = c.manager.styleEdges[style][t] ?? c.manager.tactics[t];
   return own / gives;
 }

@@ -104,6 +104,8 @@ export interface EngineCoefficients {
      * below `below`.
      */
     pressFade: { below: number; perPoint: number };
+    /** Defend's own multiplier against direct sides. */
+    directDefendOwn: number;
   };
 }
 
@@ -217,5 +219,6 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     autoSubMinutes: [60, 75],
     counterLead: 1.1,
     pressFade: { below: 70, perPoint: 0.004 },
+    directDefendOwn: 0.655,
   },
 };

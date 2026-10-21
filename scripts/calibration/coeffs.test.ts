@@ -4,12 +4,15 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { ENGINE_COEFFICIENTS } from "@/engine/coefficients";
 import { ENGINE_COEFFICIENTS_V7 } from "@/engine/coefficients-v7";
+import { ENGINE_COEFFICIENTS_V8 } from "@/engine/coefficients-v8";
 import { loadCoefficients } from "./coeffs";
 
-describe("--coeffs (catches calibration comparing a hand-kept copy of the engine 7 numbers)", () => {
-  it("resolves v7 to the candidate module itself", () => {
+describe("--coeffs (catches calibration comparing a hand-kept copy of the engine candidate numbers)", () => {
+  it("resolves v7 and v8 to the candidate modules themselves", () => {
     expect(loadCoefficients("v7")).toBe(ENGINE_COEFFICIENTS_V7);
     expect(loadCoefficients("v7").takers.freeKickWeight).toBe(1.5);
+    expect(loadCoefficients("v8")).toBe(ENGINE_COEFFICIENTS_V8);
+    expect(loadCoefficients("v8").manager.directDefendOwn).toBe(0.95);
   });
 
   it("keeps the live coefficients with no flag", () => {
