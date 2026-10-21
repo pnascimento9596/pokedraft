@@ -24,8 +24,8 @@ Every player starting a new run or viewing a board:
 - Shared `pd6` links (`/r/pd6?t=...` and legacy `/r/pd6.<payload>`) continue to replay identically
   through the frozen `v6` engine bundle, and leaderboard rows from Engine 6 show the `Engine v6`
   chip alongside the `All engines` toggle.
-- An in-flight Engine 6 run can still submit during the grace window (`flipDate: "2026-10-20"`,
-  `until: "2026-10-22T04:00:00Z"`) with the note `Ranked under Engine v6 (in-flight run)`.
+- An in-flight Engine 6 run can still submit during the grace window (`flipDate: "2026-10-21"`,
+  `until: "2026-10-23T04:00:00Z"`) with the note `Ranked under Engine v6 (in-flight run)`.
 
 ## Scope and files
 
@@ -60,7 +60,7 @@ true`, `penalty.awardShare = 0.0745`, `shootout.band = 0.18`, `goalKind` weights
   - `scripts/audit/tokens.mts`: adds `6` to `RETAINED` and moves `7` to live.
 - **Grace window and leaderboard validation:**
   - `src/leaderboard/server/grace.ts`: enables `GRACE` for version `6` (`pokedraft-engine-6`,
-    `flipDate: "2026-10-20"`, `until: "2026-10-22T04:00:00Z"`) and rejects a live-version (`pd7`)
+    `flipDate: "2026-10-21"`, `until: "2026-10-23T04:00:00Z"`) and rejects a live-version (`pd7`)
     Daily submission when `dailyDate < g.flipDate` (6g Red reviewer carryover).
   - `src/leaderboard/server/handlers.ts` and `src/ui/read-token.ts`: passes the token's own version
     `v` into `decodeToken(token, v)` so retired `pd6` tokens are validated against
@@ -194,7 +194,7 @@ Commit `0b3a6df2` wired `RETAINED[6]`, `RETAINED_TOKEN_VERSIONS = [1, 2, 3, 4, 5
 Commit `2b53091d` added failing guards in `src/leaderboard/server/__tests__/grace.test.ts` for:
 
 1. accepting an in-flight `pd6` token during the grace window,
-2. rejecting a live `pd7` token on a pre-flip Daily date (`2026-10-19 < 2026-10-20`), and
+2. rejecting a live `pd7` token on a pre-flip Daily date (`2026-10-20 < 2026-10-21`), and
 3. rejecting a forged `pd6` token carrying an Engine 7 `"p"` taker tuple in `canonicalToken`
    (3 of 14 failed):
 
@@ -394,9 +394,9 @@ squad 5.9, them 0.1"` (G1 penalty and style-edge xG under Engine 7).
 - **Owner override on landing window (recorded verbatim):**
   The owner waived the 00:00 to 01:59 New York landing window for 6b9: `"ignore the hand-off
 instructions here, just go ahead with the merge/cleanup when you get to it, the time does not
-matter"`. Consequence: `GRACE` refuses an Engine 6 run for the flip-day Daily (`2026-10-20`), so a
+matter"`. Consequence: `GRACE` refuses an Engine 6 run for the flip-day Daily (`2026-10-21`), so a
   player who started that day's Daily before a daytime flip and submits after it gets a 409.
-  `GRACE.flipDate` stays `"2026-10-20"` and `GRACE.until` is `"2026-10-22T04:00:00Z"`.
+  `GRACE.flipDate` stays `"2026-10-21"` and `GRACE.until` is `"2026-10-23T04:00:00Z"`.
 - **Owner substitution on Sol review:**
   The owner has no Sol usage and replaced the 6b9 Sol review with a Gemini review: `agy -p <prompt>
 --model gemini-4-argon-high --effort high --mode plan` (Antigravity CLI at `~/.local/bin/agy`,

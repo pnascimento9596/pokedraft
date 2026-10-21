@@ -5,7 +5,7 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Engine 7 flip
 
-Branch `feat/engine-7` off `origin/main` at `d457e72` (the 6b8 squash, PR #154). Wave 6 row 6b9 (Red). Flips the live engine to `pokedraft-engine-7` (`RUN_TOKEN_VERSION = 7`, `pd7.` tokens), wires `RETAINED[6]` (`pd6.` dot-link proxy and query-param replays), enables the Engine 6 submission grace window (`flipDate: "2026-10-20"`, `until: "2026-10-22T04:00:00Z"`), and deletes the Engine 6 rule branches and flags from the live engine. `src/scouting`, `scripts/data` and `src/data` are untouched. The first commit (`25165cf7`) records the PR #154 merge.
+Branch `feat/engine-7` off `origin/main` at `d457e72` (the 6b8 squash, PR #154). Wave 6 row 6b9 (Red). Flips the live engine to `pokedraft-engine-7` (`RUN_TOKEN_VERSION = 7`, `pd7.` tokens), wires `RETAINED[6]` (`pd6.` dot-link proxy and query-param replays), enables the Engine 6 submission grace window (`flipDate: "2026-10-21"`, `until: "2026-10-23T04:00:00Z"`), and deletes the Engine 6 rule branches and flags from the live engine. `src/scouting`, `scripts/data` and `src/data` are untouched. The first commit (`25165cf7`) records the PR #154 merge.
 
 What changed for players:
 
@@ -35,7 +35,7 @@ RED commits:
 - `2b53091d`: 3 of 14 failed in `src/leaderboard/server/__tests__/grace.test.ts` (`pd6` grace submission, pre-flip `dailyDate < GRACE.flipDate` guard on `pd7` Daily submissions, and version-aware `decodeToken(token, v)` rejecting forged `pd6` taker tuples); fixed in `d399963c` (66 of 66 passed across 2 files).
 - `5d431a45`: 8 of 61 failed across `intel.test.ts`, `clock.test.ts`, `Touchline.test.tsx`, `MatchdayFlow.intel.test.tsx`, and `Broadcast.test.tsx` (four-state `assistantStatus`, per-part `TAKEOVER_COPY`, 65' fatigue stop removal, and missed-penalty SoT exclusion); fixed in `e2cacbd5` (61 of 61 passed across 5 files).
 
-Owner overrides recorded: the owner waived the 00:00 to 01:59 New York landing window (`"ignore the hand-off instructions here, just go ahead with the merge/cleanup when you get to it, the time does not matter"`, consequence: `GRACE` refuses an Engine 6 run for the `2026-10-20` flip-day Daily if submitted after a daytime flip) and replaced the 6b9 Sol review with a Gemini review (`agy -p <prompt> --model gemini-4-argon-high --effort high --mode plan`).
+Owner overrides recorded: the owner waived the 00:00 to 01:59 New York landing window (`"ignore the hand-off instructions here, just go ahead with the merge/cleanup when you get to it, the time does not matter"`, consequence: `GRACE` refuses an Engine 6 run for the `2026-10-21` flip-day Daily if submitted after a daytime flip) and replaced the 6b9 Sol review with a Gemini review (`agy -p <prompt> --model gemini-4-argon-high --effort high --mode plan`).
 
 Gates at `97f355d2` (code-identical to this docs commit):
 

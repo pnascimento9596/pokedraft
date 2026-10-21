@@ -20,8 +20,8 @@ import { isCoached } from "@/ui/manager/coached";
 import { GOLDEN_CUP8_V6, migratedDb, scriptedToken } from "./fixtures";
 
 const SECRET = "test-secret-0123456789abcdef01234567";
-const FLIP_DAY_NOON = new Date("2026-10-20T16:00:00Z");
-const AFTER_UNTIL = new Date("2026-10-22T04:00:01Z");
+const FLIP_DAY_NOON = new Date("2026-10-21T16:00:00Z");
+const AFTER_UNTIL = new Date("2026-10-23T04:00:01Z");
 const CUP8: DraftSettings = {
   mode: "cup8",
   formation: "4-3-3",
@@ -33,8 +33,8 @@ const CUP8: DraftSettings = {
 const GRACE_V6 = {
   version: 6,
   engine: "pokedraft-engine-6",
-  until: "2026-10-22T04:00:00Z",
-  flipDate: toIsoDate("2026-10-20"),
+  until: "2026-10-23T04:00:00Z",
+  flipDate: toIsoDate("2026-10-21"),
 } as const;
 
 interface Body {
@@ -77,7 +77,7 @@ afterEach(async () => {
 });
 
 describe("grace window (catches runs played on the retired engine refused the moment the engine flips)", () => {
-  it("sets GRACE for engine 6 until 2026-10-22T04:00:00Z with flipDate 2026-10-20", () => {
+  it("sets GRACE for engine 6 until 2026-10-23T04:00:00Z with flipDate 2026-10-21", () => {
     expect(GRACE).toEqual(GRACE_V6);
   });
 
@@ -129,24 +129,24 @@ describe("grace window (catches runs played on the retired engine refused the mo
   });
 
   it("refuses a retired-engine run for the flip day's Daily with 409, so one date never mixes engines", async () => {
-    const token = pd6(scriptedToken(dailySettings("4-3-3"), dailySeed(toIsoDate("2026-10-20"))));
+    const token = pd6(scriptedToken(dailySettings("4-3-3"), dailySeed(toIsoDate("2026-10-21"))));
     const res = await submit({ nickname: "Ash", token, engineVersion: "pokedraft-engine-6" });
     expect([res.status, res.body.error.code]).toEqual([409, "ENGINE_VERSION_MISMATCH"]);
     expect(await rows()).toEqual([]);
   });
 
   it("accepts a retired-engine run for the previous day's Daily with 201 on that date", async () => {
-    const token = pd6(scriptedToken(dailySettings("4-3-3"), dailySeed(toIsoDate("2026-10-19"))));
+    const token = pd6(scriptedToken(dailySettings("4-3-3"), dailySeed(toIsoDate("2026-10-20"))));
     const res = await submit({ nickname: "Ash", token, engineVersion: "pokedraft-engine-6" });
     expect([res.status, res.body.entry?.dailyDate, res.body.entry?.engineVersion]).toEqual([
       201,
-      "2026-10-19",
+      "2026-10-20",
       "pokedraft-engine-6",
     ]);
   });
 
   it("refuses a live-engine run for the previous day's pre-flip Daily with 409 (catches 6g note 3: pre-flip daily board mixing engines)", async () => {
-    const token = scriptedToken(dailySettings("4-3-3"), dailySeed(toIsoDate("2026-10-19")));
+    const token = scriptedToken(dailySettings("4-3-3"), dailySeed(toIsoDate("2026-10-20")));
     const res = await submit({ nickname: "Ash", token, engineVersion: "pokedraft-engine-7" });
     expect([res.status, res.body.error.code]).toEqual([409, "ENGINE_VERSION_MISMATCH"]);
     expect(await rows()).toEqual([]);
