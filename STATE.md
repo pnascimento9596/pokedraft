@@ -16,7 +16,7 @@ Branch `feat/builder-link-previews` off `origin/main` at `fc890c09`. Wave 7 row 
 - Decision log: `docs/decisions/builder-link-previews.md`.
 - NOT RUN: Owner physical device test (iPhone Safari, Android Chrome); owner VoiceOver screen reader pass.
 
-Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+PR #165 (squad link previews for /?b= and gate pass-through, Yellow) merged as squash `a26daf01`, reviewed head `34567788`. Receipts on `34567788`: GLM 5.3 Flash APPROVE with canary `7bp-73c43d2c9b93f8ba09075758e50b3832` echoed (round 2, fix forward from 9c805d24 preserving static first paint). At `34567788` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,245 passed in 253 files; hosted check, db (47s) and all eight e2e shards green. Production `/api/health?db=1` served `a26daf01` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard, share-sheet) passed with retries off (40 passed); unauthenticated curl checks confirmed `/` 307, `/?b=` 307 with full OG squad preview metadata rendered on `/gate`, and `/card?b=` 200 image/png.
 
 ## Enforce Content-Security-Policy
 
