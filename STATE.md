@@ -14,7 +14,31 @@ Branch `chore/ci-hygiene` off `origin/main` at `6606585`. Wave 7 row 7ci (Green)
 - NOT RUN: Node 24 execution locally (local is Node `v22.22.3`; proven on the PR's hosted CI run); Playwright e2e suite locally (nothing under `src/` or `e2e/` changed; CI runs the 8-shard matrix); coordinator review, PR creation, hosted CI verification, and squash merge.
 - Decision log: `docs/decisions/ci-hygiene.md`.
 
+## Live checks through the passcode gate
+
+Branch `chore/live-checks-gate` off `origin/main` at `6606585`. Wave 7 row 7-0 (Green): Playwright harness and docs only, no `src/` runtime change. The first commit (`89d1ccd2`) records the PR #158 merge.
+
+- `e2e/gate-cookie.ts` exports `gateCookies(baseUrl, cookieFile, readFile)`. When both `PLAYWRIGHT_BASE_URL` and `PLAYWRIGHT_GATE_COOKIE_FILE` are set and the file trims to a non-empty digest, `playwright.config.ts` adds `{ name: "pokedraft_pass", value, domain: new URL(baseUrl).hostname, path: "/", httpOnly: true, secure: true, sameSite: "Lax", expires: -1 }` to `use.storageState.cookies` (matching `src/gate/unlock.ts:59-65` and reusing `PASSCODE_COOKIE` from `src/passcode.ts:3`). Local and CI runs keep `cookies: []`. Both `page` (and `page.request`) and Playwright's standalone `{ request }` fixture (`APIRequestContext`) inherit `use.storageState.cookies`.
+- `e2e/seed-board.spec.ts:158` adds `expect(html).toContain('data-testid="results-record"')` to the `/r` server-HTML test so `/gate?next=%2Fr%2F...` (which also carries `"Team Score"` in `<title>` via `runMetadata`) cannot satisfy it.
+- RED commit `697f7ad7`: 3 of 3 failed in `scripts/e2e/gate-cookie.test.ts`; GREEN commit `ee047837`: 3 of 3 passed.
+- Gates at `ee047837` (code-identical to this docs commit):
+  - `pnpm vitest run scripts/e2e/gate-cookie.test.ts`: 3 passed in 1 file.
+  - `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,190 passed in 250 files) and `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records) exited 0.
+  - Local Playwright (`CI=1 PLAYWRIGHT_PORT=3971 pnpm exec playwright test e2e/health.spec.ts e2e/share.spec.ts --project=chromium`): 19 passed (1 in `e2e/health.spec.ts`, 18 in `e2e/share.spec.ts`); `e2e/seed-board.spec.ts` (`--project=chromium`): 9 passed.
+- Decision log: `docs/decisions/live-checks-gate.md` (includes the real-page assertion audit for the 9 live-check specs and the list of specs that assume an ungated host or target `/gate` directly).
+- Production through the gate, run by the coordinator from this branch at `0e00245b` against production serving `6606585` (the harness change is test-only, so production code is the same):
+  - With `PLAYWRIGHT_GATE_COOKIE_FILE` set, chromium, retries off: the Wave 6 live set (`health`, `old-links`, `share`, `leaderboard`, `seed-board`, `dossier-contributions`, `xg-river`, `penalty-takers`, `opponent-injuries`) 62 passed, 0 failed.
+  - The same run without the cookie file: `e2e/old-links.spec.ts` 1 failed (the `engine-label` assertion), so the cookie is what lets the gated specs pass.
+  - Specs that target `/gate` or assume an ungated host, with the cookie: `e2e/share-sheet.spec.ts` and `e2e/theme-support.spec.ts` passed; `e2e/resilience-a11y.spec.ts` failed 5 of 6 (it replaces `storageState` with no cookies at line 9, so it hits the gate; the theme-color test at line 57 passed only because `/` redirects to the gate page, which carries the same theme-color meta, so on a gated host it passes for the wrong reason). It stays a local-only spec.
+  - `curl` without a cookie: `/` 307 to `/gate?next=%2F`, `/api/leaderboard` 401.
+- NOT RUN:
+  - The grace-window receipt (the window closes at `2026-10-23T04:00:00Z`).
+  - Hosted CI and reviewer receipt on the pushed branch.
+  - The phone check and screen reader pass.
+
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #159 (live checks through the passcode gate, Green) merged as squash `8a29610`, reviewed head `f0bb9f6`, GLM 5.3 Flash APPROVE with canary `7-0-66634a82a27e7f69a72083873cc88255` echoed (round 1). At `f0bb9f6` the coordinator re-ran lint, typecheck, test, build, both retained-bundle checks, all nine `check:*` scripts and prettier on the 6 touched files (all exit 0) and `goldens.test.ts` was byte-identical to `origin/main`; the coordinator re-ran the RED commit `697f7ad7` in a detached worktree (3 of 3 failed). Hosted check and all eight e2e shards green. Production `/api/health?db=1` served `8a29610` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok; live check on chromium through the gate with the cookie file (`health`, `old-links`, `share`, `leaderboard`, `seed-board`, `dossier-contributions`, `xg-river`, `penalty-takers`, `opponent-injuries`) 62/62 with retries off; without a cookie `/` answered 307 and `/api/leaderboard` 401.
 
 ## Wave 6 owner follow-ups
 
@@ -27,6 +51,8 @@ Branch `docs/wave6-followups` off `origin/main` at `99f7361`. Green: docs only, 
 - NOT RUN: the phone check and the screen reader pass; the e2e suite on this branch (nothing under `src/` or `e2e/` changed; CI runs it).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #158 (Wave 6 owner follow-ups, Green) merged as squash `6606585`, reviewed head `52064b7`, GLM 5.3 Flash APPROVE with canary `wave6-followups-09fd3d0a4492153b64ce3d758006a791` echoed (round 1). Hosted check and all eight e2e shards green. Production `/api/health?db=1` served `6606585` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok (checked 2026-10-21 by the Wave 7 coordinator); with the gate on, `/` without the cookie answered 307 to `/gate?next=%2F` and `/api/leaderboard` 401. No Playwright live check ran for #158: it changed docs only, and gated specs need row 7-0's cookie support.
 
 ## Wave 6 summary
 

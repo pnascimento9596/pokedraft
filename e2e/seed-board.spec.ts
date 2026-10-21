@@ -155,6 +155,7 @@ test("/r server HTML carries no seed board, so the shared page reads no database
 }) => {
   const html = await (await request.get(`/r/${GOLDEN_RUN}`)).text();
   expect(html).toContain("Team Score");
+  expect(html).toContain('data-testid="results-record"');
   expect(html).not.toContain("Friends on this seed");
 });
 
