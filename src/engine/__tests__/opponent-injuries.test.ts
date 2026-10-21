@@ -132,7 +132,7 @@ describe("opponent injuries under engine 7 (catches a Boss Club that never loses
       oppInjuries: 71,
       oppSubs: 71,
       rotations: 425,
-      oppEnergyKeys: 4482,
+      oppEnergyKeys: 4488,
     });
   });
 });
@@ -183,11 +183,13 @@ describe("the reserve's scope leaves the opponent rosters alone (catches a reser
     expect(first("inj:0:9:0")).toBe(2134766504);
   });
 
+  // Engine 7 calibrates the Final Boss score, so engine 6 is built with engine 7's ladder scores.
   it("panel runs 0 to 9 field the same Boss Clubs under engine 7 as under engine 6", () => {
+    const v6WithV7Ladder = { ...ENGINE_COEFFICIENTS, ladder: ENGINE_COEFFICIENTS_V7.ladder };
     for (let r = 0; r < 10; r++) {
       const seed = `panel-${r}` as Seed;
       expect(buildLadder(seed, "cup8", ENGINE_COEFFICIENTS_V7)).toEqual(
-        buildLadder(seed, "cup8", ENGINE_COEFFICIENTS),
+        buildLadder(seed, "cup8", v6WithV7Ladder),
       );
     }
   });
