@@ -4,10 +4,10 @@ import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
 // with V8 candidate adjustments for calibration and exploration.
 export const ENGINE_COEFFICIENTS_V8: EngineCoefficients = structuredClone(ENGINE_COEFFICIENTS);
 
-// 8c candidate: raising Defend-against-direct's own multiplier to restore favourites' goal rates
-// against direct opponents (6b8 exploration: [0.95, 0.70] under s = 1.5).
-ENGINE_COEFFICIENTS_V8.manager.directDefendOwn = 0.95;
+// 8e choice (docs/decisions/engine-8-calibration.md): the smallest Defend-against-direct edge on the
+// measured grid that brings P1 good to at least +3 while P2 stays at most +10 for both bots.
+ENGINE_COEFFICIENTS_V8.manager.directDefendOwn = 1.05;
 ENGINE_COEFFICIENTS_V8.manager.styleEdges.direct = {
   ...ENGINE_COEFFICIENTS_V8.manager.styleEdges.direct,
-  defend: [0.95, 0.7],
+  defend: [1.05, 0.52],
 };
