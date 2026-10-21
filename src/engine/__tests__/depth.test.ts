@@ -153,7 +153,7 @@ describe("v4 match event contracts", () => {
     );
     expect(new Set(penGoals.map((g) => g.side))).toEqual(new Set(["user", "opp"]));
     expect(new Set(scorers)).toEqual(new Set([keeper]));
-    expect(penGoals.length).toBe(27);
+    expect(penGoals.length).toBe(36);
   });
 
   it("reports six actual group fixtures with one match per team in every round", () => {
