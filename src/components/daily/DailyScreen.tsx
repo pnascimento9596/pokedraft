@@ -1,22 +1,16 @@
 "use client";
 
 import { useId, useState, useSyncExternalStore } from "react";
-import { z } from "zod";
 import { Challenge } from "@/components/run/PlayScreen";
 import { useToday } from "@/components/leaderboard/useToday";
 import { dailySeed } from "@/engine/rng";
 import { decodeToken } from "@/engine/token";
 import { FORMATION_IDS, type FormationId, type IsoDate } from "@/engine/types";
 import { dailySettings, isDailySettings } from "@/leaderboard/daily";
-import { loadPanel } from "@/ui/settings";
+import { DEFAULT_PANEL, loadPanel } from "@/ui/settings";
 import { readRunCheckpoint, readSession, RUN_CLEARED, runSlotKey } from "@/ui/storage";
+import { parseDailySaved } from "./dailySaved";
 import s from "./DailyScreen.module.css";
-
-const savedSchema = z.object({
-  screen: z.enum(["draft", "results", "matchday"]),
-  token: z.string(),
-  daily: z.string().nullable(),
-});
 
 function subscribe(): () => void {
   return () => {};
@@ -31,12 +25,14 @@ function initialFormation(today: IsoDate | null): FormationId | null {
   // Match restoreRun's tab-first priority, but only decode settings here. Replay stays lazy.
   for (const raw of [session, readRunCheckpoint(slot)]) {
     if (raw === null) continue;
-    let saved: z.infer<typeof savedSchema>;
+    let parsed: unknown;
     try {
-      saved = savedSchema.parse(JSON.parse(raw));
+      parsed = JSON.parse(raw);
     } catch {
       continue;
     }
+    const saved = parseDailySaved(parsed);
+    if (saved === null) continue;
     if (saved.daily !== today) return fallback;
     try {
       const { settings, seed } = decodeToken(saved.token);
@@ -48,14 +44,18 @@ function initialFormation(today: IsoDate | null): FormationId | null {
   return fallback;
 }
 
-export function DailyScreen() {
-  const today = useToday();
+export function DailyScreen({
+  serverToday = null,
+}: {
+  readonly serverToday?: IsoDate | null;
+} = {}) {
+  const today = useToday(serverToday);
   const formationId = useId();
   const [selected, setSelected] = useState<FormationId | null>(null);
   const initial = useSyncExternalStore(
     subscribe,
     () => initialFormation(today),
-    () => null,
+    () => (serverToday !== null ? DEFAULT_PANEL.formation : null),
   );
   const formation = selected ?? initial;
   if (today === null || formation === null) {
