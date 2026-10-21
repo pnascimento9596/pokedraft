@@ -30,7 +30,7 @@ A scratch run, not committed (script kept in the coordinator scratch dir as `8c-
 
 The Defend-against-direct branch is the one this row changed, and it is exercised in 73 and 286 played matches with no difference. Per-trial rate parity for the new field is the literal pin in `direct-defend.test.ts`: the user's first Defend chance against the direct side in `panel-0` match 4 is 0.0010903145032324785 at `directDefendOwn` 0.655 and 0.0015813721802608463 at 0.95.
 
-The literal-pin test was added with the implementation, after the RED commit. The RED commit covers the other four assertions in that file.
+The literal-pin test and the frozen v7 replay parity test were added with the implementation, after the RED commit. The RED commit covers the other 3 assertions in that file.
 
 ## Carryovers
 
