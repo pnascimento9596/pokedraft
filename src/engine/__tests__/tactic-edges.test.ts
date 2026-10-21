@@ -44,13 +44,13 @@ describe("engine 7 counter while leading (catches Counter paying nothing for a l
   const flat = story(0, "counter", withManager({ counterLead: 1 }));
 
   it("a chance while level keeps its rate: 79' at 1-1", () => {
-    expect(v7.userAt(79).map((ch) => [ch.p, ch.outcome])).toEqual([[0.0883224358583112, "goal"]]);
-    expect(flat.userAt(79).map((ch) => ch.p)).toEqual([0.0883224358583112]);
+    expect(v7.userAt(79).map((ch) => [ch.p, ch.outcome])).toEqual([[0.08952683271092454, "goal"]]);
+    expect(flat.userAt(79).map((ch) => ch.p)).toEqual([0.08952683271092454]);
   });
 
   it("a chance while leading is 10% likelier and scores: 81' at 2-1", () => {
-    expect(v7.userAt(81).map((ch) => [ch.p, ch.outcome])).toEqual([[0.12379820331400296, "goal"]]);
-    expect(flat.userAt(81).map((ch) => [ch.p, ch.outcome])).toEqual([[0.11254382119454814, "off"]]);
+    expect(v7.userAt(81).map((ch) => [ch.p, ch.outcome])).toEqual([[0.12548636063192117, "goal"]]);
+    expect(flat.userAt(81).map((ch) => [ch.p, ch.outcome])).toEqual([[0.11407850966538287, "off"]]);
   });
 
   it("the lead turns 3-1 into 4-1, and runCup agrees with the story", () => {
@@ -68,25 +68,25 @@ describe("engine 7 press fades with energy (catches a tired press costing nothin
   const fresh = story(3, "press", withManager({ pressFade: { below: 70, perPoint: 0 } }));
 
   it("keeps the press rate while the side is fresh enough: 103'", () => {
-    expect(v7.userAt(103).map((ch) => ch.p)).toEqual([0.06876124705797915]);
-    expect(fresh.userAt(103).map((ch) => ch.p)).toEqual([0.06876124705797915]);
+    expect(v7.userAt(103).map((ch) => ch.p)).toEqual([0.07082408446971854]);
+    expect(fresh.userAt(103).map((ch) => ch.p)).toEqual([0.07082408446971854]);
   });
 
   it("lowers a tired pressing side's chance at 120'", () => {
-    expect(v7.userAt(120).map((ch) => ch.p)).toEqual([0.08690112151169856]);
-    expect(fresh.userAt(120).map((ch) => ch.p)).toEqual([0.08847628246365548]);
+    expect(v7.userAt(120).map((ch) => ch.p)).toEqual([0.08955540998560824]);
+    expect(fresh.userAt(120).map((ch) => ch.p)).toEqual([0.09113057093756514]);
   });
 });
 
 describe("engine 7 press against a direct side (catches pressing a direct side going unpunished)", () => {
-  // Match 4 against a direct side. Press hands the direct side's first chance 25% more than
+  // Match 4 against a direct side. Press hands the direct side's first chance 28.75% more than
   // Balanced does, and Press itself adds nothing to the user's own chance. Engine 7 also awards the
   // direct side a penalty that goes in, at 57' against Press and 58' against Balanced.
   const press = story(4, "press", ENGINE_COEFFICIENTS_V7);
   const balanced = story(4, "balanced", ENGINE_COEFFICIENTS_V7);
 
-  it("the direct side's 1' chance: 0.0539 against Press, 0.0431 against Balanced", () => {
-    expect(press.oppAt(1).map((ch) => ch.p)).toEqual([0.053901450854319154]);
+  it("the direct side's 1' chance: 0.0555 against Press, 0.0431 against Balanced", () => {
+    expect(press.oppAt(1).map((ch) => ch.p)).toEqual([0.055518494379948734]);
     expect(balanced.oppAt(1).map((ch) => ch.p)).toEqual([0.04311082977935492]);
   });
 
@@ -95,8 +95,8 @@ describe("engine 7 press against a direct side (catches pressing a direct side g
     expect(balanced.userAt(1).map((ch) => ch.p)).toEqual([0.0016646022950114173]);
   });
 
-  it("Press loses it 7-2, Balanced 5-2", () => {
-    expect(press.s.result.regulation).toEqual({ user: 2, opp: 7 });
+  it("Press loses it 8-2, Balanced 5-2", () => {
+    expect(press.s.result.regulation).toEqual({ user: 2, opp: 8 });
     expect(balanced.s.result.regulation).toEqual({ user: 2, opp: 5 });
   });
 });
