@@ -12,7 +12,7 @@ describe("--coeffs (catches calibration comparing a hand-kept copy of the engine
     expect(loadCoefficients("v7")).toBe(ENGINE_COEFFICIENTS_V7);
     expect(loadCoefficients("v7").takers.freeKickWeight).toBe(1.5);
     expect(loadCoefficients("v8")).toBe(ENGINE_COEFFICIENTS_V8);
-    expect(loadCoefficients("v8").manager.directDefendOwn).toBe(0.95);
+    expect(loadCoefficients("v8").manager.directDefendOwn).toBe(1.05);
   });
 
   it("keeps the live coefficients with no flag", () => {

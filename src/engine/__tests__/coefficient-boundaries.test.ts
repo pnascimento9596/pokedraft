@@ -111,7 +111,7 @@ describe("engine 8 candidate (catches a V8 tweak leaking into live coefficients)
       expect(ENGINE_COEFFICIENTS.manager.directDefendOwn).toBe(0.655);
     } finally {
       ENGINE_COEFFICIENTS_V8.team.synergy.edgeCap = saved;
-      ENGINE_COEFFICIENTS_V8.manager.directDefendOwn = 0.95;
+      ENGINE_COEFFICIENTS_V8.manager.directDefendOwn = 1.05;
       ENGINE_COEFFICIENTS.team.synergy.edgeCap = 1;
       ENGINE_COEFFICIENTS.manager.directDefendOwn = 0.655;
     }
