@@ -87,20 +87,67 @@ describe("GET /card", () => {
     expect(tokenImageRect("4-3-3", 9).size).toBeGreaterThanOrEqual(104);
   });
 
-  it.each(["pokeapi-pixel", "pokeapi-art"])(
+  it.each([
+    ["pokeapi-pixel", `http://localhost/card?t=${FLAWLESS}`],
+    ["pokeapi-art", `http://localhost/card?t=${FLAWLESS}&pack=pokeapi-art`],
+  ])(
     "draws real creature pixels from the %s pack, not an empty square",
-    async (pack) => {
+    async (_pack, url) => {
       // Slot 9 holds Dex 573 in the flawless run. An empty square would leave the box at pitch colour.
-      expect(
-        await creaturePixels(`http://localhost/card?t=${FLAWLESS}&pack=${pack}`, 9),
-      ).toBeGreaterThan(300);
+      expect(await creaturePixels(url, 9)).toBeGreaterThan(300);
     },
     30_000,
   );
 
-  it("falls back to the default pack for an unknown pack id instead of failing", async () => {
-    expect(
-      await creaturePixels(`http://localhost/card?t=${FLAWLESS}&pack=nope`, 9),
-    ).toBeGreaterThan(300);
+  it.each([
+    [`/card?t=${FLAWLESS}&utm=1`, `/card?t=${FLAWLESS}`],
+    [`/card?mirror=1&t=${FLAWLESS}`, `/card?t=${FLAWLESS}`],
+    [
+      `/card?t=${FLAWLESS}&mirror=0&pack=pokeapi-art`,
+      `/card?t=${FLAWLESS}&pack=pokeapi-art&mirror=0`,
+    ],
+    [`/card?t=${FLAWLESS}&pack=pokeapi-pixel`, `/card?t=${FLAWLESS}`],
+    [`/card?t=${FLAWLESS}&pack=nope`, `/card?t=${FLAWLESS}`],
+    [`/card?t=${FLAWLESS}&b=${PARTIAL_BUILDER}`, `/card?t=${FLAWLESS}`],
+    [`/card?b=${PARTIAL_BUILDER}&t=${FLAWLESS}`, `/card?t=${FLAWLESS}`],
+    [`/card?t=${FLAWLESS}&t=pd1.other`, `/card?t=${FLAWLESS}`],
+    [`/card?t=pd1%2Eabc`, `/card?t=pd1.abc`],
+  ])(
+    "redirects non-canonical %s with 308 to %s so extra or reordered params share one CDN cache entry",
+    async (path, location) => {
+      const res = await GET(new NextRequest(`http://localhost${path}`));
+      expect([res.status, res.headers.get("location"), res.headers.get("cache-control")]).toEqual([
+        308,
+        location,
+        "public, max-age=86400, s-maxage=31536000",
+      ]);
+    },
+    30_000,
+  );
+
+  it("renders 200 on the canonical redirect target without redirecting again (catches a canonical comparison loop)", async () => {
+    const redirect = await GET(
+      new NextRequest(`http://localhost/card?t=${FLAWLESS}&mirror=0&pack=pokeapi-art`),
+    );
+    const location = redirect.headers.get("location");
+    expect([redirect.status, location]).toEqual([
+      308,
+      `/card?t=${FLAWLESS}&pack=pokeapi-art&mirror=0`,
+    ]);
+    const out = await png(`http://localhost${location}`);
+    expect([out.status, out.type, out.width, out.height]).toEqual([200, "image/png", 1200, 630]);
   }, 30_000);
+
+  it.each(["/card", "/card?t=", "/card?b=", "/card?t=&utm=1"])(
+    "keeps 400 with no-store for %s when no usable token is present instead of redirecting",
+    async (path) => {
+      const res = await GET(new NextRequest(`http://localhost${path}`));
+      expect([
+        res.status,
+        res.headers.get("location"),
+        res.headers.get("cache-control"),
+        await res.text(),
+      ]).toEqual([400, null, "no-store", "Bad or missing run token."]);
+    },
+  );
 });
