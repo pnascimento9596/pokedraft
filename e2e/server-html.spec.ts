@@ -16,6 +16,13 @@ test.describe("first response carries the main content", () => {
     expect(html).toContain("151 Challenge");
   });
 
+  test("/daily start panel", async ({ request }) => {
+    const html = await text(request, "/daily");
+    expect(html).toContain("Daily 8-0 Challenge");
+    expect(html).toContain("16 rounds. Each round the wheel rolls");
+    expect(html).toContain("Start run");
+  });
+
   test("/leaderboard caption", async ({ request }) => {
     const html = await text(request, "/leaderboard");
     expect(html).toMatch(/Daily 8-0 Challenge for [A-Z][a-z]+day, [A-Z][a-z]+ \d+, \d{4}/);
