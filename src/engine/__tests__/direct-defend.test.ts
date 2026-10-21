@@ -17,8 +17,8 @@ describe("defend against direct style edge (Row 8c)", () => {
   });
 
   it("exports candidate ENGINE_COEFFICIENTS_V8 with candidate directDefendOwn", () => {
-    expect(ENGINE_COEFFICIENTS_V8.manager.directDefendOwn).toBe(0.95);
-    expect(ENGINE_COEFFICIENTS_V8.manager.styleEdges.direct.defend).toEqual([0.95, 0.7]);
+    expect(ENGINE_COEFFICIENTS_V8.manager.directDefendOwn).toBe(1.05);
+    expect(ENGINE_COEFFICIENTS_V8.manager.styleEdges.direct.defend).toEqual([1.05, 0.52]);
   });
 
   it("loads ENGINE_COEFFICIENTS_V8 via loadCoefficients('v8')", () => {

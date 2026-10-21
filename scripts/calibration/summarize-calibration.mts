@@ -1,5 +1,5 @@
-// The engine 7 pin summary (hand-off 6b8) from one calibration run directory:
-//   pnpm exec tsx scripts/calibration/summarize-calibration.mts --dir <run dir> --head <sha>
+// The engine 7 or 8 pin summary (hand-offs 6b8 and 8e) from one calibration run directory:
+//   pnpm exec tsx scripts/calibration/summarize-calibration.mts --dir <run dir> --head <sha> [--coeffs v8 --out docs/reports/engine-8/calibration.json]
 // The directory holds the probe JSONs (informed, noop, oracle, shootouts, kinds, upsets,
 // formations, luck), calibrate-5000.json, wincurve.stdout, achievements.txt and suite.log.
 import { createHash } from "node:crypto";
@@ -12,8 +12,13 @@ const { values: args } = parseArgs({
     dir: { type: "string" },
     out: { type: "string", default: "docs/reports/engine-7/calibration.json" },
     head: { type: "string" },
+    coeffs: { type: "string", default: "v7" },
   },
 });
+if (args.coeffs !== "v7" && args.coeffs !== "v8")
+  throw new RangeError(`--coeffs must be v7 or v8, got ${args.coeffs}`);
+const coeffs = args.coeffs;
+const engineNumber = coeffs === "v8" ? 8 : 7;
 if (args.dir === undefined) throw new RangeError("--dir is required");
 const dir = args.dir;
 
@@ -201,7 +206,7 @@ const pins = {
     passed: so.shootouts >= 5000 && so.topMinusBottom.value >= 0.1 && q1.hi < q4.lo,
   },
   P5_flawlessBuckets: {
-    command: "pnpm calibrate --n 5000 --coeffs v7",
+    command: `pnpm calibrate --n 5000 --coeffs ${coeffs}`,
     n: calibrate.n,
     seeds: "cal:<row>:<i>, bot rng bot:<row>:<i>, i = 0..n-1, pooled over every row and bot",
     pass: "each bucket's flawless rate inside the v4 Wilson interval",
@@ -209,7 +214,7 @@ const pins = {
     passed: buckets.every((b) => b.pass),
   },
   P6_goodPlayer: {
-    command: "pnpm calibrate --n 5000 --coeffs v7",
+    command: `pnpm calibrate --n 5000 --coeffs ${coeffs}`,
     n: calibrate.n,
     seeds: "cal:<row>:<i>, bot rng bot:<row>:<i>, i = 0..n-1",
     pass: "cup8-full good mean wins 5.8 to 6.2; careless 151 (kanto151 random) 3 to 4 wins",
@@ -222,7 +227,7 @@ const pins = {
       careless.meanWins <= 4,
   },
   P7_winCurve: {
-    command: "pnpm exec tsx scripts/calibration/win-curve.mts --n 5000 --coeffs v7",
+    command: `pnpm exec tsx scripts/calibration/win-curve.mts --n 5000 --coeffs ${coeffs}`,
     n: 5000,
     seeds: 'curve:<gap>:<i>, flat user lines at 800, G1 roster of buildLadder("probe")',
     pass: "every row within 0.03 absolute of the v4 table",
@@ -231,7 +236,7 @@ const pins = {
     passed: curve.every((r) => r.maxAbsDiff <= 0.03 + 1e-9),
   },
   P8_attackingGoalShare: {
-    command: "pnpm calibrate --n 5000 --coeffs v7",
+    command: `pnpm calibrate --n 5000 --coeffs ${coeffs}`,
     pass: "ST, W and AM score 70% to 80% of user goals",
     share: wilson(Math.round(attacking), calibrate.goals.total),
     byRole: calibrate.goals.byRole,
@@ -248,7 +253,7 @@ const pins = {
 };
 
 const summary = {
-  engine: "pokedraft-engine-7 candidate (ENGINE_COEFFICIENTS_V7)",
+  engine: `pokedraft-engine-${engineNumber} candidate (ENGINE_COEFFICIENTS_V${engineNumber})`,
   head: args.head ?? null,
   note: "Proportions are count of n with a 95% Wilson interval; differences against auto use Newcombe's hybrid score interval; mean wins use a 95% normal interval; squad share of variance uses a seeded 1,000-resample percentile bootstrap over squads. Pins pass on point estimates unless the pin names an interval.",
   pins,
@@ -264,7 +269,7 @@ const summary = {
     luck,
   },
   achievements: {
-    command: "pnpm exec tsx scripts/audit/achievements-rate.mts --n 200 --coeffs v7",
+    command: `pnpm exec tsx scripts/audit/achievements-rate.mts --n 200 --coeffs ${coeffs}`,
     seeds: "achievements-0 to achievements-199, good bot, cup8 4-3-3 classic3",
     giantKiller: {
       gap: 100,
