@@ -3,6 +3,21 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Rollback drop-data guard
+
+Branch `fix/rollback-drop-data-guard` off `origin/main` at `040781bb`. Wave 7 row 7rb (Red). The first commit (`12ebf8ce`) records the PR #160 merge.
+
+- `scripts/db/rollback-core.mts` exports `INITIAL_MIGRATION_TAG`, `MigrationJournal`, `RollbackOptions`, `parseRollbackArgs`, and `rollbackNewest`. On every rollback, `rollbackNewest` queries `SELECT count(*)::int AS count FROM leaderboard_entries` before any destructive step and logs `[db:rollback] leaderboard_entries rows: N`, or `[db:rollback] leaderboard_entries table does not exist` when the relation is absent (`42P01`). When the newest applied migration is `0000_leaderboard_entries` and `dropData` is not `true`, `rollbackNewest` throws `Refusing to roll back 0000_leaderboard_entries without --drop-data because it drops the leaderboard_entries table.` without modifying `leaderboard_entries` or `drizzle.__drizzle_migrations`.
+- `scripts/db/rollback.mts` parses `--drop-data` with `parseRollbackArgs(process.argv.slice(2))`, logs `[db:rollback] target endpoint ${host}`, and calls `rollbackNewest(sql, journal, { dropData })`.
+- `scripts/db/rollback.test.ts` adapts `PGlite` (`@electric-sql/pglite`) to `SqlClient` through `createPgSql`, applies all six migrations from `drizzle/` in `drizzle/meta/_journal.json` order alongside `drizzle.__drizzle_migrations`, inserts 2 rows into `leaderboard_entries`, rolls back `0005_leaderboard_integrity` through `0001_rate_limit_events` asserting `[db:rollback] leaderboard_entries rows: 2` on each step, verifies that rolling back `0000_leaderboard_entries` without `dropData` throws the refusal message and leaves the 2 rows and `1791595926232` migration record intact, verifies that `dropData: true` logs `[db:rollback] leaderboard_entries rows: 2` before `DROP TABLE IF EXISTS "leaderboard_entries"` and drops the table, and verifies that rolling back when `leaderboard_entries` does not exist logs `[db:rollback] leaderboard_entries table does not exist` and `[db:rollback] nothing applied`.
+- `.github/workflows/ci.yml` is untouched (`db` rolls back four times from `0005` down to `0002`, leaving `2` migrations applied, so it never reaches `0000_leaderboard_entries`).
+- RED commit `fe654504`: 3 of 3 failed in `scripts/db/rollback.test.ts`; fixed in `d1463e45` (3 of 3 passed).
+- Gates at `d1463e45` (code-identical to this docs commit): `pnpm vitest run scripts/db/rollback.test.ts` passed 3 in 1 file; `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,196 passed in 252 files), `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records), and `pnpm format:check` exited 0; all nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`, `check:client-bundle` with 0 client files and 24 server files, `check:theme-contrast`, `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) exited 0; `check-retained-replays.mts` passed 13 emitted golden replays across 1 dispatcher; `measure-retained-json.mjs` measured 4 copies, 2,891,853 bytes; `pnpm exec prettier --check` on the 5 touched files exited 0.
+- Decision log: `docs/decisions/rollback-drop-data-guard.md`.
+- NOT RUN: Neon preview branch rollback proof (run by the coordinator after push; this lane never reads `DATABASE_URL` or connects to Neon); Playwright e2e suite locally (nothing under `src/` or `e2e/` changed; CI runs the 8-shard matrix); coordinator review, PR creation, hosted CI verification, and squash merge.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## CI hygiene
 
 Branch `chore/ci-hygiene` off `origin/main` at `6606585`. Wave 7 row 7ci (Green).
