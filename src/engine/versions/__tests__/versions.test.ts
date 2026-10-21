@@ -12,6 +12,7 @@ import * as v3 from "../v3";
 import * as v4 from "../v4";
 import * as v5 from "../v5";
 import * as v6 from "../v6";
+import * as v7 from "../v7";
 import { fromLegacy, type LegacyCupResult, type LegacyV3CupResult } from "../legacy";
 import { buildLadder as v1Ladder } from "../v1/src/engine/opponents";
 import { buildLadder as v2Ladder } from "../v2/src/engine/opponents";
@@ -29,6 +30,8 @@ import {
   GOLDEN_KANTO151_V5,
   GOLDEN_CUP8_V6,
   GOLDEN_KANTO151_V6,
+  GOLDEN_CUP8_V7,
+  GOLDEN_KANTO151_V7,
 } from "./fixtures";
 
 const sha256 = (s: string | Buffer): string => createHash("sha256").update(s).digest("hex");
@@ -260,6 +263,46 @@ describe("retained engine-6 bundle (catches a manager-era run replaying differen
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v6"))).toBe(
       "628f20fb2bb28a40ad21eacbb6a27cf8b9dfd75bf435bdffe37c4e6ad7f7f8b0",
+    );
+  });
+});
+
+describe("retained engine-7 bundle (catches an engine-7 run replaying differently after engine 8 moves in)", () => {
+  it("replays the engine-7 goldens byte-identical to the live engine", () => {
+    const cup8 = v7.replay(GOLDEN_CUP8_V7);
+    expect([cup8.cup.rating.score, cup8.cup.wins, cup8.cup.finish]).toEqual([593, 5, "QF"]);
+    expect(sha256(JSON.stringify(cup8))).toBe(
+      "c91cb42cac62bec6e43a649c4e914a1208108ef94a92534acfd900d13df1fe30",
+    );
+    const kanto = v7.replay(GOLDEN_KANTO151_V7);
+    expect([kanto.cup.rating.score, kanto.cup.wins, kanto.cup.finish]).toEqual([480, 3, "R32"]);
+    expect(sha256(JSON.stringify(kanto))).toBe(
+      "2b7223f3888259596fd24740506564cdca93ff13e9c035ecb417d681c2858a4d",
+    );
+  });
+
+  it("names engine 7 and token version 7", () => {
+    expect([v7.ENGINE_VERSION, v7.RUN_TOKEN_VERSION, v7.BUNDLE_MARKER]).toEqual([
+      "pokedraft-engine-7",
+      7,
+      "retained-engine-bundle:v7",
+    ]);
+  });
+
+  it("exports matchStory for retained river rendering", () => {
+    expect(typeof v7.matchStory).toBe("function");
+    const run = v7.replay(GOLDEN_CUP8_V7);
+    const story = v7.matchStory(run.draft.seed, 0, {
+      lineup: run.draft.lineup as unknown as Parameters<typeof v7.matchStory>[2]["lineup"],
+      mode: "cup8",
+    });
+    expect(story.chances.length).toBeGreaterThan(0);
+    expect(story.windows.length).toBe(18);
+  });
+
+  it("is frozen: no byte of the bundle changes", () => {
+    expect(bundleDigest(path.join(import.meta.dirname, "../v7"))).toBe(
+      "f9cf999233e9a2b87ff169a4c64754ba34227f47387ac668a0b6184d6a7f25ef",
     );
   });
 });
