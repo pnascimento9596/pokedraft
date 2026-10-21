@@ -3,6 +3,39 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Dossier contributions
+
+Branch `feat/dossier-contributions` off `origin/main` at `e927608` (the 6b9 squash, PR #155). Wave 6 row 6d (Red). Emits non-zero ability and move contributions per species and attribute from `computeBaselines` into `src/data/scouting-contributions.json` (76,204 bytes raw, 6,570 bytes `gzip -9`) with its own strict Zod schema (`ScoutingContributionsEntrySchema`), validated by `pnpm data:validate` and regenerated deterministically by `pnpm data:scouting`. `src/engine` is untouched, and `src/data/pokedex.json` (`f41cdbd6...`) and `src/data/scouting.json` (`9f771c3a...`) are byte-identical to `origin/main`. The first commit (`98696957`) records the PR #155 merge.
+
+What changed for players:
+
+- Opening a Pokémon's scouting dossier with ratings on now shows non-zero `Abilities +n` and `Moves +n` lines under each affected attribute bar in `17 Soccer Attributes`, alongside the non-zero `Review +n` scout adjustment line.
+- A note below the attribute bars explains how the numbers combine (`Abilities and moves are contributions to the baseline. Review is the scout adjustment before the 1 to 99 clamp.`).
+- When blind challenge ratings are off (`showRatings={false}`), the attribute bars, all contribution lines, and the explanatory note stay hidden.
+- The dossier loads `src/data/scouting-contributions.json` lazily on open (`/_next/static/chunks/0dpet79lzsrgy.js`, 75,483 bytes raw / 6,859 bytes `gzip -9`), so `/` (787,279 B raw / 246,006 B gzip) and `/play` (748,207 B raw / 232,059 B gzip) first-load JS do not grow (0 B raw delta).
+
+RED commits:
+
+- `62de309b`: 8 of 26 failed across `scripts/data/validate-artifacts.test.ts` and `src/scouting/__tests__/golden.test.ts` (`validateScoutingContributions`, `buildScoutingContributions`, and `src/data/scouting-contributions.json` missing); fixed in `1f60ebb8` (26 of 26 passed).
+- `7ae2ecc4`: 3 of 27 failed in `src/components/scouting/__tests__/ScoutingDossier.test.tsx` (ability, move, and review contribution lines on Snorlax, Hitmonlee, and Wishiwashi, the baseline note, and hiding in blind mode); fixed in `3cdb41bf` (27 of 27 passed).
+
+`cc5eeb96` adds the `src/data/__tests__/artifact-boundary.test.ts` regression guard and `e2e/dossier-contributions.spec.ts` (updated in `f6b6b308` to enable both builder and challenge ratings in `localStorage`, and `1e37cdd9` commits the browser proof PNGs).
+
+Gates at `1e37cdd9` (code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0 (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records). All nine `check:*` scripts exited 0 (`check:client-bundle`: 0 client files, 24 server files). Prettier passed on all touched files. `pnpm e2e:pins --check` reported the pins current.
+- Data determinism: running `pnpm data:pokedex` and `pnpm data:scouting` twice in a row produced byte-identical `src/data/scouting-contributions.json` (`7b7c46eeb338a8a1f5aa349cc388f7903b91df829e06d078e40758904ed56c21`) and left `src/data/pokedex.json` and `src/data/scouting.json` with an empty diff against `origin/main`.
+- Unit tests: 2,187 passed in 249 files (`pnpm vitest run` on the 4 touched test files: 60 passed in 4 files; `pnpm vitest run src/engine`: 354 passed in 32 files).
+- `check-retained-replays.mts`: 13 emitted golden replays passed, 1 dispatcher (`v1` 2, `v2` 2, `v3` 1, `v4` 2, `v5` 2, `v6` 2, live `v7` 2 `c91cb42c...` / `2b7223f3...`). `measure-retained-json.mjs`: 4 copies, 2,891,853 bytes.
+- Playwright (`CI=1`, headless, port 3951 against fresh build, `--project=chromium`): 39 passed across `e2e/dossier-contributions.spec.ts` (10), `e2e/dossier-picker.spec.ts` (6), `e2e/challenge-ratings.spec.ts` (5), `e2e/data-split.spec.ts` (6), `e2e/builder-ratings-layout.spec.ts` (8), and `e2e/theme-missing-width.spec.ts` (4). At `308x568` (`dossier-snorlax-308.png`), document, dialog, and attribute-grid horizontal overflow are all `0` px (`dialog.clientWidth = 284` px).
+- NOT RUN:
+  - Non-Chromium Playwright projects and unrelated Chromium specs.
+  - Coordinator review, preview/production database checks, merge, and post-merge live check.
+  - Hosted CI.
+  - The phone check and screen reader pass.
+
+Decision log: `docs/decisions/dossier-contributions.md`. Browser proof: `docs/reports/dossier-contributions/` (`dossier-snorlax-390.png`, `dossier-snorlax-360.png`, `dossier-snorlax-320.png`, `dossier-snorlax-308.png`, `dossier-blind-390.png`, `dossier-blind-360.png`, `dossier-blind-320.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Engine 7 flip
 
 Branch `feat/engine-7` off `origin/main` at `d457e72` (the 6b8 squash, PR #154). Wave 6 row 6b9 (Red). Flips the live engine to `pokedraft-engine-7` (`RUN_TOKEN_VERSION = 7`, `pd7.` tokens), wires `RETAINED[6]` (`pd6.` dot-link proxy and query-param replays), enables the Engine 6 submission grace window (`flipDate: "2026-10-21"`, `until: "2026-10-23T04:00:00Z"`), and deletes the Engine 6 rule branches and flags from the live engine. `src/scouting`, `scripts/data` and `src/data` are untouched. The first commit (`25165cf7`) records the PR #154 merge.
@@ -50,6 +83,8 @@ Gates at `77736a9d` (code-identical to this docs commit):
   - The phone check and screen reader pass.
 
 Decision log: `docs/decisions/engine-7.md`. Browser proof: `docs/reports/engine-7/` (`390-prematch-set-pieces.png`, `390-touchline-set-pieces.png`, `360-touchline-set-pieces.png`, `320-touchline-set-pieces.png`, `308-touchline-set-pieces.png`, `submit-grace-390.png`, `all-engines-390x844.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #155 (the flip to engine 7, Red) merged as squash `e927608`, reviewed head `943da02` after three review rounds (rounds 1 and 2 failed on fabricated content in the decision log and STATE, one e2e assertion, a loosened goal kind panel assertion and prettier; the fixes are logged). Receipts on `943da02`: GLM 5.3 Flash APPROVE with canary `6b9-7f0a23848cfcbf57cf166f4a1f1bfd17` echoed, the independent executing Red reviewer PASS, and the cross-vendor review STATUS clean (both Gemini 4 Argon (High) lanes through the Antigravity CLI with the pokedraft-mode skills loaded, by owner substitution; no Sol review, by owner decision). At `943da02` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts and prettier (all exit 0), 2,174 unit tests passed in 249 files, and the full chromium Playwright suite passed 640 with 5 skipped and 0 failed; hosted check and all eight e2e shards green. Preview proof (local build on the Neon preview branch, the Vercel preview being protected): health engine 7 with tokenVersions 1 to 7, a pd7 Daily submit 201 then 200, a pd6 link rendered through the retained v6 bundle, smoke row deleted. GRACE is engine 6 with flipDate `2026-10-21` and until `2026-10-23T04:00:00Z`; the owner waived the 00:00 to 01:59 landing window. Production `/api/health?db=1` served `e927608` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok; production smoke as `w6proof1021` on the 2026-10-21 Daily got 201 then 200, the existing pd6 Daily row (2026-10-16) rendered through the v6 bundle (2-1-1, Team Score 333), and `db:delete-entry` removed exactly the smoke row (`6706ca94`). Live check on chromium (17 specs including every re-pinned spec, `health`, `leaderboard`, `seed-board`, `old-links` and `share`) 92/92 with retries off.
 
 ## Engine 7 calibration
 

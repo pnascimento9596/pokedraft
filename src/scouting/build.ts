@@ -3,7 +3,7 @@ import type { AbilityTraits } from "./ability-traits";
 import { clampAttr, computeBaselines } from "./attributes";
 import { allFits } from "./fit";
 import type { ReviewEntry } from "./review";
-import { ATTRS, type Attributes, type RoleFits } from "./types";
+import { ATTRS, type Attr, type Attributes, type RoleFits } from "./types";
 
 export interface ScoutingEntry {
   id: number;
@@ -18,6 +18,12 @@ export interface ScoutingEntry {
   strengths: ReviewEntry["strengths"];
   weaknesses: ReviewEntry["weaknesses"];
   rationale: string;
+}
+
+export interface ScoutingContributionsEntry {
+  id: number;
+  abilities: Partial<Record<Attr, number>>;
+  moves: Partial<Record<Attr, number>>;
 }
 
 export function applyAdjustments(
@@ -59,5 +65,28 @@ export function buildScouting(
 }
 
 export function serializeScouting(entries: readonly ScoutingEntry[]): string {
+  return "[\n" + entries.map((e) => JSON.stringify(e)).join(",\n") + "\n]\n";
+}
+
+export function buildScoutingContributions(
+  dex: readonly Species[],
+  traits: AbilityTraits,
+): ScoutingContributionsEntry[] {
+  const baselines = computeBaselines(dex, traits);
+  return dex.map((s) => {
+    const breakdown = baselines.get(s.id)!.breakdown;
+    const abilities: Partial<Record<Attr, number>> = {};
+    const moves: Partial<Record<Attr, number>> = {};
+    for (const attr of ATTRS) {
+      if (breakdown[attr].abilities !== 0) abilities[attr] = breakdown[attr].abilities;
+      if (breakdown[attr].moves !== 0) moves[attr] = breakdown[attr].moves;
+    }
+    return { id: s.id, abilities, moves };
+  });
+}
+
+export function serializeScoutingContributions(
+  entries: readonly ScoutingContributionsEntry[],
+): string {
   return "[\n" + entries.map((e) => JSON.stringify(e)).join(",\n") + "\n]\n";
 }

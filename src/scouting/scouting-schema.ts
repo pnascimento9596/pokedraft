@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { COEFFICIENTS } from "./coefficients";
 import { ReviewEntrySchema } from "./review";
 import { ATTRS, ROLES } from "./types";
 
@@ -35,3 +36,25 @@ export const ScoutingEntrySchema = z
   .strict();
 
 export type ScoutingRecord = z.infer<typeof ScoutingEntrySchema>;
+
+const NonZeroAbilityContributionSchema = z
+  .number()
+  .min(-COEFFICIENTS.abilities.capPerAttr)
+  .max(COEFFICIENTS.abilities.capPerAttr)
+  .refine((v) => v !== 0, "zero ability contribution");
+
+const NonZeroMoveContributionSchema = z
+  .number()
+  .min(-99)
+  .max(99)
+  .refine((v) => v !== 0, "zero move contribution");
+
+export const ScoutingContributionsEntrySchema = z
+  .object({
+    id: z.number().int().min(1).max(1025),
+    abilities: z.partialRecord(z.enum(ATTRS), NonZeroAbilityContributionSchema),
+    moves: z.partialRecord(z.enum(ATTRS), NonZeroMoveContributionSchema),
+  })
+  .strict();
+
+export type ScoutingContributionsRecord = z.infer<typeof ScoutingContributionsEntrySchema>;

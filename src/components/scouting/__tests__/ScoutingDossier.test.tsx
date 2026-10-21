@@ -441,3 +441,64 @@ describe("dossier and picker (4f)", () => {
     expect(screen.queryByRole("button", { name: "Next offer" })).toBeNull();
   });
 });
+
+describe("dossier contributions (6d)", () => {
+  it("shows Snorlax ability, move and review contributions under affected attribute bars and labels baseline contributions", async () => {
+    render(<ScoutingDossier speciesId={143 as SpeciesId} showRatings={true} onClose={vi.fn()} />);
+    await act(async () => {
+      await vi.dynamicImportSettled();
+    });
+    expect(screen.getByTestId("attr-abilities-ACC").textContent).toBe("Abilities -2");
+    expect(screen.getByTestId("attr-abilities-PHY").textContent).toBe("Abilities +3");
+    expect(screen.getByTestId("attr-moves-SHO").textContent).toBe("Moves +1.75");
+    expect(screen.getByTestId("attr-moves-DRI").textContent).toBe("Moves +0.5");
+    expect(screen.getByTestId("attr-moves-TEC").textContent).toBe("Moves +0.75");
+    expect(screen.getByTestId("attr-moves-AER").textContent).toBe("Moves +3");
+    expect(screen.getByTestId("attr-moves-KIC").textContent).toBe("Moves +1");
+    expect(screen.getByTestId("attr-review-STA").textContent).toBe("Review -6");
+    expect(screen.getByTestId("attr-review-GKP").textContent).toBe("Review +6");
+    expect(screen.queryByTestId("attr-abilities-PAC")).toBeNull();
+    expect(screen.queryByTestId("attr-moves-PAC")).toBeNull();
+    expect(screen.queryByTestId("attr-review-PAC")).toBeNull();
+    expect(screen.getByTestId("attr-contributions-note").textContent).toBe(
+      "Abilities and moves are contributions to the baseline. Review is the scout adjustment before the 1 to 99 clamp.",
+    );
+  });
+
+  it("shows both ability and move or review lines when an attribute has multiple contributions (Hitmonlee and Wishiwashi)", async () => {
+    const view = render(
+      <ScoutingDossier speciesId={106 as SpeciesId} showRatings={true} onClose={vi.fn()} />,
+    );
+    await act(async () => {
+      await vi.dynamicImportSettled();
+    });
+    expect(screen.getByTestId("attr-abilities-SHO").textContent).toBe("Abilities +3");
+    expect(screen.getByTestId("attr-moves-SHO").textContent).toBe("Moves +24.25");
+    expect(screen.getByTestId("attr-abilities-TAK").textContent).toBe("Abilities +2");
+    expect(screen.getByTestId("attr-review-TAK").textContent).toBe("Review +4");
+
+    view.rerender(
+      <ScoutingDossier speciesId={746 as SpeciesId} showRatings={true} onClose={vi.fn()} />,
+    );
+    expect(screen.getByTestId("attr-abilities-REF").textContent).toBe("Abilities +4");
+    expect(screen.getByTestId("attr-abilities-DIV").textContent).toBe("Abilities +8");
+    expect(screen.getByTestId("attr-abilities-HAN").textContent).toBe("Abilities +8");
+  });
+
+  it("hides ability, move and review contribution lines when blind challenge ratings are off", async () => {
+    const view = render(
+      <ScoutingDossier speciesId={143 as SpeciesId} showRatings={true} onClose={vi.fn()} />,
+    );
+    await act(async () => {
+      await vi.dynamicImportSettled();
+    });
+    expect(screen.getByTestId("attr-abilities-PHY").textContent).toBe("Abilities +3");
+    view.rerender(
+      <ScoutingDossier speciesId={143 as SpeciesId} showRatings={false} onClose={vi.fn()} />,
+    );
+    expect(screen.queryByTestId("attr-abilities-PHY")).toBeNull();
+    expect(screen.queryByTestId("attr-moves-AER")).toBeNull();
+    expect(screen.queryByTestId("attr-review-STA")).toBeNull();
+    expect(screen.queryByTestId("attr-contributions-note")).toBeNull();
+  });
+});

@@ -11,6 +11,7 @@ import {
   type SpeciesId,
 } from "@/engine";
 import { SCOUTING_BY_ID } from "@/scouting/scouting-data";
+import type { ScoutingContributionsRecord } from "@/scouting/scouting-contributions";
 import { MOVE_TRAITS } from "@/scouting/move-traits";
 import { ATTRS, ROLES, type Attr, type Role } from "@/scouting/types";
 import { PlayerImage } from "@/components/PlayerImage";
@@ -54,6 +55,8 @@ const OFFER_LINES = [
 
 // The dossier's own history entry while it sits over the Picker, so Back closes only the dossier.
 const DOSSIER_ENTRY = "pokedraftDossier";
+
+let cachedContributions: ReadonlyMap<number, ScoutingContributionsRecord> | null = null;
 
 function onDossierEntry(): boolean {
   const state: unknown = window.history.state;
@@ -155,6 +158,28 @@ export function ScoutingDossier({
     : null;
   const signed = (value: number) => (value > 0 ? `+${value}` : `${value}`);
   const [comparing, setComparing] = useState(false);
+  const [contributions, setContributions] = useState<ReadonlyMap<
+    number,
+    ScoutingContributionsRecord
+  > | null>(() => cachedContributions);
+
+  useEffect(() => {
+    if (!showRatings) return;
+    if (cachedContributions !== null) return;
+    let live = true;
+    import("@/scouting/scouting-contributions").then(
+      (m) => {
+        cachedContributions = m.SCOUTING_CONTRIBUTIONS_BY_ID;
+        if (live) setContributions(m.SCOUTING_CONTRIBUTIONS_BY_ID);
+      },
+      () => {},
+    );
+    return () => {
+      live = false;
+    };
+  }, [showRatings]);
+
+  const contrib = (contributions ?? cachedContributions)?.get(speciesId);
 
   const squad = lineup ?? slotContext?.lineup;
   const placed = squad ? ALL_REFS.find((ref) => valueAt(squad, ref) === speciesId) : undefined;
@@ -558,40 +583,64 @@ export function ScoutingDossier({
         <section className={s.section} aria-label="Soccer attributes">
           <h3 className={s.sectionTitle}>17 Soccer Attributes</h3>
           {showRatings ? (
-            <div className={s.attrGrid}>
-              {ATTRS.map((attr) => {
-                const val = sp.attrs[attr];
-                const delta = incumbent ? val - incumbent.attrs[attr] : null;
-                return (
-                  <div key={attr} className={s.attrItem}>
-                    <div className={s.attrHeader}>
-                      <span className={s.attrCode} title={ATTR_LABEL[attr]}>
-                        {attr} · {ATTR_LABEL[attr]}
-                      </span>
-                      <span className="num">{val}</span>
+            <>
+              <div className={s.attrGrid}>
+                {ATTRS.map((attr) => {
+                  const val = sp.attrs[attr];
+                  const delta = incumbent ? val - incumbent.attrs[attr] : null;
+                  const abilityMod = contrib?.abilities[attr] ?? 0;
+                  const moveMod = contrib?.moves[attr] ?? 0;
+                  const reviewMod = scout?.adjustments[attr] ?? 0;
+                  return (
+                    <div key={attr} className={s.attrItem}>
+                      <div className={s.attrHeader}>
+                        <span className={s.attrCode} title={ATTR_LABEL[attr]}>
+                          {attr} · {ATTR_LABEL[attr]}
+                        </span>
+                        <span className="num">{val}</span>
+                      </div>
+                      <div className={s.attrTrack} aria-hidden="true">
+                        <div
+                          className={s.attrFill}
+                          data-high={val >= 80 || undefined}
+                          data-low={val < 45 || undefined}
+                          style={{ width: `${val}%` }}
+                        />
+                      </div>
+                      {abilityMod !== 0 ? (
+                        <span className={s.attrContrib} data-testid={`attr-abilities-${attr}`}>
+                          Abilities {signed(abilityMod)}
+                        </span>
+                      ) : null}
+                      {moveMod !== 0 ? (
+                        <span className={s.attrContrib} data-testid={`attr-moves-${attr}`}>
+                          Moves {signed(moveMod)}
+                        </span>
+                      ) : null}
+                      {reviewMod !== 0 ? (
+                        <span className={s.attrContrib} data-testid={`attr-review-${attr}`}>
+                          Review {signed(reviewMod)}
+                        </span>
+                      ) : null}
+                      {delta !== null ? (
+                        <span
+                          className={s.delta}
+                          role="note"
+                          aria-label={`${attr} difference versus ${incumbent!.name}`}
+                          data-delta={Math.sign(delta)}
+                        >
+                          {delta > 0 ? `+${delta}` : delta}
+                        </span>
+                      ) : null}
                     </div>
-                    <div className={s.attrTrack} aria-hidden="true">
-                      <div
-                        className={s.attrFill}
-                        data-high={val >= 80 || undefined}
-                        data-low={val < 45 || undefined}
-                        style={{ width: `${val}%` }}
-                      />
-                    </div>
-                    {delta !== null ? (
-                      <span
-                        className={s.delta}
-                        role="note"
-                        aria-label={`${attr} difference versus ${incumbent!.name}`}
-                        data-delta={Math.sign(delta)}
-                      >
-                        {delta > 0 ? `+${delta}` : delta}
-                      </span>
-                    ) : null}
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+              <p className={s.roleSub} data-testid="attr-contributions-note">
+                Abilities and moves are contributions to the baseline. Review is the scout
+                adjustment before the 1 to 99 clamp.
+              </p>
+            </>
           ) : (
             <p className={s.rationale}>
               Numeric 1 to 99 attributes are hidden while blind challenge ratings are off.
