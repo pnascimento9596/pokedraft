@@ -112,6 +112,10 @@ Fixed in `81bf5fef` (`18 passed (18)` in `src/__tests__/proxy.test.ts`, `02-gree
 - Playwright (`CI=1 PLAYWRIGHT_PORT=3972 pnpm exec playwright test e2e/health.spec.ts e2e/old-links.spec.ts e2e/share.spec.ts --project=chromium`):
   20 passed in 3 files (`16-playwright.log`).
 
+## Coordinator check on a real build
+
+Build (`next start` from this branch at `81bf5fef` with a dummy `FRIENDS_PASSCODE`, no cookie, stopped by PID): `/creatures/pokeapi-art/0001.webp` 200, `/api/health` 200, `/api/health?db=1` 503 (no local database, not the gate), `POST /api/csp-report` 204, `/api/healthz` 401, `/api/leaderboard` 401, `/` 307, `/creaturesx` 307. The coordinator re-ran the RED commit `42c2f0db` in a detached worktree: 1 of 18 failed.
+
 ## NOT RUN
 
 - Production verification (run by the coordinator after merge).

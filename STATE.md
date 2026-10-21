@@ -46,6 +46,8 @@ Gates at `81bf5fef` (code-identical to this docs commit):
   - The phone check, the screen reader pass, and the final grace-window receipt after
     `2026-10-23T04:00:00Z`.
 
+Coordinator check on a real build (`next start` from this branch at `81bf5fef` with a dummy `FRIENDS_PASSCODE`, no cookie, stopped by PID): `/creatures/pokeapi-art/0001.webp` 200, `/api/health` 200, `/api/health?db=1` 503 (no local database, not the gate), `POST /api/csp-report` 204, `/api/healthz` 401, `/api/leaderboard` 401, `/` 307, `/creaturesx` 307. The coordinator re-ran the RED commit `42c2f0db` in a detached worktree: 1 of 18 failed.
+
 Decision log: `docs/decisions/proxy-matcher-trim.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 ## CI hygiene
