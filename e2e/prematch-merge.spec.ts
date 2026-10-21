@@ -74,9 +74,10 @@ for (const [width, height] of [
       "aria-pressed",
       "true",
     );
-    // Below 600px the takeover line sits in the touchline sheet, shown once the sheet is open.
+    // A pre-match tactic pick before 45' keeps split assistant management on both sides.
     await page.getByTestId("sheet-toggle").click();
-    await expect(page.getByTestId("takeover")).toBeVisible();
+    await expect(page.getByTestId("assistant-status")).toHaveText("Assistant: subs on, tactics on");
+    await expect(page.getByTestId("takeover")).toHaveCount(0);
     await page.getByTestId("sheet-toggle").click();
     expect(await sideScroll(page)).toBeLessThanOrEqual(0);
     await page.getByTestId("play-toggle").click();

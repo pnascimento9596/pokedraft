@@ -152,14 +152,18 @@ function yourCalls() {
 }
 
 // e2e/replay-deep-links.spec.ts: the golden engine-5 cup8 draft under the live prefix, linked to
-// the first goal it scores.
+// the first user goal whose timeline pip is not overlapped by a goal right after it.
 function deepLink() {
   const token = LIVE_GOLDEN_CUP8;
   const { cup } = replay(decodeToken(token));
   let watch = 0;
   for (const match of cup.matches) {
     if (match.status !== "played") continue;
-    const goal = match.goals.find((g) => g.side === "user");
+    const goal = match.goals.find(
+      (g) =>
+        g.side === "user" &&
+        !match.goals.some((o) => o.minute > g.minute && o.minute - g.minute <= 12),
+    );
     if (goal !== undefined) {
       const before = match.goals.filter((g) => g.minute < goal.minute);
       const tally = (side: string) => before.filter((g) => g.side === side).length;
@@ -373,15 +377,16 @@ function haptics() {
   return { round, scoreAtConceded: `${before}-1`, goalsBefore: before, goals: user.length };
 }
 
-// e2e/injury-staging.spec.ts: the run's first injury the assistant answers with a substitute.
+// e2e/injury-staging.spec.ts: the run's first user injury the assistant answers with a substitute.
 function injuryStaging() {
   const run = liveRun(LIVE_GOLDEN_CUP8);
   for (const { match } of played(run)) {
     for (const injury of match.incidents ?? []) {
-      if (injury.kind !== "injury") continue;
+      if (injury.kind !== "injury" || injury.side !== "user") continue;
       const sub = (match.incidents ?? []).find(
         (i) =>
           i.kind === "sub" &&
+          i.side === "user" &&
           i.reason === "injury" &&
           i.minute === injury.minute &&
           i.slot === injury.slot,
