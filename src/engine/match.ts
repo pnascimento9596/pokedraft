@@ -444,6 +444,7 @@ const kindScale = (
   dexMean: number,
   weight: number,
 ): number => {
+  if (attackers.length === 0) return 1;
   const ratio = meanOf(attackers.map((a) => attr(a.species))) / dexMean;
   return Math.min(KIND_SCALE.max, Math.max(KIND_SCALE.min, 1 + weight * (ratio - 1)));
 };
