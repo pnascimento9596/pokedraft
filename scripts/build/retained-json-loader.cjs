@@ -5,15 +5,28 @@ const path = require("node:path");
 const versionOf = (name) => Number(/^v(\d+)$/.exec(name)?.[1]);
 
 function candidates(rootContext, resourcePath) {
-  const basename = path.basename(resourcePath);
   const versionsDir = path.join(rootContext, "src/engine/versions");
+  const isBlob =
+    path.dirname(resourcePath).endsWith(path.join("src", "engine", "versions", "_blobs")) ||
+    path.basename(path.dirname(resourcePath)) === "_blobs";
+  if (isBlob) {
+    return [
+      path.join(rootContext, "src/data/pokedex.json"),
+      path.join(rootContext, "src/data/scouting.json"),
+      path.join(rootContext, "src/data/type-chart.json"),
+      path.join(rootContext, "scripts/data/move-traits.json"),
+    ].filter((f) => existsSync(f));
+  }
+  const basename = path.basename(resourcePath);
   const own = versionOf(path.basename(path.dirname(path.dirname(path.dirname(resourcePath)))));
-  const earlier = readdirSync(versionsDir)
-    .filter((name) => versionOf(name) < own)
-    .sort((a, b) => versionOf(a) - versionOf(b))
-    .map((name) => path.join(versionsDir, name, "src/data", basename))
-    .filter((file) => existsSync(file));
-  return [path.join(rootContext, "src/data", basename), ...earlier];
+  const earlier = existsSync(versionsDir)
+    ? readdirSync(versionsDir)
+        .filter((name) => versionOf(name) < own)
+        .sort((a, b) => versionOf(a) - versionOf(b))
+        .map((name) => path.join(versionsDir, name, "src/data", basename))
+        .filter((file) => existsSync(file))
+    : [];
+  return [path.join(rootContext, "src/data", basename), ...earlier].filter((f) => existsSync(f));
 }
 
 module.exports = function retainedJsonLoader(source) {

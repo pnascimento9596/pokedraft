@@ -9,10 +9,17 @@ const hash = (value) => createHash("sha256").update(JSON.stringify(value)).diges
 const artifacts = new Map();
 for (const version of ["live", "v1", "v2", "v3", "v4", "v5", "v6"]) {
   for (const name of ["pokedex", "scouting"]) {
-    const file =
-      version === "live"
-        ? `src/data/${name}.json`
+    let file;
+    if (version === "live") {
+      file = `src/data/${name}.json`;
+    } else {
+      const manifestPath = `src/engine/versions/${version}/MANIFEST.json`;
+      const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+      const blobSha = manifest.blobs?.[`src/data/${name}.json`];
+      file = blobSha
+        ? `src/engine/versions/_blobs/${blobSha}.json`
         : `src/engine/versions/${version}/src/data/${name}.json`;
+    }
     const value = JSON.parse(readFileSync(file, "utf8"));
     const key = hash(value);
     const artifact = artifacts.get(key) ?? { names: [], copies: 0, payloadBytes: 0 };

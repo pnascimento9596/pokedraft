@@ -1,5 +1,5 @@
 import { z } from "zod";
-import raw from "../data/scouting.json";
+import raw from "../../../_blobs/5969709fca53bf0dbea4d1cbfdc3499836c2d8f6654ddfabc78a6af93d807775.json";
 import { ReviewEntrySchema } from "./review";
 import { ATTRS, ROLES } from "./types";
 

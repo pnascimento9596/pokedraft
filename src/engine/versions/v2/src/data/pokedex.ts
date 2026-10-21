@@ -1,5 +1,5 @@
 import { z } from "zod";
-import raw from "./pokedex.json";
+import raw from "../../../_blobs/f41cdbd61a96bcffbe698c3f4b1d906a1411c473ef863c8931516e849072c39c.json";
 
 export const TYPES = [
   "normal",

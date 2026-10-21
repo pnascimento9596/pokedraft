@@ -3,6 +3,23 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Content-addressed engine blobs
+
+Branch `feat/engine-blobs` off `origin/main` at `9c1db3b4`. Wave 7 row 8a (Red). The first commit (`a5d1a953`) records the PR #169 merge.
+
+- Extracted 24 duplicate JSON data files across retained engine versions v1 through v6 into a single content-addressed blob directory `src/engine/versions/_blobs/<sha256>.json`.
+- Exactly 7 unique blobs deduplicate the data files across all 6 versions.
+- Updated `scripts/engine/freeze-version.mts` to write data files to `_blobs/<sha256>.json`, rewrite imports in TypeScript files, and record `blobs` in `MANIFEST.json`.
+- Updated `scripts/engine/check-bundle-provenance.sh` to check `m.sources` in the version bundle and `m.blobs` in `_blobs/`. Provenance verified on v6: 30 sources and 4 blobs match commit `969ca1c`.
+- Updated `scripts/build/retained-json-loader.cjs` and `next.config.ts` to support `_blobs/` paths.
+- Updated `scripts/build/measure-retained-json.mjs` to resolve retained data files through `manifest.blobs`.
+- Recomputed bundle digests for v1 through v6 in `src/engine/versions/__tests__/versions.test.ts`. All 27 tests pass with byte-identical replay outputs.
+- Gates at branch HEAD: `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,280 passed in 258 files), `pnpm build`, `pnpm format:check`, and all nine `check:*` scripts clean; `check-retained-replays.mts` 13 passed, `measure-retained-json.mjs` 4 copies (2,891,853 bytes).
+- Decision log: `docs/decisions/engine-blobs.md`.
+- NOT RUN: Owner physical device test; live checks (run post-merge).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Credential rotation runbook
 
 Branch `fix/credential-rotation` off `origin/main` at `c9c7ccd8`. Wave 7 row 7cr (Red). The first commit (`448b1639`) records the PR #168 merge.

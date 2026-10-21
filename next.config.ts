@@ -38,7 +38,7 @@ const nextConfig: NextConfig = {
           all: [
             { not: "browser" },
             {
-              path: /(?:^|\/)src\/engine\/versions\/v\d+\/src\/data\/(pokedex|scouting)\.json$/,
+              path: /(?:^|\/)src\/engine\/versions\/(?:v\d+\/src\/data\/(?:pokedex|scouting)|_blobs\/[0-9a-f]{64})\.json$/,
             },
           ],
         },

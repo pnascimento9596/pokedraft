@@ -1,5 +1,5 @@
 import { z } from "zod";
-import raw from "../data/type-chart.json";
+import raw from "../../../_blobs/acfc00493f2b5d80edacf06271bfc935f5f8adc99bbb32f7dae1b89fa95f7cb1.json";
 import { TYPES } from "../data/pokedex";
 import type { PokemonType, Species } from "./types";
 

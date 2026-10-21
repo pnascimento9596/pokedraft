@@ -1,11 +1,7 @@
 {
   "name": "v1",
   "sources": {
-    "scripts/data/move-traits.json": "01f6314fad9c713cafeb0ef4f3dccbced1ef8297c8dba8d8aba4f95d1e0b5851",
-    "src/data/pokedex.json": "f41cdbd61a96bcffbe698c3f4b1d906a1411c473ef863c8931516e849072c39c",
     "src/data/pokedex.ts": "0469f030630e3f6f567d6247009ad733683e50b233316dd7c71c88864e9de5d4",
-    "src/data/scouting.json": "5969709fca53bf0dbea4d1cbfdc3499836c2d8f6654ddfabc78a6af93d807775",
-    "src/data/type-chart.json": "acfc00493f2b5d80edacf06271bfc935f5f8adc99bbb32f7dae1b89fa95f7cb1",
     "src/engine/availability.ts": "6e1b10912a17a6393489a77d51e07a9b8a1a415c61f7034fce3e2ac28a9dd54a",
     "src/engine/coefficients.ts": "3611ff531b69ba03e210147532d21ad89f1fae0e4366e3899baa678a095b3374",
     "src/engine/cup.ts": "1c0b21ccdd67bcb623e1bc936e76c7f1c8a4624e4659ee2f0bec565dfc6b5fba",
@@ -30,5 +26,11 @@
     "src/scouting/scouting-data.ts": "dc797a18bfc77dd5eaa392fa27a7b943d8a2830f274f3f0c05f3f972340c2de1",
     "src/scouting/tags.ts": "f0fc738fdadb1038663425cd8abee97142475523898c766671abb0527877421e",
     "src/scouting/types.ts": "e0397c33b8df39bd8a57e8c106684d23e487801c243b11aa12bc3ea34ea2f8d2"
+  },
+  "blobs": {
+    "scripts/data/move-traits.json": "01f6314fad9c713cafeb0ef4f3dccbced1ef8297c8dba8d8aba4f95d1e0b5851",
+    "src/data/pokedex.json": "f41cdbd61a96bcffbe698c3f4b1d906a1411c473ef863c8931516e849072c39c",
+    "src/data/scouting.json": "5969709fca53bf0dbea4d1cbfdc3499836c2d8f6654ddfabc78a6af93d807775",
+    "src/data/type-chart.json": "acfc00493f2b5d80edacf06271bfc935f5f8adc99bbb32f7dae1b89fa95f7cb1"
   }
 }
