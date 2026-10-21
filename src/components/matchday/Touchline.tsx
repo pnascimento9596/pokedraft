@@ -5,11 +5,7 @@ import { FORMATIONS, speciesById } from "@/engine";
 import type { BenchIndex, FormationId, StarterIndex } from "@/engine/types";
 import { PlayerImage } from "@/components/PlayerImage";
 import { assistantStatus, type OpponentStyle } from "@/ui/manager/intel";
-import {
-  MAX_SUBS,
-  type Decision,
-  type Touchline as TouchlineState,
-} from "@/ui/manager/touchline";
+import { MAX_SUBS, type Decision, type Touchline as TouchlineState } from "@/ui/manager/touchline";
 import { SUITABILITY_LABEL } from "@/ui/labels";
 import { getSlotSuitability } from "@/ui/suitability";
 import { SetPieceTakers } from "./SetPieceTakers";
