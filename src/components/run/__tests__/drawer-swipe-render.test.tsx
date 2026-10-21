@@ -4,7 +4,9 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 import { PlayScreen } from "../PlayScreen";
 import * as coachModule from "@/ui/coach";
 
-const query = { current: "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test" };
+const query = {
+  current: "mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=open&seed=run-test",
+};
 
 vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(query.current),

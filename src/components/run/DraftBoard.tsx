@@ -654,11 +654,7 @@ function ActiveDraftBoard({
         ) : null}
 
         {phase.kind === "choosing" ? (
-          <div
-            ref={drawerRef}
-            className={s.drawer}
-            data-testid="draft-drawer"
-          >
+          <div ref={drawerRef} className={s.drawer} data-testid="draft-drawer">
             <button
               type="button"
               className={`btn btn--ghost ${s.drawerToggle}`}
