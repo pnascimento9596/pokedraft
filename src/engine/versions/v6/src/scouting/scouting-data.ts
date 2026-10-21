@@ -1,4 +1,4 @@
-import raw from "../data/scouting.json";
+import raw from "../../../_blobs/9f771c3ad5f68097321551d188f1b0071d7d53cbceb22da217ee29b9d85d4e8e.json";
 import type { ScoutingRecord } from "./scouting-schema";
 
 export { ScoutingEntrySchema } from "./scouting-schema";

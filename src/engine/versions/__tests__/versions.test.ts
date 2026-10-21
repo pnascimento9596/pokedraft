@@ -75,7 +75,7 @@ describe("retained engine-1 bundle (catches an old shared link replaying differe
 
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v1"))).toBe(
-      "2cbcca39eec560ce5969e989c3e3460b39e53092cac2c7640c3d0fd9c8f8ba3a",
+      "426d99c58b446ef2c68dc01f8e203412fece54c432577d82282c4584100d611d",
     );
   });
 });
@@ -107,7 +107,7 @@ describe("retained engine-2 bundle (catches a dispatch 6 PR 6B run replaying dif
 
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v2"))).toBe(
-      "00c62f652808895871ea37e9306401f92ab14d38f999c4774876325783dbcd96",
+      "4e3d2e7cb21fd0746a657173eee0c1fcd356fcd96bd7dda73602e625c9f70ab8",
     );
   });
 });
@@ -133,7 +133,7 @@ describe("retained engine-3 bundle (catches a platform-overhaul run replaying di
 
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v3"))).toBe(
-      "78d81201170bb56551c56c6486dca4ec4eca8fdd65261530b5155e2d8398f009",
+      "61d0b986ed682c9147a2475f03345d4504bd55399f43f96a5d5c1be65ce637bc",
     );
   });
 });
@@ -173,7 +173,7 @@ describe("retained engine-4 bundle (catches a pre-save run replaying differently
 
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v4"))).toBe(
-      "dc448ff8df08e3f122b52c9ec1289c3dbdb5ff21d5535e08eb5f4e8ef21abbfb",
+      "2042813558e624a51fbdf8c40de2fee42ad37c42108a6b73fb01c3c70188e88d",
     );
   });
 });
@@ -214,7 +214,7 @@ describe("retained engine-5 bundle (catches a pre-manager run replaying differen
 
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v5"))).toBe(
-      "cd69715e61910e64474cb5efd64b888974234b6837b2ac5bc8a6aae8d0084ede",
+      "3037f5ce9c2b0650b0bd6ba8ad26f207c07b2625a4488151c8b2ecee5c8f042a",
     );
   });
 });
@@ -259,7 +259,7 @@ describe("retained engine-6 bundle (catches a manager-era run replaying differen
 
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v6"))).toBe(
-      "b0b922bc1eef6e7ec4af9bf64e4af10206e894fdfc5d5f317eaf75b85d604397",
+      "628f20fb2bb28a40ad21eacbb6a27cf8b9dfd75bf435bdffe37c4e6ad7f7f8b0",
     );
   });
 });

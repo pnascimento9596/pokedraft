@@ -101,4 +101,25 @@ describe("retained JSON build deduplication", () => {
   it("rejects invalid retained JSON instead of hiding it behind a live module", () => {
     expect(() => load(fixture("broken"), "broken")).toThrow();
   });
+
+  it("re-exports live data when a content-addressed blob matches live artifact", () => {
+    const rootContext = mkdtempSync(path.join(tmpdir(), "retained-json-"));
+    roots.push(rootContext);
+    mkdirSync(path.join(rootContext, "src/data"), { recursive: true });
+    writeFileSync(path.join(rootContext, "src/data/pokedex.json"), '[{"id":1}]');
+    mkdirSync(path.join(rootContext, "src/engine/versions/_blobs"), { recursive: true });
+    const dependencies: string[] = [];
+    const context = {
+      rootContext,
+      resourcePath: path.join(
+        rootContext,
+        "src/engine/versions/_blobs/f41cdbd61a96bcffbe698c3f4b1d906a1411c473ef863c8931516e849072c39c.json",
+      ),
+      addDependency: (file: string) => dependencies.push(file),
+      dependencies,
+    };
+    expect(load(context, '[{"id":1}]')).toBe(
+      'export { default } from "../../../data/pokedex.json";\n',
+    );
+  });
 });

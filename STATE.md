@@ -3,6 +3,23 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Content-addressed engine blobs
+
+Branch `feat/engine-blobs` off `origin/main` at `9c1db3b4`. Wave 7 row 8a (Red). The first commit (`a5d1a953`) records the PR #169 merge.
+
+- Extracted 24 duplicate JSON data files across retained engine versions v1 through v6 into a single content-addressed blob directory `src/engine/versions/_blobs/<sha256>.json`.
+- Exactly 7 unique blobs deduplicate the data files across all 6 versions.
+- Updated `scripts/engine/freeze-version.mts` to write data files to `_blobs/<sha256>.json`, rewrite imports in TypeScript files, and record `blobs` in `MANIFEST.json`.
+- Updated `scripts/engine/check-bundle-provenance.sh` to check `m.sources` in the version bundle and `m.blobs` in `_blobs/`. Provenance verified on v6: 30 sources and 4 blobs match commit `969ca1c`.
+- Updated `scripts/build/retained-json-loader.cjs` and `next.config.ts` to support `_blobs/` paths.
+- Updated `scripts/build/measure-retained-json.mjs` to resolve retained data files through `manifest.blobs`.
+- Recomputed bundle digests for v1 through v6 in `src/engine/versions/__tests__/versions.test.ts`. All 27 tests pass with byte-identical replay outputs.
+- Gates at branch HEAD: `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,280 passed in 258 files), `pnpm build`, `pnpm format:check`, and all nine `check:*` scripts clean; `check-retained-replays.mts` 13 passed, `measure-retained-json.mjs` 4 copies (2,891,853 bytes).
+- Decision log: `docs/decisions/engine-blobs.md`.
+- NOT RUN: Owner physical device test; live checks (run post-merge).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Credential rotation runbook
 
 Branch `fix/credential-rotation` off `origin/main` at `c9c7ccd8`. Wave 7 row 7cr (Red). The first commit (`448b1639`) records the PR #168 merge.
@@ -14,6 +31,8 @@ Branch `fix/credential-rotation` off `origin/main` at `c9c7ccd8`. Wave 7 row 7cr
 - NOT RUN: Destructive role password reset execution (awaits explicit owner consent).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #169 (credential rotation runbook, Red) merged as squash `9c1db3b4`, reviewed head `cdfd1ba2`. Receipts on `cdfd1ba2`: GLM 5.3 Flash APPROVE with canary `7cr-eb155920cccc0131042a6e7f3d5e94e4` echoed. At `cdfd1ba2` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,277 passed in 257 files; hosted check, db (53s) and all eight e2e shards green. Production `/api/health?db=1` served `9c1db3b4` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard) passed with retries off (28 passed); credential rotation runbook and decision log landed.
 
 ## App surfaces carryover sweep
 
