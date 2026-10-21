@@ -1,0 +1,1457 @@
+{
+ "engine": "pokedraft-engine-7 candidate (ENGINE_COEFFICIENTS_V7)",
+ "head": "c1f4f838",
+ "note": "Proportions are count of n with a 95% Wilson interval; differences against auto use Newcombe's hybrid score interval; mean wins use a 95% normal interval; squad share of variance uses a seeded 1,000-resample percentile bootstrap over squads. Pins pass on point estimates unless the pin names an interval.",
+ "pins": {
+  "P1_informedBeatsAuto": {
+   "command": "probe.mts --probe informed",
+   "n": 400,
+   "seeds": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; each played match of the auto cup replayed with the informed kickoff tactic",
+   "pass": "good +3 to +6 points, random at least +3 (point estimates)",
+   "byBot": {
+    "good": {
+     "matches": 2801,
+     "auto": {
+      "count": 2384,
+      "n": 2801,
+      "p": 0.8511245983577294,
+      "lo": 0.8374611459882197,
+      "hi": 0.8638262279583162
+     },
+     "arm": {
+      "count": 2414,
+      "n": 2801,
+      "p": 0.861835058907533,
+      "lo": 0.8485592187239448,
+      "hi": 0.8741197375493792
+     },
+     "winMinusAuto": {
+      "value": 0.010710460549803624,
+      "lo": -0.007662871404163756,
+      "hi": 0.029084443786633107,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": {
+      "armOnly": 73,
+      "autoOnly": 43
+     }
+    },
+    "random": {
+     "matches": 1908,
+     "auto": {
+      "count": 1311,
+      "n": 1908,
+      "p": 0.6871069182389937,
+      "lo": 0.6659430183937605,
+      "hi": 0.7075188834709127
+     },
+     "arm": {
+      "count": 1376,
+      "n": 1908,
+      "p": 0.7211740041928721,
+      "lo": 0.7006237119847991,
+      "hi": 0.7408354549252629
+     },
+     "winMinusAuto": {
+      "value": 0.03406708595387842,
+      "lo": 0.005102230793421328,
+      "hi": 0.06295451058054416,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": {
+      "armOnly": 112,
+      "autoOnly": 47
+     }
+    }
+   },
+   "passed": {
+    "good": false,
+    "random": true
+   }
+  },
+  "P2_hindsightBounded": {
+   "command": "probe.mts --probe oracle",
+   "n": 400,
+   "seeds": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; each played match of the auto cup replayed with every fixed kickoff tactic",
+   "pass": "oracle at most +10 points, good and random (point estimates)",
+   "byBot": {
+    "good": {
+     "matches": 2801,
+     "auto": {
+      "count": 2384,
+      "n": 2801,
+      "p": 0.8511245983577294,
+      "lo": 0.8374611459882197,
+      "hi": 0.8638262279583162
+     },
+     "arm": {
+      "count": 2502,
+      "n": 2801,
+      "p": 0.8932524098536238,
+      "lo": 0.881273170961307,
+      "hi": 0.9041544268039289
+     },
+     "winMinusAuto": {
+      "value": 0.042127811495894396,
+      "lo": 0.02466832814300852,
+      "hi": 0.05960762568937478,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": null
+    },
+    "random": {
+     "matches": 1908,
+     "auto": {
+      "count": 1311,
+      "n": 1908,
+      "p": 0.6871069182389937,
+      "lo": 0.6659430183937605,
+      "hi": 0.7075188834709127
+     },
+     "arm": {
+      "count": 1494,
+      "n": 1908,
+      "p": 0.7830188679245284,
+      "lo": 0.7639646087004652,
+      "hi": 0.8009357470612255
+     },
+     "winMinusAuto": {
+      "value": 0.09591194968553463,
+      "lo": 0.06798860606040862,
+      "hi": 0.1236414504862717,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": null
+    }
+   },
+   "passed": {
+    "good": true,
+    "random": true
+   }
+  },
+  "P3_noopIsFree": {
+   "command": "probe.mts --probe noop",
+   "n": 400,
+   "seeds": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; each played match of the auto cup replayed with Balanced at kickoff",
+   "pass": "no-op costs at most 0.5 points, good and random",
+   "byBot": {
+    "good": {
+     "matches": 2801,
+     "auto": {
+      "count": 2384,
+      "n": 2801,
+      "p": 0.8511245983577294,
+      "lo": 0.8374611459882197,
+      "hi": 0.8638262279583162
+     },
+     "arm": {
+      "count": 2384,
+      "n": 2801,
+      "p": 0.8511245983577294,
+      "lo": 0.8374611459882197,
+      "hi": 0.8638262279583162
+     },
+     "winMinusAuto": {
+      "value": 0,
+      "lo": -0.018655329671821985,
+      "hi": 0.018655329671821985,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": {
+      "armOnly": 0,
+      "autoOnly": 0
+     }
+    },
+    "random": {
+     "matches": 1908,
+     "auto": {
+      "count": 1311,
+      "n": 1908,
+      "p": 0.6871069182389937,
+      "lo": 0.6659430183937605,
+      "hi": 0.7075188834709127
+     },
+     "arm": {
+      "count": 1311,
+      "n": 1908,
+      "p": 0.6871069182389937,
+      "lo": 0.6659430183937605,
+      "hi": 0.7075188834709127
+     },
+     "winMinusAuto": {
+      "value": 0,
+      "lo": -0.029403383840778174,
+      "hi": 0.029403383840778174,
+      "method": "newcombe-hybrid-score"
+     },
+     "discordantWins": {
+      "armOnly": 0,
+      "autoOnly": 0
+     }
+    }
+   },
+   "passed": {
+    "good": true,
+    "random": true
+   }
+  },
+  "P4_shootoutsRewardQuality": {
+   "command": "probe.mts --probe shootouts",
+   "n": 17000,
+   "seeds": "draft seed probe-<formation>-<bot>-<i>, bot rng play:probe:<formation>:<bot>:<i>, i = 1..n; cup seed probe-<formation>-<bot>-<i> for s = 0, then probe-<formation>-<bot>-<i>:<s>",
+   "pass": "at least 5,000 shootouts; top edge quartile minus bottom at least 10 points of user win rate, intervals not overlapping",
+   "cups": 17000,
+   "knockoutMatches": 67587,
+   "shootouts": 5448,
+   "shootoutRate": {
+    "count": 5448,
+    "n": 67587,
+    "p": 0.08060721736428603,
+    "lo": 0.07857857396883482,
+    "hi": 0.08268353406208513
+   },
+   "quartiles": [
+    {
+     "quartile": 1,
+     "n": 1363,
+     "edgeRange": [
+      -50.1,
+      -7.7
+     ],
+     "meanEdge": -16.589398385913434,
+     "userWin": {
+      "count": 574,
+      "n": 1363,
+      "p": 0.42112986060161406,
+      "lo": 0.39517505668178987,
+      "hi": 0.44752800415569105
+     }
+    },
+    {
+     "quartile": 2,
+     "n": 1364,
+     "edgeRange": [
+      -7.699999999999999,
+      2.9000000000000004
+     ],
+     "meanEdge": -2.295527859237532,
+     "userWin": {
+      "count": 688,
+      "n": 1364,
+      "p": 0.5043988269794721,
+      "lo": 0.4778897958302588,
+      "hi": 0.5308831498090609
+     }
+    },
+    {
+     "quartile": 3,
+     "n": 1359,
+     "edgeRange": [
+      2.9499999999999997,
+      14.55
+     ],
+     "meanEdge": 8.461000735835174,
+     "userWin": {
+      "count": 694,
+      "n": 1359,
+      "p": 0.5106696100073583,
+      "lo": 0.484099299551073,
+      "hi": 0.5371797691242594
+     }
+    },
+    {
+     "quartile": 4,
+     "n": 1362,
+     "edgeRange": [
+      14.6,
+      67.75
+     ],
+     "meanEdge": 26.130653450807646,
+     "userWin": {
+      "count": 823,
+      "n": 1362,
+      "p": 0.604258443465492,
+      "lo": 0.5780293314451601,
+      "hi": 0.629901075711863
+     }
+    }
+   ],
+   "topMinusBottom": {
+    "value": 0.1831285828638779,
+    "lo": 0.14591530162616959,
+    "hi": 0.21961414761268166,
+    "method": "newcombe-hybrid-score"
+   },
+   "passed": true
+  },
+  "P5_flawlessBuckets": {
+   "command": "pnpm calibrate --n 5000 --coeffs v7",
+   "n": 5000,
+   "seeds": "cal:<row>:<i>, bot rng bot:<row>:<i>, i = 0..n-1, pooled over every row and bot",
+   "pass": "each bucket's flawless rate inside the v4 Wilson interval",
+   "buckets": [
+    {
+     "label": "840±20",
+     "lo": 820,
+     "hi": 860,
+     "count": 8678,
+     "meanWins": 6.144042406084351,
+     "flawless": {
+      "count": 317,
+      "n": 8678,
+      "p": 0.03652915418299147,
+      "lo": 0.032782616527500745,
+      "hi": 0.04068585126854842
+     },
+     "v4": [
+      0.0297,
+      0.0372
+     ],
+     "pass": true
+    },
+    {
+     "label": "900±20",
+     "lo": 880,
+     "hi": 920,
+     "count": 8063,
+     "meanWins": 6.545454545454546,
+     "flawless": {
+      "count": 952,
+      "n": 8063,
+      "p": 0.11807019719707305,
+      "lo": 0.11120780566373732,
+      "hi": 0.12529635477496523
+     },
+     "v4": [
+      0.1147,
+      0.129
+     ],
+     "pass": true
+    },
+    {
+     "label": "950±20",
+     "lo": 930,
+     "hi": 970,
+     "count": 20194,
+     "meanWins": 6.999554323066257,
+     "flawless": {
+      "count": 5967,
+      "n": 20194,
+      "p": 0.29548380707140737,
+      "lo": 0.2892301913056876,
+      "hi": 0.3018152202000647
+     },
+     "v4": [
+      0.2946,
+      0.3072
+     ],
+     "pass": true
+    }
+   ],
+   "passed": true
+  },
+  "P6_goodPlayer": {
+   "command": "pnpm calibrate --n 5000 --coeffs v7",
+   "n": 5000,
+   "seeds": "cal:<row>:<i>, bot rng bot:<row>:<i>, i = 0..n-1",
+   "pass": "cup8-full good mean wins 5.8 to 6.2; careless 151 (kanto151 random) 3 to 4 wins",
+   "good": {
+    "row": "cup8-full",
+    "bot": "good",
+    "cups": 5000,
+    "meanWins": 5.9116,
+    "interval": {
+     "value": 5.9116,
+     "lo": 5.884340086686939,
+     "hi": 5.938859913313061,
+     "method": "normal"
+    }
+   },
+   "careless151": {
+    "row": "kanto151",
+    "bot": "random",
+    "cups": 5000,
+    "meanWins": 3.3306,
+    "interval": {
+     "value": 3.3306,
+     "lo": 3.2986289246565503,
+     "hi": 3.3625710753434497,
+     "method": "normal"
+    }
+   },
+   "passed": true
+  },
+  "P7_winCurve": {
+   "command": "pnpm exec tsx scripts/calibration/win-curve.mts --n 5000 --coeffs v7",
+   "n": 5000,
+   "seeds": "curve:<gap>:<i>, flat user lines at 800, G1 roster of buildLadder(\"probe\")",
+   "pass": "every row within 0.03 absolute of the v4 table",
+   "worst": {
+    "gap": 0,
+    "maxAbsDiff": 0.04599999999999993
+   },
+   "rows": [
+    {
+     "gap": -300,
+     "groupW": 0.005,
+     "groupD": 0.05,
+     "koW": 0.024,
+     "v4": [
+      0.004,
+      0.059,
+      0.023
+     ],
+     "maxAbsDiff": 0.008999999999999994
+    },
+    {
+     "gap": -250,
+     "groupW": 0.004,
+     "groupD": 0.07,
+     "koW": 0.033,
+     "v4": [
+      0.006,
+      0.072,
+      0.031
+     ],
+     "maxAbsDiff": 0.0020000000000000018
+    },
+    {
+     "gap": -200,
+     "groupW": 0.015,
+     "groupD": 0.098,
+     "koW": 0.054,
+     "v4": [
+      0.007,
+      0.098,
+      0.043
+     ],
+     "maxAbsDiff": 0.011000000000000003
+    },
+    {
+     "gap": -150,
+     "groupW": 0.049,
+     "groupD": 0.155,
+     "koW": 0.125,
+     "v4": [
+      0.047,
+      0.146,
+      0.103
+     ],
+     "maxAbsDiff": 0.022000000000000006
+    },
+    {
+     "gap": -100,
+     "groupW": 0.123,
+     "groupD": 0.226,
+     "koW": 0.241,
+     "v4": [
+      0.106,
+      0.232,
+      0.214
+     ],
+     "maxAbsDiff": 0.026999999999999996
+    },
+    {
+     "gap": -50,
+     "groupW": 0.234,
+     "groupD": 0.267,
+     "koW": 0.389,
+     "v4": [
+      0.211,
+      0.268,
+      0.347
+     ],
+     "maxAbsDiff": 0.04200000000000004
+    },
+    {
+     "gap": 0,
+     "groupW": 0.385,
+     "groupD": 0.275,
+     "koW": 0.571,
+     "v4": [
+      0.351,
+      0.299,
+      0.525
+     ],
+     "maxAbsDiff": 0.04599999999999993
+    },
+    {
+     "gap": 50,
+     "groupW": 0.545,
+     "groupD": 0.262,
+     "koW": 0.738,
+     "v4": [
+      0.509,
+      0.272,
+      0.698
+     ],
+     "maxAbsDiff": 0.040000000000000036
+    },
+    {
+     "gap": 100,
+     "groupW": 0.705,
+     "groupD": 0.194,
+     "koW": 0.86,
+     "v4": [
+      0.685,
+      0.207,
+      0.836
+     ],
+     "maxAbsDiff": 0.02400000000000002
+    },
+    {
+     "gap": 150,
+     "groupW": 0.835,
+     "groupD": 0.132,
+     "koW": 0.944,
+     "v4": [
+      0.816,
+      0.147,
+      0.928
+     ],
+     "maxAbsDiff": 0.019000000000000017
+    },
+    {
+     "gap": 200,
+     "groupW": 0.91,
+     "groupD": 0.085,
+     "koW": 0.985,
+     "v4": [
+      0.899,
+      0.093,
+      0.976
+     ],
+     "maxAbsDiff": 0.01100000000000001
+    },
+    {
+     "gap": 250,
+     "groupW": 0.931,
+     "groupD": 0.062,
+     "koW": 0.987,
+     "v4": [
+      0.92,
+      0.075,
+      0.979
+     ],
+     "maxAbsDiff": 0.012999999999999998
+    },
+    {
+     "gap": 300,
+     "groupW": 0.947,
+     "groupD": 0.049,
+     "koW": 0.989,
+     "v4": [
+      0.943,
+      0.053,
+      0.987
+     ],
+     "maxAbsDiff": 0.0040000000000000036
+    },
+    {
+     "gap": 350,
+     "groupW": 0.956,
+     "groupD": 0.04,
+     "koW": 0.994,
+     "v4": [
+      0.951,
+      0.045,
+      0.988
+     ],
+     "maxAbsDiff": 0.006000000000000005
+    },
+    {
+     "gap": 400,
+     "groupW": 0.971,
+     "groupD": 0.027,
+     "koW": 0.996,
+     "v4": [
+      0.966,
+      0.032,
+      0.993
+     ],
+     "maxAbsDiff": 0.0050000000000000044
+    },
+    {
+     "gap": 450,
+     "groupW": 0.974,
+     "groupD": 0.025,
+     "koW": 0.997,
+     "v4": [
+      0.971,
+      0.028,
+      0.995
+     ],
+     "maxAbsDiff": 0.0030000000000000027
+    },
+    {
+     "gap": 500,
+     "groupW": 0.984,
+     "groupD": 0.014,
+     "koW": 0.997,
+     "v4": [
+      0.978,
+      0.02,
+      0.996
+     ],
+     "maxAbsDiff": 0.006000000000000005
+    }
+   ],
+   "passed": false
+  },
+  "P8_attackingGoalShare": {
+   "command": "pnpm calibrate --n 5000 --coeffs v7",
+   "pass": "ST, W and AM score 70% to 80% of user goals",
+   "share": {
+    "count": 1198875,
+    "n": 1743160,
+    "p": 0.6877595860391473,
+    "lo": 0.6870712332561413,
+    "hi": 0.6884471112496573
+   },
+   "byRole": {
+    "CM": 220852,
+    "CB": 80024,
+    "W": 736468,
+    "FB": 72146,
+    "ST": 462407,
+    "DM": 98446,
+    "undefined": 70476,
+    "GK": 2341
+   },
+   "passed": false
+  },
+  "P9_typeMatchups": {
+   "applicable": false,
+   "reason": "6b7 does not exist: the decision 10 prototype measured a good-bot squad share of 11.1% against the 18% pin (calibration-probe.md).",
+   "squadShareOfVariance": {
+    "random": {
+     "value": 0.3879183376954232,
+     "lo": 0.3340561865254561,
+     "hi": 0.43954515844856457,
+     "method": "bootstrap-percentile-1000"
+    },
+    "good": {
+     "value": 0.11997676109272107,
+     "lo": 0.09976955158285786,
+     "hi": 0.14120346156596036,
+     "method": "bootstrap-percentile-1000"
+    },
+    "oracle": {
+     "value": 0.0809485220637234,
+     "lo": 0.06111007944344292,
+     "hi": 0.10071168083848896,
+     "method": "bootstrap-percentile-1000"
+    }
+   }
+  }
+ },
+ "reported": {
+  "penalties": {
+   "goals": 2852,
+   "perMatch": 0.20429799426934098,
+   "awardedObservable": 3534,
+   "awardedPerMatch": 0.25315186246418336,
+   "saved": 260,
+   "missed": 422,
+   "conversion": {
+    "count": 2852,
+    "n": 3534,
+    "p": 0.8070175438596491,
+    "lo": 0.7936755842696838,
+    "hi": 0.819692747427247
+   },
+   "note": "Awarded is scored penalties plus engine 7's saved and missed penalty incidents. Engine 6 has no missed penalty: a penalty is a goal relabelled, so its conversion is 1 by construction."
+  },
+  "missedPenaltiesPerCup": 0.341,
+  "opponentInjuries": {
+   "user": 3051,
+   "opp": 4133,
+   "userPerMatch": 0.21855300859598853,
+   "oppPerMatch": 0.2960601719197708,
+   "oppReplaced": 4133,
+   "oppRotationsPerMatch": 1.5297994269340973,
+   "matchesWithOppInjury": {
+    "count": 3562,
+    "n": 13960,
+    "p": 0.2551575931232092,
+    "lo": 0.24799377633208464,
+    "hi": 0.26245612736776824
+   },
+   "note": "Injury incidents per played match. Engine 6 logs only the user's; engine 7 also injures the Boss Club, replaces each from its reserve while subs remain, and logs its 60' and 75' rotations."
+  },
+  "headerShareByAttackerAer": {
+   "unit": "user side per played match; mean AER of the ATT-line starters after absences",
+   "cuts": [
+    69,
+    75,
+    80.66666666666667
+   ],
+   "quartiles": [
+    {
+     "quartile": 1,
+     "matches": 3575,
+     "meanAer": 63.61613053613042,
+     "headerShare": {
+      "count": 1292,
+      "n": 11117,
+      "p": 0.11621840424574975,
+      "lo": 0.11039292049516161,
+      "hi": 0.12230903616250716
+     }
+    },
+    {
+     "quartile": 2,
+     "matches": 3509,
+     "meanAer": 72.11076280041799,
+     "headerShare": {
+      "count": 1514,
+      "n": 11316,
+      "p": 0.1337928596677271,
+      "lo": 0.1276445257743156,
+      "hi": 0.14018975204808784
+     }
+    },
+    {
+     "quartile": 3,
+     "matches": 3389,
+     "meanAer": 77.90174092652666,
+     "headerShare": {
+      "count": 1515,
+      "n": 11129,
+      "p": 0.1361308293647228,
+      "lo": 0.12988491949729328,
+      "hi": 0.14262785927070784
+     }
+    },
+    {
+     "quartile": 4,
+     "matches": 3487,
+     "meanAer": 85.05401013287407,
+     "headerShare": {
+      "count": 1764,
+      "n": 11363,
+      "p": 0.15524069347883482,
+      "lo": 0.1486987784821033,
+      "hi": 0.1620156419598953
+     }
+    }
+   ]
+  },
+  "goalKinds": {
+   "user": {
+    "goals": 44925,
+    "share": {
+     "open-play": {
+      "count": 22255,
+      "n": 44925,
+      "p": 0.4953811908736784,
+      "lo": 0.49075836180180665,
+      "hi": 0.5000048097997509
+     },
+     "header": {
+      "count": 6085,
+      "n": 44925,
+      "p": 0.13544796883695048,
+      "lo": 0.1323147033048297,
+      "hi": 0.13864357575304836
+     },
+     "solo": {
+      "count": 10694,
+      "n": 44925,
+      "p": 0.2380411797440178,
+      "lo": 0.2341254280366679,
+      "hi": 0.24200172855576915
+     },
+     "free-kick": {
+      "count": 3372,
+      "n": 44925,
+      "p": 0.07505843071786311,
+      "lo": 0.0726580841826707,
+      "hi": 0.07753144574280149
+     },
+     "penalty": {
+      "count": 2519,
+      "n": 44925,
+      "p": 0.056071229827490264,
+      "lo": 0.053981527522813516,
+      "hi": 0.05823684758882078
+     }
+    }
+   },
+   "opp": {
+    "goals": 5929,
+    "share": {
+     "open-play": {
+      "count": 3036,
+      "n": 5929,
+      "p": 0.5120593692022264,
+      "lo": 0.4993321078297211,
+      "hi": 0.5247710133458047
+     },
+     "header": {
+      "count": 816,
+      "n": 5929,
+      "p": 0.1376286051610727,
+      "lo": 0.12909360659146496,
+      "hi": 0.1466328850782267
+     },
+     "solo": {
+      "count": 1281,
+      "n": 5929,
+      "p": 0.21605667060212513,
+      "lo": 0.20576640213224537,
+      "hi": 0.22671465382583042
+     },
+     "free-kick": {
+      "count": 463,
+      "n": 5929,
+      "p": 0.07809074042840276,
+      "lo": 0.07153086169684299,
+      "hi": 0.08519700374962368
+     },
+     "penalty": {
+      "count": 333,
+      "n": 5929,
+      "p": 0.05616461460617305,
+      "lo": 0.050586220078502955,
+      "hi": 0.062317788685189654
+     }
+    }
+   }
+  },
+  "knockout": {
+   "matches": 6044,
+   "extraTime": {
+    "count": 1062,
+    "n": 6044,
+    "p": 0.1757114493712773,
+    "lo": 0.16632352764486963,
+    "hi": 0.18551134845373723
+   },
+   "shootout": {
+    "count": 532,
+    "n": 6044,
+    "p": 0.08802117802779616,
+    "lo": 0.08113735701591353,
+    "hi": 0.09542837843588799
+   },
+   "shootoutUserWin": {
+    "count": 262,
+    "n": 532,
+    "p": 0.4924812030075188,
+    "lo": 0.4502040511162332,
+    "hi": 0.5348661636636569
+   },
+   "coinDeciders": 0
+  },
+  "upsetCurve": [
+   {
+    "gap": -400,
+    "n": 3,
+    "win": {
+     "count": 0,
+     "n": 3,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.5615060804490177
+    },
+    "draw": {
+     "count": 0,
+     "n": 3,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.5615060804490177
+    }
+   },
+   {
+    "gap": -300,
+    "n": 35,
+    "win": {
+     "count": 2,
+     "n": 35,
+     "p": 0.05714285714285714,
+     "lo": 0.015812829614043955,
+     "hi": 0.1860738073937003
+    },
+    "draw": {
+     "count": 0,
+     "n": 35,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.09890426758938868
+    }
+   },
+   {
+    "gap": -200,
+    "n": 286,
+    "win": {
+     "count": 29,
+     "n": 286,
+     "p": 0.10139860139860139,
+     "lo": 0.07153079470847686,
+     "hi": 0.14183264242408106
+    },
+    "draw": {
+     "count": 0,
+     "n": 286,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.013254136052243707
+    }
+   },
+   {
+    "gap": -100,
+    "n": 812,
+    "win": {
+     "count": 208,
+     "n": 812,
+     "p": 0.2561576354679803,
+     "lo": 0.2273303534886535,
+     "hi": 0.2872813064217997
+    },
+    "draw": {
+     "count": 0,
+     "n": 812,
+     "p": 0,
+     "lo": 4.336808689942018e-19,
+     "hi": 0.004708757190121218
+    }
+   },
+   {
+    "gap": 0,
+    "n": 1361,
+    "win": {
+     "count": 708,
+     "n": 1361,
+     "p": 0.5202057310800882,
+     "lo": 0.4936436610959797,
+     "hi": 0.5466540555035143
+    },
+    "draw": {
+     "count": 33,
+     "n": 1361,
+     "p": 0.024246877296105803,
+     "lo": 0.017316406370391543,
+     "hi": 0.0338555391506125
+    }
+   },
+   {
+    "gap": 100,
+    "n": 1652,
+    "win": {
+     "count": 1361,
+     "n": 1652,
+     "p": 0.8238498789346247,
+     "lo": 0.8047341705558304,
+     "hi": 0.8414629052997344
+    },
+    "draw": {
+     "count": 101,
+     "n": 1652,
+     "p": 0.061138014527845036,
+     "lo": 0.05057142593505032,
+     "hi": 0.07374094790553927
+    }
+   },
+   {
+    "gap": 200,
+    "n": 1638,
+    "win": {
+     "count": 1501,
+     "n": 1638,
+     "p": 0.9163614163614163,
+     "lo": 0.9019603829881808,
+     "hi": 0.9288140352017344
+    },
+    "draw": {
+     "count": 82,
+     "n": 1638,
+     "p": 0.050061050061050064,
+     "lo": 0.040512976595145314,
+     "hi": 0.061714668264139516
+    }
+   },
+   {
+    "gap": 300,
+    "n": 1255,
+    "win": {
+     "count": 1215,
+     "n": 1255,
+     "p": 0.9681274900398407,
+     "lo": 0.9568904460114921,
+     "hi": 0.9765073698852816
+    },
+    "draw": {
+     "count": 24,
+     "n": 1255,
+     "p": 0.019123505976095617,
+     "lo": 0.012884075868789254,
+     "hi": 0.028297912397248343
+    }
+   },
+   {
+    "gap": 400,
+    "n": 1108,
+    "win": {
+     "count": 1090,
+     "n": 1108,
+     "p": 0.983754512635379,
+     "lo": 0.9744664473634265,
+     "hi": 0.9896996712635434
+    },
+    "draw": {
+     "count": 10,
+     "n": 1108,
+     "p": 0.009025270758122744,
+     "lo": 0.004909600739873589,
+     "hi": 0.0165337415491719
+    }
+   },
+   {
+    "gap": 500,
+    "n": 1885,
+    "win": {
+     "count": 1842,
+     "n": 1885,
+     "p": 0.9771883289124669,
+     "lo": 0.9694149497932701,
+     "hi": 0.983020659418217
+    },
+    "draw": {
+     "count": 40,
+     "n": 1885,
+     "p": 0.021220159151193633,
+     "lo": 0.015621951572239053,
+     "hi": 0.028765889102172187
+    }
+   },
+   {
+    "gap": 600,
+    "n": 1408,
+    "win": {
+     "count": 1395,
+     "n": 1408,
+     "p": 0.9907670454545454,
+     "lo": 0.9842669890311304,
+     "hi": 0.994596362211672
+    },
+    "draw": {
+     "count": 13,
+     "n": 1408,
+     "p": 0.009232954545454546,
+     "lo": 0.0054036377883280706,
+     "hi": 0.015733010968869622
+    }
+   },
+   {
+    "gap": 700,
+    "n": 1,
+    "win": {
+     "count": 1,
+     "n": 1,
+     "p": 1,
+     "lo": 0.20654329147389294,
+     "hi": 1
+    },
+    "draw": {
+     "count": 0,
+     "n": 1,
+     "p": 0,
+     "lo": 0,
+     "hi": 0.7934567085261071
+    }
+   }
+  ],
+  "formations": [
+   {
+    "formation": "4-3-3",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 816.7,
+     "lo": 812.8012232417685,
+     "hi": 820.5987767582316,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.96,
+     "lo": 5.871776806168533,
+     "hi": 6.048223193831467,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 8,
+     "n": 400,
+     "p": 0.02,
+     "lo": 0.010168264597915496,
+     "hi": 0.038963870377777945
+    }
+   },
+   {
+    "formation": "4-4-2",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 819.245,
+     "lo": 815.4798287281099,
+     "hi": 823.0101712718902,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.965,
+     "lo": 5.867429537831784,
+     "hi": 6.062570462168216,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 17,
+     "n": 400,
+     "p": 0.0425,
+     "lo": 0.02670146955162519,
+     "hi": 0.06700259659708263
+    }
+   },
+   {
+    "formation": "4-2-3-1",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 809.3575,
+     "lo": 805.6441351573118,
+     "hi": 813.0708648426881,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.9125,
+     "lo": 5.816618288336206,
+     "hi": 6.008381711663794,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 13,
+     "n": 400,
+     "p": 0.0325,
+     "lo": 0.019089659086961887,
+     "hi": 0.054804659873739545
+    }
+   },
+   {
+    "formation": "4-1-4-1",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 817.905,
+     "lo": 814.219494090573,
+     "hi": 821.590505909427,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 6.0175,
+     "lo": 5.927719377505841,
+     "hi": 6.107280622494159,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 13,
+     "n": 400,
+     "p": 0.0325,
+     "lo": 0.019089659086961887,
+     "hi": 0.054804659873739545
+    }
+   },
+   {
+    "formation": "3-5-2",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 808.295,
+     "lo": 804.6681497772522,
+     "hi": 811.9218502227477,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.85,
+     "lo": 5.7615533662735325,
+     "hi": 5.938446633726467,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 5,
+     "n": 400,
+     "p": 0.0125,
+     "lo": 0.005350671853550634,
+     "hi": 0.02892415273113802
+    }
+   },
+   {
+    "formation": "3-4-3",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 814.7575,
+     "lo": 810.4363954402473,
+     "hi": 819.0786045597528,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.895,
+     "lo": 5.8092351767198185,
+     "hi": 5.980764823280181,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 4,
+     "n": 400,
+     "p": 0.01,
+     "lo": 0.0038954207932788126,
+     "hi": 0.02542696699440824
+    }
+   },
+   {
+    "formation": "3-4-2-1",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 813.7225,
+     "lo": 809.6754512269551,
+     "hi": 817.7695487730448,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.83,
+     "lo": 5.733804686987286,
+     "hi": 5.926195313012714,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 7,
+     "n": 400,
+     "p": 0.0175,
+     "lo": 0.008502182660789141,
+     "hi": 0.03567751551790271
+    }
+   },
+   {
+    "formation": "5-3-2",
+    "bot": "good",
+    "n": 400,
+    "meanScore": {
+     "value": 810.7375,
+     "lo": 806.9790041543284,
+     "hi": 814.4959958456715,
+     "method": "normal"
+    },
+    "meanWins": {
+     "value": 5.8425,
+     "lo": 5.743270129532573,
+     "hi": 5.9417298704674275,
+     "method": "normal"
+    },
+    "champion": {
+     "count": 10,
+     "n": 400,
+     "p": 0.025,
+     "lo": 0.013634943739762435,
+     "hi": 0.045402064829934204
+    }
+   }
+  ],
+  "luck": {
+   "random": {
+    "bot": "random",
+    "formation": "4-3-3",
+    "squads": 150,
+    "seedsPerSquad": 40,
+    "cups": 6000,
+    "meanWins": {
+     "value": 3.282,
+     "lo": 3.1678333333333333,
+     "hi": 3.4045,
+     "method": "bootstrap-percentile-1000"
+    },
+    "champion": {
+     "count": 0,
+     "n": 6000,
+     "p": 0,
+     "lo": 5.421010862427522e-20,
+     "hi": 0.0006398569875660943
+    },
+    "groupExit": {
+     "count": 196,
+     "n": 6000,
+     "p": 0.03266666666666666,
+     "lo": 0.028459185285442543,
+     "hi": 0.03747220104560256
+    },
+    "sdWithinSquad": 0.9497850634046981,
+    "sdBetweenSquads": 0.7561201403657136,
+    "squadShareOfVariance": {
+     "value": 0.3879183376954232,
+     "lo": 0.3340561865254561,
+     "hi": 0.43954515844856457,
+     "method": "bootstrap-percentile-1000"
+    },
+    "squadMeanRange": [
+     1.375,
+     5.525
+    ]
+   },
+   "good": {
+    "bot": "good",
+    "formation": "4-3-3",
+    "squads": 150,
+    "seedsPerSquad": 40,
+    "cups": 6000,
+    "meanWins": {
+     "value": 5.937166666666666,
+     "lo": 5.88,
+     "hi": 5.9895,
+     "method": "bootstrap-percentile-1000"
+    },
+    "champion": {
+     "count": 158,
+     "n": 6000,
+     "p": 0.026333333333333334,
+     "lo": 0.02257467385096397,
+     "hi": 0.03069815066859031
+    },
+    "groupExit": {
+     "count": 0,
+     "n": 6000,
+     "p": 0,
+     "lo": 5.421010862427522e-20,
+     "hi": 0.0006398569875660943
+    },
+    "sdWithinSquad": 0.9078477295229634,
+    "sdBetweenSquads": 0.33520810285883945,
+    "squadShareOfVariance": {
+     "value": 0.11997676109272107,
+     "lo": 0.09976955158285786,
+     "hi": 0.14120346156596036,
+     "method": "bootstrap-percentile-1000"
+    },
+    "squadMeanRange": [
+     5.175,
+     6.625
+    ]
+   },
+   "oracle": {
+    "bot": "oracle",
+    "formation": "4-3-3",
+    "squads": 150,
+    "seedsPerSquad": 40,
+    "cups": 6000,
+    "meanWins": {
+     "value": 6.3165,
+     "lo": 6.2775,
+     "hi": 6.361166666666667,
+     "method": "bootstrap-percentile-1000"
+    },
+    "champion": {
+     "count": 436,
+     "n": 6000,
+     "p": 0.07266666666666667,
+     "lo": 0.06636801319476854,
+     "hi": 0.07951218457727127
+    },
+    "groupExit": {
+     "count": 0,
+     "n": 6000,
+     "p": 0,
+     "lo": 5.421010862427522e-20,
+     "hi": 0.0006398569875660943
+    },
+    "sdWithinSquad": 0.8926435458793169,
+    "sdBetweenSquads": 0.2649186982201647,
+    "squadShareOfVariance": {
+     "value": 0.0809485220637234,
+     "lo": 0.06111007944344292,
+     "hi": 0.10071168083848896,
+     "method": "bootstrap-percentile-1000"
+    },
+    "squadMeanRange": [
+     5.4,
+     7.025
+    ]
+   }
+  }
+ },
+ "achievements": {
+  "command": "pnpm exec tsx scripts/audit/achievements-rate.mts --n 200 --coeffs v7",
+  "seeds": "achievements-0 to achievements-199, good bot, cup8 4-3-3 classic3",
+  "giantKiller": {
+   "gap": 100,
+   "earned": {
+    "count": 5,
+    "n": 200,
+    "p": 0.025,
+    "lo": 0.010724561470787711,
+    "hi": 0.05717914415161715
+   },
+   "insideTwoToTwentyPercent": true
+  },
+  "hatTrickHero": {
+   "count": 143,
+   "n": 200,
+   "p": 0.715,
+   "lo": 0.648845269187895,
+   "hi": 0.773050948267227
+  }
+ },
+ "wallSecondsOnThisMachine": {
+  "upsets": {
+   "exit": 0,
+   "seconds": 18
+  },
+  "kinds": {
+   "exit": 0,
+   "seconds": 22
+  },
+  "formations": {
+   "exit": 0,
+   "seconds": 34
+  },
+  "noop": {
+   "exit": 0,
+   "seconds": 47
+  },
+  "informed": {
+   "exit": 0,
+   "seconds": 47
+  },
+  "wincurve": {
+   "exit": 0,
+   "seconds": 129
+  },
+  "luck": {
+   "exit": 0,
+   "seconds": 143
+  },
+  "shootouts": {
+   "exit": 0,
+   "seconds": 151
+  },
+  "oracle": {
+   "exit": 0,
+   "seconds": 183
+  },
+  "calibrate": {
+   "exit": 0,
+   "seconds": 711
+  }
+ },
+ "sources": {
+  "informed.json": "9c76155d29d335030d1062346fe1f8d5a2c64106bb8bae5dfb6b581085a75a9c",
+  "oracle.json": "6cca9e6ae92ecc8f19f75d47f65ba2c1dcfde6791b9ed58bd151400ed91e74cc",
+  "noop.json": "4a46050e235e1bdf6f2ea825c1bc7b93b7befecf15c6edfb9baf453b13aae497",
+  "shootouts.json": "950a5512954e28a4b554e9ad68c6aaf5a6f35ff87f1dd7c46f8b237951bf1430",
+  "calibrate-5000.json": "787362b1fb10e7e21c84b4a53271de0aa3e1250ce728c22a1bb0f74e03eb0f93",
+  "wincurve.stdout": "c13af267657ab5782893dd84420aa81ef66807414674e297fd4fb22cf1b42400",
+  "kinds.json": "8154d49d0e6a0982a21f8b0c41ac501cc5f7a82b0c176e07509f970538b99e50",
+  "upsets.json": "07c7caddc774350b673584cc193105c364b81fc7851ec4fc2cb2b70810ac7195",
+  "luck.json": "d012f4fec304600a2c6bb87833b5380e307b87e405e66644a8bb2a7ed43da0b2",
+  "achievements.txt": "890c6ecc99586622e4e2953d779a256aa924b0a2cdb0f1057a778eaba0dbb112",
+  "suite.log": "886ab97f35736647fe5c4379be065fc8a70432df04c5c1a31845060a0a68f847",
+  "formations.json": "e60367d955fdf4b2fc1ac73b95c61b7e88ab36784489a7ba900960fdaeb4cb19"
+ }
+}

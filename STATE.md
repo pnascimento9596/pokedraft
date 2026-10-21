@@ -3,6 +3,43 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Engine 7 calibration
+
+Branch `feat/engine7-calibration` off `origin/main` at `6aad55b` (the 6b6 squash). Wave 6 row 6b8 (Red). Dormant: only `ENGINE_COEFFICIENTS_V7` changes, the live coefficients and every engine code path are untouched and tokens stay pd6, so production engine output is exactly engine 6's. `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green. The first commit records the PR #153 merge.
+
+- Nothing changes for a player yet.
+- From the flip, reading the opponent pays a little more: every style edge sits 15% further from neutral. With a random draft, following the scout wins 3.4 points more matches than the assistant; with a good draft, 1.1 points more.
+- Penalties stay as common as in engine 6 (0.204 goals per match), with about 1 in 5 saved or missed.
+- The Final Boss is 7 points stronger (992 against 985), which holds flawless runs at v4's rates.
+
+Calibrated values: `styleEdges` at scale 1.15, `penalty.awardShare` 0.0745, `ladder.score.F` 992. The band stays 0.18.
+
+Pins at `c1f4f838`, every run `--coeffs v7` under `nice -n 10`:
+
+- P1 informed (400 squads per bot): good +1.07 points [-0.77, +2.91], FAIL (the P1 and P2 conflict rule holds P2); random +3.41 [+0.51, +6.30], pass.
+- P2 oracle: good +4.21 [+2.47, +5.96], random +9.59 [+6.80, +12.36], pass. P3 no-op: 0.00 for both bots, pass.
+- P4 (17,000 cups, 5,448 shootouts): top minus bottom quartile +18.31 points [+14.59, +21.96], intervals apart, pass.
+- P5 (`pnpm calibrate --n 5000`, 90,000 cups): 840 3.65% [3.28, 4.07], 900 11.81% [11.12, 12.53], 950 29.55% [28.92, 30.18], all inside v4's intervals, pass.
+- P6: cup8-full good 5.912 wins [5.884, 5.939], kanto151 random 3.331 [3.299, 3.363], pass.
+- P7 win curve (n 5000): worst row +0.046 (KO W at gap 0), FAIL, recorded under fallback 4. P8: 68.78% [68.71, 68.84], FAIL, recorded under fallback 4. P9 not applicable (6b7 does not exist).
+- Achievements (200 good-bot cups): Giant killer at 100 2.5% [1.07, 5.72], inside 2% to 20%, so the threshold stays. Hat-trick hero 71.5% [64.9, 77.3].
+
+No behaviour fix, so no RED commit. The parity guard covers the row: the live engine and its tests are unchanged and pass unchanged. Moved V7 literals in `tactic-edges.test.ts` and `opponent-injuries.test.ts` are listed in the decision log with old, new and why.
+
+Gates at `c1f4f838` (code-identical to this docs commit):
+
+- `pnpm lint`, `pnpm typecheck` and `pnpm build` exited 0. All nine `check:*` scripts exited 0. Prettier passed on the touched files. `pnpm e2e:pins --check` reported the pins current.
+- Unit tests: 2,188 passed in 251 files. `pnpm vitest run src/engine`: 369 passed in 34 files.
+- Parity: the 50-run test and the 200-run slow test are byte-identical, rate parity passed 7 of 7. `goldens.test.ts` and `src/engine/coefficients.ts` are byte-identical to `origin/main`.
+- `check-retained-replays.mts`: 10 golden replays passed, live v6 replay `2b26ee82...`. `measure-retained-json.mjs` exited 0.
+- NOT RUN:
+  - Review and hosted CI.
+  - Playwright (no UI or live engine change).
+  - A second decisive run to reproduce each output hash.
+  - The phone check and screen reader pass.
+
+Decision log: `docs/decisions/engine-7-calibration.md`. Summary: `docs/reports/engine-7/calibration.json`. No browser proof: the row has no UI change. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Engine 7 shootout band
 
 Branch `feat/engine7-shootout-band` off `origin/main` at `5190287` (the 6b5 squash). Wave 6 row 6b6 (Red). Dormant: the live coefficients keep `shootout.band: 0.1` and tokens stay pd6, so production engine output is exactly engine 6's. `src/scouting`, `scripts/data` and `src/data` are untouched and `goldens.test.ts` is byte-identical to `origin/main` and green.
