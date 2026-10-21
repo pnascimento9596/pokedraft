@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
-import { createDraft, type SlotRef } from "@/engine";
+import { createDraft, type Seed, type SlotRef } from "@/engine";
 import { Picker } from "../Picker";
 import * as lineupModule from "@/ui/lineup";
 
@@ -32,7 +32,10 @@ afterEach(() => {
 
 describe("picker swipe render efficiency (4j)", () => {
   it("pointer move during swipe modifies transform directly on the dialog without re-rendering", () => {
-    const state = createDraft({ mode: "builder", formation: "4-3-3", gens: [1], legendaries: false });
+    const state = createDraft(
+      { mode: "builder", formation: "4-3-3", gens: [1], legendaries: false },
+      "test" as Seed,
+    );
     const slot: SlotRef = { kind: "starter", index: 0 };
     render(
       <Picker
