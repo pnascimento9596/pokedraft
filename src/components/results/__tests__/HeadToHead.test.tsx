@@ -8,9 +8,9 @@ import { HeadToHead, opponentOf } from "../HeadToHead";
 // Seed golden-cup8, 4-2-3-1 Classic. THEIRS is the golden engine-5 draft under the live prefix:
 // observed 5-0-1, Team Score 593, out in the Quarter-final on penalties. MINE is the first offered
 // player into the first open slot on the same seed: observed 1-1-2, Team Score 406.
-const THEIRS = GOLDEN_CUP8_V5.replace(/^pd5\./, "pd6.");
+const THEIRS = GOLDEN_CUP8_V5.replace(/^pd5\./, "pd7.");
 const MINE =
-  "pd6.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1sicCIsODgzLCJzMCJdLFsicCIsMzE1LCJzMSJdLFsicCIsMjcyLCJzMiJdLFsicCIsNjkxLCJzMyJdLFsicCIsNDUzLCJzNCJdLFsicCIsNzU0LCJzNSJdLFsicCIsMzc2LCJzNiJdLFsicCIsMTc1LCJzNyJdLFsicCIsNjYzLCJzOCJdLFsicCIsMTg4LCJzOSJdLFsicCIsNzM3LCJzMTAiXSxbInAiLDc4NCwiYjAiXSxbInAiLDcwMywiYjEiXSxbInAiLDk0MiwiYjIiXSxbInAiLDE0NSwiYjMiXSxbInAiLDg4NCwiYjQiXV1d";
+  "pd7.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1sicCIsODgzLCJzMCJdLFsicCIsMzE1LCJzMSJdLFsicCIsMjcyLCJzMiJdLFsicCIsNjkxLCJzMyJdLFsicCIsNDUzLCJzNCJdLFsicCIsNzU0LCJzNSJdLFsicCIsMzc2LCJzNiJdLFsicCIsMTc1LCJzNyJdLFsicCIsNjYzLCJzOCJdLFsicCIsMTg4LCJzOSJdLFsicCIsNzM3LCJzMTAiXSxbInAiLDc4NCwiYjAiXSxbInAiLDcwMywiYjEiXSxbInAiLDk0MiwiYjIiXSxbInAiLDE0NSwiYjMiXSxbInAiLDg4NCwiYjQiXV1d";
 const URL_BASE =
   "http://localhost:3000/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=golden-cup8";
 
@@ -34,15 +34,15 @@ describe("HeadToHead (catches a side by side that shows the wrong records, round
         theirs={opponentOf({ kind: "live", token: THEIRS })!}
       />,
     );
-    expect(screen.getByTestId("h2h-you").textContent).toBe("You1-1-2Team Score 406");
+    expect(screen.getByTestId("h2h-you").textContent).toBe("You2-1-2Team Score 406");
     expect(screen.getByTestId("h2h-them").textContent).toBe("Them5-0-1Team Score 593");
     expect(rows()).toEqual([
       ["Round", "You", "Them"],
-      ["Group match 1", "0-0", "1-0"],
-      ["Group match 2", "1-0", "6-0"],
+      ["Group match 1", "0-0", "3-0"],
+      ["Group match 2", "1-0", "7-0"],
       ["Group match 3", "0-2", "6-1"],
-      ["Round of 32", "0-2", "6-2"],
-      ["Round of 16", "Out", "1-0"],
+      ["Round of 32", "3-3 (won on pens)", "6-2"],
+      ["Round of 16", "0-1", "2-0"],
       ["Quarter-final", "Out", "2-2 (lost on pens)"],
     ]);
     expect(screen.getByTestId("h2h-verdict").textContent).toBe("They win the seed");
@@ -82,7 +82,7 @@ describe("HeadToHead (catches a side by side that shows the wrong records, round
   });
 
   it("gives nothing to compare for a live token that does not replay", () => {
-    expect(opponentOf({ kind: "live", token: "pd6.e30" })).toBeNull();
+    expect(opponentOf({ kind: "live", token: "pd7.e30" })).toBeNull();
   });
 
   it("Send it back shares your run as the next challenge on the same seed", async () => {

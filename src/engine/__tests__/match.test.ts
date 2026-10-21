@@ -123,7 +123,9 @@ describe("simulateMatch", () => {
       { kind: "yellow", side: "user", minute: 10, slot: 3, player: 130, secondYellow: false },
       { kind: "yellow", side: "user", minute: 38, slot: 6, player: 6, secondYellow: false },
       { kind: "tactic", side: "opp", minute: 45, tactic: "attack", by: "auto" },
+      { kind: "rotate", side: "opp", minute: 60, slot: 8, player: 84 },
       { kind: "tactic", side: "user", minute: 75, tactic: "defend", by: "auto" },
+      { kind: "rotate", side: "opp", minute: 75, slot: 10, player: 21 },
       { kind: "yellow", side: "opp", minute: 78, slot: 3, player: 42, secondYellow: false },
       { kind: "yellow", side: "user", minute: 88, slot: 1, player: 59, secondYellow: false },
     ]);

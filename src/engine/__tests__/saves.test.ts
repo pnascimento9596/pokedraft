@@ -88,8 +88,8 @@ describe("recorded goalkeeper saves (catches invented, misattributed, or scoring
     const input = shootoutInput();
     const match = played(input);
     expect(match.extraTime).toEqual({ user: 0, opp: 0 });
-    expect(match.shootout!.kicks).toHaveLength(10);
-    expect(match.shootout!.kicks.filter((k) => !k.scored)).toHaveLength(1);
+    expect(match.shootout!.kicks).toHaveLength(8);
+    expect(match.shootout!.kicks.filter((k) => !k.scored)).toHaveLength(2);
     expect(match.saves!.map((s) => [s.side, s.minute])).toEqual([
       ["user", 4],
       ["user", 9],

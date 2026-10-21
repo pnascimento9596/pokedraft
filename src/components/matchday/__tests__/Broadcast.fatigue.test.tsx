@@ -14,7 +14,7 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // Match 0 of the golden cup8 draft under engine 6, with its real lineups per window and chosen
 // energies: slot 1 at 65, slot 2 at 64, slot 3 at 55, slot 4 at 54, everyone else at 90.
-const { draft, cup } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const REAL = cup.matches[0] as PlayedMatch;
 const LINEUP = toFullLineup(draft);
 const TIMELINE = buildTimeline(REAL, { matchIndex: 0, seed: cup.seed, lineup: LINEUP });

@@ -12,7 +12,7 @@ vi.mock("@/components/wheel/sound", async (importOriginal) => {
   return { ...real, unlockAudio: () => audio.events.push("unlock") };
 });
 
-const { draft, cup } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 
 afterEach(cleanup);
 

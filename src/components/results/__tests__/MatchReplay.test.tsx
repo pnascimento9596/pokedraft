@@ -12,7 +12,7 @@ beforeEach(() => {
 
 // The engine-5 golden cup8 draft under the live engine-6 prefix: G1 is a 1-0 win over Goldenrod
 // United (49'), and Santalune Town beat Veilstone United 3-0 in the other G1 fixture.
-const LIVE = `pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+const LIVE = `pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
 
 const rows = () =>
   within(screen.getByTestId("replay-standings"))
@@ -53,8 +53,8 @@ describe("MatchReplay group standings (decision 13: MatchdayLive's table folds i
     fireEvent.click(screen.getByTestId("skip-ft"));
     expect(rows()).toEqual([
       ["Santalune Town", "1", "3", "3"],
-      ["Your team", "1", "1", "3"],
-      ["Goldenrod United", "1", "-1", "0"],
+      ["Your team", "1", "3", "3"],
+      ["Goldenrod United", "1", "-3", "0"],
       ["Veilstone United", "1", "-3", "0"],
     ]);
   });
@@ -134,7 +134,7 @@ describe("MatchReplay xG river and commentary (catches a river or a ticker line 
     expect(river().getAttribute("aria-label")).toBe("Chances so far: you 0.0, them 0.0");
     expect(river().textContent).toContain("Chances (xG)");
     fireEvent.click(screen.getByTestId("skip-ft"));
-    expect(river().getAttribute("aria-label")).toBe("Chances so far: you 5.0, them 0.1");
+    expect(river().getAttribute("aria-label")).toBe("Chances so far: you 5.9, them 0.1");
   });
 
   it("names a shared run's side this squad in the river's label", () => {
@@ -150,7 +150,7 @@ describe("MatchReplay xG river and commentary (catches a river or a ticker line 
       />,
     );
     fireEvent.click(screen.getByTestId("skip-ft"));
-    expect(river().getAttribute("aria-label")).toBe("Chances so far: this squad 5.0, them 0.1");
+    expect(river().getAttribute("aria-label")).toBe("Chances so far: this squad 5.9, them 0.1");
   });
 
   it("draws no river for a run a retained engine played", () => {

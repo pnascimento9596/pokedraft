@@ -9,7 +9,7 @@ import { isCoached } from "@/ui/manager/coached";
 import type { BoardEntry } from "../../contract";
 import { handleBoard, handleSubmit } from "../handlers";
 import { drizzleStore, type LeaderboardStore } from "../store";
-import { GOLDEN_CUP8_V6, migratedDb, scriptedToken } from "./fixtures";
+import { GOLDEN_CUP8_V7, migratedDb, scriptedToken } from "./fixtures";
 
 const NOW = new Date("2026-10-09T16:00:00Z");
 
@@ -21,7 +21,7 @@ const CUP8: DraftSettings = {
   order: "squadFirst",
 };
 function token(seed: string, manager: readonly ManagerAction[] = []): string {
-  return encodeToken({ v: 6, settings: CUP8, seed: seed as Seed, actions: [], manager });
+  return encodeToken({ v: 7, settings: CUP8, seed: seed as Seed, actions: [], manager });
 }
 
 const tactic = (minute: number): ManagerAction => ({
@@ -49,7 +49,7 @@ function row(
     wins,
     draws: 0,
     losses: 8 - wins,
-    engineVersion: "pokedraft-engine-6",
+    engineVersion: "pokedraft-engine-7",
     coached,
     runFingerprint: `fp-${nickname}`,
     ipHash: "test",
@@ -173,11 +173,11 @@ describe("coach views read the stored coached column (catches the filter and the
       ...decodeToken(scriptedToken(CUP8, "eq-2")),
       manager: [tactic(30)],
     });
-    const goldenCoached = encodeToken({ ...decodeToken(GOLDEN_CUP8_V6), manager: [tactic(0)] });
+    const goldenCoached = encodeToken({ ...decodeToken(GOLDEN_CUP8_V7), manager: [tactic(0)] });
     const fixtures: [string, string][] = [
       ["Plain", plain],
       ["Coached", coached],
-      ["Golden", GOLDEN_CUP8_V6],
+      ["Golden", GOLDEN_CUP8_V7],
       ["Golden coached", goldenCoached],
     ];
     for (const [nickname, tok] of fixtures) {
@@ -187,7 +187,12 @@ describe("coach views read the stored coached column (catches the filter and the
           headers: { "content-type": "application/json", "x-real-ip": "198.51.100.9" },
           body: JSON.stringify({ nickname, token: tok }),
         }),
-        { store, ipHashSecret: "test-secret-0123456789abcdef01234567", now: () => NOW },
+        {
+          store,
+          ipHashSecret: "test-secret-0123456789abcdef01234567",
+          now: () => NOW,
+          grace: null,
+        },
       );
       expect([nickname, res.status]).toEqual([nickname, 201]);
     }

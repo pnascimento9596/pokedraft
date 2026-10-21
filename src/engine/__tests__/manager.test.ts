@@ -42,8 +42,8 @@ function token(seed: Seed, manager?: readonly ManagerAction[]): RunToken {
     push({ type: "pick", species: rolled(state) as never, slot });
   });
   return manager
-    ? { v: 6, settings: CUP8, seed, actions, manager }
-    : { v: 6, settings: CUP8, seed, actions };
+    ? { v: 7, settings: CUP8, seed, actions, manager }
+    : { v: 7, settings: CUP8, seed, actions };
 }
 
 const SEED = "golden-cup8" as Seed;
@@ -112,11 +112,11 @@ describe("engine 6 coach decisions", () => {
     expect(coached.players.find((p) => p.species === 784)!.appearances).toBeGreaterThanOrEqual(1);
   });
 
-  it("hands the touchline to the manager: no auto tactic for the user once they decide", () => {
-    const m = played(run([{ type: "tactic", match: 0, minute: 0, tactic: "press" }]).matches[0]);
+  it("hands the touchline to the manager: no auto tactic for the user once they decide from half-time on", () => {
+    const m = played(run([{ type: "tactic", match: 0, minute: 45, tactic: "press" }]).matches[0]);
     const userTactics = (m.incidents ?? []).filter((i) => i.kind === "tactic" && i.side === "user");
     expect(userTactics).toEqual([
-      { kind: "tactic", side: "user", minute: 0, tactic: "press", by: "manager" },
+      { kind: "tactic", side: "user", minute: 45, tactic: "press", by: "manager" },
     ]);
   });
 

@@ -81,7 +81,7 @@ describe("runCup", () => {
       );
       if (r.flawless) flawless++;
     }
-    expect(flawless).toBe(47);
+    expect(flawless).toBe(48);
   });
 
   it("replays identically from the same lineup and seed", () => {
@@ -135,7 +135,7 @@ describe("runCup", () => {
     // 59 misses match 4 only. Bench 4 starts match 4 in its place and comes on at 60' in the other
     // four, so it appears in all five; bench 10 is never used.
     expect([appearances[59], appearances[4], appearances[10]]).toEqual([4, 5, 0]);
-    expect(r.awards.goldenBoot).toEqual({ species: 136, goals: 5, assists: 1, appearances: 5 });
+    expect(r.awards.goldenBoot).toEqual({ species: 136, goals: 7, assists: 1, appearances: 5 });
   });
 
   // The matchday UI reads only absences[0] (fieldedFor in src/ui/manager/touchline.ts and the
@@ -161,13 +161,13 @@ describe("buildLadder", () => {
       ["viridian-fc", 601],
       ["pewter-united", 749],
       ["vermilion-fc", 859],
-      ["cinnabar-fc", 999],
+      ["cinnabar-fc", 1000],
     ]);
     expect(ladder.F.lines).toEqual({
-      GK: 100.9,
-      DEF: 104.99807355516639,
-      MID: 97.80893169877409,
-      ATT: 100.89299474605956,
+      GK: 101,
+      DEF: 105.09807355516638,
+      MID: 97.90893169877408,
+      ATT: 100.99299474605955,
     });
   });
 });

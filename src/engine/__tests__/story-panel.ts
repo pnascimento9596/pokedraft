@@ -155,14 +155,24 @@ export function checkRun(run: PanelRun, tally: PanelTally): void {
     expect(goalChances, `${run.name} match ${k} goals`).toEqual(goals);
 
     const savedChances = story.chances
-      .filter((ch) => ch.outcome === "saved")
+      .filter((ch) => ch.outcome === "saved" && ch.kind !== "penalty")
       .map((ch) => `${ch.minute}:${ch.side === "user" ? "opp" : "user"}:${ch.shooter}`)
       .sort();
     const saves = (match.saves ?? []).map((s) => `${s.minute}:${s.side}:${s.attacker}`).sort();
     expect(savedChances, `${run.name} match ${k} saves`).toEqual(saves);
 
+    const penaltyMisses = story.chances
+      .filter((ch) => ch.kind === "penalty" && ch.outcome !== "goal")
+      .map((ch) => `${ch.minute}:${ch.side}:${ch.shooter}:${ch.outcome}`)
+      .sort();
+    const penaltyIncidents = (match.incidents ?? [])
+      .filter((i) => i.kind === "penalty")
+      .map((i) => `${i.minute}:${i.side}:${i.taker}:${i.outcome}`)
+      .sort();
+    expect(penaltyMisses, `${run.name} match ${k} penalty misses`).toEqual(penaltyIncidents);
+
     const extra = match.extraTime !== null;
-    expect(story.chances).toHaveLength(extra ? 134 : 100);
+    expect(story.chances.filter((ch) => ch.kind !== "penalty")).toHaveLength(extra ? 134 : 100);
     expect(story.windows).toHaveLength(extra ? 24 : 18);
     expect(story.windows.map((w) => w.minute)).toEqual(match.windows!.map((w) => w.minute));
 

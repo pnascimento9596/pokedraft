@@ -19,7 +19,7 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // The golden cup8 draft under engine 6. Match 1: the assistant takes Togepi off for Kommo-o in
 // slot 7 at 60'. Match 5: Ludicolo is sent off from slot 2 at 6'.
-const { draft, cup } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const LINEUP = toFullLineup(draft);
 const STEP = 1000 / 60;
 const TAIL_FRAMES = 180;
@@ -217,9 +217,9 @@ describe("smooth movement (catches players stopping dead at every phase, stackin
         y: +p.point.y.toFixed(2),
       }));
     const midway = at(900);
-    expect(leaving(midway)).toEqual([{ slot: 7, species: 175, y: 11.77 }]);
+    expect(leaving(midway)).toEqual([{ slot: 7, species: 175, y: 8.62 }]);
     expect(midway.players.user[7]?.species).toBe(784);
-    expect(+midway.players.user[7]!.point.y.toFixed(2)).toBe(58.77);
+    expect(+midway.players.user[7]!.point.y.toFixed(2)).toBe(55.63);
     expect(leaving(at(1_800))).toEqual([]);
     expect(leaving(at(899, 2))).toEqual([{ slot: 7, species: 175, y: 0 }]);
     expect(leaving(at(900, 2))).toEqual([]);

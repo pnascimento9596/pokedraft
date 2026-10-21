@@ -2,19 +2,19 @@
 // Every e2e expectation that moves when the live engine changes lives here, so an engine bump
 // regenerates this one file. scripts/e2e/render-pins.test.ts fails when it is stale.
 
-export const ENGINE_VERSION = "pokedraft-engine-6";
-export const TOKEN_VERSIONS: readonly number[] = [1, 2, 3, 4, 5, 6];
+export const ENGINE_VERSION = "pokedraft-engine-7";
+export const TOKEN_VERSIONS: readonly number[] = [1, 2, 3, 4, 5, 6, 7];
 /** A live run token, as the leaderboard receives it. */
-export const LIVE_TOKEN = /^pd6\./;
+export const LIVE_TOKEN = /^pd7\./;
 /** A copied share link, in the query form message apps keep. */
-export const SHARE_LINK = /\/r\/pd6\?t=[A-Za-z0-9_-]+$/;
+export const SHARE_LINK = /\/r\/pd7\?t=[A-Za-z0-9_-]+$/;
 /** The live token prefix, for tokens the specs build or fake. */
-export const LIVE_PREFIX = "pd6.";
+export const LIVE_PREFIX = "pd7.";
 /** The golden engine-5 drafts under the live prefix, so the live engine replays them. */
 export const LIVE_GOLDEN_CUP8 =
-  "pd6.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0";
+  "pd7.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0";
 export const LIVE_GOLDEN_KANTO151 =
-  "pd6.W1siayIsIjMtNS0yIiwicCJdLCJnb2xkZW4ta2FudG8xNTEiLFtbImMiLCJzMCJdLFsicCIsMTQ5LCJzMCJdLFsiYyIsInMxIl0sWyJyIiwicyJdLFsicCIsNzMsInMxIl0sWyJjIiwiczIiXSxbInAiLDY5LCJzMiJdLFsiYyIsInMzIl0sWyJwIiw1MywiczMiXSxbImMiLCJzNCJdLFsicCIsNzgsInM0Il0sWyJjIiwiczUiXSxbInIiLCJzIl0sWyJwIiwxMTYsInM1Il0sWyJjIiwiczYiXSxbInAiLDM3LCJzNiJdLFsiYyIsInM3Il0sWyJwIiw3MSwiczciXSxbImMiLCJzOCJdLFsicCIsMTM0LCJzOCJdLFsiYyIsInM5Il0sWyJyIiwicyJdLFsicCIsMSwiczkiXSxbImMiLCJzMTAiXSxbInAiLDExNywiczEwIl0sWyJjIiwiYjAiXSxbInAiLDksImIwIl0sWyJjIiwiYjEiXSxbInAiLDIyLCJiMSJdLFsiYyIsImIyIl0sWyJyIiwicyJdLFsicCIsMTUsImIyIl0sWyJjIiwiYjMiXSxbInAiLDEyNiwiYjMiXSxbImMiLCJiNCJdLFsicCIsNzcsImI0Il1dXQ";
+  "pd7.W1siayIsIjMtNS0yIiwicCJdLCJnb2xkZW4ta2FudG8xNTEiLFtbImMiLCJzMCJdLFsicCIsMTQ5LCJzMCJdLFsiYyIsInMxIl0sWyJyIiwicyJdLFsicCIsNzMsInMxIl0sWyJjIiwiczIiXSxbInAiLDY5LCJzMiJdLFsiYyIsInMzIl0sWyJwIiw1MywiczMiXSxbImMiLCJzNCJdLFsicCIsNzgsInM0Il0sWyJjIiwiczUiXSxbInIiLCJzIl0sWyJwIiwxMTYsInM1Il0sWyJjIiwiczYiXSxbInAiLDM3LCJzNiJdLFsiYyIsInM3Il0sWyJwIiw3MSwiczciXSxbImMiLCJzOCJdLFsicCIsMTM0LCJzOCJdLFsiYyIsInM5Il0sWyJyIiwicyJdLFsicCIsMSwiczkiXSxbImMiLCJzMTAiXSxbInAiLDExNywiczEwIl0sWyJjIiwiYjAiXSxbInAiLDksImIwIl0sWyJjIiwiYjEiXSxbInAiLDIyLCJiMSJdLFsiYyIsImIyIl0sWyJyIiwicyJdLFsicCIsMTUsImIyIl0sWyJjIiwiYjMiXSxbInAiLDEyNiwiYjMiXSxbImMiLCJiNCJdLFsicCIsNzcsImI0Il1dXQ";
 
 // Seeded challenges drafted with the first offered player into the first open slot.
 export const RUN_151 = {
@@ -31,46 +31,51 @@ export const RUN_KEYBOARD = {
 } as const;
 export const RUN_POSITION_FIRST = {
   url: "/play?mode=cup8&f=4-3-3&order=positionFirst&g=123456789&style=open&seed=e2e-pf",
-  record: "0-3-0",
+  record: "1-2-1",
 } as const;
 
 // The golden engine-3 cup8 squad saved as the Builder squad and played against itself.
 export const MIRROR_EXHIBITION = {
-  firstSingle: "1-3",
-  extraTimeRematch: 7,
-  extraTime: { leg1: "3-3", leg2: "2-3", aggregate: "5-6", goal: "103' Zeraora, assist Dragalge" },
-  singleAtExtraTimeRematch: "5-5",
-  aggregateRematch: 8,
-  aggregate: "10-2",
+  firstSingle: "2-4",
+  extraTimeRematch: 1,
+  extraTime: {
+    leg1: "0-1",
+    leg2: "4-4",
+    aggregate: "4-5",
+    goal: "102' Talonflame (header), assist Togepi",
+  },
+  singleAtExtraTimeRematch: "3-1",
+  aggregateRematch: 2,
+  aggregate: "5-10",
 } as const;
 
 // A Builder friendly and the golden engine-3 squad played from the exhibition route.
 export const EXHIBITION_ROUTE = {
   friendly:
-    "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiZXhoaWJpdGlvbi1yb3V0ZS1mcmllbmRseSIsW1sibCIsMSwiczAiXSxbImwiLDIsInMxIl0sWyJsIiwzLCJzMiJdLFsibCIsNCwiczMiXSxbImwiLDUsInM0Il0sWyJsIiw2LCJzNSJdLFsibCIsNywiczYiXSxbImwiLDgsInM3Il0sWyJsIiw5LCJzOCJdLFsibCIsMTAsInM5Il0sWyJsIiwxMSwiczEwIl0sWyJsIiwxMiwiYjAiXSxbImwiLDEzLCJiMSJdLFsibCIsMTQsImIyIl0sWyJsIiwxNSwiYjMiXSxbImwiLDE2LCJiNCJdXV0",
-  friendlyVsGolden: "0-6",
-  goldenMirror: "1-3",
+    "pd7.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiZXhoaWJpdGlvbi1yb3V0ZS1mcmllbmRseSIsW1sibCIsMSwiczAiXSxbImwiLDIsInMxIl0sWyJsIiwzLCJzMiJdLFsibCIsNCwiczMiXSxbImwiLDUsInM0Il0sWyJsIiw2LCJzNSJdLFsibCIsNywiczYiXSxbImwiLDgsInM3Il0sWyJsIiw5LCJzOCJdLFsibCIsMTAsInM5Il0sWyJsIiwxMSwiczEwIl0sWyJsIiwxMiwiYjAiXSxbImwiLDEzLCJiMSJdLFsibCIsMTQsImIyIl0sWyJsIiwxNSwiYjMiXSxbImwiLDE2LCJiNCJdXV0",
+  friendlyVsGolden: "0-7",
+  goldenMirror: "2-4",
 } as const;
 
 // The route's friendly against the golden squad in manager mode, with a sub at the 45' stop.
 export const EXHIBITION_BROADCAST = {
-  assistant: "0-6",
-  withSub: "0-5",
+  assistant: "0-7",
+  withSub: "0-7",
   sub: "45' Butterfree on for Metapod (tactical, your call)",
 } as const;
 
 // A manager-mode run with Attack at the 45' stop of match 0: the full-time card's two scores.
 export const YOUR_CALLS = {
   url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-coach",
-  assistant: "6-1",
-  you: "8-2",
+  assistant: "7-1",
+  you: "9-1",
 } as const;
 
 // The golden engine-5 cup8 draft under the live prefix, linked to its first goal.
 export const DEEP_LINK = {
   token:
-    "pd6.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
-  href: "/r/pd6?t=W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0&watch=0&at=49",
+    "pd7.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
+  href: "/r/pd7?t=W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0&watch=0&at=49",
   minute: 49,
   before: "0-0",
   after: "1-0",
@@ -82,16 +87,16 @@ export const HEAD_TO_HEAD = {
   cup8: {
     url: "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=golden-cup8",
     theirs:
-      "pd6.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
+      "pd7.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
     retained:
       "pd5.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1siciIsInQiXSxbInAiLDg0OSwiczAiXSxbInAiLDMxNSwiczEiXSxbInAiLDI3MiwiczIiXSxbInAiLDY5MSwiczMiXSxbInAiLDQ1MywiczQiXSxbInAiLDc1NCwiczUiXSxbInIiLCJyIl0sWyJwIiw3ODUsInM2Il0sWyJwIiwxNzUsInM3Il0sWyJwIiw2NjMsInM4Il0sWyJwIiwxODgsInM5Il0sWyJwIiw4MDcsInMxMCJdLFsicCIsNzg0LCJiMCJdLFsicCIsNzAzLCJiMSJdLFsicCIsOTQyLCJiMiJdLFsicCIsMTQ1LCJiMyJdLFsicCIsODg0LCJiNCJdXV0",
-    you: { record: "1-1-2", score: 406 },
+    you: { record: "2-1-2", score: 406 },
     them: { record: "5-0-1", score: 593 },
   },
   kanto151: {
     url: "/play?mode=kanto151&f=3-5-2&order=positionFirst&seed=golden-kanto151",
     theirs:
-      "pd6.W1siayIsIjMtNS0yIiwicCJdLCJnb2xkZW4ta2FudG8xNTEiLFtbImMiLCJzMCJdLFsicCIsMTQ5LCJzMCJdLFsiYyIsInMxIl0sWyJyIiwicyJdLFsicCIsNzMsInMxIl0sWyJjIiwiczIiXSxbInAiLDY5LCJzMiJdLFsiYyIsInMzIl0sWyJwIiw1MywiczMiXSxbImMiLCJzNCJdLFsicCIsNzgsInM0Il0sWyJjIiwiczUiXSxbInIiLCJzIl0sWyJwIiwxMTYsInM1Il0sWyJjIiwiczYiXSxbInAiLDM3LCJzNiJdLFsiYyIsInM3Il0sWyJwIiw3MSwiczciXSxbImMiLCJzOCJdLFsicCIsMTM0LCJzOCJdLFsiYyIsInM5Il0sWyJyIiwicyJdLFsicCIsMSwiczkiXSxbImMiLCJzMTAiXSxbInAiLDExNywiczEwIl0sWyJjIiwiYjAiXSxbInAiLDksImIwIl0sWyJjIiwiYjEiXSxbInAiLDIyLCJiMSJdLFsiYyIsImIyIl0sWyJyIiwicyJdLFsicCIsMTUsImIyIl0sWyJjIiwiYjMiXSxbInAiLDEyNiwiYjMiXSxbImMiLCJiNCJdLFsicCIsNzcsImI0Il1dXQ",
+      "pd7.W1siayIsIjMtNS0yIiwicCJdLCJnb2xkZW4ta2FudG8xNTEiLFtbImMiLCJzMCJdLFsicCIsMTQ5LCJzMCJdLFsiYyIsInMxIl0sWyJyIiwicyJdLFsicCIsNzMsInMxIl0sWyJjIiwiczIiXSxbInAiLDY5LCJzMiJdLFsiYyIsInMzIl0sWyJwIiw1MywiczMiXSxbImMiLCJzNCJdLFsicCIsNzgsInM0Il0sWyJjIiwiczUiXSxbInIiLCJzIl0sWyJwIiwxMTYsInM1Il0sWyJjIiwiczYiXSxbInAiLDM3LCJzNiJdLFsiYyIsInM3Il0sWyJwIiw3MSwiczciXSxbImMiLCJzOCJdLFsicCIsMTM0LCJzOCJdLFsiYyIsInM5Il0sWyJyIiwicyJdLFsicCIsMSwiczkiXSxbImMiLCJzMTAiXSxbInAiLDExNywiczEwIl0sWyJjIiwiYjAiXSxbInAiLDksImIwIl0sWyJjIiwiYjEiXSxbInAiLDIyLCJiMSJdLFsiYyIsImIyIl0sWyJyIiwicyJdLFsicCIsMTUsImIyIl0sWyJjIiwiYjMiXSxbInAiLDEyNiwiYjMiXSxbImMiLCJiNCJdLFsicCIsNzcsImI0Il1dXQ",
     retained:
       "pd5.W1siayIsIjMtNS0yIiwicCJdLCJnb2xkZW4ta2FudG8xNTEiLFtbImMiLCJzMCJdLFsicCIsMTQ5LCJzMCJdLFsiYyIsInMxIl0sWyJyIiwicyJdLFsicCIsNzMsInMxIl0sWyJjIiwiczIiXSxbInAiLDY5LCJzMiJdLFsiYyIsInMzIl0sWyJwIiw1MywiczMiXSxbImMiLCJzNCJdLFsicCIsNzgsInM0Il0sWyJjIiwiczUiXSxbInIiLCJzIl0sWyJwIiwxMTYsInM1Il0sWyJjIiwiczYiXSxbInAiLDM3LCJzNiJdLFsiYyIsInM3Il0sWyJwIiw3MSwiczciXSxbImMiLCJzOCJdLFsicCIsMTM0LCJzOCJdLFsiYyIsInM5Il0sWyJyIiwicyJdLFsicCIsMSwiczkiXSxbImMiLCJzMTAiXSxbInAiLDExNywiczEwIl0sWyJjIiwiYjAiXSxbInAiLDksImIwIl0sWyJjIiwiYjEiXSxbInAiLDIyLCJiMSJdLFsiYyIsImIyIl0sWyJyIiwicyJdLFsicCIsMTUsImIyIl0sWyJjIiwiYjMiXSxbInAiLDEyNiwiYjMiXSxbImMiLCJiNCJdLFsicCIsNzcsImI0Il1dXQ",
     you: { record: "5-0-1", score: 580 },
@@ -104,13 +109,13 @@ export const HAPTICS = { round: "G3", scoreAtConceded: "2-1", goalsBefore: 2, go
 
 // The golden cup8 run's first injury answered with a substitute.
 export const INJURY_STAGING = {
-  round: "QF",
-  minute: 42,
-  slot: 1,
-  injured: "Roselia",
-  injuredDex: "0315",
-  sub: "Kommo-o",
-  subDex: "0784",
+  round: "G1",
+  minute: 54,
+  slot: 8,
+  injured: "Feebas",
+  injuredDex: "0349",
+  sub: "Wimpod",
+  subDex: "0767",
 } as const;
 
 // The golden cup8 run's first user red card.
@@ -136,8 +141,8 @@ export const TEAM_READABILITY = {
 // The golden runs' first user goal of each set-piece kind, as the broadcast stages it.
 export const SET_PIECES = {
   solo: { round: "G1", minute: 49, slot: 8, scorer: "Talonflame", presser: 5 },
-  header: { round: "R32", minute: 9 },
-  penalty: { round: "R32", minute: 84, slot: 10, taker: "Zeraora" },
+  header: { round: "G1", minute: 6 },
+  penalty: { round: "G1", minute: 55, slot: 10, taker: "Zeraora" },
   freeKick: {
     round: "R32",
     minute: 17,
@@ -159,32 +164,32 @@ export const HONEST_MOMENTUM = { round: "G1", kickoff: "50%50%", second: "77%23%
 export const XG_RIVER = {
   round: "G1",
   windows: 18,
-  fullTime: "Chances so far: this squad 5.0, them 0.1",
+  fullTime: "Chances so far: this squad 5.9, them 0.1",
 } as const;
 
 // A bot-drafted cup8 run that earns Hat-trick hero, Comeback and Giant killer.
 export const GIANT_KILLER = {
   url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=achievements-19",
   token:
-    "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiYWNoaWV2ZW1lbnRzLTE5IixbWyJwIiw5NzMsInMyIl0sWyJwIiw3OTIsInMwIl0sWyJwIiw4ODAsInMzIl0sWyJwIiwxMjIsInM1Il0sWyJwIiw4MCwiczEiXSxbInAiLDYyMCwiczgiXSxbInAiLDcyNywiczkiXSxbInAiLDg3MSwiczYiXSxbInAiLDE2OSwiczEwIl0sWyJwIiwxNDksInM0Il0sWyJwIiwyMjcsInM3Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw0MzAsImIwIl0sWyJwIiwzLCJiMSJdLFsicCIsMTk2LCJiMiJdLFsicCIsOTQsImIzIl0sWyJwIiwzODEsImI0Il1dXQ",
+    "pd7.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiYWNoaWV2ZW1lbnRzLTE5IixbWyJwIiw5NzMsInMyIl0sWyJwIiw3OTIsInMwIl0sWyJwIiw4ODAsInMzIl0sWyJwIiwxMjIsInM1Il0sWyJwIiw4MCwiczEiXSxbInAiLDYyMCwiczgiXSxbInAiLDcyNywiczkiXSxbInAiLDg3MSwiczYiXSxbInAiLDE2OSwiczEwIl0sWyJwIiwxNDksInM0Il0sWyJwIiwyMjcsInM3Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw0MzAsImIwIl0sWyJwIiwzLCJiMSJdLFsicCIsMTk2LCJiMiJdLFsicCIsOTQsImIzIl0sWyJwIiwzODEsImI0Il1dXQ",
   earned: ["hat-trick-hero", "comeback", "giant-killer"],
   chip: "Giant killer",
 } as const;
 
 // A bot-drafted cup8 champion.
 export const CHAMPION = {
-  url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-reveal-59",
+  url: "/play?mode=cup8&f=4-3-3&order=squadFirst&g=123456789&style=classic3&seed=e2e-reveal-29",
   token:
-    "pd6.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiZTJlLXJldmVhbC01OSIsW1sicCIsMjU3LCJzOCJdLFsicCIsMjMyLCJzMSJdLFsicCIsOTQzLCJzMiJdLFsicCIsMTAwNywiczMiXSxbInAiLDMzNCwiczQiXSxbInAiLDQ0NSwiczkiXSxbInAiLDg4NywiczEwIl0sWyJwIiwyMTQsInMwIl0sWyJwIiwxNTEsInM1Il0sWyJwIiw0OTEsInM2Il0sWyJwIiw4NzMsInM3Il0sWyJyIiwidCJdLFsicCIsNjUyLCJiMCJdLFsiciIsInQiXSxbInIiLCJ0Il0sWyJwIiw4MjgsImIxIl0sWyJwIiwyNzcsImIyIl0sWyJwIiw2ODcsImIzIl0sWyJwIiw4NDEsImI0Il1dXQ",
-  score: "868",
+    "pd7.W1siYyIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwiYyIsInMiXSwiZTJlLXJldmVhbC0yOSIsW1sicCIsMTgxLCJzMiJdLFsicCIsNzE3LCJzMCJdLFsicCIsNzMwLCJzNSJdLFsicCIsODkwLCJzMyJdLFsicCIsNjQ2LCJzNiJdLFsicCIsMTYwLCJzOSJdLFsicCIsNDc2LCJzMSJdLFsicCIsNzk1LCJzOCJdLFsicCIsNDMwLCJzMTAiXSxbInAiLDQ0OCwiczciXSxbInAiLDQ2OSwiczQiXSxbInIiLCJ0Il0sWyJyIiwidCJdLFsiciIsInQiXSxbInAiLDU0MiwiYjAiXSxbInAiLDQ2MiwiYjEiXSxbInAiLDY4LCJiMiJdLFsicCIsNzAwLCJiMyJdLFsicCIsMzMwLCJiNCJdXV0",
+  score: "825",
   record: "8-0-0",
-  mvp: "Dragapult",
+  mvp: "Feraligatr",
 } as const;
 
 // A Builder run whose shootout opens with a user goal and an opponent miss and reaches sudden death.
 export const SHOOTOUT = {
   token:
-    "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwic2hvb3RvdXQtMSIsW1sibCIsOSwiczAiXSxbImwiLDU5LCJzMSJdLFsibCIsMTQ5LCJzMiJdLFsibCIsMTMwLCJzMyJdLFsibCIsMywiczQiXSxbImwiLDgwLCJzNSJdLFsibCIsNiwiczYiXSxbImwiLDU1LCJzNyJdLFsibCIsMjYsInM4Il0sWyJsIiw4NSwiczkiXSxbImwiLDEzNSwiczEwIl0sWyJsIiwyNSwiYjAiXSxbImwiLDk0LCJiMSJdLFsibCIsNjUsImIyIl0sWyJsIiw2OCwiYjMiXSxbImwiLDE0MywiYjQiXV1d",
+    "pd7.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwic2hvb3RvdXQtMSIsW1sibCIsOSwiczAiXSxbImwiLDU5LCJzMSJdLFsibCIsMTQ5LCJzMiJdLFsibCIsMTMwLCJzMyJdLFsibCIsMywiczQiXSxbImwiLDgwLCJzNSJdLFsibCIsNiwiczYiXSxbImwiLDU1LCJzNyJdLFsibCIsMjYsInM4Il0sWyJsIiw4NSwiczkiXSxbImwiLDEzNSwiczEwIl0sWyJsIiwyNSwiYjAiXSxbImwiLDk0LCJiMSJdLFsibCIsNjUsImIyIl0sWyJsIiw2OCwiYjMiXSxbImwiLDE0MywiYjQiXV1d",
   round: "F",
 } as const;
 
@@ -196,7 +201,7 @@ export const INJURY_STOP = {
 // A pressing Builder squad with one spent and one tired slot late in extra time.
 export const FATIGUE = {
   token:
-    "pd6.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwwXSwiZmF0aWd1ZS0xIixbWyJsIiw3ODQsInMwIl0sWyJsIiwxMDA5LCJzMSJdLFsibCIsMTI5LCJzMiJdLFsibCIsMjg5LCJzMyJdLFsibCIsODg3LCJzNCJdLFsibCIsMzczLCJzNSJdLFsibCIsMTAxMCwiczYiXSxbImwiLDk5OCwiczciXSxbImwiLDEwMjIsInM4Il0sWyJsIiwxMDE4LCJzOSJdLFsibCIsMTAwNiwiczEwIl0sWyJsIiw5OTMsImIwIl0sWyJsIiw3MDYsImIxIl0sWyJsIiwyNDgsImIyIl0sWyJsIiwxMDIzLCJiMyJdLFsibCIsOTg5LCJiNCJdXSxbWyJ0IiwwLDAsInAiXSxbInQiLDEsMCwicCJdLFsidCIsMiwwLCJwIl0sWyJ0IiwzLDAsInAiXSxbInQiLDQsMCwicCJdLFsidCIsNSwwLCJwIl1dXQ",
+    "pd7.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwwXSwiZmF0aWd1ZS0xIixbWyJsIiw3ODQsInMwIl0sWyJsIiwxMDA5LCJzMSJdLFsibCIsMTI5LCJzMiJdLFsibCIsMjg5LCJzMyJdLFsibCIsODg3LCJzNCJdLFsibCIsMzczLCJzNSJdLFsibCIsMTAxMCwiczYiXSxbImwiLDk5OCwiczciXSxbImwiLDEwMjIsInM4Il0sWyJsIiwxMDE4LCJzOSJdLFsibCIsMTAwNiwiczEwIl0sWyJsIiw5OTMsImIwIl0sWyJsIiw3MDYsImIxIl0sWyJsIiwyNDgsImIyIl0sWyJsIiwxMDIzLCJiMyJdLFsibCIsOTg5LCJiNCJdXSxbWyJ0IiwwLDAsInAiXSxbInUiLDAsMSwwLDRdLFsidCIsMSwwLCJwIl0sWyJ1IiwxLDEsMCw0XSxbInQiLDIsMCwicCJdLFsidSIsMiwxLDAsNF0sWyJ0IiwzLDAsInAiXSxbInUiLDMsMSwwLDRdLFsidCIsNCwwLCJwIl0sWyJ1Iiw0LDEsMCw0XSxbInQiLDUsMCwicCJdLFsidSIsNSwxLDAsNF1dXQ",
   round: "R16",
   minute: 116,
   spent: 2,

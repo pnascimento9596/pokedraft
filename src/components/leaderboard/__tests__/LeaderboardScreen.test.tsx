@@ -30,7 +30,7 @@ function caption(search: string): string {
 describe("LeaderboardScreen caption", () => {
   it("warns that every draft setting shares the all-time 8-0 board (catches a caption that hides Open and Classic ranking together)", () => {
     expect(caption("mode=cup8&scope=all")).toBe(
-      "8-0 Challenge, all-time, engine v6. Every draft setting shares this board, and each row names its settings. Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top 50.",
+      "8-0 Challenge, all-time, engine v7. Every draft setting shares this board, and each row names its settings. Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top 50.",
     );
   });
 
@@ -42,7 +42,7 @@ describe("LeaderboardScreen caption", () => {
 
   it("says the same on the all-time 151 board, where Squad First and Position First share one board", () => {
     expect(caption("mode=kanto151&scope=all")).toBe(
-      "151 Challenge, all-time, engine v6. Every draft setting shares this board, and each row names its settings. Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top 50.",
+      "151 Challenge, all-time, engine v7. Every draft setting shares this board, and each row names its settings. Ranked by wins, then draws, then Team Score. Ties go to the earlier submission. Top 50.",
     );
   });
 

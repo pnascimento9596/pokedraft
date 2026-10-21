@@ -470,6 +470,7 @@ function goalScene(run: Run, kind: GoalKind) {
 
 function setPieces() {
   const cup8 = liveRun(LIVE_GOLDEN_CUP8);
+  const kanto = liveRun(LIVE_GOLDEN_KANTO151);
   const solo = goalScene(cup8, "solo");
   // The defender who steps in reaches the middle of the run level with the scorer and is behind
   // them by the shot. Under the territory lean the stepping defender can come from upfield of the
@@ -486,9 +487,9 @@ function setPieces() {
         : [],
     );
   if (pressers.length !== 1) throw new Error(`the solo goal has ${pressers.length} pressers`);
-  const header = goalScene(cup8, "header");
+  const header = goalScene(kanto, "header");
   const penalty = goalScene(cup8, "penalty");
-  const freeKick = goalScene(liveRun(LIVE_GOLDEN_KANTO151), "free-kick");
+  const freeKick = goalScene(kanto, "free-kick");
   const wall = freeKick
     .at(780)
     .players.opp.flatMap((p) =>
@@ -665,12 +666,10 @@ function fatigue() {
     settings: { mode: "builder", formation: "4-3-3", gens: GENS, legendaries: false },
     seed: "fatigue-1" as Seed,
     actions: [...FATIGUE_STARTERS.map(place("starter")), ...FATIGUE_BENCH.map(place("bench"))],
-    manager: Array.from({ length: 6 }, (_, match): ManagerAction => ({
-      type: "tactic",
-      match,
-      minute: 0,
-      tactic: "press",
-    })),
+    manager: Array.from({ length: 6 }, (_, match): ManagerAction[] => [
+      { type: "tactic", match, minute: 0, tactic: "press" },
+      { type: "sub", match, minute: 1, slot: 0, bench: 4 },
+    ]).flat(),
   });
   for (const { match } of played(liveRun(token))) {
     if (match.extraTime === null) continue;

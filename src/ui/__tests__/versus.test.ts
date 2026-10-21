@@ -6,7 +6,7 @@ import { challengeText, retainedLine, seedVerdict, VERDICT_LINE } from "../versu
 
 const CUP8_URL =
   "/play?mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3&seed=golden-cup8";
-const LIVE_CUP8 = GOLDEN_CUP8_V5.replace(/^pd5\./, "pd6.");
+const LIVE_CUP8 = GOLDEN_CUP8_V5.replace(/^pd5\./, "pd7.");
 
 function parse(href: string) {
   return parsePlayQuery(new URL(href, "http://x").searchParams);
@@ -91,8 +91,8 @@ describe("the vs param on /play (catches a challenge that compares runs from dif
 
   it("ignores a vs on a link with no seed, and a vs that is not a run token", () => {
     expect(parse(`${CUP8_URL.replace("&seed=golden-cup8", "")}&vs=${LIVE_CUP8}`)?.vs).toBeNull();
-    expect(parse(`${CUP8_URL}&vs=pd6.e30`)?.vs).toBeNull();
-    expect(parse(`${CUP8_URL}&vs=${LIVE_CUP8.replace("pd6.", "pd99.")}`)?.vs).toBeNull();
+    expect(parse(`${CUP8_URL}&vs=pd7.e30`)?.vs).toBeNull();
+    expect(parse(`${CUP8_URL}&vs=${LIVE_CUP8.replace("pd7.", "pd99.")}`)?.vs).toBeNull();
   });
 });
 

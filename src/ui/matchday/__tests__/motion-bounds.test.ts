@@ -11,7 +11,7 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // The golden cup8 draft under engine 6. Match 0 has a save at 59' that pulls the user's slot 3 up
 // to the shot and parries the ball back toward open play near the user's own goal.
-const { draft, cup } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const LINEUP = toFullLineup(draft);
 // One 60 Hz frame of real time.
 const STEP = 1000 / 60;

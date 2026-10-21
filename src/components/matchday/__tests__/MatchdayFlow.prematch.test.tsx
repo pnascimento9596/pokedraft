@@ -25,7 +25,7 @@ vi.mock("@/ui/manager/touchline", async (importOriginal) => {
   };
 });
 
-const { draft, cup } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const CTX = { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode };
 
 beforeEach(() => {
@@ -107,11 +107,12 @@ describe("pre-match tactic (catches a starting tactic that needs a 0' stop, or a
   });
 });
 
-// Regression guard, no RED: behaviour already correct. Engine 6 has no missable penalties, so the
-// pre-match card offers no set-piece takers in either mode.
-describe("pre-match set pieces at engine 6 (catches an engine 7 control reaching engine 6)", () => {
-  it.each([true, false])("manager mode %s: no Set pieces row", (managerMode) => {
-    open(managerMode);
+describe("pre-match set pieces at engine 7 (catches set-piece takers missing in manager mode or leaking into sim mode)", () => {
+  it("shows Set pieces in manager mode and hides them in sim mode", () => {
+    open(true);
+    expect(screen.getByTestId("set-pieces")).toBeTruthy();
+    cleanup();
+    open(false);
     expect(screen.queryByTestId("set-pieces")).toBeNull();
     expect(screen.queryByText("Set pieces")).toBeNull();
   });
