@@ -22,6 +22,8 @@ Branch `feat/freeze-engine-7` off `origin/main` at `363fed60`. Wave 7 row 8b (Re
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #171 (freeze engine 7, Red) merged as squash `f2f01113`, reviewed head `89f6a1d8`. Receipts on `89f6a1d8`: GLM 5.3 Flash APPROVE with canary `8b-6d26468b1a5d8cd31c71e62cff3c718d` echoed, and independent executing Red reviewer PASS. At `89f6a1d8` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,284 passed in 258 files; hosted check, db and all eight e2e shards green. Production `/api/health?db=1` served `f2f01113` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard) passed with retries off (28 passed); live engine 7 frozen into `src/engine/versions/v7` with `story.ts` exported for retained xG river rendering.
+
 ## Content-addressed engine blobs
 
 Branch `feat/engine-blobs` off `origin/main` at `9c1db3b4`. Wave 7 row 8a (Red). The first commit (`a5d1a953`) records the PR #169 merge.
