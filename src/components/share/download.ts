@@ -1,5 +1,8 @@
 import { readSettings } from "@/images/settings";
+import { canonicalCardQuery } from "./card-query";
 import { absoluteUrl, isCoarsePointer } from "./shareLink";
+
+export { canonicalCardQuery } from "./card-query";
 
 // What the PNG card renders: a finished run (`t`, any replayable token, builder tokens are
 // friendlies) or a builder lineup that may be incomplete (`b`, see `builderToken`).
@@ -15,7 +18,7 @@ export function cardHref(source: CardSource, look?: CardLook): string {
   const q = new URLSearchParams("t" in source ? { t: source.t } : { b: source.b });
   if (look?.pack) q.set("pack", look.pack);
   if (look && !look.mirror) q.set("mirror", "0");
-  return `/card?${q.toString()}`;
+  return `/card?${canonicalCardQuery(q) ?? q.toString()}`;
 }
 
 /** How the PNG reached the player: the share sheet, the download link, or a share sheet they closed. */

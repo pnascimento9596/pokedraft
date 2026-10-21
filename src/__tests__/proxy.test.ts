@@ -141,6 +141,32 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     expect(skipped.filter((u) => runs(u))).toEqual([]);
   });
 
+  it("creature images and health checks run the proxy and hit the passcode gate", () => {
+    const runs = (url: string) => unstable_doesMiddlewareMatch({ config, url });
+    const notMatched = [
+      "/creatures/pokeapi-art/0001.webp",
+      "/api/health",
+      "/api/health?db=1",
+      "/api/csp-report",
+      "/_next/static/x.js",
+      "/favicon.ico",
+      "/robots.txt",
+    ];
+    const matched = [
+      "/",
+      "/api/leaderboard",
+      "/api/leaderboard?mode=cup8",
+      "/r/pd7.abc",
+      "/daily",
+      "/gate",
+      "/card",
+      "/api/healthz",
+      "/creaturesx",
+    ];
+    expect(notMatched.filter((u) => runs(u) !== false)).toEqual([]);
+    expect(matched.filter((u) => runs(u) !== true)).toEqual([]);
+  });
+
   it("is off when FRIENDS_PASSCODE is unset", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "");
     expect(proxy(req("/play")).headers.get("x-middleware-next")).toBe("1");

@@ -18,6 +18,88 @@ Branch `fix/rollback-drop-data-guard` off `origin/main` at `040781bb`. Wave 7 ro
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Card canonical query
+
+Branch `fix/card-canonical-query` off `origin/main` at `8a29610`. Wave 7 row 7cq (Red). Normalizes `/card` queries to one canonical parameter order (`t` or `b`, then non-default known `pack`, then `mirror=0`) and redirects non-canonical `/card` queries with HTTP `308`. `src/passcode.ts`, `src/proxy.ts`, `src/engine`, `src/scouting`, and `src/data` are untouched.
+
+What changed for players:
+
+- `cardHref` (`src/components/share/download.ts:17-22`) emits only canonical `/card` URLs through `canonicalCardQuery` (`src/components/share/card-query.ts:3-14`), omitting `pack` when it is `DEFAULT_PACK_ID` (`"pokeapi-pixel"`) or an unknown pack id and emitting `mirror=0` only when mirroring is off.
+- `GET` in `src/app/card/route.tsx:9-38` answers `308` with `location: /card?${canonical}` and `"cache-control": CARD_CACHE_CONTROL` (`"public, max-age=86400, s-maxage=31536000"`) whenever `request.nextUrl.search !== ?${canonical}` (extra parameters, wrong parameter order, `pack=pokeapi-pixel`, unknown `pack`, `mirror=1`, duplicate parameters, or both `t` and `b` present, where `t` wins). Requests with no usable token (`/card`, `/card?t=`, `/card?b=`, `/card?t=&utm=1`) still answer `400` `"Bad or missing run token."` with `"cache-control": "no-store"`.
+
+RED and GREEN commits:
+
+- RED commit `65c1087c`: 34 of 49 failed across `src/components/share/__tests__/download.test.ts` (24 of 27 failed) and `src/app/card/__tests__/route.test.ts` (10 of 22 failed) in `/Users/paulo/.gemini/antigravity-cli/brain/432c72be-fea7-4e5b-a536-fe1d5f75a56a/scratch/logs/7cq/vitest-red.log`.
+- GREEN commit `dabf17bc`: 49 of 49 passed in 2 files in `/Users/paulo/.gemini/antigravity-cli/brain/432c72be-fea7-4e5b-a536-fe1d5f75a56a/scratch/logs/7cq/vitest-green.log`.
+
+Gates at `dabf17bc` (code-identical to this docs commit):
+
+- `pnpm vitest run src/components/share/__tests__/download.test.ts src/app/card/__tests__/route.test.ts`: 49 passed in 2 files (`vitest-green.log`).
+- `pnpm lint` (`lint.log`), `pnpm typecheck` (`typecheck.log`), `pnpm test` (`test.log`: 2,227 passed in 250 files), and `pnpm build` (`build.log`: `pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records) exited 0.
+- All nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`, `check:client-bundle` with 0 client files and 24 server files, `check:theme-contrast`, `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) and `pnpm exec prettier --check` on all 7 touched files exited 0.
+- Local Playwright (`CI=1 PLAYWRIGHT_PORT=3973 pnpm exec playwright test e2e/share.spec.ts e2e/share-sheet.spec.ts e2e/achievements.spec.ts e2e/builder.spec.ts e2e/images.spec.ts e2e/run-persist.spec.ts --project=chromium` in `playwright.log`): 52 passed, 1 skipped.
+- Decision log: `docs/decisions/card-canonical-query.md`.
+- NOT RUN:
+  - Unrelated Playwright specs and non-Chromium Playwright projects locally (CI runs the full e2e suite).
+  - Hosted CI, reviewer receipt, merge, production deploy, and the post-merge WAF rule.
+  - The grace-window receipt (the window closes at `2026-10-23T04:00:00Z`).
+  - The phone check and screen reader pass.
+
+- Coordinator check on a real build (`next start` from this branch at `e572340a`, stopped by PID), with the `FLAWLESS` token from the route test: `/card?t=<token>` 200 `image/png`; `&utm=1`, `mirror=1&t=`, and the default pack `pokeapi-pixel` each 308 to `/card?t=<token>`; `t=<token>&mirror=0&pack=pokeapi-art` 308 to `/card?t=<token>&pack=pokeapi-art&mirror=0`; the canonical `t=<token>&pack=pokeapi-art&mirror=0` 200 `image/png`; `/card` and `/card?t=` 400. The coordinator re-ran the RED commit `65c1087c` in a detached worktree: 34 of 49 failed.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #162 (/card canonical query, Red) merged as squash `edb04432`, reviewed head `c25e9b48`. Receipts on `c25e9b48`: GLM 5.3 Flash APPROVE with canary `7cq-1ce55eb4e6e66bf228be37e193fc0c54` echoed (round 1) and the independent executing Red reviewer PASS (a Gemini 4 Argon (High) lane through the Antigravity CLI with the pokedraft-mode skills loaded and no implementer context; it re-ran the gates, the RED commit and canonical card checks). At `c25e9b48` the coordinator re-ran lint, typecheck, build, retained-bundle check, check scripts and prettier, unit tests 2,201 passed in 252 files; hosted check, db and all eight e2e shards green. Production `/api/health?db=1` served `edb04432` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Production curl checks: non-canonical /card answered 308 with canonical Location header, canonical answered 200 image/png, invalid answered 400. Live check on chromium through the gate (health, old-links, share, leaderboard, share-sheet) 37 passed with retries off. Vercel WAF rate limit rule `rule_pd_card_og_rate_limit_AMF0FR` (60 req/min per IP, action rate limit 429) published to production after approval; production share card and og:image renders return 200 image/png.
+
+## Proxy matcher trim
+
+Branch `fix/proxy-matcher-trim` off `origin/main` at `6606585`. Wave 7 row 7pm (Red, owner
+decision 7).
+
+What changed for players:
+
+- Creature images under `/creatures/` (for example `/creatures/pokeapi-art/0001.webp`),
+  `/api/health` (including `/api/health?db=1`), and `/api/csp-report` are excluded in `matcher` on
+  `config` in `src/proxy.ts`
+  (`["/((?!_next/static|creatures/|api/health$|api/csp-report$|favicon.ico|robots.txt).*)"]`), so
+  they no longer run `proxy` or redirect to `/gate` when `FRIENDS_PASSCODE` is set.
+- Prefix lookalikes such as `/api/healthz` and `/creaturesx` still match `matcher` on `config` and
+  run `proxy`. `isPublicPath` in `src/passcode.ts` stays unchanged as defence in depth.
+
+RED commit:
+
+- `42c2f0db`: 1 of 18 failed in `src/__tests__/proxy.test.ts`
+  (`creature images and health checks run the proxy and hit the passcode gate` failed on
+  `/creatures/pokeapi-art/0001.webp`, `/api/health`, `/api/health?db=1`, and `/api/csp-report`);
+  fixed in `81bf5fef` (18 of 18 passed).
+
+Gates at `81bf5fef` (code-identical to this docs commit):
+
+- `pnpm vitest run src/__tests__/proxy.test.ts`: 18 of 18 passed in 1 file.
+- `pnpm lint`, `pnpm typecheck`, and `pnpm build` exited 0 (`pnpm data:validate` validated 1,025
+  Pokedex, 1,025 scouting, and 1,025 contribution records).
+- `pnpm test`: 2,188 unit tests passed in 249 files.
+- All nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`,
+  `check:client-bundle` with 0 client files and 24 server files, `check:theme-contrast`,
+  `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) exited 0, and
+  `pnpm exec prettier --check` passed on the 4 touched files (`src/proxy.ts`,
+  `src/__tests__/proxy.test.ts`, `STATE.md`, `docs/decisions/proxy-matcher-trim.md`).
+- Playwright (`CI=1 PLAYWRIGHT_PORT=3972 pnpm exec playwright test e2e/health.spec.ts e2e/old-links.spec.ts e2e/share.spec.ts --project=chromium`):
+  20 passed across `e2e/health.spec.ts` (1), `e2e/old-links.spec.ts` (1), and `e2e/share.spec.ts`
+  (18).
+- NOT RUN:
+  - Production verification (run by the coordinator after merge).
+  - Non-Chromium Playwright projects and the remaining Chromium e2e specs locally.
+  - Hosted CI, coordinator review, and merge.
+  - The phone check, the screen reader pass, and the final grace-window receipt after
+    `2026-10-23T04:00:00Z`.
+
+Coordinator check on a real build (`next start` from this branch at `81bf5fef` with a dummy `FRIENDS_PASSCODE`, no cookie, stopped by PID): `/creatures/pokeapi-art/0001.webp` 200, `/api/health` 200, `/api/health?db=1` 503 (no local database, not the gate), `POST /api/csp-report` 204, `/api/healthz` 401, `/api/leaderboard` 401, `/` 307, `/creaturesx` 307. The coordinator re-ran the RED commit `42c2f0db` in a detached worktree: 1 of 18 failed.
+
+Decision log: `docs/decisions/proxy-matcher-trim.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #161 (proxy matcher trim, Red) merged as squash `2438694`, reviewed head `8a49f17`. Receipts on `8a49f17`: GLM 5.3 Flash APPROVE with canary `7pm-a1d0237d66c4548bf4b4bf5d28b41a5f` echoed (round 1) and the independent executing Red reviewer PASS (a Gemini 4 Argon (High) lane through the Antigravity CLI with the pokedraft-mode skills loaded and no implementer context; it re-ran the gates, the RED commit and a real-build curl check). At `8a49f17` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts and prettier (all exit 0), `goldens.test.ts` was byte-identical to `origin/main` and 2,194 unit tests passed in 251 files; hosted check, `db` and all eight e2e shards green. Production `/api/health?db=1` served `2438694` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Production without a cookie: `/creatures/pokeapi-art/0001.webp` 200, `/api/health` 200, `POST /api/csp-report` 204, `/api/healthz` 401, `/api/leaderboard` 401, `/` 307, `/creaturesx` 307. Live check on chromium through the gate (`health`, `old-links`, `share`, `leaderboard`) 28/28 with retries off.
+
 ## CI hygiene
 
 Branch `chore/ci-hygiene` off `origin/main` at `6606585`. Wave 7 row 7ci (Green).
