@@ -3,6 +3,20 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Enforce Content-Security-Policy
+
+Branch `fix/enforce-csp` off `origin/main` at `90ee0f72`. Wave 7 row 7csp (Red). The first commit (`5ce8cf5f`) records the PR #163 merge.
+
+- `next.config.ts`: flips the security header key from `Content-Security-Policy-Report-Only` to `Content-Security-Policy`. Preserves all directives: default-src 'self', script-src 'self' 'unsafe-inline' (with 'unsafe-eval' in development), style-src 'self' 'unsafe-inline', img-src 'self' data: blob:, font-src 'self', connect-src 'self', object-src 'none', base-uri 'self', form-action 'self', frame-ancestors 'none', and report-uri /api/csp-report.
+- Production telemetry: 17,803 production runtime log records from Vercel covering 2026-10-20T18:25:50.149Z to 2026-10-21T17:51:04.383Z were downloaded and analyzed. Exactly zero reports were sent to `/api/csp-report`, confirming zero violations from real devices before enforcing.
+- `src/__tests__/security-headers.test.ts`: asserts that `Content-Security-Policy` is present with the exact policy value and that `Content-Security-Policy-Report-Only` is absent.
+- RED commit `7055f5a8`: 2 of 2 tests failed in `src/__tests__/security-headers.test.ts` (asserting `Content-Security-Policy` header name and asserting absence of `Content-Security-Policy-Report-Only`); fixed in `f0275fcc` (2 of 2 passed).
+- Gates at `f0275fcc`: `pnpm vitest run src/__tests__/security-headers.test.ts` passed 2 in 1 file; `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,234 passed in 252 files), and `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records) exited 0; all nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`, `check:client-bundle`, `check:theme-contrast`, `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) exited 0; `check-retained-replays.mts` passed; `measure-retained-json.mjs` passed; `pnpm exec prettier --check` on touched files exited 0.
+- Decision log: `docs/decisions/enforce-csp.md`.
+- NOT RUN: Phone check, VoiceOver screen reader pass.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Rollback drop-data guard
 
 Branch `fix/rollback-drop-data-guard` off `origin/main` at `040781bb`. Wave 7 row 7rb (Red). The first commit (`12ebf8ce`) records the PR #160 merge.
