@@ -15,6 +15,8 @@ Branch `docs/wave6-followups` off `origin/main` at `99f7361`. Green: docs only, 
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #158 (Wave 6 owner follow-ups, Green) merged as squash `6606585`, reviewed head `52064b7`, GLM 5.3 Flash APPROVE with canary `wave6-followups-09fd3d0a4492153b64ce3d758006a791` echoed (round 1). Hosted check and all eight e2e shards green. Production `/api/health?db=1` served `6606585` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok (checked 2026-10-21 by the Wave 7 coordinator); with the gate on, `/` without the cookie answered 307 to `/gate?next=%2F` and `/api/leaderboard` 401. No Playwright live check ran for #158: it changed docs only, and gated specs need row 7-0's cookie support.
+
 ## Wave 6 summary
 
 Branch `docs/wave6-summary` off `origin/main` at `2f03113`. Green: docs only, no runtime change.
