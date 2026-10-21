@@ -3,6 +3,22 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Client Zod and daily first paint
+
+Branch `feat/client-zod-daily-paint` off `origin/main` at `a26daf01`. Wave 7 row 7zd (Yellow). The first commit (`8ced5cc8`) records the PR #165 merge.
+
+- `src/components/daily/dailySaved.ts`: exports narrow handwritten validator `parseDailySaved(value: unknown)` replacing `savedSchema` Zod object in `DailyScreen.tsx` for localStorage parsing.
+- `src/components/daily/DailyScreen.tsx`: removes direct `zod` dependency, wires `parseDailySaved`, accepts `serverToday?: IsoDate | null`, and provides fallback snapshot `() => (serverToday !== null ? DEFAULT_PANEL.formation : null)` to support dynamic server rendering without client layout shifts.
+- `src/app/daily/page.tsx`: adds `DailyContent()` calling `await connection()` and passing `dailyDate(new Date())` to `<DailyScreen serverToday={...} />`, turning `/daily` into a dynamic server-rendered setup panel matching `/play`.
+- `e2e/server-html.spec.ts`: adds `/daily start panel` asserting initial response stream carries "Daily 8-0 Challenge", 16 rounds text, and "Start run".
+- RED commit `86ca539c`: failed in `src/components/daily/__tests__/daily-saved.test.ts` (missing module) and `src/app/daily/__tests__/page.test.tsx` (server render contained loading line and lacked challenge panel); fixed in `9b5a8a72`.
+- Gates at branch HEAD: `pnpm vitest run src/app/daily/__tests__/page.test.tsx src/components/daily/__tests__/` passed 34 in 3 files; `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,275 passed in 255 files), `pnpm build`, and `pnpm format:check` exited 0; all nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`, `check:client-bundle`, `check:theme-contrast`, `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) exited 0; `check-retained-replays.mts` passed 13 golden replays; `measure-retained-json.mjs` measured 4 copies, 2,891,853 bytes; local Playwright (`e2e/server-html.spec.ts`, `e2e/layout-shift.spec.ts`, `e2e/board-ux.spec.ts`, `e2e/data-split.spec.ts`, `e2e/leaderboard.spec.ts`) passed 28 across 5 files.
+- Measurements: `src/components/daily/dailySaved.ts` 602 bytes (282 bytes gzip); FCP and LCP under 4x CPU throttle median 64.0 ms (headless Playwright, excludes GPU raster).
+- Decision log: `docs/decisions/client-zod-daily-paint.md`.
+- NOT RUN: Owner physical device test (iPhone Safari, Android Chrome); owner VoiceOver screen reader pass.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Builder link previews
 
 Branch `feat/builder-link-previews` off `origin/main` at `fc890c09`. Wave 7 row 7bp (Yellow). The first commit (`4c34b3ea`) records the PR #164 merge.
