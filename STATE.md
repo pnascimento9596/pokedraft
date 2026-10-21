@@ -3,6 +3,21 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Builder link previews
+
+Branch `feat/builder-link-previews` off `origin/main` at `fc890c09`. Wave 7 row 7bp (Yellow). The first commit (`4c34b3ea`) records the PR #164 merge.
+
+- `src/app/builder-metadata.ts`: exports `builderTokenFromUrl`, `builderTitle`, and `builderMetadata`. Decodes builder tokens via `draftFromBuilderToken(token)`, calculating squad formation, placed starters count, and full squad score via `rateTeam(draft.lineup as FullLineup).score` when all 16 slots are filled. Emits OpenGraph and Twitter cards pointing to canonical public `/card?b=...` with dimensions 1200x630.
+- `src/app/page.tsx`: adds `generateMetadata({ searchParams })` for `/` when `b` is present and valid. Wraps `<HomeScreen />` with `<Suspense fallback={null}><HomeContent /></Suspense>` calling `await connection()` from `next/server` to support partial prerendering of dynamic metadata without stalling client hydration.
+- `src/app/gate/page.tsx`: detects builder link `b` parameter in `searchParams.next` via `builderTokenFromUrl` and returns squad preview metadata for unauthenticated preview bots, keeping `/` fully gated.
+- `e2e/share-sheet.spec.ts`: Playwright assertions verifying that `/?b=` and `/gate?next=%2F%3Fb%3D...` server HTML carries `og:title`, `description`, `og:description`, `twitter:description`, `og:image:alt`, and `og:image` pointing to `/card?b=...`, asserting that the card returns HTTP 200 `image/png` with dimensions 1200x630 via `sharp`, and verifying fallback behavior on invalid tokens.
+- RED commit `057f8942`: failed in `src/app/__tests__/builder-metadata.test.ts` (module missing) and `src/app/gate/__tests__/page.test.tsx` (squad preview metadata missing on gate); fixed in `1798330d`.
+- Gates at `1798330d`: `pnpm vitest run src/app/__tests__/builder-metadata.test.ts src/app/gate/__tests__/page.test.tsx` passed 20 in 2 files; `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,245 passed in 253 files), `pnpm build`, and `pnpm format:check` exited 0; all nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`, `check:client-bundle`, `check:theme-contrast`, `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) exited 0; `check-retained-replays.mts` passed 13 golden replays; `measure-retained-json.mjs` measured 4 copies, 2,891,853 bytes; local Playwright (`e2e/share-sheet.spec.ts`, `e2e/data-split.spec.ts`, `e2e/builder.spec.ts`, `e2e/share.spec.ts`) passed 51 across 4 files.
+- Decision log: `docs/decisions/builder-link-previews.md`.
+- NOT RUN: Owner physical device test (iPhone Safari, Android Chrome); owner VoiceOver screen reader pass.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Enforce Content-Security-Policy
 
 Branch `fix/enforce-csp` off `origin/main` at `90ee0f72`. Wave 7 row 7csp (Red). The first commit (`5ce8cf5f`) records the PR #163 merge.
