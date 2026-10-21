@@ -13,7 +13,7 @@ afterEach(() => {
 });
 
 const COACHED = encodeToken({
-  v: 6,
+  v: 7,
   settings: {
     mode: "cup8",
     formation: "4-3-3",
@@ -39,7 +39,7 @@ const ENTRY: BoardEntry = {
   losses: 0,
   createdAt: "2026-10-09T12:00:00.000Z",
   coached: false,
-  engineVersion: "pokedraft-engine-6",
+  engineVersion: "pokedraft-engine-7",
   seed: "e2e-seed",
   formation: "4-3-3",
 };
@@ -95,7 +95,7 @@ describe("submit names the run's own coach view (catches an uncoached leader sho
     expect(sentBody(fetchMock)).toEqual({
       nickname: "Misty",
       token: "pd1.abc",
-      engineVersion: "pokedraft-engine-6",
+      engineVersion: "pokedraft-engine-7",
       coach: "uncoached",
     });
     expect(screen.getByRole("link", { name: "View leaderboard" }).getAttribute("href")).toBe(

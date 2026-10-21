@@ -147,16 +147,16 @@ const subTuple = z.tuple([
 const takerTuple = z.tuple([z.enum(["p", "f"]), cupMatch, matchMinute, starter.nullable()]);
 const TAKER_SINCE = 7;
 
+const managerSchema = z.union([tacticTuple, subTuple, takerTuple]);
+const v6ManagerSchema = z.union([tacticTuple, subTuple]);
+
 /**
  * The coach decisions a token of `version` may carry. Nominated takers arrive with engine 7, so a
  * pd6 token never carries one: the frozen engine 6 codec would refuse it after the flip.
  */
 export function managerSchemaFor(version: number) {
-  return version >= TAKER_SINCE
-    ? z.union([tacticTuple, subTuple, takerTuple])
-    : z.union([tacticTuple, subTuple]);
+  return version >= TAKER_SINCE ? managerSchema : v6ManagerSchema;
 }
-const managerSchema = managerSchemaFor(RUN_TOKEN_VERSION);
 
 // Engine 6 appends the coach's decisions as a fourth element, left out when there are none.
 const payloadSchema = z.union([
@@ -283,12 +283,6 @@ function expandAction(c: CompactAction): DraftAction {
 }
 
 export function encodeToken(t: RunToken): string {
-  if (RUN_TOKEN_VERSION < TAKER_SINCE && t.manager?.some((a) => a.type === "taker")) {
-    throw new RunTokenError(
-      "invalidAction",
-      `a pd${RUN_TOKEN_VERSION} token cannot carry a nominated taker`,
-    );
-  }
   const payload: unknown[] = [compactSettings(t.settings), t.seed, t.actions.map(compactAction)];
   if (t.manager !== undefined && t.manager.length > 0) payload.push(t.manager.map(compactManager));
   return `pd${RUN_TOKEN_VERSION}.${toBase64Url(new TextEncoder().encode(JSON.stringify(payload)))}`;
@@ -313,8 +307,8 @@ function decodeSettings(raw: unknown): DraftSettings {
   }
 }
 
-function decodeManager(raw: unknown, index: number): ManagerAction {
-  const parsed = managerSchema.safeParse(raw);
+function decodeManager(raw: unknown, index: number, version: number): ManagerAction {
+  const parsed = managerSchemaFor(version).safeParse(raw);
   if (!parsed.success)
     throw new RunTokenError("invalidAction", `manager action ${index} is invalid`);
   return expandManager(parsed.data);
@@ -326,10 +320,10 @@ function decodeAction(raw: unknown, index: number): DraftAction {
   return expandAction(parsed.data);
 }
 
-export function decodeToken(s: string): RunToken {
+export function decodeToken(s: string, version: number = RUN_TOKEN_VERSION): RunToken {
   const m = PREFIX.exec(s);
   if (m === null) malformed("token has no pd<version>. prefix");
-  if (m[1] !== String(RUN_TOKEN_VERSION)) {
+  if (m[1] !== String(version)) {
     throw new RunTokenError("unknownVersion", `unknown token version ${m[1]}`);
   }
   const payload = payloadSchema.safeParse(parseJson(fromBase64Url(m[2]!)));
@@ -343,5 +337,5 @@ export function decodeToken(s: string): RunToken {
   };
   return rawManager === undefined || rawManager.length === 0
     ? run
-    : { ...run, manager: rawManager.map(decodeManager) };
+    : { ...run, manager: rawManager.map((raw, index) => decodeManager(raw, index, version)) };
 }

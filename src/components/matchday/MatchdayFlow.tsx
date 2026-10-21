@@ -18,7 +18,6 @@ import { finalScore } from "@/components/results/format";
 import { ROUND_LABEL } from "@/ui/labels";
 import { matchdayView, type MatchView } from "@/ui/settings";
 import {
-  SET_PIECES_ON,
   decideAll,
   fieldedFor,
   touchlineAt,
@@ -263,7 +262,7 @@ function PreMatch({
             style={match.opponent.tacticalStyle}
             onPick={setTactic}
           />
-          {SET_PIECES_ON && takers !== undefined ? (
+          {takers !== undefined ? (
             <SetPieceTakers
               formation={lineup.formation}
               onPitch={fielded.starters}

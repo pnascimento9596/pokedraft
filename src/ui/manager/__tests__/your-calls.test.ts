@@ -70,7 +70,7 @@ describe("your calls card (catches a card that credits the wrong call or invents
     ];
     const runs = reports(CALLS_18, actions, 4);
     expect(lines(runs.at(-1))).toEqual({
-      score: "Assistant 0-1, You 0-0 (5-4 pens)",
+      score: "Assistant 0-1, You 2-0",
       same: null,
       later: "Later calls depended on this match.",
       call: "Biggest swing: your Defend switch at 12'.",

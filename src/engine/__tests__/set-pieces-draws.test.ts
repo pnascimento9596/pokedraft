@@ -58,10 +58,3 @@ describe("engine 7 set_pieces draws (catches a draw count that depends on what h
     expect([...new Set(byScope.values())]).toEqual([2]);
   });
 });
-
-// Regression guard, no RED: behaviour already correct. Engine 6 never opens the stream.
-describe("engine 6 set_pieces draws (catches the dormant rule drawing at engine 6)", () => {
-  it("panel-7 match 1 at engine 6 opens no set_pieces stream", () => {
-    expect(playOnce(ENGINE_COEFFICIENTS, "panel-7", 1).byScope.size).toBe(0);
-  });
-});

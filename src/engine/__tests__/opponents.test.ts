@@ -42,7 +42,7 @@ describe("engine-4 themed Boss Club rosters (catches opponents without actual Po
       ["viridian-fc", 601],
       ["pewter-united", 749],
       ["vermilion-fc", 859],
-      ["cinnabar-fc", 999],
+      ["cinnabar-fc", 1000],
     ]);
   });
 

@@ -53,9 +53,9 @@ describe("exhibition decide", () => {
     expect(verdict.match.goals.map(goalLine)).toEqual([
       "23' Charizard (solo run)",
       "44' Venusaur",
-      "70' Blastoise, assist Charmeleon",
-      "78' Caterpie",
-      "85' Charizard (pen)",
+      "70' Blastoise, assist Charizard",
+      "78' Beedrill",
+      "85' Beedrill (solo run)",
     ]);
   });
 
@@ -66,6 +66,7 @@ describe("exhibition decide", () => {
     expect(userCalls(verdict.match)).toEqual([
       "19' auto sub 11 for 15",
       "45' manager sub 3 for 12",
+      "75' auto defend",
     ]);
     expect(finalScore(verdict.match)).toEqual({ user: 4, opp: 0 });
   });

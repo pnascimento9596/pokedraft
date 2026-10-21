@@ -14,14 +14,14 @@ import {
 import type { LeaderboardRow } from "@/db/schema";
 import { isCoached } from "@/ui/manager/coached";
 import { toBoardEntry } from "../store";
-import { GOLDEN_CUP8_V6, scriptedToken } from "./fixtures";
+import { GOLDEN_CUP8_V6, GOLDEN_CUP8_V7, scriptedToken } from "./fixtures";
 
 const GOLDEN_SQUAD = [
   849, 315, 272, 691, 453, 754, 785, 175, 663, 188, 807, 784, 703, 942, 145, 884,
 ];
 
-const COACHED_V6 = encodeToken({
-  ...decodeToken(GOLDEN_CUP8_V6),
+const COACHED_V7 = encodeToken({
+  ...decodeToken(GOLDEN_CUP8_V7),
   manager: [{ type: "tactic", match: 0, minute: 30, tactic: "attack" }],
 });
 
@@ -38,7 +38,7 @@ function row(token: string, coached: boolean): LeaderboardRow {
     wins: 5,
     draws: 0,
     losses: 1,
-    engineVersion: "pokedraft-engine-6",
+    engineVersion: "pokedraft-engine-7",
     coached,
     runFingerprint: "fp",
     ipHash: "h",
@@ -52,8 +52,9 @@ afterEach(() => {
 
 describe("toBoardEntry (catches every board row decoding its token twice)", () => {
   it.each([
+    ["the golden pd7 run", GOLDEN_CUP8_V7, GOLDEN_SQUAD, false],
+    ["the golden pd7 run with a manager decision", COACHED_V7, GOLDEN_SQUAD, true],
     ["the golden pd6 run", GOLDEN_CUP8_V6, GOLDEN_SQUAD, false],
-    ["the golden pd6 run with a manager decision", COACHED_V6, GOLDEN_SQUAD, true],
     ["the golden pd3 run", GOLDEN_CUP8_V3, GOLDEN_SQUAD, false],
   ] as const)(
     "parses the payload of %s once for its squad and Coached chip",

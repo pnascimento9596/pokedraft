@@ -55,6 +55,9 @@ const RETAINED: Readonly<Record<number, () => Promise<RetainedBundle>>> = {
   4: async () => ({ ...(await import("./v4")), adapt: (cup) => cup as CupResult }),
   // Engine 6 only added optional manager fields, so an engine-5 result is already today's shape.
   5: async () => ({ ...(await import("./v5")), adapt: (cup) => cup as CupResult }),
+  // Engine 7 only added optional penalty incidents, rotations and oppEnergy, so an engine-6 result
+  // is already today's shape.
+  6: async () => ({ ...(await import("./v6")), adapt: (cup) => cup as CupResult }),
 };
 
 const PREFIX = /^pd(\d+)\./;

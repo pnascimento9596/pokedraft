@@ -36,7 +36,6 @@ export interface EngineCoefficients {
       group: { outer: number; amplitude: number };
       knockout: { outer: number; amplitude: number };
     };
-    penaltyShare: number;
     assistProb: number;
     // Scorers and creators use separate tactical role weights.
     roleFactor: Record<Role, number>;
@@ -45,26 +44,18 @@ export interface EngineCoefficients {
   };
   shootout: { kicks: number; maxSuddenDeath: number; base: number; band: number };
   /**
-   * Engine 7: with `missable`, each side may be awarded a penalty in each five-minute window, with
-   * probability `awardShare` times that window's expected goals, and it scores with the shootout's
-   * conversion chance. `match.penaltyShare` then relabels nothing. Off, penalties are goals
-   * relabelled by `match.penaltyShare`, as in engine 6.
+   * Each side may be awarded a penalty in each five-minute window, with probability `awardShare`
+   * times that window's expected goals, and it scores with the shootout's conversion chance.
    */
-  penalty: { missable: boolean; awardShare: number };
-  /** Engine 7: a nominated free-kick taker's weight in the scorer pick for a free-kick goal. */
+  penalty: { awardShare: number };
+  /** A nominated free-kick taker's weight in the scorer pick for a free-kick goal. */
   takers: { freeKickWeight: number };
   /**
-   * Engine 7: with `injuries`, a Boss Club's players get injured at the user's rate and a reserve
-   * from its ladder step comes on, and its rotations are logged as incidents.
+   * The header share of the kind draw is scaled by 1 + header * (the attackers' mean AER over the
+   * dex mean - 1), and the solo share likewise by `solo` and mean(DRI, ACC), each clamped to 0.6
+   * to 1.5. Free kicks keep their share and open play takes the rest.
    */
-  opponent: { injuries: boolean };
-  /**
-   * Engine 7: with `weighted`, the header share of the kind draw is scaled by
-   * 1 + header * (the attackers' mean AER over the dex mean - 1), and the solo share likewise by
-   * `solo` and mean(DRI, ACC), each clamped to 0.6 to 1.5. Free kicks keep their share and open
-   * play takes the rest. Off, the shares are engine 6's.
-   */
-  goalKind: { weighted: boolean; header: number; solo: number };
+  goalKind: { header: number; solo: number };
   availability: { eventProb: number; familiarityFloor: number };
   awards: {
     goal: number;
@@ -106,16 +97,11 @@ export interface EngineCoefficients {
     /** The auto coach brings on fresh legs once a starter's energy falls below this. */
     autoSubEnergy: number;
     autoSubMinutes: readonly number[];
-    /**
-     * Engine 7: a tactic from 45' on hands tactics to the manager and any substitution hands subs
-     * to them, each on its own. Off, any decision hands both over.
-     */
-    splitManaged: boolean;
-    /** Engine 7: Counter's own multiplier is scaled by this while the side leads. */
+    /** Counter's own multiplier is scaled by this while the side leads. */
     counterLead: number;
     /**
-     * Engine 7: Press's own multiplier loses perPoint for each point the side's mean outfield
-     * energy sits below `below`.
+     * Press's own multiplier loses perPoint for each point the side's mean outfield energy sits
+     * below `below`.
      */
     pressFade: { below: number; perPoint: number };
   };
@@ -157,7 +143,6 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
       group: { outer: 0.14, amplitude: 0.2 },
       knockout: { outer: 0.2, amplitude: 0.3 },
     },
-    penaltyShare: 0.06,
     assistProb: 0.62,
     // Tuned from the dispatch 6 starting table so ST, W and AM score 70 to 80% of user goals
     // in 4-3-3, 4-2-3-1 and 3-4-3 (docs/decisions/dispatch-6.md).
@@ -189,15 +174,14 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     },
     oppScorerWeights: [0, 1, 1, 1, 1, 3, 3, 3, 6, 8, 6],
   },
-  shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.1 },
-  penalty: { missable: false, awardShare: 0 },
-  takers: { freeKickWeight: 1 },
-  opponent: { injuries: false },
-  goalKind: { weighted: false, header: 0, solo: 0 },
+  shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.18 },
+  penalty: { awardShare: 0.0745 },
+  takers: { freeKickWeight: 1.5 },
+  goalKind: { header: 1, solo: 1 },
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
   awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, CB: 1, FB: 1, DM: 1 }, minutesPerPoint: 180 },
   ladder: {
-    score: { G1: 280, G2: 300, G3: 355, R32: 480, R16: 605, QF: 730, SF: 855, F: 985 },
+    score: { G1: 280, G2: 300, G3: 355, R32: 480, R16: 605, QF: 730, SF: 855, F: 992 },
     jitter: 20,
     tilt: 5,
   },
@@ -213,11 +197,11 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     },
     styleEdges: {
       // A pressing side leaves space behind it: counters bite, a slugfest favours nobody.
-      pressing: { counter: [0.95, 0.85], attack: [1.3, 1.35] },
+      pressing: { counter: [1.115, 0.8275], attack: [1.345, 1.46] },
       // A possession side is hurt by a press and by counters that skip its build-up.
-      possession: { press: [1.18, 0.98], counter: [0.92, 0.82] },
+      possession: { press: [1.2875, 0.9425], counter: [1.0, 0.77] },
       // A direct side punishes a high line and struggles to break down a low block.
-      direct: { defend: [0.65, 0.62], press: [1.05, 1.12] },
+      direct: { defend: [0.655, 0.4825], press: [1.0, 1.2875] },
     },
     drain: 0.3,
     pressDrain: 1.4,
@@ -231,8 +215,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     cardLineWeight: { GK: 0, DEF: 1.3, MID: 1.1, ATT: 0.6 },
     autoSubEnergy: 82,
     autoSubMinutes: [60, 75],
-    splitManaged: false,
-    counterLead: 1,
-    pressFade: { below: 70, perPoint: 0 },
+    counterLead: 1.1,
+    pressFade: { below: 70, perPoint: 0.004 },
   },
 };

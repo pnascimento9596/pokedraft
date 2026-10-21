@@ -105,35 +105,52 @@ async function until(testId: string): Promise<HTMLElement | null> {
   throw new Error(`${testId} never showed and the match never ended`);
 }
 
-describe("65' managed stop (catches a managed match that runs past 65' with a tired outfield player)", () => {
-  it("stops at 65' and names Weedle (60) and Rattata (62) once the manager has decided anything", async () => {
+describe("half-time fatigue line without a 65' stop (catches the interim 65' stop lingering or half-time losing its fatigue line)", () => {
+  it("never stops at 65' even after a kickoff tactic when outfield players are below 65 energy", async () => {
     await mount([PRESS_AT_KICKOFF]);
-    const stop = await until("stop-fatigue");
-    expect(stop).not.toBeNull();
-    expect(screen.getByTestId("match-player").getAttribute("data-minute")).toBe("65");
-    expect(stop!.querySelector("p")?.textContent).toBe(
-      "65'. Most tired: Weedle (60) and Rattata (62). Make a change or play on.",
-    );
-    fireEvent.click(screen.getByTestId("stop-go"));
-    expect(await until("stop-fatigue-never")).toBeNull();
-  });
-
-  it("the 65' stop takes focus on Play on, and hands it back to 2x speed once answered (catches a stop kind the focus logic misses)", async () => {
-    await mount([PRESS_AT_KICKOFF]);
-    screen.getByTestId("speed-toggle").focus();
-    const stop = await until("stop-fatigue");
-    expect(document.activeElement).toBe(screen.getByTestId("stop-go"));
-    expect(stop!.contains(document.activeElement)).toBe(true);
-    fireEvent.click(screen.getByTestId("stop-go"));
-    await act(async () => {
-      vi.advanceTimersByTime(16);
-    });
-    expect(screen.queryByTestId("stop-fatigue")).toBeNull();
-    expect(document.activeElement).toBe(screen.getByTestId("speed-toggle"));
-  });
-
-  it("does not stop at 65' while the assistant still runs the side", async () => {
-    await mount([]);
     expect(await until("stop-fatigue")).toBeNull();
+  });
+
+  it("excludes missed penalties from Shots on Target while counting saved penalties (catches 6b3 Red SoT bug)", async () => {
+    const matchWithPenalties: PlayedMatch = {
+      ...TIRED_AT_65,
+      incidents: [
+        {
+          kind: "penalty",
+          side: "user",
+          minute: 10,
+          slot: 8,
+          taker: id(25),
+          keeper: id(143),
+          outcome: "missed",
+        },
+        {
+          kind: "penalty",
+          side: "opp",
+          minute: 20,
+          slot: 8,
+          taker: id(149),
+          keeper: id(9),
+          outcome: "saved",
+        },
+      ],
+    };
+    render(
+      <MatchPlayer
+        match={matchWithPenalties}
+        matchIndex={0}
+        seed="sot-penalty-test"
+        lineup={LINEUP}
+        view="quick"
+        startAt={90}
+      />,
+    );
+    await act(async () => {
+      await vi.dynamicImportSettled();
+    });
+    const stats = [...screen.getByTestId("match-hud").querySelectorAll("[class*=hudStat]")].map(
+      (el) => el.textContent,
+    );
+    expect(stats).toEqual(["0 SoT", "1 SoT"]);
   });
 });

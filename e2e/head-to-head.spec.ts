@@ -63,11 +63,11 @@ test("a challenge link on golden-cup8 shows the head-to-head, the round table an
   await expect(h2h.getByTestId("h2h-verdict")).toHaveText("They win the seed");
   await expect(h2h.getByRole("row")).toHaveText([
     "RoundYouThem",
-    "Group match 10-01-0",
-    "Group match 21-06-0",
+    "Group match 10-03-0",
+    "Group match 21-07-0",
     "Group match 30-26-1",
-    "Round of 320-26-2",
-    "Round of 16Out1-0",
+    "Round of 323-3 (won on pens)6-2",
+    "Round of 160-12-0",
     "Quarter-finalOut2-2 (lost on pens)",
   ]);
   for (const width of [390, 360, 320]) {

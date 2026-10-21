@@ -32,6 +32,7 @@ it.each([false, true])(
       limiter: drizzleLimiter(() => db),
       now: () => NOW,
       ipHashSecret: "test-secret-0123456789abcdef01234567",
+      grace: null,
     };
     const post = () =>
       new Request("http://local/api/leaderboard", {

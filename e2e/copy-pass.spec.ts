@@ -98,13 +98,14 @@ for (const width of [390, 360, 320]) {
 test.describe("scoreboard and history", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("the scoreboard shows 1-0 with no spaces and names a shared side This squad (catches 1 - 0 and Your XI on a friend's link)", async ({
+  test(`the scoreboard shows ${DEEP_LINK.after} with no spaces and names a shared side This squad (catches 1 - 0 and Your XI on a friend's link)`, async ({
     page,
   }) => {
     await page.goto(DEEP_LINK.href);
     const replay = page.getByTestId("match-replay");
     const score = replay.getByTestId("matchday-score");
-    await expect(score).toHaveText("1-0", { timeout: 10_000 });
+    expect(DEEP_LINK.after).toMatch(/^\d+-\d+$/);
+    await expect(score).toHaveText(DEEP_LINK.after, { timeout: 10_000 });
     await expect(replay.getByTestId("matchday-scoreboard").locator("span").first()).toHaveText(
       "This squad",
     );

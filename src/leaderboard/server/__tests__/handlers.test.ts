@@ -17,7 +17,7 @@ import type { BoardEntry } from "../../contract";
 import { dailySettings } from "../../daily";
 import { RATE_LIMIT, handleBoard, handleSubmit, hashIp } from "../handlers";
 import { drizzleStore, type LeaderboardStore } from "../store";
-import { GOLDEN_CUP8_V6, migratedDb, scriptedToken } from "./fixtures";
+import { GOLDEN_CUP8_V7, migratedDb, scriptedToken } from "./fixtures";
 import { A11Y_RUN_V1 } from "@/engine/versions/__tests__/fixtures";
 
 const NOW = new Date("2026-10-09T16:00:00Z");
@@ -68,6 +68,7 @@ async function submit(body: unknown, ip?: string, using: LeaderboardStore = stor
     ipHashSecret: SECRET,
     now: () => NOW,
     replay: countingReplay,
+    grace: null,
   });
   return { status: res.status, body: (await res.json()) as Body };
 }
@@ -116,7 +117,7 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
       draws: 0,
       losses: 1,
       teamScore: 623,
-      engineVersion: "pokedraft-engine-6",
+      engineVersion: "pokedraft-engine-7",
       ipHash: hashIp("203.0.113.7", SECRET),
     });
   });
@@ -215,7 +216,7 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
     expect((await submit({ nickname: "Gary", token: "not-a-token" })).body.error.code).toBe(
       "TOKEN_MALFORMED",
     );
-    const future = scriptedToken(CUP8, "lb-cup8").replace(/^pd6\./, "pd7.");
+    const future = scriptedToken(CUP8, "lb-cup8").replace(/^pd7\./, "pd8.");
     const res = await submit({ nickname: "Gary", token: future });
     expect(res.status).toBe(409);
     expect(res.body.error.code).toBe("ENGINE_VERSION_MISMATCH");
@@ -339,8 +340,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
 
   it("rejects a re-encoded copy of a listed run with 409 DUPLICATE_TOKEN (catches one run listed under many names)", async () => {
     const token = scriptedToken(CUP8, "lb-cup8");
-    const json = Buffer.from(token.slice("pd6.".length), "base64url").toString("utf8");
-    const reencode = (text: string) => `pd6.${Buffer.from(text, "utf8").toString("base64url")}`;
+    const json = Buffer.from(token.slice("pd7.".length), "base64url").toString("utf8");
+    const reencode = (text: string) => `pd7.${Buffer.from(text, "utf8").toString("base64url")}`;
     const spaced = reencode(JSON.stringify(JSON.parse(json), null, 1));
     const gensShuffled = reencode(json.replace('"123456789"', '"213456789"'));
     const floatSpecies = reencode(json.replace(/\["p",(\d+),/, '["p",$1.0,'));
@@ -364,8 +365,8 @@ describe("POST /api/leaderboard (catches client-trusted scores and unranked runs
 
   it("stores the canonical token when a run arrives in a non-canonical encoding", async () => {
     const token = scriptedToken(CUP8, "lb-cup8");
-    const json = Buffer.from(token.slice("pd6.".length), "base64url").toString("utf8");
-    const spaced = `pd6.${Buffer.from(JSON.stringify(JSON.parse(json), null, 1)).toString("base64url")}`;
+    const json = Buffer.from(token.slice("pd7.".length), "base64url").toString("utf8");
+    const spaced = `pd7.${Buffer.from(JSON.stringify(JSON.parse(json), null, 1)).toString("base64url")}`;
     const res = await submit({ nickname: "Ash", token: spaced });
     expect(res.status).toBe(201);
     expect(res.body.entry.token).toBe(token);
@@ -738,24 +739,24 @@ describe("stored run identity (catches a submit that leaves coached or run_finge
     const [row] = await rows();
     expect([row!.coached, row!.runFingerprint]).toEqual([
       true,
-      "7e21b3d9e68a0b6437de6cd1f7cfa7fd8b3b0d1a125e7aa45767db835eda3262",
+      "b573d76870f33a8c9b38703d4bb260f227b89523f82081344ea3eea26d08ab0b",
     ]);
   });
 });
 
-// The golden pd6 run with one touchline decision. A second identical decision a minute later
+// The golden pd7 run with one touchline decision. A second identical decision a minute later
 // changes nothing on the pitch, so it is the cheapest copy a player can make of someone's run.
 const tactic = (minute: number) =>
   ({ type: "tactic", match: 0, minute, tactic: "attack" }) as const;
-const COACHED_PD6 = encodeToken({ ...decodeToken(GOLDEN_CUP8_V6), manager: [tactic(0)] });
+const COACHED_PD7 = encodeToken({ ...decodeToken(GOLDEN_CUP8_V7), manager: [tactic(0)] });
 const NO_OP_COPY = encodeToken({
-  ...decodeToken(GOLDEN_CUP8_V6),
+  ...decodeToken(GOLDEN_CUP8_V7),
   manager: [tactic(0), tactic(1)],
 });
 
 describe("copy guard (catches one run listed twice under two nicknames)", () => {
   it("rejects a no-op manager copy of another player's run", async () => {
-    const original = await submit({ nickname: "Misty", token: COACHED_PD6 });
+    const original = await submit({ nickname: "Misty", token: COACHED_PD7 });
     expect(original.status).toBe(201);
     const copy = await submit({ nickname: "Brock", token: NO_OP_COPY });
     expect([copy.status, copy.body.error?.code, copy.body.error?.nickname]).toEqual([
@@ -763,16 +764,16 @@ describe("copy guard (catches one run listed twice under two nicknames)", () => 
       "DUPLICATE_TOKEN",
       "Misty",
     ]);
-    expect((await rows()).map((r) => [r.nickname, r.token])).toEqual([["Misty", COACHED_PD6]]);
+    expect((await rows()).map((r) => [r.nickname, r.token])).toEqual([["Misty", COACHED_PD7]]);
   });
 
   it("the no-op copy replays to the original's W-D-L and Team Score (regression guard, no RED: behaviour already correct)", () => {
-    expect(NO_OP_COPY).not.toBe(COACHED_PD6);
+    expect(NO_OP_COPY).not.toBe(COACHED_PD7);
     const record = (token: string) => {
       const { cup } = replay(decodeToken(token));
       return [cup.wins, cup.draws, cup.losses, cup.rating.score];
     };
-    expect([record(COACHED_PD6), record(NO_OP_COPY)]).toEqual([
+    expect([record(COACHED_PD7), record(NO_OP_COPY)]).toEqual([
       [5, 0, 1, 593],
       [5, 0, 1, 593],
     ]);

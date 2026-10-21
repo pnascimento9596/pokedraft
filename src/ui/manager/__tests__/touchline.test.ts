@@ -168,12 +168,29 @@ describe("touchlineAt (catches a touchline that offers a used bench player or co
     expect(touchlineAt(m, 0, LINEUP, [], 60).yellow).toEqual(booked.map(() => false));
   });
 
-  it("knows the assistant is off once the user has decided anything in this match", () => {
+  it("tracks tacticManaged (tactic at >= 45') and subsManaged (any sub) separately", () => {
     const m = match([]);
-    const actions: ManagerAction[] = [{ type: "tactic", match: 2, minute: 30, tactic: "press" }];
-    expect(touchlineAt(m, 2, LINEUP, actions, 29).managed).toBe(false);
-    expect(touchlineAt(m, 2, LINEUP, actions, 30).managed).toBe(true);
-    expect(touchlineAt(m, 1, LINEUP, actions, 89).managed).toBe(false);
+    const actions: ManagerAction[] = [
+      { type: "tactic", match: 2, minute: 30, tactic: "press" },
+      { type: "sub", match: 2, minute: 35, slot: 9, bench: 0 },
+      { type: "tactic", match: 2, minute: 45, tactic: "attack" },
+    ];
+    expect(touchlineAt(m, 2, LINEUP, actions, 30)).toMatchObject({
+      tacticManaged: false,
+      subsManaged: false,
+    });
+    expect(touchlineAt(m, 2, LINEUP, actions, 35)).toMatchObject({
+      tacticManaged: false,
+      subsManaged: true,
+    });
+    expect(touchlineAt(m, 2, LINEUP, actions, 45)).toMatchObject({
+      tacticManaged: true,
+      subsManaged: true,
+    });
+    expect(touchlineAt(m, 1, LINEUP, actions, 89)).toMatchObject({
+      tacticManaged: false,
+      subsManaged: false,
+    });
   });
 
   it("closes at the final whistle: 90 without extra time, 120 with it", () => {
@@ -421,13 +438,13 @@ describe("nominated takers on the touchline (catches a nomination that takes ove
   const { ctx, cup } = realCup("touch-2");
   const PENALTY_10 = { kind: "taker", set: "penalty", slot: 10 } as const;
 
-  it("records { type: 'taker', match: 0, minute: 0, set: 'penalty', slot: 10 } and leaves managed off", () => {
+  it("records { type: 'taker', match: 0, minute: 0, set: 'penalty', slot: 10 } and leaves both assistant halves on", () => {
     const v = decide(ctx, cup, [], 0, 0, PENALTY_10);
     if (!v.ok) throw new Error(v.reason);
     expect(v.actions).toEqual([{ type: "taker", match: 0, minute: 0, set: "penalty", slot: 10 }]);
     const line = touchlineAt(played(v.cup, 0), 0, ctx.lineup, v.actions, 0);
     expect(line.takers).toEqual({ penalty: 10, freeKick: null });
-    expect(line.managed).toBe(false);
+    expect(line).toMatchObject({ tacticManaged: false, subsManaged: false });
   });
 
   it("a later stop still shows the nominee, and Auto records a null slot", () => {

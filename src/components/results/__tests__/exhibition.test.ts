@@ -32,7 +32,7 @@ describe("one-match exhibition", () => {
       "23' Charizard (solo run)",
       "44' Venusaur",
       "78' Beedrill",
-      "85' Charizard (pen)",
+      "85' Beedrill (solo run)",
     ]);
     expect(
       (match.incidents ?? [])
@@ -112,8 +112,8 @@ describe("two-leg exhibition", () => {
       "26' Metapod",
       "46' Caterpie (solo run)",
       "57' Blastoise, assist Wartortle",
-      "72' Charizard (pen)",
-      "118' Charizard (pen)",
+      "72' Blastoise",
+      "118' Wartortle, assist Ivysaur",
     ]);
     expect(tie.aggregate).toEqual({ user: 3, opp: 2 });
     expect(tie.decidedBy).toBe("extra-time");
@@ -126,8 +126,8 @@ describe("two-leg exhibition", () => {
     expect(tie.leg2.score).toEqual({ user: 2, opp: 2 });
     expect(tie.aggregate).toEqual({ user: 2, opp: 2 });
     expect(tie.decidedBy).toBe("penalties");
-    expect(shootoutLine(tie.decider!)).toBe("2-4 on pens");
-    expect(tie.winner).toBe("opp");
+    expect(shootoutLine(tie.decider!)).toBe("5-4 on pens");
+    expect(tie.winner).toBe("user");
   });
 
   it("is deterministic for the same squads and rematch number", () => {

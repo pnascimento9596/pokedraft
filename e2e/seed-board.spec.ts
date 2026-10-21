@@ -217,10 +217,15 @@ test("live results show a run submitted from the page in the seed table without 
   expect(seen).toEqual(["?mode=cup8&seed=e2e-80", "?mode=cup8&seed=e2e-80"]);
 });
 
-test("All engines shows the engine 3 run, labelled, and the default all-time board does not", async ({
+test("All engines shows the engine 3 and engine 6 runs, labelled, and the default all-time board does not", async ({
   page,
 }) => {
   const hydration = watchHydration(page);
+  const allRows = [
+    ROWS[0],
+    ROWS[1],
+    { ...ROWS[2], token: "pd6.e2e-misty", engineVersion: "pokedraft-engine-6" },
+  ];
   const seen = await stubSeedBoard(page, (url) => {
     const engine = url.searchParams.get("engine") ?? "current";
     return {
@@ -232,7 +237,7 @@ test("All engines shows the engine 3 run, labelled, and the default all-time boa
         coach: "all",
         engine,
         seed: null,
-        entries: engine === "all" ? ROWS.slice(0, 2) : [ROWS[0]],
+        entries: engine === "all" ? allRows : [ROWS[0]],
       },
     };
   });
@@ -249,9 +254,9 @@ test("All engines shows the engine 3 run, labelled, and the default all-time boa
     await expect(toggle).toHaveAttribute("aria-pressed", "false");
     await toggle.click();
     await expect(page).toHaveURL(/\/leaderboard\?mode=cup8&scope=all&engine=all$/);
-    await expect(page.getByTestId("board-row")).toHaveCount(2);
+    await expect(page.getByTestId("board-row")).toHaveCount(3);
     await expect(toggle).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByTestId("engine-row-label")).toHaveText(["Engine v3"]);
+    await expect(page.getByTestId("engine-row-label")).toHaveText(["Engine v3", "Engine v6"]);
     await expect(page.getByText(/all-time, every engine\./)).toBeVisible();
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth),

@@ -23,7 +23,7 @@ const ENTRY: BoardEntry = {
   losses: 0,
   createdAt: "2026-10-09T12:00:00.000Z",
   coached: false,
-  engineVersion: "pokedraft-engine-6",
+  engineVersion: "pokedraft-engine-7",
   seed: "e2e-seed",
   formation: "4-3-3",
 };
@@ -62,7 +62,7 @@ describe("SubmitPanel", () => {
     expect(JSON.parse(init.body as string)).toEqual({
       nickname: "Misty",
       token: "pd1.abc",
-      engineVersion: "pokedraft-engine-6",
+      engineVersion: "pokedraft-engine-7",
       coach: "uncoached",
     });
     expect(localStorage.getItem("pokedraft:nickname")).toBe('"Misty"');

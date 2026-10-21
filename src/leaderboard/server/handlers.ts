@@ -230,11 +230,7 @@ async function parseSubmission(
 
   let run: RunToken;
   try {
-    run = decodeToken(
-      grace === null
-        ? body.data.token
-        : body.data.token.replace(/^pd\d+\./, `pd${RUN_TOKEN_VERSION}.`),
-    );
+    run = decodeToken(body.data.token, grace?.version ?? RUN_TOKEN_VERSION);
   } catch (e) {
     return reject(tokenError(e));
   }
@@ -249,6 +245,19 @@ async function parseSubmission(
       submitError(
         "ENGINE_VERSION_MISMATCH",
         `This run was played on ${grace.engine}; the ${dailyDate} daily board runs ${ENGINE_VERSION}. Reload and play again.`,
+      ),
+    );
+  }
+  if (
+    grace === null &&
+    graceSetting !== null &&
+    dailyDate !== null &&
+    dailyDate < graceSetting.flipDate
+  ) {
+    return reject(
+      submitError(
+        "ENGINE_VERSION_MISMATCH",
+        `This run was played on ${ENGINE_VERSION}; the ${dailyDate} daily board runs ${graceSetting.engine}.`,
       ),
     );
   }

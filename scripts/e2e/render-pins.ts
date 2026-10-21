@@ -152,14 +152,18 @@ function yourCalls() {
 }
 
 // e2e/replay-deep-links.spec.ts: the golden engine-5 cup8 draft under the live prefix, linked to
-// the first goal it scores.
+// the first user goal whose timeline pip is not overlapped by a goal right after it.
 function deepLink() {
   const token = LIVE_GOLDEN_CUP8;
   const { cup } = replay(decodeToken(token));
   let watch = 0;
   for (const match of cup.matches) {
     if (match.status !== "played") continue;
-    const goal = match.goals.find((g) => g.side === "user");
+    const goal = match.goals.find(
+      (g) =>
+        g.side === "user" &&
+        !match.goals.some((o) => o.minute > g.minute && o.minute - g.minute <= 12),
+    );
     if (goal !== undefined) {
       const before = match.goals.filter((g) => g.minute < goal.minute);
       const tally = (side: string) => before.filter((g) => g.side === side).length;
@@ -373,15 +377,16 @@ function haptics() {
   return { round, scoreAtConceded: `${before}-1`, goalsBefore: before, goals: user.length };
 }
 
-// e2e/injury-staging.spec.ts: the run's first injury the assistant answers with a substitute.
+// e2e/injury-staging.spec.ts: the run's first user injury the assistant answers with a substitute.
 function injuryStaging() {
   const run = liveRun(LIVE_GOLDEN_CUP8);
   for (const { match } of played(run)) {
     for (const injury of match.incidents ?? []) {
-      if (injury.kind !== "injury") continue;
+      if (injury.kind !== "injury" || injury.side !== "user") continue;
       const sub = (match.incidents ?? []).find(
         (i) =>
           i.kind === "sub" &&
+          i.side === "user" &&
           i.reason === "injury" &&
           i.minute === injury.minute &&
           i.slot === injury.slot,
@@ -470,6 +475,7 @@ function goalScene(run: Run, kind: GoalKind) {
 
 function setPieces() {
   const cup8 = liveRun(LIVE_GOLDEN_CUP8);
+  const kanto = liveRun(LIVE_GOLDEN_KANTO151);
   const solo = goalScene(cup8, "solo");
   // The defender who steps in reaches the middle of the run level with the scorer and is behind
   // them by the shot. Under the territory lean the stepping defender can come from upfield of the
@@ -486,9 +492,9 @@ function setPieces() {
         : [],
     );
   if (pressers.length !== 1) throw new Error(`the solo goal has ${pressers.length} pressers`);
-  const header = goalScene(cup8, "header");
+  const header = goalScene(kanto, "header");
   const penalty = goalScene(cup8, "penalty");
-  const freeKick = goalScene(liveRun(LIVE_GOLDEN_KANTO151), "free-kick");
+  const freeKick = goalScene(kanto, "free-kick");
   const wall = freeKick
     .at(780)
     .players.opp.flatMap((p) =>
@@ -665,12 +671,10 @@ function fatigue() {
     settings: { mode: "builder", formation: "4-3-3", gens: GENS, legendaries: false },
     seed: "fatigue-1" as Seed,
     actions: [...FATIGUE_STARTERS.map(place("starter")), ...FATIGUE_BENCH.map(place("bench"))],
-    manager: Array.from({ length: 6 }, (_, match): ManagerAction => ({
-      type: "tactic",
-      match,
-      minute: 0,
-      tactic: "press",
-    })),
+    manager: Array.from({ length: 6 }, (_, match): ManagerAction[] => [
+      { type: "tactic", match, minute: 0, tactic: "press" },
+      { type: "sub", match, minute: 1, slot: 0, bench: 4 },
+    ]).flat(),
   });
   for (const { match } of played(liveRun(token))) {
     if (match.extraTime === null) continue;

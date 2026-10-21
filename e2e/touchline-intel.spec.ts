@@ -69,7 +69,7 @@ for (const [width, height] of [
   test.describe(`at ${width}x${height}`, () => {
     test.use({ viewport: { width, height }, hasTouch: true, isMobile: true });
 
-    test("the pre-match card shows the scout line and badged pills; the open sheet shows bench cards with the fit glyph and no numbers, and a tactic switches the assistant off (catches missing touchline intelligence)", async ({
+    test("the pre-match card shows the scout line and badged pills; the open sheet shows bench cards with the fit glyph and no numbers, and a substitution switches the assistant's subs off while keeping tactics on (catches missing touchline intelligence)", async ({
       page,
     }) => {
       test.skip(test.info().project.name !== "chromium", "the viewport is set explicitly");
@@ -112,13 +112,9 @@ for (const [width, height] of [
       await cards.first().scrollIntoViewIfNeeded();
       await page.screenshot({ path: `${SHOT}/${width}-sheet-bench.png` });
 
-      const current = await sheet
-        .locator('[data-testid^="tactic-"][aria-pressed="true"]')
-        .getAttribute("data-testid");
-      const other = current === "tactic-attack" ? "tactic-defend" : "tactic-attack";
-      await sheet.getByTestId(other).scrollIntoViewIfNeeded();
-      await sheet.getByTestId(other).tap();
-      await expect(status).toHaveText("Assistant: subs off, tactics off");
+      await sheet.getByTestId("sub-confirm").scrollIntoViewIfNeeded();
+      await sheet.getByTestId("sub-confirm").tap();
+      await expect(status).toHaveText("Assistant: subs off, tactics on");
     });
   });
 }

@@ -20,7 +20,7 @@ type GoalBeat = Extract<Beat, { kind: "goal" }>;
 
 // The golden cup8 draft under engine 6: six played matches, 27 goals, extra time and a shootout in
 // the quarter-final.
-const { draft, cup } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const LINEUP = toFullLineup(draft);
 // One 60 Hz frame at 1x.
 const STEP = 1000 / 60;
@@ -97,12 +97,12 @@ describe("continuous ball (catches the ball teleporting between frames, 78.0% of
   });
 
   it("starts a penalty's flight where the ball is, then sets it on the drawn spot at 89 (catches a penalty run from the centre spot)", () => {
-    const timeline = timelineAt(3);
-    const goal = goalAt(timeline, 84);
+    const timeline = timelineAt(4);
+    const goal = goalAt(timeline, 81);
     expect(goal.goalKind).toBe("penalty");
     const key = beatKey(goal);
     const ballAt = (fired: Record<string, number>, now: number) => {
-      const b = stageFrame(timeline, viewFor(3, { clock: 84, fired, now })).stage.ball;
+      const b = stageFrame(timeline, viewFor(4, { clock: 81, fired, now })).stage.ball;
       return { x: b.x, y: b.y };
     };
     const live = ballAt({}, 10_000);

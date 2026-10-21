@@ -7,13 +7,7 @@ import type { ManagerAction } from "@/engine/types";
 import { GOLDEN_CUP8_V5 } from "@/engine/versions/__tests__/fixtures";
 import { MatchdayFlow } from "../MatchdayFlow";
 
-// Engine 7 switches the control on with missable penalties; this stands in for the flip.
-vi.mock("@/ui/manager/touchline", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/ui/manager/touchline")>()),
-  SET_PIECES_ON: true,
-}));
-
-const { draft, cup } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const CTX = { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode };
 
 beforeEach(() => {

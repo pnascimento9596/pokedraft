@@ -18,7 +18,7 @@ describe("isCoached (catches a board that marks plain runs coached or misses coa
       ...BASE,
       manager: [{ type: "tactic", match: 0, minute: 0, tactic: "attack" }],
     });
-    expect(token.startsWith("pd6.")).toBe(true);
+    expect(token.startsWith("pd7.")).toBe(true);
     expect(isCoached(token)).toBe(true);
   });
 

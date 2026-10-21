@@ -123,11 +123,11 @@ test(`solo: ${solo.scorer} dribbles past the defender who steps in, cup8 ${solo.
   expect(Math.hypot(frame.ball.x - scorer.x, (frame.ball.y - scorer.y) * 0.64)).toBeLessThan(4);
 });
 
-test(`header: the cross from the wing, cup8 ${header.round} ${header.minute}'`, async ({
+test(`header: the cross from the wing, kanto151 ${header.round} ${header.minute}'`, async ({
   page,
 }) => {
   test.setTimeout(120_000);
-  await watch(page, CUP8, header.round);
+  await watch(page, KANTO, header.round);
   const frame = await frameWhere(
     page,
     (pin) => {

@@ -19,15 +19,15 @@ import { buildTimeline, type Beat, type PitchStage, type Point, type Timeline } 
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 type GoalBeat = Extract<Beat, { kind: "goal" }>;
 
-// The golden runs under engine 6. Their goals of each kind:
+// The golden runs under engine 7. Their goals of each kind:
 //   cup8 match 0, 49': Talonflame's solo run (user).
-//   cup8 match 3, 9': Talonflame's header from Tapu Koko's cross (user).
-//   cup8 match 3, 84': Zeraora's penalty (user).
+//   kanto151 match 1, 83': Magmar's header from Rapidash's cross (user).
+//   cup8 match 4, 81': Zeraora's penalty (user).
 //   cup8 match 5, 37': Talonflame's header for the opponent.
 //   kanto151 match 3, 17': Bulbasaur's free kick (user).
 const RUNS = {
-  cup8: replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`),
-  kanto: replay(`pd6.${GOLDEN_KANTO151_V5.slice("pd5.".length)}`),
+  cup8: replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`),
+  kanto: replay(`pd7.${GOLDEN_KANTO151_V5.slice("pd5.".length)}`),
 } as const;
 type Run = keyof typeof RUNS;
 
@@ -96,7 +96,7 @@ const lengthwise = (a: Point, b: Point) => Math.hypot(a.x - b.x, (a.y - b.y) * 0
 
 describe("set pieces staged from goalKind (catches every goal kind staged as the same run onto a shot)", () => {
   it("penalty: the shape freezes, Zeraora walks the ball to the spot, steps up, pauses, then kicks from 89 (catches a penalty struck on the run before the taker reaches the ball)", () => {
-    const { goal, at } = scene("cup8", 3, 84);
+    const { goal, at } = scene("cup8", 4, 81);
     expect(goal.goalKind).toBe("penalty");
     expect(goal.scorer).toMatchObject({ side: "user", slot: 10 });
     const start = at(0);
@@ -117,7 +117,7 @@ describe("set pieces staged from goalKind (catches every goal kind staged as the
     expectNear(ballOf(at(520)), { x: 89, y: 50 });
     expectNear(ballOf(at(780)), { x: 89, y: 50 });
     expectNear(ballOf(at(900)), { x: 89, y: 50 });
-    expect(point(at(260), "user", 10).x).toBeLessThan(84);
+    expect(point(at(260), "user", 10).x).toBeLessThan(85);
     expectNear(point(at(780), "user", 10), { x: 87.4, y: 50 });
     expectNear(point(at(900), "user", 10), { x: 87.4, y: 50 });
     const kick = at(1040);
@@ -151,21 +151,21 @@ describe("set pieces staged from goalKind (catches every goal kind staged as the
     expectNear(mid.trail?.via, { x: 80.75, y: 43 }, 5);
   });
 
-  it("header: Tapu Koko's cross from the wing, and Talonflame meets it at loft 0.85 (catches a header struck off the grass)", () => {
-    const { goal, at } = scene("cup8", 3, 9);
+  it("header: Rapidash's cross from the wing, and Magmar meets it at loft 0.85 (catches a header struck off the grass)", () => {
+    const { goal, at } = scene("kanto", 1, 83);
     expect(goal.goalKind).toBe("header");
-    expect(goal.scorer).toMatchObject({ side: "user", slot: 8 });
-    expect(goal.assist).toMatchObject({ side: "user", slot: 6 });
-    expect(at(400).ball.carrier).toMatchObject({ side: "user", slot: 6 });
+    expect(goal.scorer).toMatchObject({ side: "user", slot: 5 });
+    expect(goal.assist).toMatchObject({ side: "user", slot: 4 });
+    expect(at(400).ball.carrier).toMatchObject({ side: "user", slot: 4 });
     const cross = at(650);
     expect(cross.trail?.kind).toBe("cross");
-    expectNear(cross.trail?.from, { x: 84, y: 12 });
-    expect(cross.ball.carrier).toMatchObject({ side: "user", slot: 8 });
+    expectNear(cross.trail?.from, { x: 84, y: 88 });
+    expect(cross.ball.carrier).toMatchObject({ side: "user", slot: 5 });
     const meet = at(910);
     expect(meet.ball.loft).toBeCloseTo(0.85, 6);
     expect(meet.ball.x).toBeCloseTo(88, 6);
-    expect(meet.ball.y).toBeCloseTo(47.01, 2);
-    expectNear(point(meet, "user", 8), ballOf(meet));
+    expect(meet.ball.y).toBeCloseTo(52.46, 2);
+    expectNear(point(meet, "user", 5), ballOf(meet));
   });
 
   it("solo: Talonflame dribbles a chain of touches past the defender who steps in (catches a solo goal staged as a pass)", () => {
@@ -188,8 +188,8 @@ describe("set pieces staged from goalKind (catches every goal kind staged as the
   it("every kind puts the ball in the net and the score on the board at GOAL_LANDS, 1,560 ms in (catches a set piece that lands the score before the ball)", () => {
     const cases = [
       { run: "cup8", index: 0, minute: 49, kind: "solo", mouth: { x: 98, y: 50 } },
-      { run: "cup8", index: 3, minute: 9, kind: "header", mouth: { x: 98, y: 50 } },
-      { run: "cup8", index: 3, minute: 84, kind: "penalty", mouth: { x: 98, y: 50 } },
+      { run: "kanto", index: 1, minute: 83, kind: "header", mouth: { x: 98, y: 50 } },
+      { run: "cup8", index: 4, minute: 81, kind: "penalty", mouth: { x: 98, y: 50 } },
       { run: "cup8", index: 5, minute: 37, kind: "header", mouth: { x: 2, y: 50 } },
       { run: "kanto", index: 3, minute: 17, kind: "free-kick", mouth: { x: 98, y: 50 } },
     ] as const;
@@ -207,8 +207,8 @@ describe("set pieces staged from goalKind (catches every goal kind staged as the
   it("Quick and reduced motion stay still for every kind: no wall, no trail, the ball in the net (catches set pieces animating with motion off)", () => {
     const cases = [
       ["cup8", 0, 49, { x: 98, y: 50 }],
-      ["cup8", 3, 9, { x: 98, y: 50 }],
-      ["cup8", 3, 84, { x: 98, y: 50 }],
+      ["kanto", 1, 83, { x: 98, y: 50 }],
+      ["cup8", 4, 81, { x: 98, y: 50 }],
       ["kanto", 3, 17, { x: 98, y: 50 }],
     ] as const;
     for (const [run, index, minute, mouth] of cases) {

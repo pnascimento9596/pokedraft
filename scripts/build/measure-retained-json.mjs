@@ -7,7 +7,7 @@ import ts from "typescript";
 const chunks = process.argv[2] ?? ".next/server/chunks";
 const hash = (value) => createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const artifacts = new Map();
-for (const version of ["live", "v1", "v2", "v3", "v4", "v5"]) {
+for (const version of ["live", "v1", "v2", "v3", "v4", "v5", "v6"]) {
   for (const name of ["pokedex", "scouting"]) {
     const file =
       version === "live"

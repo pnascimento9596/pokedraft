@@ -24,7 +24,7 @@ function readVersioned(token: string): { readonly version: number; readonly run:
   const version = Number(/^pd(\d+)\./.exec(token)?.[1]);
   if (version !== RUN_TOKEN_VERSION && !RETAINED_TOKEN_VERSIONS.includes(version)) return null;
   try {
-    return { version, run: decodeToken(token.replace(/^pd\d+\./, `pd${RUN_TOKEN_VERSION}.`)) };
+    return { version, run: decodeToken(token, version) };
   } catch {
     return null;
   }

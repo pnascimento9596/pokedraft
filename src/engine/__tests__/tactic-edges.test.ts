@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ENGINE_COEFFICIENTS_V7 } from "../coefficients-v7";
-import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "../coefficients";
-import { cupMatchInput, runCup } from "../cup";
-import { playMatchCore } from "../match";
-import { ENGINE_COEFFICIENTS as V6_COEFFICIENTS } from "../versions/v6/src/engine/coefficients";
-import { playMatchCore as playMatchCoreV6 } from "../versions/v6/src/engine/match";
+import { type EngineCoefficients } from "../coefficients";
+import { runCup } from "../cup";
 import { matchStory } from "../story";
 import type { ManagerAction, Seed, Tactic } from "../types";
 import { CUP8, draftLineup } from "./story-panel";
@@ -98,48 +95,5 @@ describe("engine 7 press against a direct side (catches pressing a direct side g
   it("Press loses it 8-2, Balanced 5-2", () => {
     expect(press.s.result.regulation).toEqual({ user: 2, opp: 8 });
     expect(balanced.s.result.regulation).toEqual({ user: 2, opp: 5 });
-  });
-});
-
-// Regression guard, no RED: behaviour already correct. Output parity only sees a rate when it flips
-// an outcome, so this compares every trial's rate with the frozen engine 6 bundle. Under engine 6
-// these runs counter while leading from 86' (match 0) and press below 70 mean outfield energy late
-// in normal time (matches 3 and 4), so both state terms run at their engine 6 values.
-describe("engine 7 tactic state terms at engine 6 values (catches the dormant terms moving engine 6)", () => {
-  const rates = (match: number, tactic: Tactic) => {
-    const input = cupMatchInput(LINEUP, SEED, "cup8", match, held(match, tactic));
-    const live: number[] = [];
-    const frozen: number[] = [];
-    const result = playMatchCore(input, ENGINE_COEFFICIENTS, {
-      chance: (ch) => live.push(ch.p),
-      window: () => {},
-    });
-    // The casts only bridge the bundle's own copy of the branded types, as v6-parity.ts does.
-    playMatchCoreV6(input as never, V6_COEFFICIENTS, {
-      chance: (ch) => frozen.push(ch.p),
-      window: () => {},
-    });
-    return { live, frozen, result };
-  };
-
-  it("match 0, Counter: every trial's rate matches engine 6, with the user leading from 86'", () => {
-    const { live, frozen, result } = rates(0, "counter");
-    expect(result.goals.map((g) => [g.minute, g.side])).toEqual([
-      [12, "opp"],
-      [32, "user"],
-      [86, "user"],
-    ]);
-    expect(live.length).toBe(100);
-    expect(live).toEqual(frozen);
-  });
-
-  it.each([
-    [3, [92, 59, 60, 68, 64, 78, 73, 82, 57, 76, 55]],
-    [4, [62, 59, 60, 68, 64, 78, 73, 82, 57, 76, 80]],
-  ])("match %i, Press: every trial's rate matches engine 6, tired at 90'", (match, energy) => {
-    const { live, frozen, result } = rates(match, "press");
-    expect(result.windows!.at(-1)!.energy).toEqual(energy);
-    expect(live.length).toBe(100);
-    expect(live).toEqual(frozen);
   });
 });

@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test";
 import sharp from "sharp";
-import { A11Y_RUN_V1, GOLDEN_CUP8_V2 } from "../src/engine/versions/__tests__/fixtures";
+import {
+  A11Y_RUN_V1,
+  GOLDEN_CUP8_V2,
+  GOLDEN_CUP8_V6,
+} from "../src/engine/versions/__tests__/fixtures";
 import { pngSize } from "./helpers";
 
 test.use({ permissions: ["clipboard-read", "clipboard-write"] });
@@ -54,6 +58,7 @@ test("a query link restores results, title, canonical OG image, card download an
 for (const [token, record, score, version] of [
   [A11Y_RUN_V1, "8-0-0", "845", "v1"],
   [GOLDEN_CUP8_V2, "3-0-2", "593", "v2"],
+  [GOLDEN_CUP8_V6, "5-0-1", "593", "v6"],
 ]) {
   test(`a retained ${version} dot link still replays its original results`, async ({ page }) => {
     expect((await page.goto(`/r/${token}`))?.status()).toBe(200);

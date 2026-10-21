@@ -7,7 +7,7 @@ import { GOLDEN_CUP8_V3 } from "@/engine/versions/__tests__/fixtures";
 import type { BoardEntry } from "../../contract";
 import { handleBoard, handleSubmit } from "../handlers";
 import { drizzleStore, type LeaderboardStore } from "../store";
-import { GOLDEN_CUP8_V6, migratedDb, scriptedToken } from "./fixtures";
+import { GOLDEN_CUP8_V7, migratedDb, scriptedToken } from "./fixtures";
 
 const NOW = new Date("2026-10-09T16:00:00Z");
 const SECRET = "test-secret-0123456789abcdef01234567";
@@ -44,7 +44,7 @@ function row(
     token: `tok-${nickname}`,
     draws: 0,
     losses: 8 - fields.wins,
-    engineVersion: "pokedraft-engine-6",
+    engineVersion: "pokedraft-engine-7",
     coached: false,
     runFingerprint: `fp-${nickname}`,
     ipHash: "test",
@@ -70,7 +70,7 @@ async function board(qs: string) {
 const ranked = (entries: readonly BoardEntry[]) =>
   entries.map((e) => [e.rank, e.nickname, e.engineVersion]);
 
-describe("all-time engine filter (catches an engine 3 run ranked against engine 6 runs by default)", () => {
+describe("all-time engine filter (catches an engine 3 run ranked against engine 7 runs by default)", () => {
   beforeEach(async () => {
     await db.insert(leaderboardEntries).values([
       row("Lance", {
@@ -79,7 +79,7 @@ describe("all-time engine filter (catches an engine 3 run ranked against engine 
         teamScore: 990,
         engineVersion: "pokedraft-engine-3",
       }),
-      row("Ash", { token: GOLDEN_CUP8_V6, wins: 5, teamScore: 593 }),
+      row("Ash", { token: GOLDEN_CUP8_V7, wins: 5, teamScore: 593 }),
     ]);
   });
 
@@ -87,15 +87,15 @@ describe("all-time engine filter (catches an engine 3 run ranked against engine 
     const { status, body } = await board("mode=cup8&scope=all");
     expect(status).toBe(200);
     expect(body.engine).toBe("current");
-    expect(ranked(body.entries)).toEqual([[1, "Ash", "pokedraft-engine-6"]]);
+    expect(ranked(body.entries)).toEqual([[1, "Ash", "pokedraft-engine-7"]]);
   });
 
-  it("engine=all lists the engine 3 run above the engine 6 run", async () => {
+  it("engine=all lists the engine 3 run above the engine 7 run", async () => {
     const { body } = await board("mode=cup8&scope=all&engine=all");
     expect(body.engine).toBe("all");
     expect(ranked(body.entries)).toEqual([
       [1, "Lance", "pokedraft-engine-3"],
-      [2, "Ash", "pokedraft-engine-6"],
+      [2, "Ash", "pokedraft-engine-7"],
     ]);
   });
 
@@ -108,14 +108,14 @@ describe("all-time engine filter (catches an engine 3 run ranked against engine 
         teamScore: 800,
         engineVersion: "pokedraft-engine-3",
       }),
-      row("Daily6", { dailyDate: "2026-10-13", seed: "d", wins: 6, teamScore: 800 }),
+      row("Daily7", { dailyDate: "2026-10-13", seed: "d", wins: 6, teamScore: 800 }),
     ]);
     const daily = await board("mode=cup8&scope=daily&date=2026-10-13");
     expect([daily.body.engine, ranked(daily.body.entries)]).toEqual([
       "all",
       [
         [1, "Daily3", "pokedraft-engine-3"],
-        [2, "Daily6", "pokedraft-engine-6"],
+        [2, "Daily7", "pokedraft-engine-7"],
       ],
     ]);
     const refused = await board("mode=cup8&scope=daily&date=2026-10-13&engine=all");
@@ -134,7 +134,7 @@ describe("all-time engine filter (catches an engine 3 run ranked against engine 
         headers: { "content-type": "application/json", "x-forwarded-for": "203.0.113.7" },
         body: JSON.stringify({ nickname: "Misty", token: scriptedToken(CUP8, "seed-board-rank") }),
       }),
-      { store, ipHashSecret: SECRET, now: () => NOW },
+      { store, ipHashSecret: SECRET, now: () => NOW, grace: null },
     );
     const body = (await res.json()) as { entry: BoardEntry };
     const listed = (await board("mode=cup8&scope=all")).body.entries;
@@ -144,8 +144,8 @@ describe("all-time engine filter (catches an engine 3 run ranked against engine 
       201,
       1,
       [
-        [1, "Misty", "pokedraft-engine-6"],
-        [2, "Ash", "pokedraft-engine-6"],
+        [1, "Misty", "pokedraft-engine-7"],
+        [2, "Ash", "pokedraft-engine-7"],
       ],
     ]);
   });
@@ -154,7 +154,7 @@ describe("all-time engine filter (catches an engine 3 run ranked against engine 
 describe("seed board (catches friends on one seed missing from each other's results)", () => {
   beforeEach(async () => {
     await db.insert(leaderboardEntries).values([
-      row("Ash", { token: GOLDEN_CUP8_V6, wins: 5, teamScore: 593 }),
+      row("Ash", { token: GOLDEN_CUP8_V7, wins: 5, teamScore: 593 }),
       row("Lance", {
         token: GOLDEN_CUP8_V3,
         wins: 6,
@@ -178,8 +178,8 @@ describe("seed board (catches friends on one seed missing from each other's resu
     ]);
     expect(ranked(body.entries)).toEqual([
       [1, "Lance", "pokedraft-engine-3"],
-      [2, "Misty", "pokedraft-engine-6"],
-      [3, "Ash", "pokedraft-engine-6"],
+      [2, "Misty", "pokedraft-engine-7"],
+      [3, "Ash", "pokedraft-engine-7"],
     ]);
     expect(body.entries.map((e) => e.seed)).toEqual(["golden-cup8", "golden-cup8", "golden-cup8"]);
   });

@@ -9,7 +9,7 @@ import { MatchdayFlow } from "../MatchdayFlow";
 // The golden cup8 draft under engine 6. Match 0 is against a pressing side. In match 5 (the
 // quarter-final, against a direct side) Roselia goes down in slot 1 (LB) at 42' and the assistant
 // sends on Kommo-o.
-const { draft, cup } = replay(`pd6.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const CTX = { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode };
 
 beforeEach(() => {
@@ -74,7 +74,7 @@ describe("PreMatch scout line (catches a kickoff scout line that is missing or n
   it("shows the pressing side's edges above the starting tactic, and badges the pills", () => {
     mount();
     expect(screen.getByTestId("scout-line").textContent).toBe(
-      "Scout: a pressing side. Best edge: Counter, then Press. Avoid Defend.",
+      "Scout: a pressing side. Best edge: Counter, then Press. Avoid Attack and Defend.",
     );
     expect(screen.getByTestId("edge-counter").getAttribute("data-edge")).toBe("favourable");
     expect(screen.getByTestId("edge-defend").getAttribute("data-edge")).toBe("unfavourable");
@@ -87,7 +87,7 @@ describe("PreMatch scout line (catches a kickoff scout line that is missing or n
 });
 
 describe("assistant status (catches a status line that keeps claiming the assistant runs the side)", () => {
-  it("assistant status reads 'Assistant: subs off, tactics off' after a tactic change", async () => {
+  it("assistant status splits subs and tactics: a sub turns subs off, and a half-time tactic turns tactics off", async () => {
     mount();
     await kickOff();
     await act(async () => {
@@ -96,6 +96,12 @@ describe("assistant status (catches a status line that keeps claiming the assist
     expect(screen.getByTestId("assistant-status").textContent).toBe(
       "Assistant: subs on, tactics on",
     );
+    fireEvent.click(screen.getByTestId("sheet-toggle"));
+    fireEvent.click(screen.getByTestId("sub-confirm"));
+    expect(screen.getByTestId("assistant-status").textContent).toBe(
+      "Assistant: subs off, tactics on",
+    );
+    await until("stop-halftime");
     fireEvent.click(screen.getByTestId("tactic-attack"));
     expect(screen.getByTestId("assistant-status").textContent).toBe(
       "Assistant: subs off, tactics off",
@@ -109,7 +115,7 @@ describe("half-time stop (catches a half-time stop with no scout or fatigue line
     await kickOff();
     const stop = await until("stop-halftime");
     expect(stop.querySelector('[data-testid="halftime-scout"]')?.textContent).toBe(
-      "Scout: a pressing side. Best edge: Counter, then Press. Avoid Defend.",
+      "Scout: a pressing side. Best edge: Counter, then Press. Avoid Attack and Defend.",
     );
     expect(stop.querySelector('[data-testid="halftime-fatigue"]')?.textContent).toBe(
       "Most tired: Togepi (84) and Croagunk (86).",

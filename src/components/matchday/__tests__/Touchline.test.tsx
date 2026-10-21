@@ -18,7 +18,8 @@ const seat = (index: number, species: number, available = true) => ({
 const LINE: TouchlineState = {
   minute: 46,
   tactic: "balanced",
-  managed: false,
+  tacticManaged: false,
+  subsManaged: false,
   subsUsed: 2,
   onPitch: [1, 4, 7, 10, 13, 16, 19, 21, 23, 27, 25].map(id),
   energy: [96, 80, 81, 82, 83, 84, 85, 86, 87, 88, 62],
@@ -63,7 +64,7 @@ describe("Touchline (catches a panel that offers used players or records nothing
   it("closes the substitution once all five are used, and says the assistant has stepped back", () => {
     render(
       <Touchline
-        line={{ ...LINE, subsUsed: 5, managed: true }}
+        line={{ ...LINE, subsUsed: 5, tacticManaged: true, subsManaged: true }}
         formation="4-3-3"
         onDecide={() => {}}
         error={null}
@@ -141,16 +142,48 @@ describe("Touchline as a phone sheet (catches a collapsed sheet without its tact
 });
 
 describe("Touchline intelligence (catches a touchline that hides the assistant's state, the bench's fit or a booking)", () => {
-  it("states the assistant's engine 6 behaviour: subs on, tactics on before a decision; subs off, tactics off after", () => {
+  it("states each half of the assistant's engine 7 behaviour and the matching takeover copy", () => {
     const { rerender } = render(
       <Touchline line={LINE} formation="4-3-3" onDecide={() => {}} error={null} />,
     );
     expect(screen.getByTestId("assistant-status").textContent).toBe(
       "Assistant: subs on, tactics on",
     );
+    expect(screen.queryByTestId("takeover")).toBeNull();
+
     rerender(
       <Touchline
-        line={{ ...LINE, managed: true }}
+        line={{ ...LINE, tacticManaged: false, subsManaged: true }}
+        formation="4-3-3"
+        onDecide={() => {}}
+        error={null}
+      />,
+    );
+    expect(screen.getByTestId("assistant-status").textContent).toBe(
+      "Assistant: subs off, tactics on",
+    );
+    expect(screen.getByTestId("takeover").textContent).toBe(
+      "You're making the subs now. Your assistant still manages tactics.",
+    );
+
+    rerender(
+      <Touchline
+        line={{ ...LINE, tacticManaged: true, subsManaged: false }}
+        formation="4-3-3"
+        onDecide={() => {}}
+        error={null}
+      />,
+    );
+    expect(screen.getByTestId("assistant-status").textContent).toBe(
+      "Assistant: subs on, tactics off",
+    );
+    expect(screen.getByTestId("takeover").textContent).toBe(
+      "You have the tactics now. Your assistant still makes fatigue subs.",
+    );
+
+    rerender(
+      <Touchline
+        line={{ ...LINE, tacticManaged: true, subsManaged: true }}
         formation="4-3-3"
         onDecide={() => {}}
         error={null}
@@ -158,6 +191,9 @@ describe("Touchline intelligence (catches a touchline that hides the assistant's
     );
     expect(screen.getByTestId("assistant-status").textContent).toBe(
       "Assistant: subs off, tactics off",
+    );
+    expect(screen.getByTestId("takeover").textContent).toBe(
+      "You have the touchline. Your assistant stops making changes this match.",
     );
   });
 
@@ -239,9 +275,8 @@ describe("Touchline intelligence (catches a touchline that hides the assistant's
   });
 });
 
-// Regression guard, no RED: behaviour already correct. Engine 6 has no missable penalties.
-describe("Touchline set pieces at engine 6 (catches an engine 7 control reaching engine 6)", () => {
-  it("shows no Set pieces row, expanded or not", () => {
+describe("Touchline set pieces under engine 7 (catches set-piece selects staying hidden after the flip)", () => {
+  it("renders Set pieces with Penalty taker and Free-kick taker selects", () => {
     render(
       <Touchline
         line={LINE}
@@ -251,6 +286,6 @@ describe("Touchline set pieces at engine 6 (catches an engine 7 control reaching
         sheet={{ expanded: true, onExpand: () => {} }}
       />,
     );
-    expect(screen.queryByTestId("set-pieces")).toBeNull();
+    expect(screen.getByTestId("set-pieces")).not.toBeNull();
   });
 });

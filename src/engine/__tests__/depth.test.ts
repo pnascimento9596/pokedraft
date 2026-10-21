@@ -140,20 +140,20 @@ describe("v4 match event contracts", () => {
         ...ENGINE_COEFFICIENTS,
         match: {
           ...ENGINE_COEFFICIENTS.match,
-          penaltyShare: 1,
-          // One chance per five-minute window: engine 6 tactics and fatigue can hold a single
-          // chance under certainty, so both sides get enough to score.
           chances: { regulation: 18, extraTime: 6, maxGoalProb: 1 },
         },
+        penalty: { awardShare: 1e6 },
+        shootout: { ...ENGINE_COEFFICIENTS.shootout, base: 1, band: 0 },
       },
     );
     const keeper = starters[0]!.species.id;
-    const scorers = m.goals.map((g) =>
+    const penGoals = m.goals.filter((g) => g.penalty);
+    const scorers = penGoals.map((g) =>
       g.side === "user" ? g.scorer : g.scorer.kind === "species" ? g.scorer.id : -1,
     );
-    expect(new Set(m.goals.map((g) => g.side))).toEqual(new Set(["user", "opp"]));
+    expect(new Set(penGoals.map((g) => g.side))).toEqual(new Set(["user", "opp"]));
     expect(new Set(scorers)).toEqual(new Set([keeper]));
-    expect(m.goals.every((g) => g.penalty)).toBe(true);
+    expect(penGoals.length).toBe(36);
   });
 
   it("reports six actual group fixtures with one match per team in every round", () => {
@@ -188,10 +188,10 @@ describe("v4 match event contracts", () => {
 
   it("keeps Boss XI shape within three points and the existing difficulty centre", () => {
     const final = buildLadder("golden-1", "kanto151").F;
-    expect(Object.values(final.lines).reduce((a, b) => a + b, 0) / 4).toBeCloseTo(101.15, 12);
-    expect(Math.abs(final.lines.GK - 103.9)).toBeLessThanOrEqual(3);
-    expect(Math.abs(final.lines.DEF - 103.9)).toBeLessThanOrEqual(3);
-    expect(Math.abs(final.lines.MID - 96.9)).toBeLessThanOrEqual(3);
-    expect(Math.abs(final.lines.ATT - 99.9)).toBeLessThanOrEqual(3);
+    expect(Object.values(final.lines).reduce((a, b) => a + b, 0) / 4).toBeCloseTo(101.25, 12);
+    expect(Math.abs(final.lines.GK - 104)).toBeLessThanOrEqual(3);
+    expect(Math.abs(final.lines.DEF - 104)).toBeLessThanOrEqual(3);
+    expect(Math.abs(final.lines.MID - 97)).toBeLessThanOrEqual(3);
+    expect(Math.abs(final.lines.ATT - 100)).toBeLessThanOrEqual(3);
   });
 });
