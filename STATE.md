@@ -15,8 +15,12 @@ Branch `chore/live-checks-gate` off `origin/main` at `6606585`. Wave 7 row 7-0 (
   - `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,190 passed in 250 files) and `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records) exited 0.
   - Local Playwright (`CI=1 PLAYWRIGHT_PORT=3971 pnpm exec playwright test e2e/health.spec.ts e2e/share.spec.ts --project=chromium`): 19 passed (1 in `e2e/health.spec.ts`, 18 in `e2e/share.spec.ts`); `e2e/seed-board.spec.ts` (`--project=chromium`): 9 passed.
 - Decision log: `docs/decisions/live-checks-gate.md` (includes the real-page assertion audit for the 9 live-check specs and the list of specs that assume an ungated host or target `/gate` directly).
+- Production through the gate, run by the coordinator from this branch at `0e00245b` against production serving `6606585` (the harness change is test-only, so production code is the same):
+  - With `PLAYWRIGHT_GATE_COOKIE_FILE` set, chromium, retries off: the Wave 6 live set (`health`, `old-links`, `share`, `leaderboard`, `seed-board`, `dossier-contributions`, `xg-river`, `penalty-takers`, `opponent-injuries`) 62 passed, 0 failed.
+  - The same run without the cookie file: `e2e/old-links.spec.ts` 1 failed (the `engine-label` assertion), so the cookie is what lets the gated specs pass.
+  - Specs that target `/gate` or assume an ungated host, with the cookie: `e2e/share-sheet.spec.ts` and `e2e/theme-support.spec.ts` passed; `e2e/resilience-a11y.spec.ts` failed 5 of 6 (it replaces `storageState` with no cookies at line 9, so it hits the gate; the theme-color test at line 57 passed only because `/` redirects to the gate page, which carries the same theme-color meta, so on a gated host it passes for the wrong reason). It stays a local-only spec.
+  - `curl` without a cookie: `/` 307 to `/gate?next=%2F`, `/api/leaderboard` 401.
 - NOT RUN:
-  - Production Playwright checks with `PLAYWRIGHT_GATE_COOKIE_FILE` (run by the coordinator; this lane never reads `~/.pokedraft/` or runs against production).
   - The grace-window receipt (the window closes at `2026-10-23T04:00:00Z`).
   - Hosted CI and reviewer receipt on the pushed branch.
   - The phone check and screen reader pass.

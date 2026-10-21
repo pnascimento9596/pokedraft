@@ -72,9 +72,18 @@ At commit `ee047837` (`/Users/paulo/.gemini/antigravity-cli/brain/432c72be-fea7-
 - `playwright.live.config.ts:14` and `e2e-live/live.spec.ts:8-65`: `playwright.live.config.ts` sets `use: { baseURL, trace: "retain-on-failure", colorScheme: "dark" }` without `storageState` cookies, so `e2e-live/live.spec.ts` requests `/`, `/api/leaderboard?mode=cup8&scope=all`, `/r/garbage-not-a-token`, `/daily`, `/leaderboard`, `/history`, and `/how-to-play` (`e2e-live/live.spec.ts:9, 17, 26, 59, 61`) without `pokedraft_pass`.
 - Direct `/gate` specs: `e2e/share.spec.ts:71-86`, `e2e/share-sheet.spec.ts:35-41`, `e2e/mobile-targets.spec.ts:162-167`, and `e2e/theme-support.spec.ts:10, 24-30` navigate directly to `/gate?next=...` or `/gate?error=unavailable`. Because `/gate` is in `PUBLIC` (`src/passcode.ts:18`) and `GatePage` (`src/app/gate/page.tsx:60-76`) always renders the gate form even when `pokedraft_pass` is present, these tests stay unchanged on both gated and ungated hosts.
 
+## Production results (coordinator)
+
+Run from this branch at `0e00245b` against production serving `6606585`, chromium, retries off. The coordinator holds the cookie file; its value was never printed.
+
+- With `PLAYWRIGHT_GATE_COOKIE_FILE`: the nine live-check specs above, 62 passed, 0 failed.
+- Without the cookie file: `e2e/old-links.spec.ts` 1 failed on the `engine-label` assertion. The cookie is what makes the gated specs pass.
+- With the cookie: `e2e/share-sheet.spec.ts` and `e2e/theme-support.spec.ts` passed. `e2e/resilience-a11y.spec.ts` failed 5 of 6 because line 9 drops the cookie. Its theme-color test (line 57) passed only because `/` redirects to the gate page, which carries the same theme-color meta. The spec stays local-only and is not part of any live set.
+- `curl` without a cookie: `/` 307 to `/gate?next=%2F`, `/api/leaderboard` 401.
+
 ## NOT RUN
 
-- Production Playwright checks with `PLAYWRIGHT_GATE_COOKIE_FILE` (run by the coordinator; this lane never reads `~/.pokedraft/` or targets production).
+- Production Playwright checks with `PLAYWRIGHT_GATE_COOKIE_FILE` from the lane (the coordinator ran them, above).
 - The grace-window receipt (the window closes at `2026-10-23T04:00:00Z`).
 - Hosted CI and reviewer receipt on the pushed branch.
 - The phone check and screen reader pass.
