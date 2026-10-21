@@ -8,7 +8,7 @@ import {
   toIsoDate,
   type DraftSettings,
 } from "@/engine";
-import { leaderboardAttempts, leaderboardEntries } from "@/db/schema";
+import { leaderboardEntries, rateLimitEvents } from "@/db/schema";
 import type { Db } from "@/db/types";
 import type { BoardEntry } from "../../contract";
 import { dailySettings } from "../../daily";
@@ -167,7 +167,7 @@ describe("grace window (catches runs played on the retired engine refused the mo
       engineVersion: "pokedraft-engine-6",
     });
     expect([res.status, res.body.error.code]).toEqual([422, "ILLEGAL_ACTION"]);
-    expect(await db.select().from(leaderboardAttempts)).toEqual([]);
+    expect(await db.select().from(rateLimitEvents)).toEqual([]);
   });
 
   it("answers a retry with 200 and a copy under another nickname with 409 DUPLICATE_TOKEN", async () => {

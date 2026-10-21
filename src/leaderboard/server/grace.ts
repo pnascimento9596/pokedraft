@@ -16,7 +16,12 @@ export interface Grace {
   readonly flipDate: IsoDate;
 }
 
-export const GRACE: Grace | null = null;
+export const GRACE: Grace | null = {
+  version: 6,
+  engine: "pokedraft-engine-6",
+  until: "2026-10-22T04:00:00Z",
+  flipDate: "2026-10-20" as IsoDate,
+};
 
 export function openGrace(grace: Grace | null, token: string, now: Date): Grace | null {
   if (grace === null || !token.startsWith(`pd${grace.version}.`)) return null;

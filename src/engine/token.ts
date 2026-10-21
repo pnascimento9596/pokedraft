@@ -307,8 +307,8 @@ function decodeSettings(raw: unknown): DraftSettings {
   }
 }
 
-function decodeManager(raw: unknown, index: number): ManagerAction {
-  const parsed = managerSchema.safeParse(raw);
+function decodeManager(raw: unknown, index: number, version: number): ManagerAction {
+  const parsed = managerSchemaFor(version).safeParse(raw);
   if (!parsed.success)
     throw new RunTokenError("invalidAction", `manager action ${index} is invalid`);
   return expandManager(parsed.data);
@@ -320,10 +320,10 @@ function decodeAction(raw: unknown, index: number): DraftAction {
   return expandAction(parsed.data);
 }
 
-export function decodeToken(s: string): RunToken {
+export function decodeToken(s: string, version: number = RUN_TOKEN_VERSION): RunToken {
   const m = PREFIX.exec(s);
   if (m === null) malformed("token has no pd<version>. prefix");
-  if (m[1] !== String(RUN_TOKEN_VERSION)) {
+  if (m[1] !== String(version)) {
     throw new RunTokenError("unknownVersion", `unknown token version ${m[1]}`);
   }
   const payload = payloadSchema.safeParse(parseJson(fromBase64Url(m[2]!)));
@@ -337,5 +337,5 @@ export function decodeToken(s: string): RunToken {
   };
   return rawManager === undefined || rawManager.length === 0
     ? run
-    : { ...run, manager: rawManager.map(decodeManager) };
+    : { ...run, manager: rawManager.map((raw, index) => decodeManager(raw, index, version)) };
 }
