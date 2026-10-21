@@ -3,6 +3,24 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Defend against direct, dormant
+
+Branch `feat/defend-direct-dormant` off `origin/main` at `f2f01113`. Wave 7 row 8c (Red). The first commit (`20d75ed9`) records the PR #171 merge. The second commit (`0c250a9f`) adds the RED guard test with 3 assertions (the live `directDefendOwn` value, the `ENGINE_COEFFICIENTS_V8` export, and `loadCoefficients("v8")`); it fails because `../coefficients-v8` does not exist. The frozen v7 replay parity test and the literal chance pin were added with the implementation, after RED.
+
+- Added `directDefendOwn: number` to `EngineCoefficients["manager"]` and `ENGINE_COEFFICIENTS.manager` at `0.655` (engine 7 value).
+- Created `src/engine/coefficients-v8.ts` exporting `ENGINE_COEFFICIENTS_V8: EngineCoefficients` with candidate `directDefendOwn: 0.95` and `styleEdges.direct.defend: [0.95, 0.7]` (the s = 1.5 variant explored in 6b8).
+- Wired `tacticMultipliers` in `src/engine/match.ts` to use `c.manager.directDefendOwn` when the user plays Defend against direct opponents.
+- Updated `src/ui/manager/intel.ts` and `scripts/calibration/probe-modes.ts` to reflect `directDefendOwn`.
+- Supported `--coeffs v8` in `scripts/calibration/coeffs.ts` and added unit test in `scripts/calibration/coeffs.test.ts`.
+- Restricted `coefficients-v8` in `eslint.config.mjs` and verified boundary isolation and independent copy in `src/engine/__tests__/coefficient-boundaries.test.ts`.
+- Replay parity verified: live engine replaying `GOLDEN_CUP8_V7` produces exact byte-identical JSON as frozen bundle `v7`. Scratch story parity over 50 and 200 seeds (live against frozen v7, unmanaged and Defend held): 800 and 3,200 cases, 0 mismatches, with Defend held against a direct side in 73 and 286 played matches.
+- Live goldens test `src/engine/__tests__/goldens.test.ts` is byte-identical to `origin/main` (exit code 0).
+- Gates at branch HEAD: `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,293 passed in 259 files), `pnpm build`, `pnpm format:check`, and all nine `check:*` scripts clean; `check-retained-replays.mts` 13 passed, `measure-retained-json.mjs` 4 copies (2,891,853 bytes).
+- Decision log: `docs/decisions/defend-direct-dormant.md`.
+- NOT RUN: Owner physical device test; live checks (run post-merge).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Freeze engine 7
 
 Branch `feat/freeze-engine-7` off `origin/main` at `363fed60`. Wave 7 row 8b (Red). The first commit (`3bff8b08`) records the PR #170 merge. The second commit (`bdd3fe3f`) adds the RED guard test asserting that `v7` can be imported from `@/engine/versions/v7`, its bundle digest matches the pinned sha256, and `matchStory` runs.
@@ -21,6 +39,8 @@ Branch `feat/freeze-engine-7` off `origin/main` at `363fed60`. Wave 7 row 8b (Re
 - NOT RUN: Owner physical device test; live checks (run post-merge).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #171 (freeze engine 7, Red) merged as squash `f2f01113`, reviewed head `89f6a1d8`. Receipts on `89f6a1d8`: GLM 5.3 Flash APPROVE with canary `8b-6d26468b1a5d8cd31c71e62cff3c718d` echoed, and independent executing Red reviewer PASS. At `89f6a1d8` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,284 passed in 258 files; hosted check, db and all eight e2e shards green. Production `/api/health?db=1` served `f2f01113` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard) passed with retries off (28 passed); live engine 7 frozen into `src/engine/versions/v7` with `story.ts` exported for retained xG river rendering.
 
 ## Content-addressed engine blobs
 

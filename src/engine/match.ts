@@ -335,7 +335,12 @@ function tacticMultipliers(
 ): readonly [number, number] {
   if (side.side === "user" && opponent.tacticalStyle && opponent.tacticalStyle !== "balanced") {
     const edge = c.manager.styleEdges[opponent.tacticalStyle][side.tactic];
-    if (edge) return edge;
+    if (edge) {
+      if (opponent.tacticalStyle === "direct" && side.tactic === "defend") {
+        return [c.manager.directDefendOwn, edge[1]];
+      }
+      return edge;
+    }
   }
   return c.manager.tactics[side.tactic];
 }

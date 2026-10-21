@@ -59,7 +59,7 @@ const engineDeterminism = {
   },
 };
 
-// The engine 7 candidate stays out of client code until the flip: whether an unused export is
+// The engine 7 and engine 8 candidates stay out of client code until their flips: whether an unused export is
 // tree-shaken out of a client chunk is a bundler property nothing checks.
 const engineCandidate = {
   files: ["src/ui/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}", "src/app/**/*.{ts,tsx}"],
@@ -70,8 +70,13 @@ const engineCandidate = {
       {
         patterns: [
           {
-            group: ["**/coefficients-v7", "@/engine/coefficients-v7"],
-            message: "The engine 7 candidate is for tests and scripts until the flip.",
+            group: [
+              "**/coefficients-v7",
+              "@/engine/coefficients-v7",
+              "**/coefficients-v8",
+              "@/engine/coefficients-v8",
+            ],
+            message: "Engine candidates are for tests and scripts until the flip.",
           },
         ],
       },
