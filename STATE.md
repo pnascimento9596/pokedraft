@@ -3,6 +3,51 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Proxy matcher trim
+
+Branch `fix/proxy-matcher-trim` off `origin/main` at `6606585`. Wave 7 row 7pm (Red, owner
+decision 7).
+
+What changed for players:
+
+- Creature images under `/creatures/` (for example `/creatures/pokeapi-art/0001.webp`),
+  `/api/health` (including `/api/health?db=1`), and `/api/csp-report` are excluded in `matcher` on
+  `config` in `src/proxy.ts`
+  (`["/((?!_next/static|creatures/|api/health$|api/csp-report$|favicon.ico|robots.txt).*)"]`), so
+  they no longer run `proxy` or redirect to `/gate` when `FRIENDS_PASSCODE` is set.
+- Prefix lookalikes such as `/api/healthz` and `/creaturesx` still match `matcher` on `config` and
+  run `proxy`. `isPublicPath` in `src/passcode.ts` stays unchanged as defence in depth.
+
+RED commit:
+
+- `42c2f0db`: 1 of 18 failed in `src/__tests__/proxy.test.ts`
+  (`creature images and health checks run the proxy and hit the passcode gate` failed on
+  `/creatures/pokeapi-art/0001.webp`, `/api/health`, `/api/health?db=1`, and `/api/csp-report`);
+  fixed in `81bf5fef` (18 of 18 passed).
+
+Gates at `81bf5fef` (code-identical to this docs commit):
+
+- `pnpm vitest run src/__tests__/proxy.test.ts`: 18 of 18 passed in 1 file.
+- `pnpm lint`, `pnpm typecheck`, and `pnpm build` exited 0 (`pnpm data:validate` validated 1,025
+  Pokedex, 1,025 scouting, and 1,025 contribution records).
+- `pnpm test`: 2,188 unit tests passed in 249 files.
+- All nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`,
+  `check:client-bundle` with 0 client files and 24 server files, `check:theme-contrast`,
+  `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) exited 0, and
+  `pnpm exec prettier --check` passed on the 4 touched files (`src/proxy.ts`,
+  `src/__tests__/proxy.test.ts`, `STATE.md`, `docs/decisions/proxy-matcher-trim.md`).
+- Playwright (`CI=1 PLAYWRIGHT_PORT=3972 pnpm exec playwright test e2e/health.spec.ts e2e/old-links.spec.ts e2e/share.spec.ts --project=chromium`):
+  20 passed across `e2e/health.spec.ts` (1), `e2e/old-links.spec.ts` (1), and `e2e/share.spec.ts`
+  (18).
+- NOT RUN:
+  - Production verification (run by the coordinator after merge).
+  - Non-Chromium Playwright projects and the remaining Chromium e2e specs locally.
+  - Hosted CI, coordinator review, and merge.
+  - The phone check, the screen reader pass, and the final grace-window receipt after
+    `2026-10-23T04:00:00Z`.
+
+Decision log: `docs/decisions/proxy-matcher-trim.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 6 owner follow-ups
 
 Branch `docs/wave6-followups` off `origin/main` at `99f7361`. Green: docs only, no runtime change.
