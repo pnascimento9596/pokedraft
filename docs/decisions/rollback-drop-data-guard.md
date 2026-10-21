@@ -100,8 +100,12 @@ AssertionError: expected [ '[db:rollback] nothing applied' ] to deeply equal [ â
 - **Adapting `PGlite` to `SqlClient` via `createPgSql` (`principle-test-behavior-not-implementation`, `principle-prove-it-works`).** `PGlite.prototype.query(text, params)` returns `Promise<{ rows: unknown[] }>`, matching the query signature of `PgPoolLike` in `scripts/db/connect.mts`, while `PGlite` is a single in-process connection without `.connect()`. `createPgliteSql` in `scripts/db/rollback.test.ts` wraps `client.query` in a 12-line `PgPoolLike` adapter (`connect: async () => ({ query: runQuery, release: () => {} })`) and passes it to `createPgSql`. That reuses `createPgSql`'s lazy `SqlQuery` and `BEGIN` / `COMMIT` / `ROLLBACK` transaction path against real PGlite SQL execution instead of mocking `SqlClient`.
 - **Row-count query before every rollback and missing-table handling (`principle-model-the-domain`).** `logLeaderboardRowCount` runs `SELECT count(*)::int AS count FROM leaderboard_entries` at the start of `rollbackNewest`, before checking `drizzle.__drizzle_migrations` or running the rollback transaction. When `0000_leaderboard_entries` is rolled back with `dropData: true`, the event trace in `scripts/db/rollback.test.ts` records `log:[db:rollback] leaderboard_entries rows: 2` before `sql:DROP TABLE IF EXISTS "leaderboard_entries"`. When `leaderboard_entries` has already been dropped, catching SQLSTATE `42P01` (`relation "leaderboard_entries" does not exist`) logs `[db:rollback] leaderboard_entries table does not exist` and rethrows any other error.
 
+## Evidence and proofs
+
+- **Neon preview proof (`br-rough-bird-b79ahwsx`).** The coordinator ran the four-step sequence against the Neon preview database: `pnpm db:migrate` (6 migrations recorded), `pnpm db:smoke` (OK), `pnpm db:rollback` (logged `[db:rollback] leaderboard_entries rows: 2` before `[db:rollback] OK, rolled back 0005_leaderboard_integrity`), and `pnpm db:migrate` (restored 6 migrations recorded).
+- **RED commit re-verification (`fe654504`).** The coordinator re-ran `pnpm vitest run scripts/db/rollback.test.ts` in a detached worktree at `fe654504`: 3 of 3 failed with the exact expected assertion failures.
+
 ## NOT RUN
 
-- Neon preview branch rollback proof (run by the coordinator after push; this lane never reads `DATABASE_URL` or connects to Neon).
 - Playwright e2e suite locally (nothing under `src/` or `e2e/` changed; CI runs the 8-shard matrix).
-- Coordinator review, PR creation, hosted CI verification, and squash merge.
+- Reviewer receipts, PR creation, hosted CI verification, and squash merge.

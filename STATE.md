@@ -14,7 +14,8 @@ Branch `fix/rollback-drop-data-guard` off `origin/main` at `040781bb`. Wave 7 ro
 - RED commit `fe654504`: 3 of 3 failed in `scripts/db/rollback.test.ts`; fixed in `d1463e45` (3 of 3 passed).
 - Gates at `d1463e45` (code-identical to this docs commit): `pnpm vitest run scripts/db/rollback.test.ts` passed 3 in 1 file; `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,196 passed in 252 files), `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records), and `pnpm format:check` exited 0; all nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`, `check:client-bundle` with 0 client files and 24 server files, `check:theme-contrast`, `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) exited 0; `check-retained-replays.mts` passed 13 emitted golden replays across 1 dispatcher; `measure-retained-json.mjs` measured 4 copies, 2,891,853 bytes; `pnpm exec prettier --check` on the 5 touched files exited 0.
 - Decision log: `docs/decisions/rollback-drop-data-guard.md`.
-- NOT RUN: Neon preview branch rollback proof (run by the coordinator after push; this lane never reads `DATABASE_URL` or connects to Neon); Playwright e2e suite locally (nothing under `src/` or `e2e/` changed; CI runs the 8-shard matrix); coordinator review, PR creation, hosted CI verification, and squash merge.
+- Coordinator verification: Neon preview branch proof passed (migrate recorded 6, smoke OK, rollback logged leaderboard_entries rows: 2 before rolling back 0005, migrate restored 6); RED commit fe654504 verified in detached worktree (3 of 3 failed).
+- NOT RUN: Playwright e2e suite locally (nothing under src/ or e2e/ changed; CI runs the 8-shard matrix); reviewer receipts, PR creation, hosted CI verification, and squash merge.
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
