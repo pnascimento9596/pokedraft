@@ -3,6 +3,19 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## CI hygiene
+
+Branch `chore/ci-hygiene` off `origin/main` at `6606585`. Wave 7 row 7ci (Green).
+
+- `.github/workflows/ci.yml`: sets `timeout-minutes: 30` and `node-version: 24` on every job (`check`, `db`, `e2e`), pins all five GitHub Actions to 40-character commit SHAs (`actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` `# v7.0.1`, `pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413` `# v6.1.0`, `actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1` `# v7.1.0`, `actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9` `# v6.1.0`, `actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9` `# v7.0.2`), adds `pnpm format:check` to `check`, and adds the `db` job (`postgres:16` service container running `pnpm db:migrate`, `pnpm db:smoke`, `pnpm db:rollback` four times, the remaining migration count check `SELECT count(*) FROM drizzle.__drizzle_migrations`, and `pnpm db:migrate`). `.github/workflows/theme-measurement.yml` is untouched.
+- `scripts/db/connect.mts`, `scripts/db/migrate.mts`, `package.json`, and `pnpm-lock.yaml`: adds `pg` (`^8.23.1`) and `@types/pg` (`^8.23.1`) to `devDependencies` and an opt-in `DB_DRIVER=pg` path (`createPgSql` and `drizzle-orm/node-postgres`) behind `connect()`. When `DB_DRIVER` is unset, `connect()` and `migrate.mts` keep `@neondatabase/serverless` (`neon()`) and `drizzle-orm/neon-http` unchanged. `scripts/db/smoke.mts`, `scripts/db/rollback.mts`, `scripts/db/delete-entry.mts`, and `src/db/client.ts` are untouched.
+- RED commit `4beb76c7`: 3 of 3 failed in `scripts/db/connect.test.ts`; fixed in `a33fcc28` (3 of 3 passed).
+- Gates at `a33fcc28` (code-identical to this docs commit): `pnpm lint`, `pnpm typecheck`, `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records), and `pnpm format:check` exited 0; all nine `check:*` scripts exited 0 (`check:client-bundle`: 0 client files, 24 server files); `check-retained-replays.mts` passed 13 emitted golden replays across 1 dispatcher; `measure-retained-json.mjs` measured 4 copies, 2,891,853 bytes; `pnpm test` passed 2,190 unit tests in 250 files (`pnpm vitest run scripts/db/connect.test.ts`: 3 passed in 1 file); `python3 -c "import yaml"` parsed `.github/workflows/ci.yml` (`check` 23 steps, `db` 9 steps, `e2e` 8 steps, all `timeout-minutes: 30`); `actionlint` (`1.7.12`) reported 0 errors on `.github/workflows/ci.yml`; local throwaway `postgres` (`PostgreSQL 16.14`, `initdb` + `pg_ctl` on port `55432`, `DB_DRIVER=pg`) passed `pnpm db:migrate` (6 migrations), `pnpm db:smoke` (`23505` on both unique indexes), `pnpm db:rollback` four times (`0005` down to `0002`), remaining migration count `2`, and `pnpm db:migrate` back to `6` migrations.
+- NOT RUN: Node 24 execution locally (local is Node `v22.22.3`; proven on the PR's hosted CI run); Playwright e2e suite locally (nothing under `src/` or `e2e/` changed; CI runs the 8-shard matrix); coordinator review, PR creation, hosted CI verification, and squash merge.
+- Decision log: `docs/decisions/ci-hygiene.md`.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 6 owner follow-ups
 
 Branch `docs/wave6-followups` off `origin/main` at `99f7361`. Green: docs only, no runtime change.
