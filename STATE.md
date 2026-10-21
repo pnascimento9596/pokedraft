@@ -3,6 +3,35 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Card canonical query
+
+Branch `fix/card-canonical-query` off `origin/main` at `8a29610`. Wave 7 row 7cq (Red). Normalizes `/card` queries to one canonical parameter order (`t` or `b`, then non-default known `pack`, then `mirror=0`) and redirects non-canonical `/card` queries with HTTP `308`. `src/passcode.ts`, `src/proxy.ts`, `src/engine`, `src/scouting`, and `src/data` are untouched.
+
+What changed for players:
+
+- `cardHref` (`src/components/share/download.ts:17-22`) emits only canonical `/card` URLs through `canonicalCardQuery` (`src/components/share/card-query.ts:3-14`), omitting `pack` when it is `DEFAULT_PACK_ID` (`"pokeapi-pixel"`) or an unknown pack id and emitting `mirror=0` only when mirroring is off.
+- `GET` in `src/app/card/route.tsx:9-38` answers `308` with `location: /card?${canonical}` and `"cache-control": CARD_CACHE_CONTROL` (`"public, max-age=86400, s-maxage=31536000"`) whenever `request.nextUrl.search !== ?${canonical}` (extra parameters, wrong parameter order, `pack=pokeapi-pixel`, unknown `pack`, `mirror=1`, duplicate parameters, or both `t` and `b` present, where `t` wins). Requests with no usable token (`/card`, `/card?t=`, `/card?b=`, `/card?t=&utm=1`) still answer `400` `"Bad or missing run token."` with `"cache-control": "no-store"`.
+
+RED and GREEN commits:
+
+- RED commit `65c1087c`: 34 of 49 failed across `src/components/share/__tests__/download.test.ts` (24 of 27 failed) and `src/app/card/__tests__/route.test.ts` (10 of 22 failed) in `/Users/paulo/.gemini/antigravity-cli/brain/432c72be-fea7-4e5b-a536-fe1d5f75a56a/scratch/logs/7cq/vitest-red.log`.
+- GREEN commit `dabf17bc`: 49 of 49 passed in 2 files in `/Users/paulo/.gemini/antigravity-cli/brain/432c72be-fea7-4e5b-a536-fe1d5f75a56a/scratch/logs/7cq/vitest-green.log`.
+
+Gates at `dabf17bc` (code-identical to this docs commit):
+
+- `pnpm vitest run src/components/share/__tests__/download.test.ts src/app/card/__tests__/route.test.ts`: 49 passed in 2 files (`vitest-green.log`).
+- `pnpm lint` (`lint.log`), `pnpm typecheck` (`typecheck.log`), `pnpm test` (`test.log`: 2,227 passed in 250 files), and `pnpm build` (`build.log`: `pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records) exited 0.
+- All nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`, `check:client-bundle` with 0 client files and 24 server files, `check:theme-contrast`, `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) and `pnpm exec prettier --check` on all 7 touched files exited 0.
+- Local Playwright (`CI=1 PLAYWRIGHT_PORT=3973 pnpm exec playwright test e2e/share.spec.ts e2e/share-sheet.spec.ts e2e/achievements.spec.ts e2e/builder.spec.ts e2e/images.spec.ts e2e/run-persist.spec.ts --project=chromium` in `playwright.log`): 52 passed, 1 skipped.
+- Decision log: `docs/decisions/card-canonical-query.md`.
+- NOT RUN:
+  - Unrelated Playwright specs and non-Chromium Playwright projects locally (CI runs the full e2e suite).
+  - Hosted CI, reviewer receipt, merge, production deploy, and the post-merge WAF rule.
+  - The grace-window receipt (the window closes at `2026-10-23T04:00:00Z`).
+  - The phone check and screen reader pass.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Live checks through the passcode gate
 
 Branch `chore/live-checks-gate` off `origin/main` at `6606585`. Wave 7 row 7-0 (Green): Playwright harness and docs only, no `src/` runtime change. The first commit (`89d1ccd2`) records the PR #158 merge.
