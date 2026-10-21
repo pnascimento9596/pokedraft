@@ -3,6 +3,28 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Matchday and broadcast carryovers sweep
+
+Branch `fix/matchday-broadcast-carryovers` off `origin/main` at `a560015e`. Wave 7 row 7q1 (Yellow). The first commit (`657f87ec`) records the PR #166 merge.
+
+- Full audit and resolution of all Wave 1 to 4 matchday and broadcast debts (brief section 4.3):
+  - 1d (ticker assistant line during injury stop): closed as already fixed and guarded by `src/ui/matchday/player.ts:446` (`awaitingAnswer`) and `src/components/matchday/__tests__/MatchdayFlow.intel.test.tsx:126-145`.
+  - 1e (speed toggle mid-beat jumping staging): closed as already fixed and guarded by `src/ui/matchday/player.ts:504-517` (`toggleSpeed`) and `src/ui/matchday/__tests__/player.speed.test.ts:64-100`.
+  - `score-lands-with-ball.spec.ts`: verified with window MutationObserver snapshot log; in-flight score holds at "0-0" and landed score transitions to "1-0" without polling race.
+  - 320 px scoreboard word break, missed penalty trail, wheel skip focus: closed as already fixed and guarded by `e2e/fullscreen-score-bug.spec.ts:86-99`, `src/ui/matchday/__tests__/penalty-miss.test.ts:43-59`, and `src/components/wheel/__tests__/skip-focus.test.tsx:23-53`.
+  - 2x speed motion bounds and camera zoom bound: closed as already fixed and guarded by `src/ui/matchday/__tests__/motion-bounds.test.ts:106-135` (4% ball at 1x over 20 seeds, 4% player at 1x, 8% ball/player at 2x) and `src/ui/matchday/__tests__/camera-motion.test.ts:63-76` (<= 4% x zoom at 1x, <= 8% x zoom at 2x).
+  - 2e (pause mid-kick lets kick play out): closed as already fixed and guarded by `src/ui/matchday/__tests__/player.test.ts:169-206`.
+  - 2g & 3 (extra-time callouts, badge clipping, reduced motion key-duel cards): closed as already fixed and guarded by `src/ui/matchday/__tests__/timeline.test.ts:452-461` (15 callouts in 120' match), `src/ui/matchday/__tests__/badge.test.ts:16-43`, and `src/components/matchday/__tests__/Broadcast.cutin.test.tsx:146-153`.
+  - 2h (crowd unlock and reduced motion level): closed as verified (`src/ui/matchday/timeline.ts:739` sets ambient ball at `{ x: 50, y: 50 }`, keeping crowd gain at 0.03 constant).
+  - 3 (cut-in sprite size, carrier nameplate, 1280x720 exit button): closed as already fixed via `CutInSprite` (`Broadcast.tsx:282-302`), `keepInside` (`badge.test.ts:45-65`), and 77.5px letterbox geometry with 44px button at 8px right.
+  - 3i (goal on stop minute replay): closed as refuted by architecture (`player.ts:553-558` runs goal and replay to completion before stop opens).
+  - 3j (axe touchline violations and Kick off focus): closed as already fixed and guarded by `e2e/a11y.spec.ts:124-150` and `MatchPlayer.tsx:510` (`takeFocus`).
+- Gates at branch HEAD: `pnpm vitest run src/components/matchday/__tests__/MatchdayFlow.intel.test.tsx src/ui/matchday/__tests__/player.speed.test.ts src/ui/matchday/__tests__/penalty-miss.test.ts src/components/wheel/__tests__/skip-focus.test.tsx src/ui/matchday/__tests__/motion-bounds.test.ts src/ui/matchday/__tests__/camera-motion.test.ts src/ui/matchday/__tests__/player.test.ts src/ui/matchday/__tests__/timeline.test.ts src/ui/matchday/__tests__/badge.test.ts src/components/matchday/__tests__/Broadcast.cutin.test.tsx src/ui/matchday/__tests__/player.replay.test.ts src/components/matchday/__tests__/MatchPlayer.a11y.test.tsx` passed 114 tests in 12 files; full ladder (`lint`, `typecheck`, `test`, `build`, `format:check`, all 9 `check:*` scripts) clean. Local Playwright `e2e/score-lands-with-ball.spec.ts` passed in 36.7s.
+- Decision log: `docs/decisions/matchday-broadcast-carryovers.md`.
+- NOT RUN: Owner physical device test (iPhone Safari, Android Chrome); owner VoiceOver screen reader pass.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Client Zod and daily first paint
 
 Branch `feat/client-zod-daily-paint` off `origin/main` at `a26daf01`. Wave 7 row 7zd (Yellow). The first commit (`8ced5cc8`) records the PR #165 merge.
@@ -18,6 +40,8 @@ Branch `feat/client-zod-daily-paint` off `origin/main` at `a26daf01`. Wave 7 row
 - NOT RUN: Owner physical device test (iPhone Safari, Android Chrome); owner VoiceOver screen reader pass.
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #166 (client Zod audit, daily saved validator and /daily server first paint, Yellow) merged as squash `a560015e`, reviewed head `1c1403de`. Receipts on `1c1403de`: GLM 5.3 Flash APPROVE with canary `7zd-387518b42df6eda30e7ab313516ce1d8` echoed. At `1c1403de` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,248 passed in 255 files; hosted check, db (52s) and all eight e2e shards green. Production `/api/health?db=1` served `a560015e` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard, server-html) passed with retries off (32 passed); initial /daily response stream serves the challenge setup panel before client JavaScript runs.
 
 ## Builder link previews
 
