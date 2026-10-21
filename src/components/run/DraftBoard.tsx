@@ -153,7 +153,6 @@ function ActiveDraftBoard({
   const newRunRef = useRef<HTMLButtonElement>(null);
   const keepDraftingRef = useRef<HTMLButtonElement>(null);
   const askNewRunId = useId();
-  const [swipeY, setSwipeY] = useState(0);
   const swipe = useRef<{ readonly pointerId: number; readonly y0: number } | null>(null);
   const swipeClosed = useRef(false);
   const [selection, setSelection] = useState<Selection | null>(null);
@@ -655,12 +654,7 @@ function ActiveDraftBoard({
         ) : null}
 
         {phase.kind === "choosing" ? (
-          <div
-            ref={drawerRef}
-            className={s.drawer}
-            data-testid="draft-drawer"
-            style={drawerOpen && swipeY > 0 ? { transform: `translateY(${swipeY}px)` } : undefined}
-          >
+          <div ref={drawerRef} className={s.drawer} data-testid="draft-drawer">
             <button
               type="button"
               className={`btn btn--ghost ${s.drawerToggle}`}
@@ -679,13 +673,18 @@ function ActiveDraftBoard({
               }}
               onPointerMove={(e) => {
                 if (swipe.current?.pointerId !== e.pointerId) return;
-                setSwipeY(Math.max(0, e.clientY - swipe.current.y0));
+                const dy = Math.max(0, e.clientY - swipe.current.y0);
+                if (drawerRef.current) {
+                  drawerRef.current.style.transform = dy > 0 ? `translateY(${dy}px)` : "";
+                }
               }}
               onPointerUp={(e) => {
                 if (swipe.current?.pointerId !== e.pointerId) return;
                 const moved = e.clientY - swipe.current.y0;
                 swipe.current = null;
-                setSwipeY(0);
+                if (drawerRef.current) {
+                  drawerRef.current.style.transform = "";
+                }
                 if (moved > SWIPE_CLOSE_PX) {
                   swipeClosed.current = true;
                   setDrawerOpen(false);
@@ -693,7 +692,9 @@ function ActiveDraftBoard({
               }}
               onPointerCancel={() => {
                 swipe.current = null;
-                setSwipeY(0);
+                if (drawerRef.current) {
+                  drawerRef.current.style.transform = "";
+                }
               }}
               aria-expanded={drawerOpen}
             >

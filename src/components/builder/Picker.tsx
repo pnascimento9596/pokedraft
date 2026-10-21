@@ -87,7 +87,6 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
   const current = valueAt(lineup, slot);
   const gens = settings.mode === "builder" ? settings.gens : [];
 
-  const [swipeY, setSwipeY] = useState(0);
   const swipe = useRef<Swipe | null>(null);
   // What to run once Back has removed the sheet's history entry: a pick, a clear or a close.
   const pending = useRef<(() => void) | null>(null);
@@ -207,7 +206,6 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
       ref={ref}
       className={s.dialog}
       aria-labelledby={titleId}
-      style={swipeY > 0 ? { transform: `translateY(${swipeY}px)` } : undefined}
       onClose={() => leave(onClose)}
       onClick={(e) => {
         if (e.target === e.currentTarget) e.currentTarget.close();
@@ -223,18 +221,25 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
           }}
           onPointerMove={(e) => {
             if (swipe.current?.pointerId !== e.pointerId) return;
-            setSwipeY(Math.max(0, e.clientY - swipe.current.y0));
+            const dy = Math.max(0, e.clientY - swipe.current.y0);
+            if (ref.current) {
+              ref.current.style.transform = dy > 0 ? `translateY(${dy}px)` : "";
+            }
           }}
           onPointerUp={(e) => {
             if (swipe.current?.pointerId !== e.pointerId) return;
             const moved = e.clientY - swipe.current.y0;
             swipe.current = null;
+            if (ref.current) {
+              ref.current.style.transform = "";
+            }
             if (moved > SWIPE_CLOSE_PX) ref.current?.close();
-            else setSwipeY(0);
           }}
           onPointerCancel={() => {
             swipe.current = null;
-            setSwipeY(0);
+            if (ref.current) {
+              ref.current.style.transform = "";
+            }
           }}
         >
           <span className={s.handle} data-testid="sheet-handle" aria-hidden="true" />

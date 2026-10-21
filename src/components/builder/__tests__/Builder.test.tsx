@@ -18,7 +18,8 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), prefetch:
 
 const GEN1: DraftSettings = { mode: "builder", formation: "4-3-3", gens: [1], legendaries: false };
 
-beforeAll(() => {
+beforeAll(async () => {
+  await import("@/components/builder/live");
   HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) {
     this.setAttribute("open", "");
   };
