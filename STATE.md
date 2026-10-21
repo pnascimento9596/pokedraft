@@ -17,6 +17,8 @@ Branch `fix/enforce-csp` off `origin/main` at `90ee0f72`. Wave 7 row 7csp (Red).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #164 (enforce Content-Security-Policy header, Red) merged as squash `fc890c09`, reviewed head `1d64fb9c`. Receipts on `1d64fb9c`: GLM 5.3 Flash APPROVE with canary `7csp-9f93b929a3aff322b1b0caa29b17c730` echoed (round 1) and the independent executing Red reviewer PASS (a Gemini 4 Argon (High) lane through the Antigravity CLI with the pokedraft-mode skills loaded and no implementer context; it re-ran all gates, verified the RED commit 7055f5a8 failed 2 of 2 in a detached worktree, verified code claims, line counts, directives, and 17,803 production logs with zero violations). At `1d64fb9c` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, and prettier, unit tests 2,234 passed in 252 files; hosted check, db (45s) and all eight e2e shards green. Production `/api/health?db=1` served `fc890c09` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard) passed with retries off; production headers confirmed `content-security-policy` enforcing with exact directives and zero report-only headers; Playwright live check across core pages confirmed zero CSP console errors.
+
 ## Rollback drop-data guard
 
 Branch `fix/rollback-drop-data-guard` off `origin/main` at `040781bb`. Wave 7 row 7rb (Red). The first commit (`12ebf8ce`) records the PR #160 merge.
