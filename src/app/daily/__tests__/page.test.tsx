@@ -1,5 +1,16 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { prerender } from "react-dom/static";
+
+vi.mock("next/server", () => ({
+  connection: vi.fn(async () => undefined),
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
+  usePathname: () => "/daily",
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 import DailyPage from "../page";
 
 // Server rendering must deliver the challenge panel, not the loading placeholder line,
@@ -10,8 +21,9 @@ describe("Daily page server render (catches /daily serving a loading line on fir
     const html = await new Response(prelude).text();
     expect(html).not.toContain("Loading the daily challenge");
     expect(html).toContain("Daily challenge");
-    expect(html).toContain("Today&#x27;s draft");
+    expect(html).toContain("Daily 8-0 Challenge");
     expect(html).toContain("Formation");
     expect(html).toContain("Start run");
+    expect(html).toContain("Road to the Final");
   });
 });
