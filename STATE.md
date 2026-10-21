@@ -3,6 +3,18 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wave 6 owner follow-ups
+
+Branch `docs/wave6-followups` off `origin/main` at `99f7361`. Green: docs only, no runtime change.
+
+- `docs/reports/audits-2026-10-17/program-log.md` gains "Owner follow-ups (2026-10-21)" and the Wave 7 additions from Wave 6. `docs/decisions/wave6-followups.md` holds the decisions.
+- Production serves `99f7361`, engine `pokedraft-engine-7`, token versions 1 to 7, `db.status` ok, with the passcode gate on (`FRIENDS_PASSCODE` set by the agent at the owner's request; checks in the program log).
+- The Wave 5 restore points are deleted. Engine 7 calibration stays; P1 good becomes an engine 8 row.
+- Grace window, interim: 0 rows written after the flip; the final count is NOT RUN until `2026-10-23T04:00:00Z`.
+- NOT RUN: the phone check and the screen reader pass; the e2e suite on this branch (nothing under `src/` or `e2e/` changed; CI runs it).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 6 summary
 
 Branch `docs/wave6-summary` off `origin/main` at `2f03113`. Green: docs only, no runtime change.
@@ -15,6 +27,8 @@ Branch `docs/wave6-summary` off `origin/main` at `2f03113`. Green: docs only, no
 - NOT RUN: the phone check, the screen reader pass and the owner items; the grace-window receipt (the window closes at `2026-10-23T04:00:00Z`); the e2e suite on this branch (nothing under `src/` or `e2e/` changed; CI runs it).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #157 (Wave 6 summary, Green) merged as squash `99f7361`, reviewed head `54c2779`, GLM 5.3 Flash APPROVE with canary `wave6-summary-a4ba23d94fb19a28a7103f516c07ab0a` echoed on a packet that included the program log (round 1 at `7b90747` asked to record the unit tests that had run; fixed). At `54c2779` lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main` and 2,187 unit tests passed in 249 files; hosted check and all eight e2e shards green. Vercel's Git production build started 24 minutes after the merge, after a manual Git-sourced deployment of `99f7361` had been requested. Production `/api/health?db=1` served `99f7361` with engine `pokedraft-engine-7` and `db.status` ok; live check on chromium (`health`, `old-links`, `share`, `leaderboard`, `dossier-contributions`) 38/38 with retries off, before the passcode gate went on.
 
 ## Dossier contributions
 
