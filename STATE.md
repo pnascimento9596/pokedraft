@@ -15,6 +15,8 @@ Branch `fix/credential-rotation` off `origin/main` at `c9c7ccd8`. Wave 7 row 7cr
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #169 (credential rotation runbook, Red) merged as squash `9c1db3b4`, reviewed head `cdfd1ba2`. Receipts on `cdfd1ba2`: GLM 5.3 Flash APPROVE with canary `7cr-eb155920cccc0131042a6e7f3d5e94e4` echoed. At `cdfd1ba2` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,277 passed in 257 files; hosted check, db (53s) and all eight e2e shards green. Production `/api/health?db=1` served `9c1db3b4` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard) passed with retries off (28 passed); credential rotation runbook and decision log landed.
+
 ## App surfaces carryover sweep
 
 Branch `fix/app-surface-carryovers` off `origin/main` at `d23e15f6`. Wave 7 row 7q2 (Yellow). The first commit (`da055b5e`) records the PR #167 merge.
