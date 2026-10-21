@@ -287,6 +287,12 @@
   background: var(--viz-2);
 }
 
+.attrContrib {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
 .tagsRow {
   display: flex;
   flex-wrap: wrap;
