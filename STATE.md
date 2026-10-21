@@ -3,6 +3,26 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Live checks through the passcode gate
+
+Branch `chore/live-checks-gate` off `origin/main` at `6606585`. Wave 7 row 7-0 (Green): Playwright harness and docs only, no `src/` runtime change. The first commit (`89d1ccd2`) records the PR #158 merge.
+
+- `e2e/gate-cookie.ts` exports `gateCookies(baseUrl, cookieFile, readFile)`. When both `PLAYWRIGHT_BASE_URL` and `PLAYWRIGHT_GATE_COOKIE_FILE` are set and the file trims to a non-empty digest, `playwright.config.ts` adds `{ name: "pokedraft_pass", value, domain: new URL(baseUrl).hostname, path: "/", httpOnly: true, secure: true, sameSite: "Lax", expires: -1 }` to `use.storageState.cookies` (matching `src/gate/unlock.ts:59-65` and reusing `PASSCODE_COOKIE` from `src/passcode.ts:3`). Local and CI runs keep `cookies: []`. Both `page` (and `page.request`) and Playwright's standalone `{ request }` fixture (`APIRequestContext`) inherit `use.storageState.cookies`.
+- `e2e/seed-board.spec.ts:158` adds `expect(html).toContain('data-testid="results-record"')` to the `/r` server-HTML test so `/gate?next=%2Fr%2F...` (which also carries `"Team Score"` in `<title>` via `runMetadata`) cannot satisfy it.
+- RED commit `697f7ad7`: 3 of 3 failed in `scripts/e2e/gate-cookie.test.ts`; GREEN commit `ee047837`: 3 of 3 passed.
+- Gates at `ee047837` (code-identical to this docs commit):
+  - `pnpm vitest run scripts/e2e/gate-cookie.test.ts`: 3 passed in 1 file.
+  - `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,190 passed in 250 files) and `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records) exited 0.
+  - Local Playwright (`CI=1 PLAYWRIGHT_PORT=3971 pnpm exec playwright test e2e/health.spec.ts e2e/share.spec.ts --project=chromium`): 19 passed (1 in `e2e/health.spec.ts`, 18 in `e2e/share.spec.ts`); `e2e/seed-board.spec.ts` (`--project=chromium`): 9 passed.
+- Decision log: `docs/decisions/live-checks-gate.md` (includes the real-page assertion audit for the 9 live-check specs and the list of specs that assume an ungated host or target `/gate` directly).
+- NOT RUN:
+  - Production Playwright checks with `PLAYWRIGHT_GATE_COOKIE_FILE` (run by the coordinator; this lane never reads `~/.pokedraft/` or runs against production).
+  - The grace-window receipt (the window closes at `2026-10-23T04:00:00Z`).
+  - Hosted CI and reviewer receipt on the pushed branch.
+  - The phone check and screen reader pass.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 6 owner follow-ups
 
 Branch `docs/wave6-followups` off `origin/main` at `99f7361`. Green: docs only, no runtime change.
