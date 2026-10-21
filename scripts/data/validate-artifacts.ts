@@ -3,7 +3,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import { SpeciesSchema } from "../../src/data/pokedex-schema";
-import { ScoutingEntrySchema } from "../../src/scouting/scouting-schema";
+import {
+  ScoutingContributionsEntrySchema,
+  ScoutingEntrySchema,
+} from "../../src/scouting/scouting-schema";
 
 export function validatePokedex(input: unknown) {
   return z.array(SpeciesSchema).parse(input);
@@ -19,6 +22,10 @@ export function validateScouting(input: unknown) {
   return z.array(artifactSchema).parse(input);
 }
 
+export function validateScoutingContributions(input: unknown) {
+  return z.array(ScoutingContributionsEntrySchema).parse(input);
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const root = path.resolve(import.meta.dirname, "../..");
   const dex = validatePokedex(
@@ -27,5 +34,10 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const scouting = validateScouting(
     JSON.parse(readFileSync(path.join(root, "src/data/scouting.json"), "utf8")),
   );
-  console.log(`validated ${dex.length} Pokedex and ${scouting.length} scouting records`);
+  const contributions = validateScoutingContributions(
+    JSON.parse(readFileSync(path.join(root, "src/data/scouting-contributions.json"), "utf8")),
+  );
+  console.log(
+    `validated ${dex.length} Pokedex, ${scouting.length} scouting, and ${contributions.length} contribution records`,
+  );
 }

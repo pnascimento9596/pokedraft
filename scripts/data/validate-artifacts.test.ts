@@ -4,14 +4,11 @@ import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import rawPokedex from "../../src/data/pokedex.json";
 import rawScouting from "../../src/data/scouting.json";
-import * as validators from "./validate-artifacts";
-
-const { validatePokedex, validateScouting } = validators;
-const validateScoutingContributions = (
-  validators as unknown as {
-    validateScoutingContributions: (input: unknown) => unknown[];
-  }
-).validateScoutingContributions;
+import {
+  validatePokedex,
+  validateScouting,
+  validateScoutingContributions,
+} from "./validate-artifacts";
 
 describe("generated artifact build validation", () => {
   it("accepts all 1025 Pokedex records without changing their values", () => {

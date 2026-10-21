@@ -4,24 +4,14 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { POKEDEX } from "@/data/pokedex";
 import { ABILITY_TRAITS } from "../ability-traits";
-import * as build from "../build";
+import {
+  buildScouting,
+  buildScoutingContributions,
+  serializeScouting,
+  serializeScoutingContributions,
+} from "../build";
 import { checkReviewFile } from "../review";
 import { REVIEW_FILES, REVIEWS } from "../reviews";
-
-const { buildScouting, serializeScouting } = build;
-const buildScoutingContributions = (
-  build as unknown as {
-    buildScoutingContributions: (
-      dex: typeof POKEDEX,
-      traits: typeof ABILITY_TRAITS,
-    ) => { id: number; abilities: Record<string, number>; moves: Record<string, number> }[];
-  }
-).buildScoutingContributions;
-const serializeScoutingContributions = (
-  build as unknown as {
-    serializeScoutingContributions: (entries: unknown[]) => string;
-  }
-).serializeScoutingContributions;
 
 describe("scouting.json golden", () => {
   it("covers every species exactly once across the 9 review files", () => {
