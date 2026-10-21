@@ -30,6 +30,8 @@ Gates at `dabf17bc` (code-identical to this docs commit):
   - The grace-window receipt (the window closes at `2026-10-23T04:00:00Z`).
   - The phone check and screen reader pass.
 
+- Coordinator check on a real build (`next start` from this branch at `e572340a`, stopped by PID), with the `FLAWLESS` token from the route test: `/card?t=<token>` 200 `image/png`; `&utm=1`, `mirror=1&t=`, and the default pack `pokeapi-pixel` each 308 to `/card?t=<token>`; `t=<token>&mirror=0&pack=pokeapi-art` 308 to `/card?t=<token>&pack=pokeapi-art&mirror=0`; the canonical `t=<token>&pack=pokeapi-art&mirror=0` 200 `image/png`; `/card` and `/card?t=` 400. The coordinator re-ran the RED commit `65c1087c` in a detached worktree: 34 of 49 failed.
+
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
 ## Proxy matcher trim
