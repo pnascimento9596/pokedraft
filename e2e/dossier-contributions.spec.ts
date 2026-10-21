@@ -13,7 +13,10 @@ test.use({ hasTouch: true, isMobile: true, reducedMotion: "reduce" });
 
 async function ratings(page: Page, on: boolean): Promise<void> {
   await page.addInitScript((value) => {
-    localStorage.setItem("pokedraft:panel", JSON.stringify({ showChallengeRatings: value }));
+    localStorage.setItem(
+      "pokedraft:panel",
+      JSON.stringify({ showRatings: value, showChallengeRatings: value }),
+    );
   }, on);
 }
 
@@ -51,7 +54,7 @@ for (const size of SIZES) {
       expect(await fitsWidth(page)).toBe(true);
 
       const attrsSection = dossier.getByRole("region", { name: "Soccer attributes" });
-      await attrsSection.scrollIntoViewIfNeeded();
+      await attrsSection.evaluate((el) => el.scrollIntoView({ block: "start" }));
       await page.screenshot({ path: `${SHOT}/dossier-snorlax-${size.width}.png` });
     });
 
@@ -94,7 +97,9 @@ for (const size of SIZES) {
       await expect(dossier.getByTestId("attr-contributions-note")).toHaveCount(0);
       expect(await fitsWidth(page)).toBe(true);
 
-      await dossier.getByRole("region", { name: "Soccer attributes" }).scrollIntoViewIfNeeded();
+      await dossier
+        .getByRole("region", { name: "Soccer attributes" })
+        .evaluate((el) => el.scrollIntoView({ block: "start" }));
       await page.screenshot({ path: `${SHOT}/dossier-blind-${size.width}.png` });
     });
   });
@@ -115,7 +120,7 @@ test("at 308x568 Snorlax dossier contributions fit without horizontal overflow",
   await expect(dossier.getByTestId("attr-abilities-PHY")).toHaveText("Abilities +3");
   await expect(dossier.getByTestId("attr-moves-SHO")).toHaveText("Moves +1.75");
   const attrsSection = dossier.getByRole("region", { name: "Soccer attributes" });
-  await attrsSection.scrollIntoViewIfNeeded();
+  await attrsSection.evaluate((el) => el.scrollIntoView({ block: "start" }));
 
   const metrics = await page.evaluate(() => {
     const dialog = document.querySelector<HTMLElement>('[data-testid="scouting-dossier"]')!;
