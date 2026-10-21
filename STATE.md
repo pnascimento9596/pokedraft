@@ -3,6 +3,18 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Credential rotation runbook
+
+Branch `fix/credential-rotation` off `origin/main` at `c9c7ccd8`. Wave 7 row 7cr (Red). The first commit (`448b1639`) records the PR #168 merge.
+
+- `docs/runbooks/credential-rotation.md`: documents step-by-step procedures for Neon database role password rotation, Vercel environment variable updates, production redeployment, and verification gates.
+- Enforces security invariants: zero credential exposure in output or logs, explicit owner approval gate for destructive actions, negative connect verification on old credentials, and ephemeral smoke submission.
+- Gates at branch HEAD: `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,277 passed in 257 files), `pnpm build`, `pnpm format:check`, and all nine `check:*` scripts clean.
+- Decision log: `docs/decisions/credential-rotation.md`.
+- NOT RUN: Destructive role password reset execution (awaits explicit owner consent).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## App surfaces carryover sweep
 
 Branch `fix/app-surface-carryovers` off `origin/main` at `d23e15f6`. Wave 7 row 7q2 (Yellow). The first commit (`da055b5e`) records the PR #167 merge.
