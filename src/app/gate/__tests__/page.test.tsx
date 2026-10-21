@@ -97,4 +97,23 @@ describe("gated share metadata (catches query links losing their title, descript
       ],
     });
   });
+
+  it("passes through squad preview metadata for a gated builder link", async () => {
+    const fullToken =
+      "pd7.W1siYiIsIjQtMy0zIiwiMTIzNDU2Nzg5IiwxXSwiYnVpbGRlciIsW1sibCIsMSwiczAiXSxbImwiLDIsInMxIl0sWyJsIiwzLCJzMiJdLFsibCIsNCwiczMiXSxbImwiLDUsInM0Il0sWyJsIiw2LCJzNSJdLFsibCIsNywiczYiXSxbImwiLDgsInM3Il0sWyJsIiw5LCJzOCJdLFsibCIsMTAsInM5Il0sWyJsIiwxMSwiczEwIl0sWyJsIiwxMiwiYjAiXSxbImwiLDEzLCJiMSJdLFsibCIsMTQsImIyIl0sWyJsIiwxNSwiYjMiXSxbImwiLDE2LCJiNCJdXV0";
+    const meta = await generateMetadata({
+      params: Promise.resolve({}),
+      searchParams: Promise.resolve({ next: `/?b=${encodeURIComponent(fullToken)}` }),
+    });
+    expect(meta.title).toBe("pokedraft squad: 4-3-3, Team Score 375");
+    expect(meta.description).toBe("4-3-3 squad with Team Score 375. Build your own XI on pokedraft.");
+    expect(meta.openGraph?.images).toEqual([
+      {
+        url: `/card?b=${encodeURIComponent(fullToken)}`,
+        width: 1200,
+        height: 630,
+        alt: "pokedraft squad card: 4-3-3, Team Score 375",
+      },
+    ]);
+  });
 });
