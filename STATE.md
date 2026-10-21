@@ -22,6 +22,8 @@ Branch `fix/app-surface-carryovers` off `origin/main` at `d23e15f6`. Wave 7 row 
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #168 (app surfaces carryovers sweep, Yellow) merged as squash `c9c7ccd8`, reviewed head `e2084a20`. Receipts on `e2084a20`: GLM 5.3 Flash APPROVE with canary `7q2-319532fc565fc3004ce016879b3ecda0` echoed. At `e2084a20` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,277 passed in 257 files; hosted check, db (51s) and all eight e2e shards green. Production `/api/health?db=1` served `c9c7ccd8` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard, builder, draft-flow) passed with retries off (46 passed); swipe move re-renders eliminated and test runner determinism verified.
+
 ## Matchday and broadcast carryovers sweep
 
 Branch `fix/matchday-broadcast-carryovers` off `origin/main` at `a560015e`. Wave 7 row 7q1 (Yellow). The first commit (`657f87ec`) records the PR #166 merge.
