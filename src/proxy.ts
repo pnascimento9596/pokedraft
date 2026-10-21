@@ -66,5 +66,5 @@ export function proxy(request: NextRequest): NextResponse {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|favicon.ico|robots.txt).*)"],
+  matcher: ["/((?!_next/static|creatures/|api/health$|api/csp-report$|favicon.ico|robots.txt).*)"],
 };

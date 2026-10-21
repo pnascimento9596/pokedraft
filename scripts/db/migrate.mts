@@ -1,10 +1,8 @@
-import { drizzle } from "drizzle-orm/neon-http";
-import { migrate } from "drizzle-orm/neon-http/migrator";
 import { connect } from "./connect.mjs";
 
-const { sql, host } = connect();
+const { sql, host, migrate } = connect();
 console.log(`[db:migrate] target endpoint ${host}`);
-await migrate(drizzle(sql), { migrationsFolder: "drizzle" });
+await migrate({ migrationsFolder: "drizzle" });
 const applied = (await sql.query(
   "SELECT created_at FROM drizzle.__drizzle_migrations ORDER BY created_at",
 )) as { created_at: string }[];
