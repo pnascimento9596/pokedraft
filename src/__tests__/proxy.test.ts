@@ -16,6 +16,7 @@ import {
   GOLDEN_CUP8_V4,
   GOLDEN_CUP8_V5,
   GOLDEN_CUP8_V6,
+  GOLDEN_CUP8_V7,
 } from "../engine/versions/__tests__/fixtures";
 
 // Named here rather than read from RETAINED_TOKEN_VERSIONS, so a flip that forgets to retain
@@ -29,6 +30,7 @@ const GOLDEN_BY_VERSION: Readonly<Record<number, string>> = {
   4: GOLDEN_CUP8_V4,
   5: GOLDEN_CUP8_V5,
   6: GOLDEN_CUP8_V6,
+  7: GOLDEN_CUP8_V7,
 };
 
 function importClosure(entryRel: string): string[] {
@@ -199,10 +201,10 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       { mode: "kanto151", formation: "4-4-2", order: "squadFirst" },
       "proxy-seed",
     );
-    const res = proxy(req(`/r/pd6?t=${real.slice(4)}`));
+    const res = proxy(req(`/r/pd7?t=${real.slice(4)}`));
     expect(res.headers.get("x-middleware-rewrite")).toBe(`https://pokedraft.test/r/${real}`);
     expect(
-      proxy(req(`/r/pd6?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
+      proxy(req(`/r/pd7?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
         "x-middleware-rewrite",
       ),
     ).toBe(`https://pokedraft.test/r/${real}?_rsc=123&source=chat`);
@@ -212,6 +214,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       GOLDEN_CUP8_V3,
       GOLDEN_CUP8_V4,
       GOLDEN_CUP8_V5,
+      GOLDEN_CUP8_V6,
     ]) {
       const [version, payload] = token.split(".");
       expect(proxy(req(`/r/${version}?t=${payload}`)).headers.get("x-middleware-rewrite")).toBe(
