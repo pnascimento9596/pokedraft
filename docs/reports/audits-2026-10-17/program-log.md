@@ -522,8 +522,9 @@ merged between 6b0 and 6b9 except 6g and 6b1 to 6b8.
   `db:delete-entry` removed exactly the smoke row (`6706ca94`).
 - Goldens re-pinned in 6b9: `CUP8_TOKEN` and `KANTO_TOKEN` token and replay hashes moved, their
   outcomes (`[593, 5, 0, 1, "QF"]`, `[480, 3, 0, 1, "R32"]`) did not, and the 20-run panel did not
-  move. The goal-kind panel moved from user 495 goals (63 changed) and opponent 177 (7) to 529 (65)
-  and 193 (9), `moved` 0.
+  move. The goal-kind panel (50 seeded cups, each goal compared with the same match at zero
+  goal-kind weights) moved from 495 user goals, 63 of them a different kind, and 177 opponent goals,
+  7 different, to 529 and 65, and 193 and 9; `moved` (goals at a different side or minute) stays 0.
 
 ### Engine 7 calibration (6b8, live since 6b9)
 

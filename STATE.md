@@ -11,7 +11,8 @@ Branch `docs/wave6-summary` off `origin/main` at `2f03113`. Green: docs only, no
 - `docs/decisions/wave6-summary.md` holds the owner phone checklist, the screen reader pass and the owner items still open (the passcode gate, the restore points, the calibration findings, credential rotation and the WAF rule).
 - Production at the start of this PR serves `2f03113` (PR #156), engine `pokedraft-engine-7`, token versions 1 to 7, `db.status` ok.
 - The PR #156 merged paragraph is added under its own section.
-- NOT RUN: the phone check, the screen reader pass and the owner items; the grace-window receipt (the window closes at `2026-10-23T04:00:00Z`); unit and e2e suites on this branch (nothing under `src/` or `e2e/` changed; CI runs them).
+- Gates at `7b90747` (only docs changed after it): lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main`, 2,187 unit tests passed in 249 files and Prettier passed on the 3 touched files.
+- NOT RUN: the phone check, the screen reader pass and the owner items; the grace-window receipt (the window closes at `2026-10-23T04:00:00Z`); the e2e suite on this branch (nothing under `src/` or `e2e/` changed; CI runs it).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 

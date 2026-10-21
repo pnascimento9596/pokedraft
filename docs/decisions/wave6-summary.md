@@ -10,7 +10,8 @@ items that are still open. No product code changes.
 - `docs/reports/audits-2026-10-17/program-log.md`: the Wave 6 entry (PR table, order and why, the
   flip, the engine 7 calibration table, hosted and production failures, review lessons,
   measurements that moved, open carryovers).
-- `STATE.md`: the PR #156 merged paragraph and this section.
+- `STATE.md`: the PR #156 merged paragraph and the Wave 6 summary section.
+- `docs/decisions/wave6-summary.md`: this log.
 
 ## Owner phone check (NOT RUN; owner action)
 
@@ -65,4 +66,10 @@ the set-piece selects and the empty-board button.
 
 - The phone check, the screen reader pass and the owner items above.
 - The grace-window receipt: the window closes at `2026-10-23T04:00:00Z`.
-- Unit tests and the e2e suite on this branch: nothing under `src/` or `e2e/` changed. CI runs them.
+- The e2e suite on this branch: nothing under `src/` or `e2e/` changed. CI runs it.
+
+## Gates
+
+At `7b90747` the coordinator ran lint, typecheck, build, both retained-bundle checks and all nine
+`check:*` scripts (all exit 0), `goldens.test.ts` was byte-identical to `origin/main`, 2,187 unit
+tests passed in 249 files and Prettier passed on the 3 touched files.
