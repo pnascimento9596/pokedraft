@@ -58,8 +58,8 @@ Players opening any Pokémon's scouting dossier when ratings are on:
     Snorlax (`#143`), Hitmonlee (`#106`), and Wishiwashi (`#746`), and verifies that
     `serializeScoutingContributions` matches `src/data/scouting-contributions.json` byte-for-byte.
   - `src/data/__tests__/artifact-boundary.test.ts`: guards that `SCOUTING_CONTRIBUTIONS` is the raw
-    JSON import reference (`toBe(rawContributions)`) and equals
-    `ScoutingContributionsEntrySchema.array().parse(rawContributions)`.
+    JSON import reference (`SCOUTING_CONTRIBUTIONS === rawContributions`) and equals
+    `z.array(ScoutingContributionsEntrySchema).parse(rawContributions)`.
   - `src/components/scouting/__tests__/ScoutingDossier.test.tsx`: guards literal ability, move, and
     review lines on Snorlax, Hitmonlee, and Wishiwashi, the baseline note, and hiding all
     contribution lines and the note when `showRatings={false}`.
@@ -123,12 +123,12 @@ Fixed in `3cdb41bf` (27 of 27 passed).
 
 ### Artifact and chunk sizes
 
-| Item | Raw bytes | Gzip bytes |
+| Item | Raw bytes | `gzip -9` bytes |
 | --- | --- | --- |
-| `src/data/scouting-contributions.json` (on disk) | 76,204 | 6,538 |
-| Lazy client chunk `/_next/static/chunks/0dpet79lzsrgy.js` | 75,483 | 6,844 |
-| `src/data/pokedex.json` (`f41cdbd6...`, unchanged) | 491,341 | - |
-| `src/data/scouting.json` (`9f771c3a...`, unchanged) | 847,264 | - |
+| `src/data/scouting-contributions.json` (on disk) | 76,204 | 6,570 |
+| Lazy client chunk `/_next/static/chunks/0dpet79lzsrgy.js` | 75,483 | 6,859 |
+| `src/data/pokedex.json` (`f41cdbd6...`, unchanged) | 485,196 | - |
+| `src/data/scouting.json` (`9f771c3a...`, unchanged) | 803,159 | - |
 
 ### First-load JS before (`98696957`) vs after (`1e37cdd9`)
 
@@ -205,3 +205,6 @@ None assigned to row 6d.
   code" section that claimed every cited line matched. Each is corrected above against the code.
 - The coordinator ran the full chromium Playwright suite at `6b0e82d`: 650 passed, 5 skipped, 0
   failed.
+- Round 2: corrected two more statements, the raw sizes of `pokedex.json` (485,196) and
+  `scouting.json` (803,159) and the `artifact-boundary.test.ts` expressions; the size table's gzip
+  column is now the coordinator's `gzip -9` measurement.

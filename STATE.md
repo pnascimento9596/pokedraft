@@ -5,14 +5,14 @@ and its squash SHA are recorded in the next PR's STATE update.
 
 ## Dossier contributions
 
-Branch `feat/dossier-contributions` off `origin/main` at `e927608` (the 6b9 squash, PR #155). Wave 6 row 6d (Red). Emits non-zero ability and move contributions per species and attribute from `computeBaselines` into `src/data/scouting-contributions.json` (76,204 bytes raw, 6,538 bytes gzip) with its own strict Zod schema (`ScoutingContributionsEntrySchema`), validated by `pnpm data:validate` and regenerated deterministically by `pnpm data:scouting`. `src/engine` is untouched, and `src/data/pokedex.json` (`f41cdbd6...`) and `src/data/scouting.json` (`9f771c3a...`) are byte-identical to `origin/main`. The first commit (`98696957`) records the PR #155 merge.
+Branch `feat/dossier-contributions` off `origin/main` at `e927608` (the 6b9 squash, PR #155). Wave 6 row 6d (Red). Emits non-zero ability and move contributions per species and attribute from `computeBaselines` into `src/data/scouting-contributions.json` (76,204 bytes raw, 6,570 bytes `gzip -9`) with its own strict Zod schema (`ScoutingContributionsEntrySchema`), validated by `pnpm data:validate` and regenerated deterministically by `pnpm data:scouting`. `src/engine` is untouched, and `src/data/pokedex.json` (`f41cdbd6...`) and `src/data/scouting.json` (`9f771c3a...`) are byte-identical to `origin/main`. The first commit (`98696957`) records the PR #155 merge.
 
 What changed for players:
 
 - Opening a Pokémon's scouting dossier with ratings on now shows non-zero `Abilities +n` and `Moves +n` lines under each affected attribute bar in `17 Soccer Attributes`, alongside the non-zero `Review +n` scout adjustment line.
 - A note below the attribute bars explains how the numbers combine (`Abilities and moves are contributions to the baseline. Review is the scout adjustment before the 1 to 99 clamp.`).
 - When blind challenge ratings are off (`showRatings={false}`), the attribute bars, all contribution lines, and the explanatory note stay hidden.
-- The dossier loads `src/data/scouting-contributions.json` lazily on open (`/_next/static/chunks/0dpet79lzsrgy.js`, 75,483 bytes raw / 6,844 bytes gzip), so `/` (787,279 B raw / 246,006 B gzip) and `/play` (748,207 B raw / 232,059 B gzip) first-load JS do not grow (0 B raw delta).
+- The dossier loads `src/data/scouting-contributions.json` lazily on open (`/_next/static/chunks/0dpet79lzsrgy.js`, 75,483 bytes raw / 6,859 bytes `gzip -9`), so `/` (787,279 B raw / 246,006 B gzip) and `/play` (748,207 B raw / 232,059 B gzip) first-load JS do not grow (0 B raw delta).
 
 RED commits:
 
