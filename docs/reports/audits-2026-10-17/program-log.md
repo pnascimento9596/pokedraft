@@ -590,3 +590,33 @@ Achievements under V7: Giant killer 2.5% (threshold unchanged at 100), Hat-trick
 - The Neon restore points from Wave 5 remain until the owner's yes.
 - A physical phone check and a real screen reader were not run for any row (owner action; the
   checklist is in `docs/decisions/wave6-summary.md`).
+
+### Owner follow-ups (2026-10-21)
+
+- Passcode gate on. The agent generated `FRIENDS_PASSCODE` (four random dictionary words), set it in
+  Vercel Production without printing it, and redeployed `99f7361`. The passcode and the cookie
+  digest are in 0600 files on the owner's machine (`~/.pokedraft/friends-passcode`,
+  `~/.pokedraft/friends-passcode-cookie`). Checked on production: `/` without a cookie 307 to
+  `/gate?next=%2F`, with the digest cookie 200; `/api/leaderboard` without a cookie 401;
+  `/api/health` 200; a wrong passcode 303 to `/gate?next=%2F&error=1`; the right one 303 to `/`
+  with a cookie equal to the stored digest. Wave 7 live checks send that cookie.
+- The Wave 5 restore points `br-snowy-surf-b7yk5m7w` and `br-noisy-bread-b7gzc2s4` are deleted, by
+  the owner's yes. Production now has only the `main` and `preview` branches.
+- Calibration: engine 7 stays as calibrated. P7 and P8 are accepted as measured. P1 good becomes an
+  engine 8 row (below).
+- Grace window, interim (read-only, 2026-10-21): production holds 3 rows (2 `pd3`, 1 `pd6` from
+  2026-10-17), and 0 rows were written after the flip deploy (12:48 UTC). The final count is NOT
+  RUN until the window closes at `2026-10-23T04:00:00Z`.
+- Vercel production builds: of the wave's 16 merges, 6b5 (`5190287`) never got a Git production
+  build, and #157 (`99f7361`) got one 24 minutes after the merge, past the coordinator's 15-minute
+  wait, so a manual deployment had already been started. The project link is intact (GitHub,
+  production branch `main`, deployments enabled). Treat a missing production build as a delay
+  first: wait 30 minutes before a manual deployment.
+
+### Wave 7 list additions (from Wave 6)
+
+- Engine 8, P1 good: change Defend's own multiplier against direct sides (6b8 exploration lifted
+  informed good from +1.07 to between +1.79 and +2.61), then re-measure P1 and P2 with the oracle.
+  Bundle with other engine changes so friends see one version change, not several.
+- Engine 8 freeze tooling: include `src/engine/story.ts` in the frozen bundle roots.
+- The grace-window final count after `2026-10-23T04:00:00Z`.
