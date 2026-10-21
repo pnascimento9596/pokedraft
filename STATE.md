@@ -17,6 +17,8 @@ Branch `chore/ci-hygiene` off `origin/main` at `6606585`. Wave 7 row 7ci (Green)
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #160 (CI hygiene, Green) merged as squash `040781b`, reviewed head `43aed65`, GLM 5.3 Flash APPROVE with canary `7ci-eab0520a436dab4a617b54e1b5ee2d53` echoed (round 1). At `43aed65` the coordinator re-ran lint, typecheck, test, build, both retained-bundle checks, all nine `check:*` scripts and prettier on the 7 touched files (all exit 0) and `goldens.test.ts` was byte-identical to `origin/main`. Hosted `check`, `db` and all eight e2e shards green at the head on Node 24. Production `/api/health?db=1` served `040781b` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok; live check on chromium through the gate (`health`, `old-links`, `share`, `leaderboard`) 28/28 with retries off. No Vercel setting changed (CI moved to Node 24 to match Vercel).
+
 ## Live checks through the passcode gate
 
 Branch `chore/live-checks-gate` off `origin/main` at `6606585`. Wave 7 row 7-0 (Green): Playwright harness and docs only, no `src/` runtime change. The first commit (`89d1ccd2`) records the PR #158 merge.
