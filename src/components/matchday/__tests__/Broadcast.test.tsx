@@ -199,7 +199,8 @@ describe("MatchPlayer and Touchline UX (catches a match screen with no sound tog
     const line: TouchlineState = {
       minute: 45,
       tactic: "balanced",
-      managed: false,
+      tacticManaged: false,
+      subsManaged: false,
       subsUsed: 0,
       onPitch: XI,
       energy: [95, 88, 84, 82, 58, 80, 79, 77, 75, 74, 72],

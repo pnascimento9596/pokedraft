@@ -71,9 +71,8 @@ test.describe("manager mode", () => {
     await expect(page.getByTestId("match-hud")).toContainText("Attack");
     await page.getByTestId("sound-toggle").click();
     await expect(page.getByTestId("sound-toggle")).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByTestId("takeover")).toHaveText(
-      "You have the touchline. Your assistant stops making changes this match.",
-    );
+    await expect(page.getByTestId("assistant-status")).toHaveText("Assistant: subs on, tactics on");
+    await expect(page.getByTestId("takeover")).toHaveCount(0);
     // Manager mode plays live; 2x keeps the wait for half time near 13 s.
     await page.getByTestId("speed-toggle").click();
 
@@ -89,6 +88,9 @@ test.describe("manager mode", () => {
     await expect(page.getByTestId("energy-slot-4")).toHaveAttribute("aria-pressed", "true");
     await page.getByTestId("sub-confirm").click();
     await expect(page.getByTestId("subs-count")).toHaveText(`Subs ${used + 1} of 5`);
+    await expect(page.getByTestId("takeover")).toHaveText(
+      "You're making the subs now. Your assistant still manages tactics.",
+    );
     await page.getByTestId("stop-go").click();
 
     await skipManaged(page);

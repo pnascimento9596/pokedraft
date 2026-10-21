@@ -5,12 +5,6 @@ import type { BenchIndex, SpeciesId } from "@/engine/types";
 import type { Touchline as TouchlineState } from "@/ui/manager/touchline";
 import { Touchline } from "../Touchline";
 
-// Engine 7 switches the control on with missable penalties; this stands in for the flip.
-vi.mock("@/ui/manager/touchline", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/ui/manager/touchline")>()),
-  SET_PIECES_ON: true,
-}));
-
 afterEach(cleanup);
 
 const id = (n: number) => n as SpeciesId;
@@ -24,7 +18,8 @@ const seat = (index: number, species: number) => ({
 const LINE: TouchlineState = {
   minute: 46,
   tactic: "balanced",
-  managed: false,
+  tacticManaged: false,
+  subsManaged: false,
   subsUsed: 0,
   onPitch: [1, 4, 7, 10, 13, 16, 19, 21, 23, 27, 25].map(id),
   energy: [96, 80, 81, 82, 83, 84, 85, 86, 87, 88, 62],

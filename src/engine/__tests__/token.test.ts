@@ -182,7 +182,8 @@ describe("nominated takers in the codec (catches a pd6 token carrying an engine 
   });
 
   it("re-encoding the decoded engine 6 golden token produces its pd7 counterpart", () => {
-    expect(encodeToken({ ...decodeTokenV6(GOLDEN_CUP8_V6), v: 7 })).toBe(
+    const v6 = decodeTokenV6(GOLDEN_CUP8_V6);
+    expect(encodeToken({ ...(v6 as unknown as RunToken), v: 7 })).toBe(
       `pd7.${GOLDEN_CUP8_V6.slice("pd6.".length)}`,
     );
   });

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { CLIENT_CHUNKS } from "./v7-switch";
 
 // The species data (pokedex.json and scouting.json, about 1.3 MB raw) is only needed once a
 // draft starts or the builder is used. A script that inlines either file carries their field
@@ -111,7 +112,7 @@ test("the daily start panel does not download the species data during load, and 
 async function slowData(page: Page): Promise<{ readonly askedFor: Promise<void> }> {
   let asked: () => void = () => {};
   const askedFor = new Promise<void>((r) => (asked = r));
-  await page.route("**/_next/static/chunks/**", async (route) => {
+  await page.route(CLIENT_CHUNKS, async (route) => {
     const res = await route.fetch();
     const body = await res.text();
     if (DATA_MARKERS.some((m) => body.includes(m))) {

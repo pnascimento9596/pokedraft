@@ -143,7 +143,7 @@ describe("v4 match event contracts", () => {
           chances: { regulation: 18, extraTime: 6, maxGoalProb: 1 },
         },
         penalty: { awardShare: 1e6 },
-        shootout: { ...ENGINE_COEFFICIENTS.shootout, baseConvertProb: 1, edgeMaxBonus: 0 },
+        shootout: { ...ENGINE_COEFFICIENTS.shootout, base: 1, band: 0 },
       },
     );
     const keeper = starters[0]!.species.id;

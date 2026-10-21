@@ -147,16 +147,16 @@ const subTuple = z.tuple([
 const takerTuple = z.tuple([z.enum(["p", "f"]), cupMatch, matchMinute, starter.nullable()]);
 const TAKER_SINCE = 7;
 
+const managerSchema = z.union([tacticTuple, subTuple, takerTuple]);
+const v6ManagerSchema = z.union([tacticTuple, subTuple]);
+
 /**
  * The coach decisions a token of `version` may carry. Nominated takers arrive with engine 7, so a
  * pd6 token never carries one: the frozen engine 6 codec would refuse it after the flip.
  */
 export function managerSchemaFor(version: number) {
-  return version >= TAKER_SINCE
-    ? z.union([tacticTuple, subTuple, takerTuple])
-    : z.union([tacticTuple, subTuple]);
+  return version >= TAKER_SINCE ? managerSchema : v6ManagerSchema;
 }
-const managerSchema = managerSchemaFor(RUN_TOKEN_VERSION);
 
 // Engine 6 appends the coach's decisions as a fourth element, left out when there are none.
 const payloadSchema = z.union([
