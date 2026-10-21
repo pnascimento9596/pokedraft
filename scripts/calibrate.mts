@@ -30,6 +30,7 @@ import {
 } from "@/engine/types";
 import { BOT_NAMES, BOTS, GOOD, bestFor, pickable, type BotName } from "./calibration/bots";
 import { loadCoefficients } from "./calibration/coeffs";
+import { meanInterval } from "./calibration/stats";
 
 interface Row {
   readonly id: string;
@@ -409,6 +410,7 @@ for (const row of selectedRows) {
         p90: quantile(scores, 0.9),
       },
       meanWins: meanOf(runs.map((r) => r.wins)),
+      meanWinsInterval: meanInterval(runs.map((r) => r.wins)),
       flawless: wilson(runs.filter((r) => r.flawless).length, runs.length),
       finish,
       meanSpecials: meanOf(runs.map((r) => r.specials)),
