@@ -14,17 +14,18 @@ export async function generateMetadata({ searchParams }: PageProps<"/">): Promis
   return { title: "pokedraft" };
 }
 
-async function HomeContent() {
+async function DynamicConnectionMarker() {
   await connection();
-  return <HomeScreen />;
+  return null;
 }
 
 export default function Home() {
   return (
     <>
       <main className="page">
+        <HomeScreen />
         <Suspense fallback={null}>
-          <HomeContent />
+          <DynamicConnectionMarker />
         </Suspense>
       </main>
       <SiteFooter />
