@@ -20,6 +20,8 @@ Branch `feat/engine-blobs` off `origin/main` at `9c1db3b4`. Wave 7 row 8a (Red).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #170 (content-addressed engine blobs, Red) merged as squash `363fed60`, reviewed head `31c72c68`. Receipts on `31c72c68`: GLM 5.3 Flash APPROVE with canary `8a-38e161ec593dfb295f29e2b9ecbd90c3` echoed, and independent executing Red reviewer PASS. At `31c72c68` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,280 passed in 258 files; hosted check, db and all eight e2e shards green. Production `/api/health?db=1` served `363fed60` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard) passed with retries off (28 passed); 24 duplicate data files across v1..v6 extracted to 7 content-addressed blobs.
+
 ## Credential rotation runbook
 
 Branch `fix/credential-rotation` off `origin/main` at `c9c7ccd8`. Wave 7 row 7cr (Red). The first commit (`448b1639`) records the PR #168 merge.
