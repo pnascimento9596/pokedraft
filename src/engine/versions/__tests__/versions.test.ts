@@ -247,6 +247,16 @@ describe("retained engine-6 bundle (catches a manager-era run replaying differen
     ]);
   });
 
+  it("routes pd6. tokens to the v6 bundle, not the live engine", async () => {
+    const run = await replayAnyVersion(GOLDEN_CUP8_V6);
+    expect([run.engine, run.bundle, run.current]).toEqual([
+      "pokedraft-engine-6",
+      "retained-engine-bundle:v6",
+      false,
+    ]);
+    expect(run.cup).toEqual(v6.replay(GOLDEN_CUP8_V6).cup);
+  });
+
   it("is frozen: no byte of the bundle changes", () => {
     expect(bundleDigest(path.join(import.meta.dirname, "../v6"))).toBe(
       "b0b922bc1eef6e7ec4af9bf64e4af10206e894fdfc5d5f317eaf75b85d604397",

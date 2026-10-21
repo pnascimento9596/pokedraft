@@ -17,6 +17,9 @@ import {
   GOLDEN_CUP8_V5,
   GOLDEN_KANTO151_V5,
   GOLDEN_CUP8_V6,
+  GOLDEN_KANTO151_V6,
+  GOLDEN_CUP8_V7,
+  GOLDEN_KANTO151_V7,
 } from "../../src/engine/versions/__tests__/fixtures";
 
 // Each hash is sha256 of JSON.stringify({ draft, cup }) as the issuing engine replays the token:
@@ -33,6 +36,9 @@ const CASES = [
   [5, GOLDEN_CUP8_V5, "d3f3598c4ed414bad106ecec4efe543774be9988718833f9172542cff9fdbd5a"],
   [5, GOLDEN_KANTO151_V5, "d4d1db9bd84cbd39eae072a86791a76864a16f96db5844c5be67df7c1ab2a95a"],
   [6, GOLDEN_CUP8_V6, "2b26ee82cbf26da1d64e1c4978b25e846537085747d3845d78b555cb7d8f7e05"],
+  [6, GOLDEN_KANTO151_V6, "eb3664642c3c0bd9ee50cb4382182c73e070dad7896e620492d5b0e5b8b12747"],
+  [7, GOLDEN_CUP8_V7, "c91cb42cac62bec6e43a649c4e914a1208108ef94a92534acfd900d13df1fe30"],
+  [7, GOLDEN_KANTO151_V7, "2b7223f3888259596fd24740506564cdca93ff13e9c035ecb417d681c2858a4d"],
 ] as const;
 
 type Factory = (...args: unknown[]) => unknown;
