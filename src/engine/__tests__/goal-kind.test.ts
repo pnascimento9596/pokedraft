@@ -121,4 +121,11 @@ describe("zero goal-kind weights ignore the attack (catches non-zero baseline dr
       });
     }
   });
+
+  it("an empty pool falls back to the unscaled kind shares instead of NaN open-play", () => {
+    expect(goalKindOf(0.05, [], ENGINE_COEFFICIENTS)).toBe("header");
+    expect(goalKindOf(0.15, [], ENGINE_COEFFICIENTS)).toBe("free-kick");
+    expect(goalKindOf(0.3, [], ENGINE_COEFFICIENTS)).toBe("solo");
+    expect(goalKindOf(0.5, [], ENGINE_COEFFICIENTS)).toBe("open-play");
+  });
 });
