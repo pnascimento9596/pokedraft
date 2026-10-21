@@ -3,6 +3,19 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Wave 6 summary
+
+Branch `docs/wave6-summary` off `origin/main` at `2f03113`. Green: docs only, no runtime change.
+
+- `docs/reports/audits-2026-10-17/program-log.md` gains the Wave 6 entry: the PR table for the sixteen rows, the landed order and why, the flip, the engine 7 calibration table, the hosted and production failures, the review lessons, measurements that moved and open carryovers.
+- `docs/decisions/wave6-summary.md` holds the owner phone checklist, the screen reader pass and the owner items still open (the passcode gate, the restore points, the calibration findings, credential rotation and the WAF rule).
+- Production at the start of this PR serves `2f03113` (PR #156), engine `pokedraft-engine-7`, token versions 1 to 7, `db.status` ok.
+- The PR #156 merged paragraph is added under its own section.
+- Gates at `7b90747` (only docs changed after it): lint, typecheck, build, both retained-bundle checks and all nine `check:*` scripts exited 0, `goldens.test.ts` was byte-identical to `origin/main`, 2,187 unit tests passed in 249 files and Prettier passed on the 3 touched files.
+- NOT RUN: the phone check, the screen reader pass and the owner items; the grace-window receipt (the window closes at `2026-10-23T04:00:00Z`); the e2e suite on this branch (nothing under `src/` or `e2e/` changed; CI runs it).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Dossier contributions
 
 Branch `feat/dossier-contributions` off `origin/main` at `e927608` (the 6b9 squash, PR #155). Wave 6 row 6d (Red). Emits non-zero ability and move contributions per species and attribute from `computeBaselines` into `src/data/scouting-contributions.json` (76,204 bytes raw, 6,570 bytes `gzip -9`) with its own strict Zod schema (`ScoutingContributionsEntrySchema`), validated by `pnpm data:validate` and regenerated deterministically by `pnpm data:scouting`. `src/engine` is untouched, and `src/data/pokedex.json` (`f41cdbd6...`) and `src/data/scouting.json` (`9f771c3a...`) are byte-identical to `origin/main`. The first commit (`98696957`) records the PR #155 merge.
@@ -35,6 +48,8 @@ Gates at `1e37cdd9` (code-identical to this docs commit):
   - The phone check and screen reader pass.
 
 Decision log: `docs/decisions/dossier-contributions.md`. Browser proof: `docs/reports/dossier-contributions/` (`dossier-snorlax-390.png`, `dossier-snorlax-360.png`, `dossier-snorlax-320.png`, `dossier-snorlax-308.png`, `dossier-blind-390.png`, `dossier-blind-360.png`, `dossier-blind-320.png`). Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #156 (dossier ability and move contributions, Red) merged as squash `2f03113`, reviewed head `c69de5f` after three review rounds (rounds 1 and 2 failed on false statements in the decision log only: invented names, a wrong module path, wrong field names and schema bounds, the note's render condition, artifact sizes and two test expressions; the corrections are logged). Receipts on `c69de5f`: GLM 5.3 Flash APPROVE with canary `6d-380ee739f3cb06aa424cacd81fdde2d6` echoed and the independent executing Red reviewer PASS (a Gemini 4 Argon (High) lane through the Antigravity CLI with the pokedraft-mode skills loaded, by owner substitution). At `c69de5f` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts and prettier (all exit 0), `goldens.test.ts` was byte-identical to `origin/main` and 2,187 unit tests passed in 249 files; the coordinator's full chromium Playwright run at `6b0e82d` (code-identical) passed 650 with 5 skipped and 0 failed; hosted check and all eight e2e shards green. The Red reviewer rebuilt the data twice: `pokedex.json` and `scouting.json` unchanged and `scouting-contributions.json` byte-identical across runs. Production `/api/health?db=1` served `2f03113` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok; live check on chromium (`dossier-contributions` 10, plus `dossier-picker`, `challenge-ratings`, `data-split`, `builder-ratings-layout`, `health`, `old-links`, `share` and `leaderboard`, 53) 63/63 with retries off.
 
 ## Engine 7 flip
 
