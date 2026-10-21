@@ -48,6 +48,48 @@ Gates at `81bf5fef` (code-identical to this docs commit):
 
 Decision log: `docs/decisions/proxy-matcher-trim.md`. Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## CI hygiene
+
+Branch `chore/ci-hygiene` off `origin/main` at `6606585`. Wave 7 row 7ci (Green).
+
+- `.github/workflows/ci.yml`: sets `timeout-minutes: 30` and `node-version: 24` on every job (`check`, `db`, `e2e`), pins all five GitHub Actions to 40-character commit SHAs (`actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` `# v7.0.1`, `pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413` `# v6.1.0`, `actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1` `# v7.1.0`, `actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9` `# v6.1.0`, `actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9` `# v7.0.2`), adds `pnpm format:check` to `check`, and adds the `db` job (`postgres:16` service container running `pnpm db:migrate`, `pnpm db:smoke`, `pnpm db:rollback` four times, the remaining migration count check `SELECT count(*) FROM drizzle.__drizzle_migrations`, and `pnpm db:migrate`). `.github/workflows/theme-measurement.yml` is untouched.
+- `scripts/db/connect.mts`, `scripts/db/migrate.mts`, `package.json`, and `pnpm-lock.yaml`: adds `pg` (`^8.23.1`) and `@types/pg` (`^8.23.1`) to `devDependencies` and an opt-in `DB_DRIVER=pg` path (`createPgSql` and `drizzle-orm/node-postgres`) behind `connect()`. When `DB_DRIVER` is unset, `connect()` and `migrate.mts` keep `@neondatabase/serverless` (`neon()`) and `drizzle-orm/neon-http` unchanged. `scripts/db/smoke.mts`, `scripts/db/rollback.mts`, `scripts/db/delete-entry.mts`, and `src/db/client.ts` are untouched.
+- RED commit `4beb76c7`: 3 of 3 failed in `scripts/db/connect.test.ts`; fixed in `a33fcc28` (3 of 3 passed).
+- Gates at `a33fcc28` (code-identical to this docs commit): `pnpm lint`, `pnpm typecheck`, `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records), and `pnpm format:check` exited 0; all nine `check:*` scripts exited 0 (`check:client-bundle`: 0 client files, 24 server files); `check-retained-replays.mts` passed 13 emitted golden replays across 1 dispatcher; `measure-retained-json.mjs` measured 4 copies, 2,891,853 bytes; `pnpm test` passed 2,190 unit tests in 250 files (`pnpm vitest run scripts/db/connect.test.ts`: 3 passed in 1 file); `python3 -c "import yaml"` parsed `.github/workflows/ci.yml` (`check` 23 steps, `db` 9 steps, `e2e` 8 steps, all `timeout-minutes: 30`); `actionlint` (`1.7.12`) reported 0 errors on `.github/workflows/ci.yml`; local throwaway `postgres` (`PostgreSQL 16.14`, `initdb` + `pg_ctl` on port `55432`, `DB_DRIVER=pg`) passed `pnpm db:migrate` (6 migrations), `pnpm db:smoke` (`23505` on both unique indexes), `pnpm db:rollback` four times (`0005` down to `0002`), remaining migration count `2`, and `pnpm db:migrate` back to `6` migrations.
+- NOT RUN: Node 24 execution locally (local is Node `v22.22.3`; proven on the PR's hosted CI run); Playwright e2e suite locally (nothing under `src/` or `e2e/` changed; CI runs the 8-shard matrix); coordinator review, PR creation, hosted CI verification, and squash merge.
+- Decision log: `docs/decisions/ci-hygiene.md`.
+- Hosted proof, read by the coordinator from run `39639606007` at `646b8bd1` (this branch's code before the merge of `origin/main` at `8a29610`; the head's own hosted run must also pass before the merge): every job passed, `check` 5.2 min, `db` 0.8 min, e2e shards 2.5 to 13.0 min. The `check` log shows `node: v24.22.0` and `pnpm format:check` passing; the `db` log shows `6 migration(s) recorded`, both smoke duplicates refused with `23505`, rollbacks of `0005` to `0002`, `[db:count] 2 migration(s) recorded`, then `6 migration(s) recorded` again. The coordinator re-ran the RED commit `4beb76c7` in a detached worktree (3 of 3 failed) and re-resolved all five action SHAs with `gh api` (all match).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #160 (CI hygiene, Green) merged as squash `040781b`, reviewed head `43aed65`, GLM 5.3 Flash APPROVE with canary `7ci-eab0520a436dab4a617b54e1b5ee2d53` echoed (round 1). At `43aed65` the coordinator re-ran lint, typecheck, test, build, both retained-bundle checks, all nine `check:*` scripts and prettier on the 7 touched files (all exit 0) and `goldens.test.ts` was byte-identical to `origin/main`. Hosted `check`, `db` and all eight e2e shards green at the head on Node 24. Production `/api/health?db=1` served `040781b` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok; live check on chromium through the gate (`health`, `old-links`, `share`, `leaderboard`) 28/28 with retries off. No Vercel setting changed (CI moved to Node 24 to match Vercel).
+
+## Live checks through the passcode gate
+
+Branch `chore/live-checks-gate` off `origin/main` at `6606585`. Wave 7 row 7-0 (Green): Playwright harness and docs only, no `src/` runtime change. The first commit (`89d1ccd2`) records the PR #158 merge.
+
+- `e2e/gate-cookie.ts` exports `gateCookies(baseUrl, cookieFile, readFile)`. When both `PLAYWRIGHT_BASE_URL` and `PLAYWRIGHT_GATE_COOKIE_FILE` are set and the file trims to a non-empty digest, `playwright.config.ts` adds `{ name: "pokedraft_pass", value, domain: new URL(baseUrl).hostname, path: "/", httpOnly: true, secure: true, sameSite: "Lax", expires: -1 }` to `use.storageState.cookies` (matching `src/gate/unlock.ts:59-65` and reusing `PASSCODE_COOKIE` from `src/passcode.ts:3`). Local and CI runs keep `cookies: []`. Both `page` (and `page.request`) and Playwright's standalone `{ request }` fixture (`APIRequestContext`) inherit `use.storageState.cookies`.
+- `e2e/seed-board.spec.ts:158` adds `expect(html).toContain('data-testid="results-record"')` to the `/r` server-HTML test so `/gate?next=%2Fr%2F...` (which also carries `"Team Score"` in `<title>` via `runMetadata`) cannot satisfy it.
+- RED commit `697f7ad7`: 3 of 3 failed in `scripts/e2e/gate-cookie.test.ts`; GREEN commit `ee047837`: 3 of 3 passed.
+- Gates at `ee047837` (code-identical to this docs commit):
+  - `pnpm vitest run scripts/e2e/gate-cookie.test.ts`: 3 passed in 1 file.
+  - `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,190 passed in 250 files) and `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records) exited 0.
+  - Local Playwright (`CI=1 PLAYWRIGHT_PORT=3971 pnpm exec playwright test e2e/health.spec.ts e2e/share.spec.ts --project=chromium`): 19 passed (1 in `e2e/health.spec.ts`, 18 in `e2e/share.spec.ts`); `e2e/seed-board.spec.ts` (`--project=chromium`): 9 passed.
+- Decision log: `docs/decisions/live-checks-gate.md` (includes the real-page assertion audit for the 9 live-check specs and the list of specs that assume an ungated host or target `/gate` directly).
+- Production through the gate, run by the coordinator from this branch at `0e00245b` against production serving `6606585` (the harness change is test-only, so production code is the same):
+  - With `PLAYWRIGHT_GATE_COOKIE_FILE` set, chromium, retries off: the Wave 6 live set (`health`, `old-links`, `share`, `leaderboard`, `seed-board`, `dossier-contributions`, `xg-river`, `penalty-takers`, `opponent-injuries`) 62 passed, 0 failed.
+  - The same run without the cookie file: `e2e/old-links.spec.ts` 1 failed (the `engine-label` assertion), so the cookie is what lets the gated specs pass.
+  - Specs that target `/gate` or assume an ungated host, with the cookie: `e2e/share-sheet.spec.ts` and `e2e/theme-support.spec.ts` passed; `e2e/resilience-a11y.spec.ts` failed 5 of 6 (it replaces `storageState` with no cookies at line 9, so it hits the gate; the theme-color test at line 57 passed only because `/` redirects to the gate page, which carries the same theme-color meta, so on a gated host it passes for the wrong reason). It stays a local-only spec.
+  - `curl` without a cookie: `/` 307 to `/gate?next=%2F`, `/api/leaderboard` 401.
+- NOT RUN:
+  - The grace-window receipt (the window closes at `2026-10-23T04:00:00Z`).
+  - Hosted CI and reviewer receipt on the pushed branch.
+  - The phone check and screen reader pass.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #159 (live checks through the passcode gate, Green) merged as squash `8a29610`, reviewed head `f0bb9f6`, GLM 5.3 Flash APPROVE with canary `7-0-66634a82a27e7f69a72083873cc88255` echoed (round 1). At `f0bb9f6` the coordinator re-ran lint, typecheck, test, build, both retained-bundle checks, all nine `check:*` scripts and prettier on the 6 touched files (all exit 0) and `goldens.test.ts` was byte-identical to `origin/main`; the coordinator re-ran the RED commit `697f7ad7` in a detached worktree (3 of 3 failed). Hosted check and all eight e2e shards green. Production `/api/health?db=1` served `8a29610` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok; live check on chromium through the gate with the cookie file (`health`, `old-links`, `share`, `leaderboard`, `seed-board`, `dossier-contributions`, `xg-river`, `penalty-takers`, `opponent-injuries`) 62/62 with retries off; without a cookie `/` answered 307 and `/api/leaderboard` 401.
+
 ## Wave 6 owner follow-ups
 
 Branch `docs/wave6-followups` off `origin/main` at `99f7361`. Green: docs only, no runtime change.
@@ -59,6 +101,8 @@ Branch `docs/wave6-followups` off `origin/main` at `99f7361`. Green: docs only, 
 - NOT RUN: the phone check and the screen reader pass; the e2e suite on this branch (nothing under `src/` or `e2e/` changed; CI runs it).
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #158 (Wave 6 owner follow-ups, Green) merged as squash `6606585`, reviewed head `52064b7`, GLM 5.3 Flash APPROVE with canary `wave6-followups-09fd3d0a4492153b64ce3d758006a791` echoed (round 1). Hosted check and all eight e2e shards green. Production `/api/health?db=1` served `6606585` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok (checked 2026-10-21 by the Wave 7 coordinator); with the gate on, `/` without the cookie answered 307 to `/gate?next=%2F` and `/api/leaderboard` 401. No Playwright live check ran for #158: it changed docs only, and gated specs need row 7-0's cookie support.
 
 ## Wave 6 summary
 
