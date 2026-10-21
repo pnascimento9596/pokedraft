@@ -19,6 +19,8 @@ Branch `feat/client-zod-daily-paint` off `origin/main` at `a26daf01`. Wave 7 row
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+PR #166 (client Zod audit, daily saved validator and /daily server first paint, Yellow) merged as squash `a560015e`, reviewed head `1c1403de`. Receipts on `1c1403de`: GLM 5.3 Flash APPROVE with canary `7zd-387518b42df6eda30e7ab313516ce1d8` echoed. At `1c1403de` the coordinator re-ran lint, typecheck, build, both retained-bundle checks, all nine `check:*` scripts, prettier, and unit tests 2,248 passed in 255 files; hosted check, db (52s) and all eight e2e shards green. Production `/api/health?db=1` served `a560015e` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Live check on chromium through the gate (health, old-links, share, leaderboard, server-html) passed with retries off (32 passed); initial /daily response stream serves the challenge setup panel before client JavaScript runs.
+
 ## Builder link previews
 
 Branch `feat/builder-link-previews` off `origin/main` at `fc890c09`. Wave 7 row 7bp (Yellow). The first commit (`4c34b3ea`) records the PR #164 merge.
