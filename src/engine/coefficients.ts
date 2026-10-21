@@ -189,15 +189,15 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     },
     oppScorerWeights: [0, 1, 1, 1, 1, 3, 3, 3, 6, 8, 6],
   },
-  shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.1 },
-  penalty: { missable: false, awardShare: 0 },
-  takers: { freeKickWeight: 1 },
-  opponent: { injuries: false },
-  goalKind: { weighted: false, header: 0, solo: 0 },
+  shootout: { kicks: 5, maxSuddenDeath: 200, base: 0.75, band: 0.18 },
+  penalty: { missable: true, awardShare: 0.0745 },
+  takers: { freeKickWeight: 1.5 },
+  opponent: { injuries: true },
+  goalKind: { weighted: true, header: 1, solo: 1 },
   availability: { eventProb: 0.125, familiarityFloor: 0.85 },
   awards: { goal: 3, assist: 2, cleanSheet: { GK: 2, CB: 1, FB: 1, DM: 1 }, minutesPerPoint: 180 },
   ladder: {
-    score: { G1: 280, G2: 300, G3: 355, R32: 480, R16: 605, QF: 730, SF: 855, F: 985 },
+    score: { G1: 280, G2: 300, G3: 355, R32: 480, R16: 605, QF: 730, SF: 855, F: 992 },
     jitter: 20,
     tilt: 5,
   },
@@ -213,11 +213,11 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     },
     styleEdges: {
       // A pressing side leaves space behind it: counters bite, a slugfest favours nobody.
-      pressing: { counter: [0.95, 0.85], attack: [1.3, 1.35] },
+      pressing: { counter: [1.115, 0.8275], attack: [1.345, 1.46] },
       // A possession side is hurt by a press and by counters that skip its build-up.
-      possession: { press: [1.18, 0.98], counter: [0.92, 0.82] },
+      possession: { press: [1.2875, 0.9425], counter: [1.0, 0.77] },
       // A direct side punishes a high line and struggles to break down a low block.
-      direct: { defend: [0.65, 0.62], press: [1.05, 1.12] },
+      direct: { defend: [0.655, 0.4825], press: [1.0, 1.2875] },
     },
     drain: 0.3,
     pressDrain: 1.4,
@@ -231,8 +231,8 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     cardLineWeight: { GK: 0, DEF: 1.3, MID: 1.1, ATT: 0.6 },
     autoSubEnergy: 82,
     autoSubMinutes: [60, 75],
-    splitManaged: false,
-    counterLead: 1,
-    pressFade: { below: 70, perPoint: 0 },
+    splitManaged: true,
+    counterLead: 1.1,
+    pressFade: { below: 70, perPoint: 0.004 },
   },
 };
