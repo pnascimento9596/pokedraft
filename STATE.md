@@ -3,6 +3,22 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Rollback drop-data guard
+
+Branch `fix/rollback-drop-data-guard` off `origin/main` at `040781bb`. Wave 7 row 7rb (Red). The first commit (`12ebf8ce`) records the PR #160 merge.
+
+- `scripts/db/rollback-core.mts` exports `INITIAL_MIGRATION_TAG`, `MigrationJournal`, `RollbackOptions`, `parseRollbackArgs`, and `rollbackNewest`. On every rollback, `rollbackNewest` queries `SELECT count(*)::int AS count FROM leaderboard_entries` before any destructive step and logs `[db:rollback] leaderboard_entries rows: N`, or `[db:rollback] leaderboard_entries table does not exist` when the relation is absent (`42P01`). When the newest applied migration is `0000_leaderboard_entries` and `dropData` is not `true`, `rollbackNewest` throws `Refusing to roll back 0000_leaderboard_entries without --drop-data because it drops the leaderboard_entries table.` without modifying `leaderboard_entries` or `drizzle.__drizzle_migrations`.
+- `scripts/db/rollback.mts` parses `--drop-data` with `parseRollbackArgs(process.argv.slice(2))`, logs `[db:rollback] target endpoint ${host}`, and calls `rollbackNewest(sql, journal, { dropData })`.
+- `scripts/db/rollback.test.ts` adapts `PGlite` (`@electric-sql/pglite`) to `SqlClient` through `createPgSql`, applies all six migrations from `drizzle/` in `drizzle/meta/_journal.json` order alongside `drizzle.__drizzle_migrations`, inserts 2 rows into `leaderboard_entries`, rolls back `0005_leaderboard_integrity` through `0001_rate_limit_events` asserting `[db:rollback] leaderboard_entries rows: 2` on each step, verifies that rolling back `0000_leaderboard_entries` without `dropData` throws the refusal message and leaves the 2 rows and `1791595926232` migration record intact, verifies that `dropData: true` logs `[db:rollback] leaderboard_entries rows: 2` before `DROP TABLE IF EXISTS "leaderboard_entries"` and drops the table, and verifies that rolling back when `leaderboard_entries` does not exist logs `[db:rollback] leaderboard_entries table does not exist` and `[db:rollback] nothing applied`.
+- `.github/workflows/ci.yml` is untouched (`db` rolls back four times from `0005` down to `0002`, leaving `2` migrations applied, so it never reaches `0000_leaderboard_entries`).
+- RED commit `fe654504`: 3 of 3 failed in `scripts/db/rollback.test.ts`; fixed in `d1463e45` (3 of 3 passed).
+- Gates at `d1463e45` (code-identical to this docs commit): `pnpm vitest run scripts/db/rollback.test.ts` passed 3 in 1 file; `pnpm lint`, `pnpm typecheck`, `pnpm test` (2,196 passed in 252 files), `pnpm build` (`pnpm data:validate` validated 1,025 Pokedex, 1,025 scouting, and 1,025 contribution records), and `pnpm format:check` exited 0; all nine `check:*` scripts (`check:mirrors`, `check:image-seam`, `check:image-packs`, `check:client-bundle` with 0 client files and 24 server files, `check:theme-contrast`, `check:theme-colors`, `check:dashes`, `check:breakpoints`, `check:theme-cvd`) exited 0; `check-retained-replays.mts` passed 13 emitted golden replays across 1 dispatcher; `measure-retained-json.mjs` measured 4 copies, 2,891,853 bytes; `pnpm exec prettier --check` on the 5 touched files exited 0.
+- Decision log: `docs/decisions/rollback-drop-data-guard.md`.
+- Coordinator verification: Neon preview branch proof passed (migrate recorded 6, smoke OK, rollback logged leaderboard_entries rows: 2 before rolling back 0005, migrate restored 6); RED commit fe654504 verified in detached worktree (3 of 3 failed).
+- NOT RUN: Playwright e2e suite locally (nothing under src/ or e2e/ changed; CI runs the 8-shard matrix); reviewer receipts, PR creation, hosted CI verification, and squash merge.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Card canonical query
 
 Branch `fix/card-canonical-query` off `origin/main` at `8a29610`. Wave 7 row 7cq (Red). Normalizes `/card` queries to one canonical parameter order (`t` or `b`, then non-default known `pack`, then `mirror=0`) and redirects non-canonical `/card` queries with HTTP `308`. `src/passcode.ts`, `src/proxy.ts`, `src/engine`, `src/scouting`, and `src/data` are untouched.
@@ -33,6 +49,8 @@ Gates at `dabf17bc` (code-identical to this docs commit):
 - Coordinator check on a real build (`next start` from this branch at `e572340a`, stopped by PID), with the `FLAWLESS` token from the route test: `/card?t=<token>` 200 `image/png`; `&utm=1`, `mirror=1&t=`, and the default pack `pokeapi-pixel` each 308 to `/card?t=<token>`; `t=<token>&mirror=0&pack=pokeapi-art` 308 to `/card?t=<token>&pack=pokeapi-art&mirror=0`; the canonical `t=<token>&pack=pokeapi-art&mirror=0` 200 `image/png`; `/card` and `/card?t=` 400. The coordinator re-ran the RED commit `65c1087c` in a detached worktree: 34 of 49 failed.
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
+PR #162 (/card canonical query, Red) merged as squash `edb04432`, reviewed head `c25e9b48`. Receipts on `c25e9b48`: GLM 5.3 Flash APPROVE with canary `7cq-1ce55eb4e6e66bf228be37e193fc0c54` echoed (round 1) and the independent executing Red reviewer PASS (a Gemini 4 Argon (High) lane through the Antigravity CLI with the pokedraft-mode skills loaded and no implementer context; it re-ran the gates, the RED commit and canonical card checks). At `c25e9b48` the coordinator re-ran lint, typecheck, build, retained-bundle check, check scripts and prettier, unit tests 2,201 passed in 252 files; hosted check, db and all eight e2e shards green. Production `/api/health?db=1` served `edb04432` with engine `pokedraft-engine-7`, tokenVersions 1 to 7 and `db.status` ok. Production curl checks: non-canonical /card answered 308 with canonical Location header, canonical answered 200 image/png, invalid answered 400. Live check on chromium through the gate (health, old-links, share, leaderboard, share-sheet) 37 passed with retries off. Vercel WAF rate limit rule `rule_pd_card_og_rate_limit_AMF0FR` (60 req/min per IP, action rate limit 429) published to production after approval; production share card and og:image renders return 200 image/png.
 
 ## Proxy matcher trim
 
