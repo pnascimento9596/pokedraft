@@ -1,8 +1,17 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import rawPokedex from "../../src/data/pokedex.json";
 import rawScouting from "../../src/data/scouting.json";
-import { validatePokedex, validateScouting } from "./validate-artifacts";
+import * as validators from "./validate-artifacts";
+
+const { validatePokedex, validateScouting } = validators;
+const validateScoutingContributions = (
+  validators as unknown as {
+    validateScoutingContributions: (input: unknown) => unknown[];
+  }
+).validateScoutingContributions;
 
 describe("generated artifact build validation", () => {
   it("accepts all 1025 Pokedex records without changing their values", () => {
@@ -85,6 +94,61 @@ describe("generated artifact build validation", () => {
         }),
       );
       expect(() => validateScouting(input)).toThrowError(z.ZodError);
+    },
+  );
+
+  it("accepts all 1025 scouting contribution records without changing their values", () => {
+    const rawContributions = JSON.parse(
+      readFileSync(
+        path.resolve(import.meta.dirname, "../../src/data/scouting-contributions.json"),
+        "utf8",
+      ),
+    );
+    const validated = validateScoutingContributions(rawContributions);
+    expect(validated).toHaveLength(1025);
+    expect(JSON.stringify(validated)).toBe(JSON.stringify(rawContributions));
+  });
+
+  it.each([
+    [
+      "a zero ability contribution",
+      [{ id: 143, abilities: { PHY: 0 }, moves: {} }],
+      "custom",
+      [0, "abilities", "PHY"],
+    ],
+    [
+      "a zero move contribution",
+      [{ id: 143, abilities: {}, moves: { SHO: 0 } }],
+      "custom",
+      [0, "moves", "SHO"],
+    ],
+    [
+      "an out-of-range ability contribution",
+      [{ id: 143, abilities: { PHY: 9 }, moves: {} }],
+      "too_big",
+      [0, "abilities", "PHY"],
+    ],
+    [
+      "an unknown attribute key in abilities",
+      [{ id: 143, abilities: { INVENTED: 2 }, moves: {} }],
+      "unrecognized_keys",
+      [0, "abilities"],
+    ],
+    [
+      "an extra contribution entry field",
+      [{ id: 143, abilities: {}, moves: {}, invented: true }],
+      "unrecognized_keys",
+      [0],
+    ],
+  ])(
+    "rejects %s in scouting contributions with the schema error and field path",
+    (_name, input, code, errorPath) => {
+      expect(() => validateScoutingContributions(input)).toThrowError(
+        expect.objectContaining({
+          issues: expect.arrayContaining([expect.objectContaining({ code, path: errorPath })]),
+        }),
+      );
+      expect(() => validateScoutingContributions(input)).toThrowError(z.ZodError);
     },
   );
 });
