@@ -100,9 +100,11 @@ function weightedPanel() {
 describe("a match weights both sides' goal kinds (catches the weighting reaching only one side)", () => {
   it("panel runs 0 to 49: user and opponent goals both change kind against zero weights, none moves", () => {
     const res = weightedPanel();
-    expect(res.user.changed).toBeGreaterThan(0);
-    expect(res.opp.changed).toBeGreaterThan(0);
-    expect(res.moved).toBe(0);
+    expect(res).toEqual({
+      user: { goals: 529, changed: 65 },
+      opp: { goals: 193, changed: 9 },
+      moved: 0,
+    });
   });
 });
 

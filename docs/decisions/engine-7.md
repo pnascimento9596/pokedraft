@@ -56,14 +56,16 @@ return 1`).
     an identity `adapt` (`CupResult` in Engine 7 only adds optional penalty incidents, rotations,
     and `oppEnergy`) and sets `RETAINED_TOKEN_VERSIONS = [1, 2, 3, 4, 5, 6]`.
   - `src/proxy.ts`: imports `decodeV6Token` from `./engine/versions/v6/src/engine/token` and
-    validates `pd6.` tokens in `brokenShareLink` so `/r/pd6.<payload>` redirects to
-    `/r/pd6?t=<payload>` and `/r/pd6?t=<payload>` rewrites to `/r/pd6.<payload>`.
+    validates `pd6.` tokens in `brokenShareLink`: `/r/pd6?t=<payload>` rewrites to
+    `/r/pd6.<payload>`, a valid `/r/pd6.<payload>` passes through, and a malformed one redirects to
+    `/run-not-found`.
   - `scripts/build/check-retained-replays.mts` and `scripts/build/measure-retained-json.mjs`: routes
     the `v6` golden tokens (`2b26ee82...` and `eb366464...`) through the retained `v6` bundle, adds
     the live `v7` golden replay check (`c91cb42c...` and `2b7223f3...`), and includes `"v6"` in
     retained JSON chunk measurement.
-  - `scripts/audit/tokens.mts`: adds `6` to `RETAINED` and moves `7` to live (`GOLDEN_CUP8` and
-    `GOLDEN_KANTO151`).
+  - `scripts/audit/tokens.mts`: `GOLDEN_CUP8_TOKEN_SHA256` moves from `91d7a44a...` to
+    `4adf37a5...`. The engine 7 golden fixtures are `GOLDEN_CUP8_V7` and `GOLDEN_KANTO151_V7` in
+    `src/engine/versions/__tests__/fixtures.ts`.
 - **Grace window and leaderboard validation:**
   - `src/leaderboard/server/grace.ts`: enables `GRACE` for version `6` (`pokedraft-engine-6`,
     `flipDate: "2026-10-21"`, `until: "2026-10-23T04:00:00Z"`).
@@ -511,8 +513,8 @@ replayed through Engine 7:
     stayed `[593, 5, 0, 1, "QF"]` (`[593, 5, "QF"]`). Why: `src/scouting`, `src/data`, draft RNG,
     and `ENGINE_COEFFICIENTS.rating` are unchanged so `rating.score` stays `593`; across the six
     played matches, the user wins the first five matches under both engines (`G1: 1-0` to `3-0`,
-    `G2: 6-0` to `7-0`, `G3: 6-1`, `R32: 6-2`, `R16: 1-0` to `2-0`) and in `QF` draws `0-0` after
-    extra time and loses `4-5` on penalties under both engines.
+    `G2: 6-0` to `7-0`, `G3: 6-1`, `R32: 6-2`, `R16: 1-0` to `2-0`) and in `QF` draws after extra
+    time and loses on penalties under both engines.
   - Replay SHA moves from `2b26ee82cbf26da1d64e1c4978b25e846537085747d3845d78b555cb7d8f7e05` to
     `c91cb42cac62bec6e43a649c4e914a1208108ef94a92534acfd900d13df1fe30` because `engine` (`"pokedraft-engine-7"`),
     the `G1`/`G2`/`R16` goal totals, weighted goal kinds, penalty incidents, opponent injuries and
@@ -563,8 +565,8 @@ Regenerated with `pnpm e2e:pins` (`scripts/e2e/render-pins.ts`):
   `"1-1-2"` -> `"2-1-2"` (Team Score `406` unchanged).
 - `HAPTICS`: unchanged (`round: "G3"`, `scoreAtConceded: "2-1"`, `goalsBefore: 2`, `goals: 6`).
 - `INJURY_STAGING`: stays `round: "QF"`, `minute: 42`, `slot: 1`, `injured: "Roselia"`, `sub:
-"Kommo-o"` after filtering `injury.side === "user"` in `render-pins.ts` (G1 now has an opponent
-  injury at 25', which has no bench substitute).
+"Kommo-o"` after filtering `injury.side === "user"` in `render-pins.ts` (under engine 7 the first
+  injury found can be an opponent injury, which has no bench substitute).
 - `RED_CARD`: unchanged (`round: "QF"`, `minute: 6`, `slot: 2`).
 - `CONTINUOUS_BALL`: unchanged (`round: "G1"`, `save: 59`).
 - `SET_PIECES`: `solo` unchanged (`G1`, `49'`, `Talonflame`); `header` moves from `R32 9'` to `G1
@@ -601,13 +603,13 @@ squad 5.9, them 0.1"` (G1 penalty and style-edge xG under Engine 7).
 - Set-piece picker bounding boxes (`e2e/penalty-takers.spec.ts`):
   - Pre-match card (`SetPieceTakers` inside `.prematch`):
     - `390x844`: `300x44 at x 45` (both selects stacked, full card width, no overflow)
-    - `360x800`: `270x44 at x 45`
-    - `320x568`: `230x44 at x 45`
+    - `360x780`: `270x44 at x 45`
+    - `320x640`: `230x44 at x 45`
     - `308x568`: `218x44 at x 45`
   - Touchline sheet (`SetPieceTakers` inside `.sheet`):
     - `390x844`: `366x44 at x 12`
-    - `360x800`: `336x44 at x 12`
-    - `320x568`: `296x44 at x 12`
+    - `360x780`: `336x44 at x 12`
+    - `320x640`: `296x44 at x 12`
     - `308x568`: `284x44 at x 12`
 - Browser proof committed under `docs/reports/engine-7/`:
   - `docs/reports/engine-7/390-prematch-set-pieces.png`
@@ -714,7 +716,7 @@ repeat(auto-fit, minmax(210px, 1fr))` on `.takers` so the selects stack into a s
     restored the user injury pin (`QF 42' Roselia -> Kommo-o`).
   - `deepLink()` picked the very first user goal in G1 (`49'`), which in Engine 7 sits 6 minutes
     before the `55'` penalty goal (`< 44px` apart on the timeline scrubber, tripping Playwright's
-    pointer-intercept check). Filtering for the first user goal with no other goal within 7 minutes
+    pointer-intercept check). Filtering for the first user goal with no later goal within 12 minutes
     selected `59'` (`before: "2-0"`, `after: "3-0"`).
   - `e2e/copy-pass.spec.ts` hardcoded `"1-0"` after navigating to `DEEP_LINK.href`, which failed at
     `ac067baf` once `DEEP_LINK` moved to the `59'` goal (`after: "3-0"`). Commit `b4749fda` updated
@@ -771,3 +773,16 @@ All commands run at `77736a9d` (code-identical to this docs commit), with raw ou
 - From 6b8 for the owner: P1 good (+1.07 vs +3 to +6 under the P1/P2 conflict rule), P7 (+0.046 on
   KO W at gap 0 from Engine 7's penalty rules), P8 (68.78%, needs `match.roleFactor`), and the
   open-play goal-kind share (49.54% vs 58.8% in Engine 6).
+
+## Fix round 2 (coordinator)
+
+- `src/engine/__tests__/goal-kind.test.ts`, "panel runs 0 to 49": `2cdbb27b` had relaxed the literal
+  `toEqual` to `toBeGreaterThan(0)` checks. It is literal again at the engine 7 values the panel
+  measures at this head: user `{ goals: 495, changed: 63 }` to `{ goals: 529, changed: 65 }`, opponent
+  `{ goals: 177, changed: 7 }` to `{ goals: 193, changed: 9 }`, `moved` stays `0`. The live
+  coefficients changed (6b8's calibrated values, including the 1.15 edge scale and the band), so the
+  50 seeded panel matches score different goals.
+- Corrected five statements in this log that did not match the code: the `scripts/audit/tokens.mts`
+  bullet, the `/r/pd6.<payload>` proxy behaviour, the `QF` and G1 injury details in the pins
+  section (now stated without the unverified minutes and scores), the `penalty-takers` viewports
+  (`360x780` and `320x640`), and the `deepLink()` window (12 minutes).
