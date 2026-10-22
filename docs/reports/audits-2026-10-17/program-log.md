@@ -688,5 +688,12 @@ Achievements: Giant killer 2.5% (threshold 100), Hat-trick hero 73.0%.
 
 ### Open carryovers
 
-- None! All Wave 7 program items, audit findings, and queue entries are closed.
+- No open code, audit, or platform findings: all 60 itemized findings from the 2026-10-17 audits and all queue items are closed.
+- Wave 6 conditional carryover resolved: `src/engine/story.ts` was included in the frozen bundle roots in Row 8b (PR #171, squash `f2f01113`), exporting `matchStory` for `v7` so retained engine 7 replays render the xG river.
+- Pending dated receipts (NOT RUN until window closure):
+  - Wave 6 engine 6 grace window read-only count of `pd6` submissions after flip, scheduled for after `2026-10-23T04:00:00Z`.
+  - Wave 7 engine 7 grace window read-only count of `pd7` submissions after flip, scheduled for after `2026-10-24T04:00:00Z`.
+- Owner actions (NOT RUN; checklist in `docs/decisions/wave7-summary.md`):
+  - Physical phone check on iPhone Safari and Android.
+  - Screen reader pass (VoiceOver / TalkBack).
 

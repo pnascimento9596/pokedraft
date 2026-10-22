@@ -5,7 +5,7 @@ Program closing report comparing every finding from Audit A (`pokedraft-audit-20
 ## 1. Executive Summary
 
 - Program scope: Seven waves of platform, engine, UX, mobile, performance, and security dispatches executed between 2026-10-17 and 2026-10-22.
-- Completion rate: 100% of planned rows merged across 99 merged PRs (#71 to #176), culminating in Wave 7 (PRs #159 to #176) and closed by PR #177.
+- Completion rate: 100% of planned rows merged across 99 merged PRs (#71 to #176; 91 table rows across 7 waves plus 8 side and summary PRs: #76, #80, #82, #95, #128, #130, #135, #157), culminating in Wave 7 (PRs #159 to #176) and closed by PR #177.
 - Final production state: Commit `8e071295` running live engine `pokedraft-engine-8`, token versions 1 to 8, with Content-Security-Policy enforced, species chunk split active, and database integrity verified.
 - Status of findings:
   - Fixed: 60 itemized audit and roadmap findings across engine, gameplay, UI/UX, mobile ergonomics, performance, security, and CI.
@@ -115,7 +115,7 @@ As established in Section 1 of the implementation prompt, several static claims 
 Per Section 6 of the program brief, the following items were formally deferred or marked won't-fix to protect project scope and core game invariants:
 
 - **Passwordless friend identity & server-committed attempts**: Deferred. Introduces heavyweight authentication and changes the casual friend-group social dynamic. Revisit only if friend group explicitly requests account management.
-- **Weekly standings, season mode, rivalries, and watch parties**: Deferred. Premature feature creep until friends actively engage with core head-to-head challenges.
+- **Weekly standings, season mode, rivalries, watch parties, and touchline shouts**: Deferred. Premature feature creep until friends actively engage with core head-to-head challenges.
 - **Video export via MediaRecorder**: Deferred due to inconsistent cross-browser support on mobile Safari. Replaced by instant replay and deep links (`/r/<token>?watch=...`).
 - **Broadcast heatmap & cosmetic stoppage time**: Won't fix. The simulation engine does not track sub-minute coordinate heatmaps; inventing positions would violate the "no fabricated data" invariant.
 - **Keeper fit vs quality rating adjustment**: Won't fix. Adjusting legacy raw fit formulas would rewrite historical Team Scores across engines 1 through 6. Display was made honest by showing role quality directly (PR #70).
@@ -127,4 +127,8 @@ Per Section 6 of the program brief, the following items were formally deferred o
 - All 18 rows of Wave 7 merged with exact-head squash SHAs.
 - Full automated test suite passes: 2,310 unit tests in 260 files, 12 hosted checks across GitHub Actions and Vercel, and all Playwright e2e suites green.
 - Live deployment verified at `https://pokedraft-woad.vercel.app/api/health?db=1` serving commit `8e071295`.
-- Program closed cleanly with zero open carryovers.
+- Program closed with zero open code or audit findings:
+  - All 60 itemized audit and roadmap findings resolved or formally closed.
+  - Wave 6 conditional carryover resolved: `src/engine/story.ts` was included in frozen bundle roots in Row 8b (PR #171, squash `f2f01113`), exporting `matchStory` for `v7` so retained engine 7 replays render the xG river.
+  - Dated receipts pending window closures (Wave 6 grace count after `2026-10-23T04:00:00Z`; Wave 7 grace count after `2026-10-24T04:00:00Z`) recorded as NOT RUN until their respective dates.
+  - Owner actions (physical phone check on iPhone Safari and Android; VoiceOver screen reader pass) documented with checklists in `docs/decisions/wave7-summary.md` and listed under NOT RUN.

@@ -9,11 +9,11 @@ Branch `docs/wave7-closeout` off `origin/main` at `8e071295`. Wave 7 summary (Gr
 
 - Wave 7 is closed: all 18 rows merged and live-checked across eighteen PRs (#159 to #176).
 - Program log: Wave 7 entry in `docs/reports/audits-2026-10-17/program-log.md` with full PR table, execution order, measurements that moved, brief vs code comparisons, and carryovers.
-- Program closing report: `docs/reports/audits-2026-10-17/closing-report.md` cross-referencing every Audit A and Audit G finding from the 2026-10-17 audits against its resolving PR, status (fixed, partially fixed, deferred, won't fix), and verification evidence.
+- Program closing report: `docs/reports/audits-2026-10-17/closing-report.md` cross-referencing every Audit A and Audit G finding from the 2026-10-17 audits against its resolving PR, status (fixed, deferred, won't fix, or refuted), and verification evidence.
 - Queue closure: all items in `docs/queue/dispatch-7-deferred.md`, `docs/queue/dispatch-7-frozen.md`, `docs/queue/engine-followups.md`, and `docs/queue/scouting-carryovers.md` closed with citations.
 - Owner decision log: `docs/decisions/wave7-summary.md` detailing the physical phone check checklist (iPhone Safari and Android) and screen reader pass (VoiceOver).
 - Gates at branch HEAD: `pnpm format:check`, `pnpm check:dashes`, `pnpm check:mirrors`.
-- NOT RUN: Product code changes (docs and reports only), owner physical phone check.
+- NOT RUN: Product code changes (docs and reports only), owner physical phone check and screen reader pass, pending dated grace-window receipts.
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 

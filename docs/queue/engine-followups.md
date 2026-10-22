@@ -34,7 +34,7 @@ Logged by dispatch 3 (UI). The engine and scouting were frozen in that lane, so 
 ## Status at Program Close (Wave 7)
 
 All items closed:
-- Items 1, 2, 3: Completed in dispatch 6 PR 6C (PR #10) and wired into the UI in dispatch 7 PR 7A.
+- Items 1, 2, 3: Completed in pre-program dispatch 6 PR 6C (PR #11, squash `928e4b13`) and wired into the UI in pre-program dispatch 7 PR 7A (PR #13, squash `87d46c8`).
 - Item 4: Completed in Wave 7 row 7sp (PR #175, squash `acdd8f00`) by splitting species data into a slim index (`src/data/species-index.json`, 108 KB) and 9 generation chunks (`src/data/species-chunks/gen-[1..9].json`).
 - Item 5: Closed in Wave 6 row 6-0 (PR #143, squash `eceb581`) as won't fix per rating stability across engines.
 - All engine follow-ups are now closed.

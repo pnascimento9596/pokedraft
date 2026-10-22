@@ -52,7 +52,7 @@ Item 5 placement fell (10.2% to 9.3%; 3-5-2 14.5% to 13.1%) and the squiggle spe
 ## Status at Program Close (Wave 7)
 
 All items closed:
-- Items 2 and 5: Resolved in Layer 1 (dispatch 6 PR 6B, PR #10, squash `d3502ef7`).
+- Items 2 and 5: Resolved in Layer 1 (pre-program dispatch 6 PR 6B, PR #10, squash `d3502ef7`).
 - Items 6 and 10: Resolved in PR #61 (`6915a84`, Jigglypuff bestRoles corrected, GK review rule test added in `src/scouting/__tests__/review-rules.test.ts`).
 - Items 1, 3, 4: Closed as won't fix. Measured placement rate is under 0.3% across 5,000 drafts; impact on game outcomes is negligible.
 - Items 7, 8, 9, 11, 12, 13: Closed as won't fix. Scouting Layer 1 and Layer 2 are frozen; changing ratings would move historical Team Scores across engines. All scouting carryovers are closed.
