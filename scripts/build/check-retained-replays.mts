@@ -20,10 +20,12 @@ import {
   GOLDEN_KANTO151_V6,
   GOLDEN_CUP8_V7,
   GOLDEN_KANTO151_V7,
+  GOLDEN_CUP8_V8,
+  GOLDEN_KANTO151_V8,
 } from "../../src/engine/versions/__tests__/fixtures";
 
 // Each hash is sha256 of JSON.stringify({ draft, cup }) as the issuing engine replays the token:
-// the retained bundle's own output, or the live engine's. Freezing engine 6 into a bundle keeps
+// the retained bundle's own output, or the live engine's. Freezing engine 7 into a bundle keeps
 // its case valid unchanged; the next live version then needs a case of its own.
 const CASES = [
   [1, GOLDEN_CUP8_V1, "13c141d47fd86051f7b7e5bea0808aa6bbf1d2dbb5851726b5c42fe3e441f998"],
@@ -39,6 +41,8 @@ const CASES = [
   [6, GOLDEN_KANTO151_V6, "eb3664642c3c0bd9ee50cb4382182c73e070dad7896e620492d5b0e5b8b12747"],
   [7, GOLDEN_CUP8_V7, "c91cb42cac62bec6e43a649c4e914a1208108ef94a92534acfd900d13df1fe30"],
   [7, GOLDEN_KANTO151_V7, "2b7223f3888259596fd24740506564cdca93ff13e9c035ecb417d681c2858a4d"],
+  [8, GOLDEN_CUP8_V8, "21f36d607fdd6a1b2a79c61707e3ccfcaf448175470b8eb4c51f552467946528"],
+  [8, GOLDEN_KANTO151_V8, "de30f3358babc4c1b07cbdb843f78d8fb4e879aa1fb4a8d72eeaa9e7ba6aac98"],
 ] as const;
 
 type Factory = (...args: unknown[]) => unknown;

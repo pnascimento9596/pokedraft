@@ -17,10 +17,10 @@ export interface Grace {
 }
 
 export const GRACE: Grace | null = {
-  version: 6,
-  engine: "pokedraft-engine-6",
-  until: "2026-10-23T04:00:00Z",
-  flipDate: "2026-10-21" as IsoDate,
+  version: 7,
+  engine: "pokedraft-engine-7",
+  until: "2026-10-24T04:00:00Z",
+  flipDate: "2026-10-22" as IsoDate,
 };
 
 export function openGrace(grace: Grace | null, token: string, now: Date): Grace | null {

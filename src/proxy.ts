@@ -3,6 +3,7 @@ import { decodeToken } from "./engine/token";
 import { decodeToken as decodeRetainedToken } from "./engine/versions/v3/src/engine/token";
 import { decodeToken as decodeV5Token } from "./engine/versions/v5/src/engine/token";
 import { decodeToken as decodeV6Token } from "./engine/versions/v6/src/engine/token";
+import { decodeToken as decodeV7Token } from "./engine/versions/v7/src/engine/token";
 import { PASSCODE_COOKIE, cookieMatches, isPublicPath } from "./passcode";
 import { runTokenFromUrl } from "./ui/run-link";
 
@@ -10,7 +11,7 @@ const SHARE_PATH = /^\/r\/([^/]+)$/;
 
 // A page that streams has already sent 200, so an undecodable share link is answered here,
 // before the body starts. Tokens that decode but fail the replay keep the friendly 200 page.
-// Versions 1 to 4 share the frozen v3 wire schema and versions 5 and 6 have their own frozen
+// Versions 1 to 4 share the frozen v3 wire schema and versions 5 to 7 have their own frozen
 // codecs. Validate with those data-free codecs while leaving the original token intact for replay
 // on its own retained engine.
 function brokenShareLink(token: string | null): boolean {
@@ -22,6 +23,8 @@ function brokenShareLink(token: string | null): boolean {
       decodeV5Token(token);
     } else if (token.startsWith("pd6.")) {
       decodeV6Token(token);
+    } else if (token.startsWith("pd7.")) {
+      decodeV7Token(token);
     } else {
       decodeToken(token);
     }

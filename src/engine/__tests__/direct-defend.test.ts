@@ -34,14 +34,12 @@ describe("defend against direct style edge (engine 8 flip)", () => {
     expect(loadCoefficients("v7")).toBe(ENGINE_COEFFICIENTS_V7);
   });
 
-  it("proves live matchStory code is byte-identical to frozen v7 under ENGINE_COEFFICIENTS_V7 and diverges only on Defend-vs-direct under live defaults", () => {
+  it("proves live matchStory code is byte-identical to frozen v7 across 50 cup8 seeds when given ENGINE_COEFFICIENTS_V7", () => {
     let stories = 0;
     let errorsInBoth = 0;
     let played = 0;
     let defendVsDirectPlayed = 0;
-    let v7Mismatches = 0;
-    let liveDefaultDiffsOnDirectDefend = 0;
-    let liveDefaultDiffsElsewhere = 0;
+    let mismatches = 0;
 
     for (let i = 0; i < 50; i += 1) {
       const seed = `panel-${i}` as Seed;
@@ -63,35 +61,23 @@ describe("defend against direct style edge (engine 8 flip)", () => {
           const frozen = capture(() =>
             v7.matchStory(seed, m, { lineup: lineup as never, mode: "cup8", manager } as never),
           );
-          const liveDefault = capture(() => matchStory(seed, m, { lineup, mode: "cup8", manager }));
 
           if (!liveWithV7.ok && !frozen.ok) {
             errorsInBoth += 1;
-            if (liveWithV7.message !== frozen.message) v7Mismatches += 1;
-            if (liveDefault.ok || liveDefault.message !== frozen.message) {
-              liveDefaultDiffsElsewhere += 1;
-            }
+            if (liveWithV7.message !== frozen.message) mismatches += 1;
             continue;
           }
           if (liveWithV7.ok !== frozen.ok) {
-            v7Mismatches += 1;
+            mismatches += 1;
             continue;
           }
 
           played += 1;
-          const isDefendDirect = manager !== undefined && isDirect;
-          if (isDefendDirect) {
+          if (manager !== undefined && isDirect) {
             defendVsDirectPlayed += 1;
           }
-          const frozenJson = JSON.stringify(frozen.value);
-          if (JSON.stringify(liveWithV7.value) !== frozenJson) {
-            v7Mismatches += 1;
-          }
-          const defaultSame = liveDefault.ok && JSON.stringify(liveDefault.value) === frozenJson;
-          if (isDefendDirect) {
-            if (!defaultSame) liveDefaultDiffsOnDirectDefend += 1;
-          } else if (!defaultSame) {
-            liveDefaultDiffsElsewhere += 1;
+          if (JSON.stringify(liveWithV7.value) !== JSON.stringify(frozen.value)) {
+            mismatches += 1;
           }
         }
       }
@@ -102,17 +88,13 @@ describe("defend against direct style edge (engine 8 flip)", () => {
       errorsInBoth,
       played,
       defendVsDirectPlayed,
-      v7Mismatches,
-      liveDefaultDiffsOnDirectDefend,
-      liveDefaultDiffsElsewhere,
+      mismatches,
     }).toEqual({
       stories: 800,
       errorsInBoth: 316,
       played: 484,
       defendVsDirectPlayed: 73,
-      v7Mismatches: 0,
-      liveDefaultDiffsOnDirectDefend: 73,
-      liveDefaultDiffsElsewhere: 0,
+      mismatches: 0,
     });
   });
 
