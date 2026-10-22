@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { NextRequest } from "next/server";
-import { PASSCODE_COOKIE, isPublicPath, passcodeDigest, safeNext } from "../passcode";
 import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
 import { config, proxy } from "../proxy";
 import { scriptedToken } from "../leaderboard/server/__tests__/fixtures";
@@ -66,84 +65,30 @@ function importClosure(entryRel: string): string[] {
   return [...visited].sort();
 }
 
-function req(path: string, cookie?: string): NextRequest {
-  const headers = cookie ? { cookie: `${PASSCODE_COOKIE}=${cookie}` } : undefined;
-  return new NextRequest(`https://pokedraft.test${path}`, { headers });
+function req(path: string): NextRequest {
+  return new NextRequest(`https://pokedraft.test${path}`);
 }
 
 afterEach(() => vi.unstubAllEnvs());
 
-describe("passcode gate (catches a gate that breaks link previews or leaks the API)", () => {
-  it("exempts exactly the preview and gate paths", () => {
-    const exempt = [
-      "/card",
-      "/r/pd1.abc/opengraph-image",
-      "/r/pd1.abc/opengraph-image-1x2y3z",
-      "/_next/static/chunks/app.js",
-      "/favicon.ico",
-      "/robots.txt",
-      "/gate",
-      "/gate/unlock",
-      "/api/csp-report",
-      "/api/health",
-    ];
-    const gated = [
-      "/",
-      "/play",
-      "/daily",
-      "/leaderboard",
-      "/history",
-      "/how-to-play",
-      "/r/pd1.abc",
-      "/api/leaderboard",
-      "/api/anything",
-      "/api/csp-report/x",
-      "/api/health/x",
-      "/card/extra",
-      "/r/pd1.abc/opengraph-image/x",
-      "/_next/image",
-      "/robots.txt.bak",
-      "/gate/other",
-    ];
-    expect(exempt.filter((p) => !isPublicPath(p))).toEqual([]);
-    expect(gated.filter((p) => isPublicPath(p))).toEqual([]);
+describe("proxy", () => {
+  it("never gates anything, even with FRIENDS_PASSCODE set (catches the friends-only lockout where / redirected to /gate and /api/leaderboard answered 401)", () => {
+    vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
+    for (const path of ["/", "/play", "/daily", "/leaderboard", "/api/leaderboard"]) {
+      const res = proxy(req(path));
+      expect([path, res.status, res.headers.get("x-middleware-next")]).toEqual([path, 200, "1"]);
+    }
   });
 
-  it("keeps the install files public (catches a home screen install that hits the gate, since browsers fetch the manifest without cookies)", () => {
-    const exempt = [
-      "/manifest.webmanifest",
-      "/icons/icon-192.png",
-      "/icons/icon-512.png",
-      "/icons/icon-maskable-512.png",
-      "/apple-icon.png",
-    ];
-    const gated = [
-      "/manifest.webmanifest/x",
-      "/icons/",
-      "/icons/x/icon.png",
-      "/apple-icon.png.bak",
-    ];
-    expect(exempt.filter((p) => !isPublicPath(p))).toEqual([]);
-    expect(gated.filter((p) => isPublicPath(p))).toEqual([]);
-  });
-
-  it("runs the proxy on every path except static assets (catches a matcher that skips the API or gates /_next/static)", () => {
+  it("runs the proxy on every path except static assets (catches a matcher that skips the API or runs on /_next/static)", () => {
     const runs = (url: string) => unstable_doesMiddlewareMatch({ config, url });
-    const matched = [
-      "/",
-      "/play",
-      "/api/leaderboard",
-      "/card",
-      "/gate/unlock",
-      "/r/pd3.abc",
-      "/_next/image",
-    ];
+    const matched = ["/", "/play", "/api/leaderboard", "/card", "/r/pd3.abc", "/_next/image"];
     const skipped = ["/_next/static/chunks/app.js", "/favicon.ico", "/robots.txt"];
     expect(matched.filter((u) => !runs(u))).toEqual([]);
     expect(skipped.filter((u) => runs(u))).toEqual([]);
   });
 
-  it("creature images and health checks run the proxy and hit the passcode gate", () => {
+  it("skips creature images and health checks and runs on everything else", () => {
     const runs = (url: string) => unstable_doesMiddlewareMatch({ config, url });
     const notMatched = [
       "/creatures/pokeapi-art/0001.webp",
@@ -160,7 +105,6 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       "/api/leaderboard?mode=cup8",
       "/r/pd7.abc",
       "/daily",
-      "/gate",
       "/card",
       "/api/healthz",
       "/creaturesx",
@@ -169,47 +113,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     expect(matched.filter((u) => runs(u) !== true)).toEqual([]);
   });
 
-  it("is off when FRIENDS_PASSCODE is unset", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "");
-    expect(proxy(req("/play")).headers.get("x-middleware-next")).toBe("1");
-  });
-
-  it("never gates anything, even with FRIENDS_PASSCODE set (catches the friends-only lockout where / redirected to /gate and /api/leaderboard answered 401)", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
-    for (const path of ["/", "/play", "/daily", "/leaderboard", "/api/leaderboard"]) {
-      const res = proxy(req(path));
-      expect([path, res.status, res.headers.get("x-middleware-next")]).toEqual([path, 200, "1"]);
-    }
-  });
-
-  it("redirects gated pages to /gate with the original path", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
-    const res = proxy(req("/r/pd1.abc?x=1"));
-    expect(res.status).toBe(307);
-    expect(res.headers.get("location")).toBe(
-      "https://pokedraft.test/gate?next=%2Fr%2Fpd1.abc%3Fx%3D1",
-    );
-  });
-
-  it("answers gated API calls with 401 JSON, never the gate page", async () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
-    const res = proxy(req("/api/leaderboard?mode=cup8&scope=all"));
-    expect(res.status).toBe(401);
-    expect(await res.json()).toEqual({
-      error: { code: "PASSCODE_REQUIRED", message: "Enter the friends passcode first." },
-    });
-  });
-
-  it("lets public paths and the right cookie through, and rejects a stale cookie", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
-    expect(proxy(req("/r/pd1.abc/opengraph-image")).headers.get("x-middleware-next")).toBe("1");
-    expect(proxy(req("/api/health?db=1")).headers.get("x-middleware-next")).toBe("1");
-    expect(proxy(req("/", passcodeDigest("pikachu"))).headers.get("x-middleware-next")).toBe("1");
-    expect(proxy(req("/", passcodeDigest("old-passcode"))).status).toBe(307);
-  });
-
   it("rewrites an undecodable share link to the 404 route and passes a real token through", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "");
     const cur = `pd${RUN_TOKEN_VERSION}`;
     for (const bad of ["garbage", `${cur}.%%%`, "pd99.abc", "pd0.abc", "pd01.e30", `${cur}.e30`]) {
       const res = proxy(req(`/r/${bad}`));
@@ -224,7 +128,6 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   });
 
   it("passes an old engine's share link through to the page, which replays it on its own bundle", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "");
     expect(RUN_TOKEN_VERSION).not.toBe(1);
     const res = proxy(req(`/r/${A11Y_RUN_V1}`));
     expect(res.headers.get("x-middleware-rewrite")).toBeNull();
@@ -232,7 +135,6 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   });
 
   it("restores the payload from a message-safe query link before rendering the canonical run", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "");
     const real = scriptedToken(
       { mode: "kanto151", formation: "4-4-2", order: "squadFirst" },
       "proxy-seed",
@@ -261,12 +163,10 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   });
 
   it("keeps a shipped engine-5 share link on its page once engine 6 is live (catches pd5 links 404ing)", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "");
     expect(proxy(req(`/r/${GOLDEN_CUP8_V5}`)).headers.get("x-middleware-rewrite")).toBeNull();
   });
 
   it("passes a golden share link of every retained, live and flip-retained version (regression guard, no RED: behaviour already correct; catches pd7 links 404ing at the flip)", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "");
     const versions = [
       ...new Set([...RETAINED_TOKEN_VERSIONS, RUN_TOKEN_VERSION, FLIP_RETAINS]),
     ].sort((a, b) => a - b);
@@ -280,7 +180,6 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
   });
 
   it("keeps missing, malformed and unsupported query payloads on the real 404 route", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "");
     for (const path of [
       "/r/pd4",
       "/r/pd4?t=",
@@ -309,37 +208,6 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
         }
       }
     }
-  });
-
-  it("gates the complete query link before rewriting and lets an unlocked player replay it", () => {
-    vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
-    const path = `/r/pd1?t=${A11Y_RUN_V1.slice(4)}`;
-    const res = proxy(req(path));
-    expect(res.status).toBe(307);
-    expect(new URL(res.headers.get("location")!).searchParams.get("next")).toBe(path);
-    expect(res.headers.get("x-middleware-rewrite")).toBeNull();
-    expect(proxy(req(path, passcodeDigest("pikachu"))).headers.get("x-middleware-rewrite")).toBe(
-      `https://pokedraft.test/r/${A11Y_RUN_V1}`,
-    );
-  });
-
-  it("only follows same-site relative next paths", () => {
-    expect(safeNext("/r/pd1.abc")).toBe("/r/pd1.abc");
-    expect(safeNext("//evil.test")).toBe("/");
-    expect(safeNext("/\\evil.test")).toBe("/");
-    expect(safeNext("https://evil.test")).toBe("/");
-    expect(safeNext(null)).toBe("/");
-    expect(safeNext("/\t/evil.test")).toBe("/");
-    expect(safeNext("/\n/evil.test/x")).toBe("/");
-    expect(safeNext("/leaderboard?mode=cup8#top")).toBe("/leaderboard?mode=cup8#top");
-  });
-
-  it("returns / for dot segments that normalize to a protocol-relative path (catches SE-14, the /..//evil.com open redirect)", () => {
-    expect(safeNext("/..//evil.com")).toBe("/");
-    expect(safeNext("/.//evil.com")).toBe("/");
-    expect(safeNext("/%2e%2e//evil.com")).toBe("/");
-    expect(safeNext("/a/..//evil.com")).toBe("/");
-    expect(safeNext("/a/../b")).toBe("/b");
   });
 
   it("keeps pokedex.json and scouting.json out of the proxy and token import closure (SD-03: 1.33 MB data chunk in proxy)", () => {

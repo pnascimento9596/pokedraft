@@ -39,14 +39,6 @@ test.describe("link preview metadata (catches a preview with no description or a
     expect(new URL(image!).pathname).toBe(`/r/${RUN}/opengraph-image`);
   });
 
-  test("the passcode gate preview carries the same description and alt", async ({ request }) => {
-    const html = await (await request.get(`/gate?next=${encodeURIComponent(RUN_PATH)}`)).text();
-    expect([metaContent(html, "og:description"), metaContent(html, "og:image:alt")]).toEqual([
-      [DESCRIPTION],
-      [ALT],
-    ]);
-  });
-
   test("/?b= server HTML carries the squad title, description, card alt, and card image", async ({
     request,
   }) => {
@@ -67,17 +59,6 @@ test.describe("link preview metadata (catches a preview with no description or a
     expect(cardRes.headers()["content-type"]).toContain("image/png");
     const metadata = await sharp(await cardRes.body()).metadata();
     expect([metadata.width, metadata.height]).toEqual([1200, 630]);
-  });
-
-  test("the passcode gate preview carries the same squad title, description and alt for ?b=", async ({
-    request,
-  }) => {
-    const html = await (await request.get(`/gate?next=${encodeURIComponent(BUILDER_PATH)}`)).text();
-    expect([
-      metaContent(html, "og:title"),
-      metaContent(html, "og:description"),
-      metaContent(html, "og:image:alt"),
-    ]).toEqual([[BUILDER_TITLE], [BUILDER_DESCRIPTION], [BUILDER_ALT]]);
   });
 
   test("invalid ?b= leaves default site metadata and no squad description", async ({ request }) => {

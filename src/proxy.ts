@@ -4,7 +4,6 @@ import { decodeToken as decodeRetainedToken } from "./engine/versions/v3/src/eng
 import { decodeToken as decodeV5Token } from "./engine/versions/v5/src/engine/token";
 import { decodeToken as decodeV6Token } from "./engine/versions/v6/src/engine/token";
 import { decodeToken as decodeV7Token } from "./engine/versions/v7/src/engine/token";
-import { PASSCODE_COOKIE, cookieMatches, isPublicPath } from "./passcode";
 import { runTokenFromUrl } from "./ui/run-link";
 
 const SHARE_PATH = /^\/r\/([^/]+)$/;
@@ -34,7 +33,7 @@ function brokenShareLink(token: string | null): boolean {
   }
 }
 
-function pass(request: NextRequest): NextResponse {
+export function proxy(request: NextRequest): NextResponse {
   if (!SHARE_PATH.test(request.nextUrl.pathname)) return NextResponse.next();
   const token = runTokenFromUrl(request.nextUrl);
   if (brokenShareLink(token)) {
@@ -47,25 +46,6 @@ function pass(request: NextRequest): NextResponse {
     return NextResponse.rewrite(canonical);
   }
   return NextResponse.next();
-}
-
-export function proxy(request: NextRequest): NextResponse {
-  const passcode = process.env.FRIENDS_PASSCODE;
-  if (!passcode) return pass(request);
-  const { pathname, search } = request.nextUrl;
-  if (isPublicPath(pathname)) return pass(request);
-  if (cookieMatches(request.cookies.get(PASSCODE_COOKIE)?.value, passcode)) {
-    return pass(request);
-  }
-  if (pathname.startsWith("/api/")) {
-    return NextResponse.json(
-      { error: { code: "PASSCODE_REQUIRED", message: "Enter the friends passcode first." } },
-      { status: 401, headers: { "cache-control": "no-store" } },
-    );
-  }
-  const gate = new URL("/gate", request.url);
-  gate.searchParams.set("next", `${pathname}${search}`);
-  return NextResponse.redirect(gate, 307);
 }
 
 export const config = {

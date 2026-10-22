@@ -159,13 +159,6 @@ test("phone targets: image settings open", async ({ page }) => {
   await checkPhoneWidths(page, "/how-to-play images");
 });
 
-test("phone targets: gate", async ({ page }) => {
-  await page.goto("/gate?next=/");
-  await expect(page.getByTestId("gate-passcode")).toBeVisible();
-  await settle(page);
-  await checkPhoneWidths(page, "/gate");
-});
-
 test.describe("motion on", () => {
   test.use({ reducedMotion: "no-preference" });
 

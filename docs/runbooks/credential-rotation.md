@@ -83,21 +83,3 @@ vercel --prod
    vercel env add IP_HASH_SECRET production
    ```
 3. Redeploy and verify that submissions continue to compute valid IP hashes.
-
----
-
-## 3. Friends Gate Passcode (`FRIENDS_PASSCODE`)
-
-### Considerations
-- Keys the passcode gate protecting the draft and leaderboard application.
-- Rotating this secret requires friends and players to enter the new passcode once their cookies expire.
-
-### Procedure
-1. Update `FRIENDS_PASSCODE` in Vercel production:
-   ```bash
-   vercel env rm FRIENDS_PASSCODE production -y
-   vercel env add FRIENDS_PASSCODE production
-   ```
-2. Redeploy production.
-3. Verify unauthenticated request to `/` redirects to `/gate` (HTTP 307).
-4. Verify valid passcode submission sets cookie and grants access.

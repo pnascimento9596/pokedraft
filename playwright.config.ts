@@ -1,10 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
-import { gateCookies } from "./e2e/gate-cookie";
 import { localServerPort, worktreeHead } from "./e2e/local-server";
 
-// PLAYWRIGHT_BASE_URL points the suite at a running deployment and turns the local server off, and
-// PLAYWRIGHT_GATE_COOKIE_FILE adds the passcode gate cookie when the deployment is gated:
-//   PLAYWRIGHT_BASE_URL=https://pokedraft-woad.vercel.app PLAYWRIGHT_GATE_COOKIE_FILE=$HOME/.pokedraft/friends-passcode-cookie pnpm exec playwright test <specs> --project=chromium --retries=0
+// PLAYWRIGHT_BASE_URL points the suite at a running deployment and turns the local server off:
+//   PLAYWRIGHT_BASE_URL=https://pokedraft-woad.vercel.app pnpm exec playwright test <specs> --project=chromium --retries=0
 // PLAYWRIGHT_PORT moves the local `next start` server. Without it each checkout gets its own port
 // from its path, and e2e/global-setup.ts refuses a reused server built from another commit.
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL;
@@ -33,7 +31,7 @@ export default defineConfig({
     // Every spec starts as a returning player who has seen the first-draft tip.
     // e2e/resilience-a11y.spec.ts clears this to play a first visit.
     storageState: {
-      cookies: gateCookies(BASE_URL, process.env.PLAYWRIGHT_GATE_COOKIE_FILE),
+      cookies: [],
       origins: [
         { origin: ORIGIN, localStorage: [{ name: "pokedraft:coach:draft", value: "true" }] },
       ],
