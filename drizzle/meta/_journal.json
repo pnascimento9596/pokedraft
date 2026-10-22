@@ -43,6 +43,13 @@
       "when": 1792454403045,
       "tag": "0005_leaderboard_integrity",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792690045446,
+      "tag": "0006_drop_gate_scope",
+      "breakpoints": true
     }
   ]
 }

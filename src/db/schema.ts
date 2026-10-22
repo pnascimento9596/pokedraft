@@ -78,31 +78,31 @@ export const leaderboardEntries = pgTable(
 export type LeaderboardRow = typeof leaderboardEntries.$inferSelect;
 export type NewLeaderboardRow = typeof leaderboardEntries.$inferInsert;
 
-// One row per admitted submit or gate attempt, including attempts rejected by later validation.
+// One row per admitted submit attempt, including attempts rejected by later validation.
 // Refusals and saved-run retries add no event. The key is a keyed hash, never a raw address.
 export const rateLimitEvents = pgTable(
   "rate_limit_events",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    scope: text("scope", { enum: ["submit", "gate"] }).notNull(),
+    scope: text("scope", { enum: ["submit"] }).notNull(),
     keyHash: text("key_hash").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).notNull().defaultNow(),
   },
   (t) => [
     index("rate_limit_events_lookup_idx").on(t.scope, t.keyHash, t.createdAt),
-    check("rate_limit_events_scope_chk", sql`${t.scope} IN ('submit', 'gate')`),
+    check("rate_limit_events_scope_chk", sql`${t.scope} IN ('submit')`),
   ],
 );
 
 export const rateLimitBuckets = pgTable(
   "rate_limit_buckets",
   {
-    scope: text("scope", { enum: ["submit", "gate"] }).notNull(),
+    scope: text("scope", { enum: ["submit"] }).notNull(),
     keyHash: text("key_hash").notNull(),
     attempts: timestamp("attempts", { withTimezone: true, mode: "date" }).array().notNull(),
   },
   (t) => [
     primaryKey({ columns: [t.scope, t.keyHash] }),
-    check("rate_limit_buckets_scope_chk", sql`${t.scope} IN ('submit', 'gate')`),
+    check("rate_limit_buckets_scope_chk", sql`${t.scope} IN ('submit')`),
   ],
 );

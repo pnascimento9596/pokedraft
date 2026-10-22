@@ -41,7 +41,7 @@ async function setupMigratedPglite(entriesToApply = JOURNAL.entries) {
 }
 
 describe("scripts/db/rollback", () => {
-  it("rolls back 0005 to 0001 printing leaderboard_entries row count 2 each time, refuses 0000 without dropData, and drops leaderboard_entries only with dropData: true (catches unguarded 0000 table drop or missing row-count log)", async () => {
+  it("rolls back 0006 to 0001 printing leaderboard_entries row count 2 each time, refuses 0000 without dropData, and drops leaderboard_entries only with dropData: true (catches unguarded 0000 table drop or missing row-count log)", async () => {
     const client = await setupMigratedPglite();
     try {
       await client.exec(
@@ -58,6 +58,7 @@ describe("scripts/db/rollback", () => {
       });
 
       const expectedTags = [
+        "0006_drop_gate_scope",
         "0005_leaderboard_integrity",
         "0004_run_fingerprint_coached",
         "0003_serialized_rate_limit",

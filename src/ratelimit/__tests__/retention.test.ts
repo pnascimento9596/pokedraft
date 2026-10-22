@@ -65,7 +65,6 @@ describe("rate-limit retention (catches rows for keys that never return being ke
 
   it("prunes buckets whose newest attempt is older than 1 day, never the key being admitted", async () => {
     await seedBucket("stale", [ago(2 * DAY), ago(DAY + 1)]);
-    await seedBucket("stale", [ago(3 * DAY)], "gate");
     await seedBucket("edge", [ago(DAY)]);
     await seedBucket("mixed", [ago(5 * DAY), ago(10_000)]);
     await seedBucket("visitor", [ago(9 * DAY)]);
@@ -104,14 +103,14 @@ describe("rate-limit retention (catches rows for keys that never return being ke
   it("prunes in a refused admission too, so a locked-out key still sweeps", async () => {
     const rule = { max: 1, windowMs: 60 * 60 * 1000 };
     const limiter = drizzleLimiter(() => db);
-    expect(await limiter.consume("gate", "locked", NOW, rule)).toBe(true);
+    expect(await limiter.consume("submit", "locked", NOW, rule)).toBe(true);
     await seedEvent("old", ago(8 * DAY));
     await seedBucket("old", [ago(2 * DAY)]);
 
-    expect(await limiter.consume("gate", "locked", NOW, rule)).toBe(false);
+    expect(await limiter.consume("submit", "locked", NOW, rule)).toBe(false);
 
     expect(await eventKeys()).toEqual(["locked"]);
-    expect(await bucketKeys()).toEqual(["gate:locked"]);
+    expect(await bucketKeys()).toEqual(["submit:locked"]);
   });
 
   it("prunes inside the leaderboard admission statement as well", async () => {
