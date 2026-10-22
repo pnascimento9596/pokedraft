@@ -19,7 +19,7 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // The golden cup8 draft under engine 6. Match 1: the assistant takes Togepi off for Kommo-o in
 // slot 7 at 60'. Match 5: Ludicolo is sent off from slot 2 at 6'.
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const LINEUP = toFullLineup(draft);
 const STEP = 1000 / 60;
 const TAIL_FRAMES = 180;

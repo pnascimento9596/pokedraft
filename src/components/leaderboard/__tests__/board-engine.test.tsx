@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { GOLDEN_CUP8_V3 } from "@/engine/versions/__tests__/fixtures";
-import { GOLDEN_CUP8_V7 } from "@/leaderboard/server/__tests__/fixtures";
+import { GOLDEN_CUP8_V8 } from "@/leaderboard/server/__tests__/fixtures";
 import type { BoardEntry } from "@/leaderboard/contract";
 import { boardHref, fetchBoard, parseBoardView } from "@/components/leaderboard/client";
 import { StatefulBoard } from "./board-harness";
@@ -25,14 +25,14 @@ const ASH: BoardEntry = {
   mode: "cup8",
   variant: "classic3.squadFirst.g123456789",
   dailyDate: null,
-  token: GOLDEN_CUP8_V7,
+  token: GOLDEN_CUP8_V8,
   teamScore: 593,
   wins: 5,
   draws: 0,
   losses: 1,
   createdAt: "2026-10-16T12:00:00.000Z",
   coached: false,
-  engineVersion: "pokedraft-engine-7",
+  engineVersion: "pokedraft-engine-8",
   seed: "golden-cup8",
   formation: "4-2-3-1",
 };

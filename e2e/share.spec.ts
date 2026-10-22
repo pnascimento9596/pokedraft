@@ -4,6 +4,7 @@ import {
   A11Y_RUN_V1,
   GOLDEN_CUP8_V2,
   GOLDEN_CUP8_V6,
+  GOLDEN_CUP8_V7,
 } from "../src/engine/versions/__tests__/fixtures";
 import { pngSize } from "./helpers";
 
@@ -59,6 +60,7 @@ for (const [token, record, score, version] of [
   [A11Y_RUN_V1, "8-0-0", "845", "v1"],
   [GOLDEN_CUP8_V2, "3-0-2", "593", "v2"],
   [GOLDEN_CUP8_V6, "5-0-1", "593", "v6"],
+  [GOLDEN_CUP8_V7, "5-0-1", "593", "v7"],
 ]) {
   test(`a retained ${version} dot link still replays its original results`, async ({ page }) => {
     expect((await page.goto(`/r/${token}`))?.status()).toBe(200);

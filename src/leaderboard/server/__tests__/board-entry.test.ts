@@ -14,14 +14,14 @@ import {
 import type { LeaderboardRow } from "@/db/schema";
 import { isCoached } from "@/ui/manager/coached";
 import { toBoardEntry } from "../store";
-import { GOLDEN_CUP8_V6, GOLDEN_CUP8_V7, scriptedToken } from "./fixtures";
+import { GOLDEN_CUP8_V6, GOLDEN_CUP8_V7, GOLDEN_CUP8_V8, scriptedToken } from "./fixtures";
 
 const GOLDEN_SQUAD = [
   849, 315, 272, 691, 453, 754, 785, 175, 663, 188, 807, 784, 703, 942, 145, 884,
 ];
 
-const COACHED_V7 = encodeToken({
-  ...decodeToken(GOLDEN_CUP8_V7),
+const COACHED_V8 = encodeToken({
+  ...decodeToken(GOLDEN_CUP8_V8),
   manager: [{ type: "tactic", match: 0, minute: 30, tactic: "attack" }],
 });
 
@@ -38,7 +38,7 @@ function row(token: string, coached: boolean): LeaderboardRow {
     wins: 5,
     draws: 0,
     losses: 1,
-    engineVersion: "pokedraft-engine-7",
+    engineVersion: "pokedraft-engine-8",
     coached,
     runFingerprint: "fp",
     ipHash: "h",
@@ -52,8 +52,9 @@ afterEach(() => {
 
 describe("toBoardEntry (catches every board row decoding its token twice)", () => {
   it.each([
+    ["the golden pd8 run", GOLDEN_CUP8_V8, GOLDEN_SQUAD, false],
+    ["the golden pd8 run with a manager decision", COACHED_V8, GOLDEN_SQUAD, true],
     ["the golden pd7 run", GOLDEN_CUP8_V7, GOLDEN_SQUAD, false],
-    ["the golden pd7 run with a manager decision", COACHED_V7, GOLDEN_SQUAD, true],
     ["the golden pd6 run", GOLDEN_CUP8_V6, GOLDEN_SQUAD, false],
     ["the golden pd3 run", GOLDEN_CUP8_V3, GOLDEN_SQUAD, false],
   ] as const)(
@@ -89,6 +90,7 @@ describe("toBoardEntry engine, seed and formation (catches a board row that cann
     ["pd4", GOLDEN_CUP8_V4, "4-2-3-1"],
     ["pd5", GOLDEN_CUP8_V5, "4-2-3-1"],
     ["pd6", GOLDEN_CUP8_V6, "4-2-3-1"],
+    ["pd7", GOLDEN_CUP8_V7, "4-2-3-1"],
     ["pd1 151", GOLDEN_KANTO151_V1, "3-5-2"],
     ["pd2 151", GOLDEN_KANTO151_V2, "3-5-2"],
     ["pd4 151", GOLDEN_KANTO151_V4, "3-5-2"],

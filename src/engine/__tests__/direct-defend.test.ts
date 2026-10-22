@@ -6,7 +6,7 @@ import * as v7 from "../versions/v7";
 import { loadCoefficients } from "../../../scripts/calibration/coeffs";
 import { buildLadder } from "../opponents";
 import { matchStory } from "../story";
-import { CUP_ROUNDS, type ManagerDecision, type Seed } from "../types";
+import { CUP_ROUNDS, type ManagerAction, type Seed } from "../types";
 import { CUP8, draftLineup } from "./story-panel";
 
 function capture(fn: () => unknown): { ok: true; value: unknown } | { ok: false; message: string } {
@@ -48,7 +48,7 @@ describe("defend against direct style edge (engine 8 flip)", () => {
 
       for (let m = 0; m < 8; m += 1) {
         const isDirect = ladder[CUP_ROUNDS[m]!].tacticalStyle === "direct";
-        const defendManager: readonly ManagerDecision[] = [
+        const defendManager: readonly ManagerAction[] = [
           { type: "tactic", match: m, minute: 0, tactic: "defend" },
           { type: "tactic", match: m, minute: 45, tactic: "defend" },
         ];
@@ -59,7 +59,11 @@ describe("defend against direct style edge (engine 8 flip)", () => {
             matchStory(seed, m, { lineup, mode: "cup8", manager }, ENGINE_COEFFICIENTS_V7),
           );
           const frozen = capture(() =>
-            v7.matchStory(seed, m, { lineup: lineup as never, mode: "cup8", manager } as never),
+            v7.matchStory(seed as never, m, {
+              lineup: lineup as never,
+              mode: "cup8",
+              manager,
+            } as never),
           );
 
           if (!liveWithV7.ok && !frozen.ok) {
@@ -67,7 +71,7 @@ describe("defend against direct style edge (engine 8 flip)", () => {
             if (liveWithV7.message !== frozen.message) mismatches += 1;
             continue;
           }
-          if (liveWithV7.ok !== frozen.ok) {
+          if (!liveWithV7.ok || !frozen.ok) {
             mismatches += 1;
             continue;
           }

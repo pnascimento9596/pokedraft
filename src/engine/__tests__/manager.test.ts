@@ -42,8 +42,8 @@ function token(seed: Seed, manager?: readonly ManagerAction[]): RunToken {
     push({ type: "pick", species: rolled(state) as never, slot });
   });
   return manager
-    ? { v: 7, settings: CUP8, seed, actions, manager }
-    : { v: 7, settings: CUP8, seed, actions };
+    ? { v: 8, settings: CUP8, seed, actions, manager }
+    : { v: 8, settings: CUP8, seed, actions };
 }
 
 const SEED = "golden-cup8" as Seed;

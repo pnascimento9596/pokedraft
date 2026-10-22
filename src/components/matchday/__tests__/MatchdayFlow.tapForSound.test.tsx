@@ -5,7 +5,7 @@ import { toFullLineup } from "@/engine/draft";
 import { replay } from "@/engine/replay";
 import { GOLDEN_CUP8_V5 } from "@/engine/versions/__tests__/fixtures";
 
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const CTX = { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode };
 
 // Each test imports the flow after `vi.resetModules()`, so the sound module starts with no context.

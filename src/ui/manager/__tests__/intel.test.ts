@@ -53,7 +53,7 @@ describe("tacticEdge (catches a pill badge that disagrees with the engine's mult
     expect(tacticEdge("pressing", "counter")).toBe("favourable");
   });
 
-  it("against direct: Defend favourable (0.65 for, 0.62 against), Press unfavourable", () => {
+  it("against direct: Defend favourable (1.05 for, 0.52 against), Press unfavourable", () => {
     expect(tacticEdge("direct", "defend")).toBe("favourable");
     expect(tacticEdge("direct", "press")).toBe("unfavourable");
   });
@@ -64,10 +64,10 @@ describe("tacticEdge (catches a pill badge that disagrees with the engine's mult
   });
 });
 
-describe("tacticEdge and scoutLine under engine 7 (catches badges or scout lines drifting from the live table)", () => {
+describe("tacticEdge and scoutLine under engine 8 (catches badges or scout lines drifting from the live table)", () => {
   const ALL = ["balanced", "attack", "defend", "press", "counter"] as const;
 
-  it("gives every style and tactic its engine 7 badge, with at most two favourable per style", () => {
+  it("gives every style and tactic its engine 8 badge, with at most two favourable per style", () => {
     const badges = (["pressing", "possession", "direct"] as const).map((s) =>
       ALL.map((t) => tacticEdge(s, t)),
     );
@@ -81,7 +81,7 @@ describe("tacticEdge and scoutLine under engine 7 (catches badges or scout lines
     }
   });
 
-  it("keeps the three engine 7 scout lines", () => {
+  it("keeps the three engine 8 scout lines", () => {
     expect((["pressing", "possession", "direct"] as const).map(scoutLine)).toEqual([
       "Scout: a pressing side. Best edge: Counter, then Press. Avoid Attack and Defend.",
       "Scout: a possession side. Best edge: Press, then Counter. Avoid Defend.",

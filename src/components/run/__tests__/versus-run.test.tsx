@@ -17,9 +17,9 @@ vi.mock("next/navigation", () => ({
 
 // Seed golden-cup8. THEIRS: the golden engine-5 draft under the live prefix, observed 5-0-1.
 // MINE: the first offered player into the first open slot, observed 1-1-2.
-const THEIRS = GOLDEN_CUP8_V5.replace(/^pd5\./, "pd7.");
+const THEIRS = GOLDEN_CUP8_V5.replace(/^pd5\./, "pd8.");
 const MINE =
-  "pd7.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1sicCIsODgzLCJzMCJdLFsicCIsMzE1LCJzMSJdLFsicCIsMjcyLCJzMiJdLFsicCIsNjkxLCJzMyJdLFsicCIsNDUzLCJzNCJdLFsicCIsNzU0LCJzNSJdLFsicCIsMzc2LCJzNiJdLFsicCIsMTc1LCJzNyJdLFsicCIsNjYzLCJzOCJdLFsicCIsMTg4LCJzOSJdLFsicCIsNzM3LCJzMTAiXSxbInAiLDc4NCwiYjAiXSxbInAiLDcwMywiYjEiXSxbInAiLDk0MiwiYjIiXSxbInAiLDE0NSwiYjMiXSxbInAiLDg4NCwiYjQiXV1d";
+  "pd8.W1siYyIsIjQtMi0zLTEiLCIxMjM0NTY3ODkiLCJjIiwicyJdLCJnb2xkZW4tY3VwOCIsW1sicCIsODgzLCJzMCJdLFsicCIsMzE1LCJzMSJdLFsicCIsMjcyLCJzMiJdLFsicCIsNjkxLCJzMyJdLFsicCIsNDUzLCJzNCJdLFsicCIsNzU0LCJzNSJdLFsicCIsMzc2LCJzNiJdLFsicCIsMTc1LCJzNyJdLFsicCIsNjYzLCJzOCJdLFsicCIsMTg4LCJzOSJdLFsicCIsNzM3LCJzMTAiXSxbInAiLDc4NCwiYjAiXSxbInAiLDcwMywiYjEiXSxbInAiLDk0MiwiYjIiXSxbInAiLDE0NSwiYjMiXSxbInAiLDg4NCwiYjQiXV1d";
 const CHALLENGE = "mode=cup8&f=4-2-3-1&order=squadFirst&g=123456789&style=classic3";
 
 beforeEach(() => {

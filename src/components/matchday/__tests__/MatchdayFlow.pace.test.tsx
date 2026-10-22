@@ -7,7 +7,7 @@ import { GOLDEN_CUP8_V5 } from "@/engine/versions/__tests__/fixtures";
 import type { MatchView } from "@/ui/settings";
 import { MatchdayFlow } from "../MatchdayFlow";
 
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const CTX = { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode };
 
 beforeEach(() => {

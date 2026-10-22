@@ -43,7 +43,7 @@ function goldenLineup(settings: DraftSettings, seed: string): FullLineup {
     }
     push({ type: "pick", species: rolled(state), slot });
   });
-  return replay({ v: 7, settings, seed: seed as Seed, actions }).draft.lineup as FullLineup;
+  return replay({ v: 8, settings, seed: seed as Seed, actions }).draft.lineup as FullLineup;
 }
 
 const GOLDEN_CUP8 = goldenLineup(

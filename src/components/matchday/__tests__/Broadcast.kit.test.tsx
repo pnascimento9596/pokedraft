@@ -13,7 +13,7 @@ afterEach(cleanup);
 type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // Match 0 of the golden cup8 draft under engine 6: the user wears poison, Goldenrod United water.
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const MATCH = cup.matches[0] as PlayedMatch;
 const LINEUP = toFullLineup(draft);
 const TIMELINE = buildTimeline(MATCH, { matchIndex: 0, seed: cup.seed, lineup: LINEUP });

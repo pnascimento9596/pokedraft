@@ -16,7 +16,7 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // G1 of the golden cup8 draft under engine 6: the assistant switches the user's side to Defend at
 // 75'. A sub fires on the same tick, so only the switch is marked fired here.
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const MATCH = cup.matches[0] as PlayedMatch;
 const LINEUP = toFullLineup(draft);
 const TIMELINE = buildTimeline(MATCH, { matchIndex: 0, seed: cup.seed, lineup: LINEUP });

@@ -81,7 +81,7 @@ describe("runCup", () => {
       );
       if (r.flawless) flawless++;
     }
-    expect(flawless).toBe(48);
+    expect(flawless).toBe(49);
   });
 
   it("replays identically from the same lineup and seed", () => {
@@ -135,7 +135,7 @@ describe("runCup", () => {
     // 59 misses match 4 only. Bench 4 starts match 4 in its place and comes on at 60' in the other
     // four, so it appears in all five; bench 10 is never used.
     expect([appearances[59], appearances[4], appearances[10]]).toEqual([4, 5, 0]);
-    expect(r.awards.goldenBoot).toEqual({ species: 136, goals: 7, assists: 1, appearances: 5 });
+    expect(r.awards.goldenBoot).toEqual({ species: 136, goals: 8, assists: 1, appearances: 5 });
   });
 
   // The matchday UI reads only absences[0] (fieldedFor in src/ui/manager/touchline.ts and the

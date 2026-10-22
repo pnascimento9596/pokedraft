@@ -20,7 +20,7 @@ type GoalBeat = Extract<Beat, { kind: "goal" }>;
 
 // The golden cup8 draft under engine 6: six played matches, 27 goals, extra time and a shootout in
 // the quarter-final.
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const LINEUP = toFullLineup(draft);
 // One 60 Hz frame at 1x.
 const STEP = 1000 / 60;

@@ -15,11 +15,11 @@ describe("the pinned share link", () => {
   it("hashes to the golden digest of the engine tests", () => {
     expect(sha256(goldenCup8Token())).toBe(GOLDEN_CUP8_TOKEN_SHA256);
     expect(GOLDEN_CUP8_TOKEN_SHA256).toBe(
-      "4adf37a539b999770100b571257b8368f2f644f3067dbe0887fa1276729ee985",
+      "ae0d6830dfa84bcbad2be1fbbedb6ab3ed4d38a4e6ed000d529af87f8a443f0c",
     );
   });
 
-  it("replays the same draft cut by the current engine (engine 7) to its pinned record", () => {
+  it("replays the same draft cut by the current engine (engine 8) to its pinned record", () => {
     expect(describeRun(goldenCup8Token())).toEqual({ score: 593, record: "5-0-1", finish: "QF" });
   });
 

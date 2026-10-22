@@ -84,4 +84,8 @@ export function scriptedToken(settings: DraftSettings, seed: string): string {
   return encodeToken({ v: RUN_TOKEN_VERSION, settings, seed: seed as Seed, actions });
 }
 
-export { GOLDEN_CUP8_V6, GOLDEN_CUP8_V7, GOLDEN_CUP8_V8 } from "@/engine/versions/__tests__/fixtures";
+export {
+  GOLDEN_CUP8_V6,
+  GOLDEN_CUP8_V7,
+  GOLDEN_CUP8_V8,
+} from "@/engine/versions/__tests__/fixtures";
