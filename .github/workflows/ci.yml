@@ -96,7 +96,7 @@ jobs:
             import { connect } from "./scripts/db/connect.mjs";
             connect().sql.query("SELECT count(*) FROM drizzle.__drizzle_migrations").then(([row]) => {
               console.log("[db:count] " + row.count + " migration(s) recorded");
-              if (Number(row.count) !== 2) throw new Error("expected 2 migrations remaining, got " + row.count);
+              if (Number(row.count) !== 3) throw new Error("expected 3 migrations remaining, got " + row.count);
             });
           '
       - run: pnpm db:migrate

@@ -2,7 +2,7 @@ import { sql, type SQL } from "drizzle-orm";
 import { rateLimitBuckets, rateLimitEvents } from "@/db/schema";
 import type { Db } from "@/db/types";
 
-export type RateLimitScope = "submit" | "gate";
+export type RateLimitScope = "submit";
 
 export interface RateLimitRule {
   readonly max: number;

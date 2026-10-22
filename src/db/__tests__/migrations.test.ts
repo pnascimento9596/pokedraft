@@ -232,3 +232,71 @@ it("makes coached and run_fingerprint NOT NULL, adds the fingerprint unique inde
     await client.close();
   }
 });
+
+it("drops the gate scope: removes retained gate rows, keeps submit rows, rejects new gate rows, and restores the old constraint with the paired down file (catches 0006 failing on retained gate rows or an unrestorable rollback)", async () => {
+  const { PGlite } = await import("@electric-sql/pglite");
+  const client = await PGlite.create();
+  const root = path.resolve(import.meta.dirname, "../../..");
+  const insertGate = async () => {
+    try {
+      await client.exec(
+        "INSERT INTO rate_limit_buckets (scope, key_hash, attempts) VALUES ('gate', 'new', ARRAY[now()])",
+      );
+      return "inserted";
+    } catch (e) {
+      return (e as { code?: string }).code;
+    }
+  };
+  try {
+    for (const name of [
+      "0000_leaderboard_entries.sql",
+      "0001_rate_limit_events.sql",
+      "0002_alltime_board_idx.sql",
+      "0003_serialized_rate_limit.sql",
+      "0004_run_fingerprint_coached.sql",
+      "0005_leaderboard_integrity.sql",
+    ]) {
+      await client.exec(readFileSync(path.join(root, "drizzle", name), "utf8"));
+    }
+    await client.exec(
+      "INSERT INTO rate_limit_events (scope, key_hash) VALUES ('submit', 'kept'), ('gate', 'gone')",
+    );
+    await client.exec(
+      "INSERT INTO rate_limit_buckets (scope, key_hash, attempts) VALUES ('submit', 'kept', ARRAY[now()]), ('gate', 'gone', ARRAY[now()])",
+    );
+    await client.exec(readFileSync(path.join(root, "drizzle/0006_drop_gate_scope.sql"), "utf8"));
+    expect(
+      (await client.query("SELECT scope, key_hash FROM rate_limit_events ORDER BY scope")).rows,
+    ).toEqual([{ scope: "submit", key_hash: "kept" }]);
+    expect(
+      (await client.query("SELECT scope, key_hash FROM rate_limit_buckets ORDER BY scope")).rows,
+    ).toEqual([{ scope: "submit", key_hash: "kept" }]);
+    expect(await insertGate()).toBe("23514");
+
+    const down = readFileSync(
+      path.join(root, "drizzle/rollback/0006_drop_gate_scope.down.sql"),
+      "utf8",
+    )
+      .split(";")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    for (const statement of down) await client.exec(statement);
+    expect(await insertGate()).toBe("inserted");
+
+    const previous = JSON.parse(
+      readFileSync(path.join(root, "drizzle/meta/0005_snapshot.json"), "utf8"),
+    );
+    const current = JSON.parse(
+      readFileSync(path.join(root, "drizzle/meta/0006_snapshot.json"), "utf8"),
+    );
+    expect(current.prevId).toBe(previous.id);
+    expect(current.tables["public.rate_limit_buckets"].checkConstraints).toEqual({
+      rate_limit_buckets_scope_chk: {
+        name: "rate_limit_buckets_scope_chk",
+        value: '"rate_limit_buckets"."scope" IN (\'submit\')',
+      },
+    });
+  } finally {
+    await client.close();
+  }
+});

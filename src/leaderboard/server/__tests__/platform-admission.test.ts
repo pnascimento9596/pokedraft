@@ -53,12 +53,12 @@ it.each([false, true])(
 it("keeps admitted event history while expiring the exact inclusive sliding window", async () => {
   const limiter = drizzleLimiter(() => db);
   const rule = { max: 2, windowMs: 1000 };
-  expect(await limiter.consume("gate", "boundary", NOW, rule)).toBe(true);
-  expect(await limiter.consume("gate", "boundary", NOW, rule)).toBe(true);
-  expect(await limiter.consume("gate", "boundary", new Date(NOW.getTime() + 1000), rule)).toBe(
+  expect(await limiter.consume("submit", "boundary", NOW, rule)).toBe(true);
+  expect(await limiter.consume("submit", "boundary", NOW, rule)).toBe(true);
+  expect(await limiter.consume("submit", "boundary", new Date(NOW.getTime() + 1000), rule)).toBe(
     false,
   );
-  expect(await limiter.consume("gate", "boundary", new Date(NOW.getTime() + 1001), rule)).toBe(
+  expect(await limiter.consume("submit", "boundary", new Date(NOW.getTime() + 1001), rule)).toBe(
     true,
   );
   expect(await db.select().from(rateLimitEvents)).toHaveLength(3);

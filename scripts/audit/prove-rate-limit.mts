@@ -14,7 +14,7 @@ const query = async (text: string) =>
   (await run(psql, [url, "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-c", text])).stdout.trim();
 const now = new Date("2026-10-09T16:00:00Z");
 let key = `proof-${process.pid}`;
-function statement(scope: "submit" | "gate", at: Date) {
+function statement(scope: "submit", at: Date) {
   const compiled = new PgDialect()
     .sqlToQuery(sql`WITH ${admissionCtes(scope, key, at, { max: 10, windowMs: 1000 })}
     SELECT EXISTS(SELECT 1 FROM admitted) AS allowed`);
@@ -60,8 +60,7 @@ assert.equal(
   "10",
 );
 assert.equal(await query(`SELECT count(*) FROM rate_limit_events WHERE key_hash='${key}'`), "20");
-assert.equal(await query(statement("gate", now)), "t");
-console.log(JSON.stringify({ retainedEvents: 21, submitActiveAttempts: 10, scopeIsolation: true }));
+console.log(JSON.stringify({ retainedEvents: 20, submitActiveAttempts: 10 }));
 
 key += "-last-slot";
 for (let index = 0; index < 9; index++) assert.equal(await query(statement("submit", now)), "t");

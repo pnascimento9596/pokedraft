@@ -27,7 +27,7 @@ for (let iteration = 0; iteration < 6; iteration++) {
       const state = await client.query(
         "SELECT (SELECT count(*) FROM leaderboard_entries)::int AS entries, (SELECT count(*) FROM rate_limit_buckets)::int AS buckets, (SELECT count(*) FROM drizzle.__drizzle_migrations)::int AS migrations",
       );
-      assert.deepEqual(state.rows, [{ entries: 0, buckets: 0, migrations: 6 }]);
+      assert.deepEqual(state.rows, [{ entries: 0, buckets: 0, migrations: 7 }]);
     } finally {
       await client.close();
     }

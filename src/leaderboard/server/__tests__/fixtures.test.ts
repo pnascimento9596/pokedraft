@@ -8,7 +8,7 @@ it("gives each database fixture an independent client with real teardown", async
     expect(first.client).not.toBe(second.client);
     expect(first.db).not.toBe(second.db);
     await first.client.exec(
-      "INSERT INTO rate_limit_events (scope, key_hash) VALUES ('gate', 'isolation')",
+      "INSERT INTO rate_limit_events (scope, key_hash) VALUES ('submit', 'isolation')",
     );
     await first.client.close();
     expect(first.client.closed).toBe(true);
@@ -32,7 +32,7 @@ it("applies every migration to a genuinely empty database", async () => {
     const result = await client.query<{ migrations: number; buckets: number }>(
       "SELECT (SELECT count(*) FROM drizzle.__drizzle_migrations)::int AS migrations, (SELECT count(*) FROM rate_limit_buckets)::int AS buckets",
     );
-    expect(result.rows).toEqual([{ migrations: 6, buckets: 0 }]);
+    expect(result.rows).toEqual([{ migrations: 7, buckets: 0 }]);
   } finally {
     await client.close();
   }
