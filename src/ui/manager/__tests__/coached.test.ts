@@ -18,7 +18,7 @@ describe("isCoached (catches a board that marks plain runs coached or misses coa
       ...BASE,
       manager: [{ type: "tactic", match: 0, minute: 0, tactic: "attack" }],
     });
-    expect(token.startsWith("pd7.")).toBe(true);
+    expect(token.startsWith("pd8.")).toBe(true);
     expect(isCoached(token)).toBe(true);
   });
 
@@ -43,8 +43,8 @@ describe("isCoached reads every manager-capable version (catches retained coache
   const body = (els: unknown[]) =>
     btoa(JSON.stringify(els)).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
 
-  it("lists versions 6 and 7 as carrying the manager list", () => {
-    expect([...MANAGER_TOKEN_VERSIONS]).toEqual([6, 7]);
+  it("lists versions 6, 7 and 8 as carrying the manager list", () => {
+    expect([...MANAGER_TOKEN_VERSIONS]).toEqual([6, 7, 8]);
   });
 
   it("marks a coached pd7 token coached (catches every engine 7 coached run stored as uncoached)", () => {
@@ -58,8 +58,16 @@ describe("isCoached reads every manager-capable version (catches retained coache
   it("marks a payload with a fourth element coached on each listed version, and not on others", () => {
     const coached = body(["x", "seed", [], [["t", 0, 0, "a"]]]);
     const plain = body(["x", "seed", []]);
-    expect(MANAGER_TOKEN_VERSIONS.map((v) => isCoached(`pd${v}.${coached}`))).toEqual([true, true]);
-    expect(MANAGER_TOKEN_VERSIONS.map((v) => isCoached(`pd${v}.${plain}`))).toEqual([false, false]);
+    expect(MANAGER_TOKEN_VERSIONS.map((v) => isCoached(`pd${v}.${coached}`))).toEqual([
+      true,
+      true,
+      true,
+    ]);
+    expect(MANAGER_TOKEN_VERSIONS.map((v) => isCoached(`pd${v}.${plain}`))).toEqual([
+      false,
+      false,
+      false,
+    ]);
     expect(isCoached(`pd5.${coached}`)).toBe(false);
     expect(isCoached(`pd99.${coached}`)).toBe(false);
   });

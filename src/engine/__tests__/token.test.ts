@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { decodeToken, encodeToken, managerSchemaFor } from "../token";
 import { decodeToken as decodeTokenV6 } from "../versions/v6/src/engine/token";
-import { GOLDEN_CUP8_V6 } from "../versions/__tests__/fixtures";
+import { decodeToken as decodeTokenV7 } from "../versions/v7/src/engine/token";
+import { GOLDEN_CUP8_V6, GOLDEN_CUP8_V7 } from "../versions/__tests__/fixtures";
 import {
   type DraftAction,
   type RunToken,
@@ -12,12 +13,12 @@ import {
 } from "../types";
 
 const GOLDEN_TOKEN =
-  "pd7.W1siYyIsIjQtMi0zLTEiLCIxNCIsImMiLCJwIl0sImFiYyIsW1siYyIsInMzIl0sWyJyIiwidCJdLFsicCIsMjUsbnVsbF0sWyJ3IiwiczAiLCJiNCJdXV0";
+  "pd8.W1siYyIsIjQtMi0zLTEiLCIxNCIsImMiLCJwIl0sImFiYyIsW1siYyIsInMzIl0sWyJyIiwidCJdLFsicCIsMjUsbnVsbF0sWyJ3IiwiczAiLCJiNCJdXV0";
 const FULL_TOKEN_LENGTH = 407;
 const id = (n: number): SpeciesId => n as SpeciesId;
 const s = (index: number): SlotRef => ({ kind: "starter", index }) as SlotRef;
 const b = (index: number): SlotRef => ({ kind: "bench", index }) as SlotRef;
-const token = (body: unknown, v = 7): string =>
+const token = (body: unknown, v = 8): string =>
   `pd${v}.${Buffer.from(JSON.stringify(body), "utf8").toString("base64url")}`;
 
 function codeOf(fn: () => unknown): RunTokenErrorCode | "no error" {
@@ -30,7 +31,7 @@ function codeOf(fn: () => unknown): RunTokenErrorCode | "no error" {
 }
 
 const GOLDEN: RunToken = {
-  v: 7,
+  v: 8,
   settings: {
     mode: "cup8",
     formation: "4-2-3-1",
@@ -53,7 +54,7 @@ describe("run token golden (catches drift in the compact token encoding)", () =>
   });
 
   it("the body is base64url of the compact JSON, checked with Node's own decoder", () => {
-    const body = encodeToken(GOLDEN).slice("pd7.".length);
+    const body = encodeToken(GOLDEN).slice("pd8.".length);
     expect(Buffer.from(body, "base64url").toString("utf8")).toBe(
       '[["c","4-2-3-1","14","c","p"],"abc",[["c","s3"],["r","t"],["p",25,null],["w","s0","b4"]]]',
     );
@@ -64,7 +65,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
   const cases: readonly RunToken[] = [
     GOLDEN,
     {
-      v: 7,
+      v: 8,
       settings: { mode: "builder", formation: "5-3-2", gens: [2, 9], legendaries: true },
       seed: "builder seed é" as Seed,
       actions: [
@@ -75,7 +76,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
       ],
     },
     {
-      v: 7,
+      v: 8,
       settings: { mode: "kanto151", formation: "3-4-3", order: "squadFirst" },
       seed: "k" as Seed,
       actions: [
@@ -111,7 +112,7 @@ describe("run token round trip (catches lossy encoding of any action or setting)
       slot: b(i),
     }));
     const full: RunToken = {
-      v: 7,
+      v: 8,
       settings: {
         mode: "cup8",
         formation: "4-3-3",
@@ -128,17 +129,18 @@ describe("run token round trip (catches lossy encoding of any action or setting)
 
 describe("run token errors (catches decoding untrusted input into an invalid run)", () => {
   it.each([
-    ["a future version", "pd8.W10", "unknownVersion"],
+    ["a future version", "pd9.W10", "unknownVersion"],
     ["a retired version, replayed only by its retained bundle", "pd1.W10", "unknownVersion"],
     ["a retired version, engine 4", "pd4.W10", "unknownVersion"],
     ["a retired version, engine 5", "pd5.W10", "unknownVersion"],
-    ["the newest retired version, engine 6", "pd6.W10", "unknownVersion"],
+    ["a retired version, engine 6", "pd6.W10", "unknownVersion"],
+    ["the newest retired version, engine 7", "pd7.W10", "unknownVersion"],
     ["an older retired version", "pd3.W10", "unknownVersion"],
     ["the other retired version", "pd2.W10", "unknownVersion"],
     ["no prefix", "hello", "malformed"],
-    ["bad base64url characters", "pd7.!!!!", "malformed"],
-    ["non-zero trailing bits", "pd7.W11", "malformed"],
-    ["non-JSON body", `pd7.${Buffer.from("not json").toString("base64url")}`, "malformed"],
+    ["bad base64url characters", "pd8.!!!!", "malformed"],
+    ["non-zero trailing bits", "pd8.W11", "malformed"],
+    ["non-JSON body", `pd8.${Buffer.from("not json").toString("base64url")}`, "malformed"],
     ["wrong top-level shape", token({ settings: 1 }), "malformed"],
     ["empty seed", token([["k", "4-3-3", "s"], " ", []]), "malformed"],
     ["unknown mode", token([["z", "4-3-3", "s"], "x", []]), "invalidSettings"],
@@ -157,12 +159,14 @@ describe("nominated takers in the codec (catches a pd6 token carrying an engine 
   const PENALTY_TAKER = ["p", 2, 0, 10] as const;
   const FREE_KICK_AUTO = ["f", 2, 45, null] as const;
 
-  it("the engine 7 schema accepts a penalty taker and a free-kick taker back on Auto", () => {
+  it("the engine 7 and engine 8 schemas accept a penalty taker and a free-kick taker back on Auto", () => {
     expect(managerSchemaFor(7).safeParse(PENALTY_TAKER).success).toBe(true);
     expect(managerSchemaFor(7).safeParse(FREE_KICK_AUTO).success).toBe(true);
+    expect(managerSchemaFor(8).safeParse(PENALTY_TAKER).success).toBe(true);
+    expect(managerSchemaFor(8).safeParse(FREE_KICK_AUTO).success).toBe(true);
   });
 
-  it("encodeToken and decodeToken round-trip a nominated taker in a pd7 token", () => {
+  it("encodeToken and decodeToken round-trip a nominated taker in a pd8 token", () => {
     const run: RunToken = {
       ...GOLDEN,
       manager: [{ type: "taker", match: 2, minute: 0, set: "penalty", slot: 10 as never }],
@@ -181,10 +185,14 @@ describe("nominated takers in the codec (catches a pd6 token carrying an engine 
     expect(codeOf(() => decodeTokenV6(forged))).toBe("invalidAction");
   });
 
-  it("re-encoding the decoded engine 6 golden token produces its pd7 counterpart", () => {
+  it("re-encoding the decoded engine 6 and engine 7 golden tokens produces their pd8 counterpart", () => {
     const v6 = decodeTokenV6(GOLDEN_CUP8_V6);
-    expect(encodeToken({ ...(v6 as unknown as RunToken), v: 7 })).toBe(
-      `pd7.${GOLDEN_CUP8_V6.slice("pd6.".length)}`,
+    expect(encodeToken({ ...(v6 as unknown as RunToken), v: 8 })).toBe(
+      `pd8.${GOLDEN_CUP8_V6.slice("pd6.".length)}`,
+    );
+    const v7 = decodeTokenV7(GOLDEN_CUP8_V7);
+    expect(encodeToken({ ...(v7 as unknown as RunToken), v: 8 })).toBe(
+      `pd8.${GOLDEN_CUP8_V7.slice("pd7.".length)}`,
     );
   });
 });

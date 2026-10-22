@@ -17,11 +17,12 @@ import {
   GOLDEN_CUP8_V5,
   GOLDEN_CUP8_V6,
   GOLDEN_CUP8_V7,
+  GOLDEN_CUP8_V8,
 } from "../engine/versions/__tests__/fixtures";
 
 // Named here rather than read from RETAINED_TOKEN_VERSIONS, so a flip that forgets to retain
-// engine 6 still has its pd6 links checked.
-const FLIP_RETAINS = 6;
+// engine 7 still has its pd7 links checked.
+const FLIP_RETAINS = 7;
 
 const GOLDEN_BY_VERSION: Readonly<Record<number, string>> = {
   1: GOLDEN_CUP8_V1,
@@ -31,6 +32,7 @@ const GOLDEN_BY_VERSION: Readonly<Record<number, string>> = {
   5: GOLDEN_CUP8_V5,
   6: GOLDEN_CUP8_V6,
   7: GOLDEN_CUP8_V7,
+  8: GOLDEN_CUP8_V8,
 };
 
 function importClosure(entryRel: string): string[] {
@@ -227,10 +229,10 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       { mode: "kanto151", formation: "4-4-2", order: "squadFirst" },
       "proxy-seed",
     );
-    const res = proxy(req(`/r/pd7?t=${real.slice(4)}`));
+    const res = proxy(req(`/r/pd8?t=${real.slice(4)}`));
     expect(res.headers.get("x-middleware-rewrite")).toBe(`https://pokedraft.test/r/${real}`);
     expect(
-      proxy(req(`/r/pd7?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
+      proxy(req(`/r/pd8?t=${real.slice(4)}&_rsc=123&source=chat`)).headers.get(
         "x-middleware-rewrite",
       ),
     ).toBe(`https://pokedraft.test/r/${real}?_rsc=123&source=chat`);
@@ -241,6 +243,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
       GOLDEN_CUP8_V4,
       GOLDEN_CUP8_V5,
       GOLDEN_CUP8_V6,
+      GOLDEN_CUP8_V7,
     ]) {
       const [version, payload] = token.split(".");
       expect(proxy(req(`/r/${version}?t=${payload}`)).headers.get("x-middleware-rewrite")).toBe(
@@ -254,7 +257,7 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     expect(proxy(req(`/r/${GOLDEN_CUP8_V5}`)).headers.get("x-middleware-rewrite")).toBeNull();
   });
 
-  it("passes a golden share link of every retained, live and flip-retained version (regression guard, no RED: behaviour already correct; catches pd6 links 404ing at the flip)", () => {
+  it("passes a golden share link of every retained, live and flip-retained version (regression guard, no RED: behaviour already correct; catches pd7 links 404ing at the flip)", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "");
     const versions = [
       ...new Set([...RETAINED_TOKEN_VERSIONS, RUN_TOKEN_VERSION, FLIP_RETAINS]),

@@ -289,6 +289,16 @@ describe("retained engine-7 bundle (catches an engine-7 run replaying differentl
     ]);
   });
 
+  it("routes pd7. tokens to the v7 bundle, not the live engine", async () => {
+    const run = await replayAnyVersion(GOLDEN_CUP8_V7);
+    expect([run.engine, run.bundle, run.current]).toEqual([
+      "pokedraft-engine-7",
+      "retained-engine-bundle:v7",
+      false,
+    ]);
+    expect(run.cup).toEqual(v7.replay(GOLDEN_CUP8_V7).cup);
+  });
+
   it("exports matchStory for retained river rendering", () => {
     expect(typeof v7.matchStory).toBe("function");
     const run = v7.replay(GOLDEN_CUP8_V7);
