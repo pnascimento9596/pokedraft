@@ -168,9 +168,13 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
         }
         case "fit": {
           const fitA =
-            role !== null ? fullA.fits[role] : Math.max(...fullA.bestRoles.map((r) => fullA.fits[r]));
+            role !== null
+              ? fullA.fits[role]
+              : Math.max(...fullA.bestRoles.map((r) => fullA.fits[r]));
           const fitB =
-            role !== null ? fullB.fits[role] : Math.max(...fullB.bestRoles.map((r) => fullB.fits[r]));
+            role !== null
+              ? fullB.fits[role]
+              : Math.max(...fullB.bestRoles.map((r) => fullB.fits[r]));
           return fitB - fitA || a.id - b.id;
         }
         case "pac":

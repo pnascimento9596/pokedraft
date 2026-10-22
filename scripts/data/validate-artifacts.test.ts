@@ -161,17 +161,25 @@ describe("generated artifact build validation", () => {
   it.each([
     ["a missing name", [{ ...rawIndex[0], name: undefined }], "invalid_type", [0, "name"]],
     ["an out-of-range gen", [{ ...rawIndex[0], gen: 10 }], "too_big", [0, "gen"]],
-    ["an unknown type", [{ ...rawIndex[0], types: ["invented"] }], "invalid_value", [0, "types", 0]],
+    [
+      "an unknown type",
+      [{ ...rawIndex[0], types: ["invented"] }],
+      "invalid_value",
+      [0, "types", 0],
+    ],
     ["an extra index field", [{ ...rawIndex[0], invented: true }], "unrecognized_keys", [0]],
     ["a non-array index", {}, "invalid_type", []],
-  ])("rejects %s in species-index with the schema error and field path", (_name, input, code, errorPath) => {
-    expect(() => validateSpeciesIndex(input)).toThrowError(
-      expect.objectContaining({
-        issues: expect.arrayContaining([expect.objectContaining({ code, path: errorPath })]),
-      }),
-    );
-    expect(() => validateSpeciesIndex(input)).toThrowError(z.ZodError);
-  });
+  ])(
+    "rejects %s in species-index with the schema error and field path",
+    (_name, input, code, errorPath) => {
+      expect(() => validateSpeciesIndex(input)).toThrowError(
+        expect.objectContaining({
+          issues: expect.arrayContaining([expect.objectContaining({ code, path: errorPath })]),
+        }),
+      );
+      expect(() => validateSpeciesIndex(input)).toThrowError(z.ZodError);
+    },
+  );
 
   it("accepts all 9 generation species chunks totaling 1025 records", () => {
     let total = 0;
@@ -200,7 +208,9 @@ describe("generated artifact build validation", () => {
     const input = [{ ...rawChunk1[0], invented: true }];
     expect(() => validateSpeciesChunk(input)).toThrowError(
       expect.objectContaining({
-        issues: expect.arrayContaining([expect.objectContaining({ code: "unrecognized_keys", path: [0] })]),
+        issues: expect.arrayContaining([
+          expect.objectContaining({ code: "unrecognized_keys", path: [0] }),
+        ]),
       }),
     );
   });

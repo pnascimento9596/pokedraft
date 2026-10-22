@@ -53,18 +53,22 @@ function tableOf<K extends string, V>(keys: readonly K[], value: (key: K) => V):
   return table;
 }
 
-const REGION_SPECIES: Readonly<Record<Region, readonly SlimSpecies[]>> = tableOf(REGIONS, (region) =>
-  SPECIES_INDEX.filter((s) => s.region === region),
+const REGION_SPECIES: Readonly<Record<Region, readonly SlimSpecies[]>> = tableOf(
+  REGIONS,
+  (region) => SPECIES_INDEX.filter((s) => s.region === region),
 );
 
-const COMBO_SPECIES: Readonly<Record<Region, Readonly<Record<PokemonType, readonly SlimSpecies[]>>>> =
-  tableOf(REGIONS, (region) =>
-    tableOf(TYPES, (type) =>
-      REGION_SPECIES[region].filter((s) => (s.types as readonly PokemonType[]).includes(type)),
-    ),
-  );
+const COMBO_SPECIES: Readonly<
+  Record<Region, Readonly<Record<PokemonType, readonly SlimSpecies[]>>>
+> = tableOf(REGIONS, (region) =>
+  tableOf(TYPES, (type) =>
+    REGION_SPECIES[region].filter((s) => (s.types as readonly PokemonType[]).includes(type)),
+  ),
+);
 
-const KANTO151_SPECIES: readonly SlimSpecies[] = SPECIES_INDEX.filter((s) => s.id <= KANTO151_MAX_ID);
+const KANTO151_SPECIES: readonly SlimSpecies[] = SPECIES_INDEX.filter(
+  (s) => s.id <= KANTO151_MAX_ID,
+);
 
 function inPool(settings: DraftSettings, s: SlimSpecies): boolean {
   return settings.mode === "kanto151" ? s.id <= KANTO151_MAX_ID : settings.gens.includes(s.gen);

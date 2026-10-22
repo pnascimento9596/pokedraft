@@ -143,8 +143,8 @@ export function HistoryList() {
       <section aria-label="Species Hall of Fame" className={s.career}>
         <h3>Species Hall of Fame</h3>
         <p className={s.scope}>
-          Browse all {SPECIES_INDEX.length.toLocaleString("en-US")} species. Counts cover ranked squads in
-          the stored history above, including the bench.
+          Browse all {SPECIES_INDEX.length.toLocaleString("en-US")} species. Counts cover ranked
+          squads in the stored history above, including the bench.
         </p>
         <p className={s.scope}>
           Squad coverage: {career.coveredRuns} of {career.rankedRuns} ranked stored runs. Species

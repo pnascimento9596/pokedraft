@@ -1,10 +1,4 @@
-import type {
-  FullLineup,
-  Lineup,
-  RunToken,
-  Seed,
-  SlotRef,
-} from "@/engine/types";
+import type { FullLineup, Lineup, RunToken, Seed, SlotRef } from "@/engine/types";
 import { slimSpeciesById } from "@/data/species-index";
 import { draftFromBuilderToken } from "./builder-token";
 import { emptyLineup, valueAt } from "./lineup";

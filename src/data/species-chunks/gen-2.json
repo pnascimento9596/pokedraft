@@ -33,23 +33,10 @@
       "W": 35,
       "ST": 33
     },
-    "bestRoles": [
-      "FB",
-      "CB",
-      "DM"
-    ],
-    "worstRoles": [
-      "ST",
-      "W"
-    ],
-    "strengths": [
-      "positioning",
-      "discipline"
-    ],
-    "weaknesses": [
-      "pace",
-      "shot-power"
-    ]
+    "bestRoles": ["FB", "CB", "DM"],
+    "worstRoles": ["ST", "W"],
+    "strengths": ["positioning", "discipline"],
+    "weaknesses": ["pace", "shot-power"]
   },
   {
     "id": 153,
@@ -85,23 +72,10 @@
       "W": 46,
       "ST": 45
     },
-    "bestRoles": [
-      "CB",
-      "FB",
-      "DM"
-    ],
-    "worstRoles": [
-      "ST",
-      "W"
-    ],
-    "strengths": [
-      "positioning",
-      "stamina"
-    ],
-    "weaknesses": [
-      "pace",
-      "finishing"
-    ]
+    "bestRoles": ["CB", "FB", "DM"],
+    "worstRoles": ["ST", "W"],
+    "strengths": ["positioning", "stamina"],
+    "weaknesses": ["pace", "finishing"]
   },
   {
     "id": 154,
@@ -137,24 +111,10 @@
       "W": 60,
       "ST": 62
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "ST"
-    ],
-    "strengths": [
-      "strength",
-      "positioning",
-      "stamina"
-    ],
-    "weaknesses": [
-      "acceleration",
-      "dribbling"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "ST"],
+    "strengths": ["strength", "positioning", "stamina"],
+    "weaknesses": ["acceleration", "dribbling"]
   },
   {
     "id": 155,
@@ -190,23 +150,10 @@
       "W": 61,
       "ST": 50
     },
-    "bestRoles": [
-      "W",
-      "AM",
-      "WM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "acceleration",
-      "dribbling"
-    ],
-    "weaknesses": [
-      "strength",
-      "tackling"
-    ]
+    "bestRoles": ["W", "AM", "WM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["acceleration", "dribbling"],
+    "weaknesses": ["strength", "tackling"]
   },
   {
     "id": 156,
@@ -242,24 +189,10 @@
       "W": 70,
       "ST": 63
     },
-    "bestRoles": [
-      "W",
-      "AM",
-      "ST"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "acceleration",
-      "pace",
-      "dribbling"
-    ],
-    "weaknesses": [
-      "strength",
-      "tackling"
-    ]
+    "bestRoles": ["W", "AM", "ST"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["acceleration", "pace", "dribbling"],
+    "weaknesses": ["strength", "tackling"]
   },
   {
     "id": 157,
@@ -295,24 +228,10 @@
       "W": 85,
       "ST": 84
     },
-    "bestRoles": [
-      "ST",
-      "AM",
-      "W"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "pace",
-      "shot-power",
-      "finishing"
-    ],
-    "weaknesses": [
-      "handling",
-      "tackling"
-    ]
+    "bestRoles": ["ST", "AM", "W"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["pace", "shot-power", "finishing"],
+    "weaknesses": ["handling", "tackling"]
   },
   {
     "id": 158,
@@ -348,23 +267,10 @@
       "W": 43,
       "ST": 47
     },
-    "bestRoles": [
-      "ST",
-      "DM",
-      "CB"
-    ],
-    "worstRoles": [
-      "GK",
-      "W"
-    ],
-    "strengths": [
-      "aggression",
-      "tackling"
-    ],
-    "weaknesses": [
-      "pace",
-      "vision"
-    ]
+    "bestRoles": ["ST", "DM", "CB"],
+    "worstRoles": ["GK", "W"],
+    "strengths": ["aggression", "tackling"],
+    "weaknesses": ["pace", "vision"]
   },
   {
     "id": 159,
@@ -400,24 +306,10 @@
       "W": 55,
       "ST": 61
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "ST"
-    ],
-    "worstRoles": [
-      "W",
-      "GK"
-    ],
-    "strengths": [
-      "aggression",
-      "tackling",
-      "strength"
-    ],
-    "weaknesses": [
-      "pace",
-      "vision"
-    ]
+    "bestRoles": ["CB", "DM", "ST"],
+    "worstRoles": ["W", "GK"],
+    "strengths": ["aggression", "tackling", "strength"],
+    "weaknesses": ["pace", "vision"]
   },
   {
     "id": 160,
@@ -453,24 +345,10 @@
       "W": 72,
       "ST": 83
     },
-    "bestRoles": [
-      "CB",
-      "ST",
-      "DM"
-    ],
-    "worstRoles": [
-      "W",
-      "WM"
-    ],
-    "strengths": [
-      "strength",
-      "intimidation",
-      "tackling"
-    ],
-    "weaknesses": [
-      "acceleration",
-      "agility"
-    ]
+    "bestRoles": ["CB", "ST", "DM"],
+    "worstRoles": ["W", "WM"],
+    "strengths": ["strength", "intimidation", "tackling"],
+    "weaknesses": ["acceleration", "agility"]
   },
   {
     "id": 161,
@@ -506,24 +384,10 @@
       "W": 26,
       "ST": 26
     },
-    "bestRoles": [
-      "DM",
-      "CB",
-      "FB"
-    ],
-    "worstRoles": [
-      "ST",
-      "GK"
-    ],
-    "strengths": [
-      "vision",
-      "positioning"
-    ],
-    "weaknesses": [
-      "pace",
-      "strength",
-      "shot-power"
-    ]
+    "bestRoles": ["DM", "CB", "FB"],
+    "worstRoles": ["ST", "GK"],
+    "strengths": ["vision", "positioning"],
+    "weaknesses": ["pace", "strength", "shot-power"]
   },
   {
     "id": 162,
@@ -559,24 +423,10 @@
       "W": 69,
       "ST": 61
     },
-    "bestRoles": [
-      "W",
-      "WB",
-      "FB"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "pace",
-      "agility",
-      "stamina"
-    ],
-    "weaknesses": [
-      "strength",
-      "shot-power"
-    ]
+    "bestRoles": ["W", "WB", "FB"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["pace", "agility", "stamina"],
+    "weaknesses": ["strength", "shot-power"]
   },
   {
     "id": 163,
@@ -612,23 +462,10 @@
       "W": 32,
       "ST": 30
     },
-    "bestRoles": [
-      "DM",
-      "CB",
-      "FB"
-    ],
-    "worstRoles": [
-      "ST",
-      "W"
-    ],
-    "strengths": [
-      "aerial",
-      "vision"
-    ],
-    "weaknesses": [
-      "dribbling",
-      "shot-power"
-    ]
+    "bestRoles": ["DM", "CB", "FB"],
+    "worstRoles": ["ST", "W"],
+    "strengths": ["aerial", "vision"],
+    "weaknesses": ["dribbling", "shot-power"]
   },
   {
     "id": 164,
@@ -664,24 +501,10 @@
       "W": 49,
       "ST": 48
     },
-    "bestRoles": [
-      "GK",
-      "DM",
-      "CM"
-    ],
-    "worstRoles": [
-      "ST",
-      "W"
-    ],
-    "strengths": [
-      "vision",
-      "aerial",
-      "stamina"
-    ],
-    "weaknesses": [
-      "dribbling",
-      "shot-power"
-    ]
+    "bestRoles": ["GK", "DM", "CM"],
+    "worstRoles": ["ST", "W"],
+    "strengths": ["vision", "aerial", "stamina"],
+    "weaknesses": ["dribbling", "shot-power"]
   },
   {
     "id": 165,
@@ -717,23 +540,10 @@
       "W": 39,
       "ST": 31
     },
-    "bestRoles": [
-      "WB",
-      "WM",
-      "FB"
-    ],
-    "worstRoles": [
-      "ST",
-      "CB"
-    ],
-    "strengths": [
-      "flight",
-      "teamwork"
-    ],
-    "weaknesses": [
-      "strength",
-      "shot-power"
-    ]
+    "bestRoles": ["WB", "WM", "FB"],
+    "worstRoles": ["ST", "CB"],
+    "strengths": ["flight", "teamwork"],
+    "weaknesses": ["strength", "shot-power"]
   },
   {
     "id": 166,
@@ -769,24 +579,10 @@
       "W": 56,
       "ST": 42
     },
-    "bestRoles": [
-      "GK",
-      "WM",
-      "WB"
-    ],
-    "worstRoles": [
-      "ST",
-      "CB"
-    ],
-    "strengths": [
-      "reflexes",
-      "flight",
-      "limb-reach"
-    ],
-    "weaknesses": [
-      "strength",
-      "shot-power"
-    ]
+    "bestRoles": ["GK", "WM", "WB"],
+    "worstRoles": ["ST", "CB"],
+    "strengths": ["reflexes", "flight", "limb-reach"],
+    "weaknesses": ["strength", "shot-power"]
   },
   {
     "id": 167,
@@ -822,23 +618,10 @@
       "W": 28,
       "ST": 30
     },
-    "bestRoles": [
-      "DM",
-      "CB",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "GK"
-    ],
-    "strengths": [
-      "discipline",
-      "positioning"
-    ],
-    "weaknesses": [
-      "pace",
-      "passing"
-    ]
+    "bestRoles": ["DM", "CB", "FB"],
+    "worstRoles": ["W", "GK"],
+    "strengths": ["discipline", "positioning"],
+    "weaknesses": ["pace", "passing"]
   },
   {
     "id": 168,
@@ -874,24 +657,10 @@
       "W": 37,
       "ST": 47
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "GK"
-    ],
-    "strengths": [
-      "limb-reach",
-      "marking",
-      "positioning"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "GK"],
+    "strengths": ["limb-reach", "marking", "positioning"],
+    "weaknesses": ["pace", "acceleration"]
   },
   {
     "id": 169,
@@ -927,25 +696,10 @@
       "W": 84,
       "ST": 77
     },
-    "bestRoles": [
-      "W",
-      "WB",
-      "WM"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "pace",
-      "acceleration",
-      "flight",
-      "agility"
-    ],
-    "weaknesses": [
-      "shot-power",
-      "kicking-technique"
-    ]
+    "bestRoles": ["W", "WB", "WM"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["pace", "acceleration", "flight", "agility"],
+    "weaknesses": ["shot-power", "kicking-technique"]
   },
   {
     "id": 170,
@@ -981,23 +735,10 @@
       "W": 34,
       "ST": 27
     },
-    "bestRoles": [
-      "WB",
-      "WM",
-      "DM"
-    ],
-    "worstRoles": [
-      "ST",
-      "CB"
-    ],
-    "strengths": [
-      "stamina",
-      "reflexes"
-    ],
-    "weaknesses": [
-      "footwork",
-      "dribbling"
-    ]
+    "bestRoles": ["WB", "WM", "DM"],
+    "worstRoles": ["ST", "CB"],
+    "strengths": ["stamina", "reflexes"],
+    "weaknesses": ["footwork", "dribbling"]
   },
   {
     "id": 171,
@@ -1033,24 +774,10 @@
       "W": 34,
       "ST": 37
     },
-    "bestRoles": [
-      "DM",
-      "CM",
-      "CB"
-    ],
-    "worstRoles": [
-      "W",
-      "ST"
-    ],
-    "strengths": [
-      "stamina",
-      "vision",
-      "durability"
-    ],
-    "weaknesses": [
-      "footwork",
-      "pace"
-    ]
+    "bestRoles": ["DM", "CM", "CB"],
+    "worstRoles": ["W", "ST"],
+    "strengths": ["stamina", "vision", "durability"],
+    "weaknesses": ["footwork", "pace"]
   },
   {
     "id": 172,
@@ -1086,24 +813,10 @@
       "W": 45,
       "ST": 31
     },
-    "bestRoles": [
-      "W",
-      "WM",
-      "WB"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "acceleration",
-      "agility"
-    ],
-    "weaknesses": [
-      "strength",
-      "size",
-      "durability"
-    ]
+    "bestRoles": ["W", "WM", "WB"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["acceleration", "agility"],
+    "weaknesses": ["strength", "size", "durability"]
   },
   {
     "id": 173,
@@ -1139,24 +852,10 @@
       "W": 25,
       "ST": 24
     },
-    "bestRoles": [
-      "AM",
-      "CM",
-      "WM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "teamwork",
-      "passing"
-    ],
-    "weaknesses": [
-      "pace",
-      "strength",
-      "size"
-    ]
+    "bestRoles": ["AM", "CM", "WM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["teamwork", "passing"],
+    "weaknesses": ["pace", "strength", "size"]
   },
   {
     "id": 174,
@@ -1192,24 +891,10 @@
       "W": 26,
       "ST": 24
     },
-    "bestRoles": [
-      "CM",
-      "DM",
-      "WM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "stamina",
-      "teamwork"
-    ],
-    "weaknesses": [
-      "strength",
-      "size",
-      "pace"
-    ]
+    "bestRoles": ["CM", "DM", "WM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["stamina", "teamwork"],
+    "weaknesses": ["strength", "size", "pace"]
   },
   {
     "id": 175,
@@ -1245,24 +930,10 @@
       "W": 26,
       "ST": 25
     },
-    "bestRoles": [
-      "AM",
-      "CM",
-      "DM"
-    ],
-    "worstRoles": [
-      "CB",
-      "ST"
-    ],
-    "strengths": [
-      "durability",
-      "teamwork"
-    ],
-    "weaknesses": [
-      "pace",
-      "size",
-      "strength"
-    ]
+    "bestRoles": ["AM", "CM", "DM"],
+    "worstRoles": ["CB", "ST"],
+    "strengths": ["durability", "teamwork"],
+    "weaknesses": ["pace", "size", "strength"]
   },
   {
     "id": 176,
@@ -1298,25 +969,10 @@
       "W": 44,
       "ST": 42
     },
-    "bestRoles": [
-      "CM",
-      "AM",
-      "DM"
-    ],
-    "worstRoles": [
-      "CB",
-      "ST"
-    ],
-    "strengths": [
-      "passing",
-      "vision",
-      "flight"
-    ],
-    "weaknesses": [
-      "size",
-      "strength",
-      "pace"
-    ]
+    "bestRoles": ["CM", "AM", "DM"],
+    "worstRoles": ["CB", "ST"],
+    "strengths": ["passing", "vision", "flight"],
+    "weaknesses": ["size", "strength", "pace"]
   },
   {
     "id": 177,
@@ -1352,24 +1008,10 @@
       "W": 62,
       "ST": 47
     },
-    "bestRoles": [
-      "W",
-      "AM",
-      "WM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "acceleration",
-      "agility"
-    ],
-    "weaknesses": [
-      "size",
-      "strength",
-      "aerial"
-    ]
+    "bestRoles": ["W", "AM", "WM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["acceleration", "agility"],
+    "weaknesses": ["size", "strength", "aerial"]
   },
   {
     "id": 178,
@@ -1405,24 +1047,10 @@
       "W": 79,
       "ST": 69
     },
-    "bestRoles": [
-      "AM",
-      "W",
-      "CM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "vision",
-      "pace",
-      "flight"
-    ],
-    "weaknesses": [
-      "strength",
-      "tackling"
-    ]
+    "bestRoles": ["AM", "W", "CM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["vision", "pace", "flight"],
+    "weaknesses": ["strength", "tackling"]
   },
   {
     "id": 179,
@@ -1458,23 +1086,10 @@
       "W": 36,
       "ST": 31
     },
-    "bestRoles": [
-      "CM",
-      "WM",
-      "DM"
-    ],
-    "worstRoles": [
-      "ST",
-      "GK"
-    ],
-    "strengths": [
-      "teamwork",
-      "vision"
-    ],
-    "weaknesses": [
-      "pace",
-      "strength"
-    ]
+    "bestRoles": ["CM", "WM", "DM"],
+    "worstRoles": ["ST", "GK"],
+    "strengths": ["teamwork", "vision"],
+    "weaknesses": ["pace", "strength"]
   },
   {
     "id": 180,
@@ -1510,23 +1125,10 @@
       "W": 48,
       "ST": 47
     },
-    "bestRoles": [
-      "CM",
-      "AM",
-      "WM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "passing",
-      "teamwork"
-    ],
-    "weaknesses": [
-      "pace",
-      "strength"
-    ]
+    "bestRoles": ["CM", "AM", "WM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["passing", "teamwork"],
+    "weaknesses": ["pace", "strength"]
   },
   {
     "id": 181,
@@ -1562,24 +1164,10 @@
       "W": 52,
       "ST": 58
     },
-    "bestRoles": [
-      "DM",
-      "CM",
-      "CB"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "vision",
-      "passing",
-      "stamina"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration"
-    ]
+    "bestRoles": ["DM", "CM", "CB"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["vision", "passing", "stamina"],
+    "weaknesses": ["pace", "acceleration"]
   },
   {
     "id": 182,
@@ -1615,25 +1203,10 @@
       "W": 59,
       "ST": 60
     },
-    "bestRoles": [
-      "CM",
-      "AM",
-      "DM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "passing",
-      "vision",
-      "balance"
-    ],
-    "weaknesses": [
-      "size",
-      "aerial",
-      "pace"
-    ]
+    "bestRoles": ["CM", "AM", "DM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["passing", "vision", "balance"],
+    "weaknesses": ["size", "aerial", "pace"]
   },
   {
     "id": 183,
@@ -1669,23 +1242,10 @@
       "W": 33,
       "ST": 33
     },
-    "bestRoles": [
-      "FB",
-      "DM",
-      "CM"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "stamina",
-      "shot-power"
-    ],
-    "weaknesses": [
-      "pace",
-      "size"
-    ]
+    "bestRoles": ["FB", "DM", "CM"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["stamina", "shot-power"],
+    "weaknesses": ["pace", "size"]
   },
   {
     "id": 184,
@@ -1721,24 +1281,10 @@
       "W": 42,
       "ST": 44
     },
-    "bestRoles": [
-      "DM",
-      "CM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "GK"
-    ],
-    "strengths": [
-      "stamina",
-      "shot-power",
-      "durability"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration"
-    ]
+    "bestRoles": ["DM", "CM", "FB"],
+    "worstRoles": ["W", "GK"],
+    "strengths": ["stamina", "shot-power", "durability"],
+    "weaknesses": ["pace", "acceleration"]
   },
   {
     "id": 185,
@@ -1774,25 +1320,10 @@
       "W": 35,
       "ST": 48
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "GK"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "positioning",
-      "strength",
-      "durability"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration",
-      "vision"
-    ]
+    "bestRoles": ["CB", "DM", "GK"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["positioning", "strength", "durability"],
+    "weaknesses": ["pace", "acceleration", "vision"]
   },
   {
     "id": 186,
@@ -1828,24 +1359,10 @@
       "W": 66,
       "ST": 67
     },
-    "bestRoles": [
-      "CM",
-      "AM",
-      "GK"
-    ],
-    "worstRoles": [
-      "CB",
-      "W"
-    ],
-    "strengths": [
-      "passing",
-      "vision",
-      "stamina"
-    ],
-    "weaknesses": [
-      "pace",
-      "tackling"
-    ]
+    "bestRoles": ["CM", "AM", "GK"],
+    "worstRoles": ["CB", "W"],
+    "strengths": ["passing", "vision", "stamina"],
+    "weaknesses": ["pace", "tackling"]
   },
   {
     "id": 187,
@@ -1881,24 +1398,10 @@
       "W": 46,
       "ST": 36
     },
-    "bestRoles": [
-      "W",
-      "WM",
-      "WB"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "agility",
-      "unpredictability"
-    ],
-    "weaknesses": [
-      "strength",
-      "size",
-      "shot-power"
-    ]
+    "bestRoles": ["W", "WM", "WB"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["agility", "unpredictability"],
+    "weaknesses": ["strength", "size", "shot-power"]
   },
   {
     "id": 188,
@@ -1934,24 +1437,10 @@
       "W": 65,
       "ST": 48
     },
-    "bestRoles": [
-      "W",
-      "WM",
-      "WB"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "acceleration",
-      "agility"
-    ],
-    "weaknesses": [
-      "strength",
-      "size",
-      "close-control"
-    ]
+    "bestRoles": ["W", "WM", "WB"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["acceleration", "agility"],
+    "weaknesses": ["strength", "size", "close-control"]
   },
   {
     "id": 189,
@@ -1987,25 +1476,10 @@
       "W": 79,
       "ST": 60
     },
-    "bestRoles": [
-      "W",
-      "WB",
-      "WM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "pace",
-      "acceleration",
-      "agility"
-    ],
-    "weaknesses": [
-      "strength",
-      "size",
-      "close-control"
-    ]
+    "bestRoles": ["W", "WB", "WM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["pace", "acceleration", "agility"],
+    "weaknesses": ["strength", "size", "close-control"]
   },
   {
     "id": 190,
@@ -2041,24 +1515,10 @@
       "W": 72,
       "ST": 60
     },
-    "bestRoles": [
-      "W",
-      "WM",
-      "AM"
-    ],
-    "worstRoles": [
-      "CB",
-      "DM"
-    ],
-    "strengths": [
-      "agility",
-      "dribbling",
-      "acceleration"
-    ],
-    "weaknesses": [
-      "strength",
-      "tackling"
-    ]
+    "bestRoles": ["W", "WM", "AM"],
+    "worstRoles": ["CB", "DM"],
+    "strengths": ["agility", "dribbling", "acceleration"],
+    "weaknesses": ["strength", "tackling"]
   },
   {
     "id": 191,
@@ -2094,25 +1554,10 @@
       "W": 19,
       "ST": 19
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "ST",
-      "GK"
-    ],
-    "strengths": [
-      "balance",
-      "discipline"
-    ],
-    "weaknesses": [
-      "pace",
-      "strength",
-      "size",
-      "footwork"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["ST", "GK"],
+    "strengths": ["balance", "discipline"],
+    "weaknesses": ["pace", "strength", "size", "footwork"]
   },
   {
     "id": 192,
@@ -2148,24 +1593,10 @@
       "W": 46,
       "ST": 52
     },
-    "bestRoles": [
-      "CM",
-      "AM",
-      "DM"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "passing",
-      "vision",
-      "long-shots"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration"
-    ]
+    "bestRoles": ["CM", "AM", "DM"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["passing", "vision", "long-shots"],
+    "weaknesses": ["pace", "acceleration"]
   },
   {
     "id": 193,
@@ -2201,25 +1632,10 @@
       "W": 75,
       "ST": 67
     },
-    "bestRoles": [
-      "W",
-      "ST",
-      "WM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "pace",
-      "acceleration",
-      "agility",
-      "flight"
-    ],
-    "weaknesses": [
-      "tackling",
-      "strength"
-    ]
+    "bestRoles": ["W", "ST", "WM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["pace", "acceleration", "agility", "flight"],
+    "weaknesses": ["tackling", "strength"]
   },
   {
     "id": 194,
@@ -2255,24 +1671,10 @@
       "W": 27,
       "ST": 29
     },
-    "bestRoles": [
-      "DM",
-      "CB",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "WM"
-    ],
-    "strengths": [
-      "composure",
-      "balance"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration",
-      "vision"
-    ]
+    "bestRoles": ["DM", "CB", "FB"],
+    "worstRoles": ["W", "WM"],
+    "strengths": ["composure", "balance"],
+    "weaknesses": ["pace", "acceleration", "vision"]
   },
   {
     "id": 195,
@@ -2308,25 +1710,10 @@
       "W": 38,
       "ST": 50
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "CM"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "composure",
-      "strength",
-      "stamina"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration",
-      "dribbling"
-    ]
+    "bestRoles": ["CB", "DM", "CM"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["composure", "strength", "stamina"],
+    "weaknesses": ["pace", "acceleration", "dribbling"]
   },
   {
     "id": 196,
@@ -2362,25 +1749,10 @@
       "W": 87,
       "ST": 71
     },
-    "bestRoles": [
-      "AM",
-      "W",
-      "CM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "vision",
-      "passing",
-      "pace",
-      "agility"
-    ],
-    "weaknesses": [
-      "tackling",
-      "strength"
-    ]
+    "bestRoles": ["AM", "W", "CM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["vision", "passing", "pace", "agility"],
+    "weaknesses": ["tackling", "strength"]
   },
   {
     "id": 197,
@@ -2416,24 +1788,10 @@
       "W": 50,
       "ST": 48
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "ST",
-      "GK"
-    ],
-    "strengths": [
-      "durability",
-      "stamina",
-      "positioning"
-    ],
-    "weaknesses": [
-      "shot-power",
-      "finishing"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["ST", "GK"],
+    "strengths": ["durability", "stamina", "positioning"],
+    "weaknesses": ["shot-power", "finishing"]
   },
   {
     "id": 198,
@@ -2469,25 +1827,10 @@
       "W": 81,
       "ST": 72
     },
-    "bestRoles": [
-      "W",
-      "ST",
-      "AM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "acceleration",
-      "unpredictability",
-      "flight"
-    ],
-    "weaknesses": [
-      "strength",
-      "size",
-      "tackling"
-    ]
+    "bestRoles": ["W", "ST", "AM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["acceleration", "unpredictability", "flight"],
+    "weaknesses": ["strength", "size", "tackling"]
   },
   {
     "id": 199,
@@ -2523,25 +1866,10 @@
       "W": 39,
       "ST": 51
     },
-    "bestRoles": [
-      "DM",
-      "CM",
-      "CB"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "vision",
-      "passing",
-      "composure"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration",
-      "dribbling"
-    ]
+    "bestRoles": ["DM", "CM", "CB"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["vision", "passing", "composure"],
+    "weaknesses": ["pace", "acceleration", "dribbling"]
   },
   {
     "id": 200,
@@ -2577,25 +1905,10 @@
       "W": 67,
       "ST": 53
     },
-    "bestRoles": [
-      "W",
-      "WM",
-      "AM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "acceleration",
-      "unpredictability",
-      "agility"
-    ],
-    "weaknesses": [
-      "strength",
-      "kicking-technique",
-      "tackling"
-    ]
+    "bestRoles": ["W", "WM", "AM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["acceleration", "unpredictability", "agility"],
+    "weaknesses": ["strength", "kicking-technique", "tackling"]
   },
   {
     "id": 201,
@@ -2631,24 +1944,10 @@
       "W": 41,
       "ST": 41
     },
-    "bestRoles": [
-      "AM",
-      "WM",
-      "CM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "vision",
-      "unpredictability"
-    ],
-    "weaknesses": [
-      "strength",
-      "footwork",
-      "kicking-technique"
-    ]
+    "bestRoles": ["AM", "WM", "CM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["vision", "unpredictability"],
+    "weaknesses": ["strength", "footwork", "kicking-technique"]
   },
   {
     "id": 202,
@@ -2684,25 +1983,10 @@
       "W": 17,
       "ST": 23
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "ST"
-    ],
-    "strengths": [
-      "stamina",
-      "marking",
-      "durability"
-    ],
-    "weaknesses": [
-      "pace",
-      "shot-power",
-      "dribbling"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "ST"],
+    "strengths": ["stamina", "marking", "durability"],
+    "weaknesses": ["pace", "shot-power", "dribbling"]
   },
   {
     "id": 203,
@@ -2738,24 +2022,10 @@
       "W": 76,
       "ST": 75
     },
-    "bestRoles": [
-      "ST",
-      "AM",
-      "W"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "heading",
-      "vision",
-      "pace"
-    ],
-    "weaknesses": [
-      "handling",
-      "durability"
-    ]
+    "bestRoles": ["ST", "AM", "W"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["heading", "vision", "pace"],
+    "weaknesses": ["handling", "durability"]
   },
   {
     "id": 204,
@@ -2791,24 +2061,10 @@
       "W": 19,
       "ST": 25
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "ST"
-    ],
-    "strengths": [
-      "durability",
-      "positioning"
-    ],
-    "weaknesses": [
-      "pace",
-      "dribbling",
-      "passing"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "ST"],
+    "strengths": ["durability", "positioning"],
+    "weaknesses": ["pace", "dribbling", "passing"]
   },
   {
     "id": 205,
@@ -2844,25 +2100,10 @@
       "W": 29,
       "ST": 43
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "AM"
-    ],
-    "strengths": [
-      "durability",
-      "strength",
-      "positioning"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration",
-      "dribbling"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "AM"],
+    "strengths": ["durability", "strength", "positioning"],
+    "weaknesses": ["pace", "acceleration", "dribbling"]
   },
   {
     "id": 206,
@@ -2898,24 +2139,10 @@
       "W": 34,
       "ST": 38
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "AM"
-    ],
-    "strengths": [
-      "stamina",
-      "durability"
-    ],
-    "weaknesses": [
-      "footwork",
-      "dribbling",
-      "aerial"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "AM"],
+    "strengths": ["stamina", "durability"],
+    "weaknesses": ["footwork", "dribbling", "aerial"]
   },
   {
     "id": 207,
@@ -2951,24 +2178,10 @@
       "W": 53,
       "ST": 51
     },
-    "bestRoles": [
-      "CB",
-      "FB",
-      "DM"
-    ],
-    "worstRoles": [
-      "AM",
-      "GK"
-    ],
-    "strengths": [
-      "tackling",
-      "aerial",
-      "agility"
-    ],
-    "weaknesses": [
-      "passing",
-      "vision"
-    ]
+    "bestRoles": ["CB", "FB", "DM"],
+    "worstRoles": ["AM", "GK"],
+    "strengths": ["tackling", "aerial", "agility"],
+    "weaknesses": ["passing", "vision"]
   },
   {
     "id": 208,
@@ -3004,27 +2217,10 @@
       "W": 24,
       "ST": 40
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "GK"
-    ],
-    "worstRoles": [
-      "W",
-      "AM"
-    ],
-    "strengths": [
-      "size",
-      "aerial",
-      "strength",
-      "intimidation"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration",
-      "dribbling",
-      "footwork"
-    ]
+    "bestRoles": ["CB", "DM", "GK"],
+    "worstRoles": ["W", "AM"],
+    "strengths": ["size", "aerial", "strength", "intimidation"],
+    "weaknesses": ["pace", "acceleration", "dribbling", "footwork"]
   },
   {
     "id": 209,
@@ -3060,23 +2256,10 @@
       "W": 41,
       "ST": 48
     },
-    "bestRoles": [
-      "ST",
-      "CB",
-      "DM"
-    ],
-    "worstRoles": [
-      "W",
-      "GK"
-    ],
-    "strengths": [
-      "aggression",
-      "intimidation"
-    ],
-    "weaknesses": [
-      "pace",
-      "vision"
-    ]
+    "bestRoles": ["ST", "CB", "DM"],
+    "worstRoles": ["W", "GK"],
+    "strengths": ["aggression", "intimidation"],
+    "weaknesses": ["pace", "vision"]
   },
   {
     "id": 210,
@@ -3112,26 +2295,10 @@
       "W": 55,
       "ST": 71
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "ST"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "intimidation",
-      "aggression",
-      "tackling",
-      "strength"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration",
-      "vision"
-    ]
+    "bestRoles": ["CB", "DM", "ST"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["intimidation", "aggression", "tackling", "strength"],
+    "weaknesses": ["pace", "acceleration", "vision"]
   },
   {
     "id": 211,
@@ -3167,23 +2334,10 @@
       "W": 54,
       "ST": 56
     },
-    "bestRoles": [
-      "ST",
-      "AM",
-      "WM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "intimidation",
-      "acceleration"
-    ],
-    "weaknesses": [
-      "footwork",
-      "pace"
-    ]
+    "bestRoles": ["ST", "AM", "WM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["intimidation", "acceleration"],
+    "weaknesses": ["footwork", "pace"]
   },
   {
     "id": 212,
@@ -3219,24 +2373,10 @@
       "W": 60,
       "ST": 75
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "ST"
-    ],
-    "worstRoles": [
-      "GK",
-      "WB"
-    ],
-    "strengths": [
-      "tackling",
-      "strength",
-      "intimidation"
-    ],
-    "weaknesses": [
-      "acceleration",
-      "handling"
-    ]
+    "bestRoles": ["CB", "DM", "ST"],
+    "worstRoles": ["GK", "WB"],
+    "strengths": ["tackling", "strength", "intimidation"],
+    "weaknesses": ["acceleration", "handling"]
   },
   {
     "id": 213,
@@ -3272,26 +2412,10 @@
       "W": 21,
       "ST": 24
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "ST"
-    ],
-    "strengths": [
-      "durability",
-      "positioning",
-      "discipline"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration",
-      "shot-power",
-      "size"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "ST"],
+    "strengths": ["durability", "positioning", "discipline"],
+    "weaknesses": ["pace", "acceleration", "shot-power", "size"]
   },
   {
     "id": 214,
@@ -3327,25 +2451,10 @@
       "W": 74,
       "ST": 81
     },
-    "bestRoles": [
-      "ST",
-      "CB",
-      "GK"
-    ],
-    "worstRoles": [
-      "WB",
-      "WM"
-    ],
-    "strengths": [
-      "strength",
-      "heading",
-      "shot-power",
-      "aggression"
-    ],
-    "weaknesses": [
-      "vision",
-      "passing"
-    ]
+    "bestRoles": ["ST", "CB", "GK"],
+    "worstRoles": ["WB", "WM"],
+    "strengths": ["strength", "heading", "shot-power", "aggression"],
+    "weaknesses": ["vision", "passing"]
   },
   {
     "id": 215,
@@ -3381,26 +2490,10 @@
       "W": 84,
       "ST": 76
     },
-    "bestRoles": [
-      "W",
-      "ST",
-      "AM"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "pace",
-      "agility",
-      "dribbling",
-      "unpredictability"
-    ],
-    "weaknesses": [
-      "durability",
-      "strength",
-      "discipline"
-    ]
+    "bestRoles": ["W", "ST", "AM"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["pace", "agility", "dribbling", "unpredictability"],
+    "weaknesses": ["durability", "strength", "discipline"]
   },
   {
     "id": 216,
@@ -3436,23 +2529,10 @@
       "W": 48,
       "ST": 53
     },
-    "bestRoles": [
-      "ST",
-      "AM",
-      "CM"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "footwork",
-      "dribbling"
-    ],
-    "weaknesses": [
-      "pace",
-      "size"
-    ]
+    "bestRoles": ["ST", "AM", "CM"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["footwork", "dribbling"],
+    "weaknesses": ["pace", "size"]
   },
   {
     "id": 217,
@@ -3488,25 +2568,10 @@
       "W": 62,
       "ST": 80
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "ST"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "strength",
-      "shot-power",
-      "intimidation",
-      "tackling"
-    ],
-    "weaknesses": [
-      "acceleration",
-      "agility"
-    ]
+    "bestRoles": ["CB", "DM", "ST"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["strength", "shot-power", "intimidation", "tackling"],
+    "weaknesses": ["acceleration", "agility"]
   },
   {
     "id": 218,
@@ -3542,24 +2607,10 @@
       "W": 21,
       "ST": 23
     },
-    "bestRoles": [
-      "DM",
-      "CB",
-      "CM"
-    ],
-    "worstRoles": [
-      "W",
-      "ST"
-    ],
-    "strengths": [
-      "intimidation",
-      "positioning"
-    ],
-    "weaknesses": [
-      "pace",
-      "footwork",
-      "dribbling"
-    ]
+    "bestRoles": ["DM", "CB", "CM"],
+    "worstRoles": ["W", "ST"],
+    "strengths": ["intimidation", "positioning"],
+    "weaknesses": ["pace", "footwork", "dribbling"]
   },
   {
     "id": 219,
@@ -3595,25 +2646,10 @@
       "W": 26,
       "ST": 31
     },
-    "bestRoles": [
-      "DM",
-      "CB",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "ST"
-    ],
-    "strengths": [
-      "durability",
-      "positioning",
-      "intimidation"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration",
-      "footwork"
-    ]
+    "bestRoles": ["DM", "CB", "FB"],
+    "worstRoles": ["W", "ST"],
+    "strengths": ["durability", "positioning", "intimidation"],
+    "weaknesses": ["pace", "acceleration", "footwork"]
   },
   {
     "id": 220,
@@ -3649,23 +2685,10 @@
       "W": 43,
       "ST": 36
     },
-    "bestRoles": [
-      "W",
-      "WB",
-      "FB"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "acceleration",
-      "balance"
-    ],
-    "weaknesses": [
-      "vision",
-      "passing"
-    ]
+    "bestRoles": ["W", "WB", "FB"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["acceleration", "balance"],
+    "weaknesses": ["vision", "passing"]
   },
   {
     "id": 221,
@@ -3701,25 +2724,10 @@
       "W": 50,
       "ST": 64
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "ST"
-    ],
-    "worstRoles": [
-      "W",
-      "AM"
-    ],
-    "strengths": [
-      "strength",
-      "stamina",
-      "tackling"
-    ],
-    "weaknesses": [
-      "pace",
-      "vision",
-      "acceleration"
-    ]
+    "bestRoles": ["CB", "DM", "ST"],
+    "worstRoles": ["W", "AM"],
+    "strengths": ["strength", "stamina", "tackling"],
+    "weaknesses": ["pace", "vision", "acceleration"]
   },
   {
     "id": 222,
@@ -3755,23 +2763,10 @@
       "W": 34,
       "ST": 36
     },
-    "bestRoles": [
-      "DM",
-      "CB",
-      "FB"
-    ],
-    "worstRoles": [
-      "ST",
-      "W"
-    ],
-    "strengths": [
-      "durability",
-      "positioning"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration"
-    ]
+    "bestRoles": ["DM", "CB", "FB"],
+    "worstRoles": ["ST", "W"],
+    "strengths": ["durability", "positioning"],
+    "weaknesses": ["pace", "acceleration"]
   },
   {
     "id": 223,
@@ -3807,24 +2802,10 @@
       "W": 39,
       "ST": 41
     },
-    "bestRoles": [
-      "AM",
-      "ST",
-      "CM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "long-shots",
-      "vision"
-    ],
-    "weaknesses": [
-      "footwork",
-      "durability",
-      "pace"
-    ]
+    "bestRoles": ["AM", "ST", "CM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["long-shots", "vision"],
+    "weaknesses": ["footwork", "durability", "pace"]
   },
   {
     "id": 224,
@@ -3860,24 +2841,10 @@
       "W": 52,
       "ST": 62
     },
-    "bestRoles": [
-      "CM",
-      "DM",
-      "AM"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "limb-reach",
-      "long-shots",
-      "vision"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration"
-    ]
+    "bestRoles": ["CM", "DM", "AM"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["limb-reach", "long-shots", "vision"],
+    "weaknesses": ["pace", "acceleration"]
   },
   {
     "id": 225,
@@ -3913,24 +2880,10 @@
       "W": 63,
       "ST": 53
     },
-    "bestRoles": [
-      "WM",
-      "W",
-      "AM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "passing",
-      "pace",
-      "work-rate"
-    ],
-    "weaknesses": [
-      "strength",
-      "durability"
-    ]
+    "bestRoles": ["WM", "W", "AM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["passing", "pace", "work-rate"],
+    "weaknesses": ["strength", "durability"]
   },
   {
     "id": 226,
@@ -3966,26 +2919,10 @@
       "W": 43,
       "ST": 45
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "GK"
-    ],
-    "worstRoles": [
-      "W",
-      "ST"
-    ],
-    "strengths": [
-      "reach",
-      "aerial",
-      "size",
-      "vision"
-    ],
-    "weaknesses": [
-      "acceleration",
-      "dribbling",
-      "footwork"
-    ]
+    "bestRoles": ["CB", "DM", "GK"],
+    "worstRoles": ["W", "ST"],
+    "strengths": ["reach", "aerial", "size", "vision"],
+    "weaknesses": ["acceleration", "dribbling", "footwork"]
   },
   {
     "id": 227,
@@ -4021,24 +2958,10 @@
       "W": 47,
       "ST": 50
     },
-    "bestRoles": [
-      "CB",
-      "FB",
-      "DM"
-    ],
-    "worstRoles": [
-      "AM",
-      "ST"
-    ],
-    "strengths": [
-      "aerial",
-      "durability",
-      "tackling"
-    ],
-    "weaknesses": [
-      "dribbling",
-      "passing"
-    ]
+    "bestRoles": ["CB", "FB", "DM"],
+    "worstRoles": ["AM", "ST"],
+    "strengths": ["aerial", "durability", "tackling"],
+    "weaknesses": ["dribbling", "passing"]
   },
   {
     "id": 228,
@@ -4074,23 +2997,10 @@
       "W": 61,
       "ST": 54
     },
-    "bestRoles": [
-      "W",
-      "AM",
-      "ST"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "acceleration",
-      "pace"
-    ],
-    "weaknesses": [
-      "strength",
-      "durability"
-    ]
+    "bestRoles": ["W", "AM", "ST"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["acceleration", "pace"],
+    "weaknesses": ["strength", "durability"]
   },
   {
     "id": 229,
@@ -4126,24 +3036,10 @@
       "W": 84,
       "ST": 81
     },
-    "bestRoles": [
-      "ST",
-      "W",
-      "AM"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "pace",
-      "shot-power",
-      "intimidation"
-    ],
-    "weaknesses": [
-      "durability",
-      "tackling"
-    ]
+    "bestRoles": ["ST", "W", "AM"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["pace", "shot-power", "intimidation"],
+    "weaknesses": ["durability", "tackling"]
   },
   {
     "id": 230,
@@ -4179,25 +3075,10 @@
       "W": 57,
       "ST": 63
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "CM"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "size",
-      "durability",
-      "long-shots"
-    ],
-    "weaknesses": [
-      "footwork",
-      "dribbling",
-      "acceleration"
-    ]
+    "bestRoles": ["CB", "DM", "CM"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["size", "durability", "long-shots"],
+    "weaknesses": ["footwork", "dribbling", "acceleration"]
   },
   {
     "id": 231,
@@ -4233,23 +3114,10 @@
       "W": 32,
       "ST": 36
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "GK"
-    ],
-    "strengths": [
-      "stamina",
-      "strength"
-    ],
-    "weaknesses": [
-      "pace",
-      "passing"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "GK"],
+    "strengths": ["stamina", "strength"],
+    "weaknesses": ["pace", "passing"]
   },
   {
     "id": 232,
@@ -4285,26 +3153,10 @@
       "W": 46,
       "ST": 58
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "AM"
-    ],
-    "strengths": [
-      "strength",
-      "tackling",
-      "durability",
-      "intimidation"
-    ],
-    "weaknesses": [
-      "acceleration",
-      "dribbling",
-      "passing"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "AM"],
+    "strengths": ["strength", "tackling", "durability", "intimidation"],
+    "weaknesses": ["acceleration", "dribbling", "passing"]
   },
   {
     "id": 233,
@@ -4340,25 +3192,10 @@
       "W": 61,
       "ST": 64
     },
-    "bestRoles": [
-      "DM",
-      "CM",
-      "AM"
-    ],
-    "worstRoles": [
-      "W",
-      "ST"
-    ],
-    "strengths": [
-      "vision",
-      "discipline",
-      "passing",
-      "composure"
-    ],
-    "weaknesses": [
-      "pace",
-      "aerial"
-    ]
+    "bestRoles": ["DM", "CM", "AM"],
+    "worstRoles": ["W", "ST"],
+    "strengths": ["vision", "discipline", "passing", "composure"],
+    "weaknesses": ["pace", "aerial"]
   },
   {
     "id": 234,
@@ -4394,24 +3231,10 @@
       "W": 79,
       "ST": 82
     },
-    "bestRoles": [
-      "ST",
-      "W",
-      "AM"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "pace",
-      "heading",
-      "shot-power"
-    ],
-    "weaknesses": [
-      "close-control",
-      "durability"
-    ]
+    "bestRoles": ["ST", "W", "AM"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["pace", "heading", "shot-power"],
+    "weaknesses": ["close-control", "durability"]
   },
   {
     "id": 235,
@@ -4447,24 +3270,10 @@
       "W": 53,
       "ST": 44
     },
-    "bestRoles": [
-      "W",
-      "WM",
-      "WB"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "pace",
-      "unpredictability"
-    ],
-    "weaknesses": [
-      "shot-power",
-      "strength",
-      "tackling"
-    ]
+    "bestRoles": ["W", "WM", "WB"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["pace", "unpredictability"],
+    "weaknesses": ["shot-power", "strength", "tackling"]
   },
   {
     "id": 236,
@@ -4500,24 +3309,10 @@
       "W": 30,
       "ST": 34
     },
-    "bestRoles": [
-      "ST",
-      "AM",
-      "CM"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "aggression",
-      "kicking-technique"
-    ],
-    "weaknesses": [
-      "size",
-      "pace",
-      "strength"
-    ]
+    "bestRoles": ["ST", "AM", "CM"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["aggression", "kicking-technique"],
+    "weaknesses": ["size", "pace", "strength"]
   },
   {
     "id": 237,
@@ -4553,25 +3348,10 @@
       "W": 69,
       "ST": 77
     },
-    "bestRoles": [
-      "ST",
-      "DM",
-      "CB"
-    ],
-    "worstRoles": [
-      "GK",
-      "WB"
-    ],
-    "strengths": [
-      "kicking-technique",
-      "tackling",
-      "balance",
-      "agility"
-    ],
-    "weaknesses": [
-      "pace",
-      "passing"
-    ]
+    "bestRoles": ["ST", "DM", "CB"],
+    "worstRoles": ["GK", "WB"],
+    "strengths": ["kicking-technique", "tackling", "balance", "agility"],
+    "weaknesses": ["pace", "passing"]
   },
   {
     "id": 238,
@@ -4607,24 +3387,10 @@
       "W": 56,
       "ST": 42
     },
-    "bestRoles": [
-      "AM",
-      "W",
-      "CM"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "passing",
-      "vision"
-    ],
-    "weaknesses": [
-      "strength",
-      "durability",
-      "tackling"
-    ]
+    "bestRoles": ["AM", "W", "CM"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["passing", "vision"],
+    "weaknesses": ["strength", "durability", "tackling"]
   },
   {
     "id": 239,
@@ -4660,24 +3426,10 @@
       "W": 75,
       "ST": 62
     },
-    "bestRoles": [
-      "W",
-      "ST",
-      "AM"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "acceleration",
-      "dribbling",
-      "pace"
-    ],
-    "weaknesses": [
-      "durability",
-      "strength"
-    ]
+    "bestRoles": ["W", "ST", "AM"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["acceleration", "dribbling", "pace"],
+    "weaknesses": ["durability", "strength"]
   },
   {
     "id": 240,
@@ -4713,23 +3465,10 @@
       "W": 69,
       "ST": 61
     },
-    "bestRoles": [
-      "W",
-      "ST",
-      "AM"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "acceleration",
-      "dribbling"
-    ],
-    "weaknesses": [
-      "durability",
-      "strength"
-    ]
+    "bestRoles": ["W", "ST", "AM"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["acceleration", "dribbling"],
+    "weaknesses": ["durability", "strength"]
   },
   {
     "id": 241,
@@ -4765,25 +3504,10 @@
       "W": 66,
       "ST": 50
     },
-    "bestRoles": [
-      "FB",
-      "CB",
-      "WB"
-    ],
-    "worstRoles": [
-      "AM",
-      "ST"
-    ],
-    "strengths": [
-      "stamina",
-      "durability",
-      "strength",
-      "pace"
-    ],
-    "weaknesses": [
-      "vision",
-      "passing"
-    ]
+    "bestRoles": ["FB", "CB", "WB"],
+    "worstRoles": ["AM", "ST"],
+    "strengths": ["stamina", "durability", "strength", "pace"],
+    "weaknesses": ["vision", "passing"]
   },
   {
     "id": 242,
@@ -4819,26 +3543,10 @@
       "W": 46,
       "ST": 42
     },
-    "bestRoles": [
-      "CM",
-      "DM",
-      "WM"
-    ],
-    "worstRoles": [
-      "ST",
-      "CB"
-    ],
-    "strengths": [
-      "stamina",
-      "teamwork",
-      "passing",
-      "vision"
-    ],
-    "weaknesses": [
-      "tackling",
-      "shot-power",
-      "strength"
-    ]
+    "bestRoles": ["CM", "DM", "WM"],
+    "worstRoles": ["ST", "CB"],
+    "strengths": ["stamina", "teamwork", "passing", "vision"],
+    "weaknesses": ["tackling", "shot-power", "strength"]
   },
   {
     "id": 243,
@@ -4874,24 +3582,10 @@
       "W": 87,
       "ST": 86
     },
-    "bestRoles": [
-      "AM",
-      "W",
-      "ST"
-    ],
-    "worstRoles": [
-      "GK",
-      "CB"
-    ],
-    "strengths": [
-      "pace",
-      "acceleration",
-      "vision"
-    ],
-    "weaknesses": [
-      "handling",
-      "footwork"
-    ]
+    "bestRoles": ["AM", "W", "ST"],
+    "worstRoles": ["GK", "CB"],
+    "strengths": ["pace", "acceleration", "vision"],
+    "weaknesses": ["handling", "footwork"]
   },
   {
     "id": 244,
@@ -4927,25 +3621,10 @@
       "W": 80,
       "ST": 88
     },
-    "bestRoles": [
-      "ST",
-      "CB",
-      "DM"
-    ],
-    "worstRoles": [
-      "GK",
-      "WB"
-    ],
-    "strengths": [
-      "shot-power",
-      "strength",
-      "intimidation",
-      "stamina"
-    ],
-    "weaknesses": [
-      "handling",
-      "vision"
-    ]
+    "bestRoles": ["ST", "CB", "DM"],
+    "worstRoles": ["GK", "WB"],
+    "strengths": ["shot-power", "strength", "intimidation", "stamina"],
+    "weaknesses": ["handling", "vision"]
   },
   {
     "id": 245,
@@ -4981,25 +3660,10 @@
       "W": 60,
       "ST": 62
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "GK",
-      "ST"
-    ],
-    "strengths": [
-      "positioning",
-      "stamina",
-      "durability",
-      "vision"
-    ],
-    "weaknesses": [
-      "dribbling",
-      "acceleration"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["GK", "ST"],
+    "strengths": ["positioning", "stamina", "durability", "vision"],
+    "weaknesses": ["dribbling", "acceleration"]
   },
   {
     "id": 246,
@@ -5035,23 +3699,10 @@
       "W": 38,
       "ST": 45
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "ST"
-    ],
-    "worstRoles": [
-      "W",
-      "GK"
-    ],
-    "strengths": [
-      "strength",
-      "durability"
-    ],
-    "weaknesses": [
-      "pace",
-      "acceleration"
-    ]
+    "bestRoles": ["CB", "DM", "ST"],
+    "worstRoles": ["W", "GK"],
+    "strengths": ["strength", "durability"],
+    "weaknesses": ["pace", "acceleration"]
   },
   {
     "id": 247,
@@ -5087,24 +3738,10 @@
       "W": 37,
       "ST": 43
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "FB"
-    ],
-    "worstRoles": [
-      "W",
-      "AM"
-    ],
-    "strengths": [
-      "strength",
-      "durability"
-    ],
-    "weaknesses": [
-      "footwork",
-      "dribbling",
-      "passing"
-    ]
+    "bestRoles": ["CB", "DM", "FB"],
+    "worstRoles": ["W", "AM"],
+    "strengths": ["strength", "durability"],
+    "weaknesses": ["footwork", "dribbling", "passing"]
   },
   {
     "id": 248,
@@ -5140,25 +3777,10 @@
       "W": 66,
       "ST": 84
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "ST"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "strength",
-      "intimidation",
-      "shot-power",
-      "size"
-    ],
-    "weaknesses": [
-      "acceleration",
-      "agility"
-    ]
+    "bestRoles": ["CB", "DM", "ST"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["strength", "intimidation", "shot-power", "size"],
+    "weaknesses": ["acceleration", "agility"]
   },
   {
     "id": 249,
@@ -5194,25 +3816,10 @@
       "W": 69,
       "ST": 70
     },
-    "bestRoles": [
-      "CB",
-      "GK",
-      "DM"
-    ],
-    "worstRoles": [
-      "W",
-      "AM"
-    ],
-    "strengths": [
-      "aerial",
-      "reach",
-      "size",
-      "durability"
-    ],
-    "weaknesses": [
-      "finishing",
-      "dribbling"
-    ]
+    "bestRoles": ["CB", "GK", "DM"],
+    "worstRoles": ["W", "AM"],
+    "strengths": ["aerial", "reach", "size", "durability"],
+    "weaknesses": ["finishing", "dribbling"]
   },
   {
     "id": 250,
@@ -5248,25 +3855,10 @@
       "W": 68,
       "ST": 73
     },
-    "bestRoles": [
-      "CB",
-      "DM",
-      "CM"
-    ],
-    "worstRoles": [
-      "W",
-      "WB"
-    ],
-    "strengths": [
-      "aerial",
-      "flight",
-      "stamina",
-      "strength"
-    ],
-    "weaknesses": [
-      "acceleration",
-      "dribbling"
-    ]
+    "bestRoles": ["CB", "DM", "CM"],
+    "worstRoles": ["W", "WB"],
+    "strengths": ["aerial", "flight", "stamina", "strength"],
+    "weaknesses": ["acceleration", "dribbling"]
   },
   {
     "id": 251,
@@ -5302,23 +3894,9 @@
       "W": 93,
       "ST": 83
     },
-    "bestRoles": [
-      "AM",
-      "CM",
-      "W"
-    ],
-    "worstRoles": [
-      "CB",
-      "GK"
-    ],
-    "strengths": [
-      "close-control",
-      "passing",
-      "vision"
-    ],
-    "weaknesses": [
-      "size",
-      "strength"
-    ]
+    "bestRoles": ["AM", "CM", "W"],
+    "worstRoles": ["CB", "GK"],
+    "strengths": ["close-control", "passing", "vision"],
+    "weaknesses": ["size", "strength"]
   }
 ]

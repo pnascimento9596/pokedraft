@@ -9,13 +9,7 @@ import gen7 from "@/data/species-chunks/gen-7.json";
 import gen8 from "@/data/species-chunks/gen-8.json";
 import gen9 from "@/data/species-chunks/gen-9.json";
 import { ROLES } from "@/scouting/types";
-import {
-  type Attributes,
-  type Quality,
-  type Role,
-  type RoleFits,
-  type Species,
-} from "./types";
+import { type Attributes, type Quality, type Role, type RoleFits, type Species } from "./types";
 
 const MAX_FIT = 100;
 
@@ -86,9 +80,10 @@ function buildSpecies(): readonly Species[] {
       evoChainId: c.evoChainId,
       attrs: c.attrs as unknown as Attributes,
       fits: c.fits as unknown as RoleFits,
-      quality: Object.fromEntries(
-        ROLES.map((r) => [r, qualityOf(r, c.fits[r]!)]),
-      ) as Record<Role, Quality>,
+      quality: Object.fromEntries(ROLES.map((r) => [r, qualityOf(r, c.fits[r]!)])) as Record<
+        Role,
+        Quality
+      >,
       bestRoles: c.bestRoles as readonly Role[],
       worstRoles: c.worstRoles as readonly Role[],
       strengths: c.strengths,
