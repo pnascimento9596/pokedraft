@@ -13,3 +13,10 @@ These live in paths dispatch 7 froze (scouting numbers and data). Evidence is in
 |---|---|
 | SF-20 | Closed. Engine 6 (#61, `6915a84`) added a synthetic positive control, so the KIC rule can fail: `src/scouting/__tests__/review-rules.test.ts:28-32`. Recorded in `docs/decisions/engine-6-manager.md:71-80` |
 | SF-29 | Closed. Engine 6 (#61, `6915a84`) added the GK rule test with a synthetic positive control (`src/scouting/__tests__/review-rules.test.ts:34-55`), and Jigglypuff and Wigglytuff no longer list GK as a best role (`docs/decisions/engine-6-manager.md:71-80`) |
+
+## Status at Program Close (Wave 7)
+
+All items closed:
+- SF-20: Closed. Engine 6 (PR #61, squash `6915a84`) added a synthetic positive control ensuring the KIC rule can fail (`src/scouting/__tests__/review-rules.test.ts:28-32`).
+- SF-29: Closed. Engine 6 (PR #61, squash `6915a84`) added the GK rule test with a synthetic positive control (`src/scouting/__tests__/review-rules.test.ts:34-55`), and Jigglypuff/Wigglytuff bestRoles were corrected.
+- No open frozen findings remain.
