@@ -8,7 +8,7 @@ Every player starting a new run or viewing a board:
 
 - New runs play on Engine 8 (`pokedraft-engine-8`) and encode `pd8.` tokens.
 - Defend against a direct side now uses the calibrated V8 style edge (`directDefendOwn: 1.05`, `styleEdges.direct.defend: [1.05, 0.52]`), up from Engine 7's `0.655` and `[0.655, 0.4825]`.
-- Shared `pd7` links (`/r/pd7?t=...` and legacy `/r/pd7.<payload>`) continue to replay identically through the frozen `v7` engine bundle, and retained `v7` replays continue to render the xG river via `v7.matchStory` (`src/ui/matchday/river.ts`).
+- Shared `pd7` links (`/r/pd7?t=...` and legacy `/r/pd7.<payload>`) continue to replay identically through the frozen `v7` engine bundle.
 - Leaderboard rows from Engine 7 show the `Engine v7` chip alongside the `All engines` toggle.
 - An in-flight Engine 7 run can still submit during the grace window (`flipDate: "2026-10-22"`, `until: "2026-10-24T04:00:00Z"`) with the note `Ranked on the engine 7 board.`.
 
@@ -22,7 +22,6 @@ Every player starting a new run or viewing a board:
 - **Retained Engine 7 wiring and proxy:**
   - `src/engine/versions/index.ts`: registers `RETAINED[7]` with an identity `adapt` (`CupResult` in Engine 8 adds no fields over Engine 7; Engine 8 changes only coefficients) and lazily imports `./v7`.
   - `src/engine/versions/label.ts` and `src/ui/manager/coached.ts`: sets `RETAINED_TOKEN_VERSIONS = [1, 2, 3, 4, 5, 6, 7]` and `MANAGER_TOKEN_VERSIONS = [6, 7, 8]`.
-  - `src/ui/matchday/river.ts`: routes `cup.engine === "pokedraft-engine-7"` in `storySource` to `v7.matchStory` from `@/engine/versions/v7`, so retained `pd7` replays render the xG river alongside live `pd8` runs.
   - `src/proxy.ts`: imports `decodeV7Token` from `./engine/versions/v7/src/engine/token` and validates `pd7.` tokens in `brokenShareLink`: `/r/pd7?t=<payload>` rewrites to `/r/pd7.<payload>`, a valid `/r/pd7.<payload>` passes through, and a malformed one redirects to `/run-not-found`.
   - `scripts/build/measure-retained-json.mjs` and `scripts/build/check-retained-replays.mts`: adds `"v7"` to `VERSIONS`, routes the `v7` golden tokens (`c91cb42c...` and `2b7223f3...`) through the retained `v7` bundle, and adds the live `v8` golden replay checks (`21f36d60...` and `de30f335...`).
   - `scripts/audit/tokens.mts` and `scripts/audit/tokens.test.ts`: `GOLDEN_CUP8_TOKEN_SHA256` moves from `4adf37a539b999770100b571257b8368f2f644f3067dbe0887fa1276729ee985` to `ae0d6830dfa84bcbad2be1fbbedb6ab3ed4d38a4e6ed000d529af87f8a443f0c`. The Engine 8 golden fixtures `GOLDEN_CUP8_V8` and `GOLDEN_KANTO151_V8` are exported from `src/engine/versions/__tests__/fixtures.ts` and re-exported in `src/leaderboard/server/__tests__/fixtures.ts`.
@@ -70,7 +69,7 @@ Commit `2882b283` (`feat(engine): switch live engine to v8, wire retained v7, an
 | Sweep                           | Stories | Errors in both (notPlayed) | Played stories | Defend vs direct played | Mismatches |
 | ------------------------------- | ------- | -------------------------- | -------------- | ----------------------- | ---------- |
 | 50 seeds (`panel-0..49`, test)  | 800     | 316                        | 484            | 73                      | 0          |
-| 200 seeds (`panel-0..199`, log) | 3,200   | 1,214                      | 1,986          | 286                     | 0          |
+| 200 seeds (`panel-0..199`, log) | 3,200   | 1,286                      | 1,914          | 286                     | 0          |
 
 ## Goldens, unit tests, and `e2e/pins.ts` diff (`0451c7ee`)
 
