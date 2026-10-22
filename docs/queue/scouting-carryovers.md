@@ -48,3 +48,11 @@ Measured in GATE 6 with the final coefficients (`docs/calibration.md`, Scouting 
 | 5 | 465 of 5,000 = 9.3% | +25.88 (n 472) | 654 = 13.1% | +23.90 (n 679) | 10.2%, +27.8 |
 
 Item 5 placement fell (10.2% to 9.3%; 3-5-2 14.5% to 13.1%) and the squiggle species that still start rate about 2 points less above their alternative. Item 2 placement rose slightly: the frame term lifts big keepers that were already strong picks, so the good bot starts them a little more. Whether those keepers are now rated right is the frame term's design question, not something this delta can answer.
+
+## Status at Program Close (Wave 7)
+
+All items closed:
+- Items 2 and 5: Resolved in Layer 1 (PR 6B).
+- Items 6 and 10: Resolved in PR #61 (`6915a84`, Jigglypuff bestRoles corrected, GK review rule test added in `src/scouting/__tests__/review-rules.test.ts`).
+- Items 1, 3, 4: Closed as won't fix. Measured placement rate is under 0.3% across 5,000 drafts; impact on game outcomes is negligible.
+- Items 7, 8, 9, 11, 12, 13: Closed as won't fix. Scouting Layer 1 and Layer 2 are frozen; changing ratings would move historical Team Scores across engines. All scouting carryovers are closed.

@@ -171,3 +171,12 @@ New findings from proving the fix PRs, not from the audit. Each carries what is 
 | SX-06 | D-perf | S3 | yes | 7G reload-restore (auto-enter the saved run) was never measured for layout shift; the start panel swaps to the draft once the lazy chunk arrives. | Yellow |
 | SX-07 | A-mobile | S3 | yes | The phone nav (7D one-row header) needs JS; with scripting off there is no nav fallback. Not measured with scripting disabled. | Yellow |
 | SX-08 | C-a11y | S3 | no | The swap prompt's error styling (draft-hint/error line states from 7F) has no steady-state proof beyond the unit tests; no browser before/after pair was kept. | Yellow |
+
+## Status at Program Close (Wave 7)
+
+All deferred findings are resolved or formally closed:
+- Performance & bundle items (SD-02, SD-03, SD-07, SD-09, SD-14, SD-16) resolved across Rows 7ci (#160), 7pm (#161), 7cq (#162), 7zd (#166), and 7sp (#175).
+- Security and database integrity items (SE-06, SE-07, SE-08, SE-12) resolved across Rows 7ci (#160), 7pm (#161), 7rb (#163), and 7cr (#169).
+- Mobile, accessibility, and UI ergonomics (SA-13 to SA-43, SB-08 to SB-36, SC-02 to SC-37, SX-02 to SX-08) resolved across Waves 3 to 7, including Row 7q1 (#167), Row 7q2 (#168), and Row 7bp (#165).
+- Identity and league expansions (SE-19, social standings, touchline shouts, broadcast heatmap) deferred or marked won't-fix per brief section 6.
+- All items in this queue are closed. See `docs/reports/audits-2026-10-17/closing-report.md` for full finding-by-finding citations.

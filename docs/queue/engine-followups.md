@@ -30,3 +30,9 @@ Logged by dispatch 3 (UI). The engine and scouting were frozen in that lane, so 
 | # | Status |
 |---|---|
 | 5 | Closed. Keeper fit versus quality and `weakest` ranked by quality are won't fix. Changing either moves every Team Score, and the "All engines" board compares Team Scores across engines; the 0 to 1000 scale is the one number friends quote. Dispatch 7 already made the display honest (each card shows the quality `weakest` ranks by) |
+
+## Status after Wave 7 row 7sp (PR #175)
+
+| # | Status |
+|---|---|
+| 4 | Done. Wave 7 row 7sp (PR #175, squash `acdd8f00`) split species data into a slim index (`src/data/species-index.json`, 108 KB) and 9 generation chunks (`src/data/species-chunks/gen-[1..9].json`). Engine 8 loads chunks synchronously via `SPECIES` assembly, while friendly builder and picker dynamically import `ScoutingDossier`, keeping `pokedex.json` and `scouting.json` out of the client bundle before draft start. All engine follow-ups are now closed. |
