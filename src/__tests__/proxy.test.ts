@@ -174,6 +174,14 @@ describe("passcode gate (catches a gate that breaks link previews or leaks the A
     expect(proxy(req("/play")).headers.get("x-middleware-next")).toBe("1");
   });
 
+  it("never gates anything, even with FRIENDS_PASSCODE set (catches the friends-only lockout where / redirected to /gate and /api/leaderboard answered 401)", () => {
+    vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
+    for (const path of ["/", "/play", "/daily", "/leaderboard", "/api/leaderboard"]) {
+      const res = proxy(req(path));
+      expect([path, res.status, res.headers.get("x-middleware-next")]).toEqual([path, 200, "1"]);
+    }
+  });
+
   it("redirects gated pages to /gate with the original path", () => {
     vi.stubEnv("FRIENDS_PASSCODE", "pikachu");
     const res = proxy(req("/r/pd1.abc?x=1"));
