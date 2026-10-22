@@ -18,6 +18,17 @@ Branch `fix/remove-friends-gate` off `origin/main` at `aa271daa`. Owner request:
 
 Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
 
+## Next.js 16.4.2 security upgrade
+
+Branch `chore/next-16-4-2` off `origin/main` at `9b91c53d` (Red, deploy and dependencies).
+
+- `next` and `eslint-config-next` go from 16.4.0 to 16.4.2. 16.4.0 is listed in three npm advisories (>=16.0.0 <=16.4.0): GHSA-2464-fhr4-w9xw (critical, RCE in the Image Optimization API with SVG files), GHSA-673q-mjm6-r5xr (critical, RCE in `use cache` functions returning typed arrays) and GHSA-p3m5-59mp-jv5r (high, Server Actions denial of service). 16.4.2 has no advisories listed. The build-time advisory check stopped `pnpm build` on 16.4.0.
+- Exposure before the upgrade: the source has no `"use cache"` and no `"use server"` directive, and no `next/image` use. `/_next/image` ships with Next.js and was not probed.
+- Only `package.json` and `pnpm-lock.yaml` change. No source change was needed.
+- Gates at branch HEAD: `pnpm lint`, `pnpm typecheck`, `pnpm format:check` and `pnpm check:mirrors` exit 0; `pnpm test` 2,277 passed in 256 files; `pnpm build` exits 0 with no advisory error.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Drop the dead gate rate-limit scope
 
 Branch `chore/drop-gate-rate-limit-scope` off `origin/main` at `16adfa8b`. Follow-up to the friends gate removal in PR #178 (Red, schema).
