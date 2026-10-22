@@ -39,6 +39,7 @@ import { freshSeed } from "@/ui/settings";
 import { CASCADE_TOTAL_MS, cascadeFrame, fullLineup } from "./model";
 import { ModuleCard } from "@/components/ui/primitives";
 import { NavIcon } from "@/components/ui/nav-icons";
+import { DossierModal } from "@/components/scouting/DossierModal";
 import s from "./Builder.module.css";
 
 export type BuilderEngine = typeof import("./live");
@@ -446,7 +447,7 @@ export function Builder({
       </ModuleCard>
 
       {inspectId !== null && desk.kind === "live" ? (
-        <desk.engine.ScoutingDossier
+        <DossierModal
           speciesId={inspectId}
           showRatings={showRatings}
           lineup={lineup}

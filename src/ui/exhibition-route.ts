@@ -1,11 +1,11 @@
-import {
-  speciesById,
-  type FullLineup,
-  type Lineup,
-  type RunToken,
-  type Seed,
-  type SlotRef,
-} from "@/engine";
+import type {
+  FullLineup,
+  Lineup,
+  RunToken,
+  Seed,
+  SlotRef,
+} from "@/engine/types";
+import { slimSpeciesById } from "@/data/species-index";
 import { draftFromBuilderToken } from "./builder-token";
 import { emptyLineup, valueAt } from "./lineup";
 import { readAnyToken } from "./read-token";
@@ -98,7 +98,7 @@ function full(lineup: Lineup): FullLineup | null {
   const ids = [...lineup.starters, ...lineup.bench];
   if (ids.some((id) => id === null) || new Set(ids).size !== ids.length) return null;
   try {
-    for (const id of ids) speciesById(id!);
+    for (const id of ids) slimSpeciesById(id!);
   } catch {
     return null;
   }

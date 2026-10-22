@@ -115,7 +115,7 @@ async function slowData(page: Page): Promise<{ readonly askedFor: Promise<void> 
   await page.route(CLIENT_CHUNKS, async (route) => {
     const res = await route.fetch();
     const body = await res.text();
-    if (DATA_MARKERS.some((m) => body.includes(m))) {
+    if (DATA_MARKERS.some((m) => body.includes(m)) || body.includes("rebuildDraft")) {
       asked();
       await new Promise((r) => setTimeout(r, 3000));
     }

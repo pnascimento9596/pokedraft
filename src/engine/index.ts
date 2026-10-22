@@ -9,3 +9,4 @@ export { decodeToken, encodeToken } from "./token";
 export { dailySeed, toIsoDate } from "./rng";
 export { FORMATIONS } from "./formations";
 export { SPECIES, speciesById } from "./species";
+export { SPECIES_INDEX, slimSpeciesById, type SlimSpecies } from "@/data/species-index";

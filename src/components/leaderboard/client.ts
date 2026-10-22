@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ENGINE_VERSION, FORMATION_IDS } from "@/engine";
+import { ENGINE_VERSION, FORMATION_IDS } from "@/engine/types";
 import {
   BOARD_MODES,
   BOARD_SCOPES,

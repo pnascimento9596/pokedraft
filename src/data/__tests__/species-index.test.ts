@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import rawPokedex from "../pokedex.json";
 import rawScouting from "../scouting.json";
-import { SPECIES_INDEX, slimSpeciesById, type SlimSpecies } from "../species-index";
+import { SPECIES_INDEX, slimSpeciesById } from "../species-index";
 
 describe("species-index (slim species index)", () => {
   it("indexes all 1,025 species sorted by dex id", () => {

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { challengeHref } from "@/ui/challenge-href";
 import { exhibitionHref, squadFromToken } from "@/ui/exhibition-route";
 import { PlayerImage } from "@/components/PlayerImage";
-import { pokedexById } from "@/data/pokedex";
+import { slimSpeciesById } from "@/data/species-index";
 import { StatusNote } from "@/components/ui/primitives";
 import { announce } from "@/components/Announcer";
 import { record } from "@/ui/labels";
@@ -313,7 +313,7 @@ export function Board({
                         key={id}
                         dexId={id}
                         size={24}
-                        alt={pokedexById(id)?.name ?? `#${id}`}
+                        alt={slimSpeciesById(id)?.name ?? `#${id}`}
                       />
                     ))
                   ) : (

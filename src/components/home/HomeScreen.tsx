@@ -188,7 +188,6 @@ export function HomeScreen() {
     () =>
       whenIdleAfterLoad(() => {
         loadEngine().catch(() => {});
-        loadLiveRun().catch(() => {});
       }),
     [],
   );

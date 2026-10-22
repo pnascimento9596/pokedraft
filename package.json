@@ -14,6 +14,7 @@
     "check:mirrors": "bash scripts/check-mirrors.sh",
     "data:pokedex": "node scripts/data/build-pokedex.mjs",
     "data:scouting": "tsx scripts/data/build-scouting.ts",
+    "data:species-split": "tsx scripts/data/build-species-split.ts",
     "data:movesets": "node scripts/data/build-movesets.mjs",
     "data:validate": "tsx scripts/data/validate-artifacts.ts",
     "data:type-chart": "node scripts/data/build-type-chart.mjs",

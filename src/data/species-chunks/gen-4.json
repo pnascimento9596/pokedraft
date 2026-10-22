@@ -1,0 +1,5736 @@
+[
+  {
+    "id": 387,
+    "evoChainId": 203,
+    "attrs": {
+      "PAC": 33,
+      "ACC": 40,
+      "SHO": 44,
+      "PAS": 35,
+      "VIS": 40,
+      "DRI": 43,
+      "TEC": 36,
+      "DEF": 49,
+      "TAK": 49,
+      "AER": 41,
+      "PHY": 47,
+      "STA": 45,
+      "DIV": 31,
+      "HAN": 32,
+      "REF": 34,
+      "GKP": 44,
+      "KIC": 47
+    },
+    "fits": {
+      "GK": 18,
+      "CB": 46,
+      "FB": 43,
+      "WB": 40,
+      "DM": 45,
+      "CM": 39,
+      "AM": 37,
+      "WM": 37,
+      "W": 33,
+      "ST": 35
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "FB"
+    ],
+    "worstRoles": [
+      "W",
+      "GK"
+    ],
+    "strengths": [
+      "durability",
+      "strength"
+    ],
+    "weaknesses": [
+      "pace",
+      "footwork"
+    ]
+  },
+  {
+    "id": 388,
+    "evoChainId": 203,
+    "attrs": {
+      "PAC": 39,
+      "ACC": 32,
+      "SHO": 60,
+      "PAS": 44,
+      "VIS": 51,
+      "DRI": 33,
+      "TEC": 50,
+      "DEF": 69,
+      "TAK": 79,
+      "AER": 69,
+      "PHY": 82,
+      "STA": 68,
+      "DIV": 59,
+      "HAN": 59,
+      "REF": 41,
+      "GKP": 57,
+      "KIC": 67
+    },
+    "fits": {
+      "GK": 28,
+      "CB": 71,
+      "FB": 57,
+      "WB": 51,
+      "DM": 68,
+      "CM": 52,
+      "AM": 44,
+      "WM": 45,
+      "W": 35,
+      "ST": 46
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "FB"
+    ],
+    "worstRoles": [
+      "W",
+      "AM"
+    ],
+    "strengths": [
+      "strength",
+      "durability",
+      "tackling"
+    ],
+    "weaknesses": [
+      "pace",
+      "agility",
+      "footwork"
+    ]
+  },
+  {
+    "id": 389,
+    "evoChainId": 203,
+    "attrs": {
+      "PAC": 55,
+      "ACC": 38,
+      "SHO": 82,
+      "PAS": 67,
+      "VIS": 72,
+      "DRI": 40,
+      "TEC": 73,
+      "DEF": 91,
+      "TAK": 92,
+      "AER": 91,
+      "PHY": 96,
+      "STA": 85,
+      "DIV": 86,
+      "HAN": 84,
+      "REF": 65,
+      "GKP": 81,
+      "KIC": 86
+    },
+    "fits": {
+      "GK": 80,
+      "CB": 89,
+      "FB": 69,
+      "WB": 64,
+      "DM": 86,
+      "CM": 70,
+      "AM": 61,
+      "WM": 60,
+      "W": 47,
+      "ST": 61
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "GK"
+    ],
+    "worstRoles": [
+      "W",
+      "WB"
+    ],
+    "strengths": [
+      "size",
+      "strength",
+      "durability"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "agility"
+    ]
+  },
+  {
+    "id": 390,
+    "evoChainId": 204,
+    "attrs": {
+      "PAC": 55,
+      "ACC": 65,
+      "SHO": 58,
+      "PAS": 48,
+      "VIS": 43,
+      "DRI": 75,
+      "TEC": 59,
+      "DEF": 32,
+      "TAK": 36,
+      "AER": 39,
+      "PHY": 33,
+      "STA": 33,
+      "DIV": 37,
+      "HAN": 31,
+      "REF": 46,
+      "GKP": 36,
+      "KIC": 54
+    },
+    "fits": {
+      "GK": 19,
+      "CB": 31,
+      "FB": 38,
+      "WB": 43,
+      "DM": 35,
+      "CM": 48,
+      "AM": 57,
+      "WM": 50,
+      "W": 62,
+      "ST": 56
+    },
+    "bestRoles": [
+      "W",
+      "AM",
+      "ST"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "agility",
+      "dribbling",
+      "kicking-technique"
+    ],
+    "weaknesses": [
+      "strength",
+      "stamina"
+    ]
+  },
+  {
+    "id": 391,
+    "evoChainId": 204,
+    "attrs": {
+      "PAC": 72,
+      "ACC": 76,
+      "SHO": 75,
+      "PAS": 67,
+      "VIS": 60,
+      "DRI": 86,
+      "TEC": 79,
+      "DEF": 43,
+      "TAK": 55,
+      "AER": 59,
+      "PHY": 55,
+      "STA": 52,
+      "DIV": 57,
+      "HAN": 44,
+      "REF": 63,
+      "GKP": 48,
+      "KIC": 70
+    },
+    "fits": {
+      "GK": 28,
+      "CB": 45,
+      "FB": 51,
+      "WB": 57,
+      "DM": 52,
+      "CM": 65,
+      "AM": 73,
+      "WM": 66,
+      "W": 77,
+      "ST": 73
+    },
+    "bestRoles": [
+      "W",
+      "AM",
+      "ST"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "acceleration",
+      "dribbling",
+      "footwork"
+    ],
+    "weaknesses": [
+      "durability",
+      "marking"
+    ]
+  },
+  {
+    "id": 392,
+    "evoChainId": 204,
+    "attrs": {
+      "PAC": 89,
+      "ACC": 87,
+      "SHO": 99,
+      "PAS": 89,
+      "VIS": 81,
+      "DRI": 99,
+      "TEC": 99,
+      "DEF": 65,
+      "TAK": 79,
+      "AER": 75,
+      "PHY": 77,
+      "STA": 71,
+      "DIV": 83,
+      "HAN": 69,
+      "REF": 85,
+      "GKP": 72,
+      "KIC": 99
+    },
+    "fits": {
+      "GK": 40,
+      "CB": 63,
+      "FB": 68,
+      "WB": 73,
+      "DM": 73,
+      "CM": 85,
+      "AM": 93,
+      "WM": 83,
+      "W": 94,
+      "ST": 92
+    },
+    "bestRoles": [
+      "AM",
+      "W",
+      "ST"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "dribbling",
+      "kicking-technique",
+      "agility",
+      "finishing"
+    ],
+    "weaknesses": [
+      "durability",
+      "marking"
+    ]
+  },
+  {
+    "id": 393,
+    "evoChainId": 205,
+    "attrs": {
+      "PAC": 37,
+      "ACC": 45,
+      "SHO": 48,
+      "PAS": 55,
+      "VIS": 53,
+      "DRI": 49,
+      "TEC": 50,
+      "DEF": 42,
+      "TAK": 37,
+      "AER": 35,
+      "PHY": 36,
+      "STA": 44,
+      "DIV": 31,
+      "HAN": 39,
+      "REF": 37,
+      "GKP": 47,
+      "KIC": 48
+    },
+    "fits": {
+      "GK": 19,
+      "CB": 36,
+      "FB": 36,
+      "WB": 38,
+      "DM": 43,
+      "CM": 49,
+      "AM": 51,
+      "WM": 45,
+      "W": 42,
+      "ST": 41
+    },
+    "bestRoles": [
+      "CM",
+      "DM",
+      "AM"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "passing",
+      "vision"
+    ],
+    "weaknesses": [
+      "pace",
+      "footwork",
+      "strength"
+    ]
+  },
+  {
+    "id": 394,
+    "evoChainId": 205,
+    "attrs": {
+      "PAC": 47,
+      "ACC": 48,
+      "SHO": 63,
+      "PAS": 72,
+      "VIS": 73,
+      "DRI": 55,
+      "TEC": 65,
+      "DEF": 59,
+      "TAK": 54,
+      "AER": 54,
+      "PHY": 56,
+      "STA": 57,
+      "DIV": 49,
+      "HAN": 55,
+      "REF": 55,
+      "GKP": 68,
+      "KIC": 63
+    },
+    "fits": {
+      "GK": 28,
+      "CB": 52,
+      "FB": 47,
+      "WB": 48,
+      "DM": 60,
+      "CM": 64,
+      "AM": 65,
+      "WM": 57,
+      "W": 51,
+      "ST": 53
+    },
+    "bestRoles": [
+      "CM",
+      "DM",
+      "AM"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "passing",
+      "vision",
+      "composure"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration"
+    ]
+  },
+  {
+    "id": 395,
+    "evoChainId": 205,
+    "attrs": {
+      "PAC": 58,
+      "ACC": 45,
+      "SHO": 85,
+      "PAS": 91,
+      "VIS": 91,
+      "DRI": 54,
+      "TEC": 88,
+      "DEF": 88,
+      "TAK": 79,
+      "AER": 83,
+      "PHY": 84,
+      "STA": 80,
+      "DIV": 80,
+      "HAN": 85,
+      "REF": 70,
+      "GKP": 91,
+      "KIC": 85
+    },
+    "fits": {
+      "GK": 40,
+      "CB": 83,
+      "FB": 70,
+      "WB": 69,
+      "DM": 85,
+      "CM": 83,
+      "AM": 77,
+      "WM": 70,
+      "W": 56,
+      "ST": 64
+    },
+    "bestRoles": [
+      "DM",
+      "CM",
+      "CB"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "passing",
+      "vision",
+      "composure",
+      "strength"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "agility"
+    ]
+  },
+  {
+    "id": 396,
+    "evoChainId": 206,
+    "attrs": {
+      "PAC": 54,
+      "ACC": 66,
+      "SHO": 33,
+      "PAS": 28,
+      "VIS": 31,
+      "DRI": 63,
+      "TEC": 29,
+      "DEF": 26,
+      "TAK": 30,
+      "AER": 44,
+      "PHY": 27,
+      "STA": 29,
+      "DIV": 26,
+      "HAN": 15,
+      "REF": 40,
+      "GKP": 29,
+      "KIC": 30
+    },
+    "fits": {
+      "GK": 14,
+      "CB": 30,
+      "FB": 38,
+      "WB": 41,
+      "DM": 27,
+      "CM": 31,
+      "AM": 37,
+      "WM": 42,
+      "W": 50,
+      "ST": 39
+    },
+    "bestRoles": [
+      "W",
+      "WB",
+      "WM"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "acceleration",
+      "flight"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "footwork"
+    ]
+  },
+  {
+    "id": 397,
+    "evoChainId": 206,
+    "attrs": {
+      "PAC": 72,
+      "ACC": 77,
+      "SHO": 49,
+      "PAS": 36,
+      "VIS": 32,
+      "DRI": 76,
+      "TEC": 45,
+      "DEF": 39,
+      "TAK": 54,
+      "AER": 63,
+      "PHY": 46,
+      "STA": 44,
+      "DIV": 49,
+      "HAN": 28,
+      "REF": 56,
+      "GKP": 32,
+      "KIC": 46
+    },
+    "fits": {
+      "GK": 22,
+      "CB": 47,
+      "FB": 54,
+      "WB": 55,
+      "DM": 37,
+      "CM": 38,
+      "AM": 45,
+      "WM": 51,
+      "W": 64,
+      "ST": 57
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "WB"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "pace",
+      "flight",
+      "aggression"
+    ],
+    "weaknesses": [
+      "footwork",
+      "kicking-technique"
+    ]
+  },
+  {
+    "id": 398,
+    "evoChainId": 206,
+    "attrs": {
+      "PAC": 87,
+      "ACC": 86,
+      "SHO": 83,
+      "PAS": 49,
+      "VIS": 45,
+      "DRI": 87,
+      "TEC": 74,
+      "DEF": 62,
+      "TAK": 80,
+      "AER": 90,
+      "PHY": 71,
+      "STA": 76,
+      "DIV": 79,
+      "HAN": 55,
+      "REF": 75,
+      "GKP": 50,
+      "KIC": 84
+    },
+    "fits": {
+      "GK": 35,
+      "CB": 70,
+      "FB": 74,
+      "WB": 75,
+      "DM": 56,
+      "CM": 57,
+      "AM": 62,
+      "WM": 68,
+      "W": 81,
+      "ST": 82
+    },
+    "bestRoles": [
+      "ST",
+      "W",
+      "WB"
+    ],
+    "worstRoles": [
+      "GK",
+      "DM"
+    ],
+    "strengths": [
+      "pace",
+      "aerial",
+      "aggression",
+      "heading"
+    ],
+    "weaknesses": [
+      "footwork",
+      "discipline",
+      "close-control"
+    ]
+  },
+  {
+    "id": 399,
+    "evoChainId": 207,
+    "attrs": {
+      "PAC": 34,
+      "ACC": 36,
+      "SHO": 29,
+      "PAS": 26,
+      "VIS": 30,
+      "DRI": 32,
+      "TEC": 26,
+      "DEF": 32,
+      "TAK": 35,
+      "AER": 41,
+      "PHY": 42,
+      "STA": 46,
+      "DIV": 26,
+      "HAN": 19,
+      "REF": 28,
+      "GKP": 29,
+      "KIC": 32
+    },
+    "fits": {
+      "GK": 14,
+      "CB": 36,
+      "FB": 35,
+      "WB": 34,
+      "DM": 35,
+      "CM": 30,
+      "AM": 28,
+      "WM": 31,
+      "W": 27,
+      "ST": 28
+    },
+    "bestRoles": [
+      "CB",
+      "FB",
+      "DM"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "composure",
+      "stamina"
+    ],
+    "weaknesses": [
+      "pace",
+      "finishing",
+      "footwork"
+    ]
+  },
+  {
+    "id": 400,
+    "evoChainId": 207,
+    "attrs": {
+      "PAC": 66,
+      "ACC": 67,
+      "SHO": 66,
+      "PAS": 54,
+      "VIS": 48,
+      "DRI": 70,
+      "TEC": 63,
+      "DEF": 53,
+      "TAK": 60,
+      "AER": 65,
+      "PHY": 65,
+      "STA": 71,
+      "DIV": 59,
+      "HAN": 55,
+      "REF": 62,
+      "GKP": 48,
+      "KIC": 70
+    },
+    "fits": {
+      "GK": 29,
+      "CB": 57,
+      "FB": 62,
+      "WB": 64,
+      "DM": 59,
+      "CM": 59,
+      "AM": 57,
+      "WM": 60,
+      "W": 58,
+      "ST": 56
+    },
+    "bestRoles": [
+      "WB",
+      "DM",
+      "FB"
+    ],
+    "worstRoles": [
+      "AM",
+      "GK"
+    ],
+    "strengths": [
+      "work-rate",
+      "stamina",
+      "strength"
+    ],
+    "weaknesses": [
+      "close-control",
+      "vision"
+    ]
+  },
+  {
+    "id": 401,
+    "evoChainId": 208,
+    "attrs": {
+      "PAC": 28,
+      "ACC": 38,
+      "SHO": 31,
+      "PAS": 32,
+      "VIS": 28,
+      "DRI": 40,
+      "TEC": 32,
+      "DEF": 30,
+      "TAK": 27,
+      "AER": 26,
+      "PHY": 26,
+      "STA": 28,
+      "DIV": 24,
+      "HAN": 31,
+      "REF": 27,
+      "GKP": 29,
+      "KIC": 30
+    },
+    "fits": {
+      "GK": 14,
+      "CB": 24,
+      "FB": 26,
+      "WB": 26,
+      "DM": 28,
+      "CM": 31,
+      "AM": 33,
+      "WM": 30,
+      "W": 32,
+      "ST": 31
+    },
+    "bestRoles": [
+      "AM",
+      "CM",
+      "ST"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "close-control",
+      "dribbling"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "shot-power",
+      "pace"
+    ]
+  },
+  {
+    "id": 402,
+    "evoChainId": 208,
+    "attrs": {
+      "PAC": 61,
+      "ACC": 63,
+      "SHO": 61,
+      "PAS": 47,
+      "VIS": 45,
+      "DRI": 62,
+      "TEC": 56,
+      "DEF": 47,
+      "TAK": 56,
+      "AER": 73,
+      "PHY": 60,
+      "STA": 68,
+      "DIV": 54,
+      "HAN": 42,
+      "REF": 52,
+      "GKP": 42,
+      "KIC": 66
+    },
+    "fits": {
+      "GK": 26,
+      "CB": 54,
+      "FB": 56,
+      "WB": 58,
+      "DM": 46,
+      "CM": 47,
+      "AM": 50,
+      "WM": 54,
+      "W": 60,
+      "ST": 62
+    },
+    "bestRoles": [
+      "ST",
+      "W",
+      "WB"
+    ],
+    "worstRoles": [
+      "GK",
+      "AM"
+    ],
+    "strengths": [
+      "aerial",
+      "acceleration"
+    ],
+    "weaknesses": [
+      "vision",
+      "handling",
+      "passing"
+    ]
+  },
+  {
+    "id": 403,
+    "evoChainId": 209,
+    "attrs": {
+      "PAC": 45,
+      "ACC": 52,
+      "SHO": 44,
+      "PAS": 29,
+      "VIS": 31,
+      "DRI": 53,
+      "TEC": 37,
+      "DEF": 29,
+      "TAK": 44,
+      "AER": 41,
+      "PHY": 37,
+      "STA": 34,
+      "DIV": 27,
+      "HAN": 13,
+      "REF": 34,
+      "GKP": 27,
+      "KIC": 45
+    },
+    "fits": {
+      "GK": 14,
+      "CB": 35,
+      "FB": 39,
+      "WB": 39,
+      "DM": 30,
+      "CM": 31,
+      "AM": 36,
+      "WM": 38,
+      "W": 46,
+      "ST": 44
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "FB"
+    ],
+    "worstRoles": [
+      "GK",
+      "CM"
+    ],
+    "strengths": [
+      "acceleration",
+      "aggression"
+    ],
+    "weaknesses": [
+      "strength",
+      "passing",
+      "size"
+    ]
+  },
+  {
+    "id": 404,
+    "evoChainId": 209,
+    "attrs": {
+      "PAC": 59,
+      "ACC": 60,
+      "SHO": 63,
+      "PAS": 46,
+      "VIS": 47,
+      "DRI": 60,
+      "TEC": 56,
+      "DEF": 41,
+      "TAK": 61,
+      "AER": 59,
+      "PHY": 56,
+      "STA": 48,
+      "DIV": 47,
+      "HAN": 27,
+      "REF": 46,
+      "GKP": 40,
+      "KIC": 61
+    },
+    "fits": {
+      "GK": 22,
+      "CB": 50,
+      "FB": 52,
+      "WB": 53,
+      "DM": 43,
+      "CM": 45,
+      "AM": 50,
+      "WM": 51,
+      "W": 58,
+      "ST": 60
+    },
+    "bestRoles": [
+      "ST",
+      "W",
+      "WB"
+    ],
+    "worstRoles": [
+      "GK",
+      "CM"
+    ],
+    "strengths": [
+      "pace",
+      "aggression",
+      "tackling"
+    ],
+    "weaknesses": [
+      "passing",
+      "close-control"
+    ]
+  },
+  {
+    "id": 405,
+    "evoChainId": 209,
+    "attrs": {
+      "PAC": 70,
+      "ACC": 66,
+      "SHO": 91,
+      "PAS": 77,
+      "VIS": 84,
+      "DRI": 70,
+      "TEC": 87,
+      "DEF": 73,
+      "TAK": 87,
+      "AER": 79,
+      "PHY": 78,
+      "STA": 75,
+      "DIV": 75,
+      "HAN": 62,
+      "REF": 71,
+      "GKP": 76,
+      "KIC": 91
+    },
+    "fits": {
+      "GK": 36,
+      "CB": 72,
+      "FB": 64,
+      "WB": 66,
+      "DM": 79,
+      "CM": 79,
+      "AM": 77,
+      "WM": 72,
+      "W": 75,
+      "ST": 81
+    },
+    "bestRoles": [
+      "ST",
+      "W",
+      "DM"
+    ],
+    "worstRoles": [
+      "GK",
+      "WB"
+    ],
+    "strengths": [
+      "vision",
+      "aggression",
+      "shot-power",
+      "tackling"
+    ],
+    "weaknesses": [
+      "passing",
+      "handling"
+    ]
+  },
+  {
+    "id": 406,
+    "evoChainId": 158,
+    "attrs": {
+      "PAC": 41,
+      "ACC": 55,
+      "SHO": 29,
+      "PAS": 46,
+      "VIS": 43,
+      "DRI": 58,
+      "TEC": 34,
+      "DEF": 31,
+      "TAK": 20,
+      "AER": 19,
+      "PHY": 20,
+      "STA": 29,
+      "DIV": 20,
+      "HAN": 32,
+      "REF": 49,
+      "GKP": 39,
+      "KIC": 27
+    },
+    "fits": {
+      "GK": 16,
+      "CB": 22,
+      "FB": 32,
+      "WB": 37,
+      "DM": 28,
+      "CM": 37,
+      "AM": 43,
+      "WM": 43,
+      "W": 45,
+      "ST": 33
+    },
+    "bestRoles": [
+      "W",
+      "AM",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "acceleration",
+      "agility"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "aerial"
+    ]
+  },
+  {
+    "id": 407,
+    "evoChainId": 158,
+    "attrs": {
+      "PAC": 78,
+      "ACC": 83,
+      "SHO": 76,
+      "PAS": 98,
+      "VIS": 93,
+      "DRI": 90,
+      "TEC": 91,
+      "DEF": 64,
+      "TAK": 52,
+      "AER": 55,
+      "PHY": 50,
+      "STA": 56,
+      "DIV": 67,
+      "HAN": 63,
+      "REF": 89,
+      "GKP": 87,
+      "KIC": 65
+    },
+    "fits": {
+      "GK": 37,
+      "CB": 51,
+      "FB": 59,
+      "WB": 66,
+      "DM": 64,
+      "CM": 82,
+      "AM": 90,
+      "WM": 78,
+      "W": 85,
+      "ST": 72
+    },
+    "bestRoles": [
+      "AM",
+      "CM",
+      "W"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "passing",
+      "vision",
+      "close-control"
+    ],
+    "weaknesses": [
+      "strength",
+      "tackling",
+      "handling"
+    ]
+  },
+  {
+    "id": 408,
+    "evoChainId": 211,
+    "attrs": {
+      "PAC": 52,
+      "ACC": 50,
+      "SHO": 77,
+      "PAS": 31,
+      "VIS": 27,
+      "DRI": 66,
+      "TEC": 60,
+      "DEF": 33,
+      "TAK": 63,
+      "AER": 70,
+      "PHY": 63,
+      "STA": 54,
+      "DIV": 43,
+      "HAN": 34,
+      "REF": 37,
+      "GKP": 27,
+      "KIC": 78
+    },
+    "fits": {
+      "GK": 21,
+      "CB": 52,
+      "FB": 47,
+      "WB": 48,
+      "DM": 47,
+      "CM": 48,
+      "AM": 48,
+      "WM": 46,
+      "W": 55,
+      "ST": 66
+    },
+    "bestRoles": [
+      "ST",
+      "CB",
+      "DM"
+    ],
+    "worstRoles": [
+      "GK",
+      "AM"
+    ],
+    "strengths": [
+      "heading",
+      "aggression",
+      "shot-power"
+    ],
+    "weaknesses": [
+      "vision",
+      "passing",
+      "discipline"
+    ]
+  },
+  {
+    "id": 409,
+    "evoChainId": 211,
+    "attrs": {
+      "PAC": 55,
+      "ACC": 43,
+      "SHO": 95,
+      "PAS": 56,
+      "VIS": 52,
+      "DRI": 60,
+      "TEC": 78,
+      "DEF": 53,
+      "TAK": 82,
+      "AER": 93,
+      "PHY": 88,
+      "STA": 80,
+      "DIV": 65,
+      "HAN": 58,
+      "REF": 44,
+      "GKP": 46,
+      "KIC": 97
+    },
+    "fits": {
+      "GK": 30,
+      "CB": 73,
+      "FB": 60,
+      "WB": 60,
+      "DM": 70,
+      "CM": 67,
+      "AM": 62,
+      "WM": 59,
+      "W": 60,
+      "ST": 79
+    },
+    "bestRoles": [
+      "ST",
+      "CB",
+      "DM"
+    ],
+    "worstRoles": [
+      "GK",
+      "W"
+    ],
+    "strengths": [
+      "heading",
+      "shot-power",
+      "strength",
+      "aggression"
+    ],
+    "weaknesses": [
+      "acceleration",
+      "vision",
+      "discipline"
+    ]
+  },
+  {
+    "id": 410,
+    "evoChainId": 212,
+    "attrs": {
+      "PAC": 32,
+      "ACC": 29,
+      "SHO": 30,
+      "PAS": 41,
+      "VIS": 50,
+      "DRI": 28,
+      "TEC": 27,
+      "DEF": 79,
+      "TAK": 63,
+      "AER": 39,
+      "PHY": 61,
+      "STA": 32,
+      "DIV": 52,
+      "HAN": 63,
+      "REF": 48,
+      "GKP": 70,
+      "KIC": 29
+    },
+    "fits": {
+      "GK": 27,
+      "CB": 60,
+      "FB": 48,
+      "WB": 39,
+      "DM": 57,
+      "CM": 38,
+      "AM": 33,
+      "WM": 34,
+      "W": 26,
+      "ST": 28
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "FB"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "durability",
+      "positioning"
+    ],
+    "weaknesses": [
+      "pace",
+      "footwork",
+      "finishing"
+    ]
+  },
+  {
+    "id": 411,
+    "evoChainId": 212,
+    "attrs": {
+      "PAC": 35,
+      "ACC": 25,
+      "SHO": 35,
+      "PAS": 50,
+      "VIS": 60,
+      "DRI": 26,
+      "TEC": 31,
+      "DEF": 95,
+      "TAK": 74,
+      "AER": 66,
+      "PHY": 79,
+      "STA": 57,
+      "DIV": 72,
+      "HAN": 87,
+      "REF": 58,
+      "GKP": 85,
+      "KIC": 39
+    },
+    "fits": {
+      "GK": 72,
+      "CB": 76,
+      "FB": 55,
+      "WB": 47,
+      "DM": 71,
+      "CM": 47,
+      "AM": 38,
+      "WM": 41,
+      "W": 27,
+      "ST": 34
+    },
+    "bestRoles": [
+      "CB",
+      "GK",
+      "DM"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "durability",
+      "positioning",
+      "size",
+      "strength"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "footwork"
+    ]
+  },
+  {
+    "id": 412,
+    "evoChainId": 213,
+    "attrs": {
+      "PAC": 27,
+      "ACC": 39,
+      "SHO": 16,
+      "PAS": 20,
+      "VIS": 29,
+      "DRI": 27,
+      "TEC": 14,
+      "DEF": 32,
+      "TAK": 19,
+      "AER": 20,
+      "PHY": 28,
+      "STA": 30,
+      "DIV": 22,
+      "HAN": 19,
+      "REF": 31,
+      "GKP": 31,
+      "KIC": 16
+    },
+    "fits": {
+      "GK": 12,
+      "CB": 24,
+      "FB": 27,
+      "WB": 27,
+      "DM": 26,
+      "CM": 21,
+      "AM": 21,
+      "WM": 24,
+      "W": 22,
+      "ST": 19
+    },
+    "bestRoles": [
+      "DM",
+      "FB",
+      "WB"
+    ],
+    "worstRoles": [
+      "ST",
+      "AM"
+    ],
+    "strengths": [
+      "durability",
+      "positioning"
+    ],
+    "weaknesses": [
+      "footwork",
+      "shot-power",
+      "size"
+    ]
+  },
+  {
+    "id": 413,
+    "evoChainId": 213,
+    "attrs": {
+      "PAC": 29,
+      "ACC": 35,
+      "SHO": 38,
+      "PAS": 63,
+      "VIS": 78,
+      "DRI": 28,
+      "TEC": 37,
+      "DEF": 77,
+      "TAK": 43,
+      "AER": 35,
+      "PHY": 47,
+      "STA": 56,
+      "DIV": 41,
+      "HAN": 65,
+      "REF": 60,
+      "GKP": 83,
+      "KIC": 38
+    },
+    "fits": {
+      "GK": 28,
+      "CB": 54,
+      "FB": 47,
+      "WB": 44,
+      "DM": 59,
+      "CM": 52,
+      "AM": 47,
+      "WM": 44,
+      "W": 30,
+      "ST": 31
+    },
+    "bestRoles": [
+      "DM",
+      "CM",
+      "CB"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "vision",
+      "positioning",
+      "durability"
+    ],
+    "weaknesses": [
+      "pace",
+      "footwork",
+      "size"
+    ]
+  },
+  {
+    "id": 414,
+    "evoChainId": 213,
+    "attrs": {
+      "PAC": 62,
+      "ACC": 66,
+      "SHO": 79,
+      "PAS": 68,
+      "VIS": 66,
+      "DRI": 67,
+      "TEC": 77,
+      "DEF": 43,
+      "TAK": 57,
+      "AER": 72,
+      "PHY": 57,
+      "STA": 60,
+      "DIV": 51,
+      "HAN": 37,
+      "REF": 52,
+      "GKP": 51,
+      "KIC": 76
+    },
+    "fits": {
+      "GK": 26,
+      "CB": 48,
+      "FB": 49,
+      "WB": 54,
+      "DM": 54,
+      "CM": 66,
+      "AM": 71,
+      "WM": 62,
+      "W": 69,
+      "ST": 72
+    },
+    "bestRoles": [
+      "ST",
+      "AM",
+      "W"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "aerial",
+      "flight",
+      "shot-power"
+    ],
+    "weaknesses": [
+      "handling",
+      "footwork",
+      "durability"
+    ]
+  },
+  {
+    "id": 415,
+    "evoChainId": 214,
+    "attrs": {
+      "PAC": 62,
+      "ACC": 75,
+      "SHO": 25,
+      "PAS": 32,
+      "VIS": 29,
+      "DRI": 62,
+      "TEC": 22,
+      "DEF": 30,
+      "TAK": 28,
+      "AER": 33,
+      "PHY": 28,
+      "STA": 27,
+      "DIV": 32,
+      "HAN": 25,
+      "REF": 50,
+      "GKP": 29,
+      "KIC": 21
+    },
+    "fits": {
+      "GK": 17,
+      "CB": 30,
+      "FB": 41,
+      "WB": 43,
+      "DM": 28,
+      "CM": 30,
+      "AM": 35,
+      "WM": 43,
+      "W": 51,
+      "ST": 36
+    },
+    "bestRoles": [
+      "W",
+      "WB",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "acceleration",
+      "teamwork"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "finishing"
+    ]
+  },
+  {
+    "id": 416,
+    "evoChainId": 214,
+    "attrs": {
+      "PAC": 40,
+      "ACC": 36,
+      "SHO": 63,
+      "PAS": 72,
+      "VIS": 79,
+      "DRI": 33,
+      "TEC": 57,
+      "DEF": 88,
+      "TAK": 77,
+      "AER": 79,
+      "PHY": 72,
+      "STA": 67,
+      "DIV": 64,
+      "HAN": 83,
+      "REF": 58,
+      "GKP": 89,
+      "KIC": 65
+    },
+    "fits": {
+      "GK": 71,
+      "CB": 77,
+      "FB": 60,
+      "WB": 56,
+      "DM": 76,
+      "CM": 64,
+      "AM": 56,
+      "WM": 54,
+      "W": 39,
+      "ST": 48
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "GK"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "positioning",
+      "teamwork",
+      "intimidation",
+      "aerial"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "dribbling"
+    ]
+  },
+  {
+    "id": 417,
+    "evoChainId": 215,
+    "attrs": {
+      "PAC": 85,
+      "ACC": 98,
+      "SHO": 36,
+      "PAS": 54,
+      "VIS": 53,
+      "DRI": 88,
+      "TEC": 39,
+      "DEF": 65,
+      "TAK": 41,
+      "AER": 35,
+      "PHY": 40,
+      "STA": 55,
+      "DIV": 54,
+      "HAN": 49,
+      "REF": 89,
+      "GKP": 63,
+      "KIC": 35
+    },
+    "fits": {
+      "GK": 30,
+      "CB": 48,
+      "FB": 65,
+      "WB": 67,
+      "DM": 48,
+      "CM": 49,
+      "AM": 54,
+      "WM": 66,
+      "W": 73,
+      "ST": 50
+    },
+    "bestRoles": [
+      "W",
+      "WB",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "ST"
+    ],
+    "strengths": [
+      "acceleration",
+      "agility",
+      "pace"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "shot-power"
+    ]
+  },
+  {
+    "id": 418,
+    "evoChainId": 216,
+    "attrs": {
+      "PAC": 76,
+      "ACC": 80,
+      "SHO": 54,
+      "PAS": 46,
+      "VIS": 43,
+      "DRI": 78,
+      "TEC": 54,
+      "DEF": 29,
+      "TAK": 43,
+      "AER": 51,
+      "PHY": 46,
+      "STA": 42,
+      "DIV": 49,
+      "HAN": 17,
+      "REF": 56,
+      "GKP": 32,
+      "KIC": 50
+    },
+    "fits": {
+      "GK": 21,
+      "CB": 36,
+      "FB": 47,
+      "WB": 53,
+      "DM": 39,
+      "CM": 47,
+      "AM": 53,
+      "WM": 58,
+      "W": 69,
+      "ST": 60
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "WM"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "pace",
+      "acceleration"
+    ],
+    "weaknesses": [
+      "durability",
+      "marking"
+    ]
+  },
+  {
+    "id": 419,
+    "evoChainId": 216,
+    "attrs": {
+      "PAC": 93,
+      "ACC": 93,
+      "SHO": 90,
+      "PAS": 69,
+      "VIS": 63,
+      "DRI": 94,
+      "TEC": 89,
+      "DEF": 48,
+      "TAK": 65,
+      "AER": 72,
+      "PHY": 68,
+      "STA": 73,
+      "DIV": 72,
+      "HAN": 39,
+      "REF": 75,
+      "GKP": 50,
+      "KIC": 87
+    },
+    "fits": {
+      "GK": 32,
+      "CB": 54,
+      "FB": 62,
+      "WB": 69,
+      "DM": 60,
+      "CM": 74,
+      "AM": 81,
+      "WM": 77,
+      "W": 90,
+      "ST": 87
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "AM"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "pace",
+      "acceleration",
+      "dribbling"
+    ],
+    "weaknesses": [
+      "marking",
+      "durability"
+    ]
+  },
+  {
+    "id": 420,
+    "evoChainId": 217,
+    "attrs": {
+      "PAC": 33,
+      "ACC": 42,
+      "SHO": 28,
+      "PAS": 48,
+      "VIS": 51,
+      "DRI": 32,
+      "TEC": 29,
+      "DEF": 36,
+      "TAK": 28,
+      "AER": 34,
+      "PHY": 29,
+      "STA": 36,
+      "DIV": 24,
+      "HAN": 31,
+      "REF": 33,
+      "GKP": 43,
+      "KIC": 28
+    },
+    "fits": {
+      "GK": 16,
+      "CB": 28,
+      "FB": 32,
+      "WB": 34,
+      "DM": 35,
+      "CM": 38,
+      "AM": 38,
+      "WM": 38,
+      "W": 33,
+      "ST": 29
+    },
+    "bestRoles": [
+      "AM",
+      "WM",
+      "CM"
+    ],
+    "worstRoles": [
+      "CB",
+      "ST"
+    ],
+    "strengths": [
+      "vision",
+      "passing"
+    ],
+    "weaknesses": [
+      "strength",
+      "footwork",
+      "pace"
+    ]
+  },
+  {
+    "id": 421,
+    "evoChainId": 217,
+    "attrs": {
+      "PAC": 75,
+      "ACC": 83,
+      "SHO": 60,
+      "PAS": 78,
+      "VIS": 76,
+      "DRI": 87,
+      "TEC": 67,
+      "DEF": 63,
+      "TAK": 48,
+      "AER": 44,
+      "PHY": 51,
+      "STA": 65,
+      "DIV": 55,
+      "HAN": 61,
+      "REF": 77,
+      "GKP": 71,
+      "KIC": 57
+    },
+    "fits": {
+      "GK": 32,
+      "CB": 48,
+      "FB": 61,
+      "WB": 68,
+      "DM": 58,
+      "CM": 68,
+      "AM": 75,
+      "WM": 75,
+      "W": 76,
+      "ST": 62
+    },
+    "bestRoles": [
+      "W",
+      "AM",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "teamwork",
+      "agility",
+      "dribbling"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "aerial"
+    ]
+  },
+  {
+    "id": 422,
+    "evoChainId": 218,
+    "attrs": {
+      "PAC": 31,
+      "ACC": 40,
+      "SHO": 26,
+      "PAS": 38,
+      "VIS": 51,
+      "DRI": 29,
+      "TEC": 23,
+      "DEF": 47,
+      "TAK": 30,
+      "AER": 32,
+      "PHY": 43,
+      "STA": 69,
+      "DIV": 22,
+      "HAN": 38,
+      "REF": 36,
+      "GKP": 47,
+      "KIC": 33
+    },
+    "fits": {
+      "GK": 17,
+      "CB": 40,
+      "FB": 41,
+      "WB": 41,
+      "DM": 45,
+      "CM": 38,
+      "AM": 32,
+      "WM": 38,
+      "W": 26,
+      "ST": 26
+    },
+    "bestRoles": [
+      "DM",
+      "FB",
+      "CB"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "stamina",
+      "durability"
+    ],
+    "weaknesses": [
+      "pace",
+      "footwork",
+      "finishing"
+    ]
+  },
+  {
+    "id": 423,
+    "evoChainId": 218,
+    "attrs": {
+      "PAC": 37,
+      "ACC": 35,
+      "SHO": 59,
+      "PAS": 65,
+      "VIS": 80,
+      "DRI": 30,
+      "TEC": 54,
+      "DEF": 71,
+      "TAK": 59,
+      "AER": 51,
+      "PHY": 74,
+      "STA": 92,
+      "DIV": 32,
+      "HAN": 66,
+      "REF": 48,
+      "GKP": 75,
+      "KIC": 67
+    },
+    "fits": {
+      "GK": 27,
+      "CB": 65,
+      "FB": 56,
+      "WB": 55,
+      "DM": 72,
+      "CM": 65,
+      "AM": 55,
+      "WM": 54,
+      "W": 36,
+      "ST": 44
+    },
+    "bestRoles": [
+      "DM",
+      "CB",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "stamina",
+      "durability",
+      "strength"
+    ],
+    "weaknesses": [
+      "pace",
+      "footwork",
+      "kicking-technique"
+    ]
+  },
+  {
+    "id": 424,
+    "evoChainId": 93,
+    "attrs": {
+      "PAC": 91,
+      "ACC": 92,
+      "SHO": 87,
+      "PAS": 65,
+      "VIS": 55,
+      "DRI": 99,
+      "TEC": 92,
+      "DEF": 59,
+      "TAK": 66,
+      "AER": 71,
+      "PHY": 63,
+      "STA": 70,
+      "DIV": 82,
+      "HAN": 66,
+      "REF": 86,
+      "GKP": 56,
+      "KIC": 84
+    },
+    "fits": {
+      "GK": 37,
+      "CB": 56,
+      "FB": 63,
+      "WB": 69,
+      "DM": 60,
+      "CM": 72,
+      "AM": 80,
+      "WM": 75,
+      "W": 90,
+      "ST": 86
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "AM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "dribbling",
+      "agility",
+      "close-control",
+      "kicking-technique"
+    ],
+    "weaknesses": [
+      "marking",
+      "strength"
+    ]
+  },
+  {
+    "id": 425,
+    "evoChainId": 219,
+    "attrs": {
+      "PAC": 62,
+      "ACC": 74,
+      "SHO": 39,
+      "PAS": 49,
+      "VIS": 45,
+      "DRI": 68,
+      "TEC": 39,
+      "DEF": 38,
+      "TAK": 28,
+      "AER": 48,
+      "PHY": 39,
+      "STA": 76,
+      "DIV": 38,
+      "HAN": 45,
+      "REF": 52,
+      "GKP": 35,
+      "KIC": 40
+    },
+    "fits": {
+      "GK": 22,
+      "CB": 39,
+      "FB": 52,
+      "WB": 58,
+      "DM": 42,
+      "CM": 47,
+      "AM": 47,
+      "WM": 58,
+      "W": 58,
+      "ST": 46
+    },
+    "bestRoles": [
+      "WB",
+      "WM",
+      "W"
+    ],
+    "worstRoles": [
+      "CB",
+      "ST"
+    ],
+    "strengths": [
+      "stamina",
+      "flight"
+    ],
+    "weaknesses": [
+      "strength",
+      "footwork",
+      "shot-power"
+    ]
+  },
+  {
+    "id": 426,
+    "evoChainId": 219,
+    "attrs": {
+      "PAC": 71,
+      "ACC": 73,
+      "SHO": 69,
+      "PAS": 70,
+      "VIS": 67,
+      "DRI": 69,
+      "TEC": 69,
+      "DEF": 47,
+      "TAK": 47,
+      "AER": 80,
+      "PHY": 60,
+      "STA": 89,
+      "DIV": 64,
+      "HAN": 61,
+      "REF": 64,
+      "GKP": 49,
+      "KIC": 67
+    },
+    "fits": {
+      "GK": 31,
+      "CB": 55,
+      "FB": 63,
+      "WB": 70,
+      "DM": 58,
+      "CM": 68,
+      "AM": 69,
+      "WM": 72,
+      "W": 67,
+      "ST": 64
+    },
+    "bestRoles": [
+      "WM",
+      "WB",
+      "AM"
+    ],
+    "worstRoles": [
+      "CB",
+      "ST"
+    ],
+    "strengths": [
+      "stamina",
+      "flight",
+      "aerial"
+    ],
+    "weaknesses": [
+      "strength",
+      "footwork",
+      "tackling"
+    ]
+  },
+  {
+    "id": 427,
+    "evoChainId": 220,
+    "attrs": {
+      "PAC": 74,
+      "ACC": 88,
+      "SHO": 66,
+      "PAS": 46,
+      "VIS": 40,
+      "DRI": 99,
+      "TEC": 61,
+      "DEF": 38,
+      "TAK": 39,
+      "AER": 44,
+      "PHY": 37,
+      "STA": 46,
+      "DIV": 41,
+      "HAN": 31,
+      "REF": 67,
+      "GKP": 38,
+      "KIC": 64
+    },
+    "fits": {
+      "GK": 23,
+      "CB": 35,
+      "FB": 47,
+      "WB": 53,
+      "DM": 39,
+      "CM": 52,
+      "AM": 64,
+      "WM": 60,
+      "W": 77,
+      "ST": 66
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "AM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "acceleration",
+      "kicking-technique",
+      "agility"
+    ],
+    "weaknesses": [
+      "strength",
+      "marking"
+    ]
+  },
+  {
+    "id": 428,
+    "evoChainId": 220,
+    "attrs": {
+      "PAC": 88,
+      "ACC": 87,
+      "SHO": 82,
+      "PAS": 67,
+      "VIS": 61,
+      "DRI": 99,
+      "TEC": 77,
+      "DEF": 76,
+      "TAK": 67,
+      "AER": 72,
+      "PHY": 65,
+      "STA": 63,
+      "DIV": 86,
+      "HAN": 73,
+      "REF": 92,
+      "GKP": 73,
+      "KIC": 80
+    },
+    "fits": {
+      "GK": 40,
+      "CB": 60,
+      "FB": 65,
+      "WB": 68,
+      "DM": 64,
+      "CM": 70,
+      "AM": 77,
+      "WM": 73,
+      "W": 87,
+      "ST": 81
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "AM"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "kicking-technique",
+      "agility",
+      "acceleration",
+      "dribbling"
+    ],
+    "weaknesses": [
+      "strength",
+      "marking"
+    ]
+  },
+  {
+    "id": 429,
+    "evoChainId": 98,
+    "attrs": {
+      "PAC": 86,
+      "ACC": 93,
+      "SHO": 53,
+      "PAS": 85,
+      "VIS": 90,
+      "DRI": 69,
+      "TEC": 63,
+      "DEF": 60,
+      "TAK": 36,
+      "AER": 58,
+      "PHY": 40,
+      "STA": 56,
+      "DIV": 65,
+      "HAN": 50,
+      "REF": 93,
+      "GKP": 83,
+      "KIC": 45
+    },
+    "fits": {
+      "GK": 35,
+      "CB": 45,
+      "FB": 59,
+      "WB": 67,
+      "DM": 54,
+      "CM": 66,
+      "AM": 74,
+      "WM": 75,
+      "W": 75,
+      "ST": 59
+    },
+    "bestRoles": [
+      "WM",
+      "AM",
+      "W"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "vision",
+      "unpredictability",
+      "agility"
+    ],
+    "weaknesses": [
+      "strength",
+      "tackling",
+      "footwork"
+    ]
+  },
+  {
+    "id": 430,
+    "evoChainId": 97,
+    "attrs": {
+      "PAC": 68,
+      "ACC": 68,
+      "SHO": 90,
+      "PAS": 75,
+      "VIS": 73,
+      "DRI": 78,
+      "TEC": 87,
+      "DEF": 50,
+      "TAK": 69,
+      "AER": 85,
+      "PHY": 70,
+      "STA": 84,
+      "DIV": 54,
+      "HAN": 46,
+      "REF": 58,
+      "GKP": 54,
+      "KIC": 91
+    },
+    "fits": {
+      "GK": 29,
+      "CB": 57,
+      "FB": 58,
+      "WB": 64,
+      "DM": 65,
+      "CM": 77,
+      "AM": 80,
+      "WM": 72,
+      "W": 76,
+      "ST": 81
+    },
+    "bestRoles": [
+      "ST",
+      "AM",
+      "W"
+    ],
+    "worstRoles": [
+      "GK",
+      "FB"
+    ],
+    "strengths": [
+      "finishing",
+      "aerial",
+      "intimidation",
+      "shot-power"
+    ],
+    "weaknesses": [
+      "footwork",
+      "durability"
+    ]
+  },
+  {
+    "id": 431,
+    "evoChainId": 221,
+    "attrs": {
+      "PAC": 75,
+      "ACC": 88,
+      "SHO": 40,
+      "PAS": 36,
+      "VIS": 35,
+      "DRI": 87,
+      "TEC": 43,
+      "DEF": 31,
+      "TAK": 33,
+      "AER": 37,
+      "PHY": 32,
+      "STA": 37,
+      "DIV": 43,
+      "HAN": 15,
+      "REF": 58,
+      "GKP": 32,
+      "KIC": 38
+    },
+    "fits": {
+      "GK": 19,
+      "CB": 34,
+      "FB": 49,
+      "WB": 54,
+      "DM": 32,
+      "CM": 40,
+      "AM": 48,
+      "WM": 55,
+      "W": 68,
+      "ST": 50
+    },
+    "bestRoles": [
+      "W",
+      "WM",
+      "WB"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "agility",
+      "acceleration",
+      "balance"
+    ],
+    "weaknesses": [
+      "strength",
+      "finishing"
+    ]
+  },
+  {
+    "id": 432,
+    "evoChainId": 221,
+    "attrs": {
+      "PAC": 92,
+      "ACC": 90,
+      "SHO": 68,
+      "PAS": 59,
+      "VIS": 54,
+      "DRI": 90,
+      "TEC": 69,
+      "DEF": 53,
+      "TAK": 63,
+      "AER": 64,
+      "PHY": 69,
+      "STA": 65,
+      "DIV": 74,
+      "HAN": 43,
+      "REF": 79,
+      "GKP": 52,
+      "KIC": 64
+    },
+    "fits": {
+      "GK": 32,
+      "CB": 59,
+      "FB": 69,
+      "WB": 73,
+      "DM": 52,
+      "CM": 55,
+      "AM": 64,
+      "WM": 70,
+      "W": 82,
+      "ST": 75
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "WB"
+    ],
+    "worstRoles": [
+      "GK",
+      "CM"
+    ],
+    "strengths": [
+      "pace",
+      "strength",
+      "aggression"
+    ],
+    "weaknesses": [
+      "passing",
+      "vision"
+    ]
+  },
+  {
+    "id": 433,
+    "evoChainId": 184,
+    "attrs": {
+      "PAC": 33,
+      "ACC": 47,
+      "SHO": 32,
+      "PAS": 51,
+      "VIS": 49,
+      "DRI": 51,
+      "TEC": 39,
+      "DEF": 31,
+      "TAK": 22,
+      "AER": 27,
+      "PHY": 22,
+      "STA": 30,
+      "DIV": 20,
+      "HAN": 31,
+      "REF": 30,
+      "GKP": 40,
+      "KIC": 30
+    },
+    "fits": {
+      "GK": 14,
+      "CB": 24,
+      "FB": 31,
+      "WB": 35,
+      "DM": 30,
+      "CM": 40,
+      "AM": 45,
+      "WM": 42,
+      "W": 42,
+      "ST": 33
+    },
+    "bestRoles": [
+      "AM",
+      "W",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "passing",
+      "unpredictability"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "stamina"
+    ]
+  },
+  {
+    "id": 434,
+    "evoChainId": 223,
+    "attrs": {
+      "PAC": 67,
+      "ACC": 75,
+      "SHO": 44,
+      "PAS": 36,
+      "VIS": 36,
+      "DRI": 75,
+      "TEC": 42,
+      "DEF": 37,
+      "TAK": 45,
+      "AER": 41,
+      "PHY": 47,
+      "STA": 50,
+      "DIV": 40,
+      "HAN": 23,
+      "REF": 53,
+      "GKP": 34,
+      "KIC": 45
+    },
+    "fits": {
+      "GK": 20,
+      "CB": 41,
+      "FB": 51,
+      "WB": 54,
+      "DM": 40,
+      "CM": 42,
+      "AM": 46,
+      "WM": 54,
+      "W": 61,
+      "ST": 50
+    },
+    "bestRoles": [
+      "W",
+      "WB",
+      "WM"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "acceleration",
+      "intimidation"
+    ],
+    "weaknesses": [
+      "strength",
+      "passing"
+    ]
+  },
+  {
+    "id": 435,
+    "evoChainId": 223,
+    "attrs": {
+      "PAC": 76,
+      "ACC": 76,
+      "SHO": 75,
+      "PAS": 63,
+      "VIS": 64,
+      "DRI": 80,
+      "TEC": 74,
+      "DEF": 62,
+      "TAK": 70,
+      "AER": 70,
+      "PHY": 74,
+      "STA": 86,
+      "DIV": 66,
+      "HAN": 53,
+      "REF": 69,
+      "GKP": 58,
+      "KIC": 79
+    },
+    "fits": {
+      "GK": 32,
+      "CB": 66,
+      "FB": 71,
+      "WB": 74,
+      "DM": 59,
+      "CM": 61,
+      "AM": 66,
+      "WM": 70,
+      "W": 75,
+      "ST": 75
+    },
+    "bestRoles": [
+      "W",
+      "WB",
+      "ST"
+    ],
+    "worstRoles": [
+      "GK",
+      "CM"
+    ],
+    "strengths": [
+      "stamina",
+      "intimidation",
+      "dribbling"
+    ],
+    "weaknesses": [
+      "passing",
+      "handling"
+    ]
+  },
+  {
+    "id": 436,
+    "evoChainId": 224,
+    "attrs": {
+      "PAC": 26,
+      "ACC": 24,
+      "SHO": 18,
+      "PAS": 30,
+      "VIS": 45,
+      "DRI": 4,
+      "TEC": 13,
+      "DEF": 74,
+      "TAK": 47,
+      "AER": 48,
+      "PHY": 65,
+      "STA": 50,
+      "DIV": 41,
+      "HAN": 59,
+      "REF": 43,
+      "GKP": 62,
+      "KIC": 19
+    },
+    "fits": {
+      "GK": 24,
+      "CB": 56,
+      "FB": 43,
+      "WB": 35,
+      "DM": 53,
+      "CM": 30,
+      "AM": 21,
+      "WM": 27,
+      "W": 15,
+      "ST": 21
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "FB"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "durability",
+      "strength"
+    ],
+    "weaknesses": [
+      "pace",
+      "footwork",
+      "acceleration"
+    ]
+  },
+  {
+    "id": 437,
+    "evoChainId": 224,
+    "attrs": {
+      "PAC": 30,
+      "ACC": 22,
+      "SHO": 66,
+      "PAS": 73,
+      "VIS": 83,
+      "DRI": 19,
+      "TEC": 54,
+      "DEF": 94,
+      "TAK": 87,
+      "AER": 80,
+      "PHY": 88,
+      "STA": 65,
+      "DIV": 72,
+      "HAN": 91,
+      "REF": 58,
+      "GKP": 93,
+      "KIC": 62
+    },
+    "fits": {
+      "GK": 76,
+      "CB": 84,
+      "FB": 59,
+      "WB": 52,
+      "DM": 83,
+      "CM": 64,
+      "AM": 54,
+      "WM": 49,
+      "W": 32,
+      "ST": 47
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "GK"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "durability",
+      "size",
+      "positioning"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "footwork"
+    ]
+  },
+  {
+    "id": 438,
+    "evoChainId": 91,
+    "attrs": {
+      "PAC": 22,
+      "ACC": 21,
+      "SHO": 44,
+      "PAS": 20,
+      "VIS": 21,
+      "DRI": 35,
+      "TEC": 32,
+      "DEF": 52,
+      "TAK": 61,
+      "AER": 43,
+      "PHY": 52,
+      "STA": 34,
+      "DIV": 36,
+      "HAN": 49,
+      "REF": 21,
+      "GKP": 34,
+      "KIC": 48
+    },
+    "fits": {
+      "GK": 18,
+      "CB": 49,
+      "FB": 38,
+      "WB": 32,
+      "DM": 44,
+      "CM": 31,
+      "AM": 28,
+      "WM": 27,
+      "W": 25,
+      "ST": 32
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "FB"
+    ],
+    "worstRoles": [
+      "W",
+      "AM"
+    ],
+    "strengths": [
+      "durability",
+      "tackling"
+    ],
+    "weaknesses": [
+      "pace",
+      "passing",
+      "vision"
+    ]
+  },
+  {
+    "id": 439,
+    "evoChainId": 57,
+    "attrs": {
+      "PAC": 48,
+      "ACC": 53,
+      "SHO": 35,
+      "PAS": 70,
+      "VIS": 68,
+      "DRI": 52,
+      "TEC": 46,
+      "DEF": 41,
+      "TAK": 25,
+      "AER": 31,
+      "PHY": 26,
+      "STA": 26,
+      "DIV": 36,
+      "HAN": 44,
+      "REF": 61,
+      "GKP": 60,
+      "KIC": 29
+    },
+    "fits": {
+      "GK": 23,
+      "CB": 29,
+      "FB": 37,
+      "WB": 42,
+      "DM": 38,
+      "CM": 50,
+      "AM": 55,
+      "WM": 51,
+      "W": 47,
+      "ST": 37
+    },
+    "bestRoles": [
+      "AM",
+      "WM",
+      "CM"
+    ],
+    "worstRoles": [
+      "CB",
+      "ST"
+    ],
+    "strengths": [
+      "passing",
+      "unpredictability"
+    ],
+    "weaknesses": [
+      "strength",
+      "stamina"
+    ]
+  },
+  {
+    "id": 440,
+    "evoChainId": 51,
+    "attrs": {
+      "PAC": 24,
+      "ACC": 25,
+      "SHO": 24,
+      "PAS": 29,
+      "VIS": 28,
+      "DRI": 28,
+      "TEC": 26,
+      "DEF": 38,
+      "TAK": 23,
+      "AER": 43,
+      "PHY": 46,
+      "STA": 80,
+      "DIV": 23,
+      "HAN": 48,
+      "REF": 30,
+      "GKP": 29,
+      "KIC": 32
+    },
+    "fits": {
+      "GK": 17,
+      "CB": 37,
+      "FB": 36,
+      "WB": 37,
+      "DM": 39,
+      "CM": 34,
+      "AM": 26,
+      "WM": 33,
+      "W": 22,
+      "ST": 25
+    },
+    "bestRoles": [
+      "DM",
+      "CB",
+      "FB"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "stamina",
+      "durability"
+    ],
+    "weaknesses": [
+      "pace",
+      "shot-power",
+      "tackling"
+    ]
+  },
+  {
+    "id": 441,
+    "evoChainId": 228,
+    "attrs": {
+      "PAC": 79,
+      "ACC": 90,
+      "SHO": 58,
+      "PAS": 69,
+      "VIS": 68,
+      "DRI": 84,
+      "TEC": 67,
+      "DEF": 40,
+      "TAK": 38,
+      "AER": 60,
+      "PHY": 41,
+      "STA": 67,
+      "DIV": 46,
+      "HAN": 31,
+      "REF": 63,
+      "GKP": 48,
+      "KIC": 56
+    },
+    "fits": {
+      "GK": 24,
+      "CB": 40,
+      "FB": 55,
+      "WB": 65,
+      "DM": 48,
+      "CM": 64,
+      "AM": 71,
+      "WM": 73,
+      "W": 77,
+      "ST": 62
+    },
+    "bestRoles": [
+      "W",
+      "WM",
+      "AM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "acceleration",
+      "flight",
+      "unpredictability"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "footwork"
+    ]
+  },
+  {
+    "id": 442,
+    "evoChainId": 229,
+    "attrs": {
+      "PAC": 30,
+      "ACC": 23,
+      "SHO": 64,
+      "PAS": 70,
+      "VIS": 86,
+      "DRI": 23,
+      "TEC": 58,
+      "DEF": 83,
+      "TAK": 82,
+      "AER": 57,
+      "PHY": 75,
+      "STA": 46,
+      "DIV": 60,
+      "HAN": 75,
+      "REF": 56,
+      "GKP": 92,
+      "KIC": 59
+    },
+    "fits": {
+      "GK": 67,
+      "CB": 72,
+      "FB": 54,
+      "WB": 47,
+      "DM": 74,
+      "CM": 61,
+      "AM": 55,
+      "WM": 47,
+      "W": 33,
+      "ST": 44
+    },
+    "bestRoles": [
+      "DM",
+      "CB",
+      "GK"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "intimidation",
+      "positioning",
+      "unpredictability"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "footwork"
+    ]
+  },
+  {
+    "id": 443,
+    "evoChainId": 230,
+    "attrs": {
+      "PAC": 39,
+      "ACC": 41,
+      "SHO": 49,
+      "PAS": 35,
+      "VIS": 34,
+      "DRI": 48,
+      "TEC": 44,
+      "DEF": 36,
+      "TAK": 47,
+      "AER": 52,
+      "PHY": 50,
+      "STA": 45,
+      "DIV": 34,
+      "HAN": 35,
+      "REF": 33,
+      "GKP": 33,
+      "KIC": 51
+    },
+    "fits": {
+      "GK": 18,
+      "CB": 44,
+      "FB": 39,
+      "WB": 39,
+      "DM": 42,
+      "CM": 40,
+      "AM": 40,
+      "WM": 39,
+      "W": 41,
+      "ST": 47
+    },
+    "bestRoles": [
+      "ST",
+      "CB",
+      "DM"
+    ],
+    "worstRoles": [
+      "GK",
+      "WM"
+    ],
+    "strengths": [
+      "strength",
+      "aggression"
+    ],
+    "weaknesses": [
+      "pace",
+      "passing",
+      "vision"
+    ]
+  },
+  {
+    "id": 444,
+    "evoChainId": 230,
+    "attrs": {
+      "PAC": 75,
+      "ACC": 70,
+      "SHO": 69,
+      "PAS": 49,
+      "VIS": 43,
+      "DRI": 76,
+      "TEC": 65,
+      "DEF": 52,
+      "TAK": 69,
+      "AER": 75,
+      "PHY": 71,
+      "STA": 58,
+      "DIV": 75,
+      "HAN": 54,
+      "REF": 64,
+      "GKP": 45,
+      "KIC": 68
+    },
+    "fits": {
+      "GK": 31,
+      "CB": 64,
+      "FB": 60,
+      "WB": 61,
+      "DM": 54,
+      "CM": 50,
+      "AM": 56,
+      "WM": 59,
+      "W": 70,
+      "ST": 71
+    },
+    "bestRoles": [
+      "ST",
+      "W",
+      "CB"
+    ],
+    "worstRoles": [
+      "GK",
+      "CM"
+    ],
+    "strengths": [
+      "pace",
+      "aggression",
+      "strength"
+    ],
+    "weaknesses": [
+      "passing",
+      "vision"
+    ]
+  },
+  {
+    "id": 445,
+    "evoChainId": 230,
+    "attrs": {
+      "PAC": 89,
+      "ACC": 83,
+      "SHO": 97,
+      "PAS": 81,
+      "VIS": 75,
+      "DRI": 91,
+      "TEC": 96,
+      "DEF": 88,
+      "TAK": 92,
+      "AER": 91,
+      "PHY": 93,
+      "STA": 91,
+      "DIV": 97,
+      "HAN": 87,
+      "REF": 89,
+      "GKP": 80,
+      "KIC": 97
+    },
+    "fits": {
+      "GK": 45,
+      "CB": 90,
+      "FB": 84,
+      "WB": 84,
+      "DM": 81,
+      "CM": 74,
+      "AM": 80,
+      "WM": 83,
+      "W": 90,
+      "ST": 93
+    },
+    "bestRoles": [
+      "ST",
+      "W",
+      "CB"
+    ],
+    "worstRoles": [
+      "GK",
+      "WM"
+    ],
+    "strengths": [
+      "pace",
+      "strength",
+      "finishing",
+      "aggression"
+    ],
+    "weaknesses": [
+      "handling",
+      "vision"
+    ]
+  },
+  {
+    "id": 446,
+    "evoChainId": 72,
+    "attrs": {
+      "PAC": 20,
+      "ACC": 18,
+      "SHO": 52,
+      "PAS": 39,
+      "VIS": 42,
+      "DRI": 30,
+      "TEC": 43,
+      "DEF": 50,
+      "TAK": 53,
+      "AER": 56,
+      "PHY": 74,
+      "STA": 89,
+      "DIV": 26,
+      "HAN": 62,
+      "REF": 34,
+      "GKP": 45,
+      "KIC": 68
+    },
+    "fits": {
+      "GK": 22,
+      "CB": 55,
+      "FB": 43,
+      "WB": 43,
+      "DM": 58,
+      "CM": 49,
+      "AM": 38,
+      "WM": 40,
+      "W": 27,
+      "ST": 38
+    },
+    "bestRoles": [
+      "DM",
+      "CB",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "WB"
+    ],
+    "strengths": [
+      "strength",
+      "stamina",
+      "durability"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "agility"
+    ]
+  },
+  {
+    "id": 447,
+    "evoChainId": 232,
+    "attrs": {
+      "PAC": 48,
+      "ACC": 51,
+      "SHO": 57,
+      "PAS": 29,
+      "VIS": 24,
+      "DRI": 65,
+      "TEC": 52,
+      "DEF": 23,
+      "TAK": 41,
+      "AER": 43,
+      "PHY": 37,
+      "STA": 24,
+      "DIV": 36,
+      "HAN": 23,
+      "REF": 38,
+      "GKP": 25,
+      "KIC": 54
+    },
+    "fits": {
+      "GK": 17,
+      "CB": 29,
+      "FB": 32,
+      "WB": 35,
+      "DM": 29,
+      "CM": 37,
+      "AM": 45,
+      "WM": 39,
+      "W": 53,
+      "ST": 52
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "AM"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "kicking-technique",
+      "dribbling"
+    ],
+    "weaknesses": [
+      "strength",
+      "stamina",
+      "size"
+    ]
+  },
+  {
+    "id": 448,
+    "evoChainId": 232,
+    "attrs": {
+      "PAC": 79,
+      "ACC": 75,
+      "SHO": 99,
+      "PAS": 90,
+      "VIS": 88,
+      "DRI": 96,
+      "TEC": 99,
+      "DEF": 64,
+      "TAK": 80,
+      "AER": 74,
+      "PHY": 75,
+      "STA": 64,
+      "DIV": 79,
+      "HAN": 64,
+      "REF": 79,
+      "GKP": 74,
+      "KIC": 99
+    },
+    "fits": {
+      "GK": 38,
+      "CB": 62,
+      "FB": 64,
+      "WB": 67,
+      "DM": 74,
+      "CM": 88,
+      "AM": 93,
+      "WM": 80,
+      "W": 84,
+      "ST": 89
+    },
+    "bestRoles": [
+      "AM",
+      "ST",
+      "CM"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "kicking-technique",
+      "vision",
+      "composure",
+      "finishing"
+    ],
+    "weaknesses": [
+      "marking",
+      "durability"
+    ]
+  },
+  {
+    "id": 449,
+    "evoChainId": 233,
+    "attrs": {
+      "PAC": 35,
+      "ACC": 32,
+      "SHO": 44,
+      "PAS": 28,
+      "VIS": 31,
+      "DRI": 32,
+      "TEC": 34,
+      "DEF": 54,
+      "TAK": 66,
+      "AER": 57,
+      "PHY": 69,
+      "STA": 55,
+      "DIV": 48,
+      "HAN": 40,
+      "REF": 29,
+      "GKP": 39,
+      "KIC": 50
+    },
+    "fits": {
+      "GK": 21,
+      "CB": 58,
+      "FB": 47,
+      "WB": 41,
+      "DM": 53,
+      "CM": 38,
+      "AM": 32,
+      "WM": 35,
+      "W": 29,
+      "ST": 37
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "FB"
+    ],
+    "worstRoles": [
+      "W",
+      "AM"
+    ],
+    "strengths": [
+      "strength",
+      "durability"
+    ],
+    "weaknesses": [
+      "pace",
+      "footwork",
+      "vision"
+    ]
+  },
+  {
+    "id": 450,
+    "evoChainId": 233,
+    "attrs": {
+      "PAC": 48,
+      "ACC": 30,
+      "SHO": 78,
+      "PAS": 58,
+      "VIS": 64,
+      "DRI": 34,
+      "TEC": 68,
+      "DEF": 89,
+      "TAK": 94,
+      "AER": 87,
+      "PHY": 96,
+      "STA": 89,
+      "DIV": 81,
+      "HAN": 81,
+      "REF": 49,
+      "GKP": 73,
+      "KIC": 88
+    },
+    "fits": {
+      "GK": 37,
+      "CB": 87,
+      "FB": 70,
+      "WB": 63,
+      "DM": 84,
+      "CM": 66,
+      "AM": 55,
+      "WM": 55,
+      "W": 42,
+      "ST": 57
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "FB"
+    ],
+    "worstRoles": [
+      "W",
+      "AM"
+    ],
+    "strengths": [
+      "strength",
+      "size",
+      "durability",
+      "tackling"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "agility"
+    ]
+  },
+  {
+    "id": 451,
+    "evoChainId": 234,
+    "attrs": {
+      "PAC": 60,
+      "ACC": 61,
+      "SHO": 37,
+      "PAS": 34,
+      "VIS": 35,
+      "DRI": 53,
+      "TEC": 28,
+      "DEF": 63,
+      "TAK": 52,
+      "AER": 46,
+      "PHY": 52,
+      "STA": 32,
+      "DIV": 62,
+      "HAN": 51,
+      "REF": 54,
+      "GKP": 47,
+      "KIC": 31
+    },
+    "fits": {
+      "GK": 26,
+      "CB": 53,
+      "FB": 52,
+      "WB": 48,
+      "DM": 43,
+      "CM": 31,
+      "AM": 33,
+      "WM": 41,
+      "W": 43,
+      "ST": 31
+    },
+    "bestRoles": [
+      "FB",
+      "CB",
+      "WB"
+    ],
+    "worstRoles": [
+      "AM",
+      "ST"
+    ],
+    "strengths": [
+      "limb-reach",
+      "durability"
+    ],
+    "weaknesses": [
+      "passing",
+      "kicking-technique"
+    ]
+  },
+  {
+    "id": 452,
+    "evoChainId": 234,
+    "attrs": {
+      "PAC": 83,
+      "ACC": 76,
+      "SHO": 75,
+      "PAS": 62,
+      "VIS": 61,
+      "DRI": 77,
+      "TEC": 65,
+      "DEF": 87,
+      "TAK": 86,
+      "AER": 73,
+      "PHY": 86,
+      "STA": 64,
+      "DIV": 91,
+      "HAN": 80,
+      "REF": 81,
+      "GKP": 71,
+      "KIC": 68
+    },
+    "fits": {
+      "GK": 41,
+      "CB": 82,
+      "FB": 78,
+      "WB": 73,
+      "DM": 77,
+      "CM": 66,
+      "AM": 65,
+      "WM": 67,
+      "W": 64,
+      "ST": 64
+    },
+    "bestRoles": [
+      "CB",
+      "FB",
+      "DM"
+    ],
+    "worstRoles": [
+      "AM",
+      "WM"
+    ],
+    "strengths": [
+      "limb-reach",
+      "tackling",
+      "strength",
+      "intimidation"
+    ],
+    "weaknesses": [
+      "passing",
+      "vision"
+    ]
+  },
+  {
+    "id": 453,
+    "evoChainId": 235,
+    "attrs": {
+      "PAC": 47,
+      "ACC": 48,
+      "SHO": 56,
+      "PAS": 51,
+      "VIS": 46,
+      "DRI": 55,
+      "TEC": 59,
+      "DEF": 31,
+      "TAK": 45,
+      "AER": 48,
+      "PHY": 44,
+      "STA": 36,
+      "DIV": 41,
+      "HAN": 37,
+      "REF": 40,
+      "GKP": 40,
+      "KIC": 53
+    },
+    "fits": {
+      "GK": 20,
+      "CB": 35,
+      "FB": 36,
+      "WB": 40,
+      "DM": 40,
+      "CM": 48,
+      "AM": 53,
+      "WM": 46,
+      "W": 52,
+      "ST": 53
+    },
+    "bestRoles": [
+      "AM",
+      "ST",
+      "W"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "footwork",
+      "unpredictability"
+    ],
+    "weaknesses": [
+      "strength",
+      "stamina"
+    ]
+  },
+  {
+    "id": 454,
+    "evoChainId": 235,
+    "attrs": {
+      "PAC": 76,
+      "ACC": 73,
+      "SHO": 95,
+      "PAS": 78,
+      "VIS": 71,
+      "DRI": 88,
+      "TEC": 98,
+      "DEF": 58,
+      "TAK": 76,
+      "AER": 77,
+      "PHY": 75,
+      "STA": 75,
+      "DIV": 78,
+      "HAN": 69,
+      "REF": 76,
+      "GKP": 66,
+      "KIC": 93
+    },
+    "fits": {
+      "GK": 37,
+      "CB": 60,
+      "FB": 62,
+      "WB": 67,
+      "DM": 68,
+      "CM": 80,
+      "AM": 85,
+      "WM": 75,
+      "W": 84,
+      "ST": 87
+    },
+    "bestRoles": [
+      "ST",
+      "AM",
+      "W"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "finishing",
+      "kicking-technique",
+      "footwork",
+      "aggression"
+    ],
+    "weaknesses": [
+      "durability",
+      "marking"
+    ]
+  },
+  {
+    "id": 455,
+    "evoChainId": 236,
+    "attrs": {
+      "PAC": 46,
+      "ACC": 41,
+      "SHO": 74,
+      "PAS": 71,
+      "VIS": 75,
+      "DRI": 42,
+      "TEC": 72,
+      "DEF": 65,
+      "TAK": 73,
+      "AER": 81,
+      "PHY": 66,
+      "STA": 67,
+      "DIV": 61,
+      "HAN": 70,
+      "REF": 49,
+      "GKP": 70,
+      "KIC": 74
+    },
+    "fits": {
+      "GK": 32,
+      "CB": 69,
+      "FB": 57,
+      "WB": 56,
+      "DM": 69,
+      "CM": 69,
+      "AM": 63,
+      "WM": 57,
+      "W": 46,
+      "ST": 55
+    },
+    "bestRoles": [
+      "DM",
+      "CB",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "WM"
+    ],
+    "strengths": [
+      "limb-reach",
+      "aerial",
+      "tackling"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "footwork"
+    ]
+  },
+  {
+    "id": 456,
+    "evoChainId": 237,
+    "attrs": {
+      "PAC": 34,
+      "ACC": 48,
+      "SHO": 25,
+      "PAS": 35,
+      "VIS": 44,
+      "DRI": 45,
+      "TEC": 24,
+      "DEF": 45,
+      "TAK": 28,
+      "AER": 25,
+      "PHY": 37,
+      "STA": 34,
+      "DIV": 32,
+      "HAN": 27,
+      "REF": 60,
+      "GKP": 46,
+      "KIC": 22
+    },
+    "fits": {
+      "GK": 40,
+      "CB": 33,
+      "FB": 37,
+      "WB": 36,
+      "DM": 36,
+      "CM": 33,
+      "AM": 34,
+      "WM": 35,
+      "W": 31,
+      "ST": 27
+    },
+    "bestRoles": [
+      "GK",
+      "FB",
+      "DM"
+    ],
+    "worstRoles": [
+      "ST",
+      "AM"
+    ],
+    "strengths": [
+      "reflexes",
+      "agility"
+    ],
+    "weaknesses": [
+      "footwork",
+      "pace",
+      "strength"
+    ]
+  },
+  {
+    "id": 457,
+    "evoChainId": 237,
+    "attrs": {
+      "PAC": 56,
+      "ACC": 59,
+      "SHO": 45,
+      "PAS": 61,
+      "VIS": 69,
+      "DRI": 55,
+      "TEC": 48,
+      "DEF": 69,
+      "TAK": 49,
+      "AER": 56,
+      "PHY": 59,
+      "STA": 58,
+      "DIV": 71,
+      "HAN": 56,
+      "REF": 85,
+      "GKP": 73,
+      "KIC": 43
+    },
+    "fits": {
+      "GK": 69,
+      "CB": 59,
+      "FB": 55,
+      "WB": 55,
+      "DM": 60,
+      "CM": 55,
+      "AM": 53,
+      "WM": 55,
+      "W": 46,
+      "ST": 44
+    },
+    "bestRoles": [
+      "GK",
+      "DM",
+      "CB"
+    ],
+    "worstRoles": [
+      "ST",
+      "W"
+    ],
+    "strengths": [
+      "reflexes",
+      "positioning"
+    ],
+    "weaknesses": [
+      "footwork",
+      "pace",
+      "dribbling"
+    ]
+  },
+  {
+    "id": 458,
+    "evoChainId": 116,
+    "attrs": {
+      "PAC": 44,
+      "ACC": 36,
+      "SHO": 22,
+      "PAS": 58,
+      "VIS": 63,
+      "DRI": 20,
+      "TEC": 25,
+      "DEF": 47,
+      "TAK": 35,
+      "AER": 60,
+      "PHY": 44,
+      "STA": 38,
+      "DIV": 43,
+      "HAN": 46,
+      "REF": 63,
+      "GKP": 63,
+      "KIC": 21
+    },
+    "fits": {
+      "GK": 51,
+      "CB": 45,
+      "FB": 39,
+      "WB": 38,
+      "DM": 45,
+      "CM": 40,
+      "AM": 36,
+      "WM": 39,
+      "W": 28,
+      "ST": 27
+    },
+    "bestRoles": [
+      "GK",
+      "DM",
+      "CB"
+    ],
+    "worstRoles": [
+      "ST",
+      "W"
+    ],
+    "strengths": [
+      "reflexes",
+      "aerial"
+    ],
+    "weaknesses": [
+      "footwork",
+      "finishing",
+      "acceleration"
+    ]
+  },
+  {
+    "id": 459,
+    "evoChainId": 239,
+    "attrs": {
+      "PAC": 39,
+      "ACC": 33,
+      "SHO": 51,
+      "PAS": 55,
+      "VIS": 54,
+      "DRI": 37,
+      "TEC": 51,
+      "DEF": 44,
+      "TAK": 49,
+      "AER": 59,
+      "PHY": 56,
+      "STA": 49,
+      "DIV": 43,
+      "HAN": 46,
+      "REF": 38,
+      "GKP": 48,
+      "KIC": 52
+    },
+    "fits": {
+      "GK": 23,
+      "CB": 50,
+      "FB": 42,
+      "WB": 42,
+      "DM": 50,
+      "CM": 51,
+      "AM": 47,
+      "WM": 44,
+      "W": 36,
+      "ST": 41
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "strength",
+      "aerial"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration"
+    ]
+  },
+  {
+    "id": 460,
+    "evoChainId": 239,
+    "attrs": {
+      "PAC": 59,
+      "ACC": 45,
+      "SHO": 83,
+      "PAS": 81,
+      "VIS": 81,
+      "DRI": 51,
+      "TEC": 81,
+      "DEF": 74,
+      "TAK": 78,
+      "AER": 88,
+      "PHY": 84,
+      "STA": 82,
+      "DIV": 81,
+      "HAN": 82,
+      "REF": 65,
+      "GKP": 79,
+      "KIC": 86
+    },
+    "fits": {
+      "GK": 39,
+      "CB": 79,
+      "FB": 66,
+      "WB": 66,
+      "DM": 79,
+      "CM": 78,
+      "AM": 71,
+      "WM": 66,
+      "W": 53,
+      "ST": 63
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "WB"
+    ],
+    "strengths": [
+      "size",
+      "strength",
+      "aerial"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "agility"
+    ]
+  },
+  {
+    "id": 461,
+    "evoChainId": 109,
+    "attrs": {
+      "PAC": 92,
+      "ACC": 92,
+      "SHO": 88,
+      "PAS": 59,
+      "VIS": 51,
+      "DRI": 99,
+      "TEC": 84,
+      "DEF": 63,
+      "TAK": 82,
+      "AER": 71,
+      "PHY": 68,
+      "STA": 65,
+      "DIV": 80,
+      "HAN": 65,
+      "REF": 92,
+      "GKP": 58,
+      "KIC": 87
+    },
+    "fits": {
+      "GK": 38,
+      "CB": 67,
+      "FB": 76,
+      "WB": 78,
+      "DM": 57,
+      "CM": 61,
+      "AM": 70,
+      "WM": 73,
+      "W": 89,
+      "ST": 86
+    },
+    "bestRoles": [
+      "W",
+      "ST",
+      "WB"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "pace",
+      "acceleration",
+      "dribbling",
+      "tackling"
+    ],
+    "weaknesses": [
+      "durability",
+      "strength"
+    ]
+  },
+  {
+    "id": 462,
+    "evoChainId": 34,
+    "attrs": {
+      "PAC": 55,
+      "ACC": 48,
+      "SHO": 66,
+      "PAS": 89,
+      "VIS": 92,
+      "DRI": 34,
+      "TEC": 67,
+      "DEF": 91,
+      "TAK": 80,
+      "AER": 69,
+      "PHY": 84,
+      "STA": 66,
+      "DIV": 85,
+      "HAN": 89,
+      "REF": 71,
+      "GKP": 93,
+      "KIC": 56
+    },
+    "fits": {
+      "GK": 81,
+      "CB": 81,
+      "FB": 67,
+      "WB": 63,
+      "DM": 83,
+      "CM": 72,
+      "AM": 65,
+      "WM": 62,
+      "W": 47,
+      "ST": 53
+    },
+    "bestRoles": [
+      "DM",
+      "CB",
+      "GK"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "positioning",
+      "durability",
+      "vision"
+    ],
+    "weaknesses": [
+      "footwork",
+      "acceleration",
+      "dribbling"
+    ]
+  },
+  {
+    "id": 463,
+    "evoChainId": 48,
+    "attrs": {
+      "PAC": 49,
+      "ACC": 38,
+      "SHO": 75,
+      "PAS": 78,
+      "VIS": 78,
+      "DRI": 44,
+      "TEC": 74,
+      "DEF": 91,
+      "TAK": 83,
+      "AER": 86,
+      "PHY": 89,
+      "STA": 94,
+      "DIV": 81,
+      "HAN": 99,
+      "REF": 62,
+      "GKP": 85,
+      "KIC": 83
+    },
+    "fits": {
+      "GK": 81,
+      "CB": 85,
+      "FB": 69,
+      "WB": 66,
+      "DM": 86,
+      "CM": 74,
+      "AM": 65,
+      "WM": 63,
+      "W": 47,
+      "ST": 58
+    },
+    "bestRoles": [
+      "DM",
+      "CB",
+      "GK"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "limb-reach",
+      "stamina",
+      "strength"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "agility"
+    ]
+  },
+  {
+    "id": 464,
+    "evoChainId": 50,
+    "attrs": {
+      "PAC": 40,
+      "ACC": 22,
+      "SHO": 87,
+      "PAS": 46,
+      "VIS": 46,
+      "DRI": 36,
+      "TEC": 72,
+      "DEF": 86,
+      "TAK": 96,
+      "AER": 93,
+      "PHY": 98,
+      "STA": 87,
+      "DIV": 81,
+      "HAN": 86,
+      "REF": 36,
+      "GKP": 57,
+      "KIC": 97
+    },
+    "fits": {
+      "GK": 35,
+      "CB": 87,
+      "FB": 63,
+      "WB": 57,
+      "DM": 80,
+      "CM": 62,
+      "AM": 51,
+      "WM": 50,
+      "W": 45,
+      "ST": 70
+    },
+    "bestRoles": [
+      "CB",
+      "ST",
+      "DM"
+    ],
+    "worstRoles": [
+      "W",
+      "WM"
+    ],
+    "strengths": [
+      "shot-power",
+      "strength",
+      "size",
+      "durability"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "agility"
+    ]
+  },
+  {
+    "id": 465,
+    "evoChainId": 52,
+    "attrs": {
+      "PAC": 50,
+      "ACC": 37,
+      "SHO": 90,
+      "PAS": 77,
+      "VIS": 73,
+      "DRI": 45,
+      "TEC": 90,
+      "DEF": 79,
+      "TAK": 90,
+      "AER": 89,
+      "PHY": 91,
+      "STA": 84,
+      "DIV": 90,
+      "HAN": 86,
+      "REF": 39,
+      "GKP": 69,
+      "KIC": 93
+    },
+    "fits": {
+      "GK": 37,
+      "CB": 84,
+      "FB": 67,
+      "WB": 65,
+      "DM": 83,
+      "CM": 79,
+      "AM": 70,
+      "WM": 63,
+      "W": 51,
+      "ST": 65
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "WM"
+    ],
+    "strengths": [
+      "limb-reach",
+      "durability",
+      "strength",
+      "stamina"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration"
+    ]
+  },
+  {
+    "id": 466,
+    "evoChainId": 60,
+    "attrs": {
+      "PAC": 86,
+      "ACC": 78,
+      "SHO": 99,
+      "PAS": 88,
+      "VIS": 82,
+      "DRI": 87,
+      "TEC": 99,
+      "DEF": 66,
+      "TAK": 83,
+      "AER": 87,
+      "PHY": 82,
+      "STA": 72,
+      "DIV": 88,
+      "HAN": 72,
+      "REF": 88,
+      "GKP": 77,
+      "KIC": 97
+    },
+    "fits": {
+      "GK": 42,
+      "CB": 66,
+      "FB": 67,
+      "WB": 69,
+      "DM": 76,
+      "CM": 87,
+      "AM": 90,
+      "WM": 80,
+      "W": 84,
+      "ST": 92
+    },
+    "bestRoles": [
+      "ST",
+      "AM",
+      "CM"
+    ],
+    "worstRoles": [
+      "GK",
+      "WB"
+    ],
+    "strengths": [
+      "shot-power",
+      "finishing",
+      "aggression"
+    ],
+    "weaknesses": [
+      "marking",
+      "handling"
+    ]
+  },
+  {
+    "id": 467,
+    "evoChainId": 61,
+    "attrs": {
+      "PAC": 75,
+      "ACC": 69,
+      "SHO": 95,
+      "PAS": 94,
+      "VIS": 92,
+      "DRI": 77,
+      "TEC": 97,
+      "DEF": 68,
+      "TAK": 73,
+      "AER": 80,
+      "PHY": 74,
+      "STA": 73,
+      "DIV": 81,
+      "HAN": 68,
+      "REF": 83,
+      "GKP": 85,
+      "KIC": 89
+    },
+    "fits": {
+      "GK": 40,
+      "CB": 63,
+      "FB": 63,
+      "WB": 66,
+      "DM": 75,
+      "CM": 87,
+      "AM": 90,
+      "WM": 78,
+      "W": 78,
+      "ST": 85
+    },
+    "bestRoles": [
+      "AM",
+      "CM",
+      "ST"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "shot-power",
+      "long-shots",
+      "passing",
+      "vision"
+    ],
+    "weaknesses": [
+      "handling",
+      "marking"
+    ]
+  },
+  {
+    "id": 468,
+    "evoChainId": 87,
+    "attrs": {
+      "PAC": 75,
+      "ACC": 69,
+      "SHO": 55,
+      "PAS": 94,
+      "VIS": 93,
+      "DRI": 52,
+      "TEC": 61,
+      "DEF": 90,
+      "TAK": 60,
+      "AER": 86,
+      "PHY": 70,
+      "STA": 81,
+      "DIV": 87,
+      "HAN": 87,
+      "REF": 85,
+      "GKP": 94,
+      "KIC": 52
+    },
+    "fits": {
+      "GK": 85,
+      "CB": 72,
+      "FB": 65,
+      "WB": 64,
+      "DM": 79,
+      "CM": 75,
+      "AM": 70,
+      "WM": 72,
+      "W": 56,
+      "ST": 54
+    },
+    "bestRoles": [
+      "CM",
+      "DM",
+      "GK"
+    ],
+    "worstRoles": [
+      "ST",
+      "W"
+    ],
+    "strengths": [
+      "passing",
+      "vision",
+      "aerial",
+      "flight"
+    ],
+    "weaknesses": [
+      "footwork",
+      "dribbling",
+      "kicking-technique"
+    ]
+  },
+  {
+    "id": 469,
+    "evoChainId": 95,
+    "attrs": {
+      "PAC": 90,
+      "ACC": 85,
+      "SHO": 75,
+      "PAS": 83,
+      "VIS": 78,
+      "DRI": 69,
+      "TEC": 81,
+      "DEF": 69,
+      "TAK": 71,
+      "AER": 93,
+      "PHY": 76,
+      "STA": 76,
+      "DIV": 94,
+      "HAN": 65,
+      "REF": 73,
+      "GKP": 69,
+      "KIC": 72
+    },
+    "fits": {
+      "GK": 39,
+      "CB": 65,
+      "FB": 70,
+      "WB": 75,
+      "DM": 71,
+      "CM": 74,
+      "AM": 74,
+      "WM": 80,
+      "W": 80,
+      "ST": 80
+    },
+    "bestRoles": [
+      "W",
+      "WM",
+      "ST"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "pace",
+      "flight",
+      "aerial",
+      "acceleration"
+    ],
+    "weaknesses": [
+      "footwork",
+      "handling"
+    ]
+  },
+  {
+    "id": 470,
+    "evoChainId": 67,
+    "attrs": {
+      "PAC": 84,
+      "ACC": 86,
+      "SHO": 80,
+      "PAS": 58,
+      "VIS": 55,
+      "DRI": 91,
+      "TEC": 76,
+      "DEF": 78,
+      "TAK": 86,
+      "AER": 66,
+      "PHY": 71,
+      "STA": 57,
+      "DIV": 87,
+      "HAN": 61,
+      "REF": 77,
+      "GKP": 66,
+      "KIC": 75
+    },
+    "fits": {
+      "GK": 37,
+      "CB": 72,
+      "FB": 77,
+      "WB": 73,
+      "DM": 60,
+      "CM": 58,
+      "AM": 67,
+      "WM": 69,
+      "W": 82,
+      "ST": 79
+    },
+    "bestRoles": [
+      "W",
+      "FB",
+      "ST"
+    ],
+    "worstRoles": [
+      "GK",
+      "CM"
+    ],
+    "strengths": [
+      "pace",
+      "dribbling",
+      "tackling"
+    ],
+    "weaknesses": [
+      "passing",
+      "handling"
+    ]
+  },
+  {
+    "id": 471,
+    "evoChainId": 67,
+    "attrs": {
+      "PAC": 62,
+      "ACC": 63,
+      "SHO": 63,
+      "PAS": 88,
+      "VIS": 92,
+      "DRI": 59,
+      "TEC": 70,
+      "DEF": 86,
+      "TAK": 64,
+      "AER": 53,
+      "PHY": 62,
+      "STA": 61,
+      "DIV": 68,
+      "HAN": 72,
+      "REF": 73,
+      "GKP": 93,
+      "KIC": 59
+    },
+    "fits": {
+      "GK": 36,
+      "CB": 64,
+      "FB": 59,
+      "WB": 58,
+      "DM": 74,
+      "CM": 74,
+      "AM": 74,
+      "WM": 67,
+      "W": 60,
+      "ST": 57
+    },
+    "bestRoles": [
+      "DM",
+      "CM",
+      "AM"
+    ],
+    "worstRoles": [
+      "GK",
+      "ST"
+    ],
+    "strengths": [
+      "vision",
+      "positioning",
+      "passing"
+    ],
+    "weaknesses": [
+      "strength",
+      "shot-power"
+    ]
+  },
+  {
+    "id": 472,
+    "evoChainId": 104,
+    "attrs": {
+      "PAC": 86,
+      "ACC": 78,
+      "SHO": 64,
+      "PAS": 51,
+      "VIS": 48,
+      "DRI": 74,
+      "TEC": 58,
+      "DEF": 85,
+      "TAK": 85,
+      "AER": 99,
+      "PHY": 81,
+      "STA": 70,
+      "DIV": 97,
+      "HAN": 80,
+      "REF": 81,
+      "GKP": 66,
+      "KIC": 65
+    },
+    "fits": {
+      "GK": 41,
+      "CB": 84,
+      "FB": 78,
+      "WB": 74,
+      "DM": 67,
+      "CM": 52,
+      "AM": 51,
+      "WM": 64,
+      "W": 64,
+      "ST": 51
+    },
+    "bestRoles": [
+      "CB",
+      "FB",
+      "WB"
+    ],
+    "worstRoles": [
+      "AM",
+      "CM"
+    ],
+    "strengths": [
+      "aerial",
+      "flight",
+      "durability",
+      "tackling"
+    ],
+    "weaknesses": [
+      "passing",
+      "vision"
+    ]
+  },
+  {
+    "id": 473,
+    "evoChainId": 112,
+    "attrs": {
+      "PAC": 75,
+      "ACC": 58,
+      "SHO": 90,
+      "PAS": 61,
+      "VIS": 60,
+      "DRI": 63,
+      "TEC": 83,
+      "DEF": 69,
+      "TAK": 91,
+      "AER": 90,
+      "PHY": 95,
+      "STA": 87,
+      "DIV": 89,
+      "HAN": 63,
+      "REF": 66,
+      "GKP": 58,
+      "KIC": 93
+    },
+    "fits": {
+      "GK": 37,
+      "CB": 82,
+      "FB": 71,
+      "WB": 70,
+      "DM": 79,
+      "CM": 72,
+      "AM": 66,
+      "WM": 67,
+      "W": 68,
+      "ST": 82
+    },
+    "bestRoles": [
+      "CB",
+      "ST",
+      "DM"
+    ],
+    "worstRoles": [
+      "W",
+      "AM"
+    ],
+    "strengths": [
+      "strength",
+      "size",
+      "shot-power",
+      "intimidation"
+    ],
+    "weaknesses": [
+      "acceleration",
+      "agility",
+      "close-control"
+    ]
+  },
+  {
+    "id": 474,
+    "evoChainId": 68,
+    "attrs": {
+      "PAC": 75,
+      "ACC": 80,
+      "SHO": 76,
+      "PAS": 90,
+      "VIS": 87,
+      "DRI": 73,
+      "TEC": 83,
+      "DEF": 66,
+      "TAK": 63,
+      "AER": 64,
+      "PHY": 69,
+      "STA": 78,
+      "DIV": 74,
+      "HAN": 78,
+      "REF": 81,
+      "GKP": 78,
+      "KIC": 67
+    },
+    "fits": {
+      "GK": 38,
+      "CB": 58,
+      "FB": 66,
+      "WB": 73,
+      "DM": 71,
+      "CM": 81,
+      "AM": 82,
+      "WM": 80,
+      "W": 74,
+      "ST": 69
+    },
+    "bestRoles": [
+      "AM",
+      "CM",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "passing",
+      "vision",
+      "unpredictability"
+    ],
+    "weaknesses": [
+      "strength",
+      "discipline"
+    ]
+  },
+  {
+    "id": 475,
+    "evoChainId": 140,
+    "attrs": {
+      "PAC": 73,
+      "ACC": 67,
+      "SHO": 98,
+      "PAS": 78,
+      "VIS": 76,
+      "DRI": 85,
+      "TEC": 96,
+      "DEF": 68,
+      "TAK": 81,
+      "AER": 83,
+      "PHY": 73,
+      "STA": 65,
+      "DIV": 84,
+      "HAN": 81,
+      "REF": 89,
+      "GKP": 79,
+      "KIC": 94
+    },
+    "fits": {
+      "GK": 42,
+      "CB": 64,
+      "FB": 62,
+      "WB": 63,
+      "DM": 72,
+      "CM": 81,
+      "AM": 85,
+      "WM": 73,
+      "W": 78,
+      "ST": 87
+    },
+    "bestRoles": [
+      "ST",
+      "AM",
+      "CM"
+    ],
+    "worstRoles": [
+      "GK",
+      "FB"
+    ],
+    "strengths": [
+      "finishing",
+      "kicking-technique",
+      "composure",
+      "discipline"
+    ],
+    "weaknesses": [
+      "durability",
+      "acceleration"
+    ]
+  },
+  {
+    "id": 476,
+    "evoChainId": 147,
+    "attrs": {
+      "PAC": 38,
+      "ACC": 21,
+      "SHO": 43,
+      "PAS": 72,
+      "VIS": 80,
+      "DRI": 15,
+      "TEC": 42,
+      "DEF": 95,
+      "TAK": 77,
+      "AER": 74,
+      "PHY": 82,
+      "STA": 58,
+      "DIV": 73,
+      "HAN": 91,
+      "REF": 64,
+      "GKP": 93,
+      "KIC": 43
+    },
+    "fits": {
+      "GK": 76,
+      "CB": 80,
+      "FB": 58,
+      "WB": 50,
+      "DM": 78,
+      "CM": 57,
+      "AM": 47,
+      "WM": 47,
+      "W": 29,
+      "ST": 38
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "GK"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "durability",
+      "positioning",
+      "strength"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "footwork"
+    ]
+  },
+  {
+    "id": 477,
+    "evoChainId": 182,
+    "attrs": {
+      "PAC": 43,
+      "ACC": 32,
+      "SHO": 71,
+      "PAS": 67,
+      "VIS": 75,
+      "DRI": 29,
+      "TEC": 58,
+      "DEF": 88,
+      "TAK": 92,
+      "AER": 82,
+      "PHY": 76,
+      "STA": 44,
+      "DIV": 92,
+      "HAN": 99,
+      "REF": 66,
+      "GKP": 90,
+      "KIC": 60
+    },
+    "fits": {
+      "GK": 84,
+      "CB": 81,
+      "FB": 59,
+      "WB": 52,
+      "DM": 76,
+      "CM": 61,
+      "AM": 55,
+      "WM": 49,
+      "W": 39,
+      "ST": 51
+    },
+    "bestRoles": [
+      "GK",
+      "CB",
+      "DM"
+    ],
+    "worstRoles": [
+      "W",
+      "ST"
+    ],
+    "strengths": [
+      "handling",
+      "reach",
+      "durability",
+      "size"
+    ],
+    "weaknesses": [
+      "pace",
+      "acceleration",
+      "footwork"
+    ]
+  },
+  {
+    "id": 478,
+    "evoChainId": 186,
+    "attrs": {
+      "PAC": 87,
+      "ACC": 90,
+      "SHO": 72,
+      "PAS": 74,
+      "VIS": 69,
+      "DRI": 83,
+      "TEC": 73,
+      "DEF": 61,
+      "TAK": 61,
+      "AER": 69,
+      "PHY": 61,
+      "STA": 64,
+      "DIV": 90,
+      "HAN": 71,
+      "REF": 87,
+      "GKP": 65,
+      "KIC": 60
+    },
+    "fits": {
+      "GK": 39,
+      "CB": 55,
+      "FB": 65,
+      "WB": 71,
+      "DM": 61,
+      "CM": 69,
+      "AM": 75,
+      "WM": 76,
+      "W": 82,
+      "ST": 71
+    },
+    "bestRoles": [
+      "W",
+      "AM",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "ST"
+    ],
+    "strengths": [
+      "pace",
+      "acceleration",
+      "unpredictability"
+    ],
+    "weaknesses": [
+      "strength",
+      "footwork"
+    ]
+  },
+  {
+    "id": 479,
+    "evoChainId": 240,
+    "attrs": {
+      "PAC": 78,
+      "ACC": 95,
+      "SHO": 44,
+      "PAS": 76,
+      "VIS": 78,
+      "DRI": 69,
+      "TEC": 51,
+      "DEF": 61,
+      "TAK": 36,
+      "AER": 35,
+      "PHY": 35,
+      "STA": 44,
+      "DIV": 52,
+      "HAN": 44,
+      "REF": 82,
+      "GKP": 76,
+      "KIC": 36
+    },
+    "fits": {
+      "GK": 29,
+      "CB": 41,
+      "FB": 56,
+      "WB": 61,
+      "DM": 50,
+      "CM": 58,
+      "AM": 66,
+      "WM": 68,
+      "W": 70,
+      "ST": 52
+    },
+    "bestRoles": [
+      "W",
+      "WM",
+      "AM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "acceleration",
+      "unpredictability"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "footwork"
+    ]
+  },
+  {
+    "id": 480,
+    "evoChainId": 241,
+    "attrs": {
+      "PAC": 78,
+      "ACC": 93,
+      "SHO": 69,
+      "PAS": 85,
+      "VIS": 86,
+      "DRI": 99,
+      "TEC": 75,
+      "DEF": 94,
+      "TAK": 62,
+      "AER": 46,
+      "PHY": 54,
+      "STA": 74,
+      "DIV": 63,
+      "HAN": 88,
+      "REF": 92,
+      "GKP": 94,
+      "KIC": 67
+    },
+    "fits": {
+      "GK": 39,
+      "CB": 67,
+      "FB": 79,
+      "WB": 82,
+      "DM": 71,
+      "CM": 77,
+      "AM": 84,
+      "WM": 83,
+      "W": 80,
+      "ST": 67
+    },
+    "bestRoles": [
+      "WB",
+      "AM",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "ST"
+    ],
+    "strengths": [
+      "vision",
+      "agility",
+      "positioning"
+    ],
+    "weaknesses": [
+      "strength",
+      "size"
+    ]
+  },
+  {
+    "id": 481,
+    "evoChainId": 242,
+    "attrs": {
+      "PAC": 68,
+      "ACC": 84,
+      "SHO": 94,
+      "PAS": 93,
+      "VIS": 93,
+      "DRI": 99,
+      "TEC": 95,
+      "DEF": 91,
+      "TAK": 72,
+      "AER": 53,
+      "PHY": 58,
+      "STA": 77,
+      "DIV": 56,
+      "HAN": 86,
+      "REF": 84,
+      "GKP": 95,
+      "KIC": 91
+    },
+    "fits": {
+      "GK": 38,
+      "CB": 63,
+      "FB": 72,
+      "WB": 78,
+      "DM": 77,
+      "CM": 90,
+      "AM": 94,
+      "WM": 86,
+      "W": 83,
+      "ST": 77
+    },
+    "bestRoles": [
+      "AM",
+      "CM",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "passing",
+      "vision",
+      "dribbling"
+    ],
+    "weaknesses": [
+      "strength",
+      "size"
+    ]
+  },
+  {
+    "id": 482,
+    "evoChainId": 243,
+    "attrs": {
+      "PAC": 87,
+      "ACC": 95,
+      "SHO": 98,
+      "PAS": 93,
+      "VIS": 88,
+      "DRI": 99,
+      "TEC": 99,
+      "DEF": 62,
+      "TAK": 64,
+      "AER": 54,
+      "PHY": 52,
+      "STA": 69,
+      "DIV": 56,
+      "HAN": 58,
+      "REF": 87,
+      "GKP": 75,
+      "KIC": 97
+    },
+    "fits": {
+      "GK": 34,
+      "CB": 54,
+      "FB": 65,
+      "WB": 72,
+      "DM": 66,
+      "CM": 85,
+      "AM": 95,
+      "WM": 84,
+      "W": 95,
+      "ST": 88
+    },
+    "bestRoles": [
+      "AM",
+      "W",
+      "ST"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "finishing",
+      "dribbling",
+      "acceleration",
+      "work-rate"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "durability"
+    ]
+  },
+  {
+    "id": 483,
+    "evoChainId": 244,
+    "attrs": {
+      "PAC": 80,
+      "ACC": 59,
+      "SHO": 95,
+      "PAS": 94,
+      "VIS": 95,
+      "DRI": 62,
+      "TEC": 92,
+      "DEF": 97,
+      "TAK": 96,
+      "AER": 91,
+      "PHY": 97,
+      "STA": 89,
+      "DIV": 91,
+      "HAN": 88,
+      "REF": 88,
+      "GKP": 94,
+      "KIC": 94
+    },
+    "fits": {
+      "GK": 45,
+      "CB": 94,
+      "FB": 82,
+      "WB": 80,
+      "DM": 95,
+      "CM": 90,
+      "AM": 83,
+      "WM": 79,
+      "W": 66,
+      "ST": 73
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "WB"
+    ],
+    "strengths": [
+      "size",
+      "strength",
+      "durability",
+      "intimidation"
+    ],
+    "weaknesses": [
+      "acceleration",
+      "agility",
+      "footwork"
+    ]
+  },
+  {
+    "id": 484,
+    "evoChainId": 245,
+    "attrs": {
+      "PAC": 86,
+      "ACC": 71,
+      "SHO": 99,
+      "PAS": 99,
+      "VIS": 96,
+      "DRI": 79,
+      "TEC": 99,
+      "DEF": 93,
+      "TAK": 94,
+      "AER": 91,
+      "PHY": 94,
+      "STA": 85,
+      "DIV": 95,
+      "HAN": 99,
+      "REF": 93,
+      "GKP": 95,
+      "KIC": 97
+    },
+    "fits": {
+      "GK": 48,
+      "CB": 85,
+      "FB": 75,
+      "WB": 75,
+      "DM": 93,
+      "CM": 94,
+      "AM": 90,
+      "WM": 84,
+      "W": 82,
+      "ST": 92
+    },
+    "bestRoles": [
+      "CM",
+      "ST",
+      "DM"
+    ],
+    "worstRoles": [
+      "W",
+      "WB"
+    ],
+    "strengths": [
+      "size",
+      "shot-power",
+      "passing",
+      "strength"
+    ],
+    "weaknesses": [
+      "acceleration",
+      "agility"
+    ]
+  },
+  {
+    "id": 485,
+    "evoChainId": 246,
+    "attrs": {
+      "PAC": 70,
+      "ACC": 54,
+      "SHO": 85,
+      "PAS": 91,
+      "VIS": 94,
+      "DRI": 53,
+      "TEC": 86,
+      "DEF": 96,
+      "TAK": 88,
+      "AER": 83,
+      "PHY": 93,
+      "STA": 86,
+      "DIV": 87,
+      "HAN": 86,
+      "REF": 82,
+      "GKP": 94,
+      "KIC": 83
+    },
+    "fits": {
+      "GK": 43,
+      "CB": 90,
+      "FB": 77,
+      "WB": 74,
+      "DM": 91,
+      "CM": 85,
+      "AM": 78,
+      "WM": 73,
+      "W": 59,
+      "ST": 66
+    },
+    "bestRoles": [
+      "DM",
+      "CB",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "WB"
+    ],
+    "strengths": [
+      "durability",
+      "strength",
+      "vision"
+    ],
+    "weaknesses": [
+      "acceleration",
+      "agility",
+      "footwork"
+    ]
+  },
+  {
+    "id": 486,
+    "evoChainId": 247,
+    "attrs": {
+      "PAC": 81,
+      "ACC": 61,
+      "SHO": 99,
+      "PAS": 88,
+      "VIS": 81,
+      "DRI": 82,
+      "TEC": 99,
+      "DEF": 94,
+      "TAK": 94,
+      "AER": 94,
+      "PHY": 94,
+      "STA": 95,
+      "DIV": 99,
+      "HAN": 99,
+      "REF": 89,
+      "GKP": 90,
+      "KIC": 99
+    },
+    "fits": {
+      "GK": 95,
+      "CB": 93,
+      "FB": 83,
+      "WB": 82,
+      "DM": 92,
+      "CM": 88,
+      "AM": 84,
+      "WM": 81,
+      "W": 71,
+      "ST": 77
+    },
+    "bestRoles": [
+      "CB",
+      "GK",
+      "DM"
+    ],
+    "worstRoles": [
+      "W",
+      "WB"
+    ],
+    "strengths": [
+      "strength",
+      "size",
+      "shot-power",
+      "handling"
+    ],
+    "weaknesses": [
+      "acceleration",
+      "agility"
+    ]
+  },
+  {
+    "id": 487,
+    "evoChainId": 248,
+    "attrs": {
+      "PAC": 78,
+      "ACC": 59,
+      "SHO": 83,
+      "PAS": 92,
+      "VIS": 91,
+      "DRI": 53,
+      "TEC": 85,
+      "DEF": 95,
+      "TAK": 95,
+      "AER": 90,
+      "PHY": 96,
+      "STA": 95,
+      "DIV": 91,
+      "HAN": 99,
+      "REF": 90,
+      "GKP": 94,
+      "KIC": 83
+    },
+    "fits": {
+      "GK": 46,
+      "CB": 93,
+      "FB": 81,
+      "WB": 79,
+      "DM": 94,
+      "CM": 87,
+      "AM": 77,
+      "WM": 77,
+      "W": 61,
+      "ST": 67
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "WB"
+    ],
+    "strengths": [
+      "size",
+      "strength",
+      "intimidation",
+      "durability"
+    ],
+    "weaknesses": [
+      "acceleration",
+      "footwork",
+      "dribbling"
+    ]
+  },
+  {
+    "id": 488,
+    "evoChainId": 249,
+    "attrs": {
+      "PAC": 77,
+      "ACC": 70,
+      "SHO": 50,
+      "PAS": 72,
+      "VIS": 82,
+      "DRI": 51,
+      "TEC": 53,
+      "DEF": 95,
+      "TAK": 72,
+      "AER": 85,
+      "PHY": 86,
+      "STA": 95,
+      "DIV": 92,
+      "HAN": 88,
+      "REF": 88,
+      "GKP": 92,
+      "KIC": 56
+    },
+    "fits": {
+      "GK": 88,
+      "CB": 84,
+      "FB": 76,
+      "WB": 73,
+      "DM": 83,
+      "CM": 68,
+      "AM": 59,
+      "WM": 68,
+      "W": 53,
+      "ST": 53
+    },
+    "bestRoles": [
+      "DM",
+      "CB",
+      "GK"
+    ],
+    "worstRoles": [
+      "ST",
+      "W"
+    ],
+    "strengths": [
+      "durability",
+      "stamina",
+      "aerial",
+      "positioning"
+    ],
+    "weaknesses": [
+      "footwork",
+      "finishing",
+      "kicking-technique"
+    ]
+  },
+  {
+    "id": 489,
+    "evoChainId": 250,
+    "attrs": {
+      "PAC": 65,
+      "ACC": 82,
+      "SHO": 67,
+      "PAS": 74,
+      "VIS": 73,
+      "DRI": 80,
+      "TEC": 65,
+      "DEF": 73,
+      "TAK": 57,
+      "AER": 47,
+      "PHY": 54,
+      "STA": 75,
+      "DIV": 59,
+      "HAN": 80,
+      "REF": 77,
+      "GKP": 74,
+      "KIC": 61
+    },
+    "fits": {
+      "GK": 35,
+      "CB": 53,
+      "FB": 63,
+      "WB": 68,
+      "DM": 63,
+      "CM": 69,
+      "AM": 73,
+      "WM": 73,
+      "W": 73,
+      "ST": 63
+    },
+    "bestRoles": [
+      "WM",
+      "AM",
+      "W"
+    ],
+    "worstRoles": [
+      "CB",
+      "ST"
+    ],
+    "strengths": [
+      "acceleration",
+      "stamina"
+    ],
+    "weaknesses": [
+      "strength",
+      "size"
+    ]
+  },
+  {
+    "id": 490,
+    "evoChainId": 250,
+    "attrs": {
+      "PAC": 82,
+      "ACC": 94,
+      "SHO": 94,
+      "PAS": 95,
+      "VIS": 88,
+      "DRI": 99,
+      "TEC": 97,
+      "DEF": 92,
+      "TAK": 70,
+      "AER": 49,
+      "PHY": 62,
+      "STA": 89,
+      "DIV": 65,
+      "HAN": 93,
+      "REF": 92,
+      "GKP": 92,
+      "KIC": 92
+    },
+    "fits": {
+      "GK": 41,
+      "CB": 64,
+      "FB": 73,
+      "WB": 78,
+      "DM": 79,
+      "CM": 91,
+      "AM": 95,
+      "WM": 86,
+      "W": 93,
+      "ST": 82
+    },
+    "bestRoles": [
+      "AM",
+      "CM",
+      "W"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "dribbling",
+      "passing",
+      "vision"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "aerial"
+    ]
+  },
+  {
+    "id": 491,
+    "evoChainId": 252,
+    "attrs": {
+      "PAC": 93,
+      "ACC": 90,
+      "SHO": 93,
+      "PAS": 99,
+      "VIS": 92,
+      "DRI": 96,
+      "TEC": 99,
+      "DEF": 79,
+      "TAK": 80,
+      "AER": 76,
+      "PHY": 74,
+      "STA": 66,
+      "DIV": 97,
+      "HAN": 87,
+      "REF": 93,
+      "GKP": 90,
+      "KIC": 83
+    },
+    "fits": {
+      "GK": 45,
+      "CB": 67,
+      "FB": 71,
+      "WB": 76,
+      "DM": 77,
+      "CM": 87,
+      "AM": 96,
+      "WM": 86,
+      "W": 95,
+      "ST": 90
+    },
+    "bestRoles": [
+      "AM",
+      "W",
+      "ST"
+    ],
+    "worstRoles": [
+      "GK",
+      "CB"
+    ],
+    "strengths": [
+      "pace",
+      "vision",
+      "unpredictability",
+      "intimidation"
+    ],
+    "weaknesses": [
+      "strength",
+      "stamina"
+    ]
+  },
+  {
+    "id": 492,
+    "evoChainId": 253,
+    "attrs": {
+      "PAC": 83,
+      "ACC": 96,
+      "SHO": 89,
+      "PAS": 88,
+      "VIS": 88,
+      "DRI": 96,
+      "TEC": 88,
+      "DEF": 92,
+      "TAK": 71,
+      "AER": 46,
+      "PHY": 63,
+      "STA": 89,
+      "DIV": 60,
+      "HAN": 75,
+      "REF": 92,
+      "GKP": 92,
+      "KIC": 87
+    },
+    "fits": {
+      "GK": 38,
+      "CB": 63,
+      "FB": 77,
+      "WB": 83,
+      "DM": 77,
+      "CM": 85,
+      "AM": 90,
+      "WM": 89,
+      "W": 90,
+      "ST": 79
+    },
+    "bestRoles": [
+      "W",
+      "AM",
+      "WM"
+    ],
+    "worstRoles": [
+      "CB",
+      "GK"
+    ],
+    "strengths": [
+      "acceleration",
+      "agility",
+      "stamina"
+    ],
+    "weaknesses": [
+      "strength",
+      "size",
+      "aerial"
+    ]
+  },
+  {
+    "id": 493,
+    "evoChainId": 254,
+    "attrs": {
+      "PAC": 94,
+      "ACC": 81,
+      "SHO": 94,
+      "PAS": 92,
+      "VIS": 93,
+      "DRI": 81,
+      "TEC": 92,
+      "DEF": 95,
+      "TAK": 93,
+      "AER": 94,
+      "PHY": 94,
+      "STA": 96,
+      "DIV": 96,
+      "HAN": 88,
+      "REF": 95,
+      "GKP": 95,
+      "KIC": 94
+    },
+    "fits": {
+      "GK": 47,
+      "CB": 94,
+      "FB": 88,
+      "WB": 87,
+      "DM": 94,
+      "CM": 92,
+      "AM": 87,
+      "WM": 86,
+      "W": 75,
+      "ST": 77
+    },
+    "bestRoles": [
+      "CB",
+      "DM",
+      "CM"
+    ],
+    "worstRoles": [
+      "W",
+      "WB"
+    ],
+    "strengths": [
+      "strength",
+      "size",
+      "durability",
+      "composure"
+    ],
+    "weaknesses": [
+      "acceleration",
+      "footwork"
+    ]
+  }
+]

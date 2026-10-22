@@ -1,6 +1,5 @@
 import { FORMATIONS } from "@/engine/formations";
 import type { FormationId, Role, SlotRef, Species } from "@/engine/types";
-import { SCOUTING_BY_ID } from "@/scouting/scouting-data";
 
 export type PositionSuitability = "recommended" | "ok" | "bad";
 
@@ -24,8 +23,7 @@ export function getSlotSuitability(
   if (!slot) return "ok";
 
   const role: Role = slot.role;
-  const sc = SCOUTING_BY_ID.get(species.id);
-  const worstRoles: readonly Role[] = sc?.worstRoles ?? [];
+  const worstRoles: readonly Role[] = species.worstRoles ?? [];
   const starterSlots = FORMATIONS[formation].slots;
   const maxFormationFit = Math.max(...starterSlots.map((s) => species.fits[s.role]));
 

@@ -4,10 +4,13 @@ import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import rawPokedex from "../../src/data/pokedex.json";
 import rawScouting from "../../src/data/scouting.json";
+import rawIndex from "../../src/data/species-index.json";
 import {
   validatePokedex,
   validateScouting,
   validateScoutingContributions,
+  validateSpeciesIndex,
+  validateSpeciesChunk,
 } from "./validate-artifacts";
 
 describe("generated artifact build validation", () => {
@@ -148,4 +151,57 @@ describe("generated artifact build validation", () => {
       expect(() => validateScoutingContributions(input)).toThrowError(z.ZodError);
     },
   );
+
+  it("accepts all 1025 species-index records without changing their values", () => {
+    const validated = validateSpeciesIndex(rawIndex);
+    expect(validated).toHaveLength(1025);
+    expect(JSON.stringify(validated)).toBe(JSON.stringify(rawIndex));
+  });
+
+  it.each([
+    ["a missing name", [{ ...rawIndex[0], name: undefined }], "invalid_type", [0, "name"]],
+    ["an out-of-range gen", [{ ...rawIndex[0], gen: 10 }], "too_big", [0, "gen"]],
+    ["an unknown type", [{ ...rawIndex[0], types: ["invented"] }], "invalid_value", [0, "types", 0]],
+    ["an extra index field", [{ ...rawIndex[0], invented: true }], "unrecognized_keys", [0]],
+    ["a non-array index", {}, "invalid_type", []],
+  ])("rejects %s in species-index with the schema error and field path", (_name, input, code, errorPath) => {
+    expect(() => validateSpeciesIndex(input)).toThrowError(
+      expect.objectContaining({
+        issues: expect.arrayContaining([expect.objectContaining({ code, path: errorPath })]),
+      }),
+    );
+    expect(() => validateSpeciesIndex(input)).toThrowError(z.ZodError);
+  });
+
+  it("accepts all 9 generation species chunks totaling 1025 records", () => {
+    let total = 0;
+    for (let g = 1; g <= 9; g++) {
+      const rawChunk = JSON.parse(
+        readFileSync(
+          path.resolve(import.meta.dirname, `../../src/data/species-chunks/gen-${g}.json`),
+          "utf8",
+        ),
+      );
+      const validated = validateSpeciesChunk(rawChunk);
+      expect(validated.length).toBeGreaterThan(0);
+      expect(JSON.stringify(validated)).toBe(JSON.stringify(rawChunk));
+      total += validated.length;
+    }
+    expect(total).toBe(1025);
+  });
+
+  it("rejects an extra field in species chunk entries", () => {
+    const rawChunk1 = JSON.parse(
+      readFileSync(
+        path.resolve(import.meta.dirname, "../../src/data/species-chunks/gen-1.json"),
+        "utf8",
+      ),
+    );
+    const input = [{ ...rawChunk1[0], invented: true }];
+    expect(() => validateSpeciesChunk(input)).toThrowError(
+      expect.objectContaining({
+        issues: expect.arrayContaining([expect.objectContaining({ code: "unrecognized_keys", path: [0] })]),
+      }),
+    );
+  });
 });

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { POKEDEX, pokedexById } from "@/data/pokedex";
+import { SPECIES_INDEX, slimSpeciesById } from "@/data/species-index";
 import { challengeHref } from "@/ui/challenge-href";
 import { exhibitionHref, squadFromToken } from "@/ui/exhibition-route";
 import { careerSummary } from "@/ui/career";
@@ -76,7 +76,7 @@ export function HistoryList() {
   }
   const career = careerSummary(runs, lifetime);
   const speciesFilter = pickedFilter ?? (career.species.size > 0 ? "drafted" : "all");
-  const matchingSpecies = POKEDEX.filter((pokemon) => {
+  const matchingSpecies = SPECIES_INDEX.filter((pokemon) => {
     const counts = career.species.get(pokemon.id);
     return (
       (pokemon.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -143,7 +143,7 @@ export function HistoryList() {
       <section aria-label="Species Hall of Fame" className={s.career}>
         <h3>Species Hall of Fame</h3>
         <p className={s.scope}>
-          Browse all {POKEDEX.length.toLocaleString("en-US")} species. Counts cover ranked squads in
+          Browse all {SPECIES_INDEX.length.toLocaleString("en-US")} species. Counts cover ranked squads in
           the stored history above, including the bench.
         </p>
         <p className={s.scope}>
@@ -261,7 +261,7 @@ export function HistoryList() {
                           key={id}
                           dexId={id}
                           size={24}
-                          alt={pokedexById(id)?.name ?? `#${id}`}
+                          alt={slimSpeciesById(id)?.name ?? `#${id}`}
                         />
                       ))
                     ) : (

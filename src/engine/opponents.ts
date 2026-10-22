@@ -1,4 +1,4 @@
-import { TYPES, type PokemonType } from "@/data/pokedex";
+import { TYPES, type PokemonType } from "@/data/pokedex-schema";
 import { ENGINE_COEFFICIENTS, type EngineCoefficients } from "./coefficients";
 import { FORMATIONS } from "./formations";
 import type { MatchStarter } from "./match";

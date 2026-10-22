@@ -1,22 +1,21 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react";
-import { TYPES } from "@/data/pokedex";
+import { TYPES } from "@/data/pokedex-schema";
 import {
   FORMATIONS,
   applyAction,
-  SPECIES,
   eligibleSpecies,
   speciesById,
   type DraftState,
   type Gen,
   type PokemonType,
   type SlotRef,
-  type Species,
   type SpeciesId,
 } from "@/engine";
+import { SPECIES_INDEX, slimSpeciesById, type SlimSpecies } from "@/data/species-index";
 import { PlayerImage } from "@/components/PlayerImage";
-import { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
+import { DossierModal } from "@/components/scouting/DossierModal";
 import { TypeChip } from "@/components/TypeChip";
 import { genLabel, SUITABILITY_LABEL, typeLabel } from "@/ui/labels";
 import { ALL_REFS, valueAt } from "@/ui/lineup";
@@ -140,53 +139,55 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
 
   const candidates = useMemo(() => {
     const ids = new Set<SpeciesId>([...eligibleSpecies(state), ...onField.keys()]);
-    return [...ids].sort((a, b) => a - b).map(speciesById);
+    return [...ids].sort((a, b) => a - b).map(slimSpeciesById);
   }, [state, onField]);
 
   const filter = useMemo(() => {
     const q = query.trim().toLowerCase();
     const folded = fold(q);
-    return (sp: Species) =>
+    return (sp: SlimSpecies) =>
       (q === "" || (folded !== "" && fold(sp.name).includes(folded)) || dex(sp.id).includes(q)) &&
       (type === null || (sp.types as readonly PokemonType[]).includes(type)) &&
       (gen === null || sp.gen === gen) &&
       (!recommendedOnly ||
         (role !== null
-          ? sp.bestRoles.includes(role)
-          : getSlotSuitability(sp, lineup.formation, slot) === "recommended"));
+          ? speciesById(sp.id).bestRoles.includes(role)
+          : getSlotSuitability(speciesById(sp.id), lineup.formation, slot) === "recommended"));
   }, [query, type, gen, recommendedOnly, role, lineup.formation, slot]);
   const matches = useMemo(() => {
     const list = candidates.filter(filter);
     if (sortBy === "dex") return list;
     return [...list].sort((a, b) => {
+      const fullA = speciesById(a.id);
+      const fullB = speciesById(b.id);
       switch (sortBy) {
         case "rating": {
-          const scoreA = ratingFor(a, role, slotLabel).score;
-          const scoreB = ratingFor(b, role, slotLabel).score;
+          const scoreA = ratingFor(fullA, role, slotLabel).score;
+          const scoreB = ratingFor(fullB, role, slotLabel).score;
           return scoreB - scoreA || a.id - b.id;
         }
         case "fit": {
           const fitA =
-            role !== null ? a.fits[role] : Math.max(...a.bestRoles.map((r) => a.fits[r]));
+            role !== null ? fullA.fits[role] : Math.max(...fullA.bestRoles.map((r) => fullA.fits[r]));
           const fitB =
-            role !== null ? b.fits[role] : Math.max(...b.bestRoles.map((r) => b.fits[r]));
+            role !== null ? fullB.fits[role] : Math.max(...fullB.bestRoles.map((r) => fullB.fits[r]));
           return fitB - fitA || a.id - b.id;
         }
         case "pac":
-          return b.attrs.PAC - a.attrs.PAC || a.id - b.id;
+          return fullB.attrs.PAC - fullA.attrs.PAC || a.id - b.id;
         case "sho":
-          return b.attrs.SHO - a.attrs.SHO || a.id - b.id;
+          return fullB.attrs.SHO - fullA.attrs.SHO || a.id - b.id;
         case "pas":
-          return b.attrs.PAS - a.attrs.PAS || a.id - b.id;
+          return fullB.attrs.PAS - fullA.attrs.PAS || a.id - b.id;
         case "def":
-          return b.attrs.DEF - a.attrs.DEF || a.id - b.id;
+          return fullB.attrs.DEF - fullA.attrs.DEF || a.id - b.id;
         case "phy":
-          return b.attrs.PHY - a.attrs.PHY || a.id - b.id;
+          return fullB.attrs.PHY - fullA.attrs.PHY || a.id - b.id;
       }
     });
   }, [candidates, filter, sortBy, role, slotLabel]);
   // The builder pool only drops species by generation or by the Legendaries switch.
-  const hiddenBySettings = matches.length === 0 && SPECIES.some(filter);
+  const hiddenBySettings = matches.length === 0 && SPECIES_INDEX.some(filter);
 
   const [typesExpanded, setTypesExpanded] = useState(false);
   const [extraPages, setExtraPages] = useState(0);
@@ -433,10 +434,10 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
               at !== undefined ? ALL_REFS.find((ref) => valueAt(lineup, ref) === sp.id) : undefined;
             const swapFit =
               source && current !== null && current !== sp.id
-                ? `${sp.name} to ${slotLabel}: ${SUITABILITY_LABEL[getSlotSuitability(sp, lineup.formation, slot)]} fit. ${speciesById(current).name} to ${at}: ${SUITABILITY_LABEL[getSlotSuitability(speciesById(current), lineup.formation, source)]} fit.`
+                ? `${sp.name} to ${slotLabel}: ${SUITABILITY_LABEL[getSlotSuitability(speciesById(sp.id), lineup.formation, slot)]} fit. ${slimSpeciesById(current).name} to ${at}: ${SUITABILITY_LABEL[getSlotSuitability(speciesById(current), lineup.formation, source)]} fit.`
                 : null;
             const here = current === sp.id;
-            const rating = showRatings ? ratingFor(sp, role, slotLabel) : null;
+            const rating = showRatings ? ratingFor(speciesById(sp.id), role, slotLabel) : null;
             return (
               <li key={sp.id}>
                 <button
@@ -511,7 +512,7 @@ export function Picker({ state, slot, showRatings, onPick, onClear, onClose }: P
         </ul>
       </div>
       {inspectId !== null ? (
-        <ScoutingDossier
+        <DossierModal
           speciesId={inspectId}
           compareTo={current !== null && current !== inspectId ? speciesById(current) : undefined}
           showRatings={showRatings}
