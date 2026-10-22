@@ -3,6 +3,21 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Matchday screenshots and GIF refresh
+
+Branch `chore/screenshots-refresh` off `origin/main` at `acdd8f00`. Wave 7 row 7x (Green). The first commit records the PR #175 merge.
+
+- Refreshed 360 px mobile matchday screenshots in `docs/reports/manager-mode/` from live production (`https://pokedraft-woad.vercel.app`) at `acdd8f00` on engine 8 with token version 8:
+  - `prematch-360.png`: pre-match card (360x1566 full-page) with scout line and badged starting tactics.
+  - `touchline-kickoff-360.png`: paused at minute 3 with collapsed sheet (360x780 viewport).
+  - `touchline-stop-360.png`: half-time stop at 45' (360x780 viewport) with scout line and fatigue line in the sheet.
+  - `live-match-move-callout.gif`: 7 s cut at 8 fps (360x780) from a Playwright video ending 2.5 s after the first move badge ("Shuppet used Phantom Force!").
+- Gates at branch HEAD: `pnpm format:check`, `pnpm check:dashes`, `pnpm check:mirrors`.
+- Decision log: `docs/decisions/screenshots-refresh.md`.
+- NOT RUN: UI code changes (assets and docs only), owner physical device check.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Species chunk split
 
 Branch `feat/species-chunk-split` off `origin/main` at `b823acff`. Wave 7 row 7sp (Red). The first commit (`25c8817d`) records the PR #174 merge. RED commit `80472c2d` adds failing guards for species chunk split and slim index (4 tests in `src/data/__tests__/species-index.test.ts` and 30 tests in `scripts/data/validate-artifacts.test.ts` failing on missing `species-index.json`).
@@ -18,7 +33,7 @@ Branch `feat/species-chunk-split` off `origin/main` at `b823acff`. Wave 7 row 7s
 - Decision log: `docs/decisions/species-chunk-split.md`.
 - NOT RUN: Owner physical device test; live checks (run post-merge).
 
-Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+Merged in PR #175 (squash `acdd8f00`). GLM 5.3 Flash (canary `7sp-r2-320db9616fcd6392e47fb7b80501f64a`) and independent Red reviewer approved head `edef5111`. Production serves `acdd8f00` (engine 8, token versions 1 to 8, db ok). Gated live checks 35 passed on Chromium through gate.
 
 ## Flip to engine 8
 
