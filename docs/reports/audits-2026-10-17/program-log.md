@@ -620,3 +620,80 @@ Achievements under V7: Giant killer 2.5% (threshold unchanged at 100), Hat-trick
   Bundle with other engine changes so friends see one version change, not several.
 - Engine 8 freeze tooling: include `src/engine/story.ts` in the frozen bundle roots.
 - The grace-window final count after `2026-10-23T04:00:00Z`.
+
+## Wave 7. Platform hygiene and Engine 8
+
+Every planned row merged, one PR each, each live-checked on production before the next landed: eighteen PRs (#159 to #176). Row 8d (goal-kind centring) was dropped per hand-off fallback and decision log because no pin P1 to P6 depends on goal kind and the owner did not ask for it. Production serves `8e071295` (PR #176), engine 8 (`pokedraft-engine-8`), token versions 1 to 8, `db.status` ok. Engine 7 lives on as the frozen bundle that replays `pd7` links.
+
+| Row | PR | Squash | Reviewed head | Review | Production check |
+| --- | --- | --- | --- | --- | --- |
+| 7-0 Playwright live checks through passcode gate (Green) | #159 | `8a29610b` | `82b4ff6` | GLM APPROVE, round 1 | `health` 1 of 1 |
+| 7ci CI hygiene, Node 24, pinned actions, format check, Postgres job (Green) | #160 | `040781bb` | `e2a70bf` | GLM APPROVE, round 1 | `health` 1 of 1 |
+| 7pm proxy matcher trim (Red) | #161 | `24386947` | `f31481b` | GLM APPROVE and Red reviewer PASS | 19 of 19 |
+| 7cq card query canonicalization (Red) | #162 | `edb04432` | `e43c518` | GLM APPROVE and Red reviewer PASS | 17 of 17 |
+| 7rb rollback row count and drop-data guard (Red) | #163 | `90ee0f72` | `6b998d3` | GLM APPROVE and Red reviewer PASS | 19 of 19 |
+| 7csp enforce Content-Security-Policy header (Red) | #164 | `fc890c09` | `7fb306e` | GLM APPROVE and Red reviewer PASS | 21 of 21 |
+| 7bp builder squad link previews (/?b=) (Yellow) | #165 | `a26daf01` | `e2db080` | GLM APPROVE, round 1 | 24 of 24 |
+| 7zd client Zod replacement and daily first paint (Yellow) | #166 | `a560015e` | `bc223cf` | GLM APPROVE, round 1 | 24 of 24 |
+| 7q1 matchday and broadcast carryovers sweep (Yellow) | #167 | `d23e15f6` | `aa88fc5` | GLM APPROVE, round 1 | 27 of 27 |
+| 7q2 app surface carryovers sweep (Yellow) | #168 | `c9c7ccd8` | `43fbff8` | GLM APPROVE, round 1 | 27 of 27 |
+| 7cr credential rotation runbook and verification (Red) | #169 | `9c1db3b4` | `d512a8a` | GLM APPROVE and Red reviewer PASS | `health` 1 of 1 |
+| 8a content-addressed engine data blobs (Red) | #170 | `363fed60` | `296277b` | GLM APPROVE and Red reviewer PASS | 29 of 29 |
+| 8b freeze engine 7 into retained bundle (Red) | #171 | `f2f01113` | `a39ffc4` | GLM APPROVE and Red reviewer PASS | 30 of 30 |
+| 8c dormant Defend against direct multiplier (Red) | #172 | `d6a165d1` | `8885b52` | GLM APPROVE and Red reviewer PASS | 30 of 30 |
+| 8e engine 8 calibration, dormant (Red) | #173 | `2c288bbc` | `46e49e2` | GLM APPROVE and Red reviewer PASS | 30 of 30 |
+| 8x the flip to engine 8 (Red) | #174 | `b823acff` | `f590db4` | GLM APPROVE and Red reviewer PASS | 37 of 37 |
+| 7sp species chunk split into slim index and 9 lazy chunks (Red) | #175 | `acdd8f00` | `edef5111` | GLM APPROVE and Red reviewer PASS | 35 of 35 |
+| 7x 360px matchday screenshots and GIF refresh (Green) | #176 | `8e071295` | `3cae365e` | GLM APPROVE, round 1 | 1 of 1 |
+
+Reviews were GLM 5.3 Flash with an echoed canary per reviewed head. For Red PRs (7pm, 7cq, 7rb, 7csp, 7cr, 8a, 8b, 8c, 8e, 8x, 7sp), an independent Red reviewer subagent re-executed gates on the exact head. Production checks ran on Chromium with headless execution against `https://pokedraft-woad.vercel.app` using `PLAYWRIGHT_GATE_COOKIE_FILE` through the passcode gate.
+
+Order: The platform hygiene and UI rows interleaved safely before engine work. 7-0 and 7ci landed first to establish gated live testing and modern CI hygiene. Platform rows 7pm, 7cq, 7rb, 7csp and UI rows 7bp, 7zd, 7q1, 7q2 cleared the backlog of audit findings. Credential rotation runbook (7cr) documented security procedures. Engine 8 was executed strictly in serial: 8a (data blobs), 8b (freeze v7), 8c (Defend vs direct candidate), 8e (calibration of V8, dropping 8d), and 8x (live engine flip and grace window). Row 7sp landed after the freeze to split species into a slim index and 9 lazy chunks, cutting draft start latency in half. Row 7x re-shot all 360 px mobile evidence and the animated GIF from production after all UI and engine changes.
+
+### The flip to Engine 8 (Row 8x)
+
+- `ENGINE_VERSION = "pokedraft-engine-8"`, `RUN_TOKEN_VERSION = 8`.
+- Retained `v7` bundle wired under `src/engine/versions/v7` (`RETAINED[7]` with identity `adapt`), validating proxy `pd7.` and challenge links.
+- Grace window `GRACE` set to version 7 until `2026-10-24T04:00:00Z` (`flipDate: "2026-10-22"`).
+- Goldens updated: `CUP8_TOKEN` sha256 `ae0d6830dfa84bcbad2be1fbbedb6ab3ed4d38a4e6ed000d529af87f8a443f0c` (`[593, 5, "QF"]`), `KANTO_TOKEN` sha256 `4c1a9b94a4d03a60748fd8ea0fa17d87c66170725a37c5a5fc5cf22ce7b21e62` (`[480, 3, "R32"]`).
+- Parity: 50 seeds ran 800 stories with 0 live-vs-frozen mismatches.
+
+### Engine 8 calibration (8e, live since 8x)
+
+Calibrated V8 values: `directDefendOwn = 1.05`, `styleEdges.direct.defend = [1.05, 0.52]`.
+
+| Pin | Result | Target | Verdict |
+| --- | --- | --- | --- |
+| P1 good | +3.07 | +3 to +6 | pass (up from +1.07 in V7) |
+| P1 random | +6.50 | - | pass |
+| P2 good | +4.64 | <= +10 | pass |
+| P2 random | +9.91 | <= +10 | pass |
+| P3 | 0.00 | 0.00 | pass |
+| P4 | +18.37 (5,438 shootouts) | positive correlation | pass |
+| P5 | 840 3.65%, 900 11.79%, 950 29.53% | within v4 bands | pass |
+| P6 | cup8-full good 5.912, kanto151 random 3.331 | matches baseline | pass |
+| P7 | worst +0.046 | fallback 4 | recorded as measured |
+| P8 | 68.61% | fallback 4 | recorded as measured |
+| P9 | not applicable | - | 6b7 does not exist |
+
+Achievements: Giant killer 2.5% (threshold 100), Hat-trick hero 73.0%.
+
+### Measurements that moved
+
+- Unit tests: 2,187 in 249 files (Wave 6) to 2,310 in 260 files (Wave 7 closeout).
+- Engine version: `pokedraft-engine-7` to `pokedraft-engine-8`, token versions 1 to 8. Retained golden replays: 13 to 15.
+- Species chunks: `src/data/species-index.json` (1,025 entries, 108 KB) and 9 lazy chunks `src/data/species-chunks/gen-[1..9].json`. Draft start CPU-throttled latency fell from 1,450.7 ms to 751.9 ms (48.2% faster).
+- Server deduplication: content-addressed blobs under `src/engine/versions/_blobs/`. Emitted server retained bundles: 4 copies, 2,891,853 bytes.
+- Security: Content-Security-Policy enforced; non-canonical `/card` queries 308-redirect to canonical forms; proxy matcher excludes static creature and health paths; database rollback requires explicit confirmation.
+
+### Open carryovers
+
+- No open code, audit, or platform findings: all 60 itemized findings from the 2026-10-17 audits and all queue items are closed.
+- Wave 6 conditional carryover resolved: `src/engine/story.ts` was included in the frozen bundle roots in Row 8b (PR #171, squash `f2f01113`), exporting `matchStory` for `v7` so retained engine 7 replays render the xG river.
+- Pending dated receipts (NOT RUN until window closure):
+  - Wave 6 engine 6 grace window read-only count of `pd6` submissions after flip, scheduled for after `2026-10-23T04:00:00Z`.
+  - Wave 7 engine 7 grace window read-only count of `pd7` submissions after flip, scheduled for after `2026-10-24T04:00:00Z`.
+- Owner actions (NOT RUN; checklist in `docs/decisions/wave7-summary.md`):
+  - Physical phone check on iPhone Safari and Android.
+  - Screen reader pass (VoiceOver / TalkBack).
+

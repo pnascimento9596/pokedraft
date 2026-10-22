@@ -30,3 +30,11 @@ Logged by dispatch 3 (UI). The engine and scouting were frozen in that lane, so 
 | # | Status |
 |---|---|
 | 5 | Closed. Keeper fit versus quality and `weakest` ranked by quality are won't fix. Changing either moves every Team Score, and the "All engines" board compares Team Scores across engines; the 0 to 1000 scale is the one number friends quote. Dispatch 7 already made the display honest (each card shows the quality `weakest` ranks by) |
+
+## Status at Program Close (Wave 7)
+
+All items closed:
+- Items 1, 2, 3: Completed in pre-program dispatch 6 PR 6C (PR #11, squash `928e4b13`) and wired into the UI in pre-program dispatch 7 PR 7A (PR #13, squash `87d46c8`).
+- Item 4: Completed in Wave 7 row 7sp (PR #175, squash `acdd8f00`) by splitting species data into a slim index (`src/data/species-index.json`, 108 KB) and 9 generation chunks (`src/data/species-chunks/gen-[1..9].json`).
+- Item 5: Closed in Wave 6 row 6-0 (PR #143, squash `eceb581`) as won't fix per rating stability across engines.
+- All engine follow-ups are now closed.
