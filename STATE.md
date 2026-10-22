@@ -17,7 +17,7 @@ Branch `feat/flip-engine-8` off `origin/main` at `2c288bbc`. Wave 7 row 8x (Red)
 - Decision log: `docs/decisions/engine-8.md`.
 - NOT RUN: non-Chromium Playwright projects, live production checks (post-merge), owner physical device test.
 
-Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+Merged in PR #174 (squash `b823acff`). GLM 5.3 Flash (canary `8x-cfc14c15fdec7f1ade57f8543f40f378`) and independent Red reviewer approved head `f590db45`. Production serves `b823acff` (iad1, engine 8, token versions 1 to 8, db ok). Gated live checks 37 passed on Chromium; historical pd6 and pd7 links verified; default leaderboard board verified empty for engine 8.
 
 ## Engine 8 calibration, dormant
 
