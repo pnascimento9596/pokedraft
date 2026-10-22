@@ -101,7 +101,7 @@ describe("a match weights both sides' goal kinds (catches the weighting reaching
   it("panel runs 0 to 49: user and opponent goals both change kind against zero weights, none moves", () => {
     const res = weightedPanel();
     expect(res).toEqual({
-      user: { goals: 529, changed: 65 },
+      user: { goals: 535, changed: 66 },
       opp: { goals: 193, changed: 9 },
       moved: 0,
     });

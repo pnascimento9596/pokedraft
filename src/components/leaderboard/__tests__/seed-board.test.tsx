@@ -3,7 +3,7 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { decodeToken, encodeToken } from "@/engine/token";
 import { GOLDEN_CUP8_V3 } from "@/engine/versions/__tests__/fixtures";
-import { GOLDEN_CUP8_V7 } from "@/leaderboard/server/__tests__/fixtures";
+import { GOLDEN_CUP8_V8 } from "@/leaderboard/server/__tests__/fixtures";
 import type { BoardEntry } from "@/leaderboard/contract";
 import { SeedBoard } from "@/components/leaderboard/SeedBoard";
 
@@ -25,14 +25,14 @@ const ASH: BoardEntry = {
   mode: "cup8",
   variant: "classic3.squadFirst.g123456789",
   dailyDate: null,
-  token: GOLDEN_CUP8_V7,
+  token: GOLDEN_CUP8_V8,
   teamScore: 593,
   wins: 5,
   draws: 0,
   losses: 1,
   createdAt: "2026-10-16T12:00:00.000Z",
   coached: false,
-  engineVersion: "pokedraft-engine-7",
+  engineVersion: "pokedraft-engine-8",
   seed: "golden-cup8",
   formation: "4-2-3-1",
 };
@@ -60,7 +60,7 @@ describe("Friends on this seed (catches a results page that hides who else playe
   it("lists the seed's rows, marks this run and labels the older engine", async () => {
     const fetchMock = vi.fn(async () => json(200, { ...SEED_OK, entries: [ASH, LANCE] }));
     vi.stubGlobal("fetch", fetchMock);
-    render(<SeedBoard token={GOLDEN_CUP8_V7} />);
+    render(<SeedBoard token={GOLDEN_CUP8_V8} />);
     const table = await screen.findByRole("table", { name: "Friends on this seed" });
     const rows = within(table)
       .getAllByRole("row")
@@ -84,10 +84,10 @@ describe("Friends on this seed (catches a results page that hides who else playe
   });
 
   it("marks this run for a link whose JSON spacing differs from the stored token (catches a string compare that shows the player's own row as a link)", async () => {
-    const [prefix, body] = GOLDEN_CUP8_V7.split(".") as [string, string];
+    const [prefix, body] = GOLDEN_CUP8_V8.split(".") as [string, string];
     const spaced = JSON.stringify(JSON.parse(Buffer.from(body, "base64url").toString()), null, 1);
     const link = `${prefix}.${Buffer.from(spaced).toString("base64url")}`;
-    expect(link).not.toBe(GOLDEN_CUP8_V7);
+    expect(link).not.toBe(GOLDEN_CUP8_V8);
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => json(200, { ...SEED_OK, entries: [ASH, LANCE] })),
@@ -108,7 +108,7 @@ describe("Friends on this seed (catches a results page that hides who else playe
   it("renders nothing when nobody has submitted the seed", async () => {
     const fetchMock = vi.fn(async () => json(200, { ...SEED_OK, entries: [] }));
     vi.stubGlobal("fetch", fetchMock);
-    const { container } = render(<SeedBoard token={GOLDEN_CUP8_V7} />);
+    const { container } = render(<SeedBoard token={GOLDEN_CUP8_V8} />);
     await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
     await Promise.resolve();
     expect(container.textContent).toBe("");
@@ -124,7 +124,7 @@ describe("Friends on this seed (catches a results page that hides who else playe
     ],
   ])("says Board unavailable on %s, never an empty table", async (_, reply) => {
     vi.stubGlobal("fetch", vi.fn(reply));
-    render(<SeedBoard token={GOLDEN_CUP8_V7} />);
+    render(<SeedBoard token={GOLDEN_CUP8_V8} />);
     expect((await screen.findByTestId("seed-board-error")).textContent).toContain(
       "Board unavailable",
     );
@@ -135,7 +135,7 @@ describe("Friends on this seed (catches a results page that hides who else playe
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
     const builder = encodeToken({
-      ...decodeToken(GOLDEN_CUP8_V7),
+      ...decodeToken(GOLDEN_CUP8_V8),
       settings: { mode: "builder", formation: "4-3-3", gens: [1], legendaries: false },
       actions: [],
     });

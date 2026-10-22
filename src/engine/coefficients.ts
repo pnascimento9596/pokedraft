@@ -203,7 +203,10 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
       // A possession side is hurt by a press and by counters that skip its build-up.
       possession: { press: [1.2875, 0.9425], counter: [1.0, 0.77] },
       // A direct side punishes a high line and struggles to break down a low block.
-      direct: { defend: [0.655, 0.4825], press: [1.0, 1.2875] },
+      // Keep styleEdges.direct.defend[0] equal to directDefendOwn below: match.ts reads
+      // directDefendOwn only when this edge exists, while intel.ts and the calibration probe
+      // read directDefendOwn unconditionally; with both defined and equal they cannot disagree.
+      direct: { defend: [1.05, 0.52], press: [1.0, 1.2875] },
     },
     drain: 0.3,
     pressDrain: 1.4,
@@ -219,6 +222,7 @@ export const ENGINE_COEFFICIENTS: EngineCoefficients = {
     autoSubMinutes: [60, 75],
     counterLead: 1.1,
     pressFade: { below: 70, perPoint: 0.004 },
-    directDefendOwn: 0.655,
+    // Must stay equal to styleEdges.direct.defend[0] above.
+    directDefendOwn: 1.05,
   },
 };

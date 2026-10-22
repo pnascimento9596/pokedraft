@@ -12,7 +12,7 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 // The golden cup8 draft under engine 6. Match 0: the assistant takes Togepi (175) off for Kommo-o
 // (784) in slot 7 at 60'. Its real windows never fall below 65, so the slowdown guards pass
 // windows with the same lineups and chosen energies.
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const LINEUP = toFullLineup(draft);
 const STEP = 1000 / 60;
 const TAIL_FRAMES = 180;

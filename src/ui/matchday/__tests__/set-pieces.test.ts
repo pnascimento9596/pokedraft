@@ -26,8 +26,8 @@ type GoalBeat = Extract<Beat, { kind: "goal" }>;
 //   cup8 match 5, 37': Talonflame's header for the opponent.
 //   kanto151 match 3, 17': Bulbasaur's free kick (user).
 const RUNS = {
-  cup8: replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`),
-  kanto: replay(`pd7.${GOLDEN_KANTO151_V5.slice("pd5.".length)}`),
+  cup8: replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`),
+  kanto: replay(`pd8.${GOLDEN_KANTO151_V5.slice("pd5.".length)}`),
 } as const;
 type Run = keyof typeof RUNS;
 

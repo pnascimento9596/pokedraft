@@ -25,7 +25,7 @@ vi.mock("@/ui/manager/touchline", async (importOriginal) => {
   };
 });
 
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const CTX = { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode };
 
 beforeEach(() => {

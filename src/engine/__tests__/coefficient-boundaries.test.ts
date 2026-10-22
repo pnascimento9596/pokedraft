@@ -78,9 +78,12 @@ describe("engine candidate import boundary (catches candidates reaching client c
 });
 
 describe("engine 7 candidate (catches a V7 tweak leaking into the live engine coefficients)", () => {
-  it("shares no nested object with ENGINE_COEFFICIENTS", () => {
+  it("retains engine 7 directDefendOwn and shares no nested object with ENGINE_COEFFICIENTS", () => {
     const live = JSON.stringify(ENGINE_COEFFICIENTS);
     const saved = ENGINE_COEFFICIENTS_V7.team.synergy.edgeCap;
+    expect(ENGINE_COEFFICIENTS_V7.manager.directDefendOwn).toBe(0.655);
+    expect(ENGINE_COEFFICIENTS_V7.manager.styleEdges.direct.defend).toEqual([0.655, 0.4825]);
+    expect(ENGINE_COEFFICIENTS.manager.directDefendOwn).toBe(1.05);
     try {
       ENGINE_COEFFICIENTS_V7.team.synergy.edgeCap = 9;
       ENGINE_COEFFICIENTS_V7.match.chances.regulation = 99;
@@ -108,12 +111,12 @@ describe("engine 8 candidate (catches a V8 tweak leaking into live coefficients)
       ENGINE_COEFFICIENTS_V8.team.synergy.edgeCap = 9;
       ENGINE_COEFFICIENTS_V8.manager.directDefendOwn = 9;
       expect(ENGINE_COEFFICIENTS.team.synergy.edgeCap).toBe(1);
-      expect(ENGINE_COEFFICIENTS.manager.directDefendOwn).toBe(0.655);
+      expect(ENGINE_COEFFICIENTS.manager.directDefendOwn).toBe(1.05);
     } finally {
       ENGINE_COEFFICIENTS_V8.team.synergy.edgeCap = saved;
       ENGINE_COEFFICIENTS_V8.manager.directDefendOwn = 1.05;
       ENGINE_COEFFICIENTS.team.synergy.edgeCap = 1;
-      ENGINE_COEFFICIENTS.manager.directDefendOwn = 0.655;
+      ENGINE_COEFFICIENTS.manager.directDefendOwn = 1.05;
     }
     expect(JSON.stringify(ENGINE_COEFFICIENTS)).toBe(live);
   });

@@ -9,7 +9,7 @@ import { MatchdayFlow } from "../MatchdayFlow";
 // The golden cup8 draft under engine 6. Match 0 is against a pressing side. In match 5 (the
 // quarter-final, against a direct side) Roselia goes down in slot 1 (LB) at 42' and the assistant
 // sends on Kommo-o.
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const CTX = { lineup: toFullLineup(draft), seed: cup.seed, mode: draft.settings.mode };
 
 beforeEach(() => {

@@ -58,6 +58,9 @@ const RETAINED: Readonly<Record<number, () => Promise<RetainedBundle>>> = {
   // Engine 7 only added optional penalty incidents, rotations and oppEnergy, so an engine-6 result
   // is already today's shape.
   6: async () => ({ ...(await import("./v6")), adapt: (cup) => cup as CupResult }),
+  // Engine 8 changes only the Defend-against-direct coefficients and adds no CupResult fields, so
+  // an engine-7 result is already today's shape.
+  7: async () => ({ ...(await import("./v7")), adapt: (cup) => cup as CupResult }),
 };
 
 const PREFIX = /^pd(\d+)\./;

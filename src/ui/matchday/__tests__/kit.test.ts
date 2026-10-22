@@ -39,7 +39,7 @@ describe("team kits on the pitch (catches one fixed colour per side, and two sid
   });
 
   it("counts both types of a dual-type starter: the golden squad wears poison, tied with grass on four and first in slot 0 (catches a dual type counted once)", () => {
-    const { draft } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+    const { draft } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
     expect(kitsFor(toFullLineup(draft).starters, "water")).toEqual({
       user: "#A63EAA",
       opp: "#6390F0",

@@ -4,7 +4,7 @@
  * token version that keeps this layout is appended here, so runs stored under a retained version
  * keep their Coached marker after the live decoder moves on.
  */
-export const MANAGER_TOKEN_VERSIONS: readonly number[] = [6, 7];
+export const MANAGER_TOKEN_VERSIONS: readonly number[] = [6, 7, 8];
 
 const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
 

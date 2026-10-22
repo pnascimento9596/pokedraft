@@ -12,7 +12,7 @@ beforeEach(() => {
 
 // The engine-5 golden cup8 draft under the live engine-6 prefix: G1 is a 1-0 win over Goldenrod
 // United (49'), and Santalune Town beat Veilstone United 3-0 in the other G1 fixture.
-const LIVE = `pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
+const LIVE = `pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`;
 
 const rows = () =>
   within(screen.getByTestId("replay-standings"))

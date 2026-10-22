@@ -7,7 +7,7 @@ import { PACE } from "../clock";
 import { START, play, stageFrame, type PlayEnv, type PlayState } from "../player";
 import { buildTimeline, type Point } from "../timeline";
 
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const LINEUP = toFullLineup(draft);
 const STEP = 1000 / 60;
 const TAIL_FRAMES = 180;

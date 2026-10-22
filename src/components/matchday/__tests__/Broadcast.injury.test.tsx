@@ -16,7 +16,7 @@ type PlayedMatch = Extract<MatchResult, { status: "played" }>;
 
 // Match 5 (the quarter-final) of the golden cup8 draft under engine 6: Roselia (315) goes down in
 // slot 1 at 42' and the assistant brings on Kommo-o (784) from the bench.
-const { draft, cup } = replay(`pd7.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
+const { draft, cup } = replay(`pd8.${GOLDEN_CUP8_V5.slice("pd5.".length)}`);
 const MATCH = cup.matches[5] as PlayedMatch;
 const LINEUP = toFullLineup(draft);
 const TIMELINE = buildTimeline(MATCH, { matchIndex: 5, seed: cup.seed, lineup: LINEUP });
