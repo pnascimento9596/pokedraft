@@ -3,6 +3,21 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Remove the friends passcode gate
+
+Branch `fix/remove-friends-gate` off `origin/main` at `aa271daa`. Owner request: the site is open to everyone and nothing asks for a passcode (Red, proxy and deploy behavior).
+
+- Bug: with `FRIENDS_PASSCODE` set in Vercel production, `/` and every page answered 307 to `/gate` and `/api/leaderboard` answered 401, so a new visitor could not play. Reproduced with `curl` on `https://pokedraft-woad.vercel.app` before the fix.
+- Removed `src/passcode.ts`, `src/gate/`, `src/app/gate/` (page, form styles, `/gate/unlock` handler) and their tests, `e2e/gate-cookie.ts` with `scripts/e2e/gate-cookie.test.ts`, and the gate specs in `e2e/mobile-targets.spec.ts`, `e2e/theme-support.spec.ts`, `e2e/share.spec.ts` and `e2e/share-sheet.spec.ts`.
+- `src/proxy.ts` no longer reads `FRIENDS_PASSCODE`. It still validates `/r/...` share links and keeps its matcher unchanged. `FRIENDS_PASSCODE` is now ignored if it is still set.
+- `playwright.config.ts` drops `PLAYWRIGHT_GATE_COOKIE_FILE`. `README.md` drops the `FRIENDS_PASSCODE` row, `CLAUDE.md` and `AGENTS.md` drop "gate unlocks" from the `IP_HASH_SECRET` line, and `docs/runbooks/credential-rotation.md` drops the passcode section.
+- RED commit `663483a7`: the new guard test in `src/__tests__/proxy.test.ts` failed (`/` returned 307, expected 200 with `x-middleware-next`); GREEN is the commit that deletes the gate.
+- Kept on purpose: the `gate` rate-limit scope in `src/ratelimit/store.ts` and the `rate_limit_*` check constraints in `src/db/schema.ts`. Removing it needs a migration and is a carryover.
+- Gates at branch HEAD: `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm format:check`, `pnpm check:mirrors` and `pnpm check:dashes` exit 0; `pnpm test` 2,276 passed in 256 files; Playwright Chromium `e2e/builder.spec.ts`, `e2e/share.spec.ts` and `e2e/theme-support.spec.ts` 33 passed against a local `next start` with `FRIENDS_PASSCODE` set and no cookie.
+- NOT RUN: non-Chromium Playwright projects, live production checks (post-merge), the other eight `check:*` scripts.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Wave 7 summary and program closing report
 
 Branch `docs/wave7-closeout` off `origin/main` at `8e071295`. Wave 7 summary (Green).

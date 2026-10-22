@@ -21,11 +21,10 @@ pnpm dev          # http://localhost:3000
 The game, builder and daily screens work without any environment variables. Anything that touches
 the leaderboard database needs these (never commit them; `.env*` is git-ignored):
 
-| Variable           | Used by                                                                             |
-| ------------------ | ----------------------------------------------------------------------------------- |
-| `DATABASE_URL`     | the leaderboard API and `pnpm db:*` scripts (Neon, pooled)                          |
-| `IP_HASH_SECRET`   | keys the stored IP hash, at least 32 characters; submissions fail closed without it |
-| `FRIENDS_PASSCODE` | optional, turns on the friends gate                                                 |
+| Variable         | Used by                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------- |
+| `DATABASE_URL`   | the leaderboard API and `pnpm db:*` scripts (Neon, pooled)                          |
+| `IP_HASH_SECRET` | keys the stored IP hash, at least 32 characters; submissions fail closed without it |
 
 ## Test
 

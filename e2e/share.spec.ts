@@ -70,23 +70,6 @@ for (const [token, record, score, version] of [
   });
 }
 
-test("the passcode gate previews a query destination with its canonical public card", async ({
-  page,
-}) => {
-  expect((await page.goto(`/gate?next=${encodeURIComponent(QUERY_PATH)}`))?.status()).toBe(200);
-  await expect(page).toHaveTitle("pokedraft run: 1-1-1, Team Score 283");
-  await expect(page.locator('input[name="next"]')).toHaveValue(QUERY_PATH);
-  const ogImage = page.locator('meta[property="og:image"]');
-  await expect(ogImage).toHaveAttribute(
-    "content",
-    new RegExp(`/r/${CURRENT_RUN.replace(".", "\\.")}/opengraph-image$`),
-  );
-  const imageUrl = new URL((await ogImage.getAttribute("content"))!);
-  const image = await page.request.get(`${imageUrl.pathname}${imageUrl.search}`);
-  expect(image.status()).toBe(200);
-  expect(image.headers()["content-type"]).toContain("image/png");
-});
-
 for (const path of [
   "/r/pd1",
   "/r/pd1?t=e30",
