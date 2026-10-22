@@ -3,6 +3,22 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Flip to engine 8
+
+Branch `feat/flip-engine-8` off `origin/main` at `2c288bbc`. Wave 7 row 8x (Red). The first commit (`e0223cc8`) records the PR #173 merge. RED commit `a3879716` adds failing guards across 11 files for the engine 8 flip, retained `v7` wiring, proxy `pd7.` handling, grace window, and 50-seed live-vs-frozen `matchStory` parity (41 failed, 96 passed of 137 tests in 9 files); `2882b283` flips the live engine, wires retained `v7`, and sets the engine 7 grace window (137 of 137 passed in 9 files); `0451c7ee` re-pins `src/engine/__tests__/goldens.test.ts`, unit tests, and `e2e/pins.ts` (2,298 passed in 259 files).
+
+- `ENGINE_VERSION = "pokedraft-engine-8"` and `RUN_TOKEN_VERSION = 8` in `src/engine/types.ts`.
+- `ENGINE_COEFFICIENTS` in `src/engine/coefficients.ts` takes the calibrated V8 Defend-against-direct values: `manager.directDefendOwn = 1.05` and `manager.styleEdges.direct.defend = [1.05, 0.52]`. `ENGINE_COEFFICIENTS_V7` in `src/engine/coefficients-v7.ts` holds a literal deep copy of the engine 7 values (`directDefendOwn: 0.655`, `styleEdges.direct.defend: [0.655, 0.4825]`), and `ENGINE_COEFFICIENTS_V8` in `src/engine/coefficients-v8.ts` is `structuredClone(ENGINE_COEFFICIENTS)`.
+- Live-vs-frozen code parity (`matchStory(seed, m, { lineup, mode: "cup8", manager }, ENGINE_COEFFICIENTS_V7)` vs `v7.matchStory` from `src/engine/versions/v7`, unmanaged and with Defend held at `0'` and `45'`): 50 seeds (`panel-0` to `panel-49`, committed in `src/engine/__tests__/direct-defend.test.ts`) ran 800 stories (316 `notPlayed` errors in both, 484 played, 73 Defend vs direct played) with 0 mismatches; 200 seeds (`panel-0` to `panel-199`) ran 3,200 stories (1,214 `notPlayed` errors in both, 1,986 played, 286 Defend vs direct played) with 0 mismatches.
+- Retained `v7` wired in `src/engine/versions/index.ts` (`RETAINED[7]` with identity `adapt`), `src/engine/versions/label.ts` (`RETAINED_TOKEN_VERSIONS = [1, 2, 3, 4, 5, 6, 7]`), `src/ui/manager/coached.ts` (`MANAGER_TOKEN_VERSIONS = [6, 7, 8]`), `src/ui/matchday/river.ts` (`storySource` routes `pokedraft-engine-7` to `v7.matchStory`), and `src/proxy.ts` (`pd7.` validated via `decodeV7Token`).
+- `GRACE` in `src/leaderboard/server/grace.ts` set to `{ version: 7, engine: "pokedraft-engine-7", until: "2026-10-24T04:00:00Z", flipDate: "2026-10-22" }`. Because `GRACE` holds one window, this replaces engine 6's grace window (`until: "2026-10-23T04:00:00Z"`) a day early; `pd6` submissions now return `409 ENGINE_VERSION_MISMATCH`.
+- Goldens (`src/engine/__tests__/goldens.test.ts` and `scripts/audit/tokens.mts`): `CUP8_TOKEN` sha256 `ae0d6830dfa84bcbad2be1fbbedb6ab3ed4d38a4e6ed000d529af87f8a443f0c`, replay sha256 `21f36d607fdd6a1b2a79c61707e3ccfcaf448175470b8eb4c51f552467946528` (`[593, 5, "QF"]` unchanged); `KANTO_TOKEN` sha256 `4c1a9b94a4d03a60748fd8ea0fa17d87c66170725a37c5a5fc5cf22ce7b21e62`, replay sha256 `de30f3358babc4c1b07cbdb843f78d8fb4e879aa1fb4a8d72eeaa9e7ba6aac98` (`[480, 3, "R32"]` unchanged).
+- Gates at `0451c7ee` plus docs: `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm format:check`, `pnpm e2e:pins --check`, and all nine `check:*` scripts exit 0; `pnpm test` 2,298 passed in 259 files; `check-retained-replays.mts` 15 emitted golden replays passed (1 dispatcher); `measure-retained-json.mjs` 4 copies, 2,891,853 bytes; `check:client-bundle` 0 client files, 28 server files (`retained-engine-bundle:v7` in 0 client files and 4 server files); Playwright Chromium (`grace-submit`, `share`, `seed-board`, `head-to-head`) 37 passed; live `next start` proof on `/api/health`, `/r/<pd7>`, and `/r/<pd8>` passed.
+- Decision log: `docs/decisions/engine-8.md`.
+- NOT RUN: non-Chromium Playwright projects, live production checks (post-merge), owner physical device test.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Engine 8 calibration, dormant
 
 Branch `feat/engine8-calibration` off `origin/main` at `d6a165d1`. Wave 7 row 8e (Red). The first commit (`51c9977a`) records the PR #172 merge. RED commit `37894142` pins the V8 value (2 of 21 failed against the old V8 file); `ae1af58c` is the V8 change (21 of 21 passed).
