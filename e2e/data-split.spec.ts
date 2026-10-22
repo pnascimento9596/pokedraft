@@ -55,7 +55,7 @@ const PLAY = "/play?mode=cup8&f=4-4-2&order=squadFirst&g=123456789&style=classic
 
 test.use({ reducedMotion: "reduce" });
 
-test("the builder home does not download the species data during load, and the picker gets it", async ({
+test("the builder home and picker do not download kickMoves or baseline before a draft starts", async ({
   page,
 }) => {
   const data = watchDataChunk(page);
@@ -65,7 +65,7 @@ test("the builder home does not download the species data during load, and the p
 
   await page.getByTestId("slot-s0").click();
   await expect(page.getByRole("dialog")).toBeVisible();
-  expect(await data.loadedMarkers()).toEqual(['"baseline"', '"kickMoves"']);
+  expect(await data.loadedMarkers()).toEqual([]);
 });
 
 test("the challenge start panel does not download the species data during load, and Start gets it", async ({
@@ -115,7 +115,7 @@ async function slowData(page: Page): Promise<{ readonly askedFor: Promise<void> 
   await page.route(CLIENT_CHUNKS, async (route) => {
     const res = await route.fetch();
     const body = await res.text();
-    if (DATA_MARKERS.some((m) => body.includes(m))) {
+    if (DATA_MARKERS.some((m) => body.includes(m)) || body.includes("rebuildDraft")) {
       asked();
       await new Promise((r) => setTimeout(r, 3000));
     }

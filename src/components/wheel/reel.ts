@@ -1,8 +1,8 @@
-import { TYPES } from "@/data/pokedex";
+import { TYPES } from "@/data/pokedex-schema";
 import {
   GENS,
   REGIONS,
-  speciesById,
+  slimSpeciesById,
   type DraftSettings,
   type PokemonType,
   type Region,
@@ -48,7 +48,7 @@ export function typeFace(type: PokemonType): Face {
 }
 
 export function speciesFace(id: SpeciesId): Face {
-  return { kind: "species", value: id, label: speciesById(id).name };
+  return { kind: "species", value: id, label: slimSpeciesById(id).name };
 }
 
 export function regionFaces(settings: DraftSettings): readonly Face[] {

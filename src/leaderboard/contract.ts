@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { toIsoDate, type FormationId } from "@/engine";
+import { toIsoDate } from "@/engine/rng";
+import type { FormationId } from "@/engine/types";
 
 export const BOARD_MODES = ["cup8", "kanto151"] as const;
 export type BoardMode = (typeof BOARD_MODES)[number];

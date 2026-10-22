@@ -1,7 +1,7 @@
-import { TYPES } from "@/data/pokedex";
+import { TYPES } from "@/data/pokedex-schema";
+import { SPECIES_INDEX, type SlimSpecies } from "@/data/species-index";
 import { createEngineRng, deriveSubseed, type EngineRng } from "./rng";
 import { normalizeSettings } from "./settings";
-import { SPECIES } from "./species";
 import {
   DRAFT_ROUNDS,
   DraftError,
@@ -21,7 +21,6 @@ import {
   type Roll,
   type Seed,
   type SlotRef,
-  type Species,
   type SpeciesId,
   type StarterIndex,
 } from "./types";
@@ -31,7 +30,7 @@ export { normalizeSettings } from "./settings";
 export type RolledSettings = Exclude<DraftSettings, { readonly mode: "builder" }>;
 type ComboRoll = Extract<Roll, { readonly kind: "combo" }>;
 type SpeciesRoll = Extract<Roll, { readonly kind: "species" }>;
-type Eligible = (s: Species) => boolean;
+type Eligible = (s: SlimSpecies) => boolean;
 
 const KANTO151_MAX_ID = 151;
 
@@ -46,7 +45,7 @@ export function slotRefs(): readonly SlotRef[] {
   return SLOT_REFS;
 }
 
-const BY_ID = new Map<number, Species>(SPECIES.map((s) => [s.id, s]));
+const BY_ID = new Map<number, SlimSpecies>(SPECIES_INDEX.map((s) => [s.id, s]));
 
 function tableOf<K extends string, V>(keys: readonly K[], value: (key: K) => V): Record<K, V> {
   const table = {} as Record<K, V>;
@@ -54,20 +53,24 @@ function tableOf<K extends string, V>(keys: readonly K[], value: (key: K) => V):
   return table;
 }
 
-const REGION_SPECIES: Readonly<Record<Region, readonly Species[]>> = tableOf(REGIONS, (region) =>
-  SPECIES.filter((s) => s.region === region),
+const REGION_SPECIES: Readonly<Record<Region, readonly SlimSpecies[]>> = tableOf(
+  REGIONS,
+  (region) => SPECIES_INDEX.filter((s) => s.region === region),
 );
 
-const COMBO_SPECIES: Readonly<Record<Region, Readonly<Record<PokemonType, readonly Species[]>>>> =
-  tableOf(REGIONS, (region) =>
-    tableOf(TYPES, (type) =>
-      REGION_SPECIES[region].filter((s) => (s.types as readonly PokemonType[]).includes(type)),
-    ),
-  );
+const COMBO_SPECIES: Readonly<
+  Record<Region, Readonly<Record<PokemonType, readonly SlimSpecies[]>>>
+> = tableOf(REGIONS, (region) =>
+  tableOf(TYPES, (type) =>
+    REGION_SPECIES[region].filter((s) => (s.types as readonly PokemonType[]).includes(type)),
+  ),
+);
 
-const KANTO151_SPECIES: readonly Species[] = SPECIES.filter((s) => s.id <= KANTO151_MAX_ID);
+const KANTO151_SPECIES: readonly SlimSpecies[] = SPECIES_INDEX.filter(
+  (s) => s.id <= KANTO151_MAX_ID,
+);
 
-function inPool(settings: DraftSettings, s: Species): boolean {
+function inPool(settings: DraftSettings, s: SlimSpecies): boolean {
   return settings.mode === "kanto151" ? s.id <= KANTO151_MAX_ID : settings.gens.includes(s.gen);
 }
 
@@ -388,7 +391,7 @@ export function runDraft(
 }
 
 export function eligibleSpecies(state: DraftState): readonly SpeciesId[] {
-  return SPECIES.filter(eligibility(state.settings, state.drafted)).map((s) => s.id);
+  return SPECIES_INDEX.filter(eligibility(state.settings, state.drafted)).map((s) => s.id);
 }
 
 export function isComplete(state: DraftState): boolean {

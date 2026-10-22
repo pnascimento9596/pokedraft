@@ -1,6 +1,6 @@
 import { z } from "zod";
 import raw from "@/data/type-chart.json";
-import { TYPES } from "@/data/pokedex";
+import { TYPES } from "@/data/pokedex-schema";
 import type { PokemonType, Species } from "./types";
 
 const TypeChartSchema = z

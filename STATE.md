@@ -3,6 +3,23 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## Species chunk split
+
+Branch `feat/species-chunk-split` off `origin/main` at `b823acff`. Wave 7 row 7sp (Red). The first commit (`25c8817d`) records the PR #174 merge. RED commit `80472c2d` adds failing guards for species chunk split and slim index (4 tests in `src/data/__tests__/species-index.test.ts` and 30 tests in `scripts/data/validate-artifacts.test.ts` failing on missing `species-index.json`).
+
+- Derived slim species index `src/data/species-index.json` (1,025 entries holding `id, name, types, gen, special`) via `scripts/data/build-species-split.ts`.
+- Derived 9 generation chunks `src/data/species-chunks/gen-[1..9].json` holding `{ id, evoChainId, attrs, fits, bestRoles, worstRoles, strengths, weaknesses }`.
+- Validated artifacts: all 1,025 index records and 1,025 chunk records match `pokedex.json` and `scouting.json` across all 9 generations.
+- Engine isolation: `src/engine/species.ts` assembles `SPECIES` synchronously from `SPECIES_INDEX` and the 9 generation chunks without importing `pokedex.json` or `scouting.json`.
+- Role fit suitability: `src/engine/types.ts` adds `worstRoles` to `interface Species`, removing `SCOUTING_BY_ID` import from `src/ui/suitability.ts`.
+- Bundle isolation: `src/components/scouting/DossierModal.tsx` dynamically imports `ScoutingDossier`, ensuring that neither `pokedex.json` (kickMoves) nor `scouting.json` (baseline) is bundled into the friendly builder and picker client chunks before a draft starts.
+- Draft start performance under 4x CPU throttle in Chromium: baseline median 1450.7 ms -> post-split median 751.9 ms (48.2% faster).
+- Gates at branch HEAD: `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm check:mirrors`, and all nine `check:*` scripts clean; `pnpm test` 2,310 passed in 260 files; Playwright Chromium `e2e/data-split.spec.ts` 6 passed.
+- Decision log: `docs/decisions/species-chunk-split.md`.
+- NOT RUN: Owner physical device test; live checks (run post-merge).
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Flip to engine 8
 
 Branch `feat/flip-engine-8` off `origin/main` at `2c288bbc`. Wave 7 row 8x (Red). The first commit (`e0223cc8`) records the PR #173 merge. RED commit `a3879716` adds failing guards across 11 files for the engine 8 flip, retained `v7` wiring, proxy `pd7.` handling, grace window, and 50-seed live-vs-frozen `matchStory` parity (41 failed, 96 passed of 137 tests in 9 files); `2882b283` flips the live engine, wires retained `v7`, and sets the engine 7 grace window (137 of 137 passed in 9 files); `0451c7ee` re-pins `src/engine/__tests__/goldens.test.ts`, unit tests, and `e2e/pins.ts` (2,298 passed in 259 files).
@@ -17,7 +34,7 @@ Branch `feat/flip-engine-8` off `origin/main` at `2c288bbc`. Wave 7 row 8x (Red)
 - Decision log: `docs/decisions/engine-8.md`.
 - NOT RUN: non-Chromium Playwright projects, live production checks (post-merge), owner physical device test.
 
-Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+Merged in PR #174 (squash `b823acff`). GLM 5.3 Flash (canary `8x-cfc14c15fdec7f1ade57f8543f40f378`) and independent Red reviewer approved head `f590db45`. Production serves `b823acff` (iad1, engine 8, token versions 1 to 8, db ok). Gated live checks 37 passed on Chromium; historical pd6 and pd7 links verified; default leaderboard board verified empty for engine 8.
 
 ## Engine 8 calibration, dormant
 

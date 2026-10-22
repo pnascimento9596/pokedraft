@@ -1,7 +1,7 @@
-import type { PokemonType } from "@/data/pokedex";
+import type { PokemonType } from "@/data/pokedex-schema";
 import type { Attributes, Role, RoleFits } from "@/scouting/types";
 
-export type { PokemonType } from "@/data/pokedex";
+export type { PokemonType } from "@/data/pokedex-schema";
 export type { Attributes, Role, RoleFits } from "@/scouting/types";
 
 declare const brand: unique symbol;
@@ -46,6 +46,7 @@ export interface Species {
   readonly fits: RoleFits;
   readonly quality: Readonly<Record<Role, Quality>>;
   readonly bestRoles: readonly Role[];
+  readonly worstRoles: readonly Role[];
   readonly strengths: readonly string[];
   readonly weaknesses: readonly string[];
 }

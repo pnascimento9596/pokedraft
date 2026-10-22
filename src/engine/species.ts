@@ -1,28 +1,50 @@
-import { POKEDEX } from "@/data/pokedex";
-import { SCOUTING } from "@/scouting/scouting-data";
+import { SPECIES_INDEX } from "@/data/species-index";
+import gen1 from "@/data/species-chunks/gen-1.json";
+import gen2 from "@/data/species-chunks/gen-2.json";
+import gen3 from "@/data/species-chunks/gen-3.json";
+import gen4 from "@/data/species-chunks/gen-4.json";
+import gen5 from "@/data/species-chunks/gen-5.json";
+import gen6 from "@/data/species-chunks/gen-6.json";
+import gen7 from "@/data/species-chunks/gen-7.json";
+import gen8 from "@/data/species-chunks/gen-8.json";
+import gen9 from "@/data/species-chunks/gen-9.json";
 import { ROLES } from "@/scouting/types";
-import { asSpeciesId } from "./settings";
-import {
-  GENS,
-  REGIONS,
-  type Gen,
-  type Quality,
-  type Region,
-  type Role,
-  type Species,
-} from "./types";
+import { type Attributes, type Quality, type Role, type RoleFits, type Species } from "./types";
 
 const MAX_FIT = 100;
 
 export { ROLE_LINE } from "./roles";
 export { asSpeciesId } from "./settings";
 
+interface ChunkEntry {
+  readonly id: number;
+  readonly evoChainId: number;
+  readonly attrs: Record<string, number>;
+  readonly fits: Record<string, number>;
+  readonly bestRoles: readonly string[];
+  readonly worstRoles: readonly string[];
+  readonly strengths: readonly string[];
+  readonly weaknesses: readonly string[];
+}
+
+const CHUNKS: readonly ChunkEntry[] = [
+  ...gen1,
+  ...gen2,
+  ...gen3,
+  ...gen4,
+  ...gen5,
+  ...gen6,
+  ...gen7,
+  ...gen8,
+  ...gen9,
+];
+
 function buildQualityTables(): Record<Role, readonly Quality[]> {
-  const total = SCOUTING.length;
+  const total = CHUNKS.length;
   const tables = {} as Record<Role, readonly Quality[]>;
   for (const role of ROLES) {
     const counts = new Array<number>(MAX_FIT + 1).fill(0);
-    for (const s of SCOUTING) counts[s.fits[role]]! += 1;
+    for (const s of CHUNKS) counts[s.fits[role]!]! += 1;
     const table: Quality[] = [];
     let below = 0;
     for (let f = 0; f <= MAX_FIT; f++) {
@@ -43,46 +65,29 @@ export function qualityOf(role: Role, fit: number): Quality {
   return QUALITY_TABLES[role][fit]!;
 }
 
-function asRegion(region: string, id: number): Region {
-  if (!(REGIONS as readonly string[]).includes(region)) {
-    throw new RangeError(`species ${id} has unknown region ${region}`);
-  }
-  return region as Region;
-}
-
-function asGen(gen: number, id: number): Gen {
-  if (!(GENS as readonly number[]).includes(gen)) {
-    throw new RangeError(`species ${id} has unknown gen ${gen}`);
-  }
-  return gen as Gen;
-}
-
 function buildSpecies(): readonly Species[] {
-  const dex = new Map(POKEDEX.map((p) => [p.id, p]));
-  return SCOUTING.map((s): Species => {
-    const p = dex.get(s.id);
-    if (!p) throw new RangeError(`scouting species ${s.id} is missing from the Pokédex`);
-    if (p.name !== s.name || p.gen !== s.gen) {
-      throw new RangeError(`scouting and Pokédex disagree on species ${s.id}`);
-    }
-    const [first, second] = p.types;
+  const chunkMap = new Map<number, ChunkEntry>(CHUNKS.map((c) => [c.id, c]));
+  return SPECIES_INDEX.map((idx): Species => {
+    const c = chunkMap.get(idx.id);
+    if (!c) throw new RangeError(`chunk record missing for species ${idx.id}`);
     return {
-      id: asSpeciesId(s.id),
-      name: s.name,
-      gen: asGen(p.gen, p.id),
-      region: asRegion(p.region, p.id),
-      types: second === undefined ? [first!] : [first!, second],
-      special: p.legendary || p.mythical,
-      evoChainId: p.evoChainId,
-      attrs: s.attrs,
-      fits: s.fits,
-      quality: Object.fromEntries(ROLES.map((r) => [r, qualityOf(r, s.fits[r])])) as Record<
+      id: idx.id,
+      name: idx.name,
+      gen: idx.gen,
+      region: idx.region,
+      types: idx.types,
+      special: idx.special,
+      evoChainId: c.evoChainId,
+      attrs: c.attrs as unknown as Attributes,
+      fits: c.fits as unknown as RoleFits,
+      quality: Object.fromEntries(ROLES.map((r) => [r, qualityOf(r, c.fits[r]!)])) as Record<
         Role,
         Quality
       >,
-      bestRoles: s.bestRoles,
-      strengths: s.strengths,
-      weaknesses: s.weaknesses,
+      bestRoles: c.bestRoles as readonly Role[],
+      worstRoles: c.worstRoles as readonly Role[],
+      strengths: c.strengths,
+      weaknesses: c.weaknesses,
     };
   }).sort((a, b) => a.id - b.id);
 }

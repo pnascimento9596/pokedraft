@@ -17,7 +17,6 @@ export { applyAction, createDraft, eligibleSpecies, rateTeam, replay, speciesByI
 export { builderToken, draftFromBuilderToken } from "@/ui/builder-token";
 export { previewCandidateEdges, ratePartialLineup, ratePartialLines } from "@/ui/partial-rating";
 export { swapMessage } from "@/ui/swap-message";
-export { ResultsView } from "@/components/results/ResultsView";
 export { Picker } from "./Picker";
 
 // Rebuilds the draft under new settings and keeps every species that is still eligible there.
@@ -46,5 +45,3 @@ export function randomDraft(settings: DraftSettings, seed: DraftState["seed"], r
   }
   return state;
 }
-
-export { ScoutingDossier } from "@/components/scouting/ScoutingDossier";
