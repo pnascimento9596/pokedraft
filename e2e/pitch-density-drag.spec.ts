@@ -11,6 +11,11 @@ const SLOTS = [
   ...Array.from({ length: 5 }, (_, i) => `b${i}`),
 ];
 const STARTERS = '[data-testid^="slot-s"][data-filled="true"]';
+// The draft sprite is clamp(36px, min(16% of the pitch width, 10.5% of the field height), 64px);
+// the field is clamp(300px, 100svh - 215px, 580px) and the pitch is the viewport less 32 px of
+// gutter. 390x844: min(57.28, 60.9) = 57.3. 360x800: min(52.48, 60.9) = 52.5. 320x568: min(46.08,
+// 37.07) = 37.1.
+const SPRITE: Readonly<Record<number, string>> = { 390: "57.3", 360: "52.5", 320: "37.1" };
 const SIZES = [
   { width: 390, height: 844 },
   { width: 360, height: 800 },
@@ -66,7 +71,7 @@ for (const size of SIZES) {
   test.describe(`at ${size.width}x${size.height}`, () => {
     test.use({ viewport: size });
 
-    test("token sprite is 48px and stays inside its token (catches the 30px sprite below 540px)", async ({
+    test("token sprite grows with the pitch and stays inside its token (catches the 36px sprite of an unregistered --sprite, and the 30px sprite below 540px)", async ({
       page,
     }) => {
       await fullDraft(page);
@@ -82,10 +87,13 @@ for (const size of SIZES) {
             a.right <= t.right + 0.5 &&
             a.top >= t.top - 0.5 &&
             a.bottom <= t.bottom + 0.5;
-          return `${getComputedStyle(art).width} ${getComputedStyle(art).height} ${inside ? "inside" : "outside"}`;
+          const px = (v: string) => (Math.round(parseFloat(v) * 10) / 10).toFixed(1);
+          const cs = getComputedStyle(art);
+          return `${px(cs.width)} ${px(cs.height)} ${inside ? "inside" : "outside"}`;
         }),
       );
-      expect(sprites).toEqual(Array.from({ length: 11 }, () => "48px 48px inside"));
+      const side = SPRITE[size.width]!;
+      expect(sprites).toEqual(Array.from({ length: 11 }, () => `${side} ${side} inside`));
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.getByTestId("pitch").screenshot({ path: `${SHOT}/pitch-${size.width}.png` });
     });

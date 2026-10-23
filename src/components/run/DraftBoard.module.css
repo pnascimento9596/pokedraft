@@ -360,6 +360,22 @@
     display: none;
   }
 }
+/* Phones: the picked player's bar is one compact row, so the pitch under it fits the screen. */
+@media (max-width: 959.98px) {
+  .selectionBar {
+    padding: 6px 8px;
+  }
+  .selectionHint,
+  .selectionDelta {
+    line-height: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .selectionName {
+    line-height: 16px;
+  }
+}
 .dragPreview {
   position: fixed;
   left: 0;

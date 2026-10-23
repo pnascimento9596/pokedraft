@@ -1,6 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   DRAFT_ROUNDS,
   FORMATIONS,
@@ -75,6 +84,9 @@ const REROLL_BUTTONS: Readonly<Record<"cup8" | "kanto151", readonly [RerollTarge
 
 // A downward drag on the open picker's toggle longer than this closes it, as on the builder Picker.
 const SWIPE_CLOSE_PX = 80;
+/** The one-column layout of DraftBoard.module.css, where the pitch sits under the hub. */
+const PHONE_LAYOUT = "(max-width: 959.98px)";
+const FRAME_GAP_PX = 8;
 
 // How long a hint for a tap that did nothing stays up.
 const HINT_MS = 4000;
@@ -196,10 +208,31 @@ function ActiveDraftBoard({
   const drawerRef = useRef<HTMLDivElement>(null);
 
   const placeAfterPick = phase.kind === "choosing" && phase.slot === null;
+  // On a phone each Squad First roll, each candidate tap and each signing frames the pitch, so the
+  // pick lands with every position (and the picked player's card) on screen.
+  const frameKey = `${placeAfterPick ? rollId : ""}|${selection?.species ?? ""}|${filledCount(state.lineup)}`;
+  const framedKey = useRef<string | null>(null);
+  // Before paint, so the pick never shows a frame at the old scroll position.
+  useLayoutEffect(() => {
+    const section = pitchRef.current;
+    if (framedKey.current === frameKey || section === null) return;
+    const first = framedKey.current === null;
+    framedKey.current = frameKey;
+    if (!window.matchMedia(PHONE_LAYOUT).matches) return;
+    const field = section.querySelector('[data-testid="pitch"]') ?? section;
+    const top = section.getBoundingClientRect().top;
+    if (top >= 0 && field.getBoundingClientRect().bottom <= window.innerHeight) return;
+    // As the draft opens, the hub and its sound toggle stay in view above the pitch top.
+    if (first && top >= 0 && top <= window.innerHeight / 2) return;
+    const from = first ? (section.parentElement ?? section) : section;
+    const y = from.getBoundingClientRect().top;
+    window.scrollTo({ top: window.scrollY + y - FRAME_GAP_PX, behavior: "instant" });
+  }, [frameKey]);
   useEffect(() => {
     const pitch = pitchRef.current;
     if (!placeAfterPick || pitch === null || scrolledRoll.current === rollId) return;
     scrolledRoll.current = rollId;
+    if (window.matchMedia(PHONE_LAYOUT).matches) return;
     const top = pitch.getBoundingClientRect().top;
     const headerRoom = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
     // Leave the page alone while the pitch top already shows, so the hub above it stays in view.

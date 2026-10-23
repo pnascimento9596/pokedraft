@@ -469,8 +469,13 @@ test("pointer drag from candidate card directly drops onto empty slot", async ({
   // The open picker's backdrop takes taps, so this drag only lands while it stays inert mid-drag.
   await expect(page.locator("[data-choosing][data-drawer]")).toHaveCount(1);
 
+  // The picker covers most of a short phone and a release over it places nothing, so the target
+  // slot is scrolled to show just above the picker.
   const emptySlot = page.locator('[data-testid^="slot-s"][data-filled="false"]').first();
-  await emptySlot.evaluate((el) => el.scrollIntoView({ block: "end", behavior: "instant" }));
+  await emptySlot.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    window.scrollBy({ top: r.top + r.height / 2 - 30, behavior: "instant" });
+  });
 
   const cardBox = (await firstCard.boundingBox())!;
   const slotBox = (await emptySlot.boundingBox())!;
