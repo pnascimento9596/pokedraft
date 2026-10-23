@@ -263,7 +263,8 @@ for (const engine of ["chromium", "webkit"] as const) {
         await start.tap();
         await page.locator('[data-testid^="candidate-"]').first().tap();
         const field = page.getByTestId("pitch-stage");
-        expect(await field.evaluate((e) => getComputedStyle(e).height)).toBe("520px");
+        // clamp(300px, 100svh - 215px, 580px) at 844 px tall.
+        expect(await field.evaluate((e) => getComputedStyle(e).height)).toBe("580px");
         const boxes = await page.locator('[data-testid^="slot-s"]').evaluateAll((elements) =>
           elements.map((e) => {
             const r = e.getBoundingClientRect();

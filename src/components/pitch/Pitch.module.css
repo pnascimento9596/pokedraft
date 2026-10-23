@@ -370,9 +370,6 @@
     aspect-ratio: auto;
     height: 580px;
   }
-  .wrap[data-fit] .field {
-    height: 520px;
-  }
   .token {
     width: 56px;
     height: 90px;
@@ -384,9 +381,6 @@
     height: 56px;
     min-width: 44px;
     min-height: 44px;
-  }
-  .wrap[data-fit] .token[data-filled="true"] {
-    height: 88px;
   }
   /* A phone token is 56px wide. The type shows as a top bar instead of a side frame and an icon
      column, so the sprite gets the full width. The type stays in the accessible name. */
@@ -489,4 +483,92 @@
 
 .token[data-filled="true"] .cardRole {
   visibility: hidden;
+}
+
+/* The draft pitch on a phone. The field takes the screen height left over by the picked player's
+   bar and the bench, so a pick lands with every position on screen. The tilt leaves an empty band
+   above the far touchline; the negative margin takes it back. The cards grow with the field's
+   width, so the sprite and the name stay readable.
+   --field-h sits outside the query because a container query cannot style its own container.
+   --pitch-sprite is a registered length, computed once on the field against the pitch's width; left
+   unregistered, its cqi would resolve inside each sprite box, which is a container of its own. */
+@property --pitch-sprite {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 48px;
+}
+.wrap[data-fit] {
+  --field-h: clamp(300px, calc(100svh - 215px), 580px);
+}
+@container (max-width: 540px) {
+  .wrap[data-fit] .field {
+    --pitch-sprite: clamp(36px, min(16cqi, calc(var(--field-h) * 0.105)), 64px);
+  }
+  .wrap[data-fit] .perspective {
+    padding: 0 0 16px;
+    margin-top: calc(var(--field-h) * -0.06);
+  }
+  .wrap[data-fit] .field {
+    height: var(--field-h);
+  }
+  /* The slot label and the rating float over the top of the sprite instead of taking a row, so a
+     card is shorter and the rows overlap less. */
+  .wrap[data-fit] .field .token[data-filled="true"] {
+    width: clamp(56px, 20cqi, 76px);
+    height: calc(var(--pitch-sprite) + 26px);
+    padding-top: 4px;
+    grid-template-rows: var(--pitch-sprite) minmax(14px, 1fr);
+    row-gap: 2px;
+  }
+  .wrap[data-fit] .field .token[data-filled="true"] .cardHeader {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: auto;
+    z-index: 1;
+  }
+  .wrap[data-fit] .field .token[data-filled="true"] .tokenImage {
+    grid-row: 1;
+  }
+  .wrap[data-fit] .field .token[data-filled="true"] .tokenName {
+    grid-row: 2;
+  }
+  .wrap[data-fit] .field .filledSlot {
+    z-index: 1;
+  }
+  .wrap[data-fit] .field .tokenImage {
+    height: var(--pitch-sprite);
+  }
+  .wrap[data-fit] .field .tokenImage > :global([data-player-image]) {
+    width: min(var(--pitch-sprite), 100cqi) !important;
+    height: min(var(--pitch-sprite), 100cqi) !important;
+  }
+  /* The picture fills its box instead of keeping the 48 px it was drawn at, and grows past the
+     transparent margin around the sprite. */
+  .wrap[data-fit] .tokenImage img {
+    width: 100% !important;
+    height: 100% !important;
+    scale: 1.2;
+    transform-origin: center bottom;
+  }
+  .wrap[data-fit] .bench {
+    gap: 4px;
+    padding: 6px;
+  }
+  .wrap[data-fit] .bench .token {
+    height: 52px;
+  }
+  .wrap[data-fit] .bench .token[data-filled="true"] {
+    height: 78px;
+    padding-top: 15px;
+    grid-template-rows: 0 40px 14px;
+    row-gap: 2px;
+  }
+  .wrap[data-fit] .bench .tokenImage {
+    height: 40px;
+  }
+  .wrap[data-fit] .bench .tokenImage > :global([data-player-image]) {
+    width: min(40px, 100cqi) !important;
+    height: min(40px, 100cqi) !important;
+  }
 }

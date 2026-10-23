@@ -3,6 +3,20 @@
 Measured ground truth. Each PR's section cites its reviewed head and the gates run there; the merge
 and its squash SHA are recorded in the next PR's STATE update.
 
+## A pick lands on the pitch on a phone
+
+Branch `fix/wheel-modal-mobile` off `origin/main` at `fa669868`. Owner request: in every drafting mode the wheel spins over the pitch, and a pick lands with the picked player's card, its Scout button and every position on one phone screen (Yellow, UI only). Decision log: `docs/decisions/wheel-modal-mobile.md`.
+
+- Merged since the last update: PR #178 (friends gate removal) as `16adfa8b` from head `321bedd6`, PR #179 (gate rate-limit scope) as `9b91c53d` from head `115cfc9e`, PR #180 (Next.js 16.4.2) as `fa669868` from head `7f9d9edd`.
+- Bug: on a phone a Position First pick, or any pick after a scroll, left the pitch off screen, and the one-column draft was taller than the screen (an empty band above the tilted field, a three-line selection bar, a tall bench).
+- `DraftBoard.tsx` frames the pitch before paint on a phone after each Squad First roll, selection and signing; desktop scrolling is unchanged. `Pitch.module.css` sizes the draft field to `clamp(300px, 100svh - 215px, 580px)` under a 540 px pitch and grows the field cards through a registered `--pitch-sprite` (37 to 57 px from 320x568 to 390x844, was 48 px). `DraftBoard.module.css` makes the phone selection bar one row.
+- RED commit `a3c5eacb`: the two guards in `e2e/mobile-draft.spec.ts` fail on `origin/main` in all six phone runs (iphone-se, iphone-14, pixel-7) and pass at the fix commit `508e08bc`.
+- Gates on the fix tree: `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm check:dashes` and `pnpm build` exit 0; `pnpm test` 2,277 passed in 256 files; full Playwright (chromium, iphone-se, iphone-14, pixel-7) 1,113 passed, 67 skipped, 0 failed.
+- Browser proof: after a pick the selection bar with Scout, the whole field and all 16 slots are on screen at 320x568, 375x667, 390x844, 412x915, iPhone 14 and Pixel 7.
+- NOT RUN: physical phones, `pnpm check:mirrors` (no mirrored file changed), the other `check:*` scripts. The e2e runs rewrite screenshots under `docs/reports/`; they are not part of this PR.
+
+Merge status, the squash SHA and the reviewer receipt go into the next STATE update.
+
 ## Remove the friends passcode gate
 
 Branch `fix/remove-friends-gate` off `origin/main` at `aa271daa`. Owner request: the site is open to everyone and nothing asks for a passcode (Red, proxy and deploy behavior).

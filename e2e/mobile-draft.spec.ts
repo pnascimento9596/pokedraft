@@ -469,8 +469,13 @@ test("pointer drag from candidate card directly drops onto empty slot", async ({
   // The open picker's backdrop takes taps, so this drag only lands while it stays inert mid-drag.
   await expect(page.locator("[data-choosing][data-drawer]")).toHaveCount(1);
 
+  // The picker covers most of a short phone and a release over it places nothing, so the target
+  // slot is scrolled to show just above the picker.
   const emptySlot = page.locator('[data-testid^="slot-s"][data-filled="false"]').first();
-  await emptySlot.evaluate((el) => el.scrollIntoView({ block: "end", behavior: "instant" }));
+  await emptySlot.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    window.scrollBy({ top: r.top + r.height / 2 - 30, behavior: "instant" });
+  });
 
   const cardBox = (await firstCard.boundingBox())!;
   const slotBox = (await emptySlot.boundingBox())!;
@@ -530,4 +535,64 @@ test("touch release over drawer does not place into occluded slots", async ({ pa
 
   // Round must NOT have advanced (remains Round 1)
   await expect(page.getByTestId("round-header")).toHaveText("Round 1 of 16");
+});
+
+// The pick lands on the pitch: once a player is signed from the wheel pop-up, the whole formation,
+// the bench and (Squad First) the picked player's card with its Scout button are on screen, with
+// no scroll back up. The bug left the page at the bench or below it, with the forwards off screen.
+async function offScreen(page: Page, testIds: readonly string[]): Promise<string[]> {
+  return page.evaluate((ids) => {
+    const missing: string[] = [];
+    for (const id of ids) {
+      for (const el of document.querySelectorAll(
+        `[data-testid="${id}"], [data-testid^="${id}-"]`,
+      )) {
+        if (el.closest('[data-testid="draft-drawer"]') !== null) continue;
+        const r = el.getBoundingClientRect();
+        if (r.top < -1 || r.bottom > innerHeight + 1) {
+          missing.push(
+            `${el.getAttribute("data-testid")} spans ${Math.round(r.top)} to ${Math.round(r.bottom)} of ${innerHeight}`,
+          );
+        }
+      }
+    }
+    return missing;
+  }, testIds);
+}
+
+const POSITION_ROUTE = (order: "squadFirst" | "positionFirst") =>
+  `/play?mode=cup8&f=4-3-3&order=${order}&g=123456789&style=classic3&seed=e2e-frame`;
+
+test("a Position First pick made from the bench lands with every position on screen", async ({
+  page,
+}) => {
+  await start(page, POSITION_ROUTE("positionFirst"));
+  const bench = page.getByTestId("slot-b0");
+  await bench.evaluate((el) => el.scrollIntoView({ block: "end", behavior: "instant" }));
+  await settle(page);
+  await tapNow(page, bench, "the first bench slot");
+  const candidate = page.locator('[data-testid^="candidate-"]').first();
+  await tapNow(page, candidate, "the first offered player");
+  await expect(bench).toHaveAttribute("data-filled", "true");
+  await settle(page);
+  expect(await offScreen(page, ["pitch-stage", "slot"])).toEqual([]);
+});
+
+test("a Squad First pick lands on the pitch with the picked card and Scout on screen", async ({
+  page,
+}) => {
+  await start(page, POSITION_ROUTE("squadFirst"));
+  for (const slot of ["slot-b0", "slot-b1"]) {
+    const candidate = page.locator('[data-testid^="candidate-"]').first();
+    await tapNow(page, candidate, "the first offered player");
+    await settle(page);
+    expect(await offScreen(page, ["draft-selection-bar", "pitch-stage", "slot"])).toEqual([]);
+    await expect(
+      page.getByTestId("draft-selection-bar").getByRole("button", { name: "Scout" }),
+    ).toBeVisible();
+    const target = page.getByTestId(slot);
+    await target.evaluate((el) => el.scrollIntoView({ block: "end", behavior: "instant" }));
+    await tapNow(page, target, slot);
+    await expect(target).toHaveAttribute("data-filled", "true");
+  }
 });
